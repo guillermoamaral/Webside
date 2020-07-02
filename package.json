@@ -1,0 +1,40 @@
+{
+  "name": "bee",
+  "version": "1.0.0",
+  "description": "Bee Web",
+  "main": "index.js",
+  "dependencies": {
+    "@material-ui/core": "^4.10.2",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
+    "axios": "^0.19.2",
+    "codemirror": "^5.55.0",
+    "react": "^16.13.1",
+    "react-codemirror2": "^7.2.1",
+    "react-dom": "^16.13.1",
+    "react-swipeable-views": "^0.13.9"
+  },
+  "devDependencies": {
+    "react-scripts": "^3.4.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "author": "",
+  "license": "ISC",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
