@@ -33,7 +33,7 @@ class CodeEditor extends Component {
                         theme: 'material',
                         lineNumbers: true,
                         matchBrackets: true, 
-                        indentUnit: 4, 
+                        indentUnit: 10, 
                         highlightSelectionMatches: true, 
                         styleActiveLine: true, 
                         matchTags: {

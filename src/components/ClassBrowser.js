@@ -137,17 +137,23 @@ class ClassBrowser extends Component {
     showClassDefinition = () => {
         this.setState({mode: "class"})
     }
+    
     source() {
-        return (this.state.mode === "method")? this.state.selectedMethod.source : this.state.definitions[this.state.selectedClass];
+        if (this.state.mode === "method") {
+            return this.state.selectedMethod.source
+         } else {
+            return this.state.definitions[this.state.selectedClass];
+         }
     }
 
     render() {
+        const { classes, classTree, variables, selectedClass } = this.state;
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         return (
             <Grid container spacing={3} alignItems="stretch">
                 <Grid item xs={12} md={3} lg={3}>
                     <Paper>
-                        <SearchList options={this.state.classes}/>
+                        <SearchList options={classes}/>
                     </Paper>
                 </Grid> 
                 <Grid item xs={12} md={12} lg={12}>
@@ -155,14 +161,14 @@ class ClassBrowser extends Component {
                         <Grid item xs={12} md={3} lg={3}>
                             <Paper className={fixedHeightPaper}>
                                 <ClassTree
-                                    classes={this.state.classTree}
+                                    classes={classTree}
                                     onSelect={this.classSelected}/>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={3} lg={3}>
                             <Paper className={fixedHeightPaper}>
                                 <SimpleList
-                                    items={this.state.variables[this.state.selectedClass]}
+                                    items={variables[selectedClass]}
                                     onSelect={this.variableSelected}/>
                             </Paper>
                         </Grid>
@@ -183,7 +189,7 @@ class ClassBrowser extends Component {
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
-                    <ButtonGroup variant="text">
+                    <ButtonGroup variant="text" aria-label="large outlined primary button group">
                         <Button onClick={this.showMethodDefinition}>Method defintion</Button>
                         <Button onClick={this.showClassDefinition}>Class definition</Button>
                     </ButtonGroup>

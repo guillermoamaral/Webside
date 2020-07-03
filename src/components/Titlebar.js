@@ -13,10 +13,11 @@ class Titlebar extends Component {
     render() {
         return (
             <AppBar
-              position="absolute"
-              className={clsx(this.props.classes.appBar, this.props.sidebarExpanded && this.props.classes.appBarShift)}
+                color="default"
+                position="absolute"
+                className={clsx(this.props.classes.appBar, this.props.sidebarExpanded && this.props.classes.appBarShift)}
             >
-            <Toolbar className={this.props.classes.toolbar}>
+            <Toolbar className={this.props.classes.toolbar}> 
               <IconButton
                 edge="start"
                 color="inherit"
@@ -36,7 +37,7 @@ class Titlebar extends Component {
                 noWrap
                 className={this.props.classes.title}
               >
-                Bee Web IDE
+                Smalltalk Web IDE
               </Typography>
               <Avatar
                 alt="Uddeshya Singh"

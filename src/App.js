@@ -6,11 +6,13 @@ import {
   CssBaseline
 } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
-import { orange } from "@material-ui/core/colors";
+import { amber } from "@material-ui/core/colors";
 
 import Titlebar from './components/Titlebar'
 import Sidebar from './components/Sidebar';
+import TabControl from './components/TabControl';
 import ClassBrowser from './components/ClassBrowser';
+
 
 const port = 9000 //window.location.port;
 const baseUri = `http://${window.location.hostname}:${port}/bee`;
@@ -31,6 +33,7 @@ const useStyles = theme => ({
     ...theme.mixins.toolbar
   },
   appBar: {
+    color: "primary",
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
@@ -38,6 +41,7 @@ const useStyles = theme => ({
     })
   },
   appBarShift: {
+    color: "primary",
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
@@ -97,16 +101,21 @@ const useStyles = theme => ({
 
 const theme = createMuiTheme({
   typography: {
-    fontFamily: '"Segoe UI"'
+    fontFamily: '"Segoe UI"',
+    fontSize: 14,
   },
   palette: {
     type: "dark"
   },
   primary: {
-    main: orange[300]
+    main: amber[300]
   },
   secondary: {
-    main: orange[900]
+    main: amber[900]
+  },
+  codeMirror: {
+    fontFamily: '"Arial"',
+    fontSize: 24,
   }
 });
 
@@ -136,7 +145,7 @@ class App extends Component {
           <main className={this.props.classes.content}>
             <div className={this.props.classes.appBarSpacer} />
             <Container maxWidth="lg" className={this.props.classes.container}>
-              <ClassBrowser classes={this.props.classes} root={'ParseNode'} baseUri={baseUri}/>         
+              <TabControl pages={[1, 2, 3]}/>
             </Container>
           </main>
         </div>
