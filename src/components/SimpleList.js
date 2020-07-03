@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { List, ListItem, ListItemText } from "@material-ui/core";
+import React, { Component } from 'react';
+import { List, ListItem, ListItemText } from '@material-ui/core';
 
 class SimpleList extends Component {
   constructor(props) {

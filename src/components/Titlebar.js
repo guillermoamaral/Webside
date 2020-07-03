@@ -5,9 +5,9 @@ import {
     Avatar,
     Typography,
     IconButton,
-  } from "@material-ui/core";
-import clsx from "clsx";  
-import MenuIcon from "@material-ui/icons/Menu";
+  } from '@material-ui/core';
+import clsx from 'clsx';  
+import MenuIcon from '@material-ui/icons/Menu';
 
 class Titlebar extends Component {
     render() {

@@ -64,18 +64,19 @@ class TabControl extends Component {
                     >
                         {this.props.pages.map((p, i) => {
                             return (<Tab
-                                label={"Item " + p}
+                                key={i.toString()}
+                                label={p.label}
                                 id= {`scrollable-auto-tab-${i}`}
-                                aria-controls = {`scrollable-auto-tabpanel-${i}`}
-                                />);
+                                aria-controls = {`scrollable-auto-tabpanel-${i}`}/>);
                         })}
                 </Tabs>
                 {this.props.pages.map((p, i) => {
                     return (
                         <TabPanel
+                            key={i.toString()}
                             index={i}
-                            value={this.state.value} >
-                            {i}
+                            value={this.state.value}>
+                            {p.component}
                         </TabPanel>);
                 })}
 

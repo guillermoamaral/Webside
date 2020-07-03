@@ -9,7 +9,7 @@ class CodeEditor extends Component {
     constructor(props){
         super(props);
         this.state = {
-            source: 'no source',
+            source: '"no source"',
         }
     }
 

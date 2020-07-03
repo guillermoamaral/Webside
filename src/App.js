@@ -124,6 +124,16 @@ class App extends Component {
     super(props);
     this.state = {
       sidebarExpanded: false,
+      pages: [
+        {
+          label: 'Number',
+          component: <ClassBrowser baseUri={baseUri} classes={this.props.classes} root='Number'/>
+        },
+        {
+          label: 'ParseNode',
+          component: <ClassBrowser baseUri={baseUri} classes={this.props.classes} root='ParseNode'/>
+        }
+      ]
     }
   }
 
@@ -145,7 +155,7 @@ class App extends Component {
           <main className={this.props.classes.content}>
             <div className={this.props.classes.appBarSpacer} />
             <Container maxWidth="lg" className={this.props.classes.container}>
-              <TabControl pages={[1, 2, 3]}/>
+              <TabControl pages={this.state.pages}/>
             </Container>
           </main>
         </div>
