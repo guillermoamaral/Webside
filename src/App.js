@@ -3,18 +3,13 @@ import { withStyles } from "@material-ui/core/styles";
 import {
   Container,
   createMuiTheme,
-  CssBaseline,
-  AppBar,
-  Toolbar,
-  Avatar,
-  Typography,
-  IconButton,
+  CssBaseline
 } from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
 import { ThemeProvider } from "@material-ui/styles";
-import clsx from "clsx";
 import { orange } from "@material-ui/core/colors";
-import Sidebar from "./components/Sidebar";
+
+import Titlebar from './components/Titlebar'
+import Sidebar from './components/Sidebar';
 import ClassBrowser from './components/ClassBrowser';
 
 const port = 9000 //window.location.port;
@@ -90,8 +85,8 @@ const useStyles = theme => ({
     paddingBottom: theme.spacing(1)
   },
   paper: {
-    padding: theme.spacing(1),
-    display: "flex",
+//    padding: theme.spacing(1),
+//    display: "flex",
     overflow: "auto",
     flexDirection: "row"
   },
@@ -119,16 +114,16 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      sidebarOpen: false,
+      sidebarExpanded: false,
     }
   }
 
-  openSidebar = () => {
-    this.setState({sidebarOpen: true});
+  expandSidebar = () => {
+    this.setState({sidebarExpanded: true});
   };
   
-  closeSidebar = () => {
-    this.setState({sidebarOpen: false});
+  collapseSidebar = () => {
+    this.setState({sidebarExpanded: false});
   };
   
   render () {
@@ -136,39 +131,8 @@ class App extends Component {
       <ThemeProvider theme={theme}>
         <div className={this.props.classes.root}>
           <CssBaseline/>
-          <AppBar
-              position="absolute"
-              className={clsx(this.props.classes.appBar, this.state.sidebarOpen && this.props.classes.appBarShift)}
-            >
-            <Toolbar className={this.props.classes.toolbar}>
-              <IconButton
-                edge="start"
-                color="inherit"
-                aria-label="open drawer"
-                onClick={this.openSidebar}
-                className={clsx(
-                  this.props.classes.menuButton,
-                  this.state.open && this.props.classes.menuButtonHidden
-                )}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography
-                component="h1"
-                variant="h6"
-                color="inherit"
-                noWrap
-                className={this.props.classes.title}
-              >
-                Bee Smalltalk Web IDE
-              </Typography>
-              <Avatar
-                alt="Uddeshya Singh"
-              />
-            </Toolbar>
-          </AppBar>
-
-          <Sidebar classes={this.props.classes} open={this.state.sidebarOpen} onClose={this.closeSidebar}/>
+          <Titlebar classes={this.props.classes} sidebarExpanded={this.state.sidebarExpanded} expandSidebar={this.expandSidebar} />
+          <Sidebar classes={this.props.classes} expanded={this.state.sidebarExpanded} onClose={this.collapseSidebar}/>
           
           <main className={this.props.classes.content}>
             <div className={this.props.classes.appBarSpacer} />
