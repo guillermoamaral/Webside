@@ -4,7 +4,8 @@ import { List, ListItem, ListItemText } from "@material-ui/core";
 class SimpleList extends Component {
   constructor(props) {
     super(props);
-    this.state = {selectedIndex: null}
+    this.state = {
+      selectedIndex: null}
   }
 
   handleClick = (event, index) => {
@@ -20,16 +21,16 @@ class SimpleList extends Component {
 
   render () {
     return (
-      <List dense>
+      <List>
           {
             (this.props.items == null ? [] : this.props.items).map((v, i) =>
               <ListItem
                 button
                 key={v}
                 selected={this.state.selectedIndex === i}
-                onClick={(event) => this.handleClick(event, i)}
-              >
-                <ListItemText primary={v}/>
+                onClick={(event) => this.handleClick(event, i)}>
+                  <ListItemText primary={v} 
+              width="100%"/>
               </ListItem>
           )}
       </List>

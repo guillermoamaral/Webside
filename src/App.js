@@ -133,7 +133,6 @@ class App extends Component {
           <CssBaseline/>
           <Titlebar classes={this.props.classes} sidebarExpanded={this.state.sidebarExpanded} expandSidebar={this.expandSidebar} />
           <Sidebar classes={this.props.classes} expanded={this.state.sidebarExpanded} onClose={this.collapseSidebar}/>
-          
           <main className={this.props.classes.content}>
             <div className={this.props.classes.appBarSpacer} />
             <Container maxWidth="lg" className={this.props.classes.container}>

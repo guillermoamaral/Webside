@@ -21,8 +21,8 @@ class Sidebar extends Component {
         return (
             <Drawer
                 variant="permanent"
-                classes={{paper: clsx(this.props.classes.drawerPaper, !this.props.open && this.props.classes.drawerPaperClose)}}
-                open={this.props.open}
+                classes={{paper: clsx(this.props.classes.drawerPaper, !this.props.expanded && this.props.classes.drawerPaperClose)}}
+                open={this.props.expanded}
                 >
                 <div className={this.props.classes.toolbarIcon}>
                     <IconButton onClick={this.props.onClose.bind(this)}>

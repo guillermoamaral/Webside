@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import { useTheme, makeStyles } from '@material-ui/core/styles';
+import { useTheme } from '@material-ui/core/styles';
 import { VariableSizeList } from 'react-window';
 import { Typography } from '@material-ui/core';
 
@@ -87,34 +87,23 @@ ListboxComponent.propTypes = {
   children: PropTypes.node,
 };
 
-const useStyles = makeStyles({
-  listbox: {
-    boxSizing: 'border-box',
-    '& ul': {
-      padding: 0,
-      margin: 0,
-    },
-  },
-});
-
-const renderGroup = (params) => [
-  <ListSubheader key={params.key} component="div">
-    {params.group}
-  </ListSubheader>,
-  params.children,
-];
-
-export default function SearchList() {
-  const classes = useStyles();
-  return (
-    <Autocomplete
-      id="autocomplete"
-      ListboxComponent={ListboxComponent}
-      renderGroup={renderGroup}
-      options={[]}
-      groupBy={(option) => option[0].toUpperCase()}
-      renderInput={(params) => <TextField {...params} variant="outlined" label="Search..." />}
-      renderOption={(option) => <Typography noWrap>{option}</Typography>}
-    />
-  );
+class SearchList extends Component {
+    render () {
+        return (
+            <Autocomplete
+            id="autocomplete"
+            ListboxComponent={ListboxComponent}
+            renderGroup={(params) => [
+                <ListSubheader key={params.key} component="div">
+                {params.group}
+                </ListSubheader>,
+                params.children,
+            ]}
+            options={this.props.options}
+            renderInput={(params) => <TextField {...params} variant="outlined" label="Search..." />}
+            renderOption={(option) => <Typography noWrap>{option}</Typography>}
+            />);
+    }
 }
+
+export default SearchList;

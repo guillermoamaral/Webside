@@ -22,7 +22,19 @@ class CodeEditor extends Component {
                 options={{
                     mode: 'smalltalk',
                     theme: 'material',
-                    lineNumbers: true}}
+                    lineNumbers: true,
+                    matchBrackets: true, 
+                    indentUnit: 4, 
+                    highlightSelectionMatches: true, 
+                    styleActiveLine: true, 
+                    matchTags: {
+                        bothTags: true
+                    }, 
+                    lineWrapping: true, 
+                    extraKeys: {
+                        "Alt-S": "saveClicked", 
+                        "Ctrl-S": "evaluateClicked"
+                    }}}
                 onBeforeChange={(editor, data, value) => { this.setState({source: value}) }}
                 onChange={(editor, data, value) => {}}/>
             </div>
