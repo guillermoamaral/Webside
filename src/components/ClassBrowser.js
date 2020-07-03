@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid, Paper } from "@material-ui/core";
+import { Grid, Paper, Button, ButtonGroup } from "@material-ui/core";
 import axios from 'axios';
 import clsx from "clsx";
 
@@ -23,7 +23,8 @@ class ClassBrowser extends Component {
             variables: {},
             categories: {},
             selectors: {},
-            selectedMethod: {selector: 'no method', source: 'nothing'}
+            selectedMethod: {selector: 'no method', source: 'nothing'},
+            mode: "method"
         }
     }
 
@@ -129,6 +130,17 @@ class ClassBrowser extends Component {
         return this.state.selectedClass == null? [] : this.state.variables[this.state.selectedClass];
     }
 
+    showMethodDefinition = () => {
+        this.setState({mode: "method"})
+    }
+
+    showClassDefinition = () => {
+        this.setState({mode: "class"})
+    }
+    source() {
+        return (this.state.mode === "method")? this.state.selectedMethod.source : this.state.definitions[this.state.selectedClass];
+    }
+
     render() {
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         return (
@@ -171,8 +183,14 @@ class ClassBrowser extends Component {
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
+                    <ButtonGroup variant="text">
+                        <Button onClick={this.showMethodDefinition}>Method defintion</Button>
+                        <Button onClick={this.showClassDefinition}>Class definition</Button>
+                    </ButtonGroup>
+                </Grid>                 
+                <Grid item xs={12} md={12} lg={12}>
                     <Paper>
-                        <CodeEditor method={this.state.selectedMethod} />
+                        <CodeEditor source={this.source()} />
                     </Paper>
                 </Grid> 
             </Grid>

@@ -8,7 +8,7 @@ import { useTheme } from '@material-ui/core/styles';
 import { VariableSizeList } from 'react-window';
 import { Typography } from '@material-ui/core';
 
-const LISTBOX_PADDING = 1; // px
+const LISTBOX_PADDING = 0; // px
 
 function renderRow(props) {
   const { data, index, style } = props;
@@ -21,7 +21,6 @@ function renderRow(props) {
 }
 
 const OuterElementContext = React.createContext({});
-
 const OuterElementType = React.forwardRef((props, ref) => {
   const outerProps = React.useContext(OuterElementContext);
   return <div ref={ref} {...props} {...outerProps} />;
@@ -91,17 +90,17 @@ class SearchList extends Component {
     render () {
         return (
             <Autocomplete
-            id="autocomplete"
-            ListboxComponent={ListboxComponent}
-            renderGroup={(params) => [
-                <ListSubheader key={params.key} component="div">
-                {params.group}
-                </ListSubheader>,
-                params.children,
-            ]}
-            options={this.props.options}
-            renderInput={(params) => <TextField {...params} variant="outlined" label="Search..." />}
-            renderOption={(option) => <Typography noWrap>{option}</Typography>}
+                id="autocomplete"
+                ListboxComponent={ListboxComponent}
+                renderGroup={(params) => [
+                    <ListSubheader key={params.key} component="div">
+                    {params.group}
+                    </ListSubheader>,
+                    params.children,
+                ]}
+                options={this.props.options}
+                renderInput={(params) => <TextField {...params} variant="outlined" label="Search..." />}
+                renderOption={(option) => <Typography noWrap>{option}</Typography>}
             />);
     }
 }

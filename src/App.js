@@ -88,7 +88,7 @@ const useStyles = theme => ({
 //    padding: theme.spacing(1),
 //    display: "flex",
     overflow: "auto",
-    flexDirection: "row"
+//    flexDirection: "row"
   },
   fixedHeight: {
     height: 240

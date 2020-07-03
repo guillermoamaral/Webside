@@ -14,7 +14,7 @@ class ClassTree extends Component {
         )
     }
 
-    handleSelect = (event, id) => {
+    nodeSelected = (event, id) => {
         const handler = this.props.onSelect;
         if (handler !== null) {
             handler.bind(this);
@@ -28,7 +28,7 @@ class ClassTree extends Component {
                 defaultCollapseIcon={<ArrowRightIcon />}
                 defaultExpanded={['root']}
                 defaultExpandIcon={<ArrowDropDownIcon />}
-                onNodeSelect={this.handleSelect}
+                onNodeSelect={this.nodeSelected}
                 >
                 {this.createItems(this.props.classes)}
             </TreeView>

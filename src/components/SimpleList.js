@@ -8,7 +8,7 @@ class SimpleList extends Component {
       selectedIndex: null}
   }
 
-  handleClick = (event, index) => {
+  itemSelected = (event, index) => {
     this.setState({selectedIndex: index});
     if (this.props !== null) { 
       const handler = this.props.onSelect;
@@ -25,10 +25,11 @@ class SimpleList extends Component {
           {
             (this.props.items == null ? [] : this.props.items).map((v, i) =>
               <ListItem
+                style={{paddingTop: 0, paddingBottom: 0}}
                 button
                 key={v}
                 selected={this.state.selectedIndex === i}
-                onClick={(event) => this.handleClick(event, i)}>
+                onClick={(event) => this.itemSelected(event, i)}>
                   <ListItemText primary={v} 
               width="100%"/>
               </ListItem>
