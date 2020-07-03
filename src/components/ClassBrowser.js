@@ -3,6 +3,7 @@ import { Grid, Paper } from "@material-ui/core";
 import axios from 'axios';
 import clsx from "clsx";
 
+import SearchList from './SearchList';
 import ClassTree from './ClassTree';
 import SimpleList from './SimpleList';
 import CodeEditor from './CodeEditor';
@@ -12,6 +13,7 @@ class ClassBrowser extends Component {
         super(props);
         this.state = {
             root: this.props.root,
+            classTree: [],
             classes: [],
             definitions: {},
             selectedClass: this.props.root,
@@ -26,9 +28,8 @@ class ClassBrowser extends Component {
     }
 
     componentDidMount(){
-        axios.get(this.props.baseUri+'/class-tree?root='+this.state.root)
-            .then(res => {this.setState({classes: res.data})}
-        )
+        this.getClassTree();
+        this.getClasses();
     }
 
     classSelected = (c) => {
@@ -36,7 +37,8 @@ class ClassBrowser extends Component {
             this.getDefinition();
             this.getVariables();
             this.getCategories();
-            this.getSelectors();});
+            //this.getSelectors()
+        });
     }
 
     variableSelected = (v) => {
@@ -49,6 +51,18 @@ class ClassBrowser extends Component {
 
     selectorSelected = (s) => {
         this.setState({selectedSelector: s}, () => this.getMethod());
+    }
+
+    getClassTree = () => {
+        axios.get(this.props.baseUri+'/classes?root='+this.state.root+'&tree=true')
+            .then(res => {this.setState({classTree: res.data})}
+        )
+    }
+
+    getClasses = () => {
+        axios.get(this.props.baseUri+'/classes?names=true')
+            .then(res => {this.setState({classes: res.data})}
+        )
     }
 
     getDefinition = () => {
@@ -71,7 +85,11 @@ class ClassBrowser extends Component {
         const c = this.state.selectedClass;
         if (this.state.categories[c] == null) {
             axios.get(this.props.baseUri+'/classes/'+ c + '/categories')
-                .then(res => { this.setState({categories: {[c]: res.data.sort()}}) })
+                .then(res => {
+                    this.setState({
+                        categories: {[c]: res.data.sort()},
+                        selectedCategory: null}) 
+                 })
         }
     }
 
@@ -115,12 +133,17 @@ class ClassBrowser extends Component {
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         return (
             <Grid container spacing={3} alignItems="stretch">
+                <Grid item xs={12} md={3} lg={3}>
+                    <Paper>
+                        <SearchList options={this.state.classes}/>
+                    </Paper>
+                </Grid> 
                 <Grid item xs={12} md={12} lg={12}>
                     <Grid container spacing={3}>
                         <Grid item xs={12} md={3} lg={3}>
                             <Paper className={fixedHeightPaper}>
                                 <ClassTree
-                                    classes={this.state.classes}
+                                    classes={this.state.classTree}
                                     onSelect={this.classSelected}/>
                             </Paper>
                         </Grid>
