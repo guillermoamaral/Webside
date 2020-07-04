@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { List, ListItem, ListItemText } from '@material-ui/core';
+import { List, ListItem, ListItemText, ListItemIcon } from '@material-ui/core';
 
 class SimpleList extends Component {
   constructor(props) {
@@ -19,6 +19,16 @@ class SimpleList extends Component {
     }
   };
 
+  itemIcon = (i) => {
+    if (this.props.icons !== undefined && i < this.props.icons.length) {
+      return (
+        <ListItemIcon style={{minWidth: 0}}>
+          {this.props.icons[i]}
+      </ListItemIcon>
+      )
+    }
+  }
+
   render () {
     return (
       <List>
@@ -30,8 +40,8 @@ class SimpleList extends Component {
                 key={v}
                 selected={this.state.selectedIndex === i}
                 onClick={(event) => this.itemSelected(event, i)}>
-                  <ListItemText primary={v} 
-              width="100%"/>
+                  {this.itemIcon(i)}
+                  <ListItemText primary={v} />
               </ListItem>
           )}
       </List>

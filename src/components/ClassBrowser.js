@@ -119,12 +119,13 @@ class ClassBrowser extends Component {
         const { selectedClass, selectedCategory, selectors } = this.state;
         if (selectedClass !== null && selectedCategory !== null 
             && (selectors[selectedClass] == null || selectors[selectedClass][selectedCategory] == null)) { 
-            axios.get(this.props.baseUri + '/classes/' + selectedClass + '/selectors?category=' + selectedCategory)
+            axios.get(this.props.baseUri + '/classes/' + selectedClass + '/selectors?category=' + selectedCategory + '&marks=true')
                 .then(res => {
                     if (selectors[selectedClass] == null) {
                         selectors[selectedClass] = {}
                     };
-                    selectors[selectedClass][selectedCategory] = res.data.sort();
+                    const sorted = res.data.sort(function(a, b){ return a.selector <= b.selector? -1 : 1 });
+                    selectors[selectedClass][selectedCategory] = sorted;
                     this.setState({selectors: selectors}) 
                 })
         }
@@ -171,7 +172,7 @@ class ClassBrowser extends Component {
             case "comment":
                 source = this.state.comments[this.state.selectedClass];
                 break;
-            case "definition":
+            case "class":
                 source = this.state.definitions[this.state.selectedClass];
                 break;
             case "method":    
@@ -196,28 +197,28 @@ class ClassBrowser extends Component {
                 <Grid item xs={12} md={12} lg={12}>
                     <Grid container spacing={3}>
                         <Grid item xs={12} md={3} lg={3}>
-                            <Paper className={fixedHeightPaper}>
+                            <Paper className={fixedHeightPaper} variant="outlined">
                                 <ClassTree
                                     classes={classTree}
                                     onSelect={this.classSelected}/>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={3} lg={3}>
-                            <Paper className={fixedHeightPaper}>
+                            <Paper className={fixedHeightPaper} variant="outlined">
                                 <SimpleList
                                     items={variables[selectedClass]}
                                     onSelect={this.variableSelected}/>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={3} lg={3}>
-                            <Paper className={fixedHeightPaper}>
+                            <Paper className={fixedHeightPaper} variant="outlined">
                                 <SimpleList
                                     items={this.currentCategories()}
                                     onSelect={this.categorySelected}/>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={3} lg={3}>
-                            <Paper className={fixedHeightPaper}>
+                            <Paper className={fixedHeightPaper} variant="outlined">
                                 <SelectorList
                                     selectors={this.currentSelectors()}
                                     onSelect={this.selectorSelected}/>
@@ -227,13 +228,13 @@ class ClassBrowser extends Component {
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     <ButtonGroup variant="text" aria-label="large outlined primary button group">
-                        <Button onClick={this.showMethodDefinition}>Method defintion</Button>
-                        <Button onClick={this.showClassDefinition}>Class definition</Button>
-                        <Button onClick={this.showClassComment}>Class comment</Button>
+                        <Button onClick={this.showMethodDefinition} variant="outlined">Method defintion</Button>
+                        <Button onClick={this.showClassDefinition} variant="outlined">Class definition</Button>
+                        <Button onClick={this.showClassComment} variant="outlined">Class comment</Button>
                     </ButtonGroup>
                 </Grid>                 
                 <Grid item xs={12} md={12} lg={12}>
-                    <Paper>
+                    <Paper variant="outlined">
                         <CodeEditor source={this.source()} />
                     </Paper>
                 </Grid> 

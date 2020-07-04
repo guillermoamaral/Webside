@@ -9,6 +9,7 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "axios": "^0.19.2",
     "codemirror": "^5.55.0",
+    "mdi-material-ui": "^6.16.0",
     "react": "^16.13.1",
     "react-codemirror2": "^7.2.1",
     "react-dom": "^16.13.1",

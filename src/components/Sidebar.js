@@ -7,14 +7,14 @@ import {
     ListItemText,
     Divider,
     IconButton
-} from "@material-ui/core";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ClassBrowserIcon from "@material-ui/icons/AccountTree";
-import WorkspaceIcon from "@material-ui/icons/Code";
-import PeopleIcon from "@material-ui/icons/People";
-import GitHubIcon from "@material-ui/icons/GitHub";
-import SettingsIcon from "@material-ui/icons/Settings";
-import clsx from "clsx";
+} from '@material-ui/core';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ClassBrowserIcon from '@material-ui/icons/AccountTree';
+import WorkspaceIcon from '@material-ui/icons/Code';
+import PeopleIcon from '@material-ui/icons/People';
+import GitHubIcon from '@material-ui/icons/GitHub';
+import SettingsIcon from '@material-ui/icons/Settings';
+import clsx from 'clsx';
 
 class Sidebar extends Component {
     render() {

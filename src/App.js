@@ -126,8 +126,8 @@ class App extends Component {
       sidebarExpanded: false,
       pages: [
         {
-          label: 'Number',
-          component: <ClassBrowser baseUri={baseUri} classes={this.props.classes} root='Number'/>
+          label: 'Collection',
+          component: <ClassBrowser baseUri={baseUri} classes={this.props.classes} root='Collection'/>
         },
         {
           label: 'ParseNode',
