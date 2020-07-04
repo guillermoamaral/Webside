@@ -119,6 +119,9 @@ const theme = createMuiTheme({
   codeMirror: {
     fontFamily: '"Arial"',
     fontSize: 24,
+  },
+  radioLabel: {
+    fontSize: 12
   }
 });
 
@@ -127,16 +130,12 @@ class App extends Component {
     super(props);
     this.state = {
       sidebarExpanded: false,
-      pages: [
-        {
-          label: 'Collection',
-          component: <ClassBrowser baseUri={baseUri} classes={this.props.classes} root='Collection'/>
-        },
-        {
-          label: 'ParseNode',
-          component: <ClassBrowser baseUri={baseUri} classes={this.props.classes} root='ParseNode'/>
-        }
-      ]
+      pages: ['Collection', 'Magnitude', 'ParseNode', 'WebAPI'].map((c) => {
+        return (
+          {
+            label: c,
+            component: <ClassBrowser baseUri={baseUri} classes={this.props.classes} root={c}/>
+          })})
     }
   }
 
@@ -147,6 +146,10 @@ class App extends Component {
   collapseSidebar = () => {
     this.setState({sidebarExpanded: false});
   };
+
+  closePage = (page) => {
+    this.setState({pages: this.state.pages.filter((p) => {return p.label !== page.label})})
+  }
   
   render () {
     return (
@@ -158,7 +161,7 @@ class App extends Component {
           <main className={this.props.classes.content}>
             <div className={this.props.classes.appBarSpacer} />
             <Container maxWidth="lg" className={this.props.classes.container}>
-              <TabControl pages={this.state.pages}/>
+              <TabControl pages={this.state.pages} onClose={this.closePage}/>
             </Container>
           </main>
         </div>

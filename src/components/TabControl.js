@@ -8,16 +8,15 @@ import Box from '@material-ui/core/Box';
 import CloseIcon from '@material-ui/icons/Close';
 
 function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+  const { id, children, visible, ...other } = props;
   return (
     <div
       role="tabpanel"
-      hidden={value !== index}
-      id={`scrollable-auto-tabpanel-${index}`}
-      aria-labelledby={`scrollable-auto-tab-${index}`}
+      hidden={!visible}
+      id={id}
       {...other}
     >
-      {value === index && (
+      {visible && (
         <Box p={3}>
           {children}
         </Box>
@@ -28,8 +27,8 @@ function TabPanel(props) {
 
 TabPanel.propTypes = {
   children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
+  id: PropTypes.any.isRequired,
+  visible: PropTypes.any.isRequired,
 };
 
 const useStyles = (theme) => ({
@@ -44,53 +43,69 @@ class TabControl extends Component {
     constructor(props){
         super(props);
         this.state = {
-            value: 0
+            selectedIndex: 0
         }
     }
 
     tabChanged = (event, value) => {
-       this.setState({value: value});
+       this.setState({selectedIndex: value});
     }
 
     tabLabel = (i) => {
       return (
         <span>
         {this.props.pages[i].label}
-        <IconButton onClick={this.closeTab} size="small">
-          <CloseIcon fontSize="small"/>
+        <IconButton onClick={this.pageClosed} size="small">
+          <CloseIcon id={i} fontSize="small"/>
         </IconButton>
       </span>
       )
     }
 
+    pageClosed = (event) => {
+      event.stopPropagation();
+      if (this.props !== null) {
+        const handler = this.props.onClose;
+        if (handler !== undefined) {
+            var index = parseInt(event.target.id);
+            handler.bind(this);
+            handler(this.props.pages[index]);
+            var selected = this.state.selectedIndex;
+            if (index < selected) {
+              selected = Math.max(selected - 1, 0)
+            }
+            this.setState({selectedIndex: selected})
+        }
+      }
+    };    
+
     render() {
         return (
             <div className={this.props.classes.root}>
                 <Tabs
-                    value={this.state.value}
+                    value={this.state.selectedIndex}
                     onChange={this.tabChanged}
                     indicatorColor="primary"
                     textColor="inherit"
                     variant="scrollable"
                     scrollButtons="auto"
-                    aria-label="scrollable auto tabs"
                     >
                         {this.props.pages.map((p, i) => {
                             return (
                               <Tab
-                              component="div"
+                                component="div"
                                 key={i.toString()}
                                 label={this.tabLabel(i)}
-                                id= {`scrollable-auto-tab-${i}`}
-                                aria-controls = {`scrollable-auto-tabpanel-${i}`}/>);
+                                id= {`tab-${i}`}/>);
                         })}
                 </Tabs>
                 {this.props.pages.map((p, i) => {
                     return (
                         <TabPanel
+                            id={`tabpanel-${i}`}
                             key={i.toString()}
                             index={i}
-                            value={this.state.value}>
+                            visible={i === this.state.selectedIndex}>
                             {p.component}
                         </TabPanel>);
                 })}

@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { Grid, Paper } from '@material-ui/core';
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
 import axios from 'axios';
 import clsx from 'clsx';
 
@@ -20,7 +24,7 @@ class ClassBrowser extends Component {
             classes: [],
             definitions: {},
             comments: {},
-            selectedClass: this.props.root,
+            selectedClass: null,
             selectedVariable: null,
             selectedCategory: null,
             selectedSelector: null,
@@ -34,15 +38,15 @@ class ClassBrowser extends Component {
     }
 
     componentDidMount(){
-        this.getClassTree();
-        this.getClasses();
+        this.changeRoot(this.state.root)
     }
 
     changeRoot = (root) => {
+        const selected = this.state.selectedClass !== null;
         this.setState({root: root}, () => {
             this.getClassTree();
             this.getClasses();
-            this.classSelected(root);
+            if (selected) { this.classSelected(root) };
         })
     }
 
@@ -170,6 +174,7 @@ class ClassBrowser extends Component {
 
 
     changeSide = (e, side) => {
+        console.log(side);
         if (side == null) return;
         this.setState({side: side});
         if (side === "instance") {
@@ -206,24 +211,11 @@ class ClassBrowser extends Component {
         const { classes, classTree, variables, selectedClass } = this.state;
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         return (
-            <Grid container spacing={1} >
+            <Grid container spacing={1}>
                 <Grid item xs={12} md={6} lg={6}>
                     <Paper>
                         {/*<SearchList options={classes}/>*/}
                     </Paper>
-                </Grid>
-                <Grid item xs={12} md={3} lg={3}>
-                    <ToggleButtonGroup
-                        value={this.state.side}
-                        exclusive
-                        onChange={this.changeSide}>
-                        <ToggleButton value="instance" variant="outlined" size="small">
-                            Instance
-                        </ToggleButton>
-                        <ToggleButton value="class" variant="outlined" size="small">
-                            Class
-                        </ToggleButton>
-                    </ToggleButtonGroup>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     <Grid container spacing={1}>
@@ -258,7 +250,7 @@ class ClassBrowser extends Component {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={12} md={12} lg={12}>
+                <Grid item xs={12} md={6} lg={6}>
                     <ToggleButtonGroup
                         value={this.state.mode}
                         exclusive
@@ -273,6 +265,12 @@ class ClassBrowser extends Component {
                             Class comment
                         </ToggleButton>
                     </ToggleButtonGroup>
+                </Grid>
+                <Grid item xs={12} md={6} lg={6}>
+                    <RadioGroup row name="side" value={this.state.side} onChange={this.changeSide} defaultValue="instance" size="small">
+                        <FormControlLabel value="instance" control={<Radio size="small"/>} label="Instance"/>
+                        <FormControlLabel value="class" control={<Radio size="small"/>} label="Class" />
+                    </RadioGroup>
                 </Grid>                 
                 <Grid item xs={12} md={12} lg={12}>
                     <Paper variant="outlined">
