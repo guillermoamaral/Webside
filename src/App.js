@@ -103,6 +103,9 @@ const theme = createMuiTheme({
   typography: {
     fontFamily: '"Segoe UI"',
     fontSize: 14,
+    button: {
+      textTransform: 'none'
+    }
   },
   palette: {
     type: "dark"

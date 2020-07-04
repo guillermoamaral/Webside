@@ -35,6 +35,12 @@ class ClassBrowser extends Component {
         this.getClasses();
     }
 
+    changeRoot = (root) => {
+        this.setState({root: root});
+        this.getClassTree();
+        this.getClasses();
+    }
+
     classSelected = (c) => {
         this.setState({selectedClass: c}, () => {
             this.getDefinition();
@@ -165,7 +171,15 @@ class ClassBrowser extends Component {
     showClassComment = () => {
         this.setState({mode: "comment"})
     }
-    
+
+    showInstanceSide = () => {
+        this.changeRoot(this.state.root)
+    }
+
+    showClassSide = () => {
+        this.changeRoot(this.state.root + " class")
+    }
+
     source() {
         var source;
         switch (this.state.mode) { 
@@ -188,14 +202,14 @@ class ClassBrowser extends Component {
         const { classes, classTree, variables, selectedClass } = this.state;
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         return (
-            <Grid container spacing={3} alignItems="stretch">
+            <Grid container spacing={1} >
                 <Grid item xs={12} md={3} lg={3}>
                     <Paper>
                         {/*<SearchList options={classes}/>*/}
                     </Paper>
                 </Grid> 
                 <Grid item xs={12} md={12} lg={12}>
-                    <Grid container spacing={3}>
+                    <Grid container spacing={1}>
                         <Grid item xs={12} md={3} lg={3}>
                             <Paper className={fixedHeightPaper} variant="outlined">
                                 <ClassTree
@@ -212,6 +226,10 @@ class ClassBrowser extends Component {
                         </Grid>
                         <Grid item xs={12} md={3} lg={3}>
                             <Paper className={fixedHeightPaper} variant="outlined">
+                                <ButtonGroup variant="text" aria-label="outlined primary button group" fullWidth={true}>
+                                    <Button onClick={this.showInstanceSide} variant="outlined" size="small">Instance</Button>
+                                    <Button onClick={this.showClassSide} variant="outlined" size="small">Class</Button>
+                                </ButtonGroup>
                                 <SimpleList
                                     items={this.currentCategories()}
                                     onSelect={this.categorySelected}/>
