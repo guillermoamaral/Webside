@@ -5,7 +5,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
-import Close from '@material-ui/icons/Close';
+import CloseIcon from '@material-ui/icons/Close';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -57,7 +57,7 @@ class TabControl extends Component {
         <span>
         {this.props.pages[i].label}
         <IconButton onClick={this.closeTab} size="small">
-          <Close/>
+          <CloseIcon fontSize="small"/>
         </IconButton>
       </span>
       )

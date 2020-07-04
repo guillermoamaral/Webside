@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Paper, Button, ButtonGroup } from '@material-ui/core';
+import { Grid, Paper } from '@material-ui/core';
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import axios from 'axios';
@@ -42,6 +42,7 @@ class ClassBrowser extends Component {
         this.setState({root: root}, () => {
             this.getClassTree();
             this.getClasses();
+            this.classSelected(root);
         })
     }
 
@@ -103,12 +104,15 @@ class ClassBrowser extends Component {
     }
 
     getVariables = () => {
-        const { selectedClass, variables } = this.state;
+        var { selectedClass, variables, selectedVariable } = this.state;
         if (variables[selectedClass] == null) {
             axios.get(this.props.baseUri + '/classes/' + selectedClass + '/instance-variables')
                 .then(res => {
-                    variables[selectedClass] = res.data.sort();
-                    this.setState({variables: variables})
+                    variables[selectedClass] = res.data;
+                    if (!variables[selectedClass].includes(selectedVariable)) {
+                        selectedVariable = null;
+                    }
+                    this.setState({variables: variables, selectedVariable: selectedVariable})
                 })
         }
     }
@@ -164,17 +168,6 @@ class ClassBrowser extends Component {
         return this.state.selectedClass == null? [] : this.state.variables[this.state.selectedClass];
     }
 
-    showMethodDefinition = () => {
-        this.setState({mode: "method"})
-    }
-
-    showClassDefinition = () => {
-        this.setState({mode: "class"})
-    }
-
-    showClassComment = () => {
-        this.setState({mode: "comment"})
-    }
 
     changeSide = (e, side) => {
         if (side == null) return;
@@ -185,7 +178,11 @@ class ClassBrowser extends Component {
         } else {
             this.changeRoot(this.state.root + " class")
         }
-      }
+    }
+
+    changeMode = (e, mode) => {
+        this.setState({mode: mode})
+    }
 
     source() {
         var source;
@@ -210,11 +207,24 @@ class ClassBrowser extends Component {
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         return (
             <Grid container spacing={1} >
-                <Grid item xs={12} md={3} lg={3}>
+                <Grid item xs={12} md={6} lg={6}>
                     <Paper>
                         {/*<SearchList options={classes}/>*/}
                     </Paper>
-                </Grid> 
+                </Grid>
+                <Grid item xs={12} md={3} lg={3}>
+                    <ToggleButtonGroup
+                        value={this.state.side}
+                        exclusive
+                        onChange={this.changeSide}>
+                        <ToggleButton value="instance" variant="outlined" size="small">
+                            Instance
+                        </ToggleButton>
+                        <ToggleButton value="class" variant="outlined" size="small">
+                            Class
+                        </ToggleButton>
+                    </ToggleButtonGroup>
+                </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     <Grid container spacing={1}>
                         <Grid item xs={12} md={3} lg={3}>
@@ -228,22 +238,12 @@ class ClassBrowser extends Component {
                             <Paper className={fixedHeightPaper} variant="outlined">
                                 <SimpleList
                                     items={variables[selectedClass]}
+                                    selectedItem={this.selectedVariable}
                                     onSelect={this.variableSelected}/>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={3} lg={3}>
                             <Paper className={fixedHeightPaper} variant="outlined">
-                                <ToggleButtonGroup
-                                    value={this.state.side}
-                                    exclusive
-                                    onChange={this.changeSide}>
-                                    <ToggleButton value="instance" variant="outlined" size="small">
-                                        Instance
-                                    </ToggleButton>
-                                    <ToggleButton value="class" variant="outlined" size="small">
-                                        Class
-                                    </ToggleButton>
-                                </ToggleButtonGroup>
                                 <SimpleList
                                     items={this.currentCategories()}
                                     onSelect={this.categorySelected}/>
@@ -259,11 +259,20 @@ class ClassBrowser extends Component {
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
-                    <ButtonGroup variant="text" aria-label="large outlined primary button group">
-                        <Button onClick={this.showMethodDefinition} variant="outlined">Method defintion</Button>
-                        <Button onClick={this.showClassDefinition} variant="outlined">Class definition</Button>
-                        <Button onClick={this.showClassComment} variant="outlined">Class comment</Button>
-                    </ButtonGroup>
+                    <ToggleButtonGroup
+                        value={this.state.mode}
+                        exclusive
+                        onChange={this.changeMode}>
+                        <ToggleButton value="method" variant="outlined" size="small">
+                            Method defintion
+                        </ToggleButton>
+                        <ToggleButton value="class" variant="outlined" size="small">
+                            Class definition
+                        </ToggleButton>
+                        <ToggleButton value="comment" variant="outlined" size="small">
+                            Class comment
+                        </ToggleButton>
+                    </ToggleButtonGroup>
                 </Grid>                 
                 <Grid item xs={12} md={12} lg={12}>
                     <Paper variant="outlined">

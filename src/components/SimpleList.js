@@ -5,16 +5,29 @@ class SimpleList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedIndex: null}
+      selectedItem: props.selectedItem,
+      selectedIndex: props.selectedItem == null ? null : props.indexOf(props.selectedItem)}
   }
 
+  /*
+  static getDerivedStateFromProps(props, state) {
+    if (props.selectedItem !== state.selectedItem) {
+        return {
+            selectedItem: null,
+            selectedIndex: null
+         }
+    };
+    return null;
+ }*/
+
   itemSelected = (event, index) => {
-    this.setState({selectedIndex: index});
+    const item = this.props.items[index];
+    this.setState({selectedItem: item, selectedIndex: index});
     if (this.props !== null) { 
       const handler = this.props.onSelect;
       if (handler !== null) {
           handler.bind(this);
-          handler(this.props.items[index]);
+          handler(item);
       }
     }
   };

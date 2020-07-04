@@ -19,7 +19,6 @@ class CodeEditor extends Component {
                 source: props.source
             }
        };
-       
        return null;
     }
 
