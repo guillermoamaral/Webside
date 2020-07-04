@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Grid, Paper, Button, ButtonGroup } from '@material-ui/core';
+import ToggleButton from "@material-ui/lab/ToggleButton";
+import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import axios from 'axios';
 import clsx from 'clsx';
 
@@ -26,7 +28,8 @@ class ClassBrowser extends Component {
             categories: {},
             selectors: {},
             selectedMethod: {selector: 'selector', source: '"no source"'},
-            mode: "method"
+            mode: "method",
+            side: "instance"
         }
     }
 
@@ -36,9 +39,10 @@ class ClassBrowser extends Component {
     }
 
     changeRoot = (root) => {
-        this.setState({root: root});
-        this.getClassTree();
-        this.getClasses();
+        this.setState({root: root}, () => {
+            this.getClassTree();
+            this.getClasses();
+        })
     }
 
     classSelected = (c) => {
@@ -48,7 +52,7 @@ class ClassBrowser extends Component {
             this.getCategories();
             this.getCommment();
             //this.getSelectors()
-        });
+        })
     }
 
     variableSelected = (v) => {
@@ -64,7 +68,7 @@ class ClassBrowser extends Component {
     }
 
     getClassTree = () => {
-        axios.get(this.props.baseUri + '/classes?root='+this.state.root+'&tree=true')
+        axios.get(this.props.baseUri + '/classes?root=' + this.state.root + '&tree=true')
             .then(res => {this.setState({classTree: res.data})}
         )
     }
@@ -91,7 +95,7 @@ class ClassBrowser extends Component {
         if (comments[selectedClass] == null) {
             axios.get(this.props.baseUri + '/classes/' + selectedClass + '/comment')
                 .then(res => {
-                    const comment = (res.data == null || res.data == '') ? '"no comment"' : res.data;
+                    const comment = (res.data == null || res.data === '') ? '"no comment"' : res.data;
                     comments[selectedClass] = comment;
                     this.setState({comments: comments})
                 })
@@ -172,13 +176,16 @@ class ClassBrowser extends Component {
         this.setState({mode: "comment"})
     }
 
-    showInstanceSide = () => {
-        this.changeRoot(this.state.root)
-    }
-
-    showClassSide = () => {
-        this.changeRoot(this.state.root + " class")
-    }
+    changeSide = (e, side) => {
+        if (side == null) return;
+        this.setState({side: side});
+        if (side === "instance") {
+            const name = this.state.root;
+            this.changeRoot(name.slice(0, name.length - 6))
+        } else {
+            this.changeRoot(this.state.root + " class")
+        }
+      }
 
     source() {
         var source;
@@ -226,10 +233,17 @@ class ClassBrowser extends Component {
                         </Grid>
                         <Grid item xs={12} md={3} lg={3}>
                             <Paper className={fixedHeightPaper} variant="outlined">
-                                <ButtonGroup variant="text" aria-label="outlined primary button group" fullWidth={true}>
-                                    <Button onClick={this.showInstanceSide} variant="outlined" size="small">Instance</Button>
-                                    <Button onClick={this.showClassSide} variant="outlined" size="small">Class</Button>
-                                </ButtonGroup>
+                                <ToggleButtonGroup
+                                    value={this.state.side}
+                                    exclusive
+                                    onChange={this.changeSide}>
+                                    <ToggleButton value="instance" variant="outlined" size="small">
+                                        Instance
+                                    </ToggleButton>
+                                    <ToggleButton value="class" variant="outlined" size="small">
+                                        Class
+                                    </ToggleButton>
+                                </ToggleButtonGroup>
                                 <SimpleList
                                     items={this.currentCategories()}
                                     onSelect={this.categorySelected}/>

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import SimpleList from './SimpleList';
 import { ArrowUpDownBold, ArrowUpBold, ArrowDownBold } from 'mdi-material-ui';
-//import { mdiArrowUpDownBold } from '@mdi/js';
 
 class SelectorList extends Component {
     render() {

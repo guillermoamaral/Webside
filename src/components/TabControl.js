@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import Close from '@material-ui/icons/Close';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -48,7 +50,18 @@ class TabControl extends Component {
 
     tabChanged = (event, value) => {
        this.setState({value: value});
-    };
+    }
+
+    tabLabel = (i) => {
+      return (
+        <span>
+        {this.props.pages[i].label}
+        <IconButton onClick={this.closeTab} size="small">
+          <Close/>
+        </IconButton>
+      </span>
+      )
+    }
 
     render() {
         return (
@@ -63,9 +76,11 @@ class TabControl extends Component {
                     aria-label="scrollable auto tabs"
                     >
                         {this.props.pages.map((p, i) => {
-                            return (<Tab
+                            return (
+                              <Tab
+                              component="div"
                                 key={i.toString()}
-                                label={p.label}
+                                label={this.tabLabel(i)}
                                 id= {`scrollable-auto-tab-${i}`}
                                 aria-controls = {`scrollable-auto-tabpanel-${i}`}/>);
                         })}
