@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Grid, Paper, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
-import ToggleButton from "@material-ui/lab/ToggleButton";
-import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import axios from 'axios';
 import clsx from 'clsx';
 
@@ -28,7 +26,6 @@ class ClassBrowser extends Component {
             categories: {},
             selectors: {},
             selectedMethod: {selector: 'selector', source: '"no source"'},
-            mode: "method",
             side: "instance"
         }
     }
@@ -169,9 +166,7 @@ class ClassBrowser extends Component {
         return this.state.selectedClass == null? [] : this.state.variables[this.state.selectedClass];
     }
 
-
     changeSide = (e, side) => {
-        console.log(side);
         if (side == null) return;
         this.setState({side: side});
         if (side === "instance") {
@@ -182,72 +177,8 @@ class ClassBrowser extends Component {
         }
     }
 
-    changeMode = (e, mode) => {
-        this.setState({mode: mode})
-    }
-
-    source() {
-        var source;
-        switch (this.state.mode) { 
-            case "comment":
-                source = this.state.comments[this.state.selectedClass];
-                break;
-            case "class":
-                source = this.state.definitions[this.state.selectedClass];
-                break;
-            case "method":    
-                source = this.state.selectedMethod.source;
-                break;
-            default:
-                source = 'no source';
-        };
-        return source      
-    }
-
-    postDefinition = (definition) => {
-        const { selectedClass, definitions } = this.state;
-        axios.post(this.props.baseUri + '/classes/' + selectedClass, definition)
-            .then(res => {
-                definitions[selectedClass] = definition;
-                this.setState({definitions: definitions})
-            })
-    }
-    
-    postCommment = (comment) => {
-        const { selectedClass, comments } = this.state;
-        axios.post(this.props.baseUri + '/classes/' + selectedClass + '/comment', comment)
-            .then(res => {
-                comments[selectedClass] = comment;
-                this.setState({comments: comments})
-            })
-    }
-
-    postMethod = (source) => {
-        const { selectedClass, selectedSelector } = this.state;
-        axios.post(this.props.baseUri + '/classes/' + selectedClass + '/methods/' + selectedSelector, source)
-            .then(res => {
-                this.setState({selectedMethod: res.data})
-            })
-    }
-
-    saveSource = (source) => {
-        console.log(source)
-        switch (this.state.mode) { 
-            case "comment":
-                this.postComment(source);
-                break;
-            case "class":
-                this.postDefinition(source);
-                break;
-            case "method":    
-                this.postMethod(source);
-                break;
-            default:
-        }
-    }
-
     render() {
-        const { classes, classTree, variables, selectedClass } = this.state;
+        const { classes, definitions, comments, classTree, variables, selectedClass, selectedMethod } = this.state;
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         return (
             <Grid container spacing={1}>
@@ -290,29 +221,20 @@ class ClassBrowser extends Component {
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={6} lg={6}>
-                    <ToggleButtonGroup
-                        value={this.state.mode}
-                        exclusive
-                        onChange={this.changeMode}>
-                        <ToggleButton value="method" variant="outlined" size="small">
-                            Method defintion
-                        </ToggleButton>
-                        <ToggleButton value="class" variant="outlined" size="small">
-                            Class definition
-                        </ToggleButton>
-                        <ToggleButton value="comment" variant="outlined" size="small">
-                            Class comment
-                        </ToggleButton>
-                    </ToggleButtonGroup>
-                </Grid>
-                <Grid item xs={12} md={6} lg={6}>
                     <RadioGroup row name="side" value={this.state.side} onChange={this.changeSide} defaultValue="instance" size="small">
                         <FormControlLabel value="instance" control={<Radio size="small" color="default"/>} label="Instance"/>
                         <FormControlLabel value="class" control={<Radio size="small" color="default"/>} label="Class" />
                     </RadioGroup>
                 </Grid>                 
                 <Grid item xs={12} md={12} lg={12}>
-                    <CodeEditor source={this.source()} onSave={this.saveSource} />
+                    <CodeEditor
+                        baseUri={this.props.baseUri}
+                        class={selectedClass}
+                        definition={definitions[selectedClass]}
+                        comment={comments[selectedClass]}
+                        selector={selectedMethod.selector}
+                        method={selectedMethod.source}
+                        />
                 </Grid> 
             </Grid>
         )
