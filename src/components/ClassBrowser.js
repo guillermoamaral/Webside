@@ -62,7 +62,7 @@ class ClassBrowser extends Component {
     }
 
     getClassTree = () => {
-        axios.get(this.props.baseUri + '/classe?root=' + this.state.root + '&tree=true')
+        axios.get(this.props.baseUri + '/classes?root=' + this.state.root + '&tree=true')
             .then(res => {this.setState({classTree: res.data})})
             .catch(error => {this.reportError(error)})
     }

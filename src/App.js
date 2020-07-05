@@ -187,6 +187,7 @@ class App extends Component {
     } else {
       text = 'Could not send request: ' + error.message;
     }
+    console.log(text);
     this.setState({transcriptText: this.state.transcriptText + '\n' + text})
   }
   
