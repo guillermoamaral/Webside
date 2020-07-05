@@ -9,6 +9,7 @@ import {
     IconButton
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import TranscriptIcon from '@material-ui/icons/Notes';
 import ClassBrowserIcon from '@material-ui/icons/AccountTree';
 import WorkspaceIcon from '@material-ui/icons/Code';
 import PeopleIcon from '@material-ui/icons/People';
@@ -32,15 +33,21 @@ class Sidebar extends Component {
                 <List>
                     <ListItem button>
                         <ListItemIcon>
+                            <TranscriptIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Transcript" />
+                    </ListItem>
+                    <ListItem button>
+                        <ListItemIcon>
                             <ClassBrowserIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Class Browser" />
+                        <ListItemText primary="New class Browser" />
                     </ListItem>
                     <ListItem button>
                         <ListItemIcon>
                             <WorkspaceIcon />
                         </ListItemIcon>
-                        <ListItemText primary="Workspace" />
+                        <ListItemText primary="New workspace" />
                     </ListItem>
                     <ListItem button>
                         <ListItemIcon>

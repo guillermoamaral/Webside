@@ -52,17 +52,21 @@ class TabControl extends Component {
     }
 
     tabLabel = (i) => {
+      const page = this.props.pages[i];
       return (
         <span>
-        {this.props.pages[i].label}
-        <IconButton onClick={this.pageClosed} size="small">
-          <CloseIcon id={i} fontSize="small"/>
-        </IconButton>
-      </span>
+          <IconButton>
+            {page.icon}
+          </IconButton>
+          {page.label}
+          <IconButton onClick={this.tabClosed}>
+            <CloseIcon id={i} fontSize="small"/>
+          </IconButton>
+        </span>
       )
     }
 
-    pageClosed = (e) => {
+    tabClosed = (e) => {
       e.stopPropagation();
       if (this.props !== null) {
         const handler = this.props.onClose;
@@ -70,7 +74,6 @@ class TabControl extends Component {
             var index = parseInt(e.target.id);
             handler.bind(this);
             handler(this.props.pages[index]);
-            console.log(this.state);
             var selected = this.state.selectedIndex;
             if (index < selected) {
               selected = Math.max(selected - 1, 0)

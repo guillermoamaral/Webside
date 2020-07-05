@@ -14,8 +14,9 @@ const styles = (theme) => ({
     root: {
         //fontFamily: Inconsolata, monospace;
         fontSize: 16,
-        backgroundColor: theme.palette.background.paper
+        backgroundColor: theme.palette.background.paper,
         //height: "100%",
+        //maxHeight: 200,
     },
     grow: {
         flexGrow: 1
@@ -25,6 +26,7 @@ const styles = (theme) => ({
 class CodeEditor extends Component {
     constructor(props){
         super(props);
+        this.reportError = props.onError.bind();
         this.state = {
             class: '"no class"',
             definition: '"no class definition"', 
@@ -70,28 +72,26 @@ class CodeEditor extends Component {
         axios.post(this.props.baseUri + '/classes/' + this.props.class, definition)
             .then(res => {
                 const accepted = res.data;
-                console.log(accepted);
                 if (this.props !== null && this.props.onClassDefined !== undefined) { 
                     const handler = this.props.onClassDefined;
                     handler.bind(this);
                     handler(accepted)
                 }
-                this.setState({definition: accepted})
-            })
+                this.setState({definition: accepted})})
+            .catch(error => {this.reportError(error)})
     }
     
     commentClass = (comment) => {
         axios.post(this.props.baseUri + '/classes/' + this.props.class + '/comment', comment)
             .then(res => {
                 const accepted = res.data;
-                console.log(accepted);
                 this.setState({comment: accepted})
                 if (this.props !== null && this.props.onClassCommented !== undefined) { 
                     const handler = this.props.onClassCommented;
                     handler.bind(this);
                     handler(accepted)
-                }
-            })
+                }})
+            .catch(error => {this.reportError(error)})
     }
 
     compileMethod = (source) => {
@@ -99,14 +99,13 @@ class CodeEditor extends Component {
         axios.post(this.props.baseUri + '/classes/' + this.props.class + '/methods', method)
             .then(res => {
                 const compiled = res.data;
-                console.log(compiled);
                 this.setState({source: compiled.source, selector: compiled.selector})
                 if (this.props !== null && this.props.onMethodCompiled !== undefined) { 
                     const handler = this.props.onMethodCompiled;
                     handler.bind(this);
                     handler(compiled)
-                }
-            })
+                }})
+            .catch(error => {this.reportError(error)})
     }
     
     saveClicked = (e) => {
@@ -165,7 +164,7 @@ class CodeEditor extends Component {
                                 indentUnit: 10, 
                                 highlightSelectionMatches: true, 
                                 styleActiveLine: true, 
-                               matchTags: {
+                                matchTags: {
                                     bothTags: true
                                 }, 
                                 lineWrapping: true, 

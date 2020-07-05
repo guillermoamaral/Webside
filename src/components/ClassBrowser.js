@@ -12,6 +12,7 @@ import CodeEditor from './CodeEditor';
 class ClassBrowser extends Component {
     constructor(props) {
         super(props);
+        this.reportError = props.onError.bind();
         this.state = {
             root: this.props.root,
             classTree: [],
@@ -61,16 +62,15 @@ class ClassBrowser extends Component {
     }
 
     getClassTree = () => {
-        axios.get(this.props.baseUri + '/classes?root=' + this.state.root + '&tree=true')
-            .then(res => {this.setState({classTree: res.data})}
-        )
+        axios.get(this.props.baseUri + '/classe?root=' + this.state.root + '&tree=true')
+            .then(res => {this.setState({classTree: res.data})})
+            .catch(error => {this.reportError(error)})
     }
 
     getClassNames = () => {
         axios.get(this.props.baseUri + '/classes?names=true')
-            .then(res => {
-                this.setState({classNames: res.data})}
-        )
+            .then(res => {this.setState({classNames: res.data})})
+            .catch(error => {this.reportError(error)})
     }
 
     getDefinition = () => {
@@ -80,8 +80,8 @@ class ClassBrowser extends Component {
             axios.get(this.props.baseUri + '/classes/' + selectedClass)
                 .then(res => {
                     classes[selectedClass].definition = res.data;
-                    this.setState({classes: classes})
-                })
+                    this.setState({classes: classes})})
+                .catch(error => {this.reportError(error)})
         }
     }
 
@@ -92,26 +92,25 @@ class ClassBrowser extends Component {
             axios.get(this.props.baseUri + '/classes/' + selectedClass + '/comment')
                 .then(res => {
                     classes[selectedClass].comment = res.data;
-                    this.setState({classes: classes})
-                })
+                    this.setState({classes: classes})})
+                .catch(error => {this.reportError(error)})
         }
     }
 
     getVariables = () => {
-        console.log('getting variables')
         const { classes, selectedClass, selectedVariable } = this.state;
         if (classes[selectedClass] == null) { classes[selectedClass] = {name: selectedClass} }
         if (classes[selectedClass].variables == null) {
             axios.get(this.props.baseUri + '/classes/' + selectedClass + '/variables')
                 .then(res => {
                     classes[selectedClass].variables = res.data;
-                    console.log(res.data)
+
                     var selected = selectedVariable;
                     if (!classes[selectedClass].variables.includes(selected)) {
                         selected = null;
                     }
-                    this.setState({classes: classes, selectedVariable: selected})
-                })
+                    this.setState({classes: classes, selectedVariable: selected})})
+                .catch(error => {this.reportError(error)})
         }
     }
 
@@ -126,8 +125,8 @@ class ClassBrowser extends Component {
                     if (!classes[selectedClass].categories.includes(selected)) {
                         selected = null;
                     }
-                    this.setState({classes: classes, selectedCategory: selected})
-                })
+                    this.setState({classes: classes, selectedCategory: selected})})
+                .catch(error => {this.reportError(error)})
         }
     }
 
@@ -142,8 +141,8 @@ class ClassBrowser extends Component {
                     };
                     const sorted = res.data.sort(function(a, b){ return a.selector <= b.selector? -1 : 1 });
                     classes[selectedClass].selectors[selectedCategory] = sorted;
-                    this.setState({classes: classes}) 
-                })
+                    this.setState({classes: classes})})
+                .catch(error => {this.reportError(error)})
         }
     }
 
@@ -151,9 +150,8 @@ class ClassBrowser extends Component {
         const { selectedClass, selectedSelector } = this.state;
         if (selectedClass == null || selectedSelector == null) { return };
         axios.get(this.props.baseUri + '/classes/' + selectedClass + '/methods/' + selectedSelector)
-            .then(res => {
-                this.setState({selectedMethod: res.data})
-            })
+            .then(res => {this.setState({selectedMethod: res.data})})
+            .catch(error => {this.reportError(error)})
     }
 
     currentDefinition() {
@@ -276,6 +274,7 @@ class ClassBrowser extends Component {
                             category={selectedCategory}
                             selector={selectedSelector}
                             source={selectedMethod == null ? '' : selectedMethod.source}
+                            onError={this.reportError}
                             onClassDefined={this.classDefined}
                             onClassCommented={this.classCommented}
                             onMethodCompiled={this.methodCompiled}

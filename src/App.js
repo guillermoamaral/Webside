@@ -4,8 +4,12 @@ import {
   Container,
   createMuiTheme,
   CssBaseline,
-  Grid
+  Grid,
+  Paper
 } from '@material-ui/core';
+import TranscriptIcon from '@material-ui/icons/Notes';
+import ClassBrowserIcon from '@material-ui/icons/AccountTree';
+import WorkspaceIcon from '@material-ui/icons/Code';
 import { ThemeProvider } from '@material-ui/styles';
 import { amber } from '@material-ui/core/colors';
 
@@ -89,7 +93,7 @@ const styles = theme => ({
     paddingTop: theme.spacing(1)
   },
   paper: {
-//    padding: theme.spacing(1),
+    padding: theme.spacing(1),
 //    display: "flex",
     overflow: "auto",
 //    flexDirection: "row"
@@ -130,15 +134,37 @@ class App extends Component {
     super(props);
     this.state = {
       sidebarExpanded: false,
-      pages: ['Collection', 'Magnitude', 'ParseNode', 'WebAPI'].map((c) => {
-        return (
-          {
-            label: c,
-            component: <ClassBrowser baseUri={baseUri} classes={this.props.classes} root={c}/>
-          })})
+      transcriptText: 'Wellcome! \n This is the transcript..',
+      pages: []
     }
   }
 
+  componentDidMount() {
+    this.openTranscript();
+    this.openClassBrowser('Object');
+  }
+
+  addPage(label, icon, component) {
+    const page = {label: label, icon: icon, component: component};
+    const pages = this.state.pages;
+    pages.push(page);
+    this.setState({pages: pages})
+  }
+
+  openTranscript() {
+    const transcript = <Transcript text={this.state.transcriptText}/>;
+    this.addPage('Transcript', <TranscriptIcon />, transcript);
+  }
+
+  openClassBrowser(root) {
+    const browser = <ClassBrowser
+      baseUri={baseUri}
+      classes={this.props.classes}
+      root={root}
+      onError={this.reportError}/>;
+    this.addPage(root, <ClassBrowserIcon />, browser);
+  }
+  
   expandSidebar = () => {
     this.setState({sidebarExpanded: true});
   };
@@ -150,6 +176,19 @@ class App extends Component {
   closePage = (page) => {
     this.setState({pages: this.state.pages.filter((p) => {return p.label !== page.label})})
   }
+
+  reportError = (error) => {
+    var text;
+    if (error.response) {
+      text = 'Response error: ' + error.response.status + ': ' + error.response.statusText;
+      //console.log(error.response.data);
+    } else if (error.request) {
+      text = 'Request error: ' + error.request;
+    } else {
+      text = 'Could not send request: ' + error.message;
+    }
+    this.setState({transcriptText: this.state.transcriptText + '\n' + text})
+  }
   
   render () {
     return (
@@ -157,23 +196,21 @@ class App extends Component {
         <div className={this.props.classes.root}>
           <CssBaseline/>
           <Titlebar classes={this.props.classes} sidebarExpanded={this.state.sidebarExpanded} expandSidebar={this.expandSidebar} />
-          <Sidebar classes={this.props.classes} expanded={this.state.sidebarExpanded} onClose={this.collapseSidebar}/>
+          <Sidebar
+            classes={this.props.classes}
+            expanded={this.state.sidebarExpanded}
+            onClose={this.collapseSidebar}/>
           <main className={this.props.classes.content}>
             <div className={this.props.classes.appBarSpacer} />
             <Container className={this.props.classes.container}>
               <Grid container spacing={0}>
                 <Grid item xs={12} md={9} lg={9}>
-                  <Grid container spacing={1}>
-                    <Grid item xs={12} md={12} lg={12}>
-                      <TabControl pages={this.state.pages} onClose={this.closePage}/>
-                    </Grid>
-                    <Grid item xs={12} md={12} lg={12}>
-                      <Transcript />
-                    </Grid>
-                  </Grid>
+                    <TabControl pages={this.state.pages} onClose={this.closePage}/>
                 </Grid>
                 <Grid item xs={12} md={3} lg={3}>
-                  <p>Inspection area</p>
+                  <Paper>
+                    <p>Inspection area</p>
+                  </Paper>
                 </Grid>
               </Grid>
             </Container>
