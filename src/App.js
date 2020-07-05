@@ -12,8 +12,8 @@ import { amber } from '@material-ui/core/colors';
 import Titlebar from './components/Titlebar'
 import Sidebar from './components/Sidebar';
 import TabControl from './components/TabControl';
+import Transcript from './components/Transcript';
 import ClassBrowser from './components/ClassBrowser';
-
 
 const port = 9000 //window.location.port;
 const baseUri = `http://${window.location.hostname}:${port}/bee`;
@@ -86,8 +86,7 @@ const styles = theme => ({
     overflow: "auto"
   },
   container: {
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1)
+    paddingTop: theme.spacing(1)
   },
   paper: {
 //    padding: theme.spacing(1),
@@ -96,7 +95,7 @@ const styles = theme => ({
 //    flexDirection: "row"
   },
   fixedHeight: {
-    height: 240
+    height: 200
   }
 });
 
@@ -161,15 +160,20 @@ class App extends Component {
           <Sidebar classes={this.props.classes} expanded={this.state.sidebarExpanded} onClose={this.collapseSidebar}/>
           <main className={this.props.classes.content}>
             <div className={this.props.classes.appBarSpacer} />
-            <Container maxWidth="lg" className={this.props.classes.container}>
-              <Grid container spacing={1}>
-                <Grid item xs={12} md={9} lg={10}>
-                  <TabControl pages={this.state.pages} onClose={this.closePage}/>
+            <Container className={this.props.classes.container}>
+              <Grid container spacing={0}>
+                <Grid item xs={12} md={9} lg={9}>
+                  <Grid container spacing={1}>
+                    <Grid item xs={12} md={12} lg={12}>
+                      <TabControl pages={this.state.pages} onClose={this.closePage}/>
+                    </Grid>
+                    <Grid item xs={12} md={12} lg={12}>
+                      <Transcript />
+                    </Grid>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} md={3} lg={2}>
-                </Grid>
-                <Grid item xs={12} md={12} lg={12}>
-                  <p>This area is reserved to a future footer... or for a footoore futer</p>
+                <Grid item xs={12} md={3} lg={3}>
+                  <p>Inspection area</p>
                 </Grid>
               </Grid>
             </Container>

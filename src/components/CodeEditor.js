@@ -24,16 +24,17 @@ const styles = (theme) => ({
 
 class CodeEditor extends Component {
     constructor(props){
-        console.log('initializing')
         super(props);
         this.state = {
             class: '"no class"',
             definition: '"no class definition"', 
             comment: '"no class comment"',
-            method: '"no method code"',
-            value: '',
-            mode: "method",
-            dirty: false
+            category: null,
+            selector: null,
+            source: '"no source code"',
+            mode: "source",
+            dirty: false,
+            value: ''
         }
     }
 
@@ -41,12 +42,16 @@ class CodeEditor extends Component {
         if (props.class !== state.class ||
             props.definition !== state.definition ||
             props.comment !== state.comment ||
-            props.method !== state.method) {
+            props.category !== state.category ||
+            props.selector !== state.selector ||
+            props.source !== state.source) {
             return {
                 class: props.class,
                 definition: props.definition,
                 comment: props.comment,
-                method: props.method,
+                category: props.category,
+                selector: props.selector,
+                source: props.source,
                 value: props[state.mode],
             }
         };
@@ -61,39 +66,60 @@ class CodeEditor extends Component {
         this.setState({mode: mode, value: this.state[mode]})
     }
 
-    postDefinition = (definition) => {
-        axios.post(this.props.baseUri + '/classes', definition)
+    defineClass = (definition) => {
+        axios.post(this.props.baseUri + '/classes/' + this.props.class, definition)
             .then(res => {
-                this.setState({definition: definition})
+                const accepted = res.data;
+                console.log(accepted);
+                if (this.props !== null && this.props.onClassDefined !== undefined) { 
+                    const handler = this.props.onClassDefined;
+                    handler.bind(this);
+                    handler(accepted)
+                }
+                this.setState({definition: accepted})
             })
     }
     
-    postCommment = (comment) => {
+    commentClass = (comment) => {
         axios.post(this.props.baseUri + '/classes/' + this.props.class + '/comment', comment)
             .then(res => {
-                this.setState({comment: comment})
+                const accepted = res.data;
+                console.log(accepted);
+                this.setState({comment: accepted})
+                if (this.props !== null && this.props.onClassCommented !== undefined) { 
+                    const handler = this.props.onClassCommented;
+                    handler.bind(this);
+                    handler(accepted)
+                }
             })
     }
 
-    postMethod = (source) => {
-        const method = {source: source};
+    compileMethod = (source) => {
+        const method = {source: source, category: this.props.category};
         axios.post(this.props.baseUri + '/classes/' + this.props.class + '/methods', method)
             .then(res => {
-                this.setState({method: res.data})
+                const compiled = res.data;
+                console.log(compiled);
+                this.setState({source: compiled.source, selector: compiled.selector})
+                if (this.props !== null && this.props.onMethodCompiled !== undefined) { 
+                    const handler = this.props.onMethodCompiled;
+                    handler.bind(this);
+                    handler(compiled)
+                }
             })
     }
-
+    
     saveClicked = (e) => {
         const { value } = this.state;
         switch (this.state.mode) { 
             case "comment":
-                this.postComment(value);
+                this.commentClass(value);
                 break;
             case "definition":
-                this.postDefinition(value);
+                this.defineClass(value);
                 break;
-            case "method":    
-                this.postMethod(value);
+            case "source":    
+                this.compileMethod(value);
                 break;
             default:
         }
@@ -109,7 +135,7 @@ class CodeEditor extends Component {
                                 value={this.state.mode}
                                 exclusive
                                 onChange={this.changeMode}>
-                                <ToggleButton value="method" variant="outlined" size="small">
+                                <ToggleButton value="source" variant="outlined" size="small">
                                     Method defintion
                                 </ToggleButton>
                                 <ToggleButton value="definition" variant="outlined" size="small">
@@ -121,7 +147,7 @@ class CodeEditor extends Component {
                             </ToggleButtonGroup>    
                             <div className={this.props.classes.grow} />
                             <IconButton color="inherit" onClick={this.saveClicked}>
-                                <SaveIcon />
+                                <SaveIcon size="large"/>
                             </IconButton>
                         </Toolbar>
                     {/*</AppBar>*/}
@@ -139,7 +165,7 @@ class CodeEditor extends Component {
                                 indentUnit: 10, 
                                 highlightSelectionMatches: true, 
                                 styleActiveLine: true, 
-                                matchTags: {
+                               matchTags: {
                                     bothTags: true
                                 }, 
                                 lineWrapping: true, 

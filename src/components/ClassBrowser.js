@@ -15,16 +15,12 @@ class ClassBrowser extends Component {
         this.state = {
             root: this.props.root,
             classTree: [],
-            classes: [],
-            definitions: {},
-            comments: {},
+            classes: {},
+            classNames: [],
             selectedClass: null,
             selectedVariable: null,
             selectedCategory: null,
             selectedSelector: null,
-            variables: {},
-            categories: {},
-            selectors: {},
             selectedMethod: {selector: 'selector', source: '"no source"'},
             side: "instance"
         }
@@ -38,7 +34,7 @@ class ClassBrowser extends Component {
         const selected = this.state.selectedClass !== null;
         this.setState({root: root}, () => {
             this.getClassTree();
-            this.getClasses();
+            this.getClassNames();
             if (selected) { this.classSelected(root) };
         })
     }
@@ -46,10 +42,9 @@ class ClassBrowser extends Component {
     classSelected = (c) => {
         this.setState({selectedClass: c}, () => {
             this.getDefinition();
-            this.getVariables();
-            this.getCategories();
             this.getCommment();
-            //this.getSelectors()
+            this.getVariables();
+            this.getCategories()
         })
     }
 
@@ -71,73 +66,83 @@ class ClassBrowser extends Component {
         )
     }
 
-    getClasses = () => {
+    getClassNames = () => {
         axios.get(this.props.baseUri + '/classes?names=true')
-            .then(res => {this.setState({classes: res.data})}
+            .then(res => {
+                this.setState({classNames: res.data})}
         )
     }
 
     getDefinition = () => {
-        const { selectedClass, definitions } = this.state;
-        if (definitions[selectedClass] == null) {
+        const { classes, selectedClass } = this.state;
+        if (classes[selectedClass] == null) { classes[selectedClass] = {name: selectedClass} }
+        if (classes[selectedClass].definition == null) {
             axios.get(this.props.baseUri + '/classes/' + selectedClass)
                 .then(res => {
-                    definitions[selectedClass] = res.data;
-                    this.setState({definitions: definitions})
+                    classes[selectedClass].definition = res.data;
+                    this.setState({classes: classes})
                 })
         }
     }
 
-    getCommment = () => {
-        const { selectedClass, comments } = this.state;
-        if (comments[selectedClass] == null) {
+    getCommment = () => {        
+        const { classes, selectedClass } = this.state;
+        if (classes[selectedClass] == null) { classes[selectedClass] = {name: selectedClass} }
+        if (classes[selectedClass].comment == null) {
             axios.get(this.props.baseUri + '/classes/' + selectedClass + '/comment')
                 .then(res => {
-                    const comment = (res.data == null || res.data === '') ? '"no comment"' : res.data;
-                    comments[selectedClass] = comment;
-                    this.setState({comments: comments})
+                    classes[selectedClass].comment = res.data;
+                    this.setState({classes: classes})
                 })
         }
     }
 
     getVariables = () => {
-        var { selectedClass, variables, selectedVariable } = this.state;
-        if (variables[selectedClass] == null) {
-            axios.get(this.props.baseUri + '/classes/' + selectedClass + '/instance-variables')
+        console.log('getting variables')
+        const { classes, selectedClass, selectedVariable } = this.state;
+        if (classes[selectedClass] == null) { classes[selectedClass] = {name: selectedClass} }
+        if (classes[selectedClass].variables == null) {
+            axios.get(this.props.baseUri + '/classes/' + selectedClass + '/variables')
                 .then(res => {
-                    variables[selectedClass] = res.data;
-                    if (!variables[selectedClass].includes(selectedVariable)) {
-                        selectedVariable = null;
+                    classes[selectedClass].variables = res.data;
+                    console.log(res.data)
+                    var selected = selectedVariable;
+                    if (!classes[selectedClass].variables.includes(selected)) {
+                        selected = null;
                     }
-                    this.setState({variables: variables, selectedVariable: selectedVariable})
+                    this.setState({classes: classes, selectedVariable: selected})
                 })
         }
     }
 
     getCategories = () => {
-        const { selectedClass, categories } = this.state;
-        if (categories[selectedClass] == null) {
-            axios.get(this.props.baseUri + '/classes/' +  selectedClass + '/categories')
+        const { classes, selectedClass, selectedCategory } = this.state;
+        if (classes[selectedClass] == null) { classes[selectedClass] = {name: selectedClass} }
+        if (classes[selectedClass].categories == null) {
+            axios.get(this.props.baseUri + '/classes/' + selectedClass + '/categories')
                 .then(res => {
-                    const categories  = this.state.categories;
-                    categories[selectedClass] = res.data.sort();
-                    this.setState({categories: categories})
-                 })
+                    classes[selectedClass].categories = res.data;
+                    var selected = selectedCategory;
+                    if (!classes[selectedClass].categories.includes(selected)) {
+                        selected = null;
+                    }
+                    this.setState({classes: classes, selectedCategory: selected})
+                })
         }
     }
 
     getSelectors = () => {
-        const { selectedClass, selectedCategory, selectors } = this.state;
+        const { classes, selectedClass, selectedCategory } = this.state;
         if (selectedClass !== null && selectedCategory !== null 
-            && (selectors[selectedClass] == null || selectors[selectedClass][selectedCategory] == null)) { 
+            && (classes[selectedClass].selectors == null || classes[selectedClass].selectors[selectedCategory] == null)) { 
             axios.get(this.props.baseUri + '/classes/' + selectedClass + '/selectors?category=' + selectedCategory + '&marks=true')
                 .then(res => {
-                    if (selectors[selectedClass] == null) {
-                        selectors[selectedClass] = {}
+                    if (classes[selectedClass].selectors == null) {
+                        classes[selectedClass].selectors = {}
                     };
                     const sorted = res.data.sort(function(a, b){ return a.selector <= b.selector? -1 : 1 });
-                    selectors[selectedClass][selectedCategory] = sorted;
-                    this.setState({selectors: selectors}) 
+                    classes[selectedClass].selectors[selectedCategory] = sorted;
+                    this.setState({classes: classes}) 
                 })
         }
     }
@@ -151,19 +156,36 @@ class ClassBrowser extends Component {
             })
     }
 
+    currentDefinition() {
+        const { classes, selectedClass } = this.state;
+        if (selectedClass == null || classes[selectedClass] == null) { return '' };
+        return classes[selectedClass].definition;
+    }
+
+    currentComment() {
+        const { classes, selectedClass } = this.state;
+        if (selectedClass == null || classes[selectedClass] == null) { return '' };
+        return classes[selectedClass].comment;
+    }
+
+    currentVariables() {
+        const { classes, selectedClass } = this.state;
+        if (selectedClass == null || classes[selectedClass] == null) { return [] };
+        return classes[selectedClass].variables;
+    }
+
     currentCategories = () => {
-        const c = this.state.selectedClass;
-        return c == null ? [] : this.state.categories[c];
+        const { classes, selectedClass } = this.state;
+        if (selectedClass == null || classes[selectedClass] == null) { return [] };
+        return classes[selectedClass].categories;
     }
 
     currentSelectors = () => {
-        const c = this.state.selectedClass;
-        const k = this.state.selectedCategory;
-        return (c == null || k == null || this.state.selectors[c] == null) ? [] : this.state.selectors[c][k];
-    }
-
-    variables() {
-        return this.state.selectedClass == null? [] : this.state.variables[this.state.selectedClass];
+        const { classes, selectedClass, selectedCategory } = this.state;
+        if (selectedClass == null || selectedCategory == null
+                || classes[selectedClass] == null
+                || classes[selectedClass].selectors == null) { return [] };
+        return classes[selectedClass].selectors[selectedCategory];
     }
 
     changeSide = (e, side) => {
@@ -177,8 +199,20 @@ class ClassBrowser extends Component {
         }
     }
 
+    methodCompiled = (method) => {
+        this.categorySelected(method.category);
+        this.selectorSelected(method.selector);
+    }
+
     render() {
-        const { classes, definitions, comments, classTree, variables, selectedClass, selectedMethod } = this.state;
+        const { 
+            classes,
+            classTree,
+            selectedClass,
+            selectedVariable,
+            selectedCategory,
+            selectedSelector,
+            selectedMethod } = this.state;
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         return (
             <Grid container spacing={1}>
@@ -199,8 +233,8 @@ class ClassBrowser extends Component {
                         <Grid item xs={12} md={3} lg={3}>
                             <Paper className={fixedHeightPaper} variant="outlined">
                                 <SimpleList
-                                    items={variables[selectedClass]}
-                                    selectedItem={this.selectedVariable}
+                                    items={this.currentVariables()}
+                                    selectedItem={selectedVariable}
                                     onSelect={this.variableSelected}/>
                             </Paper>
                         </Grid>
@@ -208,6 +242,7 @@ class ClassBrowser extends Component {
                             <Paper className={fixedHeightPaper} variant="outlined">
                                 <SimpleList
                                     items={this.currentCategories()}
+                                    selectedItem={selectedCategory}
                                     onSelect={this.categorySelected}/>
                             </Paper>
                         </Grid>
@@ -220,21 +255,32 @@ class ClassBrowser extends Component {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={12} md={6} lg={6}>
-                    <RadioGroup row name="side" value={this.state.side} onChange={this.changeSide} defaultValue="instance" size="small">
-                        <FormControlLabel value="instance" control={<Radio size="small" color="default"/>} label="Instance"/>
-                        <FormControlLabel value="class" control={<Radio size="small" color="default"/>} label="Class" />
-                    </RadioGroup>
-                </Grid>                 
                 <Grid item xs={12} md={12} lg={12}>
-                    <CodeEditor
-                        baseUri={this.props.baseUri}
-                        class={selectedClass}
-                        definition={definitions[selectedClass]}
-                        comment={comments[selectedClass]}
-                        selector={selectedMethod.selector}
-                        method={selectedMethod.source}
-                        />
+                    <Grid container spacing={1} justify="center">
+                        <Grid item xs={12} md={6} lg={6}></Grid>
+                        <Grid item xs={12} md={6} lg={6}>
+                            <RadioGroup row name="side" value={this.state.side} onChange={this.changeSide} defaultValue="instance" size="small">
+                                <FormControlLabel value="instance" control={<Radio size="small" color="default"/>} label="Instance"/>
+                                <FormControlLabel value="class" control={<Radio size="small" color="default"/>} label="Class" />
+                            </RadioGroup>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item xs={12} md={12} lg={12}>
+                    <Paper variant="outlined">
+                        <CodeEditor
+                            baseUri={this.props.baseUri}
+                            class={selectedClass}
+                            definition={this.currentDefinition()}
+                            comment={this.currentComment()}
+                            category={selectedCategory}
+                            selector={selectedSelector}
+                            source={selectedMethod == null ? '' : selectedMethod.source}
+                            onClassDefined={this.classDefined}
+                            onClassCommented={this.classCommented}
+                            onMethodCompiled={this.methodCompiled}
+                            />
+                    </Paper>
                 </Grid> 
             </Grid>
         )
