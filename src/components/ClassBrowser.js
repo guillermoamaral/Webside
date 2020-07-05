@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import { Grid, Paper } from '@material-ui/core';
+import { Grid, Paper, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
 import ToggleButton from "@material-ui/lab/ToggleButton";
 import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
 import axios from 'axios';
 import clsx from 'clsx';
 
@@ -150,11 +146,12 @@ class ClassBrowser extends Component {
     }
 
     getMethod = () => {
-        const c = this.state.selectedClass;
-        const s = this.state.selectedSelector;
-        if (c == null || s == null) { return };
-        axios.get(this.props.baseUri + '/classes/' + c + '/methods/' + s)
-            .then(res => { this.setState({selectedMethod: res.data}) })
+        const { selectedClass, selectedSelector } = this.state;
+        if (selectedClass == null || selectedSelector == null) { return };
+        axios.get(this.props.baseUri + '/classes/' + selectedClass + '/methods/' + selectedSelector)
+            .then(res => {
+                this.setState({selectedMethod: res.data})
+            })
     }
 
     currentCategories = () => {
@@ -205,6 +202,48 @@ class ClassBrowser extends Component {
                 source = 'no source';
         };
         return source      
+    }
+
+    postDefinition = (definition) => {
+        const { selectedClass, definitions } = this.state;
+        axios.post(this.props.baseUri + '/classes/' + selectedClass, definition)
+            .then(res => {
+                definitions[selectedClass] = definition;
+                this.setState({definitions: definitions})
+            })
+    }
+    
+    postCommment = (comment) => {
+        const { selectedClass, comments } = this.state;
+        axios.post(this.props.baseUri + '/classes/' + selectedClass + '/comment', comment)
+            .then(res => {
+                comments[selectedClass] = comment;
+                this.setState({comments: comments})
+            })
+    }
+
+    postMethod = (source) => {
+        const { selectedClass, selectedSelector } = this.state;
+        axios.post(this.props.baseUri + '/classes/' + selectedClass + '/methods/' + selectedSelector, source)
+            .then(res => {
+                this.setState({selectedMethod: res.data})
+            })
+    }
+
+    saveSource = (source) => {
+        console.log(source)
+        switch (this.state.mode) { 
+            case "comment":
+                this.postComment(source);
+                break;
+            case "class":
+                this.postDefinition(source);
+                break;
+            case "method":    
+                this.postMethod(source);
+                break;
+            default:
+        }
     }
 
     render() {
@@ -268,14 +307,12 @@ class ClassBrowser extends Component {
                 </Grid>
                 <Grid item xs={12} md={6} lg={6}>
                     <RadioGroup row name="side" value={this.state.side} onChange={this.changeSide} defaultValue="instance" size="small">
-                        <FormControlLabel value="instance" control={<Radio size="small"/>} label="Instance"/>
-                        <FormControlLabel value="class" control={<Radio size="small"/>} label="Class" />
+                        <FormControlLabel value="instance" control={<Radio size="small" color="default"/>} label="Instance"/>
+                        <FormControlLabel value="class" control={<Radio size="small" color="default"/>} label="Class" />
                     </RadioGroup>
                 </Grid>                 
                 <Grid item xs={12} md={12} lg={12}>
-                    <Paper variant="outlined">
-                        <CodeEditor source={this.source()} />
-                    </Paper>
+                    <CodeEditor source={this.source()} onSave={this.saveSource} />
                 </Grid> 
             </Grid>
         )

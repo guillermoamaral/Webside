@@ -14,7 +14,7 @@ class ClassTree extends Component {
         )
     }
 
-    nodeSelected = (event, id) => {
+    nodeSelected = (e, id) => {
         const handler = this.props.onSelect;
         if (handler !== null) {
             handler.bind(this);

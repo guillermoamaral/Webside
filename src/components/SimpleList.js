@@ -20,7 +20,7 @@ class SimpleList extends Component {
     return null;
  }*/
 
-  itemSelected = (event, index) => {
+  itemSelected = (e, index) => {
     const item = this.props.items[index];
     this.setState({selectedItem: item, selectedIndex: index});
     if (this.props !== null) { 
@@ -52,7 +52,8 @@ class SimpleList extends Component {
                 button
                 key={v}
                 selected={this.state.selectedIndex === i}
-                onClick={(event) => this.itemSelected(event, i)}>
+                onClick={(e) => this.itemSelected(e, i)}
+                >
                   {this.itemIcon(i)}
                   <ListItemText primary={v} />
               </ListItem>

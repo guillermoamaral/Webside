@@ -31,7 +31,7 @@ TabPanel.propTypes = {
   visible: PropTypes.any.isRequired,
 };
 
-const useStyles = (theme) => ({
+const styles = (theme) => ({
   root: {
     flexGrow: 1,
     width: '100%',
@@ -47,7 +47,7 @@ class TabControl extends Component {
         }
     }
 
-    tabChanged = (event, value) => {
+    tabChanged = (e, value) => {
        this.setState({selectedIndex: value});
     }
 
@@ -62,14 +62,15 @@ class TabControl extends Component {
       )
     }
 
-    pageClosed = (event) => {
-      event.stopPropagation();
+    pageClosed = (e) => {
+      e.stopPropagation();
       if (this.props !== null) {
         const handler = this.props.onClose;
         if (handler !== undefined) {
-            var index = parseInt(event.target.id);
+            var index = parseInt(e.target.id);
             handler.bind(this);
             handler(this.props.pages[index]);
+            console.log(this.state);
             var selected = this.state.selectedIndex;
             if (index < selected) {
               selected = Math.max(selected - 1, 0)
@@ -96,16 +97,18 @@ class TabControl extends Component {
                                 component="div"
                                 key={i.toString()}
                                 label={this.tabLabel(i)}
-                                id= {`tab-${i}`}/>);
+                                id= {`tab-${i}`}
+                              />);
                         })}
                 </Tabs>
-                {this.props.pages.map((p, i) => {
+                  {this.props.pages.map((p, i) => {
                     return (
                         <TabPanel
                             id={`tabpanel-${i}`}
                             key={i.toString()}
                             index={i}
-                            visible={i === this.state.selectedIndex}>
+                            visible={i === this.state.selectedIndex}
+                          >
                             {p.component}
                         </TabPanel>);
                 })}
@@ -115,4 +118,4 @@ class TabControl extends Component {
     };
 };
 
-export default withStyles(useStyles)(TabControl);
+export default withStyles(styles)(TabControl);

@@ -12,21 +12,18 @@ import MenuIcon from '@material-ui/icons/Menu';
 class Titlebar extends Component {
     render() {
         return (
-            <AppBar
+          <AppBar
                 color="default"
                 position="absolute"
-                className={clsx(this.props.classes.appBar, this.props.sidebarExpanded && this.props.classes.appBarShift)}
-            >
+                className={clsx(this.props.classes.appBar, this.props.sidebarExpanded && this.props.classes.appBarShift)}>
             <Toolbar className={this.props.classes.toolbar}> 
               <IconButton
                 edge="start"
                 color="inherit"
-                aria-label="open drawer"
                 onClick={this.props.expandSidebar.bind(this)}
                 className={clsx(
                   this.props.classes.menuButton,
-                  this.props.sidebarExpanded && this.props.classes.menuButtonHidden
-                )}
+                  this.props.sidebarExpanded && this.props.classes.menuButtonHidden)}
               >
                 <MenuIcon />
               </IconButton>

@@ -1,12 +1,13 @@
-import React, { Component } from "react";
-import { withStyles } from "@material-ui/core/styles";
+import React, { Component } from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import {
   Container,
   createMuiTheme,
-  CssBaseline
-} from "@material-ui/core";
-import { ThemeProvider } from "@material-ui/styles";
-import { amber } from "@material-ui/core/colors";
+  CssBaseline,
+  Grid
+} from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/styles';
+import { amber } from '@material-ui/core/colors';
 
 import Titlebar from './components/Titlebar'
 import Sidebar from './components/Sidebar';
@@ -18,7 +19,7 @@ const port = 9000 //window.location.port;
 const baseUri = `http://${window.location.hostname}:${port}/bee`;
 
 const drawerWidth = 240;
-const useStyles = theme => ({
+const styles = theme => ({
   root: {
     display: "flex"
   },
@@ -161,7 +162,16 @@ class App extends Component {
           <main className={this.props.classes.content}>
             <div className={this.props.classes.appBarSpacer} />
             <Container maxWidth="lg" className={this.props.classes.container}>
-              <TabControl pages={this.state.pages} onClose={this.closePage}/>
+              <Grid container spacing={1}>
+                <Grid item xs={12} md={9} lg={10}>
+                  <TabControl pages={this.state.pages} onClose={this.closePage}/>
+                </Grid>
+                <Grid item xs={12} md={3} lg={2}>
+                </Grid>
+                <Grid item xs={12} md={12} lg={12}>
+                  <p>This area is reserved to a future footer... or for a footoore futer</p>
+                </Grid>
+              </Grid>
             </Container>
           </main>
         </div>
@@ -170,4 +180,4 @@ class App extends Component {
   }
 }
 
-export default withStyles(useStyles)(App);
+export default withStyles(styles)(App);
