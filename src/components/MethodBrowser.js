@@ -39,7 +39,7 @@ class MethodBrowser extends Component {
         if (method.classComment == null) {
             axios.get(this.props.baseUri + '/classes/' + method.class + '/comment')
                 .then(res => {
-                    method.classComment = res.data;
+                    method.comment = res.data;
                     this.setState({selectedMethod: method})})
                 .catch(error => {this.reportError(error)})
         }
@@ -50,7 +50,7 @@ class MethodBrowser extends Component {
         if (method.selector == null || method.class == null) { return };
         axios.get(this.props.baseUri + '/classes/' + method.class + '/methods/' + method.selector)
             .then(res => {
-                method.source = res.data;
+                method.source = res.data.source;
                 this.setState({selectedMethod: method})})
             .catch(error => {this.reportError(error)})
     }
@@ -78,9 +78,9 @@ class MethodBrowser extends Component {
                             selector={method == null ? '' : method.selector}
                             source={method == null ? '' : method.source}
                             onError={this.reportError}
-                            //onClassDefined={this.classDefined}
-                            //onClassCommented={this.classCommented}
-                            //onMethodCompiled={this.methodCompiled}
+                            onClassDefined={this.classDefined}
+                            onClassCommented={this.classCommented}
+                            onMethodCompiled={this.methodCompiled}
                             />
                     </Paper>
                 </Grid> 

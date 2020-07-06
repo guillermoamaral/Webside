@@ -43,7 +43,7 @@ class SimpleList extends Component {
 
   render () {
     return (
-      <List>
+      <List style={{paddingTop: 0, paddingBottom: 0}}>
           {
             (this.props.items == null ? [] : this.props.items).map((item, index) =>
               <ListItem

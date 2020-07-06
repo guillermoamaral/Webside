@@ -4,12 +4,16 @@ import TreeItem from '@material-ui/lab/TreeItem';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
-class ClassTree extends Component {
-    createItems = (classes) => {
+class Tree extends Component {
+    createItems = (items) => {
         return (
-            classes.map((c) => 
-                <TreeItem key={c.name} nodeId={c.name} label={c.name}>
-                    {Array.isArray(c.subclasses) ? this.createItems(c.subclasses) : null}
+            items.map((item, index) => 
+                <TreeItem
+                    key={"item" + index}
+                    nodeId={item[this.props.label]}
+                    label={item[this.props.label]}
+                    >
+                        {Array.isArray(item[this.props.children]) ? this.createItems(item[this.props.children]) : null}
                 </TreeItem>)
         )
     }
@@ -30,10 +34,10 @@ class ClassTree extends Component {
                 defaultExpandIcon={<ArrowDropDownIcon />}
                 onNodeSelect={this.nodeSelected}
                 >
-                {this.createItems(this.props.classes)}
+                {this.createItems(this.props.items)}
             </TreeView>
         )
     };
 }
 
-export default ClassTree
+export default Tree

@@ -12,8 +12,8 @@ require('codemirror/mode/smalltalk/smalltalk.js');
 
 const styles = (theme) => ({
     root: {
-        //fontFamily: Inconsolata, monospace;
-        fontSize: 16,
+        fontFamily: '"Segoe UI"'    ,
+        fontSize: 14,
         backgroundColor: theme.palette.background.paper,
         //height: "100%",
         //maxHeight: 200,

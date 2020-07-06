@@ -97,19 +97,23 @@ const styles = theme => ({
   },
   paper: {
     padding: theme.spacing(1),
-//    display: "flex",
+    //display: "flex",
     overflow: "auto",
-//    flexDirection: "row"
+    //maxHeight: 240,
+    //flexDirection: "row"
   },
   fixedHeight: {
     height: 200
+  },
+  fixedHeight2: {
+    height: 154
   }
 });
 
 const theme = createMuiTheme({
   typography: {
     fontFamily: '"Segoe UI"',
-    fontSize: 14,
+    fontSize: 12,
     button: {
       textTransform: 'none'
     }
@@ -125,10 +129,10 @@ const theme = createMuiTheme({
   },
   codeMirror: {
     fontFamily: '"Arial"',
-    fontSize: 24,
+    fontSize: 12,
   },
   radioLabel: {
-    fontSize: 12
+    fontSize: 10
   }
 });
 
@@ -144,7 +148,7 @@ class App extends Component {
 
   componentDidMount() {
     this.openTranscript();
-    this.openClassBrowser('Point');
+    this.openClassBrowser('Magnitude');
     axios.get(baseUri + '/classes/Point/methods')
       .then(res => {this.openMethodBrowser('Point methods', res.data)})
       .catch(error => {this.reportError(error)});

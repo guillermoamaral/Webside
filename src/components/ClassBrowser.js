@@ -4,7 +4,7 @@ import axios from 'axios';
 import clsx from 'clsx';
 
 import SearchList from './SearchList';
-import ClassTree from './ClassTree';
+import ClassTree from './Tree';
 import SelectorList from './SelectorList';
 import SimpleList from './SimpleList';
 import CodeEditor from './CodeEditor';
@@ -224,6 +224,7 @@ class ClassBrowser extends Component {
             selectedSelector,
             selectedMethod } = this.state;
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
+        const fixedHeightPaper2 = clsx(this.props.classes.paper, this.props.classes.fixedHeight2);
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={6} lg={6}>
@@ -236,12 +237,14 @@ class ClassBrowser extends Component {
                         <Grid item xs={12} md={3} lg={3}>
                             <Paper className={fixedHeightPaper} variant="outlined">
                                 <ClassTree
-                                    classes={classTree}
+                                    items={classTree}
+                                    label={"name"}
+                                    children={"subclasses"}
                                     onSelect={this.classSelected}/>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={3} lg={3}>
-                            <Paper className={fixedHeightPaper} variant="outlined">
+                            <Paper  className={fixedHeightPaper} variant="outlined">
                                 <SimpleList
                                     items={this.currentVariables()}
                                     selectedItem={selectedVariable}
@@ -249,15 +252,25 @@ class ClassBrowser extends Component {
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={3} lg={3}>
-                            <Paper className={fixedHeightPaper} variant="outlined">
-                                <SimpleList
-                                    items={this.currentCategories()}
-                                    selectedItem={selectedCategory}
-                                    onSelect={this.categorySelected}/>
-                            </Paper>
+                            <Grid container spacing={1} justify="center">
+                                <Grid item xs={12} md={12} lg={12}>
+                                    <RadioGroup row name="side" value={this.state.side} onChange={this.changeSide} defaultValue="instance" size="small">
+                                        <FormControlLabel value="instance" control={<Radio size="small" color="default"/>} label="Instance"/>
+                                        <FormControlLabel value="class" control={<Radio size="small" color="default"/>} label="Class" />
+                                    </RadioGroup>
+                                </Grid>
+                                <Grid item xs={12} md={12} lg={12}>
+                                    <Paper className={fixedHeightPaper2} variant="outlined">
+                                        <SimpleList
+                                            items={this.currentCategories()}
+                                            selectedItem={selectedCategory}
+                                            onSelect={this.categorySelected}/>
+                                    </Paper>
+                                </Grid>
+                            </Grid>
                         </Grid>
                         <Grid item xs={12} md={3} lg={3}>
-                            <Paper className={fixedHeightPaper} variant="outlined">
+                            <Paper  className={fixedHeightPaper} variant="outlined">
                                 <SelectorList
                                     selectors={this.currentSelectors()}
                                     onSelect={this.selectorSelected}/>
@@ -266,18 +279,7 @@ class ClassBrowser extends Component {
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
-                    <Grid container spacing={1} justify="center">
-                        <Grid item xs={12} md={6} lg={6}></Grid>
-                        <Grid item xs={12} md={6} lg={6}>
-                            <RadioGroup row name="side" value={this.state.side} onChange={this.changeSide} defaultValue="instance" size="small">
-                                <FormControlLabel value="instance" control={<Radio size="small" color="default"/>} label="Instance"/>
-                                <FormControlLabel value="class" control={<Radio size="small" color="default"/>} label="Class" />
-                            </RadioGroup>
-                        </Grid>
-                    </Grid>
-                </Grid>
-                <Grid item xs={12} md={12} lg={12}>
-                    <Paper variant="outlined">
+                    <Paper variant="outlined" height="100%">
                         <CodeEditor
                             baseUri={this.props.baseUri}
                             class={selectedClass}
