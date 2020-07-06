@@ -55,7 +55,7 @@ class TabControl extends Component {
       const page = this.props.pages[i];
       return (
         <span>
-          {page.icon}
+          {React.cloneElement(page.icon, {fontSize: "small"})}
           {page.label}
           <IconButton onClick={this.tabClosed}>
             <CloseIcon id={i} fontSize="small"/>

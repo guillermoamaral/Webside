@@ -40,8 +40,8 @@ class ClassBrowser extends Component {
         })
     }
 
-    classSelected = (c) => {
-        this.setState({selectedClass: c}, () => {
+    classSelected = (species) => {
+        this.setState({selectedClass: species}, () => {
             this.getDefinition();
             this.getCommment();
             this.getVariables();
@@ -49,16 +49,16 @@ class ClassBrowser extends Component {
         })
     }
 
-    variableSelected = (v) => {
-        this.setState({selectedVariable: v});
+    variableSelected = (variable) => {
+        this.setState({selectedVariable: variable});
     }
 
-    categorySelected = (c) => {
-        this.setState({selectedCategory: c}, () => this.getSelectors());
+    categorySelected = (category) => {
+        this.setState({selectedCategory: category}, () => this.getSelectors());
     }
 
-    selectorSelected = (s) => {
-        this.setState({selectedSelector: s}, () => this.getMethod());
+    selectorSelected = (selector) => {
+        this.setState({selectedSelector: selector.selector}, () => this.getMethod());
     }
 
     getClassTree = () => {
@@ -116,7 +116,7 @@ class ClassBrowser extends Component {
 
     getCategories = () => {
         const { classes, selectedClass, selectedCategory } = this.state;
-        if (classes[selectedClass] == null) { classes[selectedClass] = {name: selectedClass} }
+        if (classes[selectedClass] == null) { classes[selectedClass] = {name: selectedClass}}
         if (classes[selectedClass].categories == null) {
             axios.get(this.props.baseUri + '/classes/' + selectedClass + '/categories')
                 .then(res => {

@@ -8,7 +8,8 @@ class SelectorList extends Component {
         const selectors = this.props.selectors == null ? [] : this.props.selectors;
         return (
             <SimpleList
-                items={selectors.map(s => { return s.selector })}
+                label="selector"
+                items={selectors}
                 icons={selectors.map(s => {
                     if (s.overriding && s.overriden) {
                         return <ArrowUpDownBold style={{fontSize: size}} />

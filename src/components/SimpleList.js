@@ -20,8 +20,7 @@ class SimpleList extends Component {
     return null;
  }*/
 
-  itemSelected = (e, index) => {
-    const item = this.props.items[index];
+  itemSelected = (e, index, item) => {
     this.setState({selectedItem: item, selectedIndex: index});
     if (this.props !== null) { 
       const handler = this.props.onSelect;
@@ -32,12 +31,12 @@ class SimpleList extends Component {
     }
   };
 
-  itemIcon = (i) => {
-    if (this.props.icons !== undefined && i < this.props.icons.length) {
+  itemIcon = (index) => {
+    if (this.props.icons !== undefined && index < this.props.icons.length) {
       return (
         <ListItemIcon style={{minWidth: 0}}>
-          {this.props.icons[i]}
-      </ListItemIcon>
+          {this.props.icons[index]}
+        </ListItemIcon>
       )
     }
   }
@@ -46,16 +45,16 @@ class SimpleList extends Component {
     return (
       <List>
           {
-            (this.props.items == null ? [] : this.props.items).map((v, i) =>
+            (this.props.items == null ? [] : this.props.items).map((item, index) =>
               <ListItem
                 style={{paddingTop: 0, paddingBottom: 0}}
                 button
-                key={v}
-                selected={this.state.selectedIndex === i}
-                onClick={(e) => this.itemSelected(e, i)}
+                key={"item" + index}
+                selected={this.state.selectedIndex === index}
+                onClick={(e) => this.itemSelected(e, index, item)}
                 >
-                  {this.itemIcon(i)}
-                  <ListItemText primary={v} />
+                  {this.itemIcon(index)}
+                  <ListItemText primary={this.props.label == null ? item : item[this.props.label]} />
               </ListItem>
           )}
       </List>

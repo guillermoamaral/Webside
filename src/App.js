@@ -7,17 +7,20 @@ import {
   Grid,
   Paper
 } from '@material-ui/core';
-import TranscriptIcon from '@material-ui/icons/Notes';
+import TranscriptIcon from '@material-ui/icons/Announcement';
 import ClassBrowserIcon from '@material-ui/icons/AccountTree';
+import MethodBrowserIcon from '@material-ui/icons/Notes';
 import WorkspaceIcon from '@material-ui/icons/Code';
 import { ThemeProvider } from '@material-ui/styles';
 import { amber } from '@material-ui/core/colors';
+import axios from 'axios';
 
 import Titlebar from './components/Titlebar'
 import Sidebar from './components/Sidebar';
 import TabControl from './components/TabControl';
 import Transcript from './components/Transcript';
 import ClassBrowser from './components/ClassBrowser';
+import MethodBrowser from './components/MethodBrowser';
 
 const port = 9000 //window.location.port;
 const baseUri = `http://${window.location.hostname}:${port}/bee`;
@@ -142,6 +145,9 @@ class App extends Component {
   componentDidMount() {
     this.openTranscript();
     this.openClassBrowser('Point');
+    axios.get(baseUri + '/classes/Point/methods')
+      .then(res => {this.openMethodBrowser('Point methods', res.data)})
+      .catch(error => {this.reportError(error)});
   }
 
   addPage(label, icon, component) {
@@ -163,6 +169,15 @@ class App extends Component {
       root={root}
       onError={this.reportError}/>;
     this.addPage(root, <ClassBrowserIcon />, browser);
+  }
+
+  openMethodBrowser(title, methods) {
+    const browser = <MethodBrowser
+      baseUri={baseUri}
+      classes={this.props.classes}
+      methods={methods}
+      onError={this.reportError}/>;
+    this.addPage(title, <MethodBrowserIcon />, browser);
   }
   
   expandSidebar = () => {

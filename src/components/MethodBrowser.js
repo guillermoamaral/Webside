@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Paper, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
+import { Grid, Paper } from '@material-ui/core';
 import axios from 'axios';
 import clsx from 'clsx';
 
@@ -11,99 +11,76 @@ class MethodBrowser extends Component {
         super(props);
         this.reportError = props.onError.bind();
         this.state = {
-            selectedSelector: null,
             selectedMethod: {selector: 'selector', source: '"no source"'},
-            side: "instance"
         }
     }
 
-    selectorSelected = (s) => {
-        this.setState({selectedSelector: s}, () => this.getMethod());
+    methodSelected = (method) => {
+        this.setState({selectedMethod: method}, () => {
+            this.getSource();
+            this.getClassDefinition();
+            this.getClassComment();
+        });
     }
 
-    getDefinition = () => {
-        const { classes, selectedClass } = this.state;
-        if (classes[selectedClass] == null) { classes[selectedClass] = {name: selectedClass} }
-        if (classes[selectedClass].definition == null) {
-            axios.get(this.props.baseUri + '/classes/' + selectedClass)
+    getClassDefinition = () => {
+        const method = this.state.selectedMethod;
+        if (method.classDefinition == null) {
+            axios.get(this.props.baseUri + '/classes/' + method.class)
                 .then(res => {
-                    classes[selectedClass].definition = res.data;
-                    this.setState({classes: classes})})
+                    method.classDefinition = res.data;
+                    this.setState({selectedMethod: method})})
                 .catch(error => {this.reportError(error)})
         }
     }
 
-    getCommment = () => {        
-        const { classes, selectedClass } = this.state;
-        if (classes[selectedClass] == null) { classes[selectedClass] = {name: selectedClass} }
-        if (classes[selectedClass].comment == null) {
-            axios.get(this.props.baseUri + '/classes/' + selectedClass + '/comment')
+    getClassComment = () => {        
+        const method = this.state.selectedMethod;
+        if (method.classComment == null) {
+            axios.get(this.props.baseUri + '/classes/' + method.class + '/comment')
                 .then(res => {
-                    classes[selectedClass].comment = res.data;
-                    this.setState({classes: classes})})
+                    method.classComment = res.data;
+                    this.setState({selectedMethod: method})})
                 .catch(error => {this.reportError(error)})
         }
     }
 
-    getMethod = () => {
-        const { selectedClass, selectedSelector } = this.state;
-        if (selectedClass == null || selectedSelector == null) { return };
-        axios.get(this.props.baseUri + '/classes/' + selectedClass + '/methods/' + selectedSelector)
-            .then(res => {this.setState({selectedMethod: res.data})})
+    getSource = () => {
+        const method = this.state.selectedMethod;
+        if (method.selector == null || method.class == null) { return };
+        axios.get(this.props.baseUri + '/classes/' + method.class + '/methods/' + method.selector)
+            .then(res => {
+                method.source = res.data;
+                this.setState({selectedMethod: method})})
             .catch(error => {this.reportError(error)})
     }
 
-    currentDefinition() {
-        const { classes, selectedClass } = this.state;
-        if (selectedClass == null || classes[selectedClass] == null) { return '' };
-        return classes[selectedClass].definition;
-    }
-
-    currentComment() {
-        const { classes, selectedClass } = this.state;
-        if (selectedClass == null || classes[selectedClass] == null) { return '' };
-        return classes[selectedClass].comment;
-    }
-
-    changeSide = (e, side) => {
-        if (side == null) return;
-        this.setState({side: side});
-        if (side === "instance") {
-            const name = this.state.root;
-            this.changeRoot(name.slice(0, name.length - 6))
-        } else {
-            this.changeRoot(this.state.root + " class")
-        }
-    }
-
     render() {
-        const { 
-            selectedSelector,
-            selectedMethod } = this.state;
+        const method = this.state.selectedMethod;
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
                     <Paper className={fixedHeightPaper} variant="outlined">
                         <SelectorList
-                            selectors={this.props.selectors}
-                            onSelect={this.selectorSelected}/>
+                            selectors={this.props.methods}
+                            onSelect={this.methodSelected}/>
                     </Paper>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     <Paper variant="outlined">
                         <CodeEditor
                             baseUri={this.props.baseUri}
-                            class={this.currentClass()}
-                            definition={this.currentDefinition()}
-                            comment={this.currentComment()}
-                            category={selectedCategory}
-                            selector={selectedSelector}
-                            source={selectedMethod == null ? '' : selectedMethod.source}
+                            class={method == null ? '' : method.class}
+                            definition={method == null ? '' : method.classDefinition}
+                            comment={method == null ? '' : method.classComment}
+                            category={method == null ? '' : method.category}
+                            selector={method == null ? '' : method.selector}
+                            source={method == null ? '' : method.source}
                             onError={this.reportError}
-                            onClassDefined={this.classDefined}
-                            onClassCommented={this.classCommented}
-                            onMethodCompiled={this.methodCompiled}
+                            //onClassDefined={this.classDefined}
+                            //onClassCommented={this.classCommented}
+                            //onMethodCompiled={this.methodCompiled}
                             />
                     </Paper>
                 </Grid> 
