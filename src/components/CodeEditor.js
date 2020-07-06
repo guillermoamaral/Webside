@@ -69,7 +69,7 @@ class CodeEditor extends Component {
     }
 
     defineClass = (definition) => {
-        axios.post(this.props.baseUri + '/classes/' + this.props.class, definition)
+        axios.post(this.props.baseUri + '/classes', definition)
             .then(res => {
                 const accepted = res.data;
                 if (this.props !== null && this.props.onClassDefined !== undefined) { 
