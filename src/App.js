@@ -141,7 +141,7 @@ class App extends Component {
 
   componentDidMount() {
     this.openTranscript();
-    this.openClassBrowser('Object');
+    this.openClassBrowser('Point');
   }
 
   addPage(label, icon, component) {

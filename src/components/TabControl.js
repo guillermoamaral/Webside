@@ -55,9 +55,7 @@ class TabControl extends Component {
       const page = this.props.pages[i];
       return (
         <span>
-          <IconButton>
-            {page.icon}
-          </IconButton>
+          {page.icon}
           {page.label}
           <IconButton onClick={this.tabClosed}>
             <CloseIcon id={i} fontSize="small"/>

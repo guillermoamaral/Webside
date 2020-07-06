@@ -7,7 +7,6 @@ require('codemirror/theme/material.css');
 require('codemirror/mode/smalltalk/smalltalk.js');
 
 class Transcript extends Component {
-    
     render() {
         return (
             <Grid container>

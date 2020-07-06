@@ -120,7 +120,7 @@ class ClassBrowser extends Component {
         if (classes[selectedClass].categories == null) {
             axios.get(this.props.baseUri + '/classes/' + selectedClass + '/categories')
                 .then(res => {
-                    classes[selectedClass].categories = res.data;
+                    classes[selectedClass].categories = res.data.sort();
                     var selected = selectedCategory;
                     if (!classes[selectedClass].categories.includes(selected)) {
                         selected = null;
@@ -139,7 +139,7 @@ class ClassBrowser extends Component {
                     if (classes[selectedClass].selectors == null) {
                         classes[selectedClass].selectors = {}
                     };
-                    const sorted = res.data.sort(function(a, b){ return a.selector <= b.selector? -1 : 1 });
+                    const sorted = res.data.sort((a, b) => { return a.selector <= b.selector? -1 : 1 });
                     classes[selectedClass].selectors[selectedCategory] = sorted;
                     this.setState({classes: classes})})
                 .catch(error => {this.reportError(error)})
@@ -197,9 +197,21 @@ class ClassBrowser extends Component {
         }
     }
 
+    classDefined = (definition) => {
+        const classes = this.state.classes;
+        classes[this.state.selectedClass].definition = definition;
+        classes[this.state.selectedClass].variables = null;
+        this.setState({classes: classes}, () => {this.getVariables()})
+    }
+
     methodCompiled = (method) => {
-        this.categorySelected(method.category);
-        this.selectorSelected(method.selector);
+        const classes = this.state.classes;
+        const selectors = classes[method.class].selectors[method.category];
+        if (selectors.find(s => s.selector === method.selector) === undefined) {
+            selectors.push({selector: method.selector});
+            selectors.sort((a, b) => { return a.selector <= b.selector? -1 : 1 })
+        }
+        this.setState({classes: classes}, () => {this.selectorSelected(method.selector)})
     }
 
     render() {
@@ -286,4 +298,4 @@ class ClassBrowser extends Component {
     };
 }
 
-export default ClassBrowser
+export default ClassBrowser;
