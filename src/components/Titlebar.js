@@ -5,15 +5,17 @@ import {
     Avatar,
     Typography,
     IconButton,
+    SvgIcon
   } from '@material-ui/core';
 import clsx from 'clsx';  
 import MenuIcon from '@material-ui/icons/Menu';
+import { ReactComponent as Logo } from "../public/logo.svg";
 
 class Titlebar extends Component {
     render() {
         return (
           <AppBar
-                color="default"
+                color="primary"
                 position="absolute"
                 className={clsx(this.props.classes.appBar, this.props.sidebarExpanded && this.props.classes.appBarShift)}>
             <Toolbar className={this.props.classes.toolbar}> 
@@ -23,7 +25,8 @@ class Titlebar extends Component {
                 onClick={this.props.expandSidebar.bind(this)}
                 className={clsx(
                   this.props.classes.menuButton,
-                  this.props.sidebarExpanded && this.props.classes.menuButtonHidden)}
+                  this.props.sidebarExpanded && this.props.classes.menuButtonHidden
+                )}
               >
                 <MenuIcon />
               </IconButton>
@@ -34,7 +37,8 @@ class Titlebar extends Component {
                 noWrap
                 className={this.props.classes.title}
               >
-                Smalltalk Web IDE
+                <SvgIcon><Logo /></SvgIcon>
+                Bee Smalltalk (Powered by Online Smalltalk IDE v1.0.0) 
               </Typography>
               <Avatar
                 alt="Uddeshya Singh"

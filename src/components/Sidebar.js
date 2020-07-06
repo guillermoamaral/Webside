@@ -9,7 +9,8 @@ import {
     IconButton
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import TranscriptIcon from '@material-ui/icons/Notes';
+import AddIcon from '@material-ui/icons/Add';
+import TranscriptIcon from '@material-ui/icons/CallToAction';
 import ClassBrowserIcon from '@material-ui/icons/AccountTree';
 import WorkspaceIcon from '@material-ui/icons/Code';
 import PeopleIcon from '@material-ui/icons/People';
@@ -31,6 +32,12 @@ class Sidebar extends Component {
                 </div>
                 <Divider />
                 <List>
+                    <ListItem button>
+                        <ListItemIcon>
+                            <AddIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="New" />
+                    </ListItem>                    
                     <ListItem button>
                         <ListItemIcon>
                             <TranscriptIcon />

@@ -255,8 +255,8 @@ class ClassBrowser extends Component {
                             <Grid container spacing={1} justify="center">
                                 <Grid item xs={12} md={12} lg={12}>
                                     <RadioGroup row name="side" value={this.state.side} onChange={this.changeSide} defaultValue="instance" size="small">
-                                        <FormControlLabel value="instance" control={<Radio size="small" color="default"/>} label="Instance"/>
-                                        <FormControlLabel value="class" control={<Radio size="small" color="default"/>} label="Class" />
+                                        <FormControlLabel value="instance" control={<Radio size="small" color="primary"/>} label="Instance"/>
+                                        <FormControlLabel value="class" control={<Radio size="small" color="primary"/>} label="Class" />
                                     </RadioGroup>
                                 </Grid>
                                 <Grid item xs={12} md={12} lg={12}>

@@ -120,13 +120,16 @@ const theme = createMuiTheme({
     }
   },
   palette: {
-    type: "dark"
-  },
-  primary: {
-    main: amber[300]
-  },
-  secondary: {
-    main: amber[900]
+    type: "dark",
+    primary: {
+      main: amber[300]
+    },
+    secondary: {
+      main: amber[900]
+    },
+    classBrowser: {
+      main: '#f3504b'
+    }
   },
   codeMirror: {
     fontFamily: '"Arial"',
@@ -173,7 +176,7 @@ class App extends Component {
       classes={this.props.classes}
       root={root}
       onError={this.reportError}/>;
-    this.addPage(root, <ClassBrowserIcon />, browser);
+    this.addPage(root, <ClassBrowserIcon style={{color: "#f3504b"}}/>, browser);
   }
 
   openMethodBrowser(title, methods) {
@@ -182,7 +185,7 @@ class App extends Component {
       classes={this.props.classes}
       methods={methods}
       onError={this.reportError}/>;
-    this.addPage(title + '(' + methods.length + ')', <MethodBrowserIcon />, browser);
+    this.addPage(title + '(' + methods.length + ')', <MethodBrowserIcon style={{color: "#2bb9dd"}}/>, browser);
   }
   
   expandSidebar = () => {
@@ -194,6 +197,7 @@ class App extends Component {
   };
 
   closePage = (page) => {
+    console.log(page)
     this.setState({pages: this.state.pages.filter((p) => {return p.label !== page.label})})
   }
 

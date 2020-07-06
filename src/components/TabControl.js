@@ -39,6 +39,7 @@ const styles = (theme) => ({
   },
   icon: {
     //display: "flex",
+    color: "primary",
     alignItems: "left",
     justifyContent: "flex-end",
     paddingTop: "8px"
@@ -57,32 +58,34 @@ class TabControl extends Component {
        this.setState({selectedIndex: value});
     }
 
-    tabLabel = (i) => {
-      const page = this.props.pages[i];
+    tabLabel = (index) => {
+      const page = this.props.pages[index];
       return (
         <span>
           {React.cloneElement(page.icon, {fontSize: "small", className: this.props.classes.icon})}
           {page.label}
-          <IconButton onClick={this.tabClosed}>
-            <CloseIcon id={i} fontSize="small"/>
+          <IconButton onClick={this.tabClosed} value={index}>
+            <CloseIcon fontSize="small"/>
           </IconButton>
         </span>
       )
     }
 
-    tabClosed = (e) => {
-      e.stopPropagation();
+    tabClosed = (event) => {
+      console.log(event.target === undefined)
+      if (event.target == null) { return }
+      event.stopPropagation();
       if (this.props !== null) {
         const handler = this.props.onClose;
         if (handler !== undefined) {
-            var index = parseInt(e.target.id);
+            var index = event.target.value;
+            console.log(event)
             handler.bind(this);
             handler(this.props.pages[index]);
-            var selected = this.state.selectedIndex;
-            if (index < selected) {
-              selected = Math.max(selected - 1, 0)
+            if (index <= this.state.selectedIndex) {
+              index = Math.max(index - 1, 0)
+              this.setState({selectedIndex: index})
             }
-            this.setState({selectedIndex: selected})
         }
       }
     };    
@@ -94,7 +97,7 @@ class TabControl extends Component {
                     value={this.state.selectedIndex}
                     onChange={this.tabChanged}
                     indicatorColor="primary"
-                    textColor="inherit"
+                    textColor="primary"
                     variant="scrollable"
                     scrollButtons="auto"
                     >
