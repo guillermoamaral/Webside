@@ -37,6 +37,12 @@ const styles = (theme) => ({
     width: '100%',
     backgroundColor: theme.palette.background.paper,
   },
+  icon: {
+    //display: "flex",
+    alignItems: "left",
+    justifyContent: "flex-end",
+    paddingTop: "8px"
+  },
 });
 
 class TabControl extends Component {
@@ -55,7 +61,7 @@ class TabControl extends Component {
       const page = this.props.pages[i];
       return (
         <span>
-          {React.cloneElement(page.icon, {fontSize: "small"})}
+          {React.cloneElement(page.icon, {fontSize: "small", className: this.props.classes.icon})}
           {page.label}
           <IconButton onClick={this.tabClosed}>
             <CloseIcon id={i} fontSize="small"/>

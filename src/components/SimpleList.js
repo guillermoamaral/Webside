@@ -31,6 +31,13 @@ class SimpleList extends Component {
     }
   };
 
+  itemLabel = (item) => {
+    if (this.props.label == null) { return item }    
+    if (typeof this.props.label == "string")  { return item[this.props.label] }
+    this.props.label.bind(this);
+    return this.props.label(item)
+  }
+
   itemIcon = (index) => {
     if (this.props.icons !== undefined && index < this.props.icons.length) {
       return (
@@ -54,7 +61,7 @@ class SimpleList extends Component {
                 onClick={(e) => this.itemSelected(e, index, item)}
                 >
                   {this.itemIcon(index)}
-                  <ListItemText primary={this.props.label == null ? item : item[this.props.label]} />
+                  <ListItemText primary={this.itemLabel(item)} />
               </ListItem>
           )}
       </List>

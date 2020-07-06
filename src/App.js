@@ -7,9 +7,9 @@ import {
   Grid,
   Paper
 } from '@material-ui/core';
-import TranscriptIcon from '@material-ui/icons/Announcement';
+import TranscriptIcon from '@material-ui/icons/CallToAction';
 import ClassBrowserIcon from '@material-ui/icons/AccountTree';
-import MethodBrowserIcon from '@material-ui/icons/Notes';
+import MethodBrowserIcon from '@material-ui/icons/Reorder';
 import WorkspaceIcon from '@material-ui/icons/Code';
 import { ThemeProvider } from '@material-ui/styles';
 import { amber } from '@material-ui/core/colors';
@@ -93,7 +93,8 @@ const styles = theme => ({
     overflow: "auto"
   },
   container: {
-    paddingTop: theme.spacing(1)
+    paddingTop: theme.spacing(0),
+    paddingLeft: theme.spacing(0)
   },
   paper: {
     padding: theme.spacing(1),
@@ -113,7 +114,7 @@ const styles = theme => ({
 const theme = createMuiTheme({
   typography: {
     fontFamily: '"Segoe UI"',
-    fontSize: 12,
+    fontSize: 14,
     button: {
       textTransform: 'none'
     }
@@ -181,7 +182,7 @@ class App extends Component {
       classes={this.props.classes}
       methods={methods}
       onError={this.reportError}/>;
-    this.addPage(title, <MethodBrowserIcon />, browser);
+    this.addPage(title + '(' + methods.length + ')', <MethodBrowserIcon />, browser);
   }
   
   expandSidebar = () => {

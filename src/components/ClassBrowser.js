@@ -238,7 +238,7 @@ class ClassBrowser extends Component {
                             <Paper className={fixedHeightPaper} variant="outlined">
                                 <ClassTree
                                     items={classTree}
-                                    label={"name"}
+                                    label="name"
                                     children={"subclasses"}
                                     onSelect={this.classSelected}/>
                             </Paper>

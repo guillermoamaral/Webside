@@ -8,7 +8,7 @@ class SelectorList extends Component {
         const selectors = this.props.selectors == null ? [] : this.props.selectors;
         return (
             <SimpleList
-                label="selector"
+                label={this.props.showClass === true ? ((s) => {return s.class + '>>#' + s.selector}) : "selector"}
                 items={selectors}
                 icons={selectors.map(s => {
                     if (s.overriding && s.overriden) {
