@@ -33,10 +33,11 @@ class Inspector extends Component {
                         .then(res => {
                             const variable = res.data;
                             variable.name = v.name; 
-                            object.variables.push(variable)})
+                            object.variables.push(variable);
+                            this.setState({objectTree: this.state.objectTree});
+                        })
                         .catch(error => {this.reportError(error)})    
                 });
-                this.setState({objectTree: this.state.objectTree})
             })
             .catch(error => {this.reportError(error); return []})
     }
