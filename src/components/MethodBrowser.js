@@ -71,6 +71,7 @@ class MethodBrowser extends Component {
                 <Grid item xs={12} md={12} lg={12}>
                     <Paper variant="outlined">
                         <CodeEditor
+                            classes={this.props.classes}
                             baseUri={this.props.baseUri}
                             class={method == null ? '' : method.class}
                             definition={method == null ? '' : method.classDefinition}

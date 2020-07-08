@@ -13,6 +13,7 @@ class Transcript extends Component {
                 <Grid item xs={12} md={12} lg={12}>
                     <Paper variant="outlined">
                         <CodeMirror
+                            classes={this.props.classes}
                             value={this.props.text}
                             options={{
                                 mode: 'smalltalk',

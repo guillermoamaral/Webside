@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import SimpleList from './SimpleList';
+import CustomList from './CustomList';
 import { ArrowUpDownBold, ArrowUpBold, ArrowDownBold } from 'mdi-material-ui';
 
 class SelectorList extends Component {
@@ -7,7 +7,7 @@ class SelectorList extends Component {
         const size = 14;
         const selectors = this.props.selectors == null ? [] : this.props.selectors;
         return (
-            <SimpleList
+            <CustomList
                 label={this.props.showClass === true ? ((s) => {return s.class + '>>#' + s.selector}) : "selector"}
                 items={selectors}
                 icons={selectors.map(s => {

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -31,21 +30,6 @@ TabPanel.propTypes = {
   visible: PropTypes.any.isRequired,
 };
 
-const styles = (theme) => ({
-  root: {
-    flexGrow: 1,
-    width: '100%',
-    backgroundColor: theme.palette.background.paper,
-  },
-  icon: {
-    //display: "flex",
-    color: "primary",
-    alignItems: "left",
-    justifyContent: "flex-end",
-    paddingTop: "8px"
-  },
-});
-
 class TabControl extends Component {
     constructor(props){
         super(props);
@@ -62,7 +46,7 @@ class TabControl extends Component {
       const page = this.props.pages[index];
       return (
         <span>
-          {React.cloneElement(page.icon, {fontSize: "small", className: this.props.classes.icon})}
+          {React.cloneElement(page.icon, {className: this.props.classes.tabIcon})}
           {page.label}
           <IconButton onClick={this.tabClosed} value={index}>
             <CloseIcon fontSize="small"/>
@@ -72,14 +56,12 @@ class TabControl extends Component {
     }
 
     tabClosed = (event) => {
-      console.log(event.target === undefined)
       if (event.target == null) { return }
       event.stopPropagation();
       if (this.props !== null) {
         const handler = this.props.onClose;
         if (handler !== undefined) {
             var index = event.target.value;
-            console.log(event)
             handler.bind(this);
             handler(this.props.pages[index]);
             if (index <= this.state.selectedIndex) {
@@ -92,7 +74,7 @@ class TabControl extends Component {
 
     render() {
         return (
-            <div className={this.props.classes.root}>
+            <div className={this.props.classes.tabControl}>
                 <Tabs
                     value={this.state.selectedIndex}
                     onChange={this.tabChanged}
@@ -128,4 +110,4 @@ class TabControl extends Component {
     };
 };
 
-export default withStyles(styles)(TabControl);
+export default TabControl;

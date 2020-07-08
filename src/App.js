@@ -4,9 +4,9 @@ import {
   Container,
   createMuiTheme,
   CssBaseline,
-  Grid,
-  Paper
+  Grid
 } from '@material-ui/core';
+
 import TranscriptIcon from '@material-ui/icons/CallToAction';
 import ClassBrowserIcon from '@material-ui/icons/AccountTree';
 import MethodBrowserIcon from '@material-ui/icons/Reorder';
@@ -21,6 +21,7 @@ import TabControl from './components/TabControl';
 import Transcript from './components/Transcript';
 import ClassBrowser from './components/ClassBrowser';
 import MethodBrowser from './components/MethodBrowser';
+import Inspector from './components/Inspector';
 
 const port = 9000 //window.location.port;
 const baseUri = `http://${window.location.hostname}:${port}/bee`;
@@ -103,18 +104,67 @@ const styles = theme => ({
     //maxHeight: 240,
     //flexDirection: "row"
   },
+  tabControl: {
+    flexGrow: 1,
+    width: '100%',
+    //backgroundColor: theme.palette.background.paper,
+  },
+  tabIcon: {
+    //display: "flex",
+    color: "primary",
+    alignItems: "left",
+    justifyContent: "flex-end",
+    paddingTop: "4px",
+    fontSize: "small", 
+  },
+  radioGroup: {
+    fontSize: 10,
+    width: 'auto',
+    height: 'auto',
+    display: 'flex',
+    //flexWrap: 'nowrap',
+    //flexDirection: 'row'
+  },
+  radioButton: {
+    fontSize: 10,
+  },
+  radioLabel: {
+    fontSize: 10
+  },
   fixedHeight: {
     height: 200
   },
   fixedHeight2: {
     height: 154
-  }
+  },
+  transcriptIcon: {
+    color: '#eebd00',
+  },
+  classBrowserIcon: {
+    color: '#f3504b',
+  },
+  methodBrowserIcon: {
+    color: '#2bb9dd',
+  },
+  workspaceIcon: {
+    color: '#f28285',
+  },
+  codeMirror: {
+    fontFamily: theme.typography.fontFamily,
+    fontSize: "20px",
+    backgroundColor: theme.palette.background.paper,
+    //height: "100%",
+    //maxHeight: 200,
+  },
+  grow: {
+    flexGrow: 1
+  },
 });
 
 const theme = createMuiTheme({
   typography: {
     fontFamily: '"Segoe UI"',
-    fontSize: 14,
+    fontSize: 11,
     button: {
       textTransform: 'none'
     }
@@ -127,16 +177,9 @@ const theme = createMuiTheme({
     secondary: {
       main: amber[900]
     },
-    classBrowser: {
-      main: '#f3504b'
+    background: {
+    //paper: 'black'
     }
-  },
-  codeMirror: {
-    fontFamily: '"Arial"',
-    fontSize: 12,
-  },
-  radioLabel: {
-    fontSize: 10
   }
 });
 
@@ -146,12 +189,14 @@ class App extends Component {
     this.state = {
       sidebarExpanded: false,
       transcriptText: 'Wellcome! \n This is the transcript..',
-      pages: []
+      pages: [],
+      inspectors: []
     }
   }
 
   componentDidMount() {
     this.openTranscript();
+    this.openInspectors();
     this.openClassBrowser('Magnitude');
     axios.get(baseUri + '/classes/Point/methods')
       .then(res => {this.openMethodBrowser('Point methods', res.data)})
@@ -166,8 +211,18 @@ class App extends Component {
   }
 
   openTranscript() {
-    const transcript = <Transcript text={this.state.transcriptText}/>;
-    this.addPage('Transcript', <TranscriptIcon />, transcript);
+    const transcript = <Transcript
+      classes={this.props.classes}
+      text={this.state.transcriptText}
+      />;
+    this.addPage('Transcript', <TranscriptIcon className={this.props.classes.transcriptIcon} />, transcript);
+  }
+
+  openInspectors() {
+    axios.get(baseUri + '/objects')
+      .then(res => {
+        res.data.forEach(o => this.openInspector(o))})
+      .catch(error => {this.reportError(error)})
   }
 
   openClassBrowser(root) {
@@ -175,8 +230,9 @@ class App extends Component {
       baseUri={baseUri}
       classes={this.props.classes}
       root={root}
-      onError={this.reportError}/>;
-    this.addPage(root, <ClassBrowserIcon style={{color: "#f3504b"}}/>, browser);
+      onError={this.reportError}
+      />;
+    this.addPage(root, <ClassBrowserIcon className={this.props.classes.classBrowserIcon} />, browser);
   }
 
   openMethodBrowser(title, methods) {
@@ -184,8 +240,22 @@ class App extends Component {
       baseUri={baseUri}
       classes={this.props.classes}
       methods={methods}
-      onError={this.reportError}/>;
-    this.addPage(title + '(' + methods.length + ')', <MethodBrowserIcon style={{color: "#2bb9dd"}}/>, browser);
+      onError={this.reportError}
+      />;
+    this.addPage(title + '(' + methods.length + ')', <MethodBrowserIcon className={this.props.classes.methodBrowserIcon} />, browser);
+  }
+
+  openInspector(object) {
+    const inspector = <Inspector
+      key={object.id}
+      baseUri={baseUri}
+      classes={this.props.classes}
+      root={object}
+      onError={this.reportError}
+      />;
+    const inspectors = this.state.inspectors;
+    inspectors.push(inspector);
+    this.setState({inspectors: inspectors})
   }
   
   expandSidebar = () => {
@@ -197,7 +267,6 @@ class App extends Component {
   };
 
   closePage = (page) => {
-    console.log(page)
     this.setState({pages: this.state.pages.filter((p) => {return p.label !== page.label})})
   }
 
@@ -229,13 +298,11 @@ class App extends Component {
             <div className={this.props.classes.appBarSpacer} />
             <Container className={this.props.classes.container}>
               <Grid container spacing={0}>
-                <Grid item xs={12} md={9} lg={9}>
-                    <TabControl pages={this.state.pages} onClose={this.closePage}/>
+                <Grid item xs={12} md={9} lg={8}>
+                    <TabControl classes={this.props.classes} pages={this.state.pages} onClose={this.closePage}/>
                 </Grid>
-                <Grid item xs={12} md={3} lg={3}>
-                  <Paper>
-                    <p>Inspection area</p>
-                  </Paper>
+                <Grid item xs={12} md={3} lg={4}>
+                  {this.state.inspectors.map((inspector) => {return inspector})}
                 </Grid>
               </Grid>
             </Container>

@@ -1,27 +1,13 @@
 import React, { Component } from 'react';
-import { Grid, Paper, AppBar, Toolbar, IconButton } from '@material-ui/core';
+import { Grid, Paper, Toolbar, IconButton } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import SaveIcon from '@material-ui/icons/Save';
-import { withStyles } from '@material-ui/core/styles';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import axios from 'axios';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
 require('codemirror/mode/smalltalk/smalltalk.js');
-
-const styles = (theme) => ({
-    root: {
-        fontFamily: '"Segoe UI"'    ,
-        fontSize: 14,
-        backgroundColor: theme.palette.background.paper,
-        //height: "100%",
-        //maxHeight: 200,
-    },
-    grow: {
-        flexGrow: 1
-    },
-  });
 
 class CodeEditor extends Component {
     constructor(props){
@@ -154,7 +140,7 @@ class CodeEditor extends Component {
                 <Grid item xs={12} md={12} lg={12}>
                     <Paper variant="outlined">
                         <CodeMirror
-                            className={this.props.classes.root}
+                            className={this.props.classes.codeEditor}
                             value={this.state.value}
                             options={{
                                 mode: 'smalltalk',
@@ -182,5 +168,5 @@ class CodeEditor extends Component {
     }
 };
 
-export default withStyles(styles)(CodeEditor);
+export default CodeEditor;
 

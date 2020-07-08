@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { List, ListItem, ListItemText, ListItemIcon } from '@material-ui/core';
 
-class SimpleList extends Component {
+class CustomList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -69,4 +69,4 @@ class SimpleList extends Component {
   };
 }
 
-export default SimpleList;
+export default CustomList;
