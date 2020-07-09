@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import IconButton from '@material-ui/core/IconButton';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
+import { Tabs, Tab, Box, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 
 function TabPanel(props) {
@@ -59,7 +56,6 @@ class TabControl extends Component {
       event.stopPropagation();
       if (event.target == null) { return }
       var index = parseInt(event.target.id);
-      console.log(event.target.id)
       if (isNaN(index)) { return }
       if (this.props !== null) {
         const handler = this.props.onClose;

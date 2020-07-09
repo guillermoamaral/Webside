@@ -43,6 +43,14 @@ class API {
         catch (error) { this.handleError('Cannot fetch class ' + classname, error) }
     }
 
+    async instanceVariablesOf(classname) {
+        try {
+            const response = await axios.get(this.baseUri + '/classes/' + classname + '/instance-variables');
+            return response.data
+        }
+        catch (error) { this.handleError('Cannot fecth instance variables of class ' + classname, error) }
+    }    
+
     async variablesOf(classname) {
         try {
             const response = await axios.get(this.baseUri + '/classes/' + classname + '/variables');
@@ -129,6 +137,23 @@ class API {
         }
         catch (error) { this.handleError('Cannot fetch objects', error)}
     }
+
+    async object(id) {
+        try {
+            const response = await axios.get(this.baseUri + '/objects/' + id)
+            return response.data
+        }
+        catch (error) { this.handleError('Cannot fetch object with id ' + id, error)}
+    }
+
+    async variableOf(id, variable) {
+        try {
+            const response = await axios.get(this.baseUri + '/objects/' + id + '/' + variable);
+            return response.data
+        }
+        catch (error) { this.handleError('Cannot fecth variable ' + variable + ' of object with id ' + id, error) }
+    }
+
 }
 
 export default API;

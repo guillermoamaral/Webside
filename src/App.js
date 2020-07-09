@@ -104,7 +104,8 @@ const styles = theme => ({
     //display: "flex",
     overflow: "auto",
     //maxHeight: 240,
-    //flexDirection: "row"
+    //flexDirection: "row."
+    //color: theme.palette.secondary.main,
   },
   tabControl: {
     flexGrow: 1,
@@ -177,10 +178,12 @@ const theme = createMuiTheme({
       main: amber[300]
     },
     secondary: {
-      main: amber[900]
+      main: amber[200]
     },
     background: {
-    //paper: 'black'
+      main: 'red',
+      paper: '#303030',
+      grid: 'red'
     }
   }
 });
@@ -199,7 +202,7 @@ class App extends Component {
 
   componentDidMount() {
     // this.openTranscript();
-    // this.openInspectors();
+    this.openInspectors();
     // this.openClassBrowser('Magnitude');
     // this.api.sendersOf('implementorsOf:')
     //   .then(methods => this.openMethodBrowser('#sendersOf:', methods));
@@ -251,20 +254,18 @@ class App extends Component {
     const workspace = <Workspace
       api={this.api}
       classes={this.props.classes}
-      //onEvaluate={this.openInspector}
+      onEvaluate={this.openInspector.bind(this)}
       />;
     this.addPage('Workspace', <WorkspaceIcon className={this.props.classes.workspaceIcon} />, workspace);
   }
 
   openInspector(object) {
-    console.log(this)
-    console.log(object)
     const inspector = <Inspector
       api={this.api}
       key={object.id}
-      baseUri={baseUri}
       classes={this.props.classes}
       root={object}
+      onClose={this.closeInspector}
       onError={this.reportError}
       />;
     const inspectors = this.state.inspectors;
@@ -272,6 +273,10 @@ class App extends Component {
     this.setState({inspectors: inspectors})
   }
   
+  closeInspector = (id) => { 
+    this.setState({inspectors: this.state.inspectors.filter((i) => {return i.props.root.id !== id})});
+  }
+
   expandSidebar = () => {
     this.setState({sidebarExpanded: true});
   };
@@ -280,12 +285,11 @@ class App extends Component {
     this.setState({sidebarExpanded: false});
   };
 
-  closePage = (page) => {
+  removePage = (page) => {
     this.setState({pages: this.state.pages.filter((p) => {return p.label !== page.label})})
   }
 
   reportError = (text) => {
-    console.log(text)
     this.setState({transcriptText: this.state.transcriptText + '\n' + text})
   }
   
@@ -304,7 +308,7 @@ class App extends Component {
             <Container className={this.props.classes.container}>
               <Grid container spacing={0}>
                 <Grid item xs={12} md={9} lg={8}>
-                    <TabControl classes={this.props.classes} pages={this.state.pages} onClose={this.closePage}/>
+                    <TabControl classes={this.props.classes} pages={this.state.pages} onClose={this.removePage}/>
                 </Grid>
                 <Grid item xs={12} md={3} lg={4}>
                   {this.state.inspectors.map((inspector) => {return inspector})}

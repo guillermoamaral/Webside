@@ -30,6 +30,9 @@ class Workspace extends Component {
                     this.setState({expression: this.state.expression + ' -> ' + object.printString})
                 }
             })
+            .catch(error => {
+                this.setState({expression: this.state.expression + ' -> ' + error})
+            })
     }
 
     render() {
