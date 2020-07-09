@@ -38,7 +38,7 @@ class TabControl extends Component {
         }
     }
 
-    tabChanged = (e, value) => {
+    tabChanged = (event, value) => {
        this.setState({selectedIndex: value});
     }
 
@@ -48,20 +48,22 @@ class TabControl extends Component {
         <span>
           {React.cloneElement(page.icon, {className: this.props.classes.tabIcon})}
           {page.label}
-          <IconButton onClick={this.tabClosed} value={index}>
-            <CloseIcon fontSize="small"/>
+          <IconButton onClick={this.tabClosed} id={index} size="small">
+            <CloseIcon fontSize="small" id={index}/>
           </IconButton>
         </span>
       )
     }
 
     tabClosed = (event) => {
-      if (event.target == null) { return }
       event.stopPropagation();
+      if (event.target == null) { return }
+      var index = parseInt(event.target.id);
+      console.log(event.target.id)
+      if (isNaN(index)) { return }
       if (this.props !== null) {
         const handler = this.props.onClose;
         if (handler !== undefined) {
-            var index = event.target.value;
             handler.bind(this);
             handler(this.props.pages[index]);
             if (index <= this.state.selectedIndex) {

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Grid, Paper } from '@material-ui/core';
-import axios from 'axios';
 import clsx from 'clsx';
 
 import SelectorList from './SelectorList';
@@ -17,42 +16,20 @@ class MethodBrowser extends Component {
 
     methodSelected = (method) => {
         this.setState({selectedMethod: method}, () => {
-            this.getSource();
             this.getClassDefinition();
-            this.getClassComment();
         });
     }
 
     getClassDefinition = () => {
         const method = this.state.selectedMethod;
         if (method.classDefinition == null) {
-            axios.get(this.props.baseUri + '/classes/' + method.class)
-                .then(res => {
-                    method.classDefinition = res.data;
+            this.props.api.definitionOf(method.class)
+                .then(definition => {
+                    method.classDefinition = definition.definitionString;
+                    method.classComment = definition.comment;
                     this.setState({selectedMethod: method})})
-                .catch(error => {this.reportError(error)})
+                .catch(error => {})
         }
-    }
-
-    getClassComment = () => {        
-        const method = this.state.selectedMethod;
-        if (method.classComment == null) {
-            axios.get(this.props.baseUri + '/classes/' + method.class + '/comment')
-                .then(res => {
-                    method.comment = res.data;
-                    this.setState({selectedMethod: method})})
-                .catch(error => {this.reportError(error)})
-        }
-    }
-
-    getSource = () => {
-        const method = this.state.selectedMethod;
-        if (method.selector == null || method.class == null) { return };
-        axios.get(this.props.baseUri + '/classes/' + method.class + '/methods/' + method.selector)
-            .then(res => {
-                method.source = res.data.source;
-                this.setState({selectedMethod: method})})
-            .catch(error => {this.reportError(error)})
     }
 
     render() {

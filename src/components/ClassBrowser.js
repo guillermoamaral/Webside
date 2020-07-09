@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Grid, Paper, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
-import axios from 'axios';
 import clsx from 'clsx';
 
 import SearchList from './SearchList';
@@ -40,12 +39,14 @@ class ClassBrowser extends Component {
         })
     }
 
-    classSelected = (species) => {
-        this.setState({selectedClass: species}, () => {
-            this.getDefinition();
-            this.getCommment();
-            this.getVariables();
-            this.getCategories()
+    classSelected = (name) => {
+        const classes = this.state.classes; 
+        if (classes[name] == null) { classes[name] = {name: name} };
+        const species = classes[name];
+        this.setState({classes: classes, selectedClass: species}, () => {
+            this.getClassDefinition(species);
+            this.getVariables(species);
+            this.getCategories(species)
         })
     }
 
@@ -54,138 +55,114 @@ class ClassBrowser extends Component {
     }
 
     categorySelected = (category) => {
-        this.setState({selectedCategory: category}, () => this.getSelectors());
+        this.setState({selectedCategory: category}, () => {
+            this.getSelectors(this.state.selectedClass, category)
+        });
     }
 
     selectorSelected = (selector) => {
-        this.setState({selectedSelector: selector.selector}, () => this.getMethod());
+        this.setState({selectedSelector: selector}, () => {
+            this.getMethod(this.state.selectedClass, selector)
+        });
     }
 
     getClassTree = () => {
-        axios.get(this.props.baseUri + '/classes?root=' + this.state.root + '&tree=true')
-            .then(res => {this.setState({classTree: res.data})})
-            .catch(error => {this.reportError(error)})
+        this.props.api.classTree(this.state.root)
+            .then(tree => {this.setState({classTree: tree})})
+            .catch(error => {})
     }
 
     getClassNames = () => {
-        axios.get(this.props.baseUri + '/classes?names=true')
-            .then(res => {this.setState({classNames: res.data})})
-            .catch(error => {this.reportError(error)})
+        this.props.api.classNames()
+            .then(names => {this.setState({classNames: names})})
+            .catch(error => {})
     }
 
-    getDefinition = () => {
-        const { classes, selectedClass } = this.state;
-        if (classes[selectedClass] == null) { classes[selectedClass] = {name: selectedClass} }
-        if (classes[selectedClass].definition == null) {
-            axios.get(this.props.baseUri + '/classes/' + selectedClass)
-                .then(res => {
-                    classes[selectedClass].definition = res.data;
+    getClassDefinition = (species) => {
+        const { classes } = this.state;
+        if (species.definitionString == null) {
+            this.props.api.definitionOf(species.name)
+                .then(definition => {
+                    species.definitionString = definition.definitionString;
+                    species.comment = definition.comment;
+                    species.superclass = definition.superclass;
                     this.setState({classes: classes})})
-                .catch(error => {this.reportError(error)})
+                .catch(error => {})
         }
     }
 
-    getCommment = () => {        
-        const { classes, selectedClass } = this.state;
-        if (classes[selectedClass] == null) { classes[selectedClass] = {name: selectedClass} }
-        if (classes[selectedClass].comment == null) {
-            axios.get(this.props.baseUri + '/classes/' + selectedClass + '/comment')
-                .then(res => {
-                    classes[selectedClass].comment = res.data;
-                    this.setState({classes: classes})})
-                .catch(error => {this.reportError(error)})
-        }
-    }
-
-    getVariables = () => {
-        const { classes, selectedClass, selectedVariable } = this.state;
-        if (classes[selectedClass] == null) { classes[selectedClass] = {name: selectedClass} }
-        if (classes[selectedClass].variables == null) {
-            axios.get(this.props.baseUri + '/classes/' + selectedClass + '/variables')
-                .then(res => {
-                    classes[selectedClass].variables = res.data;
+    getVariables = (species) => {
+        const { classes, selectedVariable } = this.state;
+        if (species.variables == null) {
+            this.props.api.variablesOf(species.name)
+                .then(variables => {
+                    species.variables = variables;
                     var selected = selectedVariable;
-                    if ((classes[selectedClass].variables.find(v => v.name === selected.nave)) === undefined) {
+                    if (selected !== null && (variables.find(v => v.name === selected.name)) === undefined) {
                         selected = null;
                     }
                     this.setState({classes: classes, selectedVariable: selected})})
-                .catch(error => {this.reportError(error)})
+                .catch(error => {})
         }
     }
 
-    getCategories = () => {
-        const { classes, selectedClass, selectedCategory } = this.state;
-        if (classes[selectedClass] == null) { classes[selectedClass] = {name: selectedClass}}
-        if (classes[selectedClass].categories == null) {
-            axios.get(this.props.baseUri + '/classes/' + selectedClass + '/categories')
-                .then(res => {
-                    classes[selectedClass].categories = res.data.sort();
+    getCategories = (species) => {
+        const { classes, selectedCategory } = this.state;
+        if (species.categories == null) {
+            this.props.api.categoriesOf(species.name)
+                .then(categories => {
+                    species.categories = categories.sort();
                     var selected = selectedCategory;
-                    if (!classes[selectedClass].categories.includes(selected)) {
+                    if (!categories.includes(selected)) {
                         selected = null;
                     }
                     this.setState({classes: classes, selectedCategory: selected})})
-                .catch(error => {this.reportError(error)})
+                .catch(error => {})
         }
     }
 
-    getSelectors = () => {
-        const { classes, selectedClass, selectedCategory } = this.state;
-        if (selectedClass !== null && selectedCategory !== null 
-            && (classes[selectedClass].selectors == null || classes[selectedClass].selectors[selectedCategory] == null)) { 
-            axios.get(this.props.baseUri + '/classes/' + selectedClass + '/selectors?category=' + selectedCategory + '&marks=true')
-                .then(res => {
-                    if (classes[selectedClass].selectors == null) {
-                        classes[selectedClass].selectors = {}
+    getSelectors = (species, category) => {
+        const { classes } = this.state;
+        if (species.selectors == null || species.selectors[category] == null) { 
+            this.props.api.selectorsOf(species.name, category)
+                .then(selectors => {
+                    if (species.selectors == null) {
+                        species.selectors = {}
                     };
-                    const sorted = res.data.sort((a, b) => { return a.selector <= b.selector? -1 : 1 });
-                    classes[selectedClass].selectors[selectedCategory] = sorted;
+                    const sorted = selectors.sort((a, b) => { return a.selector <= b.selector? -1 : 1 });
+                    species.selectors[category] = sorted;
                     this.setState({classes: classes})})
-                .catch(error => {this.reportError(error)})
+                .catch(error => {})
         }
     }
 
-    getMethod = () => {
-        const { selectedClass, selectedSelector } = this.state;
-        if (selectedClass == null || selectedSelector == null) { return };
-        axios.get(this.props.baseUri + '/classes/' + selectedClass + '/methods/' + selectedSelector)
-            .then(res => {this.setState({selectedMethod: res.data})})
-            .catch(error => {this.reportError(error)})
-    }
-
-    currentDefinition() {
-        const { classes, selectedClass } = this.state;
-        if (selectedClass == null || classes[selectedClass] == null) { return '' };
-        return classes[selectedClass].definition;
-    }
-
-    currentComment() {
-        const { classes, selectedClass } = this.state;
-        if (selectedClass == null || classes[selectedClass] == null) { return '' };
-        return classes[selectedClass].comment;
+    getMethod = (species, selector) => {
+        //Should not happen that..
+        //if (species == null || selector == null) { return };
+        this.props.api.method(species.name, selector.selector)
+            .then(method => {this.setState({selectedMethod: method})})
+            .catch(error => {})
     }
 
     currentVariables() {
-        const { classes, selectedClass } = this.state;
-        if (selectedClass == null || classes[selectedClass] == null) { return [] };
-        return classes[selectedClass].variables;
+        const { selectedClass } = this.state;
+        if (selectedClass == null || selectedClass.variables == null) { return [] };
+        return selectedClass.variables;
     }
 
     currentCategories = () => {
-        const { classes, selectedClass } = this.state;
-        if (selectedClass == null || classes[selectedClass] == null) { return [] };
-        return classes[selectedClass].categories;
+        const { selectedClass } = this.state;
+        if (selectedClass == null || selectedClass.categories == null) { return [] };
+        return selectedClass.categories;
     }
 
     currentSelectors = () => {
-        const { classes, selectedClass, selectedCategory } = this.state;
-        if (selectedClass == null || selectedCategory == null
-                || classes[selectedClass] == null
-                || classes[selectedClass].selectors == null) { return [] };
-        return classes[selectedClass].selectors[selectedCategory];
+        const { selectedClass, selectedCategory } = this.state;
+        if (selectedClass == null || selectedCategory == null || selectedClass.selectors == null) { return [] };
+        return selectedClass.selectors[selectedCategory];
     }
 
-    changeSide = (e, side) => {
+    changeSide = (event, side) => {
         if (side == null) return;
         this.setState({side: side});
         if (side === "instance") {
@@ -196,11 +173,16 @@ class ClassBrowser extends Component {
         }
     }
 
-    classDefined = (definition) => {
+    classDefined = (species) => {
         const classes = this.state.classes;
-        classes[this.state.selectedClass].definition = definition;
-        classes[this.state.selectedClass].variables = null;
-        this.setState({classes: classes}, () => {this.getVariables()})
+        classes[species.name].definitionString = species.definitionString;
+        this.setState({classes: classes}, () => {this.getVariables(classes[species.name])})
+    }
+
+    classCommented = (species) => {
+        const classes = this.state.classes;
+        classes[species.name].comment = species.comment;
+        this.setState({classes: classes})
     }
 
     methodCompiled = (method) => {
@@ -216,6 +198,7 @@ class ClassBrowser extends Component {
     render() {
         const {
             classTree,
+            classes,
             selectedClass,
             selectedVariable,
             selectedCategory,
@@ -288,12 +271,12 @@ class ClassBrowser extends Component {
                     <Paper variant="outlined" height="100%">
                         <CodeEditor
                             classes={this.props.classes}
-                            baseUri={this.props.baseUri}
-                            class={selectedClass}
-                            definition={this.currentDefinition()}
-                            comment={this.currentComment()}
+                            api={this.props.api}
+                            class={selectedClass == null ? '' : selectedClass.name}
+                            definition={selectedClass == null ? '' : selectedClass.definitionString}
+                            comment={selectedClass == null ? '' : selectedClass.comment}
                             category={selectedCategory}
-                            selector={selectedSelector}
+                            selector={selectedSelector == null ? '' : selectedSelector.selector}
                             source={selectedMethod == null ? '' : selectedMethod.source}
                             onError={this.reportError}
                             onClassDefined={this.classDefined}

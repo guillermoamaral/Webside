@@ -53,7 +53,7 @@ class CustomTree extends Component {
         return (
             <TreeView
                 defaultCollapseIcon={<ArrowDropDownIcon />}
-                //defaultExpanded={['root']}
+                defaultExpanded={['root']}
                 defaultExpandIcon={<ArrowRightIcon />}
                 onNodeSelect={this.itemSelected}
                 >

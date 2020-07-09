@@ -3,7 +3,6 @@ import { Grid, Paper, Toolbar, IconButton } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import SaveIcon from '@material-ui/icons/Save';
 import { Controlled as CodeMirror } from 'react-codemirror2';
-import axios from 'axios';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
@@ -14,12 +13,12 @@ class CodeEditor extends Component {
         super(props);
         this.reportError = props.onError.bind();
         this.state = {
-            class: '"no class"',
-            definition: '"no class definition"', 
-            comment: '"no class comment"',
-            category: null,
-            selector: null,
-            source: '"no source code"',
+            class: props.class,
+            definition: props.definition,
+            comment: props.comment,
+            category: props.category,
+            selector: props.selector,
+            source: props.source,
             mode: "source",
             dirty: false,
             value: ''
@@ -46,55 +45,53 @@ class CodeEditor extends Component {
         return null;
     }
 
-    changed = (value) => {
+    valueChanged = (value) => {
         this.setState({value: value, dirty: true})
     }
 
-    changeMode = (e, mode) => {
+    modeChanged = (event, mode) => {
         this.setState({mode: mode, value: this.state[mode]})
     }
 
-    defineClass = (definition) => {
-        axios.post(this.props.baseUri + '/classes', definition)
-            .then(res => {
-                const accepted = res.data;
-                if (this.props !== null && this.props.onClassDefined !== undefined) { 
+    defineClass = (definitionString) => {
+        this.props.api.defineClass(this.props.class, definitionString, null)
+            .then(definition => {
+                this.setState({definition: definition.definitionString});
+                if (this.props.onClassDefined !== undefined) { 
                     const handler = this.props.onClassDefined;
                     handler.bind(this);
-                    handler(accepted)
+                    handler(definition)
                 }
-                this.setState({definition: accepted})})
-            .catch(error => {this.reportError(error)})
+            })
+            .catch(error => {})
     }
     
     commentClass = (comment) => {
-        axios.post(this.props.baseUri + '/classes/' + this.props.class + '/comment', comment)
-            .then(res => {
-                const accepted = res.data;
-                this.setState({comment: accepted})
-                if (this.props !== null && this.props.onClassCommented !== undefined) { 
+        this.props.api.defineClass(this.props.class, null, comment)
+            .then(definition => {
+                this.setState({comment: definition.comment});
+                if (this.props.onClassCommented !== undefined) { 
                     const handler = this.props.onClassCommented;
                     handler.bind(this);
-                    handler(accepted)
-                }})
-            .catch(error => {this.reportError(error)})
+                    handler(definition)
+                }
+            })
+            .catch(error => {})
     }
 
     compileMethod = (source) => {
-        const method = {source: source, category: this.props.category};
-        axios.post(this.props.baseUri + '/classes/' + this.props.class + '/methods', method)
-            .then(res => {
-                const compiled = res.data;
-                this.setState({source: compiled.source, selector: compiled.selector})
-                if (this.props !== null && this.props.onMethodCompiled !== undefined) { 
+        this.api.compileMethod(this.props.class, this.props.category, source)
+            .then(method => {
+                this.setState({source: method.source, selector: method.selector})
+                if (this.props.onMethodCompiled !== undefined) { 
                     const handler = this.props.onMethodCompiled;
                     handler.bind(this);
-                    handler(compiled)
+                    handler(method)
                 }})
-            .catch(error => {this.reportError(error)})
+            .catch(error => {})
     }
     
-    saveClicked = (e) => {
+    saveClicked = (event) => {
         const { value } = this.state;
         switch (this.state.mode) { 
             case "comment":
@@ -119,7 +116,7 @@ class CodeEditor extends Component {
                             <ToggleButtonGroup
                                 value={this.state.mode}
                                 exclusive
-                                onChange={this.changeMode}>
+                                onChange={this.modeChanged}>
                                 <ToggleButton value="source" variant="outlined" size="small">
                                     Method defintion
                                 </ToggleButton>
@@ -158,8 +155,8 @@ class CodeEditor extends Component {
                                     "Alt-S": "saveClicked", 
                                     "Ctrl-S": "evaluateClicked"
                                 }}}
-                            onBeforeChange={(editor, data, value) => {this.changed(value)}}
-                            onChange={(editor, data, value) => {this.changed(value)}}
+                            onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
+                            onChange={(editor, data, value) => {this.valueChanged(value)}}
                         />
                     </Paper>
                 </Grid>

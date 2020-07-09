@@ -6,14 +6,15 @@ import {
   CssBaseline,
   Grid
 } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/styles';
+import { amber } from '@material-ui/core/colors';
+
+import API from './components/API';
 
 import TranscriptIcon from '@material-ui/icons/CallToAction';
 import ClassBrowserIcon from '@material-ui/icons/AccountTree';
 import MethodBrowserIcon from '@material-ui/icons/Reorder';
 import WorkspaceIcon from '@material-ui/icons/Code';
-import { ThemeProvider } from '@material-ui/styles';
-import { amber } from '@material-ui/core/colors';
-import axios from 'axios';
 
 import Titlebar from './components/Titlebar'
 import Sidebar from './components/Sidebar';
@@ -22,6 +23,7 @@ import Transcript from './components/Transcript';
 import ClassBrowser from './components/ClassBrowser';
 import MethodBrowser from './components/MethodBrowser';
 import Inspector from './components/Inspector';
+import Workspace from './components/Workspace';
 
 const port = 9000 //window.location.port;
 const baseUri = `http://${window.location.hostname}:${port}/bee`;
@@ -164,7 +166,7 @@ const styles = theme => ({
 const theme = createMuiTheme({
   typography: {
     fontFamily: '"Segoe UI"',
-    fontSize: 11,
+    fontSize: 13,
     button: {
       textTransform: 'none'
     }
@@ -186,6 +188,7 @@ const theme = createMuiTheme({
 class App extends Component {
   constructor(props){
     super(props);
+    this.api = new API(baseUri, this.reportError);
     this.state = {
       sidebarExpanded: false,
       transcriptText: 'Wellcome! \n This is the transcript..',
@@ -195,12 +198,12 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.openTranscript();
-    this.openInspectors();
-    this.openClassBrowser('Magnitude');
-    axios.get(baseUri + '/classes/Point/methods')
-      .then(res => {this.openMethodBrowser('Point methods', res.data)})
-      .catch(error => {this.reportError(error)});
+    // this.openTranscript();
+    // this.openInspectors();
+    // this.openClassBrowser('Magnitude');
+    // this.api.sendersOf('implementorsOf:')
+    //   .then(methods => this.openMethodBrowser('#sendersOf:', methods));
+    this.openWorkspace()
   }
 
   addPage(label, icon, component) {
@@ -219,15 +222,14 @@ class App extends Component {
   }
 
   openInspectors() {
-    axios.get(baseUri + '/objects')
-      .then(res => {
-        res.data.forEach(o => this.openInspector(o))})
-      .catch(error => {this.reportError(error)})
+    this.api.objects()
+      .then(objects => {objects.forEach(o => this.openInspector(o))})
+      .catch(error => {})
   }
 
   openClassBrowser(root) {
     const browser = <ClassBrowser
-      baseUri={baseUri}
+      api={this.api}
       classes={this.props.classes}
       root={root}
       onError={this.reportError}
@@ -237,7 +239,7 @@ class App extends Component {
 
   openMethodBrowser(title, methods) {
     const browser = <MethodBrowser
-      baseUri={baseUri}
+      api={this.api}
       classes={this.props.classes}
       methods={methods}
       onError={this.reportError}
@@ -245,8 +247,20 @@ class App extends Component {
     this.addPage(title + '(' + methods.length + ')', <MethodBrowserIcon className={this.props.classes.methodBrowserIcon} />, browser);
   }
 
+  openWorkspace() {
+    const workspace = <Workspace
+      api={this.api}
+      classes={this.props.classes}
+      //onEvaluate={this.openInspector}
+      />;
+    this.addPage('Workspace', <WorkspaceIcon className={this.props.classes.workspaceIcon} />, workspace);
+  }
+
   openInspector(object) {
+    console.log(this)
+    console.log(object)
     const inspector = <Inspector
+      api={this.api}
       key={object.id}
       baseUri={baseUri}
       classes={this.props.classes}
@@ -270,17 +284,8 @@ class App extends Component {
     this.setState({pages: this.state.pages.filter((p) => {return p.label !== page.label})})
   }
 
-  reportError = (error) => {
-    var text;
-    if (error.response) {
-      text = 'Response error: ' + error.response.status + ': ' + error.response.statusText;
-      //console.log(error.response.data);
-    } else if (error.request) {
-      text = 'Request error: ' + error.request;
-    } else {
-      text = 'Could not send request: ' + error.message;
-    }
-    console.log(text);
+  reportError = (text) => {
+    console.log(text)
     this.setState({transcriptText: this.state.transcriptText + '\n' + text})
   }
   
