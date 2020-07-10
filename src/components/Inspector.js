@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Typography, Paper, IconButton } from '@material-ui/core';
+import { Box, Grid, Typography, Paper, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import clsx from 'clsx';
 
@@ -9,6 +9,7 @@ class Inspector extends Component {
     constructor(props) {
         super(props);
         this.reportError = props.onError.bind();
+        if (this.props.onClose !== undefined) { this.props.onClose.bind() };
         const root = this.props.root;
         root.name = 'self';
         this.state = {
@@ -23,7 +24,6 @@ class Inspector extends Component {
     }
 
     close = () => {
-        this.props.onClose.bind();
         this.props.onClose(this.props.root.id);
     }
 
@@ -52,41 +52,44 @@ class Inspector extends Component {
         const { objectTree, selectedObject } = this.state;
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         return (
-            <Grid container spacing={1}>
-                <Grid item xs={12} md={12} lg={12}>
-                    <Typography
-                        component="h6"
-                        variant="h6"
-                        color="inherit"
-                        noWrap
-                        className={this.props.classes.grow}
-                    >
-                        {this.props.root.class + ': ' + this.props.root.id}
-                        <IconButton onClick={this.close} size="small" >
-                            <CloseIcon fontSize="small"/>
-                        </IconButton>
-                    </Typography>
-                </Grid>
-                <Grid item xs={12} md={12} lg={12}>
-                    <Grid container spacing={1}>
-                        <Grid item xs={6} md={6} lg={6}>
-                            <Paper className={fixedHeightPaper} variant="outlined">
-                                <CustomTree
-                                    items={objectTree}
-                                    label="name"
-                                    children={"variables"}
-                                    onSelect={this.variableSelected}
-                                />
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={6} md={6} lg={6}>
-                            <Paper className={fixedHeightPaper} variant="outlined">
-                                {this.state.selectedObject.printString}
-                            </Paper>
+            <Box className={this.props.classes.box}>
+                <Grid container spacing={1} justify="center">
+                    <Grid item xs={12} md={12} lg={12}>
+                        <Typography
+                            component="h6"
+                            variant="h6"
+                            color="inherit"
+                            noWrap
+                            className={this.props.classes.title}
+                        >
+                            {root.class + ': ' + root.id}
+                            {this.props.onClose &&
+                                <IconButton onClick={this.close} size="small" >
+                                    <CloseIcon fontSize="small"/>
+                                </IconButton>}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} md={12} lg={12}>
+                        <Grid container spacing={1}>
+                            <Grid item xs={12} md={6} lg={6}>
+                                <Paper className={fixedHeightPaper} variant="outlined">
+                                    <CustomTree
+                                        items={objectTree}
+                                        label="name"
+                                        children={"variables"}
+                                        onSelect={this.variableSelected}
+                                    />
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} md={6} lg={6}>
+                                <Paper className={fixedHeightPaper} variant="outlined">
+                                    {this.state.selectedObject.printString}
+                                </Paper>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
+            </Box>
         )
     };
 }

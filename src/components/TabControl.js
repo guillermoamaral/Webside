@@ -13,7 +13,7 @@ function TabPanel(props) {
       {...other}
     >
       {visible && (
-        <Box p={3}>
+        <Box className={props.classes.box} p={3}>
           {children}
         </Box>
       )}
@@ -97,6 +97,7 @@ class TabControl extends Component {
                             id={`tabpanel-${i}`}
                             key={i.toString()}
                             index={i}
+                            classes={this.props.classes}
                             visible={i === this.state.selectedIndex}
                           >
                             {p.component}

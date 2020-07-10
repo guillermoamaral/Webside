@@ -15,6 +15,7 @@ import TranscriptIcon from '@material-ui/icons/CallToAction';
 import ClassBrowserIcon from '@material-ui/icons/AccountTree';
 import MethodBrowserIcon from '@material-ui/icons/Reorder';
 import WorkspaceIcon from '@material-ui/icons/Code';
+import InspectorIcon from '@material-ui/icons/Visibility';
 
 import Titlebar from './components/Titlebar'
 import Sidebar from './components/Sidebar';
@@ -107,6 +108,9 @@ const styles = theme => ({
     //flexDirection: "row."
     //color: theme.palette.secondary.main,
   },
+  box: {
+    //backgroundColor: theme.palette.primary.main,
+  },
   tabControl: {
     flexGrow: 1,
     width: '100%',
@@ -175,7 +179,8 @@ const theme = createMuiTheme({
   palette: {
     type: "dark",
     primary: {
-      main: amber[300]
+      main: amber[300],
+      background: 'black'
     },
     secondary: {
       main: amber[200]
@@ -195,17 +200,15 @@ class App extends Component {
     this.state = {
       sidebarExpanded: false,
       transcriptText: 'Wellcome! \n This is the transcript..',
-      pages: [],
-      inspectors: []
+      pages: []
     }
   }
 
   componentDidMount() {
-    // this.openTranscript();
+    this.openTranscript();
     this.openInspectors();
-    // this.openClassBrowser('Magnitude');
-    // this.api.sendersOf('implementorsOf:')
-    //   .then(methods => this.openMethodBrowser('#sendersOf:', methods));
+    this.openClassBrowser('Magnitude');
+    this.api.sendersOf('implementorsOf:').then(methods => this.openMethodBrowser('#sendersOf:', methods));
     this.openWorkspace()
   }
 
@@ -231,6 +234,7 @@ class App extends Component {
   }
 
   openClassBrowser(root) {
+    console.log(root);
     const browser = <ClassBrowser
       api={this.api}
       classes={this.props.classes}
@@ -254,7 +258,7 @@ class App extends Component {
     const workspace = <Workspace
       api={this.api}
       classes={this.props.classes}
-      onEvaluate={this.openInspector.bind(this)}
+      onError={this.reportError}
       />;
     this.addPage('Workspace', <WorkspaceIcon className={this.props.classes.workspaceIcon} />, workspace);
   }
@@ -265,18 +269,11 @@ class App extends Component {
       key={object.id}
       classes={this.props.classes}
       root={object}
-      onClose={this.closeInspector}
       onError={this.reportError}
       />;
-    const inspectors = this.state.inspectors;
-    inspectors.push(inspector);
-    this.setState({inspectors: inspectors})
+    this.addPage(object.class + ': ' + object.id, <InspectorIcon className={this.props.classes.workspaceIcon} />, inspector);
   }
   
-  closeInspector = (id) => { 
-    this.setState({inspectors: this.state.inspectors.filter((i) => {return i.props.root.id !== id})});
-  }
-
   expandSidebar = () => {
     this.setState({sidebarExpanded: true});
   };
@@ -306,12 +303,9 @@ class App extends Component {
           <main className={this.props.classes.content}>
             <div className={this.props.classes.appBarSpacer} />
             <Container className={this.props.classes.container}>
-              <Grid container spacing={0}>
-                <Grid item xs={12} md={9} lg={8}>
+              <Grid container spacing={1}>
+                <Grid item xs={12} md={9} lg={9}>
                     <TabControl classes={this.props.classes} pages={this.state.pages} onClose={this.removePage}/>
-                </Grid>
-                <Grid item xs={12} md={3} lg={4}>
-                  {this.state.inspectors.map((inspector) => {return inspector})}
                 </Grid>
               </Grid>
             </Container>
