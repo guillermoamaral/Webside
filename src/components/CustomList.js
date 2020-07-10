@@ -22,27 +22,29 @@ class CustomList extends Component {
 
   itemSelected = (e, index, item) => {
     this.setState({selectedItem: item, selectedIndex: index});
-    if (this.props !== null) { 
-      const handler = this.props.onSelect;
-      if (handler !== null) {
-          handler.bind(this);
-          handler(item);
-      }
+    //this cannot happend... check
+    //if (this.props !== null) { 
+    const handler = this.props.onSelect;
+    if (handler !== undefined) {
+        handler.bind(this);
+        handler(item);
     }
   };
 
-  itemLabel = (item) => {
-    if (this.props.label == null) { return item }    
-    if (typeof this.props.label == "string")  { return item[this.props.label] }
-    this.props.label.bind(this);
-    return this.props.label(item)
+  getItemLabel = (item) => {
+    const getter = this.props.label;
+    if (getter == undefined) { return item }    
+    if (typeof getter == "string")  { return item[getter] }
+    getter.bind(this);
+    return getter(item)
   }
 
-  itemIcon = (index) => {
-    if (this.props.icons !== undefined && index < this.props.icons.length) {
+  getItemIcon = (index) => {
+    const icons = this.props.icons;
+    if (icons !== undefined && index < icons.length) {
       return (
         <ListItemIcon style={{minWidth: 0}}>
-          {this.props.icons[index]}
+          {icons[index]}
         </ListItemIcon>
       )
     }
@@ -60,8 +62,8 @@ class CustomList extends Component {
                 selected={this.state.selectedIndex === index}
                 onClick={(e) => this.itemSelected(e, index, item)}
                 >
-                  {this.itemIcon(index)}
-                  <ListItemText primary={this.itemLabel(item)} />
+                  {this.getItemIcon(index)}
+                  <ListItemText primary={this.getItemLabel(item)} />
               </ListItem>
           )}
       </List>

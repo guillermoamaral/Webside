@@ -12,6 +12,7 @@ class Inspector extends Component {
         if (this.props.onClose !== undefined) { this.props.onClose.bind() };
         const root = this.props.root;
         root.name = 'self';
+        root.path = '';
         this.state = {
             root: root,
             objectTree: [root],
@@ -35,7 +36,8 @@ class Inspector extends Component {
                 variables.forEach(v => {
                     this.props.api.variableOf(object.id, v.name)
                         .then(variable => {
-                            variable.name = v.name; 
+                            variable.name = v.name;
+                            variable.path = object.path + '/' + v.name;
                             object.variables.push(variable);
                             this.setState({objectTree: this.state.objectTree});
                         })
@@ -45,7 +47,13 @@ class Inspector extends Component {
             .catch(error => { return [] })
     }
 
-    variableSelected = (variable) => {}
+    variableSelected = (id) => {
+        console.log("selected " + id)
+    }
+
+    variableExpanded = (id) => {
+        console.log("expanded " + id)
+    }
 
     render() {
         const root = this.props.root;
@@ -76,14 +84,16 @@ class Inspector extends Component {
                                     <CustomTree
                                         items={objectTree}
                                         label="name"
+                                        id="id"
                                         children={"variables"}
+                                        onExpand={this.variableExpanded}
                                         onSelect={this.variableSelected}
                                     />
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} md={6} lg={6}>
                                 <Paper className={fixedHeightPaper} variant="outlined">
-                                    {this.state.selectedObject.printString}
+                                    {selectedObject.printString}
                                 </Paper>
                             </Grid>
                         </Grid>

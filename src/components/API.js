@@ -93,6 +93,14 @@ class API {
        catch (error) { this.handleError('Cannot fetch senders of ' + selector, error) }
     }
 
+    async referencesOf(classname) {
+        try {
+           const response = await axios.get(this.baseUri + '/methods?referencing=' + classname);
+           return response.data;
+       }
+       catch (error) { this.handleError('Cannot fetch references to ' + classname, error) }
+    }
+
     async implementorsOf(selector) {
          try {
             const response = await axios.get(this.baseUri + '/methods?selector=' + selector);
@@ -122,9 +130,10 @@ class API {
         catch (error) { this.handleError('Cannot compile ' + source + ' in ' + classname, error)}
     }
 
-    async evaluate(expression) {
+    async evaluate(expression, pins) {
         try {
-            const response = await axios.post(this.baseUri + '/objects', expression);
+            const value = pins === undefined ? false : pins;
+            const response = await axios.post(this.baseUri + '/objects?pins=' + value, expression);
             return response.data;
         }
         catch (error) { this.handleError('Cannot evaluate ' + expression, error) }
@@ -146,12 +155,20 @@ class API {
         catch (error) { this.handleError('Cannot fetch object with id ' + id, error)}
     }
 
-    async variableOf(id, variable) {
+    async deleteObject(id) {
         try {
-            const response = await axios.get(this.baseUri + '/objects/' + id + '/' + variable);
+            const response = await axios.delete(this.baseUri + '/objects/' + id)
             return response.data
         }
-        catch (error) { this.handleError('Cannot fecth variable ' + variable + ' of object with id ' + id, error) }
+        catch (error) { this.handleError('Cannot fetch object with id ' + id, error)}
+    }
+
+    async variableOf(id, path) {
+        try {
+            const response = await axios.get(this.baseUri + '/objects/' + id + '/' + path);
+            return response.data
+        }
+        catch (error) { this.handleError('Cannot fecth variable ' + path + ' of object with id ' + id, error) }
     }
 
 }

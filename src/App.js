@@ -117,12 +117,12 @@ const styles = theme => ({
     //backgroundColor: theme.palette.background.paper,
   },
   tabIcon: {
-    //display: "flex",
+    display: "flex",
     color: "secondary",
     alignItems: "left",
     justifyContent: "flex-end",
     paddingTop: "8px",
-    //fontSize: "small", 
+    fontSize: "small", 
   },
   radioGroup: {
     fontSize: 10,
@@ -197,11 +197,12 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.openTranscript();
-    this.openInspectors();
-    this.openClassBrowser('Magnitude');
-    this.api.sendersOf('implementorsOf:').then(methods => this.openMethodBrowser('#sendersOf:', methods));
+    // this.openTranscript();
+    // this.openInspectors();
+    // this.api.referencesOf('JsonObject').then(methods => this.openMethodBrowser('JsonObject references', methods));
+    // this.api.sendersOf('implementorsOf:').then(methods => this.openMethodBrowser('Senders of #implementorsOf:', methods));
     this.openWorkspace()
+    this.openClassBrowser('Magnitude');
   }
 
   addPage(label, icon, component) {
@@ -209,6 +210,11 @@ class App extends Component {
     const pages = this.state.pages;
     pages.push(page);
     this.setState({pages: pages})
+  }
+
+  removePage = (page) => {
+    //console.log(page.component.type === Inspector)
+    this.setState({pages: this.state.pages.filter((p) => {return p.label !== page.label})})
   }
 
   openTranscript() {
@@ -226,7 +232,6 @@ class App extends Component {
   }
 
   openClassBrowser(root) {
-    console.log(root);
     const browser = <ClassBrowser
       api={this.api}
       classes={this.props.classes}
@@ -274,10 +279,6 @@ class App extends Component {
     this.setState({sidebarExpanded: false});
   };
 
-  removePage = (page) => {
-    this.setState({pages: this.state.pages.filter((p) => {return p.label !== page.label})})
-  }
-
   reportError = (text) => {
     this.setState({transcriptText: this.state.transcriptText + '\n' + text})
   }
@@ -296,7 +297,7 @@ class App extends Component {
             <div className={this.props.classes.appBarSpacer} />
             <Container className={this.props.classes.container}>
               <Grid container spacing={1}>
-                <Grid item xs={12} md={9} lg={9}>
+                <Grid item xs={12} md={12} lg={12}>
                     <TabControl classes={this.props.classes} pages={this.state.pages} onClose={this.removePage}/>
                 </Grid>
               </Grid>

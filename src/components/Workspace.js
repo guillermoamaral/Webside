@@ -14,7 +14,7 @@ class Workspace extends Component {
         super(props);
         this.reportError=props.onError.bind();
         this.state = {
-            expression: '',
+            expression: '1 @ 2 extent: 10',
             opensInspector: true,
             inspectors: [],
         };
@@ -43,7 +43,7 @@ class Workspace extends Component {
     }
 
     evaluateClicked = () => {
-        this.props.api.evaluate(this.state.expression)
+        this.props.api.evaluate(this.state.expression, true)
             .then(object => {
                 if (this.state.opensInspector) {
                     this.openInspector(object)

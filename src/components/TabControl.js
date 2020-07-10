@@ -45,18 +45,23 @@ class TabControl extends Component {
         <span>
           {React.cloneElement(page.icon, {className: this.props.classes.tabIcon})}
           {page.label}
-          <IconButton onClick={this.tabClosed} id={index} size="small">
-            <CloseIcon fontSize="small" id={index}/>
+          <IconButton onClick={this.tabClosed} id={index} value={index} size="small">
+            <CloseIcon fontSize="small" id={index} value={index}/>
           </IconButton>
         </span>
       )
     }
 
     tabClosed = (event) => {
-      event.stopPropagation();
       if (event.target == null) { return }
       var index = parseInt(event.target.id);
-      if (isNaN(index)) { return }
+      if (isNaN(index)) { 
+        index = parseInt(event.target.id);
+       }
+      if (isNaN(index)) { 
+        console.log(event.target)
+        return }
+      event.stopPropagation();
       if (this.props !== null) {
         const handler = this.props.onClose;
         if (handler !== undefined) {

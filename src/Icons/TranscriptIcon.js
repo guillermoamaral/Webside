@@ -3,6 +3,6 @@ import CallToAction from '@material-ui/icons/CallToAction';
 
 export default function TranscriptIcon() {
     return (
-        <CallToAction style={{color: '#eebd00'}} />
+        <CallToAction fontSize="small" style={{color: '#eebd00'}} />
     )
 }
