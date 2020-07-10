@@ -94,7 +94,7 @@ class Workspace extends Component {
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={4} lg={4}>
-                    {this.state.inspectors.map((inspector) => {return inspector})}
+                    {this.state.inspectors.map(inspector => {return inspector})}
                 </Grid>
             </Grid>
         )

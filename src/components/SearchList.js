@@ -94,7 +94,7 @@ class SearchList extends Component {
                 ListboxComponent={ListboxComponent}
                 renderGroup={(params) => [
                     <ListSubheader key={params.key} component="div">
-                    {params.group}
+                      {params.group}
                     </ListSubheader>,
                     params.children,
                 ]}

@@ -9,7 +9,7 @@ import {
   } from '@material-ui/core';
 import clsx from 'clsx';  
 import MenuIcon from '@material-ui/icons/Menu';
-import { ReactComponent as Logo } from "../public/logo.svg";
+import { ReactComponent as Logo } from "../resources/logo.svg";
 
 class Titlebar extends Component {
     render() {
@@ -30,6 +30,7 @@ class Titlebar extends Component {
               >
                 <MenuIcon />
               </IconButton>
+              <SvgIcon><Logo style={{width: 24, height: 24}}/></SvgIcon>
               <Typography
                 component="h1"
                 variant="h6"
@@ -37,7 +38,6 @@ class Titlebar extends Component {
                 noWrap
                 className={this.props.classes.title}
               >
-                <SvgIcon><Logo /></SvgIcon>
                 Bee Smalltalk (Powered by Online Smalltalk IDE v1.0.0) 
               </Typography>
               <Avatar

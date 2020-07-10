@@ -17,6 +17,7 @@ class API {
             reason = 'Could not send request: ' + error.message;
         }
         this.reportError(prefix +  '\n' + reason);
+        throw( error );
     }
 
     async classTree(root) {
@@ -24,7 +25,7 @@ class API {
             const response = await axios.get(this.baseUri + '/classes?root=' + root + '&tree=true');
             return response.data; 
         }
-        catch (error) { this.handleError('Cannot fetch class tree from ' + root, error)}
+        catch (error) { this.handleError('Cannot fetch class tree from ' + root, error) }
     }
 
     async classNames() {
@@ -32,7 +33,7 @@ class API {
             const response = await axios.get(this.baseUri + '/classes?names=true')
             return response.data; 
         }
-        catch (error) { this.handleError('Cannot fetch class names', error)}
+        catch (error) { this.handleError('Cannot fetch class names', error) }
     }
 
     async definitionOf(classname) {
@@ -165,7 +166,7 @@ class API {
 
     async variableOf(id, path) {
         try {
-            const response = await axios.get(this.baseUri + '/objects/' + id + '/' + path);
+            const response = await axios.get(this.baseUri + '/objects/' + id + path);
             return response.data
         }
         catch (error) { this.handleError('Cannot fecth variable ' + path + ' of object with id ' + id, error) }

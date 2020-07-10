@@ -20,7 +20,8 @@ class SelectorList extends Component {
                     if (s.overriden) {
                         return <ArrowDownBold style={{fontSize: size}} />    
                     }
-                    return null})}
+                    return null
+                })}
                 onSelect={this.props.onSelect}/>
         )
     }

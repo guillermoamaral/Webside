@@ -93,7 +93,8 @@ class TabControl extends Component {
                                 key={i.toString()}
                                 label={this.tabLabel(i)}
                                 id= {`tab-${i}`}
-                              />);
+                              />
+                            );
                         })}
                 </Tabs>
                   {this.props.pages.map((p, i) => {
@@ -106,7 +107,8 @@ class TabControl extends Component {
                             visible={i === this.state.selectedIndex}
                           >
                             {p.component}
-                        </TabPanel>);
+                        </TabPanel>
+                    );
                 })}
 
             </div>

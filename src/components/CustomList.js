@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { List, ListItem, ListItemText, ListItemIcon } from '@material-ui/core';
+import { List, ListItem, ListItemText, ListItemIcon, Menu, MenuItem } from '@material-ui/core';
 
 class CustomList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedItem: props.selectedItem,
-      selectedIndex: props.selectedItem == null ? null : props.indexOf(props.selectedItem)}
+      selectedIndex: props.selectedItem == null ? null : props.indexOf(props.selectedItem),
+      menuX: null,
+      menuY: null}
   }
 
   /*
@@ -18,7 +20,45 @@ class CustomList extends Component {
          }
     };
     return null;
- }*/
+  }*/
+
+  createItems = () => {
+    if (this.props.items == undefined) { return [] };
+    return (
+      this.props.items.map((item, index) => {
+        return (
+          <ListItem
+            style={{paddingTop: 0, paddingBottom: 0}}
+            button
+            key={"item" + index}
+            selected={this.state.selectedIndex === index}
+            onClick={(e) => this.itemSelected(e, index, item)}
+            onContextMenu={this.openMenu}
+            >
+              {this.getItemIcon(index)}
+              <ListItemText primary={this.getItemLabel(item)} />
+          </ListItem>
+        )
+      })
+    )
+  }
+
+  createMenuItems = () => {
+    if (this.props.menuOptions === undefined) { return [] };
+    return (
+      this.props.menuOptions.map(option => {
+        return (
+          <MenuItem
+            onClick={this.menuOptionClicked}
+            style={{paddingTop: 0, paddingBottom: 0}}
+          >
+            {option.label}
+          </MenuItem>
+        )
+      })
+    )
+  }
+
 
   itemSelected = (e, index, item) => {
     this.setState({selectedItem: item, selectedIndex: index});
@@ -50,23 +90,45 @@ class CustomList extends Component {
     }
   }
 
+  openMenu = (event) => {
+    if (this.props.menuOptions === undefined) { return }
+    event.preventDefault();
+    this.setState({
+      menuX: event.clientX - 2,
+      menuY: event.clientY - 4});
+  };
+
+  optionClicked = (event) => {
+    console.log(event.target);
+    this.closeMenu(event)
+  }
+
+  closeMenu = (event) => {
+    this.setState({
+      menuX: null,
+      menuY: null});
+  }
+
   render () {
     return (
-      <List style={{paddingTop: 0, paddingBottom: 0}}>
-          {
-            (this.props.items == null ? [] : this.props.items).map((item, index) =>
-              <ListItem
-                style={{paddingTop: 0, paddingBottom: 0}}
-                button
-                key={"item" + index}
-                selected={this.state.selectedIndex === index}
-                onClick={(e) => this.itemSelected(e, index, item)}
-                >
-                  {this.getItemIcon(index)}
-                  <ListItemText primary={this.getItemLabel(item)} />
-              </ListItem>
-          )}
-      </List>
+      <div>
+        <List style={{paddingTop: 0, paddingBottom: 0}}>
+          {this.createItems()}
+        </List>
+        <Menu
+            keepMounted
+            open={this.state.menuX !== null}
+            onClose={this.closeMenu}
+            anchorReference="anchorPosition"
+            anchorPosition={
+              this.state.menuY !== null && this.state.menuX !== null
+                ? { top: this.state.menuY, left: this.state.menuX }
+                : undefined
+            }
+          >
+            {this.createMenuItems()}
+          </Menu>
+      </div>
     )
   };
 }

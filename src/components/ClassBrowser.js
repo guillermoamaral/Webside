@@ -68,7 +68,8 @@ class ClassBrowser extends Component {
 
     getClassTree = () => {
         this.props.api.classTree(this.state.root)
-            .then(tree => {this.setState({classTree: tree})})
+            .then(tree => {
+                this.setState({classTree: tree})})
             .catch(error => {})
     }
 
@@ -87,7 +88,7 @@ class ClassBrowser extends Component {
                     species.comment = definition.comment;
                     species.superclass = definition.superclass;
                     this.setState({classes: classes})})
-                .catch(error => {})
+                .catch(error => {console.log('good fart')})
         }
     }
 
@@ -229,6 +230,7 @@ class ClassBrowser extends Component {
                                 <CustomList
                                     items={this.currentVariables()}
                                     label="name"
+                                    selectedItem={selectedVariable}
                                     onSelect={this.variableSelected}/>
                             </Paper>
                         </Grid>

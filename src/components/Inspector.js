@@ -16,6 +16,7 @@ class Inspector extends Component {
         this.state = {
             root: root,
             objectTree: [root],
+            variables: {},
             selectedObject: root,
         }
     }
@@ -34,11 +35,13 @@ class Inspector extends Component {
             .then(variables => {
                 object.variables = [];
                 variables.forEach(v => {
-                    this.props.api.variableOf(object.id, v.name)
+                    const path = object.path + '/' + v.name;
+                    this.props.api.variableOf(this.props.root.id, path)
                         .then(variable => {
                             variable.name = v.name;
-                            variable.path = object.path + '/' + v.name;
+                            variable.path = path;
                             object.variables.push(variable);
+                            this.state.variables[variable.id] = variable;
                             this.setState({objectTree: this.state.objectTree});
                         })
                         .catch(error => {})    
@@ -48,11 +51,14 @@ class Inspector extends Component {
     }
 
     variableSelected = (id) => {
-        console.log("selected " + id)
+        const variable = this.state.variables[id];
+        if (variable !== undefined) {
+            this.getVariables(variable);
+            this.setState({selectedObject: variable})
+        }
     }
 
     variableExpanded = (id) => {
-        console.log("expanded " + id)
     }
 
     render() {

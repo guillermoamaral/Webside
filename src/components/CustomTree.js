@@ -25,7 +25,7 @@ class CustomTree extends Component {
 
     getItemId = (item) => {
         const getter = this.props.id;
-        if (getter == undefined) { return this.getItemLabel(item) }    
+        if (getter === undefined) { return this.getItemLabel(item) }    
         if (typeof getter == "string")  { return item[getter].toString() }
         getter.bind(this);
         return getter(item)
@@ -33,7 +33,7 @@ class CustomTree extends Component {
 
     getItemLabel = (item) => {
         const getter = this.props.label;
-        if (getter == undefined) { return item }    
+        if (getter === undefined) { return item }    
         if (typeof getter == "string")  { return item[getter] }
         getter.bind(this);
         return getter(item)
@@ -41,7 +41,7 @@ class CustomTree extends Component {
 
     getItemChildren = (item) => {
         const getter = this.props.children;
-        if (getter == undefined) { return null }    
+        if (getter === undefined) { return null }    
         if (typeof getter == "string")  { return item[getter] }
         getter.bind(this);
         return getter(item)
@@ -56,7 +56,7 @@ class CustomTree extends Component {
     };
 
     itemToggled = (event, id) => {
-        const handler = this.props.onExpanded;
+        const handler = this.props.onExpand;
         if (handler !== undefined) {
             handler.bind(this);
             handler(id);
