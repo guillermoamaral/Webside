@@ -18,7 +18,8 @@ class CustomTree extends Component {
                         label={label}
                         >
                             {Array.isArray(children) ? this.createItems(children) : null}
-                    </TreeItem>)
+                    </TreeItem>
+                )
             })
         )
     }
