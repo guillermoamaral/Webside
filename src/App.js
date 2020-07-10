@@ -201,8 +201,8 @@ class App extends Component {
     // this.openInspectors();
     // this.api.referencesOf('JsonObject').then(methods => this.openMethodBrowser('JsonObject references', methods));
     // this.api.sendersOf('implementorsOf:').then(methods => this.openMethodBrowser('Senders of #implementorsOf:', methods));
-    this.openWorkspace()
-    this.openClassBrowser('Magnitude');
+    // this.openWorkspace()
+    this.openClassBrowser('Point');
   }
 
   addPage(label, icon, component) {

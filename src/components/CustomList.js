@@ -49,6 +49,7 @@ class CustomList extends Component {
       this.props.menuOptions.map(option => {
         return (
           <MenuItem
+            key={option.label}
             onClick={this.menuOptionClicked}
             style={{paddingTop: 0, paddingBottom: 0}}
           >
@@ -58,7 +59,6 @@ class CustomList extends Component {
       })
     )
   }
-
 
   itemSelected = (e, index, item) => {
     this.setState({selectedItem: item, selectedIndex: index});

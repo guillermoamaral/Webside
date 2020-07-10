@@ -22,6 +22,7 @@ class SelectorList extends Component {
                     }
                     return null
                 })}
+                menuOptions={[{label: 'Rename'}, {label: 'Delete'}, {label: 'Senders'}, {label: 'Implementors'}]}
                 onSelect={this.props.onSelect}/>
         )
     }
