@@ -11,11 +11,11 @@ import { amber } from '@material-ui/core/colors';
 
 import API from './components/API';
 
-import TranscriptIcon from '@material-ui/icons/CallToAction';
-import ClassBrowserIcon from '@material-ui/icons/AccountTree';
-import MethodBrowserIcon from '@material-ui/icons/Reorder';
-import WorkspaceIcon from '@material-ui/icons/Code';
-import InspectorIcon from '@material-ui/icons/Visibility';
+import TranscriptIcon from './Icons/TranscriptIcon';
+import ClassBrowserIcon from './Icons/ClassBrowserIcon';
+import MethodBrowserIcon from './Icons/MethodBrowserIcon';
+import WorkspaceIcon from './Icons/WorkspaceIcon';
+import InspectorIcon from './Icons/InspectorIcon';
 
 import Titlebar from './components/Titlebar'
 import Sidebar from './components/Sidebar';
@@ -118,11 +118,11 @@ const styles = theme => ({
   },
   tabIcon: {
     //display: "flex",
-    color: "primary",
+    color: "secondary",
     alignItems: "left",
     justifyContent: "flex-end",
-    paddingTop: "4px",
-    fontSize: "small", 
+    paddingTop: "8px",
+    //fontSize: "small", 
   },
   radioGroup: {
     fontSize: 10,
@@ -143,18 +143,6 @@ const styles = theme => ({
   },
   fixedHeight2: {
     height: 154
-  },
-  transcriptIcon: {
-    color: '#eebd00',
-  },
-  classBrowserIcon: {
-    color: '#f3504b',
-  },
-  methodBrowserIcon: {
-    color: '#2bb9dd',
-  },
-  workspaceIcon: {
-    color: '#f28285',
   },
   codeMirror: {
     fontFamily: theme.typography.fontFamily,
@@ -184,6 +172,10 @@ const theme = createMuiTheme({
     },
     secondary: {
       main: amber[200]
+    },
+    text: {
+      primary: "#aaaaaa",
+      secondary: "#00000"
     },
     background: {
       main: 'red',
@@ -224,7 +216,7 @@ class App extends Component {
       classes={this.props.classes}
       text={this.state.transcriptText}
       />;
-    this.addPage('Transcript', <TranscriptIcon className={this.props.classes.transcriptIcon} />, transcript);
+    this.addPage('Transcript', <TranscriptIcon />, transcript);
   }
 
   openInspectors() {

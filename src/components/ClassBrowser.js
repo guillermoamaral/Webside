@@ -162,7 +162,7 @@ class ClassBrowser extends Component {
         return selectedClass.selectors[selectedCategory];
     }
 
-    changeSide = (event, side) => {
+    sideChanged = (event, side) => {
         if (side == null) return;
         this.setState({side: side});
         if (side === "instance") {
@@ -238,7 +238,7 @@ class ClassBrowser extends Component {
                                     <RadioGroup
                                         name="side"
                                         value={this.state.side}
-                                        onChange={this.changeSide}
+                                        onChange={this.sideChanged}
                                         defaultValue="instance"
                                         className={this.props.classes.radioGroup}
                                         size="small"

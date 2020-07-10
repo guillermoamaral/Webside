@@ -10,10 +10,11 @@ import {
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import AddIcon from '@material-ui/icons/Add';
-import TranscriptIcon from '@material-ui/icons/CallToAction';
-import ClassBrowserIcon from '@material-ui/icons/AccountTree';
-import MethodBrowserIcon from '@material-ui/icons/Reorder';
-import WorkspaceIcon from '@material-ui/icons/Code';
+import TranscriptIcon from '../Icons/TranscriptIcon';
+import ClassBrowserIcon from '../Icons/ClassBrowserIcon';
+import MethodBrowserIcon from '../Icons/MethodBrowserIcon';
+import WorkspaceIcon from '../Icons/WorkspaceIcon';
+import InspectorIcon from '../Icons/InspectorIcon';
 import PeopleIcon from '@material-ui/icons/People';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import SettingsIcon from '@material-ui/icons/Settings';
