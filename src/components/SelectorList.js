@@ -13,6 +13,30 @@ class SelectorList extends Component {
             .catch(error => {})
     }
 
+    browseSenders = (selector) => {
+        if (this.props.globalOptions === undefined) { return }
+        const option = this.props.globalOptions.browseSenders;
+        if (option !== undefined) {
+            option(selector.selector)
+        }
+    }
+
+    browseImplementors = (selector) => {
+        if (this.props.globalOptions === undefined) { return }
+        const option = this.props.globalOptions.browseImplementors;
+        if (option !== undefined) {
+            option(selector.selector)
+        }
+    }
+
+    browseReferences = (selector) => {
+        if (this.props.globalOptions === undefined) { return }
+        const option = this.props.globalOptions.browseReferences;
+        if (option !== undefined) {
+            option(selector.class)
+        }
+    }
+
     render() {
         const size = 14;
         const selectors = this.props.selectors == null ? [] : this.props.selectors;
@@ -20,6 +44,7 @@ class SelectorList extends Component {
             <CustomList
                 label={this.props.showClass === true ? ((s) => {return s.class + '>>#' + s.selector}) : "selector"}
                 items={selectors}
+                selectedItem={this.props.selectedItem}
                 icons={selectors.map(s => {
                     if (s.overriding && s.overriden) {
                         return <ArrowUpDownBold style={{fontSize: size}} />
@@ -36,7 +61,8 @@ class SelectorList extends Component {
                     {label: 'Rename', action: this.renameSelector},
                     {label: 'Remove', action: this.removeSelector},
                     {label: 'Senders', action: this.browseSenders},
-                    {label: 'Implementors', action: this.browseImplementors},]}
+                    {label: 'Implementors', action: this.browseImplementors},
+                    {label: 'Class references', action: this.browseReferences}]}
                 onSelect={this.props.onSelect}/>
         )
     }

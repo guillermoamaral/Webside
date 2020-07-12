@@ -189,6 +189,11 @@ class App extends Component {
   constructor(props){
     super(props);
     this.api = new API(baseUri, 'guest', this.reportError);
+    this.globalOptions = {
+      browseSenders: this.browseSenders,
+      browseImplementors: this.browseImplementors,
+      browseReferences: this.browseReferences,
+      inspectObject: this.openInspector}
     this.state = {
       sidebarExpanded: false,
       transcriptText: 'Wellcome! \n This is the transcript..',
@@ -199,9 +204,9 @@ class App extends Component {
   componentDidMount() {
     // this.openTranscript();
     // this.openInspectors();
-    // this.api.referencesOf('JsonObject').then(methods => this.openMethodBrowser('JsonObject references', methods));
-    // this.api.sendersOf('implementorsOf:').then(methods => this.openMethodBrowser('Senders of #implementorsOf:', methods));
-    // this.openWorkspace()
+    // this.browseReferences('JsonObject');
+    // this.browseSenders('implementorsOf:');
+    // this.openWorkspace();
     this.openClassBrowser('Point');
   }
 
@@ -219,6 +224,8 @@ class App extends Component {
 
   openTranscript() {
     const transcript = <Transcript
+      api={this.api}
+      globalOptions={this.globalOptions}
       classes={this.props.classes}
       text={this.state.transcriptText}
       />;
@@ -231,9 +238,10 @@ class App extends Component {
       .catch(error => {})
   }
 
-  openClassBrowser(root) {
+  openClassBrowser = (root) => {
     const browser = <ClassBrowser
       api={this.api}
+      globalOptions={this.globalOptions}
       classes={this.props.classes}
       root={root}
       onError={this.reportError}
@@ -241,9 +249,10 @@ class App extends Component {
     this.addPage(root, <ClassBrowserIcon className={this.props.classes.classBrowserIcon} />, browser);
   }
 
-  openMethodBrowser(title, methods) {
+  openMethodBrowser = (methods, title = 'Methods') => {
     const browser = <MethodBrowser
       api={this.api}
+      globalOptions={this.globalOptions}
       classes={this.props.classes}
       methods={methods}
       onError={this.reportError}
@@ -251,18 +260,20 @@ class App extends Component {
     this.addPage(title + '(' + methods.length + ')', <MethodBrowserIcon className={this.props.classes.methodBrowserIcon} />, browser);
   }
 
-  openWorkspace() {
+  openWorkspace = () => {
     const workspace = <Workspace
       api={this.api}
+      globalOptions={this.globalOptions}
       classes={this.props.classes}
       onError={this.reportError}
       />;
     this.addPage('Workspace', <WorkspaceIcon className={this.props.classes.workspaceIcon} />, workspace);
   }
 
-  openInspector(object) {
+  openInspector = (object) => {
     const inspector = <Inspector
       api={this.api}
+      globalOptions={this.globalOptions}
       key={object.id}
       classes={this.props.classes}
       root={object}
@@ -271,6 +282,21 @@ class App extends Component {
     this.addPage(object.class + ': ' + object.id, <InspectorIcon className={this.props.classes.workspaceIcon} />, inspector);
   }
   
+  browseSenders = (selector) => {
+    this.api.sendersOf(selector)
+      .then(methods => this.openMethodBrowser(methods, 'Senders of ' + selector)); 
+  }
+
+  browseImplementors = (selector) => {
+    this.api.implementorsOf(selector)
+      .then(methods => this.openMethodBrowser(methods, 'Implementors of ' + selector)); 
+  }
+
+  browseReferences = (classname) => {
+    this.api.referencesOf(classname)
+      .then(methods => this.openMethodBrowser(methods, 'References to ' + classname)); 
+  }
+
   expandSidebar = () => {
     this.setState({sidebarExpanded: true});
   };

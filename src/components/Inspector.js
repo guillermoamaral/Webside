@@ -16,7 +16,7 @@ class Inspector extends Component {
         this.state = {
             root: root,
             objectTree: [root],
-            variables: {},
+            objects: {},
             selectedObject: root,
         }
     }
@@ -41,8 +41,9 @@ class Inspector extends Component {
                             variable.name = v.name;
                             variable.path = path;
                             object.variables.push(variable);
-                            this.state.variables[variable.id] = variable;
-                            this.setState({objectTree: this.state.objectTree});
+                            const objects = this.state.objects;
+                            objects[variable.id] = variable;
+                            this.setState({objectTree: this.state.objectTree, objects: objects});
                         })
                         .catch(error => {})    
                 });
@@ -51,7 +52,7 @@ class Inspector extends Component {
     }
 
     variableSelected = (id) => {
-        const variable = this.state.variables[id];
+        const variable = this.state.objects[id];
         if (variable !== undefined) {
             this.getVariables(variable);
             this.setState({selectedObject: variable})

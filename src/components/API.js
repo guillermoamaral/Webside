@@ -25,9 +25,9 @@ class API {
 
     async classTree(root) {
         try {
-            const response = await axios.get(this.baseUri + '/classes?root=' + root + '&tree=true');
-            return response.data; 
-        }
+            const response = await axios.get(this.baseUri + '/classes?root=' + root + '&tree=true');        
+            return response.data;
+         }
         catch (error) { this.handleError('Cannot fetch class tree from ' + root, error) }
     }
 

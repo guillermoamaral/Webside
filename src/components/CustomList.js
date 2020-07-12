@@ -87,6 +87,8 @@ class CustomList extends Component {
   }
 
   render () {
+    console.log('garlopa')
+    console.log(this.props.selectedItem)
     return (
       <div>
         <List style={{paddingTop: 0, paddingBottom: 0}}>

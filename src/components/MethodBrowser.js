@@ -16,11 +16,11 @@ class MethodBrowser extends Component {
 
     methodSelected = (method) => {
         this.setState({selectedMethod: method}, () => {
-            this.getClassDefinition();
+            this.updateClassDefinition();
         });
     }
 
-    getClassDefinition = () => {
+    updateClassDefinition = () => {
         const method = this.state.selectedMethod;
         if (method.classDefinition == null) {
             this.props.api.definitionOf(method.class)
@@ -40,6 +40,8 @@ class MethodBrowser extends Component {
                 <Grid item xs={12} md={12} lg={12}>
                     <Paper className={fixedHeightPaper} variant="outlined">
                         <SelectorList
+                            api={this.props.api}
+                            globalOptions={this.props.globalOptions}
                             showClass={true}
                             selectors={this.props.methods}
                             onSelect={this.methodSelected}/>

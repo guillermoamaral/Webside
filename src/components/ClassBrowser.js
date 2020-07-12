@@ -33,7 +33,7 @@ class ClassBrowser extends Component {
     changeRoot = (root) => {
         const selected = this.state.selectedClass !== null;
         this.setState({root: root}, () => {
-            this.getClassTree();
+            this.updateClassTree();
             this.getClassNames();
             if (selected) { this.classSelected(root) };
         })
@@ -66,7 +66,7 @@ class ClassBrowser extends Component {
         });
     }
 
-    getClassTree = () => {
+    updateClassTree = () => {
         this.props.api.classTree(this.state.root)
             .then(tree => {
                 this.setState({classTree: tree})})
@@ -88,7 +88,7 @@ class ClassBrowser extends Component {
                     species.comment = definition.comment;
                     species.superclass = definition.superclass;
                     this.setState({classes: classes})})
-                .catch(error => {console.log('good fart')})
+                .catch(error => {})
         }
     }
 
@@ -123,7 +123,7 @@ class ClassBrowser extends Component {
     }
 
     updateSelectors = (species, category, force = false) => {
-        const { classes } = this.state;
+        const { classes , selectedSelector } = this.state;
         if (force || species.selectors == null || species.selectors[category] == null) {
             this.props.api.selectorsOf(species.name, category)
                 .then(selectors => {
@@ -132,7 +132,15 @@ class ClassBrowser extends Component {
                     };
                     const sorted = selectors.sort((a, b) => { return a.selector <= b.selector? -1 : 1 });
                     species.selectors[category] = sorted;
-                    this.setState({classes: classes})})
+                    var selected;
+                    console.log(selectedSelector)
+                    if (selectedSelector !== null) {
+                        selected = sorted.find(s => { return s.selector === selectedSelector.selector })
+                    } else {
+                        selected = null
+                    }
+                    console.log(selected)
+                    this.setState({classes: classes, selectedSelector: selected})})
                 .catch(error => {})
         }
     }
@@ -195,11 +203,13 @@ class ClassBrowser extends Component {
         const classes = this.state.classes;
         const selectors = classes[method.class].selectors[method.category];
         var selector = selectors.find(s => { return s.selector === method.selector });
+        var updates = false;
         if (selector === undefined) {
-            this.updateSelectors(classes[method.class], method.category, true);
-            selector = selectors.find(s => s.selector === method.selector);
+            selector = {class: method.class, selector: method.selector};
+            updates = true;
         } 
-        this.setState({classes: classes}, () => {this.selectorSelected(selector)})
+        this.setState({classes: classes, selectedSelector: selector, selectedMethod: method});
+        if (updates) { this.updateSelectors(classes[method.class], method.category, true) }
     }
 
     removeClass = (selector) => {
@@ -210,7 +220,7 @@ class ClassBrowser extends Component {
         const classes = this.state.classes;
         const category = this.state.selectedCategory;
         var selectors = classes[selector.class].selectors[category];
-        classes[selector.class].selectors[category] = selectors.filter(s => { return s.selector !== selector.selector});
+        classes[selector.class].selectors[category] = selectors.filter(s => { return s.selector !== selector.selector });
         this.setState({classes: classes})
     }
 
@@ -283,7 +293,9 @@ class ClassBrowser extends Component {
                             <Paper  className={fixedHeightPaper} variant="outlined">
                                 <SelectorList
                                     api={this.props.api}
+                                    globalOptions={this.props.globalOptions}
                                     selectors={this.currentSelectors()}
+                                    selectedItem={selectedSelector}
                                     onSelect={this.selectorSelected}
                                     onRemoved={this.selectorRemoved}
                                     />

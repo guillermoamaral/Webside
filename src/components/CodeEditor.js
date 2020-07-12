@@ -142,6 +142,7 @@ class CodeEditor extends Component {
                             options={{
                                 mode: 'smalltalk',
                                 theme: 'material',
+                                lineSeparator: '\r',
                                 lineNumbers: true,
                                 matchBrackets: true, 
                                 indentUnit: 10, 

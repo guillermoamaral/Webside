@@ -46,7 +46,7 @@ class PopupMenu extends Component {
     itemClicked = (event, option) => {
         event.stopPropagation();
         this.close();
-        option.action.bind();
+        // option.action.bind();
         option.action();
 
     }
