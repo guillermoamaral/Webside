@@ -54,7 +54,7 @@ class CodeEditor extends Component {
     }
 
     defineClass = (definitionString) => {
-        this.props.api.defineClass(this.props.class, definitionString, null)
+        this.props.api.defineClass(this.props.class, definitionString)
             .then(definition => {
                 this.setState({definition: definition.definitionString});
                 if (this.props.onClassDefined !== undefined) { 
@@ -67,7 +67,7 @@ class CodeEditor extends Component {
     }
     
     commentClass = (comment) => {
-        this.props.api.defineClass(this.props.class, null, comment)
+        this.props.api.commentClass(this.props.class, comment)
             .then(definition => {
                 this.setState({comment: definition.comment});
                 if (this.props.onClassCommented !== undefined) { 
@@ -80,7 +80,7 @@ class CodeEditor extends Component {
     }
 
     compileMethod = (source) => {
-        this.api.compileMethod(this.props.class, this.props.category, source)
+        this.props.api.compileMethod(this.props.class, this.props.category, source)
             .then(method => {
                 this.setState({source: method.source, selector: method.selector})
                 if (this.props.onMethodCompiled !== undefined) { 

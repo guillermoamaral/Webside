@@ -44,9 +44,9 @@ class ClassBrowser extends Component {
         if (classes[name] == null) { classes[name] = {name: name} };
         const species = classes[name];
         this.setState({classes: classes, selectedClass: species}, () => {
-            this.getClassDefinition(species);
-            this.getVariables(species);
-            this.getCategories(species)
+            this.updateClassDefinition(species);
+            this.updateVariables(species);
+            this.updateCategories(species)
         })
     }
 
@@ -56,13 +56,13 @@ class ClassBrowser extends Component {
 
     categorySelected = (category) => {
         this.setState({selectedCategory: category}, () => {
-            this.getSelectors(this.state.selectedClass, category)
+            this.updateSelectors(this.state.selectedClass, category)
         });
     }
 
     selectorSelected = (selector) => {
         this.setState({selectedSelector: selector}, () => {
-            this.getMethod(this.state.selectedClass, selector)
+            this.updateMethod(this.state.selectedClass, selector)
         });
     }
 
@@ -79,7 +79,7 @@ class ClassBrowser extends Component {
             .catch(error => {})
     }
 
-    getClassDefinition = (species) => {
+    updateClassDefinition = (species) => {
         const { classes } = this.state;
         if (species.definitionString == null) {
             this.props.api.definitionOf(species.name)
@@ -92,7 +92,7 @@ class ClassBrowser extends Component {
         }
     }
 
-    getVariables = (species) => {
+    updateVariables = (species) => {
         const { classes, selectedVariable } = this.state;
         if (species.variables == null) {
             this.props.api.variablesOf(species.name)
@@ -107,7 +107,7 @@ class ClassBrowser extends Component {
         }
     }
 
-    getCategories = (species) => {
+    updateCategories = (species) => {
         const { classes, selectedCategory } = this.state;
         if (species.categories == null) {
             this.props.api.categoriesOf(species.name)
@@ -122,9 +122,9 @@ class ClassBrowser extends Component {
         }
     }
 
-    getSelectors = (species, category) => {
+    updateSelectors = (species, category, force = false) => {
         const { classes } = this.state;
-        if (species.selectors == null || species.selectors[category] == null) { 
+        if (force || species.selectors == null || species.selectors[category] == null) {
             this.props.api.selectorsOf(species.name, category)
                 .then(selectors => {
                     if (species.selectors == null) {
@@ -137,7 +137,7 @@ class ClassBrowser extends Component {
         }
     }
 
-    getMethod = (species, selector) => {
+    updateMethod = (species, selector) => {
         //Should not happen that..
         //if (species == null || selector == null) { return };
         this.props.api.method(species.name, selector.selector)
@@ -176,8 +176,13 @@ class ClassBrowser extends Component {
 
     classDefined = (species) => {
         const classes = this.state.classes;
-        classes[species.name].definitionString = species.definitionString;
-        this.setState({classes: classes}, () => {this.getVariables(classes[species.name])})
+        const current = classes[species.name];
+        if (current !== undefined) {
+            current.definitionString = species.definitionString;
+            this.setState({classes: classes}, () => {this.updateVariables(classes[species.name])})
+        } else {
+            this.changeRoot(species.name)
+        }
     }
 
     classCommented = (species) => {
@@ -189,11 +194,24 @@ class ClassBrowser extends Component {
     methodCompiled = (method) => {
         const classes = this.state.classes;
         const selectors = classes[method.class].selectors[method.category];
-        if (selectors.find(s => s.selector === method.selector) === undefined) {
-            selectors.push({selector: method.selector});
-            selectors.sort((a, b) => { return a.selector <= b.selector? -1 : 1 })
-        }
-        this.setState({classes: classes}, () => {this.selectorSelected(method.selector)})
+        var selector = selectors.find(s => { return s.selector === method.selector });
+        if (selector === undefined) {
+            this.updateSelectors(classes[method.class], method.category, true);
+            selector = selectors.find(s => s.selector === method.selector);
+        } 
+        this.setState({classes: classes}, () => {this.selectorSelected(selector)})
+    }
+
+    removeClass = (selector) => {
+        console.log(selector)
+    }
+
+    selectorRemoved = (selector) => {
+        const classes = this.state.classes;
+        const category = this.state.selectedCategory;
+        var selectors = classes[selector.class].selectors[category];
+        classes[selector.class].selectors[category] = selectors.filter(s => { return s.selector !== selector.selector});
+        this.setState({classes: classes})
     }
 
     render() {
@@ -222,7 +240,8 @@ class ClassBrowser extends Component {
                                     items={classTree}
                                     label="name"
                                     children={"subclasses"}
-                                    onSelect={this.classSelected}/>
+                                    onSelect={this.classSelected}
+                                    menuOptions={[{label: 'Remove', action: this.removeClass}]}/>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={3} lg={3}>
@@ -263,8 +282,11 @@ class ClassBrowser extends Component {
                         <Grid item xs={12} md={3} lg={3}>
                             <Paper  className={fixedHeightPaper} variant="outlined">
                                 <SelectorList
+                                    api={this.props.api}
                                     selectors={this.currentSelectors()}
-                                    onSelect={this.selectorSelected}/>
+                                    onSelect={this.selectorSelected}
+                                    onRemoved={this.selectorRemoved}
+                                    />
                             </Paper>
                         </Grid>
                     </Grid>

@@ -1,10 +1,20 @@
 import React, { Component } from 'react';
 import TreeView from '@material-ui/lab/TreeView';
 import TreeItem from '@material-ui/lab/TreeItem';
+import PopupMenu from './PopupMenu';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 class CustomTree extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+          selectedItem: props.selectedItem,
+          menuOpen: false,
+          menuPosition: {x: null, y: null}
+        }
+    }
+
     createItems = (items) => {
         return (
             items.map((item, index) => {
@@ -16,6 +26,7 @@ class CustomTree extends Component {
                         key={label + "-item-" + index}
                         nodeId={id}
                         label={label}
+                        onContextMenu={this.openMenu}
                         >
                             {Array.isArray(children) ? this.createItems(children) : null}
                     </TreeItem>
@@ -64,8 +75,34 @@ class CustomTree extends Component {
         }
     };
 
+    menuOptions() {
+        if (this.props.menuOptions === undefined) { return undefined };
+        return this.props.menuOptions.map(o => {
+            return {
+              label: o.label,
+              action: () => {this.menuOptionClicked(o)}
+            }
+          }
+        )
+    }
+
+    openMenu = (event) => {
+        event.preventDefault();
+        this.setState({menuOpen: true, menuPosition: {x: event.clientX - 2, y: event.clientY - 4}})
+    };
+    
+    closeMenu = () => {
+        this.setState({menuOpen: false});
+    }
+    
+    menuOptionClicked(option) {
+        option.action.bind();
+        option.action(this.state.selectedItem);
+    }
+
     render() {
         return (
+            <div>
             <TreeView
                 defaultCollapseIcon={<ArrowDropDownIcon />}
                 defaultExpanded={['root']}
@@ -75,8 +112,17 @@ class CustomTree extends Component {
                 >
                 {this.createItems(this.props.items)}
             </TreeView>
+            { 
+              <PopupMenu
+                options={this.menuOptions()}
+                open={this.state.menuOpen}
+                position={this.state.menuPosition}
+                onClose={this.closeMenu}/>}
+          </div>
         )
     };
 }
 
 export default CustomTree;
+
+

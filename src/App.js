@@ -188,7 +188,7 @@ const theme = createMuiTheme({
 class App extends Component {
   constructor(props){
     super(props);
-    this.api = new API(baseUri, this.reportError);
+    this.api = new API(baseUri, 'guest', this.reportError);
     this.state = {
       sidebarExpanded: false,
       transcriptText: 'Wellcome! \n This is the transcript..',

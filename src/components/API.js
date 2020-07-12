@@ -2,9 +2,10 @@ import React from 'react';
 import axios from 'axios';
 
 class API {
-    constructor(uri, reportError){
+    constructor(uri, user, reportError){
         this.baseUri = uri;
         this.reportError = reportError.bind();
+        this.author = user;
     };
 
     handleError(prefix, error) {
@@ -19,6 +20,8 @@ class API {
         this.reportError(prefix +  '\n' + reason);
         throw( error );
     }
+
+    // Queries...
 
     async classTree(root) {
         try {
@@ -110,26 +113,71 @@ class API {
         catch (error) { this.handleError('Cannot fetch implementors of ' + selector, error) }
     }
 
-    async defineClass(classname, definitionString, comment) {
-        const definition = {
-            name: classname,
-            definitionString: definition,
-            comment: comment};
+    // Changes...
+
+    newChange(type) {
+        return {
+            type: type,
+            author: this.user,
+        }
+    }
+
+    async defineClass(classname, definition) {
+        const change = this.newChange('ClassDefinition');
+        change.class = classname;
+        change.definition = definition;
         try {
-            const response = await axios.post(this.baseUri + '/classes', definition);
+            const response = await axios.post(this.baseUri + '/changes', change);
             return response.data;
         }
         catch (error) { this.handleError('Cannot define class ' + classname, error) }
     }
 
+    async commentClass(classname, comment) {
+        const change = this.newChange('ClassCommentDefinition');
+        change.class = classname;
+        change.comment = comment;
+        try {
+            const response = await axios.post(this.baseUri + '/changes', change);
+            return response.data;
+        }
+        catch (error) { this.handleError('Cannot comment class ' + classname, error) }
+    }
+
+    async removeClass(classname) {
+        const change = this.newChange('ClassRemove');
+        change.class = classname;
+        try {
+            const response = await axios.post(this.baseUri + '/changes', change);
+            return response.data;
+        }
+        catch (error) { this.handleError('Cannot remove class ' + classname, error) }
+    }
+
     async compileMethod(classname, category, source) {
         try {
-            const method = {class: classname, category: category, source: source};
-            const response = await axios.post(this.baseUri + '/classes/' + classname + '/methods', method);
+            const change = this.newChange('MethodDefinition');
+            change.class = classname;
+            change.category = category;
+            change.source = source;
+            const response = await axios.post(this.baseUri + '/changes', change);
             return response.data;
         }
         catch (error) { this.handleError('Cannot compile ' + source + ' in ' + classname, error)}
     }
+
+    async removeMethod(classname, selector) {
+        const change = this.newChange('MethodRemove');
+        change.class = classname;
+        change.selector = selector;
+        try {
+            const response = await axios.post(this.baseUri + '/changes', change);
+            return response.data;
+        }
+        catch (error) { this.handleError('Cannot remove methodd ' + classname + '>>#' + selector, error) }
+    }
+
+    // Objects...
 
     async evaluate(expression, pins) {
         try {

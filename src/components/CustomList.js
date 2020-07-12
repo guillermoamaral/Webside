@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { List, ListItem, ListItemText, ListItemIcon, Menu, MenuItem } from '@material-ui/core';
+import { List, ListItem, ListItemText, ListItemIcon } from '@material-ui/core';
+import PopupMenu from './PopupMenu';
 
 class CustomList extends Component {
   constructor(props) {
@@ -7,23 +8,13 @@ class CustomList extends Component {
     this.state = {
       selectedItem: props.selectedItem,
       selectedIndex: props.selectedItem == null ? null : props.indexOf(props.selectedItem),
-      menuX: null,
-      menuY: null}
+      menuOpen: false,
+      menuPosition: {x: null, y: null}
+    }
   }
 
-  /*
-  static getDerivedStateFromProps(props, state) {
-    if (props.selectedItem !== state.selectedItem) {
-        return {
-            selectedItem: null,
-            selectedIndex: null
-         }
-    };
-    return null;
-  }*/
-
   createItems = () => {
-    if (this.props.items == undefined) { return [] };
+    if (this.props.items === undefined) { return [] };
     return (
       this.props.items.map((item, index) => {
         return (
@@ -32,7 +23,7 @@ class CustomList extends Component {
             button
             key={"item" + index}
             selected={this.state.selectedIndex === index}
-            onClick={(e) => this.itemSelected(e, index, item)}
+            onClick={(event) => this.itemSelected(event, index, item)}
             onContextMenu={this.openMenu}
             >
               {this.getItemIcon(index)}
@@ -43,27 +34,8 @@ class CustomList extends Component {
     )
   }
 
-  createMenuItems = () => {
-    if (this.props.menuOptions === undefined) { return [] };
-    return (
-      this.props.menuOptions.map(option => {
-        return (
-          <MenuItem
-            key={option.label}
-            onClick={this.menuOptionClicked}
-            style={{paddingTop: 0, paddingBottom: 0}}
-          >
-            {option.label}
-          </MenuItem>
-        )
-      })
-    )
-  }
-
-  itemSelected = (e, index, item) => {
+  itemSelected = (event, index, item) => {
     this.setState({selectedItem: item, selectedIndex: index});
-    //this cannot happend... check
-    //if (this.props !== null) { 
     const handler = this.props.onSelect;
     if (handler !== undefined) {
         handler.bind(this);
@@ -73,7 +45,7 @@ class CustomList extends Component {
 
   getItemLabel = (item) => {
     const getter = this.props.label;
-    if (getter == undefined) { return item }    
+    if (getter === undefined) { return item }    
     if (typeof getter == "string")  { return item[getter] }
     getter.bind(this);
     return getter(item)
@@ -90,23 +62,28 @@ class CustomList extends Component {
     }
   }
 
-  openMenu = (event) => {
-    if (this.props.menuOptions === undefined) { return }
-    event.preventDefault();
-    this.setState({
-      menuX: event.clientX - 2,
-      menuY: event.clientY - 4});
-  };
-
-  optionClicked = (event) => {
-    console.log(event.target);
-    this.closeMenu(event)
+  menuOptions() {
+    if (this.props.menuOptions === undefined) { return undefined };
+    return this.props.menuOptions.map(o => {
+        return {
+          label: o.label,
+          action: () => {this.menuOptionClicked(o)}
+        }
+      }
+    )
   }
 
-  closeMenu = (event) => {
-    this.setState({
-      menuX: null,
-      menuY: null});
+  openMenu = (event) => {
+    event.preventDefault();
+    this.setState({menuOpen: true, menuPosition: {x: event.clientX - 2, y: event.clientY - 4}})
+  };
+
+  closeMenu = () => {
+    this.setState({menuOpen: false});
+  }
+
+  menuOptionClicked(option) {
+    option.action(this.state.selectedItem);
   }
 
   render () {
@@ -115,19 +92,12 @@ class CustomList extends Component {
         <List style={{paddingTop: 0, paddingBottom: 0}}>
           {this.createItems()}
         </List>
-        <Menu
-            keepMounted
-            open={this.state.menuX !== null}
-            onClose={this.closeMenu}
-            anchorReference="anchorPosition"
-            anchorPosition={
-              this.state.menuY !== null && this.state.menuX !== null
-                ? { top: this.state.menuY, left: this.state.menuX }
-                : undefined
-            }
-          >
-            {this.createMenuItems()}
-          </Menu>
+        { 
+          <PopupMenu
+            options={this.menuOptions()}
+            open={this.state.menuOpen}
+            position={this.state.menuPosition}
+            onClose={this.closeMenu}/>}
       </div>
     )
   };
