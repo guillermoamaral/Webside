@@ -44,7 +44,8 @@ class SelectorList extends Component {
             <CustomList
                 label={this.props.showClass === true ? ((s) => {return s.class + '>>#' + s.selector}) : "selector"}
                 items={selectors}
-                selectedItem={this.props.selectedItem}
+                selectedItem={this.props.selectedSelector}
+                onSelect={this.props.onSelect}
                 icons={selectors.map(s => {
                     if (s.overriding && s.overriden) {
                         return <ArrowUpDownBold style={{fontSize: size}} />
@@ -63,7 +64,7 @@ class SelectorList extends Component {
                     {label: 'Senders', action: this.browseSenders},
                     {label: 'Implementors', action: this.browseImplementors},
                     {label: 'Class references', action: this.browseReferences}]}
-                onSelect={this.props.onSelect}/>
+            />
         )
     }
 };

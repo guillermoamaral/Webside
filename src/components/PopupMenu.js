@@ -2,22 +2,6 @@ import React, { Component } from 'react';
 import { Menu, MenuItem } from '@material-ui/core';
 
 class PopupMenu extends Component {
-    // constructor(props){
-    //     super(props);
-    //     this.state = {
-    //         open: props.open
-    //     }
-    // }
-
-    // static getDerivedStateFromProps(props, state) {
-    //     if (props.open !== state.open) {
-    //         return {
-    //             open: props.open
-    //          }
-    //     };
-    //     return null;
-    // }
-
     createItems = () => {
         if (this.props.options === undefined) { return [] };
         return (
@@ -46,13 +30,11 @@ class PopupMenu extends Component {
     itemClicked = (event, option) => {
         event.stopPropagation();
         this.close();
-        // option.action.bind();
         option.action();
 
     }
     
     close = () => {
-        //this.setState({open: false});
         const handler = this.props.onClose;
         if (handler !== undefined) {
             handler.bind(this);

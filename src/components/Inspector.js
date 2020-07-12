@@ -22,14 +22,14 @@ class Inspector extends Component {
     }
 
     componentDidMount() {
-        this.getVariables(this.state.root)
+        this.updateVariables(this.state.root)
     }
 
     close = () => {
         this.props.onClose(this.props.root.id);
     }
 
-    getVariables = (object) => {
+    updateVariables = (object) => {
         if (object.variables !== undefined) { return object.variables }
         this.props.api.instanceVariablesOf(object.class)
             .then(variables => {
@@ -51,15 +51,14 @@ class Inspector extends Component {
             .catch(error => { return [] })
     }
 
-    variableSelected = (id) => {
-        const variable = this.state.objects[id];
-        if (variable !== undefined) {
-            this.getVariables(variable);
-            this.setState({selectedObject: variable})
+    variableSelected = (object) => {
+        if (object !== undefined) {
+            this.updateVariables(object);
+            this.setState({selectedObject: object})
         }
     }
 
-    variableExpanded = (id) => {
+    variableExpanded = (object) => {
     }
 
     render() {

@@ -16,11 +16,11 @@ class MethodBrowser extends Component {
 
     methodSelected = (method) => {
         this.setState({selectedMethod: method}, () => {
-            this.updateClassDefinition();
+            this.updateDefinition();
         });
     }
 
-    updateClassDefinition = () => {
+    updateDefinition = () => {
         const method = this.state.selectedMethod;
         if (method.classDefinition == null) {
             this.props.api.definitionOf(method.class)

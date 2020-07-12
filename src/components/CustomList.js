@@ -38,7 +38,6 @@ class CustomList extends Component {
     this.setState({selectedItem: item, selectedIndex: index});
     const handler = this.props.onSelect;
     if (handler !== undefined) {
-        handler.bind(this);
         handler(item);
     }
   };
@@ -87,8 +86,6 @@ class CustomList extends Component {
   }
 
   render () {
-    console.log('garlopa')
-    console.log(this.props.selectedItem)
     return (
       <div>
         <List style={{paddingTop: 0, paddingBottom: 0}}>

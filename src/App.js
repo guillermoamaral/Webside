@@ -202,12 +202,10 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // this.openTranscript();
-    // this.openInspectors();
-    // this.browseReferences('JsonObject');
-    // this.browseSenders('implementorsOf:');
-    // this.openWorkspace();
-    this.openClassBrowser('Point');
+    this.openTranscript();
+    this.openInspectors();
+    this.openWorkspace();
+    this.openClassBrowser('Magnitude');
   }
 
   addPage(label, icon, component) {

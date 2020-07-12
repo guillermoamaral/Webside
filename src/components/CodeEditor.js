@@ -59,7 +59,6 @@ class CodeEditor extends Component {
                 this.setState({definition: definition.definitionString});
                 if (this.props.onClassDefined !== undefined) { 
                     const handler = this.props.onClassDefined;
-                    handler.bind(this);
                     handler(definition)
                 }
             })

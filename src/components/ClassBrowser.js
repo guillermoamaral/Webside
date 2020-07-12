@@ -3,7 +3,7 @@ import { Grid, Paper, RadioGroup, FormControlLabel, Radio } from '@material-ui/c
 import clsx from 'clsx';
 
 import SearchList from './SearchList';
-import CustomTree from './CustomTree';
+import ClassTree from './ClassTree';
 import SelectorList from './SelectorList';
 import CustomList from './CustomList';
 import CodeEditor from './CodeEditor';
@@ -14,7 +14,6 @@ class ClassBrowser extends Component {
         this.reportError = props.onError.bind();
         this.state = {
             root: this.props.root,
-            classTree: [],
             classes: {},
             classNames: [],
             selectedClass: null,
@@ -30,21 +29,23 @@ class ClassBrowser extends Component {
         this.changeRoot(this.state.root);
     }
 
-    changeRoot = (root) => {
-        const selected = this.state.selectedClass !== null;
-        this.setState({root: root}, () => {
-            this.updateClassTree();
-            this.getClassNames();
-            if (selected) { this.classSelected(root) };
+    getClassNames = () => {
+        this.props.api.classNames()
+            .then(names => {this.setState({classNames: names})})
+            .catch(error => {})
+    }
+
+    changeRoot = (classname) => {
+        this.setState({root: classname}, () => {
+            this.updateClasses();
+            //this.getClassNames();
         })
     }
 
-    classSelected = (name) => {
+    classSelected = (species) => {
         const classes = this.state.classes; 
-        if (classes[name] == null) { classes[name] = {name: name} };
-        const species = classes[name];
         this.setState({classes: classes, selectedClass: species}, () => {
-            this.updateClassDefinition(species);
+            this.updateDefinition(species);
             this.updateVariables(species);
             this.updateCategories(species)
         })
@@ -66,20 +67,21 @@ class ClassBrowser extends Component {
         });
     }
 
-    updateClassTree = () => {
+    updateClasses = () => {
         this.props.api.classTree(this.state.root)
-            .then(tree => {
-                this.setState({classTree: tree})})
+            .then(classes => {
+                const map = {};
+                classes.forEach(c => { map[c.name] = c });
+                var selected = this.state.selectedClass;
+                if (selected !== null) {
+                    selected = classes.find(c => { return c.name = selected.name });
+                    if (selected === undefined) { selected = null }
+                }
+                this.setState({classes: map, selectedClass: selected})})
             .catch(error => {})
     }
 
-    getClassNames = () => {
-        this.props.api.classNames()
-            .then(names => {this.setState({classNames: names})})
-            .catch(error => {})
-    }
-
-    updateClassDefinition = (species) => {
+    updateDefinition = (species) => {
         const { classes } = this.state;
         if (species.definitionString == null) {
             this.props.api.definitionOf(species.name)
@@ -99,8 +101,9 @@ class ClassBrowser extends Component {
                 .then(variables => {
                     species.variables = variables;
                     var selected = selectedVariable;
-                    if (selected !== null && (variables.find(v => v.name === selected.name)) === undefined) {
-                        selected = null;
+                    if (selected !== null) {
+                        selected = variables.find(v => v.name === selected.name);
+                        if (selected === undefined) { selected = null };
                     }
                     this.setState({classes: classes, selectedVariable: selected})})
                 .catch(error => {})
@@ -127,19 +130,14 @@ class ClassBrowser extends Component {
         if (force || species.selectors == null || species.selectors[category] == null) {
             this.props.api.selectorsOf(species.name, category)
                 .then(selectors => {
-                    if (species.selectors == null) {
-                        species.selectors = {}
-                    };
+                    if (species.selectors == null) { species.selectors = {} };
                     const sorted = selectors.sort((a, b) => { return a.selector <= b.selector? -1 : 1 });
                     species.selectors[category] = sorted;
-                    var selected;
-                    console.log(selectedSelector)
-                    if (selectedSelector !== null) {
-                        selected = sorted.find(s => { return s.selector === selectedSelector.selector })
-                    } else {
-                        selected = null
+                    var selected = selectedSelector;
+                    if (selected !== null) {
+                        selected = sorted.find(s => { return s.selector === selected.selector })
+                        if (selected === undefined) { selected = null }
                     }
-                    console.log(selected)
                     this.setState({classes: classes, selectedSelector: selected})})
                 .catch(error => {})
         }
@@ -186,11 +184,17 @@ class ClassBrowser extends Component {
         const classes = this.state.classes;
         const current = classes[species.name];
         if (current !== undefined) {
+            console.log('ojo al piojo')
+            console.log(species == current)
             current.definitionString = species.definitionString;
             this.setState({classes: classes}, () => {this.updateVariables(classes[species.name])})
         } else {
             this.changeRoot(species.name)
         }
+    }
+
+    classRemoved = (species) => {
+        console.log(species)
     }
 
     classCommented = (species) => {
@@ -212,10 +216,6 @@ class ClassBrowser extends Component {
         if (updates) { this.updateSelectors(classes[method.class], method.category, true) }
     }
 
-    removeClass = (selector) => {
-        console.log(selector)
-    }
-
     selectorRemoved = (selector) => {
         const classes = this.state.classes;
         const category = this.state.selectedCategory;
@@ -226,7 +226,7 @@ class ClassBrowser extends Component {
 
     render() {
         const {
-            classTree,
+            root,
             classes,
             selectedClass,
             selectedVariable,
@@ -246,12 +246,14 @@ class ClassBrowser extends Component {
                     <Grid container spacing={1}>
                         <Grid item xs={12} md={3} lg={3}>
                             <Paper className={fixedHeightPaper} variant="outlined">
-                                <CustomTree
-                                    items={classTree}
-                                    label="name"
-                                    children={"subclasses"}
+                                <ClassTree
+                                    api={this.props.api}
+                                    globalOptions={this.props.globalOptions}
+                                    classes={classes}
+                                    root={root}
+                                    selectedClass={selectedClass}
                                     onSelect={this.classSelected}
-                                    menuOptions={[{label: 'Remove', action: this.removeClass}]}/>
+                                    onRemoved={this.classRemoved}/>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={3} lg={3}>
@@ -295,7 +297,7 @@ class ClassBrowser extends Component {
                                     api={this.props.api}
                                     globalOptions={this.props.globalOptions}
                                     selectors={this.currentSelectors()}
-                                    selectedItem={selectedSelector}
+                                    selectedSelector={selectedSelector}
                                     onSelect={this.selectorSelected}
                                     onRemoved={this.selectorRemoved}
                                     />
