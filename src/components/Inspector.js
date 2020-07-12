@@ -68,7 +68,7 @@ class Inspector extends Component {
         return (
             <Box className={this.props.classes.box}>
                 <Grid container spacing={1} justify="center">
-                    <Grid item xs={12} md={12} lg={12}>
+                    {/* <Grid item xs={12} md={12} lg={12}>
                         <Typography
                             component="h6"
                             variant="h6"
@@ -82,7 +82,7 @@ class Inspector extends Component {
                                     <CloseIcon fontSize="small"/>
                                 </IconButton>}
                         </Typography>
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={12} md={12} lg={12}>
                         <Grid container spacing={1}>
                             <Grid item xs={12} md={6} lg={6}>

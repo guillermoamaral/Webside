@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import CustomTree from './CustomTree';
 
 class ClassTree extends Component {
-    getSubclasses = (species) => {
-        const classes = this.props.classes;
-        return species.subclasses === undefined ? [] : species.subclasses.map(name => { return classes[name] })
-    }
+    // getSubclasses = (species) => {
+    //     console.log('getSubclasses')
+    //     const classes = this.props.classes;
+    //     const subclasses = species.subclasses === undefined ? [] : species.subclasses.map(name => { return classes[name] });
+    //     console.log('finish getSubclasses')
+    //     return subclasses
+    // }
 
     removeClass = (species) => {
         this.props.api.removeClass(species.name)
@@ -32,7 +35,7 @@ class ClassTree extends Component {
             <CustomTree
                 items={root !== undefined ? [root] : []}
                 label="name"
-                children={this.getSubclasses}
+                children={"subclasses"}
                 onSelect={this.props.onSelect}
                 selectedItem={this.props.selectedClass}
                 menuOptions={[

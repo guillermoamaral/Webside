@@ -4,10 +4,15 @@ import {
   Container,
   createMuiTheme,
   CssBaseline,
-  Grid
+  Grid,
+  IconButton,
+  Menu,
+  MenuItem
 } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { amber } from '@material-ui/core/colors';
+
+import AddIcon from '@material-ui/icons/AddCircle';
 
 import API from './components/API';
 
@@ -16,7 +21,6 @@ import ClassBrowserIcon from './Icons/ClassBrowserIcon';
 import MethodBrowserIcon from './Icons/MethodBrowserIcon';
 import WorkspaceIcon from './Icons/WorkspaceIcon';
 import InspectorIcon from './Icons/InspectorIcon';
-
 import Titlebar from './components/Titlebar'
 import Sidebar from './components/Sidebar';
 import TabControl from './components/TabControl';
@@ -196,16 +200,17 @@ class App extends Component {
       inspectObject: this.openInspector}
     this.state = {
       sidebarExpanded: false,
+      addPageMenuOpen: false,
       transcriptText: 'Wellcome! \n This is the transcript..',
       pages: []
     }
   }
 
   componentDidMount() {
-    this.openTranscript();
-    this.openInspectors();
-    this.openWorkspace();
-    this.openClassBrowser('Magnitude');
+    // this.openTranscript();
+    // this.openInspectors();
+    // this.openWorkspace();
+    this.openClassBrowser('Object');
   }
 
   addPage(label, icon, component) {
@@ -236,7 +241,8 @@ class App extends Component {
       .catch(error => {})
   }
 
-  openClassBrowser = (root) => {
+  openClassBrowser = (classname) => {
+    const root = (classname === undefined)? 'Magnitude' : classname;
     const browser = <ClassBrowser
       api={this.api}
       globalOptions={this.globalOptions}
@@ -321,8 +327,29 @@ class App extends Component {
             <div className={this.props.classes.appBarSpacer} />
             <Container className={this.props.classes.container}>
               <Grid container spacing={1}>
-                <Grid item xs={12} md={12} lg={12}>
+                <Grid item xs={11} md={11} lg={11}>
                     <TabControl classes={this.props.classes} pages={this.state.pages} onClose={this.removePage}/>
+                </Grid>
+                <Grid item xs={1} md={1} lg={1}>
+                  <IconButton id="addPageButton" color="primary" onClick={() => {this.setState({addPageMenuOpen: true})}}>
+                    <AddIcon style={{ fontSize: 40 }}/>
+                  </IconButton>
+                  <Menu
+                    id="addPageMenu"
+                    anchorEl={document.getElementById("addPageButton")}
+                    keepMounted
+                    open={this.state.addPageMenuOpen}
+                    onClose={() => {this.setState({addPageMenuOpen: false})}}
+                  >
+                    <MenuItem onClick={() => {this.openClassBrowser('Object')}}>
+                      <ClassBrowserIcon />
+                      Class Browse
+                    </MenuItem>
+                    <MenuItem onClick={this.openWorkspace}>
+                      <WorkspaceIcon />
+                      New Workspace
+                    </MenuItem>
+                  </Menu>
                 </Grid>
               </Grid>
             </Container>

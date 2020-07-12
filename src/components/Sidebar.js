@@ -9,12 +9,7 @@ import {
     IconButton
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import AddIcon from '@material-ui/icons/Add';
-import TranscriptIcon from '../Icons/TranscriptIcon';
-import ClassBrowserIcon from '../Icons/ClassBrowserIcon';
-import MethodBrowserIcon from '../Icons/MethodBrowserIcon';
-import WorkspaceIcon from '../Icons/WorkspaceIcon';
-import InspectorIcon from '../Icons/InspectorIcon';
+import ChangesIcon from '@material-ui/icons/List';
 import PeopleIcon from '@material-ui/icons/People';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -36,34 +31,10 @@ class Sidebar extends Component {
                 <List>
                     <ListItem button>
                         <ListItemIcon>
-                            <AddIcon />
+                            <ChangesIcon />
                         </ListItemIcon>
-                        <ListItemText primary="New" />
+                        <ListItemText primary="Changes" />
                     </ListItem>                    
-                    <ListItem button>
-                        <ListItemIcon>
-                            <TranscriptIcon className={this.props.classes.transcriptIcon} />
-                        </ListItemIcon>
-                        <ListItemText primary="Transcript" />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemIcon>
-                            <ClassBrowserIcon className={this.props.classes.classBrowserIcon} />
-                        </ListItemIcon>
-                        <ListItemText primary="New class Browser" />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemIcon>
-                            <MethodBrowserIcon className={this.props.classes.methodBrowserIcon} />
-                        </ListItemIcon>
-                        <ListItemText primary="New class Browser" />
-                    </ListItem>
-                    <ListItem button>
-                        <ListItemIcon>
-                            <WorkspaceIcon className={this.props.classes.workspaceIcon} />
-                        </ListItemIcon>
-                        <ListItemText primary="New workspace" />
-                    </ListItem>
                     <ListItem button>
                         <ListItemIcon>
                             <PeopleIcon />

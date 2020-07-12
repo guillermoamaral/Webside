@@ -1,7 +1,18 @@
 import React, { Component } from 'react';
-import { Grid, Paper, Toolbar, IconButton } from '@material-ui/core';
-import { Controlled as CodeMirror } from 'react-codemirror2';
+import {
+    Grid,
+    Paper,
+    Toolbar,
+    IconButton,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    Typography
+} from '@material-ui/core';
 import PlayIcon from '@material-ui/icons/PlayArrow';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import InspectorIcon from '../Icons/InspectorIcon';
+import { Controlled as CodeMirror } from 'react-codemirror2';
 
 import Inspector from './Inspector';
 
@@ -94,7 +105,24 @@ class Workspace extends Component {
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={4} lg={4}>
-                    {this.state.inspectors.map(inspector => {return inspector})}
+                    {this.state.inspectors.map(inspector => {
+                        return (
+                            <Accordion key={inspector.key}>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    id="panel1a-header"
+                                    >
+                                    <InspectorIcon/>
+                                    <Typography>
+                                        {inspector.props.root.class + ': ' + inspector.props.root.id}
+                                    </Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    {inspector}
+                                </AccordionDetails>
+                            </Accordion>
+                        )         
+                    })}
                 </Grid>
             </Grid>
         )

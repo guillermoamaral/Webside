@@ -43,8 +43,10 @@ class ClassBrowser extends Component {
     }
 
     classSelected = (species) => {
+        console.log('classSelected')
         const classes = this.state.classes; 
         this.setState({classes: classes, selectedClass: species}, () => {
+            console.log('finished setState from classSelected')
             this.updateDefinition(species);
             this.updateVariables(species);
             this.updateCategories(species)
@@ -62,7 +64,9 @@ class ClassBrowser extends Component {
     }
 
     selectorSelected = (selector) => {
+        console.log('selectorSelected')
         this.setState({selectedSelector: selector}, () => {
+            console.log('finished setState from selectedSelector')
             this.updateMethod(this.state.selectedClass, selector)
         });
     }
@@ -144,10 +148,11 @@ class ClassBrowser extends Component {
     }
 
     updateMethod = (species, selector) => {
+        console.log('updateMethod')
         //Should not happen that..
         //if (species == null || selector == null) { return };
         this.props.api.method(species.name, selector.selector)
-            .then(method => {this.setState({selectedMethod: method})})
+            .then(method => {this.setState({selectedMethod: method}, console.log('finished setState from updateMethod'))})
             .catch(error => {})
     }
 
@@ -185,7 +190,7 @@ class ClassBrowser extends Component {
         const current = classes[species.name];
         if (current !== undefined) {
             console.log('ojo al piojo')
-            console.log(species == current)
+            console.log(species === current)
             current.definitionString = species.definitionString;
             this.setState({classes: classes}, () => {this.updateVariables(classes[species.name])})
         } else {

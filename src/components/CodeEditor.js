@@ -107,6 +107,7 @@ class CodeEditor extends Component {
     }
 
     render() {
+        console.log('render CodeEditor')
         return (
             <Grid container spacing={0}>
                 <Grid item xs={12} md={12} lg={12}>
