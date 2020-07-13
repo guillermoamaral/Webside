@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 import CustomTree from './CustomTree';
 
 class ClassTree extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            root: props.root
+        }
+    }
     // getSubclasses = (species) => {
     //     console.log('getSubclasses')
     //     const classes = this.props.classes;
@@ -9,6 +15,16 @@ class ClassTree extends Component {
     //     console.log('finish getSubclasses')
     //     return subclasses
     // }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.root !== state.root) {
+            console.log('classTree changed')
+            return {
+                items: props.items,
+            };
+        }
+        return null
+    }
 
     removeClass = (species) => {
         this.props.api.removeClass(species.name)

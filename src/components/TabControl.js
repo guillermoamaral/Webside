@@ -31,7 +31,7 @@ class TabControl extends Component {
     constructor(props){
         super(props);
         this.state = {
-            selectedIndex: 0
+            selectedIndex: props.selectedIndex === undefined ? 0 : props.selectedIndex
         }
     }
 
@@ -61,7 +61,7 @@ class TabControl extends Component {
       if (this.props !== null) {
         const handler = this.props.onClose;
         if (handler !== undefined) {
-            handler.bind(this);
+            //handler.bind(this);
             handler(this.props.pages[index]);
             if (index <= this.state.selectedIndex) {
               index = Math.max(index - 1, 0)

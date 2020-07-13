@@ -41,7 +41,7 @@ class Workspace extends Component {
           onError={this.reportError}
           />;
         const inspectors = this.state.inspectors;
-        inspectors.push(inspector);
+        inspectors.unshift(inspector);
         this.setState({inspectors: inspectors})
     }
 
@@ -117,7 +117,7 @@ class Workspace extends Component {
                                         {inspector.props.root.class + ': ' + inspector.props.root.id}
                                     </Typography>
                                 </AccordionSummary>
-                                <AccordionDetails>
+                                <AccordionDetails style={{width: "100%"}}>
                                     {inspector}
                                 </AccordionDetails>
                             </Accordion>

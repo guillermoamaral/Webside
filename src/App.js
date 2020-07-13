@@ -201,23 +201,24 @@ class App extends Component {
     this.state = {
       sidebarExpanded: false,
       addPageMenuOpen: false,
-      transcriptText: 'Wellcome! \n This is the transcript..',
+      selectedPage: null,
+      transcriptText: 'Wellcome! \n\n This is the transcript..',
       pages: []
     }
   }
 
   componentDidMount() {
-    // this.openTranscript();
+    this.openTranscript();
     // this.openInspectors();
     // this.openWorkspace();
-    this.openClassBrowser('Object');
+    //this.openClassBrowser('Object');
   }
 
   addPage(label, icon, component) {
     const page = {label: label, icon: icon, component: component};
     const pages = this.state.pages;
     pages.push(page);
-    this.setState({pages: pages})
+    this.setState({pages: pages, selectedPage: pages.length - 1})
   }
 
   removePage = (page) => {
@@ -312,6 +313,16 @@ class App extends Component {
   reportError = (text) => {
     this.setState({transcriptText: this.state.transcriptText + '\n' + text})
   }
+
+  addClassBrowserClicked = () => {
+    this.setState({addPageMenuOpen: false})
+    this.openClassBrowser('Object')
+  }
+
+  addWorkspaceClicked = () => {
+    this.setState({addPageMenuOpen: false})
+    this.openWorkspace()
+  }
   
   render () {
     return (
@@ -328,7 +339,11 @@ class App extends Component {
             <Container className={this.props.classes.container}>
               <Grid container spacing={1}>
                 <Grid item xs={11} md={11} lg={11}>
-                    <TabControl classes={this.props.classes} pages={this.state.pages} onClose={this.removePage}/>
+                    <TabControl
+                      classes={this.props.classes}
+                      selectedPage={this.state.selectedPage}
+                      pages={this.state.pages}
+                      onClose={this.removePage}/>
                 </Grid>
                 <Grid item xs={1} md={1} lg={1}>
                   <IconButton id="addPageButton" color="primary" onClick={() => {this.setState({addPageMenuOpen: true})}}>
@@ -341,11 +356,11 @@ class App extends Component {
                     open={this.state.addPageMenuOpen}
                     onClose={() => {this.setState({addPageMenuOpen: false})}}
                   >
-                    <MenuItem onClick={() => {this.openClassBrowser('Object')}}>
+                    <MenuItem onClick={this.addClassBrowserClicked}>
                       <ClassBrowserIcon />
                       Class Browse
                     </MenuItem>
-                    <MenuItem onClick={this.openWorkspace}>
+                    <MenuItem onClick={this.addWorkspaceClicked}>
                       <WorkspaceIcon />
                       New Workspace
                     </MenuItem>

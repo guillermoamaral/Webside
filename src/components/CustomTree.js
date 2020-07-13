@@ -9,10 +9,11 @@ class CustomTree extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          selectedItem: props.selectedItem,
-          selectedId: props.selectedItem == null ? null : this.getItemId(props.selectedItem),
-          menuOpen: false,
-          menuPosition: {x: null, y: null}
+            items: props.items,
+            selectedItem: props.selectedItem,
+            selectedId: props.selectedItem == null ? null : this.getItemId(props.selectedItem),
+            menuOpen: false,
+            menuPosition: {x: null, y: null}
         }
     }
 
