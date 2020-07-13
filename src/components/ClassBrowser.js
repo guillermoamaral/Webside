@@ -42,11 +42,53 @@ class ClassBrowser extends Component {
         })
     }
 
+    selections() {
+        return {
+            selectedClass: this.state.selectedClass,
+            selectedVariable: this.state.selectedVariable,
+            selectedCategory: this.state.selectedCategory,
+            selectedSelector: this.state.selectedSelector,
+            selectedMethod: this.state.selectedMethod,
+        };
+    }
+
+    reviseSelections(selections) {
+        const species = selections.selectedClass;
+        if (species !== null) {
+            var variable = selections.selectedVariable;
+            if (variable !== null) {
+                variable = species.variables.find(v => { return v.name === variable.name });
+                selections.seletectedVariable = variable === undefined ? null : variable;
+            }
+            if (!species.categories.includes(selections.selectedCategory)) {
+                selections.selectedCategory = null;
+            }
+            const category = selections.selectedCategory;
+            var selector = selections.selectedSelector;
+            if (selector !== null && category !== null) {
+                selector = species.selectors[category].find(s => { return s.selector === selector.selector });
+                selections.seletectedSelector = selector === undefined ? null : selector;    
+            }
+        }
+    }
+
+    applySelections(selections) {
+        console.log('applying selections')
+        console.log(selections)
+        this.setState((prevState, props) => {
+            return {
+                selectedClass: selections.selectedClass,
+                selectedVariable: selections.selectedVariable,
+                selectedCategory: selections.selectedCategory,
+                selectedSelector: selections.selectedSelector,
+                selectedMethod: selections.selectedMethod,            
+            }
+        })
+    }
+
     classSelected = (species) => {
-        console.log('classSelected')
         const classes = this.state.classes; 
         this.setState({classes: classes, selectedClass: species}, () => {
-            console.log('finished setState from classSelected')
             this.updateDefinition(species);
             this.updateVariables(species);
             this.updateCategories(species)
@@ -64,9 +106,7 @@ class ClassBrowser extends Component {
     }
 
     selectorSelected = (selector) => {
-        console.log('selectorSelected')
         this.setState({selectedSelector: selector}, () => {
-            console.log('finished setState from selectedSelector')
             this.updateMethod(this.state.selectedClass, selector)
         });
     }
@@ -148,30 +188,147 @@ class ClassBrowser extends Component {
     }
 
     updateMethod = (species, selector) => {
-        console.log('updateMethod')
         //Should not happen that..
         //if (species == null || selector == null) { return };
         this.props.api.method(species.name, selector.selector)
-            .then(method => {this.setState({selectedMethod: method}, console.log('finished setState from updateMethod'))})
+            .then(method => {this.setState({selectedMethod: method})})
             .catch(error => {})
+    }
+
+    // async approach (2)
+    classSelected2 = async (species) => {
+        const selections = this.selections();
+        selections.selectedClass = species;
+        try {
+            console.log('updating definition')
+            await this.updateDefinition2(selections);
+            console.log('updating variables')
+            await this.updateVariables2(selections);
+            console.log('updating categories')
+            await this.updateCategories2(selections);
+
+            console.log('updating selectors')
+            await this.updateSelectors2(selections);
+            console.log('applying selections')
+            this.applySelections(selections)   
+        }
+        catch (error) {
+            this.reportError(error)
+        }
+    }
+
+    variableSelected2 = async (variable) => {
+        const selections = this.selections();
+        selections.selectedVariable = variable;
+        try {
+            await this.updateSelectors2(selections);
+            this.applySelections(selections)   
+        }
+        catch (error) {
+            this.reportError(error)
+        }
+    }
+
+    categorySelected2 = async (category) => {
+        const selections = this.selections();
+        selections.selectedCategory = category;
+        try {
+            await this.updateSelectors2(selections);
+            this.applySelections(selections)   
+        }
+        catch (error) {
+            this.reportError(error)
+        }
+    }
+
+    selectorSelected2 = async (selector) => {
+        const selections = this.selections();
+        selections.selectedSelector = selector;
+        try {
+            console.log('updating method')
+            await this.updateMethod2(selections);
+            this.applySelections(selections)   
+        }
+        catch (error) {
+            this.reportError(error)
+        }
+    }
+
+    updateDefinition2(selections, force = false) {
+        const species = selections.selectedClass;
+        if (force || species.definitionString == null) {
+            return this.props.api.definitionOf(species.name)
+                .then(definition => {
+                    species.definitionString = definition.definitionString;
+                    species.comment = definition.comment;
+                    species.superclass = definition.superclass;
+                })
+        }
+    }
+    
+    updateVariables2(selections, force = false) {
+        const species = selections.selectedClass;
+        if (force || species.variables == null) {
+            return this.props.api.variablesOf(species.name)
+                .then(variables => {species.variables = variables; console.log('variables here')})
+        }
+    }
+
+    updateCategories2(selections, force = false) { 
+        const species = selections.selectedClass;
+        if (force || species.categories == null) {
+            return this.props.api.categoriesOf(species.name)
+                .then(categories => {species.categories = categories.sort(); console.log('categories here')});
+        }
+    }
+
+    updateSelectors2(selections, force = false) {
+        this.reviseSelections(selections);
+        const species = selections.selectedClass;
+        if (species.selectors == null) { species.selectors = {} };
+        const category = selections.selectedCategory;
+        if ((force || species.selectors[category] == null) && category !== null) {
+            return this.props.api.selectorsOf(species.name, category)
+                .then(selectors => {
+                    const sorted = selectors.sort((a, b) => { return a.selector <= b.selector? -1 : 1 });
+                    species.selectors[category] = sorted;     
+                    console.log('selectors here')   
+                })
+        }
+    }
+
+    updateMethod2(selections) {
+        const species = selections.selectedClass;
+        const selector = selections.selectedSelector;
+        return this.props.api.method(species.name, selector.selector)
+            .then(method => {selections.selectedMethod = method; console.log('method here')})
     }
 
     currentVariables() {
         const { selectedClass } = this.state;
-        if (selectedClass == null || selectedClass.variables == null) { return [] };
-        return selectedClass.variables;
+        if (selectedClass == null || selectedClass.variables == null) {
+            return []
+        } else {
+            return selectedClass.variables;
+        }
     }
 
     currentCategories = () => {
         const { selectedClass } = this.state;
-        if (selectedClass == null || selectedClass.categories == null) { return [] };
-        return selectedClass.categories;
+        if (selectedClass == null || selectedClass.categories == null) {
+            return []
+        } else {
+            return selectedClass.categories;
+        }
     }
 
     currentSelectors = () => {
         const { selectedClass, selectedCategory } = this.state;
-        if (selectedClass == null || selectedCategory == null || selectedClass.selectors == null) { return [] };
-        return selectedClass.selectors[selectedCategory];
+        if (selectedClass == null || selectedCategory == null || selectedClass.selectors == null) {
+            return []
+        } else {
+            return selectedClass.selectors[selectedCategory];
+        }
     }
 
     sideChanged = (event, side) => {
@@ -185,12 +342,12 @@ class ClassBrowser extends Component {
         }
     }
 
+    // Changes...
+
     classDefined = (species) => {
         const classes = this.state.classes;
         const current = classes[species.name];
         if (current !== undefined) {
-            console.log('ojo al piojo')
-            console.log(species === current)
             current.definitionString = species.definitionString;
             this.setState({classes: classes}, () => {this.updateVariables(classes[species.name])})
         } else {
@@ -257,7 +414,7 @@ class ClassBrowser extends Component {
                                     classes={classes}
                                     root={root}
                                     selectedClass={selectedClass}
-                                    onSelect={this.classSelected}
+                                    onSelect={this.classSelected2}
                                     onRemoved={this.classRemoved}/>
                             </Paper>
                         </Grid>
@@ -267,7 +424,7 @@ class ClassBrowser extends Component {
                                     items={this.currentVariables()}
                                     label="name"
                                     selectedItem={selectedVariable}
-                                    onSelect={this.variableSelected}/>
+                                    onSelect={this.variableSelected2}/>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={3} lg={3}>
@@ -291,7 +448,7 @@ class ClassBrowser extends Component {
                                         <CustomList
                                             items={this.currentCategories()}
                                             selectedItem={selectedCategory}
-                                            onSelect={this.categorySelected}/>
+                                            onSelect={this.categorySelected2}/>
                                     </Paper>
                                 </Grid>
                             </Grid>
@@ -303,7 +460,7 @@ class ClassBrowser extends Component {
                                     globalOptions={this.props.globalOptions}
                                     selectors={this.currentSelectors()}
                                     selectedSelector={selectedSelector}
-                                    onSelect={this.selectorSelected}
+                                    onSelect={this.selectorSelected2}
                                     onRemoved={this.selectorRemoved}
                                     />
                             </Paper>

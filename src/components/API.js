@@ -50,7 +50,7 @@ class API {
     async instanceVariablesOf(classname) {
         try {
             const response = await axios.get(this.baseUri + '/classes/' + classname + '/instance-variables');
-            return response.data
+            return response.data;
         }
         catch (error) { this.handleError('Cannot fecth instance variables of class ' + classname, error) }
     }    
@@ -58,7 +58,7 @@ class API {
     async variablesOf(classname) {
         try {
             const response = await axios.get(this.baseUri + '/classes/' + classname + '/variables');
-            return response.data
+            return response.data;
         }
         catch (error) { this.handleError('Cannot fecth variables of class ' + classname, error) }
     }
@@ -66,7 +66,7 @@ class API {
     async categoriesOf(classname) {
         try {
             const response = await axios.get(this.baseUri + '/classes/' + classname + '/categories');
-            return response.data
+            return response.data;
         }
         catch (error) { this.handleError('Cannot fecth categories of class ' + classname, error) }
     }

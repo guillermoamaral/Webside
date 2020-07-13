@@ -10,7 +10,7 @@ import {
   MenuItem
 } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
-import { amber } from '@material-ui/core/colors';
+import { amber , blue } from '@material-ui/core/colors';
 
 import AddIcon from '@material-ui/icons/AddCircle';
 
@@ -30,6 +30,7 @@ import MethodBrowser from './components/MethodBrowser';
 import Inspector from './components/Inspector';
 import Workspace from './components/Workspace';
 
+const smalltalk = 'Bee';
 const port = 9000 //window.location.port;
 const baseUri = `http://${window.location.hostname}:${port}/bee`;
 
@@ -175,7 +176,7 @@ const theme = createMuiTheme({
       background: 'black'
     },
     secondary: {
-      main: amber[200]
+      main: amber[900]
     },
     text: {
       primary: "#aaaaaa",
@@ -329,7 +330,11 @@ class App extends Component {
       <ThemeProvider theme={theme}>
         <div className={this.props.classes.root}>
           <CssBaseline/>
-          <Titlebar classes={this.props.classes} sidebarExpanded={this.state.sidebarExpanded} expandSidebar={this.expandSidebar} />
+          <Titlebar
+            title={smalltalk + ' Web IDE'}
+            classes={this.props.classes}
+            sidebarExpanded={this.state.sidebarExpanded}
+            expandSidebar={this.expandSidebar} />
           <Sidebar
             classes={this.props.classes}
             expanded={this.state.sidebarExpanded}

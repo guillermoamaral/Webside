@@ -9,10 +9,8 @@ class ClassTree extends Component {
         }
     }
     // getSubclasses = (species) => {
-    //     console.log('getSubclasses')
     //     const classes = this.props.classes;
     //     const subclasses = species.subclasses === undefined ? [] : species.subclasses.map(name => { return classes[name] });
-    //     console.log('finish getSubclasses')
     //     return subclasses
     // }
 
@@ -46,6 +44,7 @@ class ClassTree extends Component {
     }
 
     render() {
+        console.log('rendering class tree')
         const root = this.props.classes[this.props.root];
         return (
             <CustomTree

@@ -6,12 +6,25 @@ class CustomList extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      items: props.items,
       selectedItem: props.selectedItem,
-      selectedIndex: props.selectedItem == null ? null : props.indexOf(props.selectedItem),
+      selectedIndex: props.selectedItem == null ? null : props.items.indexOf(props.selectedItem),
       menuOpen: false,
       menuPosition: {x: null, y: null}
     }
   }
+
+  // static getDerivedStateFromProps(props, state) {
+  //   if (props.items !== state.items ||
+  //       props.selecteItem !== state.selectedItem) {
+  //         return {
+  //             items: props.items,
+  //             selectedItem: props.selectedItem,
+  //             selectedIndex: props.selectedItem == null ? null : props.items.indexOf(props.selectedItem), 
+  //         };
+  //   }
+  //   return null
+  // }
 
   createItems = () => {
     if (this.props.items === undefined) { return [] };
