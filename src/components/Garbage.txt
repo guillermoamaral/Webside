@@ -1,0 +1,95 @@
+Old approach to update class browser with "nested" setState calls...
+    classSelected = (species) => {
+        const classes = this.state.classes; 
+        this.setState({classes: classes, selectedClass: species}, () => {
+            this.updateDefinition(species);
+            this.updateVariables(species);
+            this.updateCategories(species)
+        })
+    }
+
+    variableSelected = (variable) => {
+        this.setState({selectedVariable: variable});
+    }
+
+    categorySelected = (category) => {
+        this.setState({selectedCategory: category}, () => {
+            this.updateSelectors(this.state.selectedClass, category)
+        });
+    }
+
+    selectorSelected = (selector) => {
+        this.setState({selectedSelector: selector}, () => {
+            this.updateMethod(this.state.selectedClass, selector)
+        });
+    }
+
+    updateDefinition = (species) => {
+        const { classes } = this.state;
+        if (species.definitionString == null) {
+            this.props.api.definitionOf(species.name)
+                .then(definition => {
+                    species.definitionString = definition.definitionString;
+                    species.comment = definition.comment;
+                    species.superclass = definition.superclass;
+                    this.setState({classes: classes})})
+                .catch(error => {})
+        }
+    }
+
+    updateVariables = (species) => {
+        const { classes, selectedVariable } = this.state;
+        if (species.variables == null) {
+            this.props.api.variablesOf(species.name)
+                .then(variables => {
+                    species.variables = variables;
+                    var selected = selectedVariable;
+                    if (selected !== null) {
+                        selected = variables.find(v => v.name === selected.name);
+                        if (selected === undefined) { selected = null };
+                    }
+                    this.setState({classes: classes, selectedVariable: selected})})
+                .catch(error => {})
+        }
+    }
+
+    updateCategories = (species) => {
+        const { classes, selectedCategory } = this.state;
+        if (species.categories == null) {
+            this.props.api.categoriesOf(species.name)
+                .then(categories => {
+                    species.categories = categories.sort();
+                    var selected = selectedCategory;
+                    if (!categories.includes(selected)) {
+                        selected = null;
+                    }
+                    this.setState({classes: classes, selectedCategory: selected})})
+                .catch(error => {})
+        }
+    }
+
+    updateSelectors = (species, category, force = false) => {
+        const { classes , selectedSelector } = this.state;
+        if (force || species.selectors == null || species.selectors[category] == null) {
+            this.props.api.selectorsOf(species.name, category)
+                .then(selectors => {
+                    if (species.selectors == null) { species.selectors = {} };
+                    const sorted = selectors.sort((a, b) => { return a.selector <= b.selector? -1 : 1 });
+                    species.selectors[category] = sorted;
+                    var selected = selectedSelector;
+                    if (selected !== null) {
+                        selected = sorted.find(s => { return s.selector === selected.selector })
+                        if (selected === undefined) { selected = null }
+                    }
+                    this.setState({classes: classes, selectedSelector: selected})})
+                .catch(error => {})
+        }
+    }
+
+    updateMethod = (species, selector) => {
+        //Should not happen that..
+        //if (species == null || selector == null) { return };
+        this.props.api.method(species.name, selector.selector)
+            .then(method => {this.setState({selectedMethod: method})})
+            .catch(error => {})
+    }

@@ -8,11 +8,6 @@ class ClassTree extends Component {
             root: props.root
         }
     }
-    // getSubclasses = (species) => {
-    //     const classes = this.props.classes;
-    //     const subclasses = species.subclasses === undefined ? [] : species.subclasses.map(name => { return classes[name] });
-    //     return subclasses
-    // }
 
     static getDerivedStateFromProps(props, state) {
         if (props.root !== state.root) {
@@ -51,6 +46,7 @@ class ClassTree extends Component {
                 items={root !== undefined ? [root] : []}
                 label="name"
                 children={"subclasses"}
+                onExpand={this.props.onExpand}
                 onSelect={this.props.onSelect}
                 selectedItem={this.props.selectedClass}
                 menuOptions={[

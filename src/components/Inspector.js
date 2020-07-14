@@ -52,13 +52,13 @@ class Inspector extends Component {
     }
 
     variableSelected = (object) => {
-        if (object !== undefined) {
-            this.updateVariables(object);
-            this.setState({selectedObject: object})
-        }
+        this.setState({selectedObject: object})
     }
 
     variableExpanded = (object) => {
+        if (object !== undefined) {
+            object.variables.forEach(v => this.updateVariables(v))
+        }
     }
 
     render() {
