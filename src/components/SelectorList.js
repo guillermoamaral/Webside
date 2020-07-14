@@ -4,7 +4,8 @@ import { ArrowUpDownBold, ArrowUpBold, ArrowDownBold } from 'mdi-material-ui';
 
 class SelectorList extends Component {
     removeSelector = (selector) => {
-        this.props.api.removeMethod(selector.class, selector.selector)
+        console.log(selector)
+        this.props.api.deleteMethod(selector.class, selector.selector)
             .then(response => {
                 if (this.props.onRemoved !== undefined) {
                     this.props.onRemoved(selector)

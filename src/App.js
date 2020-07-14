@@ -212,7 +212,7 @@ class App extends Component {
     //this.openTranscript();
     // this.openInspectors();
     // this.openWorkspace();
-    this.openClassBrowser('Magnitude');
+    this.openClassBrowser('Object');
   }
 
   addPage(label, icon, component) {
@@ -238,7 +238,7 @@ class App extends Component {
   }
 
   openInspectors() {
-    this.api.objects()
+    this.api.getObjects()
       .then(objects => {objects.forEach(o => this.openInspector(o))})
       .catch(error => {})
   }
@@ -287,19 +287,19 @@ class App extends Component {
       />;
     this.addPage(object.class + ': ' + object.id, <InspectorIcon className={this.props.classes.workspaceIcon} />, inspector);
   }
-  
+
   browseSenders = (selector) => {
-    this.api.sendersOf(selector)
+    this.api.getSenders(selector)
       .then(methods => this.openMethodBrowser(methods, 'Senders of ' + selector)); 
   }
 
   browseImplementors = (selector) => {
-    this.api.implementorsOf(selector)
+    this.api.getImplementors(selector)
       .then(methods => this.openMethodBrowser(methods, 'Implementors of ' + selector)); 
   }
 
   browseReferences = (classname) => {
-    this.api.referencesOf(classname)
+    this.api.getReferences(classname)
       .then(methods => this.openMethodBrowser(methods, 'References to ' + classname)); 
   }
 

@@ -73,7 +73,6 @@ class CustomTree extends Component {
     itemToggled = (event, index, item) => {
         const handler = this.props.onExpand;
         if (handler !== undefined) {
-        //    handler.bind(this);
             handler(item);
         }
     };
@@ -104,6 +103,7 @@ class CustomTree extends Component {
     }
 
     render() {
+        console.log('rendering tree')
         return (
             <div>
             <TreeView

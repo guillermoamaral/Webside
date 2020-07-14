@@ -3,7 +3,6 @@ import CustomList from './CustomList';
 
 class VariableList extends Component {
     render() {
-        const size = 14;
         return (
             <CustomList
                 items={this.props.variables}

@@ -17,21 +17,20 @@ class API {
             reason = 'Could not send request: ' + error.message;
         }
         this.reportError(prefix +  '\n' + reason);
-        throw( error );
+        throw(error);
     }
 
     // Queries...
-
-    async classTree(root) {
+    async getClassTree(root, depth) {
         try {
-            const response = await axios.get(this.baseUri + '/classes?root=' + root + '&tree=true');     
+            const response = await axios.get(this.baseUri + '/classes?root=' + root + '&tree=true&depth=' + depth);     
             return response.data;
 
          }
         catch (error) { this.handleError('Cannot fetch class tree from ' + root, error) }
     }
 
-    async classNames() {
+    async getClassNames() {
         try {
             const response = await axios.get(this.baseUri + '/classes?names=true')
             return response.data; 
@@ -39,7 +38,7 @@ class API {
         catch (error) { this.handleError('Cannot fetch class names', error) }
     }
 
-    async definitionOf(classname) {
+    async getDefinition(classname) {
         try {
             const response = await axios.get(this.baseUri + '/classes/' + classname);
             return response.data;
@@ -47,7 +46,7 @@ class API {
         catch (error) { this.handleError('Cannot fetch class ' + classname, error) }
     }
 
-    async instanceVariablesOf(classname) {
+    async getInstanceVariables(classname) {
         try {
             const response = await axios.get(this.baseUri + '/classes/' + classname + '/instance-variables');
             return response.data;
@@ -55,7 +54,7 @@ class API {
         catch (error) { this.handleError('Cannot fecth instance variables of class ' + classname, error) }
     }    
 
-    async variablesOf(classname) {
+    async getVariables(classname) {
         try {
             const response = await axios.get(this.baseUri + '/classes/' + classname + '/variables');
             return response.data;
@@ -63,7 +62,7 @@ class API {
         catch (error) { this.handleError('Cannot fecth variables of class ' + classname, error) }
     }
 
-    async categoriesOf(classname) {
+    async getCategories(classname) {
         try {
             const response = await axios.get(this.baseUri + '/classes/' + classname + '/categories');
             return response.data;
@@ -71,7 +70,7 @@ class API {
         catch (error) { this.handleError('Cannot fecth categories of class ' + classname, error) }
     }
 
-    async selectorsOf(classname, category) {
+    async getSelectors(classname, category) {
         try {
             var url = this.baseUri + '/classes/' + classname + '/selectors?marks=true';
             if (category !== null) { url = url + '&category=' + category}
@@ -81,7 +80,7 @@ class API {
         catch (error) { this.handleError('Cannot fecth selectors of class ' + classname, error) }
     }
 
-    async method(classname, selector) {
+    async getMethod(classname, selector) {
         try {
             const response = await axios.get(this.baseUri + '/classes/' + classname + '/methods/' + selector);
             return response.data;
@@ -89,7 +88,7 @@ class API {
         catch (error) { this.handleError('Cannot fetch method ' + classname + '>>#' + selector, error) }
     }
 
-    async sendersOf(selector) {
+    async getSenders(selector) {
         try {
            const response = await axios.get(this.baseUri + '/methods?sending=' + selector);
            return response.data;
@@ -97,7 +96,7 @@ class API {
        catch (error) { this.handleError('Cannot fetch senders of ' + selector, error) }
     }
 
-    async referencesOf(classname) {
+    async getReferences(classname) {
         try {
            const response = await axios.get(this.baseUri + '/methods?referencing=' + classname);
            return response.data;
@@ -105,7 +104,7 @@ class API {
        catch (error) { this.handleError('Cannot fetch references to ' + classname, error) }
     }
 
-    async implementorsOf(selector) {
+    async getImplementors(selector) {
          try {
             const response = await axios.get(this.baseUri + '/methods?selector=' + selector);
             return response.data;
@@ -114,7 +113,6 @@ class API {
     }
 
     // Changes...
-
     newChange(type) {
         return {
             type: type,
@@ -122,13 +120,21 @@ class API {
         }
     }
 
+    async postChange(change) {
+        try {
+            const response = await axios.post(this.baseUri + '/changes', change);
+            return response.data;
+        }
+        catch (error) { this.handleError('Cannot apply change ' + change, error) }
+    }
+
+    //Helpers...
     async defineClass(classname, definition) {
         const change = this.newChange('ClassDefinition');
         change.class = classname;
         change.definition = definition;
         try {
-            const response = await axios.post(this.baseUri + '/changes', change);
-            return response.data;
+            return await this.postChange(change);
         }
         catch (error) { this.handleError('Cannot define class ' + classname, error) }
     }
@@ -138,18 +144,16 @@ class API {
         change.class = classname;
         change.comment = comment;
         try {
-            const response = await axios.post(this.baseUri + '/changes', change);
-            return response.data;
+            return await this.postChange(change);
         }
         catch (error) { this.handleError('Cannot comment class ' + classname, error) }
     }
 
-    async removeClass(classname) {
+    async deleteClass(classname) {
         const change = this.newChange('ClassRemove');
         change.class = classname;
         try {
-            const response = await axios.post(this.baseUri + '/changes', change);
-            return response.data;
+            return await axios.postChange(change);
         }
         catch (error) { this.handleError('Cannot remove class ' + classname, error) }
     }
@@ -160,19 +164,17 @@ class API {
             change.class = classname;
             change.category = category;
             change.source = source;
-            const response = await axios.post(this.baseUri + '/changes', change);
-            return response.data;
+            return await this.postChange(change);
         }
         catch (error) { this.handleError('Cannot compile ' + source + ' in ' + classname, error)}
     }
 
-    async removeMethod(classname, selector) {
+    async deleteMethod(classname, selector) {
         const change = this.newChange('MethodRemove');
         change.class = classname;
         change.selector = selector;
         try {
-            const response = await axios.post(this.baseUri + '/changes', change);
-            return response.data;
+            return await this.postChange(change);
         }
         catch (error) { this.handleError('Cannot remove methodd ' + classname + '>>#' + selector, error) }
     }
@@ -188,7 +190,7 @@ class API {
         catch (error) { this.handleError('Cannot evaluate ' + expression, error) }
     }
 
-    async objects() {
+    async getObjects() {
         try {
             const response = await axios.get(this.baseUri + '/objects')
             return response.data
@@ -196,7 +198,7 @@ class API {
         catch (error) { this.handleError('Cannot fetch objects', error)}
     }
 
-    async object(id) {
+    async getObject(id) {
         try {
             const response = await axios.get(this.baseUri + '/objects/' + id)
             return response.data
@@ -212,7 +214,7 @@ class API {
         catch (error) { this.handleError('Cannot fetch object with id ' + id, error)}
     }
 
-    async variableOf(id, path) {
+    async getVariable(id, path) {
         try {
             const response = await axios.get(this.baseUri + '/objects/' + id + path);
             return response.data

@@ -7,7 +7,6 @@ import ClassTree from './ClassTree';
 import VariableList from './VariableList';
 import CategoryList from './CategoryList';
 import SelectorList from './SelectorList';
-import CustomList from './CustomList';
 import CodeEditor from './CodeEditor';
 
 class ClassBrowser extends Component {
@@ -32,214 +31,78 @@ class ClassBrowser extends Component {
     }
 
     getClassNames = () => {
-        this.props.api.classNames()
+        this.props.api.getClassNames()
             .then(names => {this.setState({classNames: names})})
             .catch(error => {})
     }
 
     changeRoot = (classname) => {
-        this.setState({root: classname}, () => {
-            this.updateClasses();
+        this.setState({root: classname, classes: {}}, () => {
+            this.updateClasses(classname)
+                .then(() => {
+                    this.classSelected(this.state.classes[classname])})
             //this.getClassNames();
         })
     }
 
-    selections() {
+    currentSelections() {
         return {
-            selectedClass: this.state.selectedClass,
-            selectedVariable: this.state.selectedVariable,
-            selectedCategory: this.state.selectedCategory,
-            selectedSelector: this.state.selectedSelector,
-            selectedMethod: this.state.selectedMethod,
+            class: this.state.selectedClass,
+            variable: this.state.selectedVariable,
+            category: this.state.selectedCategory,
+            selector: this.state.selectedSelector,
+            method: this.state.selectedMethod,
         };
     }
 
-    reviseSelections(selections) {
-        const species = selections.selectedClass;
-        if (species !== null) {
-            var variable = selections.selectedVariable;
-            if (variable !== null) {
-                variable = species.variables.find(v => {return v.name === variable.name});
-                selections.selectedVariable = variable === undefined ? null : variable;
-            }
-            if (!species.categories.includes(selections.selectedCategory)) {
-                selections.selectedCategory = null;
-            }
-            const category = selections.selectedCategory;
-            var selector = selections.selectedSelector;
-            if (selector !== null && category !== null) {
-                selector = species.selectors[category].find(s => { return s.selector === selector.selector });
-                selections.selectedSelector = selector === undefined ? null : selector;    
-            }
-        }
-    }
-
     applySelections(selections) {
-        this.reviseSelections(selections);
         this.setState((prevState, props) => {
             return {
-                selectedClass: selections.selectedClass,
-                selectedVariable: selections.selectedVariable,
-                selectedCategory: selections.selectedCategory,
-                selectedSelector: selections.selectedSelector,
-                selectedMethod: selections.selectedMethod,            
+                selectedClass: selections.class,
+                selectedVariable: selections.variable,
+                selectedCategory: selections.category,
+                selectedSelector: selections.selector,
+                selectedMethod: selections.method,            
             }
         })
     }
 
-    updateClasses = () => {
-        this.props.api.classTree(this.state.root)
-            .then(classes => {
-                const map = {};
-                classes.forEach(c => { map[c.name] = c });
-                var selected = this.state.selectedClass;
-                if (selected !== null) {
-                    selected = classes.find(c => { return c.name = selected.name });
-                    if (selected === undefined) { selected = null }
-                }
-                this.setState({classes: map, selectedClass: selected})})
-            .catch(error => {})
-    }
-
+    // Events...
     classSelected = async (species) => {
-        const selections = this.selections();
-        selections.selectedClass = species;
-        try {
-            console.log('updating definition')
-            await this.updateDefinition(selections);
-            console.log('updating variables')
-            await this.updateVariables(selections);
-            console.log('updating categories')
-            await this.updateCategories(selections);
-            console.log('updating selectors')
-            await this.updateSelectors(selections);
-            console.log('applying selections')
-            this.applySelections(selections)   
-        }
-        catch (error) {
-            this.reportError(error)
-        }
+        const selections = this.currentSelections();
+        selections.class = species;
+        await this.updateDefinition(selections);
+        await this.updateVariables(selections);
+        await this.updateCategories(selections);
+        await this.updateSelectors(selections);
+        this.applySelections(selections)
     }
 
     // classExpanded = (species) => {
     //     species.subclasses.forEach(c => {
-    //         this.updateDefinition(c);
-    //         this.updateSubclasses(c);
+    //         this.updateClasses(species);
     //     })
     // }    
 
     variableSelected = async (variable) => {
-        const selections = this.selections();
-        selections.selectedVariable = variable;
-        try {
-            await this.updateSelectors(selections);
-            this.applySelections(selections)   
-        }
-        catch (error) {
-            this.reportError(error)
-        }
+        const selections = this.currentSelections();
+        selections.variable = variable;
+        await this.updateSelectors(selections);
+        this.applySelections(selections);
     }
 
     categorySelected = async (category) => {
-        const selections = this.selections();
-        selections.selectedCategory = category;
-        try {
-            await this.updateSelectors(selections);
-            this.applySelections(selections)   
-        }
-        catch (error) {
-            this.reportError(error)
-        }
+        const selections = this.currentSelections();
+        selections.category = category;
+        await this.updateSelectors(selections);
+        this.applySelections(selections);
     }
 
     selectorSelected = async (selector) => {
-        const selections = this.selections();
-        selections.selectedSelector = selector;
-        try {
-            console.log('updating method')
-            await this.updateMethod(selections);
-            this.applySelections(selections)   
-        }
-        catch (error) {
-            this.reportError(error)
-        }
-    }
-
-    updateDefinition(selections, force = false) {
-        const species = selections.selectedClass;
-        if (force || species.definitionString == null) {
-            return this.props.api.definitionOf(species.name)
-                .then(definition => {
-                    species.definitionString = definition.definitionString;
-                    species.comment = definition.comment;
-                    species.superclass = definition.superclass;
-                })
-        }
-    }
-    
-    updateVariables(selections, force = false) {
-        const species = selections.selectedClass;
-        if (force || species.variables == null) {
-            return this.props.api.variablesOf(species.name)
-                .then(variables => {species.variables = variables; console.log('variables here')})
-        }
-    }
-
-    updateCategories(selections, force = false) { 
-        const species = selections.selectedClass;
-        if (force || species.categories == null) {
-            return this.props.api.categoriesOf(species.name)
-                .then(categories => {species.categories = categories.sort(); console.log('categories here')});
-        }
-    }
-
-    updateSelectors(selections, force = false) {
-        this.reviseSelections(selections);
-        const species = selections.selectedClass;
-        if (species.selectors == null) { species.selectors = {} };
-        const category = selections.selectedCategory;
-        if ((force || species.selectors[category] == null) && category !== null) {
-            return this.props.api.selectorsOf(species.name, category)
-                .then(selectors => {
-                    const sorted = selectors.sort((a, b) => { return a.selector <= b.selector? -1 : 1 });
-                    species.selectors[category] = sorted;     
-                    console.log('selectors here')   
-                })
-        }
-    }
-
-    updateMethod(selections) {
-        const species = selections.selectedClass;
-        const selector = selections.selectedSelector;
-        return this.props.api.method(species.name, selector.selector)
-            .then(method => {selections.selectedMethod = method; console.log('method here')})
-    }
-
-    currentVariables() {
-        const { selectedClass } = this.state;
-        if (selectedClass == null || selectedClass.variables == null) {
-            return []
-        } else {
-            return selectedClass.variables;
-        }
-    }
-
-    currentCategories = () => {
-        const { selectedClass } = this.state;
-        if (selectedClass == null || selectedClass.categories == null) {
-            return []
-        } else {
-            return selectedClass.categories;
-        }
-    }
-
-    currentSelectors = () => {
-        const { selectedClass, selectedCategory } = this.state;
-        if (selectedClass == null || selectedCategory == null || selectedClass.selectors == null) {
-            return []
-        } else {
-            return selectedClass.selectors[selectedCategory];
-        }
+        const selections = this.currentSelections();
+        selections.selector = selector;
+        await this.updateMethod(selections);
+        this.applySelections(selections)   
     }
 
     sideChanged = (event, side) => {
@@ -253,20 +116,15 @@ class ClassBrowser extends Component {
         }
     }
 
-    // Changes...
     classDefined = (species) => {
         const classes = this.state.classes;
         const current = classes[species.name];
         if (current !== undefined) {
             current.definitionString = species.definitionString;
-            this.setState({classes: classes}, () => {this.updateVariables(classes[species.name])})
+            this.classSelected(current);
         } else {
             this.changeRoot(species.name)
         }
-    }
-
-    classRemoved = (species) => {
-        console.log(species)
     }
 
     classCommented = (species) => {
@@ -275,31 +133,113 @@ class ClassBrowser extends Component {
         this.setState({classes: classes})
     }
 
-    methodCompiled = (method) => {
-        console.log(method)
+    classRemoved = (species) => {
+        console.log(species)
+    }
+
+    methodCompiled = async (method) => {
         const classes = this.state.classes;
-        const selectors = classes[method.class].selectors[method.category];
+        const species = classes[method.class];
+        const selectors = species.selectors[method.category];
         var selector = selectors.find(s => {return s.selector === method.selector});
-        const selections = this.selections();
-        selections.selectedMethod = method;
+        const selections = this.currentSelections();
         if (selector === undefined) {
-            selector = {class: method.class, selector: method.selector}
-            this.updateSelectors(selections, true)
-                .then(() => {
-                    selections.selectedSelector = selector;
-                    this.applySelections(selections)})
-        } else {
-            selections.selectedSelector = selector;
-            this.applySelections(selections);
+            await this.updateSelectors(selections, true);
+            const selectors = species.selectors[method.category];
+            selector = selectors.find(s => {return s.selector === method.selector});
         }
+        this.selectorSelected(selector);
     }
 
     selectorRemoved = (selector) => {
+        console.log(selector)
         const classes = this.state.classes;
         const category = this.state.selectedCategory;
         var selectors = classes[selector.class].selectors[category];
-        classes[selector.class].selectors[category] = selectors.filter(s => { return s.selector !== selector.selector });
+        classes[selector.class].selectors[category] = selectors.filter(s => {return s.selector !== selector.selector});
         this.setState({classes: classes})
+    }
+
+    // Updating...
+    async updateClasses(root) {
+        const classes = this.state.classes;
+        const tree = await this.props.api.getClassTree(root, 2);
+        tree.forEach(c => {classes[c.name] = c});
+    }
+
+    async updateDefinition(selections, force = false) {
+        const species = selections.class; 
+        if (force || species.definitionString === undefined) {
+            const definition = await this.props.api.getDefinition(species.name);
+            species.definitionString = definition.definitionString;
+            species.comment = definition.comment;
+            species.superclass = definition.superclass;
+        }
+    }
+    
+    async updateVariables(selections, force = false) {
+        const species = selections.class;
+        if (force || species.variables === undefined) {
+            species.variables = await this.props.api.getVariables(species.name);
+        }
+        var variable = selections.variable;
+        if (variable !== null) {
+            variable = species.variables.find(v => {return v.name === variable.name});
+            selections.variable = variable === undefined ? null : variable;
+        }
+    }
+
+    async updateCategories(selections, force = false) {
+        const species = selections.class; 
+        if (force || species.categories === undefined) {
+            const categories = await this.props.api.getCategories(species.name);
+            species.categories = categories.sort();
+        }
+        if (!species.categories.includes(selections.category)) {
+            selections.category = null;
+        }
+    }
+
+    async updateSelectors(selections, force = false) {
+        const species = selections.class;
+        const category = selections.category;
+        if (species.selectors === undefined) {species.selectors = {}};
+        if ((force || species.selectors[category] === undefined) && category !== null) {
+            const selectors = await this.props.api.getSelectors(species.name, category);
+            species.selectors[category] = selectors.sort((a, b) => {return a.selector <= b.selector? -1 : 1});
+        }
+        var selector = selections.selector;
+        if (selector !== null && category !== null) {
+            selector = species.selectors[category].find(s => {return s.selector === selector.selector});
+            selections.celector = selector === undefined ? null : selector;    
+        }
+    }
+
+    async updateMethod(selections, force = true) {
+        const species = selections.class;
+        const selector = selections.selector;
+        if (force) {
+            const method = await this.props.api.getMethod(species.name, selector.selector);
+            selections.method = method;
+        }
+    }
+
+    // Contents..
+    currentVariables() {
+        const species = this.state.selectedClass;
+        return (species == null || species.variables == null)? [] : species.variables;
+    }
+
+    currentCategories = () => {
+        const species = this.state.selectedClass;
+        return (species == null || species.categories == null)? [] : species.categories;
+    }
+
+    currentSelectors = () => {
+        const species = this.state.selectedClass;
+        const category = this.state.selectedCategory;
+        return (species == null || category == null
+            || species.selectors == null)? [] : species.selectors[category];
     }
 
     render() {
@@ -310,8 +250,7 @@ class ClassBrowser extends Component {
             selectedVariable,
             selectedCategory,
             selectedSelector,
-            selectedMethod } = this.state;
-        console.log(selectedSelector)
+            selectedMethod} = this.state;
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         const fixedHeightPaper2 = clsx(this.props.classes.paper, this.props.classes.fixedHeight2);
         return (

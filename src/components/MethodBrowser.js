@@ -16,14 +16,14 @@ class MethodBrowser extends Component {
 
     methodSelected = (method) => {
         this.setState({selectedMethod: method}, () => {
-            this.updateDefinition();
+            this.getDefinition();
         });
     }
 
-    updateDefinition = () => {
+    getDefinition = () => {
         const method = this.state.selectedMethod;
         if (method.classDefinition == null) {
-            this.props.api.definitionOf(method.class)
+            this.props.api.getDefinition(method.class)
                 .then(definition => {
                     method.classDefinition = definition.definitionString;
                     method.classComment = definition.comment;

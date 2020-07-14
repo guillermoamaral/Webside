@@ -3,7 +3,6 @@ import CustomList from './CustomList';
 
 class CategoryList extends Component {
     render() {
-        const size = 14;
         return (
             <CustomList
                 items={this.props.categories}

@@ -31,12 +31,12 @@ class Inspector extends Component {
 
     updateVariables = (object) => {
         if (object.variables !== undefined) { return object.variables }
-        this.props.api.instanceVariablesOf(object.class)
+        this.props.api.getInstanceVariables(object.class)
             .then(variables => {
                 object.variables = [];
                 variables.forEach(v => {
                     const path = object.path + '/' + v.name;
-                    this.props.api.variableOf(this.props.root.id, path)
+                    this.props.api.getVariable(this.props.root.id, path)
                         .then(variable => {
                             variable.name = v.name;
                             variable.path = path;
@@ -68,40 +68,23 @@ class Inspector extends Component {
         return (
             <Box className={this.props.classes.box}>
                 <Grid container spacing={1} justify="center">
-                    {/* <Grid item xs={12} md={12} lg={12}>
-                        <Typography
-                            component="h6"
-                            variant="h6"
-                            color="inherit"
-                            noWrap
-                            className={this.props.classes.title}
-                        >
-                            {root.class + ': ' + root.id}
-                            {this.props.onClose &&
-                                <IconButton onClick={this.close} size="small" >
-                                    <CloseIcon fontSize="small"/>
-                                </IconButton>}
-                        </Typography>
-                    </Grid> */}
-                    <Grid item xs={12} md={12} lg={12}>
-                        <Grid container spacing={1}>
-                            <Grid item xs={12} md={6} lg={6}>
-                                <Paper className={fixedHeightPaper} variant="outlined">
-                                    <CustomTree
-                                        items={objectTree}
-                                        label="name"
-                                        id="id"
-                                        children={"variables"}
-                                        onExpand={this.variableExpanded}
-                                        onSelect={this.variableSelected}
-                                    />
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} md={6} lg={6}>
-                                <Paper className={fixedHeightPaper} variant="outlined">
-                                    {selectedObject.printString}
-                                </Paper>
-                            </Grid>
+                    <Grid container spacing={1}>
+                        <Grid item xs={12} md={6} lg={6}>
+                            <Paper className={fixedHeightPaper} variant="outlined">
+                                <CustomTree
+                                    items={objectTree}
+                                    label="name"
+                                    id="id"
+                                    children={"variables"}
+                                    onExpand={this.variableExpanded}
+                                    onSelect={this.variableSelected}
+                                />
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} md={6} lg={6}>
+                            <Paper className={fixedHeightPaper} variant="outlined">
+                                {selectedObject.printString}
+                            </Paper>
                         </Grid>
                     </Grid>
                 </Grid>

@@ -11,7 +11,6 @@ class ClassTree extends Component {
 
     static getDerivedStateFromProps(props, state) {
         if (props.root !== state.root) {
-            console.log('classTree changed')
             return {
                 items: props.items,
             };
@@ -20,7 +19,7 @@ class ClassTree extends Component {
     }
 
     removeClass = (species) => {
-        this.props.api.removeClass(species.name)
+        this.props.api.deleteClass(species.name)
             .then(response => {
                 const handler = this.props.onRemoved; 
                 if (handler !== undefined) {
@@ -39,7 +38,6 @@ class ClassTree extends Component {
     }
 
     render() {
-        console.log('rendering class tree')
         const root = this.props.classes[this.props.root];
         return (
             <CustomTree
