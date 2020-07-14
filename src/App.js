@@ -209,10 +209,10 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.openTranscript();
+    //this.openTranscript();
     // this.openInspectors();
     // this.openWorkspace();
-    //this.openClassBrowser('Object');
+    this.openClassBrowser('Magnitude');
   }
 
   addPage(label, icon, component) {
@@ -317,7 +317,7 @@ class App extends Component {
 
   addClassBrowserClicked = () => {
     this.setState({addPageMenuOpen: false})
-    this.openClassBrowser('Object')
+    this.openClassBrowser('Magnitude')
   }
 
   addWorkspaceClicked = () => {

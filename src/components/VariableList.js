@@ -1,0 +1,24 @@
+import React, { Component } from 'react';
+import CustomList from './CustomList';
+
+class VariableList extends Component {
+    render() {
+        const size = 14;
+        return (
+            <CustomList
+                items={this.props.variables}
+                label="name"
+                selectedItem={this.props.selectedVariable}
+                onSelect={this.props.onSelect}
+                menuOptions={[
+                    {label: 'Add', action: this.addVariable},
+                    {label: 'Rename', action: this.renameVariable},
+                    {label: 'Remove', action: this.removeVariable},
+                    {label: 'Move to superclass', action: this.moveVariableUp},
+                    {label: 'Move to subclass', action: this.moveVariableDown}]}
+            />
+        )
+    }
+};
+
+export default VariableList;

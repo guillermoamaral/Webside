@@ -14,17 +14,17 @@ class CustomList extends Component {
     }
   }
 
-  // static getDerivedStateFromProps(props, state) {
-  //   if (props.items !== state.items ||
-  //       props.selecteItem !== state.selectedItem) {
-  //         return {
-  //             items: props.items,
-  //             selectedItem: props.selectedItem,
-  //             selectedIndex: props.selectedItem == null ? null : props.items.indexOf(props.selectedItem), 
-  //         };
-  //   }
-  //   return null
-  // }
+  static getDerivedStateFromProps(props, state) {
+    if (
+        props.selecteItem !== state.selectedItem) {
+          return {
+              items: props.items,
+              selectedItem: props.selectedItem,
+              selectedIndex: props.selectedItem == null ? null : props.items.indexOf(props.selectedItem), 
+          };
+    }
+    return null
+  }
 
   createItems = () => {
     if (this.props.items === undefined) { return [] };
@@ -48,6 +48,7 @@ class CustomList extends Component {
   }
 
   itemSelected = (event, index, item) => {
+    event.preventDefault();
     this.setState({selectedItem: item, selectedIndex: index});
     const handler = this.props.onSelect;
     if (handler !== undefined) {

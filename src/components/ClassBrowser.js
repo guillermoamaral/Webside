@@ -4,6 +4,8 @@ import clsx from 'clsx';
 
 import SearchList from './SearchList';
 import ClassTree from './ClassTree';
+import VariableList from './VariableList';
+import CategoryList from './CategoryList';
 import SelectorList from './SelectorList';
 import CustomList from './CustomList';
 import CodeEditor from './CodeEditor';
@@ -57,8 +59,8 @@ class ClassBrowser extends Component {
         if (species !== null) {
             var variable = selections.selectedVariable;
             if (variable !== null) {
-                variable = species.variables.find(v => { return v.name === variable.name });
-                selections.seletectedVariable = variable === undefined ? null : variable;
+                variable = species.variables.find(v => {return v.name === variable.name});
+                selections.selectedVariable = variable === undefined ? null : variable;
             }
             if (!species.categories.includes(selections.selectedCategory)) {
                 selections.selectedCategory = null;
@@ -67,14 +69,13 @@ class ClassBrowser extends Component {
             var selector = selections.selectedSelector;
             if (selector !== null && category !== null) {
                 selector = species.selectors[category].find(s => { return s.selector === selector.selector });
-                selections.seletectedSelector = selector === undefined ? null : selector;    
+                selections.selectedSelector = selector === undefined ? null : selector;    
             }
         }
     }
 
     applySelections(selections) {
-        console.log('applying selections')
-        console.log(selections)
+        this.reviseSelections(selections);
         this.setState((prevState, props) => {
             return {
                 selectedClass: selections.selectedClass,
@@ -275,16 +276,22 @@ class ClassBrowser extends Component {
     }
 
     methodCompiled = (method) => {
+        console.log(method)
         const classes = this.state.classes;
         const selectors = classes[method.class].selectors[method.category];
-        var selector = selectors.find(s => { return s.selector === method.selector });
-        var updates = false;
+        var selector = selectors.find(s => {return s.selector === method.selector});
+        const selections = this.selections();
+        selections.selectedMethod = method;
         if (selector === undefined) {
-            selector = {class: method.class, selector: method.selector};
-            updates = true;
-        } 
-        this.setState({classes: classes, selectedSelector: selector, selectedMethod: method});
-        if (updates) { this.updateSelectors(classes[method.class], method.category, true) }
+            selector = {class: method.class, selector: method.selector}
+            this.updateSelectors(selections, true)
+                .then(() => {
+                    selections.selectedSelector = selector;
+                    this.applySelections(selections)})
+        } else {
+            selections.selectedSelector = selector;
+            this.applySelections(selections);
+        }
     }
 
     selectorRemoved = (selector) => {
@@ -304,6 +311,7 @@ class ClassBrowser extends Component {
             selectedCategory,
             selectedSelector,
             selectedMethod } = this.state;
+        console.log(selectedSelector)
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         const fixedHeightPaper2 = clsx(this.props.classes.paper, this.props.classes.fixedHeight2);
         return (
@@ -330,10 +338,9 @@ class ClassBrowser extends Component {
                         </Grid>
                         <Grid item xs={12} md={3} lg={3}>
                             <Paper  className={fixedHeightPaper} variant="outlined">
-                                <CustomList
-                                    items={this.currentVariables()}
-                                    label="name"
-                                    selectedItem={selectedVariable}
+                                <VariableList
+                                    variables={this.currentVariables()}
+                                    selectedVariable={selectedVariable}
                                     onSelect={this.variableSelected}/>
                             </Paper>
                         </Grid>
@@ -355,9 +362,9 @@ class ClassBrowser extends Component {
                                 </Grid>
                                 <Grid item xs={12} md={12} lg={12}>
                                     <Paper className={fixedHeightPaper2} variant="outlined">
-                                        <CustomList
-                                            items={this.currentCategories()}
-                                            selectedItem={selectedCategory}
+                                        <CategoryList
+                                            categories={this.currentCategories()}
+                                            selectedCategory={selectedCategory}
                                             onSelect={this.categorySelected}/>
                                     </Paper>
                                 </Grid>
