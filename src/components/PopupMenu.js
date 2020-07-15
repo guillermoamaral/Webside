@@ -1,21 +1,25 @@
 import React, { Component } from 'react';
-import { Menu, MenuItem } from '@material-ui/core';
+import { Menu, MenuItem, Divider } from '@material-ui/core';
 
 class PopupMenu extends Component {
     createItems = () => {
-        if (this.props.options === undefined) { return [] };
+        if (this.props.options === undefined) {return []};
         return (
             this.props.options.map(option => {
-                return (
-                    <MenuItem
-                        key={option.label}
-                        id={option.id}
-                        onClick={(event) => this.itemClicked(event, option)}
-                        style={{paddingTop: 0, paddingBottom: 0}}
-                    >
-                        {option.label}
-                    </MenuItem>
-                )
+                 if (option == null) {
+                    return <Divider key="divider"/>
+                } else {
+                    return (
+                        <MenuItem
+                            key={option.label}
+                            id={option.id}
+                            onClick={(event) => this.itemClicked(event, option)}
+                            style={{paddingTop: 0, paddingBottom: 0}}
+                        >
+                            {option.label}
+                        </MenuItem>
+                    )
+                }
             })
         )
     }

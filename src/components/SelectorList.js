@@ -4,7 +4,6 @@ import { ArrowUpDownBold, ArrowUpBold, ArrowDownBold } from 'mdi-material-ui';
 
 class SelectorList extends Component {
     removeSelector = (selector) => {
-        console.log(selector)
         this.props.api.deleteMethod(selector.class, selector.selector)
             .then(response => {
                 if (this.props.onRemoved !== undefined) {
@@ -15,7 +14,7 @@ class SelectorList extends Component {
     }
 
     browseSenders = (selector) => {
-        if (this.props.globalOptions === undefined) { return }
+        if (this.props.globalOptions === undefined) {return}
         const option = this.props.globalOptions.browseSenders;
         if (option !== undefined) {
             option(selector.selector)
@@ -23,7 +22,7 @@ class SelectorList extends Component {
     }
 
     browseImplementors = (selector) => {
-        if (this.props.globalOptions === undefined) { return }
+        if (this.props.globalOptions === undefined) {return}
         const option = this.props.globalOptions.browseImplementors;
         if (option !== undefined) {
             option(selector.selector)
@@ -31,7 +30,7 @@ class SelectorList extends Component {
     }
 
     browseReferences = (selector) => {
-        if (this.props.globalOptions === undefined) { return }
+        if (this.props.globalOptions === undefined) {return}
         const option = this.props.globalOptions.browseReferences;
         if (option !== undefined) {
             option(selector.class)
@@ -39,7 +38,7 @@ class SelectorList extends Component {
     }
 
     render() {
-        const size = 14;
+        const size = 12;
         const selectors = this.props.selectors == null ? [] : this.props.selectors;
         return (
             <CustomList
@@ -60,8 +59,10 @@ class SelectorList extends Component {
                     return null
                 })}
                 menuOptions={[
+                    {label: 'New', action: this.newSelector},
                     {label: 'Rename', action: this.renameSelector},
                     {label: 'Remove', action: this.removeSelector},
+                    null,
                     {label: 'Senders', action: this.browseSenders},
                     {label: 'Implementors', action: this.browseImplementors},
                     {label: 'Class references', action: this.browseReferences}]}

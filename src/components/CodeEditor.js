@@ -57,7 +57,7 @@ class CodeEditor extends Component {
         this.props.api.defineClass(this.props.class, definitionString)
             .then(definition => {
                 this.setState({definition: definition.definitionString});
-                if (this.props.onClassDefined !== undefined) { 
+                if (this.props.onClassDefined !== undefined) {
                     const handler = this.props.onClassDefined;
                     handler(definition)
                 }
@@ -69,7 +69,7 @@ class CodeEditor extends Component {
         this.props.api.commentClass(this.props.class, comment)
             .then(definition => {
                 this.setState({comment: definition.comment});
-                if (this.props.onClassCommented !== undefined) { 
+                if (this.props.onClassCommented !== undefined) {
                     const handler = this.props.onClassCommented;
                     handler.bind(this);
                     handler(definition)
@@ -82,7 +82,7 @@ class CodeEditor extends Component {
         this.props.api.compileMethod(this.props.class, this.props.category, source)
             .then(method => {
                 this.setState({source: method.source, selector: method.selector})
-                if (this.props.onMethodCompiled !== undefined) { 
+                if (this.props.onMethodCompiled !== undefined) {
                     const handler = this.props.onMethodCompiled;
                     handler.bind(this);
                     handler(method)
@@ -91,8 +91,8 @@ class CodeEditor extends Component {
     }
     
     saveClicked = (event) => {
-        const { value } = this.state;
-        switch (this.state.mode) { 
+        const value = this.state.value;
+        switch (this.state.mode) {
             case "comment":
                 this.commentClass(value);
                 break;

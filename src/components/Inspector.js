@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Box, Grid, Typography, Paper, IconButton } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import { Box, Grid, Paper } from '@material-ui/core';
 import clsx from 'clsx';
 
 import CustomTree from './CustomTree';
@@ -9,7 +8,7 @@ class Inspector extends Component {
     constructor(props) {
         super(props);
         this.reportError = props.onError.bind();
-        if (this.props.onClose !== undefined) { this.props.onClose.bind() };
+        if (this.props.onClose !== undefined) {this.props.onClose.bind()};
         const root = this.props.root;
         root.name = 'self';
         root.path = '';
@@ -30,7 +29,7 @@ class Inspector extends Component {
     }
 
     updateVariables = (object) => {
-        if (object.variables !== undefined) { return object.variables }
+        if (object.variables !== undefined) {return object.variables}
         this.props.api.getInstanceVariables(object.class)
             .then(variables => {
                 object.variables = [];
@@ -48,7 +47,7 @@ class Inspector extends Component {
                         .catch(error => {})    
                 });
             })
-            .catch(error => { return [] })
+            .catch(error => {return []})
     }
 
     variableSelected = (object) => {
@@ -62,12 +61,11 @@ class Inspector extends Component {
     }
 
     render() {
-        const root = this.props.root;
-        const { objectTree, selectedObject } = this.state;
+        const {objectTree, selectedObject} = this.state;
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         return (
             <Box className={this.props.classes.box}>
-                <Grid container spacing={1} justify="center">
+                <Grid container spacing={1}>
                     <Grid container spacing={1}>
                         <Grid item xs={12} md={6} lg={6}>
                             <Paper className={fixedHeightPaper} variant="outlined">

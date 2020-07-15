@@ -45,7 +45,7 @@ class Workspace extends Component {
         this.setState({inspectors: inspectors})
     }
 
-    closeInspector = (id) => { 
+    closeInspector = (id) => {
         this.setState({inspectors: this.state.inspectors.filter((i) => {return i.props.root.id !== id})});
     }
     
@@ -105,9 +105,9 @@ class Workspace extends Component {
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={4} lg={4}>
-                    {this.state.inspectors.map(inspector => {
+                    {this.state.inspectors.map((inspector, index) => {
                         return (
-                            <Accordion key={inspector.key}>
+                            <Accordion key={inspector.key} defaultExpanded={index===0}>
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
                                     id="panel1a-header"
@@ -117,9 +117,7 @@ class Workspace extends Component {
                                         {inspector.props.root.class + ': ' + inspector.props.root.id}
                                     </Typography>
                                 </AccordionSummary>
-                                <AccordionDetails style={{width: "100%"}}>
-                                    {inspector}
-                                </AccordionDetails>
+                                {inspector}
                             </Accordion>
                         )         
                     })}

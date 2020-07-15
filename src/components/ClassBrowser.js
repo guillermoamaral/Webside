@@ -57,7 +57,13 @@ class ClassBrowser extends Component {
 
     applySelections(selections) {
         this.setState((prevState, props) => {
+            const species = selections.class;
+            const classes = prevState.classes;
+            if (species !== undefined && classes[species.name] === undefined) {
+                classes[species.name] = species;
+            }
             return {
+                classes: classes,
                 selectedClass: selections.class,
                 selectedVariable: selections.variable,
                 selectedCategory: selections.category,
@@ -152,7 +158,6 @@ class ClassBrowser extends Component {
     }
 
     selectorRemoved = (selector) => {
-        console.log(selector)
         const classes = this.state.classes;
         const category = this.state.selectedCategory;
         var selectors = classes[selector.class].selectors[category];
@@ -168,7 +173,7 @@ class ClassBrowser extends Component {
     }
 
     async updateDefinition(selections, force = false) {
-        const species = selections.class; 
+        const species = selections.class;
         if (force || species.definitionString === undefined) {
             const definition = await this.props.api.getDefinition(species.name);
             species.definitionString = definition.definitionString;

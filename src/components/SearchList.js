@@ -11,7 +11,7 @@ import { Typography } from '@material-ui/core';
 const LISTBOX_PADDING = 0; // px
 
 function renderRow(props) {
-  const { data, index, style } = props;
+  const {data, index, style} = props;
   return React.cloneElement(data[index], {
     style: {
       ...style,
@@ -38,10 +38,10 @@ function useResetCache(data) {
 
 // Adapter for react-window
 const ListboxComponent = React.forwardRef(function ListboxComponent(props, ref) {
-  const { children, ...other } = props;
+  const {children, ...other} = props;
   const itemData = React.Children.toArray(children);
   const theme = useTheme();
-  const smUp = useMediaQuery(theme.breakpoints.up('sm'), { noSsr: true });
+  const smUp = useMediaQuery(theme.breakpoints.up('sm'), {noSsr: true});
   const itemCount = itemData.length;
   const itemSize = smUp ? 36 : 48;
 

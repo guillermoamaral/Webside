@@ -16,11 +16,11 @@ class MethodBrowser extends Component {
 
     methodSelected = (method) => {
         this.setState({selectedMethod: method}, () => {
-            this.getDefinition();
+            this.updateDefinition();
         });
     }
 
-    getDefinition = () => {
+    updateDefinition = () => {
         const method = this.state.selectedMethod;
         if (method.classDefinition == null) {
             this.props.api.getDefinition(method.class)
@@ -43,6 +43,7 @@ class MethodBrowser extends Component {
                             api={this.props.api}
                             globalOptions={this.props.globalOptions}
                             showClass={true}
+                            selectedSelector={method}
                             selectors={this.props.methods}
                             onSelect={this.methodSelected}/>
                     </Paper>

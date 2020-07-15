@@ -30,7 +30,7 @@ class ClassTree extends Component {
     }
 
     browseReferences = (species) => {
-        if (this.props.globalOptions === undefined) { return }
+        if (this.props.globalOptions === undefined) {return}
         const option = this.props.globalOptions.browseReferences;
         if (option !== undefined) {
             option(species.name)
@@ -48,8 +48,10 @@ class ClassTree extends Component {
                 onSelect={this.props.onSelect}
                 selectedItem={this.props.selectedClass}
                 menuOptions={[
+                    {label: 'New', action: this.newClass},
                     {label: 'Rename', action: this.renameClass},
                     {label: 'Remove', action: this.removeClass},
+                    null,
                     {label: 'References', action: this.browseReferences}]}
             />
         )

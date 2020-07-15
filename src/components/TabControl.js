@@ -4,7 +4,7 @@ import { Tabs, Tab, Box, IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 
 function TabPanel(props) {
-  const { id, children, visible, ...other } = props;
+  const {id, children, visible, ...other} = props;
   return (
     <div
       role="tabpanel"

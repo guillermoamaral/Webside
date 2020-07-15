@@ -27,7 +27,7 @@ class CustomList extends Component {
   }
 
   createItems = () => {
-    if (this.props.items === undefined) { return [] };
+    if (this.props.items === undefined) {return []};
     return (
       this.props.items.map((item, index) => {
         return (
@@ -48,7 +48,6 @@ class CustomList extends Component {
   }
 
   itemSelected = (event, index, item) => {
-    event.preventDefault();
     this.setState({selectedItem: item, selectedIndex: index});
     const handler = this.props.onSelect;
     if (handler !== undefined) {
@@ -58,9 +57,9 @@ class CustomList extends Component {
 
   getItemLabel = (item) => {
     const getter = this.props.label;
-    if (getter === undefined) { return item }    
-    if (typeof getter == "string")  { return item[getter] }
-    getter.bind(this);
+    if (getter === undefined) {return item}    
+    if (typeof getter == "string")  {return item[getter]}
+    //getter.bind(this);
     return getter(item)
   }
 
@@ -76,9 +75,9 @@ class CustomList extends Component {
   }
 
   menuOptions() {
-    if (this.props.menuOptions === undefined) { return undefined };
+    if (this.props.menuOptions === undefined) {return undefined};
     return this.props.menuOptions.map(o => {
-        return {
+        return o == null? null : {
           label: o.label,
           action: () => {this.menuOptionClicked(o)}
         }
@@ -96,7 +95,9 @@ class CustomList extends Component {
   }
 
   menuOptionClicked(option) {
-    option.action(this.state.selectedItem);
+    if (option.action !== undefined) {
+      option.action(this.state.selectedItem);
+    }
   }
 
   render () {
@@ -105,7 +106,7 @@ class CustomList extends Component {
         <List style={{paddingTop: 0, paddingBottom: 0}}>
           {this.createItems()}
         </List>
-        { 
+        {
           <PopupMenu
             options={this.menuOptions()}
             open={this.state.menuOpen}

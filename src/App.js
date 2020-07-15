@@ -103,18 +103,19 @@ const styles = theme => ({
   },
   container: {
     paddingTop: theme.spacing(0),
-    paddingLeft: theme.spacing(0)
+    paddingLeft: theme.spacing(0),
   },
   paper: {
     padding: theme.spacing(1),
     //display: "flex",
     overflow: "auto",
+    width: '100%',
     //maxHeight: 240,
     //flexDirection: "row."
     //color: theme.palette.secondary.main,
   },
   box: {
-    //backgroundColor: theme.palette.primary.main,
+    //backgroundColor: 'white',
   },
   tabControl: {
     flexGrow: 1,
@@ -212,7 +213,7 @@ class App extends Component {
     //this.openTranscript();
     // this.openInspectors();
     // this.openWorkspace();
-    this.openClassBrowser('Object');
+    this.openClassBrowser('Collection');
   }
 
   addPage(label, icon, component) {
@@ -352,7 +353,7 @@ class App extends Component {
                 </Grid>
                 <Grid item xs={1} md={1} lg={1}>
                   <IconButton id="addPageButton" color="primary" onClick={() => {this.setState({addPageMenuOpen: true})}}>
-                    <AddIcon style={{ fontSize: 40 }}/>
+                    <AddIcon style={{fontSize: 40}}/>
                   </IconButton>
                   <Menu
                     id="addPageMenu"

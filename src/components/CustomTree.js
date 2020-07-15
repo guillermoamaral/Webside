@@ -41,22 +41,22 @@ class CustomTree extends Component {
 
     getItemId = (item) => {
         const getter = this.props.id;
-        if (getter === undefined) { return this.getItemLabel(item) }    
-        if (typeof getter == "string")  { return item[getter].toString() }
+        if (getter === undefined) {return this.getItemLabel(item)}    
+        if (typeof getter == "string")  {return item[getter].toString()}
         return getter(item)
       }
 
     getItemLabel = (item) => {
         const getter = this.props.label;
-        if (getter === undefined) { return item }    
-        if (typeof getter == "string")  { return item[getter] }
+        if (getter === undefined) {return item}    
+        if (typeof getter == "string")  {return item[getter]}
         return getter(item)
       }
 
     getItemChildren = (item) => {
         const getter = this.props.children;
-        if (getter === undefined) { return null }    
-        if (typeof getter == "string")  { return item[getter] }
+        if (getter === undefined) {return null}    
+        if (typeof getter == "string")  {return item[getter]}
         return getter(item)
     }
 
@@ -78,9 +78,9 @@ class CustomTree extends Component {
     };
 
     menuOptions() {
-        if (this.props.menuOptions === undefined) { return undefined };
+        if (this.props.menuOptions === undefined) {return undefined};
         return this.props.menuOptions.map(o => {
-            return {
+            return o == null ? null : {
               label: o.label,
               action: () => {this.menuOptionClicked(o)}
             }
@@ -114,7 +114,7 @@ class CustomTree extends Component {
                 >
                 {this.createItems(this.props.items)}
             </TreeView>
-            { 
+            {
               <PopupMenu
                 options={this.menuOptions()}
                 open={this.state.menuOpen}
