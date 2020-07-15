@@ -153,7 +153,7 @@ class API {
         const change = this.newChange('ClassRemove');
         change.class = classname;
         try {
-            return await axios.postChange(change);
+            return await this.postChange(change);
         }
         catch (error) {this.handleError('Cannot remove class ' + classname, error) }
     }

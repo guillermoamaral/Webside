@@ -11,11 +11,10 @@ import {
 } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { amber , blue } from '@material-ui/core/colors';
-
 import AddIcon from '@material-ui/icons/AddCircle';
+import { ConfirmProvider } from 'material-ui-confirm';
 
 import API from './components/API';
-
 import TranscriptIcon from './Icons/TranscriptIcon';
 import ClassBrowserIcon from './Icons/ClassBrowserIcon';
 import MethodBrowserIcon from './Icons/MethodBrowserIcon';
@@ -329,53 +328,55 @@ class App extends Component {
   render () {
     return (
       <ThemeProvider theme={theme}>
-        <div className={this.props.classes.root}>
-          <CssBaseline/>
-          <Titlebar
-            title={smalltalk + ' Web IDE'}
-            classes={this.props.classes}
-            sidebarExpanded={this.state.sidebarExpanded}
-            expandSidebar={this.expandSidebar} />
-          <Sidebar
-            classes={this.props.classes}
-            expanded={this.state.sidebarExpanded}
-            onClose={this.collapseSidebar}/>
-          <main className={this.props.classes.content}>
-            <div className={this.props.classes.appBarSpacer} />
-            <Container className={this.props.classes.container}>
-              <Grid container spacing={1}>
-                <Grid item xs={11} md={11} lg={11}>
-                    <TabControl
-                      classes={this.props.classes}
-                      selectedPage={this.state.selectedPage}
-                      pages={this.state.pages}
-                      onClose={this.removePage}/>
+        <ConfirmProvider>
+          <div className={this.props.classes.root}>
+            <CssBaseline/>
+            <Titlebar
+              title={smalltalk + ' Web IDE'}
+              classes={this.props.classes}
+              sidebarExpanded={this.state.sidebarExpanded}
+              expandSidebar={this.expandSidebar}/>
+            <Sidebar
+              classes={this.props.classes}
+              expanded={this.state.sidebarExpanded}
+              onClose={this.collapseSidebar}/>
+            <main className={this.props.classes.content}>
+              <div className={this.props.classes.appBarSpacer} />
+              <Container className={this.props.classes.container}>
+                <Grid container spacing={1}>
+                  <Grid item xs={11} md={11} lg={11}>
+                      <TabControl
+                        classes={this.props.classes}
+                        selectedPage={this.state.selectedPage}
+                        pages={this.state.pages}
+                        onClose={this.removePage}/>
+                  </Grid>
+                  <Grid item xs={1} md={1} lg={1}>
+                    <IconButton id="addPageButton" color="primary" onClick={() => {this.setState({addPageMenuOpen: true})}}>
+                      <AddIcon style={{fontSize: 40}}/>
+                    </IconButton>
+                    <Menu
+                      id="addPageMenu"
+                      anchorEl={document.getElementById("addPageButton")}
+                      keepMounted
+                      open={this.state.addPageMenuOpen}
+                      onClose={() => {this.setState({addPageMenuOpen: false})}}
+                    >
+                      <MenuItem onClick={this.addClassBrowserClicked}>
+                        <ClassBrowserIcon />
+                        Class Browse
+                      </MenuItem>
+                      <MenuItem onClick={this.addWorkspaceClicked}>
+                        <WorkspaceIcon />
+                        New Workspace
+                      </MenuItem>
+                    </Menu>
+                  </Grid>
                 </Grid>
-                <Grid item xs={1} md={1} lg={1}>
-                  <IconButton id="addPageButton" color="primary" onClick={() => {this.setState({addPageMenuOpen: true})}}>
-                    <AddIcon style={{fontSize: 40}}/>
-                  </IconButton>
-                  <Menu
-                    id="addPageMenu"
-                    anchorEl={document.getElementById("addPageButton")}
-                    keepMounted
-                    open={this.state.addPageMenuOpen}
-                    onClose={() => {this.setState({addPageMenuOpen: false})}}
-                  >
-                    <MenuItem onClick={this.addClassBrowserClicked}>
-                      <ClassBrowserIcon />
-                      Class Browse
-                    </MenuItem>
-                    <MenuItem onClick={this.addWorkspaceClicked}>
-                      <WorkspaceIcon />
-                      New Workspace
-                    </MenuItem>
-                  </Menu>
-                </Grid>
-              </Grid>
-            </Container>
-          </main>
-        </div>
+              </Container>
+            </main>
+          </div>
+        </ConfirmProvider>
       </ThemeProvider>
     )
   }

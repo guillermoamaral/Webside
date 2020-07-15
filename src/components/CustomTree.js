@@ -11,10 +11,20 @@ class CustomTree extends Component {
         this.state = {
             items: props.items,
             selectedItem: props.selectedItem,
-            selectedId: props.selectedItem == null ? null : this.getItemId(props.selectedItem),
             menuOpen: false,
             menuPosition: {x: null, y: null}
         }
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (
+            props.selecteItem !== state.selectedItem) {
+              return {
+                  items: props.items,
+                  selectedItem: props.selectedItem,
+              };
+        }
+        return null
     }
 
     createItems = (items) => {
@@ -28,8 +38,8 @@ class CustomTree extends Component {
                         key={label + "-item-" + index}
                         nodeId={id}
                         label={label}
-                        onLabelClick={(event) => this.itemSelected(event, index, item)}
-                        onIconClick={(event) => this.itemToggled(event, index, item)}
+                        onLabelClick={(event) => this.itemSelected(event, item)}
+                        onIconClick={(event) => this.itemToggled(event, item)}
                         onContextMenu={this.openMenu}
                         >
                             {Array.isArray(children) ? this.createItems(children) : null}
@@ -60,9 +70,9 @@ class CustomTree extends Component {
         return getter(item)
     }
 
-    itemSelected = (event, index, item) => {
+    itemSelected = (event, item) => {
         event.preventDefault();
-        this.setState({selectedItem: item, selectedIndex: index});
+        this.setState({selectedItem: item});
         const handler = this.props.onSelect;
         if (handler !== undefined) {
 
@@ -70,7 +80,7 @@ class CustomTree extends Component {
         }
     };
 
-    itemToggled = (event, index, item) => {
+    itemToggled = (event, item) => {
         const handler = this.props.onExpand;
         if (handler !== undefined) {
             handler(item);
@@ -98,19 +108,19 @@ class CustomTree extends Component {
     }
     
     menuOptionClicked(option) {
-        option.action.bind();
-        option.action(this.state.selectedItem);
+        if (option.action !== undefined) {
+            option.action(this.state.selectedItem);
+        }
     }
 
     render() {
-        console.log('rendering tree')
         return (
             <div>
             <TreeView
                 defaultCollapseIcon={<ArrowDropDownIcon />}
                 defaultExpanded={['root']}
                 defaultExpandIcon={<ArrowRightIcon />}
-                defaultSelected={this.state.selectedId}
+                selected={this.state.selectedItem === null ? null : this.getItemId(this.state.selectedItem)}
                 >
                 {this.createItems(this.props.items)}
             </TreeView>

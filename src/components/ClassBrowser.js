@@ -129,7 +129,13 @@ class ClassBrowser extends Component {
             current.definitionString = species.definitionString;
             this.classSelected(current);
         } else {
-            this.changeRoot(species.name)
+            classes[species.name] = species;
+            const superclass = classes[species.superclass];
+            if (superclass !== undefined) {
+                superclass.subclasses.push(species);
+                superclass.subclasses.sort((a, b) => {return a.name <= b.name? -1 : 1});
+            }
+            this.setState({classes: classes}, () => this.classSelected(species))
         }
     }
 
@@ -140,7 +146,15 @@ class ClassBrowser extends Component {
     }
 
     classRemoved = (species) => {
-        console.log(species)
+        const classes = this.state.classes;
+        delete classes[species.name];
+        const superclass = classes[species.superclass];
+        if (superclass !== undefined) {
+            superclass.subclasses = superclass.subclasses.filter(c => c !== species);
+            this.setState({classes: classes}, () => this.classSelected(superclass));
+        } else {
+            this.changeRoot('Object')
+        }
     }
 
     methodCompiled = async (method) => {
