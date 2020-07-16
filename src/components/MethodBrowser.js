@@ -15,14 +15,12 @@ class MethodBrowser extends Component {
     }
 
     methodSelected = (method) => {
-        this.setState({selectedMethod: method}, () => {
-            this.updateDefinition();
-        });
+        this.updateDefinition(method);
+        this.setState({selectedMethod: method});
     }
 
-    updateDefinition = () => {
-        const method = this.state.selectedMethod;
-        if (method.classDefinition == null) {
+    updateDefinition = (method) => {
+        if (method.classDefinition === undefined) {
             this.props.api.getDefinition(method.class)
                 .then(definition => {
                     method.classDefinition = definition.definitionString;
@@ -53,16 +51,13 @@ class MethodBrowser extends Component {
                         <CodeEditor
                             classes={this.props.classes}
                             baseUri={this.props.baseUri}
-                            class={method == null ? '' : method.class}
                             definition={method == null ? '' : method.classDefinition}
                             comment={method == null ? '' : method.classComment}
-                            category={method == null ? '' : method.category}
-                            selector={method == null ? '' : method.selector}
                             source={method == null ? '' : method.source}
                             onError={this.reportError}
-                            onClassDefined={this.classDefined}
-                            onClassCommented={this.classCommented}
-                            onMethodCompiled={this.methodCompiled}
+                            onDefine={this.defineClass}
+                            onComment={this.commentClass}
+                            onCompile={this.compileMethod}
                             />
                     </Paper>
                 </Grid> 

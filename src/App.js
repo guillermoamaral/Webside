@@ -12,7 +12,6 @@ import {
 import { ThemeProvider } from '@material-ui/styles';
 import { amber , blue } from '@material-ui/core/colors';
 import AddIcon from '@material-ui/icons/AddCircle';
-import { ConfirmProvider } from 'material-ui-confirm';
 
 import API from './components/API';
 import TranscriptIcon from './Icons/TranscriptIcon';
@@ -30,8 +29,25 @@ import Inspector from './components/Inspector';
 import Workspace from './components/Workspace';
 
 const smalltalk = 'Bee';
-const port = 9000 //window.location.port;
-const baseUri = `http://${window.location.hostname}:${port}/bee`;
+var port;
+var baseUri;
+var mainPrimaryColor;
+var mainSecondaryColor;
+
+switch (smalltalk) {
+  case "Bee": 
+    port = 9000 //window.location.port;
+    baseUri = `http://${window.location.hostname}:${port}/bee`;
+    mainPrimaryColor = amber[300];
+    mainSecondaryColor = amber[800];
+    break;  
+  case "Pharo":
+    port = 9001 //window.location.port;
+    baseUri = `http://${window.location.hostname}:${port}/pharo`;
+    mainPrimaryColor = blue[300];
+    mainSecondaryColor = blue[800];
+    break;
+}
 
 const drawerWidth = 240;
 const styles = theme => ({
@@ -151,10 +167,10 @@ const styles = theme => ({
   },
   codeMirror: {
     fontFamily: theme.typography.fontFamily,
-    fontSize: "20px",
+    fontSize: "16px",
     backgroundColor: theme.palette.background.paper,
-    //height: "100%",
-    //maxHeight: 200,
+    height: "100%",
+    maxHeight: 200,
   },
   grow: {
     flexGrow: 1
@@ -172,11 +188,11 @@ const theme = createMuiTheme({
   palette: {
     type: "dark",
     primary: {
-      main: amber[300],
+      main: mainPrimaryColor,
       background: 'black'
     },
     secondary: {
-      main: amber[900]
+      main: mainSecondaryColor,
     },
     text: {
       primary: "#aaaaaa",
@@ -328,7 +344,6 @@ class App extends Component {
   render () {
     return (
       <ThemeProvider theme={theme}>
-        <ConfirmProvider>
           <div className={this.props.classes.root}>
             <CssBaseline/>
             <Titlebar
@@ -376,7 +391,6 @@ class App extends Component {
               </Container>
             </main>
           </div>
-        </ConfirmProvider>
       </ThemeProvider>
     )
   }

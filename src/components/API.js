@@ -158,6 +158,16 @@ class API {
         catch (error) {this.handleError('Cannot remove class ' + classname, error) }
     }
 
+    async deleteCategory(classname, category) {
+        const change = this.newChange('CategoryRemove');
+        change.class = classname;
+        change.category = category;
+        try {
+            return await this.postChange(change);
+        }
+        catch (error) {this.handleError('Cannot remove category ' + category + ' from class ' + classname, error) }
+    }
+
     async compileMethod(classname, category, source) {
         try {
             const change = this.newChange('MethodDefinition');

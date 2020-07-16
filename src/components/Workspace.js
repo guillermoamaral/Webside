@@ -82,7 +82,7 @@ class Workspace extends Component {
                     <Grid item xs={12} md={12} lg={12}>
                         <Paper variant="outlined">
                             <CodeMirror
-                                className={this.props.classes.codeEditor}
+                                className={this.props.classes.codeMirror}
                                 value={this.state.expression}
                                 options={{
                                     mode: 'smalltalk',

@@ -13,11 +13,8 @@ class CodeEditor extends Component {
         super(props);
         this.reportError = props.onError.bind();
         this.state = {
-            class: props.class,
             definition: props.definition,
             comment: props.comment,
-            category: props.category,
-            selector: props.selector,
             source: props.source,
             mode: "source",
             dirty: false,
@@ -26,18 +23,12 @@ class CodeEditor extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.class !== state.class ||
-            props.definition !== state.definition ||
+        if (props.definition !== state.definition ||
             props.comment !== state.comment ||
-            props.category !== state.category ||
-            props.selector !== state.selector ||
             props.source !== state.source) {
             return {
-                class: props.class,
                 definition: props.definition,
                 comment: props.comment,
-                category: props.category,
-                selector: props.selector,
                 source: props.source,
                 value: props[state.mode],
             }
@@ -53,54 +44,38 @@ class CodeEditor extends Component {
         this.setState({mode: mode, value: this.state[mode]})
     }
 
-    defineClass = (definitionString) => {
-        this.props.api.defineClass(this.props.class, definitionString)
-            .then(definition => {
-                this.setState({definition: definition.definitionString});
-                if (this.props.onClassDefined !== undefined) {
-                    const handler = this.props.onClassDefined;
-                    handler(definition)
-                }
-            })
-            .catch(error => {})
+    define = (definition) => {
+        const handler = this.props.onDefine;
+        if (handler !== undefined) {
+            handler(definition);
+        }
     }
     
-    commentClass = (comment) => {
-        this.props.api.commentClass(this.props.class, comment)
-            .then(definition => {
-                this.setState({comment: definition.comment});
-                if (this.props.onClassCommented !== undefined) {
-                    const handler = this.props.onClassCommented;
-                    handler.bind(this);
-                    handler(definition)
-                }
-            })
-            .catch(error => {})
+    comment = (comment) => {
+        const handler = this.props.onComment;
+        if (handler !== undefined) {
+            handler(comment);
+        }
     }
 
-    compileMethod = (source) => {
-        this.props.api.compileMethod(this.props.class, this.props.category, source)
-            .then(method => {
-                this.setState({source: method.source, selector: method.selector})
-                if (this.props.onMethodCompiled !== undefined) {
-                    const handler = this.props.onMethodCompiled;
-                    handler.bind(this);
-                    handler(method)
-                }})
-            .catch(error => {})
+    compile = (source) => {
+        const handler = this.props.onCompile;
+        if (handler !== undefined) {
+            handler(source);
+        }
     }
     
     saveClicked = (event) => {
         const value = this.state.value;
         switch (this.state.mode) {
             case "comment":
-                this.commentClass(value);
+                this.comment(value);
                 break;
             case "definition":
-                this.defineClass(value);
+                this.define(value);
                 break;
             case "source":    
-                this.compileMethod(value);
+                this.compile(value);
                 break;
             default:
         }
@@ -136,7 +111,7 @@ class CodeEditor extends Component {
                 <Grid item xs={12} md={12} lg={12}>
                     <Paper variant="outlined">
                         <CodeMirror
-                            className={this.props.classes.codeEditor}
+                            className={this.props.classes.codeMirror}
                             value={this.state.value}
                             options={{
                                 mode: 'smalltalk',

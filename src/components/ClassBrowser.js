@@ -73,110 +73,22 @@ class ClassBrowser extends Component {
         })
     }
 
-    // Events...
-    classSelected = async (species) => {
-        const selections = this.currentSelections();
-        selections.class = species;
-        await this.updateDefinition(selections);
-        await this.updateVariables(selections);
-        await this.updateCategories(selections);
-        await this.updateSelectors(selections);
-        this.applySelections(selections)
+    // Contents..
+       currentVariables() {
+        const species = this.state.selectedClass;
+        return (species == null || species.variables == null)? [] : species.variables;
     }
 
-    // classExpanded = (species) => {
-    //     species.subclasses.forEach(c => {
-    //         this.updateClasses(species);
-    //     })
-    // }    
-
-    variableSelected = async (variable) => {
-        const selections = this.currentSelections();
-        selections.variable = variable;
-        await this.updateSelectors(selections);
-        this.applySelections(selections);
+    currentCategories = () => {
+        const species = this.state.selectedClass;
+        return (species == null || species.categories == null)? [] : species.categories;
     }
 
-    categorySelected = async (category) => {
-        const selections = this.currentSelections();
-        selections.category = category;
-        await this.updateSelectors(selections);
-        this.applySelections(selections);
-    }
-
-    selectorSelected = async (selector) => {
-        const selections = this.currentSelections();
-        selections.selector = selector;
-        await this.updateMethod(selections);
-        this.applySelections(selections)   
-    }
-
-    sideChanged = (event, side) => {
-        if (side == null) return;
-        this.setState({side: side});
-        if (side === "instance") {
-            const name = this.state.root;
-            this.changeRoot(name.slice(0, name.length - 6))
-        } else {
-            this.changeRoot(this.state.root + " class")
-        }
-    }
-
-    classDefined = (species) => {
-        const classes = this.state.classes;
-        const current = classes[species.name];
-        if (current !== undefined) {
-            current.definitionString = species.definitionString;
-            this.classSelected(current);
-        } else {
-            classes[species.name] = species;
-            const superclass = classes[species.superclass];
-            if (superclass !== undefined) {
-                superclass.subclasses.push(species);
-                superclass.subclasses.sort((a, b) => {return a.name <= b.name? -1 : 1});
-            }
-            this.setState({classes: classes}, () => this.classSelected(species))
-        }
-    }
-
-    classCommented = (species) => {
-        const classes = this.state.classes;
-        classes[species.name].comment = species.comment;
-        this.setState({classes: classes})
-    }
-
-    classRemoved = (species) => {
-        const classes = this.state.classes;
-        delete classes[species.name];
-        const superclass = classes[species.superclass];
-        if (superclass !== undefined) {
-            superclass.subclasses = superclass.subclasses.filter(c => c !== species);
-            this.setState({classes: classes}, () => this.classSelected(superclass));
-        } else {
-            this.changeRoot('Object')
-        }
-    }
-
-    methodCompiled = async (method) => {
-        const classes = this.state.classes;
-        const species = classes[method.class];
-        const selectors = species.selectors[method.category];
-        var selector = selectors.find(s => {return s.selector === method.selector});
-        const selections = this.currentSelections();
-        if (selector === undefined) {
-            await this.updateSelectors(selections, true);
-            const selectors = species.selectors[method.category];
-            selector = selectors.find(s => {return s.selector === method.selector});
-        }
-        this.selectorSelected(selector);
-    }
-
-    selectorRemoved = (selector) => {
-        const classes = this.state.classes;
+    currentSelectors = () => {
+        const species = this.state.selectedClass;
         const category = this.state.selectedCategory;
-        var selectors = classes[selector.class].selectors[category];
-        classes[selector.class].selectors[category] = selectors.filter(s => {return s.selector !== selector.selector});
-        this.setState({classes: classes})
+        return (species == null || category == null
+            || species.selectors == null)? [] : species.selectors[category];
     }
 
     // Updating...
@@ -243,22 +155,129 @@ class ClassBrowser extends Component {
         }
     }
 
-    // Contents..
-    currentVariables() {
-        const species = this.state.selectedClass;
-        return (species == null || species.variables == null)? [] : species.variables;
+    // Events...
+    classSelected = async (species) => {
+        const selections = this.currentSelections();
+        selections.class = species;
+        await this.updateDefinition(selections);
+        await this.updateVariables(selections);
+        await this.updateCategories(selections);
+        await this.updateSelectors(selections);
+        this.applySelections(selections)
     }
 
-    currentCategories = () => {
-        const species = this.state.selectedClass;
-        return (species == null || species.categories == null)? [] : species.categories;
+    // classExpanded = (species) => {
+    //     species.subclasses.forEach(c => {
+    //         this.updateClasses(species);
+    //     })
+    // }
+
+    defineClass = async (definition) => {
+        const species = await this.props.api.defineClass(this.state.selectedClass.name, definition);    
+        const classes = this.state.classes;
+        const current = classes[species.name];
+        if (current !== undefined) {
+            current.definitionString = species.definitionString;
+            this.classSelected(current);
+        } else {
+            classes[species.name] = species;
+            const superclass = classes[species.superclass];
+            if (superclass !== undefined) {
+                superclass.subclasses.push(species);
+                superclass.subclasses.sort((a, b) => {return a.name <= b.name? -1 : 1});
+            }
+            this.setState({classes: classes}, () => this.classSelected(species))
+        }
+    }
+    
+    commentClass = async (comment) => {
+        const species = await this.props.api.commentClass(this.state.selectedClass.name, comment);
+        const classes = this.state.classes;
+        classes[species.name].comment = species.comment;
+        this.setState({classes: classes})
+    }
+    
+    classRemoved = (species) => {
+        const classes = this.state.classes;
+        delete classes[species.name];
+        const superclass = classes[species.superclass];
+        if (superclass !== undefined) {
+            superclass.subclasses = superclass.subclasses.filter(c => c !== species);
+            this.setState({classes: classes}, () => this.classSelected(superclass));
+        } else {
+            this.changeRoot('Object')
+        }
     }
 
-    currentSelectors = () => {
+    variableSelected = async (variable) => {
+        const selections = this.currentSelections();
+        selections.variable = variable;
+        await this.updateSelectors(selections);
+        this.applySelections(selections);
+    }
+
+    categorySelected = async (category) => {
+        const selections = this.currentSelections();
+        selections.category = category;
+        await this.updateSelectors(selections);
+        this.applySelections(selections);
+    } 
+
+    categoryRemoved = async (category) => {        
+        const selections = this.currentSelections();
+        selections.category = null;
+        await this.updateSelectors(selections);
+        this.applySelections(selections);
+    }    
+
+    selectorSelected = async (selector) => {
+        const selections = this.currentSelections();
+        selections.selector = selector;
+        await this.updateMethod(selections);
+        this.applySelections(selections);
+    }
+
+    selectorRemoved = (selector) => {
+        const classes = this.state.classes;
+        const category = this.state.selectedCategory;
+        var selectors = classes[selector.class].selectors[category];
+        classes[selector.class].selectors[category] = selectors.filter(s => {return s.selector !== selector.selector});
+        this.setState({classes: classes})
+    }
+
+    sideChanged = (event, side) => {
+        if (side == null) return;
+        this.setState({side: side});
+        if (side === "instance") {
+            const name = this.state.root;
+            this.changeRoot(name.slice(0, name.length - 6))
+        } else {
+            this.changeRoot(this.state.root + " class")
+        }
+    }
+
+    compileMethod = async (source) => {
         const species = this.state.selectedClass;
         const category = this.state.selectedCategory;
-        return (species == null || category == null
-            || species.selectors == null)? [] : species.selectors[category];
+        const method = await this.props.api.compileMethod(species.name, category, source);
+        const selections = this.currentSelections();
+        if (!species.categories.includes(method.category)) {
+            await this.updateCategories(selections, true);
+        }
+        selections.category = method.category;
+        const selectors = species.selectors;
+        var selector;
+        if (selectors[method.category] !== undefined) {
+            selector = selectors[method.category].find(s => {return s.selector === method.selector});
+        }
+        if (selector === undefined) {
+            await this.updateSelectors(selections, true);
+            const selectors = species.selectors[method.category];
+            selector = selectors.find(s => {return s.selector === method.selector});
+        }
+        selections.selector = selector;
+        await this.updateMethod(selections);
+        this.applySelections(selections)  
     }
 
     render() {
@@ -297,6 +316,7 @@ class ClassBrowser extends Component {
                         <Grid item xs={12} md={3} lg={3}>
                             <Paper  className={fixedHeightPaper} variant="outlined">
                                 <VariableList
+                                    api={this.props.api}
                                     variables={this.currentVariables()}
                                     selectedVariable={selectedVariable}
                                     onSelect={this.variableSelected}/>
@@ -321,9 +341,12 @@ class ClassBrowser extends Component {
                                 <Grid item xs={12} md={12} lg={12}>
                                     <Paper className={fixedHeightPaper2} variant="outlined">
                                         <CategoryList
+                                            api={this.props.api}
+                                            class={selectedClass}
                                             categories={this.currentCategories()}
                                             selectedCategory={selectedCategory}
-                                            onSelect={this.categorySelected}/>
+                                            onSelect={this.categorySelected}
+                                            onRemoved={this.categoryRemoved}/>
                                     </Paper>
                                 </Grid>
                             </Grid>
@@ -347,16 +370,13 @@ class ClassBrowser extends Component {
                         <CodeEditor
                             classes={this.props.classes}
                             api={this.props.api}
-                            class={selectedClass == null ? '' : selectedClass.name}
                             definition={selectedClass == null ? '' : selectedClass.definitionString}
                             comment={selectedClass == null ? '' : selectedClass.comment}
-                            category={selectedCategory}
-                            selector={selectedSelector == null ? '' : selectedSelector.selector}
                             source={selectedMethod == null ? '' : selectedMethod.source}
                             onError={this.reportError}
-                            onClassDefined={this.classDefined}
-                            onClassCommented={this.classCommented}
-                            onMethodCompiled={this.methodCompiled}
+                            onDefine={this.defineClass}
+                            onComment={this.commentClass}
+                            onCompile={this.compileMethod}
                             />
                     </Paper>
                 </Grid> 
