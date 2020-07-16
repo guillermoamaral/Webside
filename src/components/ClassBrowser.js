@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Paper, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
+import { Grid, Box, Paper, RadioGroup, FormControlLabel, Radio, TextField } from '@material-ui/core';
 import clsx from 'clsx';
 
 import SearchList from './SearchList';
@@ -41,7 +41,7 @@ class ClassBrowser extends Component {
             this.updateClasses(classname)
                 .then(() => {
                     this.classSelected(this.state.classes[classname])})
-            //this.getClassNames();
+            this.getClassNames();
         })
     }
 
@@ -74,7 +74,7 @@ class ClassBrowser extends Component {
     }
 
     // Contents..
-       currentVariables() {
+    currentVariables() {
         const species = this.state.selectedClass;
         return (species == null || species.variables == null)? [] : species.variables;
     }
@@ -293,92 +293,100 @@ class ClassBrowser extends Component {
         const fixedHeightPaper2 = clsx(this.props.classes.paper, this.props.classes.fixedHeight2);
         return (
             <Grid container spacing={1}>
-                <Grid item xs={12} md={6} lg={6}>
-                    <Paper>
-                        {/*<SearchList options={classes}/>*/}
-                    </Paper>
-                </Grid>
                 <Grid item xs={12} md={12} lg={12}>
-                    <Grid container spacing={1}>
-                        <Grid item xs={12} md={3} lg={3}>
-                            <Paper className={fixedHeightPaper} variant="outlined">
-                                <ClassTree
-                                    api={this.props.api}
-                                    globalOptions={this.props.globalOptions}
-                                    classes={classes}
-                                    root={root}
-                                    selectedClass={selectedClass}
-                                    onExpand={this.classExpanded}
-                                    onSelect={this.classSelected}
-                                    onRemoved={this.classRemoved}/>
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} md={3} lg={3}>
-                            <Paper  className={fixedHeightPaper} variant="outlined">
-                                <VariableList
-                                    api={this.props.api}
-                                    variables={this.currentVariables()}
-                                    selectedVariable={selectedVariable}
-                                    onSelect={this.variableSelected}/>
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} md={3} lg={3}>
-                            <Grid container spacing={1} justify="center">
-                                <Grid item xs={12} md={12} lg={12}>
-                                    <RadioGroup
-                                        name="side"
-                                        value={this.state.side}
-                                        onChange={this.sideChanged}
-                                        defaultValue="instance"
-                                        className={this.props.classes.radioGroup}
-                                        size="small"
-                                        row
-                                        >
-                                        <FormControlLabel className={this.props.radioButton} value="instance" control={<Radio size="small" color="primary"/>} label="Instance"/>
-                                        <FormControlLabel className={this.props.radioButton} value="class" control={<Radio size="small" color="primary"/>} label="Class" />
-                                    </RadioGroup>
+                    <Grid container spacing={0}>
+                        <Grid item xs={11} md={11} lg={11}>
+                            <Grid item xs={12} md={12} lg={12}>
+                                <Grid container spacing={1}>
+                                    <Grid item xs={3} md={3} lg={3}>
+                                        <SearchList options={this.state.classNames}/>
+                                    </Grid>                        
+                                    <Grid item xs={3} md={3} lg={3}>
+                                    </Grid>
+                                    <Grid item xs={3} md={3} lg={3}>
+                                        <Box display="flex" justifyContent="center">
+                                            <RadioGroup
+                                                name="side"
+                                                value={this.state.side}
+                                                onChange={this.sideChanged}
+                                                defaultValue="instance"
+                                                row
+                                                >
+                                                <FormControlLabel value="instance" control={<Radio size="small" color="primary"/>} label="Instance"/>
+                                                <FormControlLabel value="class" control={<Radio size="small" color="primary"/>} label="Class" />
+                                            </RadioGroup>
+                                        </Box>
+                                    </Grid>
+                                    <Grid item xs={3} md={3} lg={3}>
+                                    </Grid>                            
                                 </Grid>
-                                <Grid item xs={12} md={12} lg={12}>
-                                    <Paper className={fixedHeightPaper2} variant="outlined">
-                                        <CategoryList
-                                            api={this.props.api}
-                                            class={selectedClass}
-                                            categories={this.currentCategories()}
-                                            selectedCategory={selectedCategory}
-                                            onSelect={this.categorySelected}
-                                            onRemoved={this.categoryRemoved}/>
-                                    </Paper>
+                            </Grid>
+                            <Grid item xs={12} md={12} lg={12}>
+                                <Grid container spacing={1}>
+                                    <Grid item xs={12} md={3} lg={3}>
+                                        <Paper className={fixedHeightPaper} variant="outlined">
+                                            <ClassTree
+                                                api={this.props.api}
+                                                globalOptions={this.props.globalOptions}
+                                                classes={classes}
+                                                root={root}
+                                                selectedClass={selectedClass}
+                                                onExpand={this.classExpanded}
+                                                onSelect={this.classSelected}
+                                                onRemoved={this.classRemoved}/>
+                                        </Paper>
+                                    </Grid>
+                                    <Grid item xs={12} md={3} lg={3}>
+                                        <Paper className={fixedHeightPaper} variant="outlined">
+                                            <VariableList
+                                                api={this.props.api}
+                                                variables={this.currentVariables()}
+                                                selectedVariable={selectedVariable}
+                                                onSelect={this.variableSelected}/>
+                                        </Paper>
+                                    </Grid>
+                                    <Grid item xs={12} md={3} lg={3}>
+                                        <Paper className={fixedHeightPaper} variant="outlined">
+                                            <CategoryList
+                                                api={this.props.api}
+                                                class={selectedClass}
+                                                categories={this.currentCategories()}
+                                                selectedCategory={selectedCategory}
+                                                onSelect={this.categorySelected}
+                                                onRemoved={this.categoryRemoved}/>
+                                        </Paper>
+                                    </Grid>
+                                    <Grid item xs={12} md={3} lg={3}>
+                                        <Paper className={fixedHeightPaper} variant="outlined">
+                                            <SelectorList
+                                                api={this.props.api}
+                                                globalOptions={this.props.globalOptions}
+                                                selectors={this.currentSelectors()}
+                                                selectedSelector={selectedSelector}
+                                                onSelect={this.selectorSelected}
+                                                onRemoved={this.selectorRemoved}
+                                                />
+                                        </Paper>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Grid item xs={12} md={3} lg={3}>
-                            <Paper  className={fixedHeightPaper} variant="outlined">
-                                <SelectorList
-                                    api={this.props.api}
-                                    globalOptions={this.props.globalOptions}
-                                    selectors={this.currentSelectors()}
-                                    selectedSelector={selectedSelector}
-                                    onSelect={this.selectorSelected}
-                                    onRemoved={this.selectorRemoved}
-                                    />
-                            </Paper>
-                        </Grid>
+                        <Grid item xs={1} md={1} lg={1}
+                        ></Grid>
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
-                    <Paper variant="outlined" height="100%">
-                        <CodeEditor
-                            classes={this.props.classes}
-                            api={this.props.api}
-                            definition={selectedClass == null ? '' : selectedClass.definitionString}
-                            comment={selectedClass == null ? '' : selectedClass.comment}
-                            source={selectedMethod == null ? '' : selectedMethod.source}
-                            onError={this.reportError}
-                            onDefine={this.defineClass}
-                            onComment={this.commentClass}
-                            onCompile={this.compileMethod}
-                            />
-                    </Paper>
+                    <CodeEditor
+                        classes={this.props.classes}
+                        api={this.props.api}
+                        definition={selectedClass == null ? '' : selectedClass.definitionString}
+                        comment={selectedClass == null ? '' : selectedClass.comment}
+                        source={selectedMethod == null ? '' : selectedMethod.source}
+                        onError={this.reportError}
+                        onDefine={this.defineClass}
+                        onComment={this.commentClass}
+                        onCompile={this.compileMethod}
+                        />
                 </Grid> 
             </Grid>
         )

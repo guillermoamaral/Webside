@@ -145,32 +145,15 @@ const styles = theme => ({
     paddingTop: "8px",
     fontSize: "small", 
   },
-  radioGroup: {
-    fontSize: 10,
-    width: 'auto',
-    height: 'auto',
-    display: 'flex',
-    //flexWrap: 'nowrap',
-    //flexDirection: 'row'
-  },
-  radioButton: {
-    fontSize: 10,
-  },
-  radioLabel: {
-    fontSize: 10
-  },
   fixedHeight: {
     height: 200
-  },
-  fixedHeight2: {
-    height: 154
   },
   codeMirror: {
     fontFamily: theme.typography.fontFamily,
     fontSize: "16px",
     backgroundColor: theme.palette.background.paper,
     height: "100%",
-    maxHeight: 200,
+//    maxHeight: 200,
   },
   grow: {
     flexGrow: 1

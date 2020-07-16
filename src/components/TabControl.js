@@ -13,7 +13,7 @@ function TabPanel(props) {
       {...other}
     >
       {visible && (
-        <Box className={props.classes.box} p={3}>
+        <Box className={props.classes.box} p={1}>
           {children}
         </Box>
       )}

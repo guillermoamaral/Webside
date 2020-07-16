@@ -49,7 +49,6 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(props, ref) 
     if (React.isValidElement(child) && child.type === ListSubheader) {
       return 48;
     }
-
     return itemSize;
   };
 
@@ -99,7 +98,7 @@ class SearchList extends Component {
                     params.children,
                 ]}
                 options={this.props.options}
-                renderInput={(params) => <TextField {...params} variant="outlined" label="Search..." />}
+                renderInput={(params) => <TextField {...params} size="small" variant="outlined"/>}
                 renderOption={(option) => <Typography noWrap>{option}</Typography>}
             />);
     }
