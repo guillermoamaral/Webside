@@ -13,7 +13,6 @@ import {
 import { ThemeProvider } from '@material-ui/styles';
 import { amber , blue } from '@material-ui/core/colors';
 import AddIcon from '@material-ui/icons/AddCircle';
-import clsx from 'clsx';
 
 import API from './components/API';
 import TranscriptIcon from './Icons/TranscriptIcon';
