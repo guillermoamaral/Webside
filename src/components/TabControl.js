@@ -35,8 +35,9 @@ class TabControl extends Component {
         }
     }
 
-    tabChanged = (event, value) => {
-       this.setState({selectedIndex: value});
+    tabChanged = (event, index) => {
+      event.preventDefault();
+      this.setState({selectedIndex: index});
     }
 
     tabLabel = (index) => {
@@ -61,7 +62,6 @@ class TabControl extends Component {
       if (this.props !== null) {
         const handler = this.props.onClose;
         if (handler !== undefined) {
-            //handler.bind(this);
             handler(this.props.pages[index]);
             if (index <= this.state.selectedIndex) {
               index = Math.max(index - 1, 0)

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Grid, Paper } from '@material-ui/core';
 import clsx from 'clsx';
 
-import SelectorList from './SelectorList';
+import MethodList from './MethodList';
 import CodeEditor from './CodeEditor';
 
 class MethodBrowser extends Component {
@@ -10,20 +10,20 @@ class MethodBrowser extends Component {
         super(props);
         this.reportError = props.onError.bind();
         this.state = {
-            selectedMethod: {selector: 'selector', source: '"no source"'},
+            selectedMethod: null,
         }
     }
 
     methodSelected = (method) => {
-        this.updateDefinition(method);
+        this.updateClass(method);
         this.setState({selectedMethod: method});
     }
 
-    updateDefinition = (method) => {
+    updateClass = (method) => {
         if (method.classDefinition === undefined) {
-            this.props.api.getDefinition(method.class)
+            this.props.api.getClass(method.class)
                 .then(definition => {
-                    method.classDefinition = definition.definitionString;
+                    method.classDefinition = definition.definition;
                     method.classComment = definition.comment;
                     this.setState({selectedMethod: method})})
                 .catch(error => {})
@@ -37,12 +37,12 @@ class MethodBrowser extends Component {
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
                     <Paper className={fixedHeightPaper} variant="outlined">
-                        <SelectorList
+                        <MethodList
                             api={this.props.api}
                             globalOptions={this.props.globalOptions}
                             showClass={true}
-                            selectedSelector={method}
-                            selectors={this.props.methods}
+                            selectedMethod={method}
+                            methods={this.props.methods}
                             onSelect={this.methodSelected}/>
                     </Paper>
                 </Grid>

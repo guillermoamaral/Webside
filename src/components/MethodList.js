@@ -2,66 +2,67 @@ import React, { Component } from 'react';
 import CustomList from './CustomList';
 import { ArrowUpDownBold, ArrowUpBold, ArrowDownBold } from 'mdi-material-ui';
 
-class SelectorList extends Component {
-    removeSelector = (selector) => {
-        this.props.api.deleteMethod(selector.class, selector.selector)
+class MethodList extends Component {
+    removeMethod = (method) => {
+        this.props.api.deleteMethod(method.class, method.selector)
             .then(response => {
-                if (this.props.onRemoved !== undefined) {
-                    this.props.onRemoved(selector)
+                const handler = this.props.onRemoved;
+                if (handler !== undefined) {
+                    handler(method)
                 }
             })
             .catch(error => {})
     }
 
-    browseSenders = (selector) => {
+    browseSenders = (method) => {
         if (this.props.globalOptions === undefined) {return}
         const option = this.props.globalOptions.browseSenders;
         if (option !== undefined) {
-            option(selector.selector)
+            option(method.selector)
         }
     }
 
-    browseImplementors = (selector) => {
+    browseImplementors = (method) => {
         if (this.props.globalOptions === undefined) {return}
         const option = this.props.globalOptions.browseImplementors;
         if (option !== undefined) {
-            option(selector.selector)
+            option(method.selector)
         }
     }
 
-    browseReferences = (selector) => {
+    browseReferences = (method) => {
         if (this.props.globalOptions === undefined) {return}
         const option = this.props.globalOptions.browseReferences;
         if (option !== undefined) {
-            option(selector.class)
+            option(method.class)
         }
     }
 
     render() {
         const size = 12;
-        const selectors = this.props.selectors == null ? [] : this.props.selectors;
+        const methods = this.props.methods == null ? [] : this.props.methods;
         return (
             <CustomList
-                label={this.props.showClass === true ? ((s) => {return s.class + '>>#' + s.selector}) : "selector"}
-                items={selectors}
-                selectedItem={this.props.selectedSelector}
+                label={this.props.showClass === true ? (m => {return m.class + '>>#' + m.selector}) : "selector"}
+                items={methods}
+                selectedItem={this.props.selectedMethod}
                 onSelect={this.props.onSelect}
-                icons={selectors.map(s => {
-                    if (s.overriding && s.overriden) {
+                icons={methods.map(m => {
+                    if (m.overriding && m.overriden) {
                         return <ArrowUpDownBold style={{fontSize: size}} />
                     }
-                    if (s.overrriding) {
+                    if (m.overrriding) {
                         return <ArrowUpBold style={{fontSize: size}} />
                     }
-                    if (s.overriden) {
+                    if (m.overriden) {
                         return <ArrowDownBold style={{fontSize: size}} />    
                     }
                     return null
                 })}
                 menuOptions={[
-                    {label: 'New', action: this.newSelector},
-                    {label: 'Rename', action: this.renameSelector},
-                    {label: 'Remove', action: this.removeSelector},
+                    {label: 'New', action: this.newMethod},
+                    {label: 'Rename', action: this.renameMethod},
+                    {label: 'Remove', action: this.removeMethod},
                     null,
                     {label: 'Senders', action: this.browseSenders},
                     {label: 'Implementors', action: this.browseImplementors},
@@ -71,4 +72,4 @@ class SelectorList extends Component {
     }
 };
 
-export default SelectorList;
+export default MethodList;

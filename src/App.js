@@ -28,7 +28,7 @@ import MethodBrowser from './components/MethodBrowser';
 import Inspector from './components/Inspector';
 import Workspace from './components/Workspace';
 
-const smalltalk = 'Bee';
+const smalltalk = 'Pharo';
 var port;
 var baseUri;
 var mainPrimaryColor;
@@ -215,7 +215,10 @@ class App extends Component {
   }
 
   addPage(label, icon, component) {
-    const page = {label: label, icon: icon, component: component};
+    const page = {
+      label: label,
+      icon: icon,
+      component: component};
     const pages = this.state.pages;
     pages.push(page);
     this.setState({pages: pages, selectedPage: pages.length - 1})
@@ -223,7 +226,7 @@ class App extends Component {
 
   removePage = (page) => {
     //console.log(page.component.type === Inspector)
-    this.setState({pages: this.state.pages.filter((p) => {return p.label !== page.label})})
+    this.setState({pages: this.state.pages.filter(p => {return p !== page})})
   }
 
   openTranscript() {

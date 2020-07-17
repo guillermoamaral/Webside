@@ -38,7 +38,7 @@ class API {
         catch (error) {this.handleError('Cannot fetch class names', error)}
     }
 
-    async getDefinition(classname) {
+    async getClass(classname) {
         try {
             const response = await axios.get(this.baseUri + '/classes/' + classname);
             return response.data;
@@ -70,14 +70,13 @@ class API {
         catch (error) {this.handleError('Cannot fecth categories of class ' + classname, error) }
     }
 
-    async getSelectors(classname, category) {
+    async getMethods(classname) {
         try {
-            var url = this.baseUri + '/classes/' + classname + '/selectors?marks=true';
-            if (category !== null) {url = url + '&category=' + category}
+            var url = this.baseUri + '/classes/' + classname + '/methods?marks=true';
             const response = await axios.get(url);
             return response.data;
         }
-        catch (error) {this.handleError('Cannot fecth selectors of class ' + classname, error) }
+        catch (error) {this.handleError('Cannot fecth methods of class ' + classname, error) }
     }
 
     async getMethod(classname, selector) {

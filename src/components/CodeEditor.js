@@ -83,9 +83,10 @@ class CodeEditor extends Component {
 
     render() {
         return (
-            <Grid container spacing={0}>
+            <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
                     <ToggleButtonGroup
+                        label="primary"
                         value={this.state.mode}
                         exclusive
                         onChange={this.modeChanged}>
