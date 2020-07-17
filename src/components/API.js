@@ -79,6 +79,15 @@ class API {
         catch (error) {this.handleError('Cannot fecth methods of class ' + classname, error) }
     }
 
+    async getMethodsUsing(classname, variable) {
+        try {
+            var url = this.baseUri + '/classes/' + classname + '/methods?using=' + variable;
+            const response = await axios.get(url);
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot fecth methods of class ' + classname + ' using ' + variable, error) }
+    }
+
     async getMethod(classname, selector) {
         try {
             const response = await axios.get(this.baseUri + '/classes/' + classname + '/methods/' + selector);

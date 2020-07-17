@@ -84,11 +84,14 @@ class ClassBrowser extends Component {
     currentMethods = () => {
         const species = this.state.selectedClass;
         const category = this.state.selectedCategory;
-        if (species == null || category == null || species.methods === undefined) {
-            return []
-        } else {
+        const variable = this.state.selectedVariable;
+        if (species == null) {return []}
+        if (category == null && variable === null) {return species.methods}
+        if (category == null) {return species[variable.name]}
+        if (variable == null) {
             return species.methods.filter(m => {return m.category === category});
         }
+        return species[variable.name].filter(m => {return m.category === category});
     }
 
     // Updating...
@@ -136,6 +139,10 @@ class ClassBrowser extends Component {
         if (force || species.methods === undefined) {
             const methods = await this.props.api.getMethods(species.name);
             species.methods = methods.sort((a, b) => {return a.selector <= b.selector? -1 : 1});
+        }
+        const variable = selections.variable;
+        if (variable !== null && (force || species[variable.name] === undefined)) {
+            species[variable.name] = await this.props.api.getMethodsUsing(species.name, variable.name);            
         }
         var method = selections.method;
         if (method !== null) {
@@ -288,7 +295,9 @@ class ClassBrowser extends Component {
                             <Grid item xs={12} md={12} lg={12}>
                                 <Grid container spacing={1}>
                                     <Grid item xs={3} md={3} lg={3}>
-                                        <SearchList options={this.state.classNames}/>
+                                        <SearchList
+                                            options={this.state.classNames}
+                                            onChange={(classname) => {this.changeRoot(classname)}}/>
                                     </Grid>                        
                                     <Grid item xs={3} md={3} lg={3}>
                                     </Grid>

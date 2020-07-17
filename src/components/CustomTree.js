@@ -10,19 +10,18 @@ class CustomTree extends Component {
         super(props);
         this.state = {
             items: props.items,
-            selectedItem: props.selectedItem,
+            selectedItem: props.selectedItem === undefined ? null : props.selectedItem,
             menuOpen: false,
             menuPosition: {x: null, y: null}
         }
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (
-            props.selecteItem !== state.selectedItem) {
-              return {
-                  items: props.items,
-                  selectedItem: props.selectedItem,
-              };
+        if (props.selecteItem !== state.selectedItem) {
+            return {
+                items: props.items,
+                selectedItem: props.selectedItem === undefined ? null : props.selectedItem,
+            };
         }
         return null
     }

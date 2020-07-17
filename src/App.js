@@ -202,13 +202,13 @@ class App extends Component {
       sidebarExpanded: false,
       addPageMenuOpen: false,
       selectedPage: null,
-      transcriptText: 'Wellcome! \n\n This is the transcript..',
+      transcriptText: 'Wellcome! \n\n This is Webtalk, a web Smalltalk IDE built with React.',
       pages: []
     }
   }
 
   componentDidMount() {
-    //this.openTranscript();
+    this.openTranscript();
     // this.openInspectors();
     // this.openWorkspace();
     this.openClassBrowser('Collection');

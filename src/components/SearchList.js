@@ -86,6 +86,13 @@ ListboxComponent.propTypes = {
 };
 
 class SearchList extends Component {
+    valueChanged(value) {
+      const handler = this.props.onChange;
+      if (handler !== undefined) {
+        handler(value);
+      }
+    }
+
     render () {
         return (
             <Autocomplete
@@ -97,6 +104,7 @@ class SearchList extends Component {
                     </ListSubheader>,
                     params.children,
                 ]}
+                onChange={(event, value) => {this.valueChanged(value)}}
                 options={this.props.options}
                 renderInput={(params) => <TextField {...params} size="small" variant="outlined"/>}
                 renderOption={(option) => <Typography noWrap>{option}</Typography>}

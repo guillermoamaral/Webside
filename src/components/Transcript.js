@@ -7,6 +7,22 @@ require('codemirror/theme/material.css');
 require('codemirror/mode/smalltalk/smalltalk.js');
 
 class Transcript extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            text: props.text,
+        }
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        if (props.text !== state.text) {
+            return {
+                text: props.text
+            };
+        }
+        return null
+    }
+
     render() {
         return (
             <Grid container>

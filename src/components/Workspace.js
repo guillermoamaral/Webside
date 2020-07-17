@@ -107,7 +107,7 @@ class Workspace extends Component {
                 <Grid item xs={12} md={4} lg={4}>
                     {this.state.inspectors.map((inspector, index) => {
                         return (
-                            <Accordion key={inspector.key} defaultExpanded={index===0}>
+                            <Accordion key={inspector.key} defaultExpanded>
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
                                     id="panel1a-header"
