@@ -1,2 +1,2 @@
-# Bee-client
-Bee IDE implemented using ReactJS and Material-UI
+# Smalltalk Web IDE
+Smalltalk IDE implemented using ReactJS and Material-UI
