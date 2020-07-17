@@ -286,7 +286,6 @@ class ClassBrowser extends Component {
             selectedCategory,
             selectedMethod} = this.state;
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
-        const fixedHeightPaper2 = clsx(this.props.classes.paper, this.props.classes.fixedHeight2);
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>

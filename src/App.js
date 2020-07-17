@@ -7,11 +7,13 @@ import {
   Grid,
   IconButton,
   Menu,
-  MenuItem
+  MenuItem,
+  Drawer
 } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { amber , blue } from '@material-ui/core/colors';
 import AddIcon from '@material-ui/icons/AddCircle';
+import clsx from 'clsx';
 
 import API from './components/API';
 import TranscriptIcon from './Icons/TranscriptIcon';
@@ -28,7 +30,7 @@ import MethodBrowser from './components/MethodBrowser';
 import Inspector from './components/Inspector';
 import Workspace from './components/Workspace';
 
-const smalltalk = 'Pharo';
+const smalltalk = 'Bee';
 var port;
 var baseUri;
 var mainPrimaryColor;
@@ -152,7 +154,7 @@ const styles = theme => ({
     fontFamily: theme.typography.fontFamily,
     fontSize: "16px",
     backgroundColor: theme.palette.background.paper,
-    height: "100%",
+    //height: "100%",
 //    maxHeight: 200,
   },
   grow: {
@@ -202,13 +204,14 @@ class App extends Component {
       sidebarExpanded: false,
       addPageMenuOpen: false,
       selectedPage: null,
+      transcriptOpen: false,
       transcriptText: 'Wellcome! \n\n This is Webtalk, a web Smalltalk IDE built with React.',
       pages: []
     }
   }
 
   componentDidMount() {
-    this.openTranscript();
+    // this.openTranscript();
     // this.openInspectors();
     // this.openWorkspace();
     this.openClassBrowser('Collection');
@@ -233,7 +236,7 @@ class App extends Component {
     const transcript = <Transcript
       api={this.api}
       globalOptions={this.globalOptions}
-      classes={this.props.classes}
+      classes={this.props.classes}      
       text={this.state.transcriptText}
       />;
     this.addPage('Transcript', <TranscriptIcon />, transcript);
@@ -282,8 +285,8 @@ class App extends Component {
     const inspector = <Inspector
       api={this.api}
       globalOptions={this.globalOptions}
-      key={object.id}
       classes={this.props.classes}
+      key={object.id}
       root={object}
       onError={this.reportError}
       />;
@@ -314,7 +317,11 @@ class App extends Component {
   };
 
   reportError = (text) => {
-    this.setState({transcriptText: this.state.transcriptText + '\n' + text})
+    this.setState(
+      {
+        transcriptText: this.state.transcriptText + '\n' + text,
+        transcriptOpen: true,
+    })
   }
 
   addClassBrowserClicked = () => {
@@ -326,7 +333,11 @@ class App extends Component {
     this.setState({addPageMenuOpen: false})
     this.openWorkspace()
   }
-  
+
+  toggleShowTranscript = () => {
+    this.setState({transcriptOpen: !this.state.transcriptOpen});
+  }
+
   render () {
     return (
       <ThemeProvider theme={theme}>
@@ -340,6 +351,7 @@ class App extends Component {
             <Sidebar
               classes={this.props.classes}
               expanded={this.state.sidebarExpanded}
+              onTranscript={this.toggleShowTranscript}
               onClose={this.collapseSidebar}/>
             <main className={this.props.classes.content}>
               <div className={this.props.classes.appBarSpacer} />
@@ -373,6 +385,22 @@ class App extends Component {
                       </MenuItem>
                     </Menu>
                   </Grid>
+                  <React.Fragment key="bottom">
+                    <Drawer
+                      anchor="bottom"
+                      variant="persistent"
+                      open={this.state.transcriptOpen}
+                      onClose={() => this.setState({transcriptOpen: false})}
+                      //onOpen={() => this.setState({transcriptOpen: true})}
+                    >
+                      <Transcript
+                        api={this.api}
+                        globalOptions={this.globalOptions}
+                        classes={this.props.classes}      
+                        text={this.state.transcriptText}
+                        />
+                    </Drawer>
+                  </React.Fragment>
                 </Grid>
               </Container>
             </main>

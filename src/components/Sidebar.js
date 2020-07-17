@@ -8,6 +8,7 @@ import {
     Divider,
     IconButton
 } from '@material-ui/core';
+import TranscriptIcon from '../Icons/TranscriptIcon';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChangesIcon from '@material-ui/icons/List';
 import PeopleIcon from '@material-ui/icons/People';
@@ -23,12 +24,18 @@ class Sidebar extends Component {
                 classes={{paper: clsx(this.props.classes.drawerPaper, !this.props.expanded && this.props.classes.drawerPaperClose)}}
                 open={this.props.expanded}>
                 <div className={this.props.classes.toolbarIcon}>
-                    <IconButton onClick={this.props.onClose.bind(this)}>
+                    <IconButton onClick={this.props.onClose.bind()}>
                         <ChevronLeftIcon />
                     </IconButton>
                 </div>
                 <Divider />
                 <List>
+                    <ListItem button onClick={this.props.onTranscript.bind()}>
+                        <ListItemIcon>
+                            <TranscriptIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Transcript" />
+                    </ListItem>
                     <ListItem button>
                         <ListItemIcon>
                             <ChangesIcon />
