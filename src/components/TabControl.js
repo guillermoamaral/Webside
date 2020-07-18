@@ -47,7 +47,7 @@ class TabControl extends Component {
           {React.cloneElement(page.icon, {className: this.props.classes.tabIcon})}
           {page.label}
           <IconButton 
-            onClick={(event) => {this.tabClosed(event, index)}}
+            onClick={event => {this.tabClosed(event, index)}}
             id={index}
             value={index}
             size="small">

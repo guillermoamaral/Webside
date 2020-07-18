@@ -46,14 +46,22 @@ class API {
         catch (error) {this.handleError('Cannot fetch class ' + classname, error)}
     }
 
+    async getSubclasses(classname) {
+        try {
+            const response = await axios.get(this.baseUri + '/classes/' + classname + '/subclasses');
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot fecth subclasses of class ' + classname, error)}
+    }
+
     async getInstanceVariables(classname) {
         try {
             const response = await axios.get(this.baseUri + '/classes/' + classname + '/instance-variables');
             return response.data;
         }
         catch (error) {this.handleError('Cannot fecth instance variables of class ' + classname, error) }
-    }    
-
+    }
+    
     async getVariables(classname) {
         try {
             const response = await axios.get(this.baseUri + '/classes/' + classname + '/variables');
@@ -90,8 +98,9 @@ class API {
 
     async getMethod(classname, selector) {
         try {
-            const response = await axios.get(this.baseUri + '/classes/' + classname + '/methods/' + selector);
-            return response.data;
+            const encoded = encodeURIComponent(selector);
+            const response = await axios.get(this.baseUri + '/classes/' + classname + '/methods?selector=' + encoded);
+            return response.data.length === 0 ? null : response.data[0];
         }
         catch (error) {this.handleError('Cannot fetch method ' + classname + '>>#' + selector, error) }
     }
@@ -198,7 +207,6 @@ class API {
     }
 
     // Objects...
-
     async evaluate(expression, pins) {
         try {
             const value = pins === undefined ? false : pins;

@@ -16,15 +16,15 @@ class CustomTree extends Component {
         }
     }
 
-    static getDerivedStateFromProps(props, state) {
-        if (props.selecteItem !== state.selectedItem) {
-            return {
-                items: props.items,
-                selectedItem: props.selectedItem === undefined ? null : props.selectedItem,
-            };
-        }
-        return null
-    }
+    // static getDerivedStateFromProps(props, state) {
+    //     if (props.selecteItem !== state.selectedItem) {
+    //         return {
+    //             items: props.items,
+    //             selectedItem: props.selectedItem === undefined ? null : props.selectedItem,
+    //         };
+    //     }
+    //     return null
+    // }
 
     createItems = (items) => {
         return (
@@ -37,8 +37,8 @@ class CustomTree extends Component {
                         key={label + "-item-" + index}
                         nodeId={id}
                         label={label}
-                        onLabelClick={(event) => this.itemSelected(event, item)}
-                        onIconClick={(event) => this.itemToggled(event, item)}
+                        onLabelClick={event => this.itemSelected(event, item)}
+                        onIconClick={event => this.itemToggled(event, item)}
                         onContextMenu={this.openMenu}
                         >
                             {Array.isArray(children) ? this.createItems(children) : null}

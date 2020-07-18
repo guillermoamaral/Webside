@@ -8,7 +8,8 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Drawer
+  Drawer,
+  ClickAwayListener
 } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { amber , blue } from '@material-ui/core/colors';
@@ -213,7 +214,7 @@ class App extends Component {
     // this.openTranscript();
     // this.openInspectors();
     // this.openWorkspace();
-    this.openClassBrowser('Collection');
+    this.openClassBrowser('Magnitude');
   }
 
   addPage(label, icon, component) {

@@ -70,7 +70,7 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(props, ref) 
           ref={gridRef}
           outerElementType={OuterElementType}
           innerElementType="ul"
-          itemSize={(index) => getChildSize(itemData[index])}
+          itemSize={index => getChildSize(itemData[index])}
           overscanCount={5}
           itemCount={itemCount}
         >
@@ -98,7 +98,7 @@ class SearchList extends Component {
             <Autocomplete
                 id="autocomplete"
                 ListboxComponent={ListboxComponent}
-                renderGroup={(params) => [
+                renderGroup={params => [
                     <ListSubheader key={params.key} component="div">
                       {params.group}
                     </ListSubheader>,
@@ -106,8 +106,8 @@ class SearchList extends Component {
                 ]}
                 onChange={(event, value) => {this.valueChanged(value)}}
                 options={this.props.options}
-                renderInput={(params) => <TextField {...params} size="small" variant="outlined"/>}
-                renderOption={(option) => <Typography noWrap>{option}</Typography>}
+                renderInput={params => <TextField {...params} size="small" variant="outlined"/>}
+                renderOption={option => <Typography noWrap>{option}</Typography>}
             />);
     }
 }

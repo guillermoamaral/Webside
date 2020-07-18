@@ -13,7 +13,7 @@ class PopupMenu extends Component {
                         <MenuItem
                             key={option.label}
                             id={option.id}
-                            onClick={(event) => this.itemClicked(event, option)}
+                            onClick={event => this.itemClicked(event, option)}
                             style={{paddingTop: 0, paddingBottom: 0}}
                         >
                             {option.label}

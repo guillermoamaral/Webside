@@ -21,15 +21,10 @@ class ClassTree extends Component {
     //     return null
     // }
 
-    removeClass = (species) => {
-        this.props.api.deleteClass(species.name)
-            .then(response => {
-                const handler = this.props.onRemoved; 
-                if (handler !== undefined) {
-                    handler(species)
-                }
-            })
-            .catch(error => {})
+    removeClass = async (species) => {
+        await this.props.api.deleteClass(species.name);
+        const handler = this.props.onRemoved; 
+        if (handler !== undefined) {handler(species)}
     }
 
     browseReferences = (species) => {
@@ -41,7 +36,7 @@ class ClassTree extends Component {
     }
 
     render() {
-        const root = this.props.classes[this.props.root];
+        const root = this.props.root;
         return (
             <div>
                 <CustomTree
@@ -61,7 +56,7 @@ class ClassTree extends Component {
                 <ConfirmDialog
                     title="Delete Class?"
                     open={this.state.confirmOpen}
-                    setOpen={(open) => {this.setState({confirmOpen: open})}}
+                    setOpen={open => {this.setState({confirmOpen: open})}}
                     onConfirm={() => this.removeClass(this.state.classToRemove)}
                 >
                     Are you sure you want to delete this class?

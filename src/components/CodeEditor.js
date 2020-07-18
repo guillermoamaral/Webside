@@ -11,6 +11,7 @@ require('codemirror/mode/smalltalk/smalltalk.js');
 class CodeEditor extends Component {
     constructor(props){
         super(props);
+        this.instance = null;
         this.reportError = props.onError.bind();
         this.state = {
             definition: props.definition,
@@ -81,6 +82,54 @@ class CodeEditor extends Component {
         }
     }
 
+    browseSenders = () => {
+        const selector = this.instance.getSelection();
+        if (this.props.globalOptions === undefined) {return}
+        const option = this.props.globalOptions.browseSenders;
+        if (option !== undefined) {option(selector)}
+    }
+
+    browseImplementors = () => {
+        const selector = this.instance.getSelection();
+        if (this.props.globalOptions === undefined) {return}
+        const option = this.props.globalOptions.browseImplementors;
+        if (option !== undefined) {option(selector)}
+    }
+
+    evaluableExpression() {
+        const expression = this.instance.getSelection();
+        if (expression.length > 0) {return expression}
+        const cursor = this.instance.getCursor("to");
+        return this.instance.getRange({ch: 0, line: cursor.line}, cursor)
+    }
+
+    evaluate = () => {
+        const expression = this.evaluableExpression();
+        this.props.api.evaluate(expression, false)
+    }
+
+    inspectEvaluation = () => {
+        if (this.props.globalOptions === undefined) {return}
+        const expression = this.evaluableExpression();
+        this.props.api.evaluate(expression, true)
+            .then(object => {
+                const option = this.props.globalOptions.inspectObject;
+                if (option !== undefined) {option(object)}
+            })
+    }
+
+    showEvaluation = () => {
+        const expression = this.evaluableExpression();
+        this.props.api.evaluate(expression, false)
+            .then(object => {
+                const cursor = this.instance.getCursor("to");
+                this.instance.replaceRange(" " + object.printString, cursor);
+                const from = {ch: cursor.ch + 1, line: cursor.line};
+                const to = {ch: from.ch + object.printString.length, line: from.line};
+                this.instance.setSelection(from, to)
+            })
+    }
+  
     render() {
         return (
             <Grid container spacing={1}>
@@ -122,9 +171,14 @@ class CodeEditor extends Component {
                                         }, 
                                         lineWrapping: true, 
                                         extraKeys: {
-                                            "Alt-S": "saveClicked", 
-                                            "Ctrl-S": "evaluateClicked"
+                                            "Ctrl-D": this.evaluate,
+                                            "Ctrl-I": this.inspectEvaluation,
+                                            "Ctrl-S": this.showEvaluation,
+                                            "Alt-S": this.saveClicked,
+                                            "Alt-N": this.browseSenders,
+                                            "Alt-M": this.browseImplementors
                                         }}}
+                                    editorDidMount={editor => {this.instance = editor}}
                                     onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
                                     onChange={(editor, data, value) => {this.valueChanged(value)}}
                                 />

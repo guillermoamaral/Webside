@@ -36,7 +36,7 @@ class CustomList extends Component {
             button
             key={"item" + index}
             selected={this.state.selectedIndex === index}
-            onClick={(event) => this.itemSelected(event, index, item)}
+            onClick={event => this.itemSelected(event, index, item)}
             onContextMenu={this.openMenu}
             >
               {this.getItemIcon(index)}

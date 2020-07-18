@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Box, Paper, RadioGroup, FormControlLabel, Radio, TextField } from '@material-ui/core';
+import { Grid, Box, Paper, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
 import clsx from 'clsx';
 
 import SearchList from './SearchList';
@@ -26,6 +26,7 @@ class ClassBrowser extends Component {
     }
 
     componentDidMount(){
+        this.getClassNames();
         this.changeRoot(this.state.root);
     }
 
@@ -35,13 +36,13 @@ class ClassBrowser extends Component {
             .catch(error => {})
     }
 
-    changeRoot = (classname) => {
-        this.setState({root: classname, classes: {}}, () => {
-            this.updateClasses(classname)
-                .then(() => {
-                    this.classSelected(this.state.classes[classname])})
-            this.getClassNames();
-        })
+    changeRoot = async (classname) => {
+        const tree = await this.props.api.getClassTree(classname, 2);
+        const species = tree[0];
+        this.setState(
+            {root: classname, classes: {[classname]: species}},
+            () => {this.classSelected(species)}
+        )
     }
 
     currentSelections() {
@@ -95,12 +96,6 @@ class ClassBrowser extends Component {
     }
 
     // Updating...
-    async updateClasses(root) {
-        const classes = this.state.classes;
-        const tree = await this.props.api.getClassTree(root, 2);
-        tree.forEach(c => {classes[c.name] = c});
-    }
-
     async updateClass(selections, force = false) {
         const species = selections.class;
         if (force || species.definition === undefined) {
@@ -108,6 +103,19 @@ class ClassBrowser extends Component {
             species.definition = definition.definition;
             species.comment = definition.comment;
             species.superclass = definition.superclass;
+        }
+        if (force || species.subclasses === undefined) {
+            species.subclasses = await this.props.api.getSubclasses(species.name);
+        }
+    }
+
+    async updateSubclasses(species) { 
+        if (species.subclasses !== undefined) {
+            await Promise.all(species.subclasses.map (async c => {
+                if (c.subclasses === undefined) {
+                    c.subclasses = await this.props.api.getSubclasses(c.name);
+                }
+            }))
         }
     }
     
@@ -165,17 +173,17 @@ class ClassBrowser extends Component {
         const selections = this.currentSelections();
         selections.class = species;
         await this.updateClass(selections);
+        await this.updateSubclasses(species);
         await this.updateVariables(selections);
         await this.updateCategories(selections);
         await this.updateMethods(selections);
         this.applySelections(selections)
     }
 
-    // classExpanded = (species) => {
-    //     species.subclasses.forEach(c => {
-    //         this.updateClasses(species);
-    //     })
-    // }
+    classExpanded = async (species) => {
+        await this.updateSubclasses(species);
+        this.setState({classes: this.state.classes});
+    }
 
     defineClass = async (definition) => {
         const species = await this.props.api.defineClass(this.state.selectedClass.name, definition);    
@@ -296,7 +304,7 @@ class ClassBrowser extends Component {
                                     <Grid item xs={3} md={3} lg={3}>
                                         <SearchList
                                             options={this.state.classNames}
-                                            onChange={(classname) => {this.changeRoot(classname)}}/>
+                                            onChange={classname => {this.changeRoot(classname)}}/>
                                     </Grid>                        
                                     <Grid item xs={3} md={3} lg={3}>
                                     </Grid>
@@ -325,8 +333,7 @@ class ClassBrowser extends Component {
                                             <ClassTree
                                                 api={this.props.api}
                                                 globalOptions={this.props.globalOptions}
-                                                classes={classes}
-                                                root={root}
+                                                root={classes[root]}
                                                 selectedClass={selectedClass}
                                                 onExpand={this.classExpanded}
                                                 onSelect={this.classSelected}
@@ -376,6 +383,7 @@ class ClassBrowser extends Component {
                     <CodeEditor
                         classes={this.props.classes}
                         api={this.props.api}
+                        globalOptions={this.props.globalOptions}
                         definition={selectedClass == null ? '' : selectedClass.definition}
                         comment={selectedClass == null ? '' : selectedClass.comment}
                         source={selectedMethod == null ? '' : selectedMethod.source}
