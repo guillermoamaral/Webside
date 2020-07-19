@@ -1,8 +1,8 @@
 import React from 'react';
-import Code from '@material-ui/icons/Code';
+import Icon from '@material-ui/icons/Code';
 
 export default function TranscriptIcon() {
     return (
-        <Code fontSize="small" style={{color: '#f28285'}} />
+        <Icon fontSize="small" style={{color: '#f28285'}} />
     )
 }

@@ -41,7 +41,7 @@ class ClassTree extends Component {
             <div>
                 <CustomTree
                     items={root !== undefined ? [root] : []}
-                    label="name"
+                    itemLabel="name"
                     children={"subclasses"}
                     onExpand={this.props.onExpand}
                     onSelect={this.props.onSelect}

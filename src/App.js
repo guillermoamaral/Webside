@@ -21,6 +21,7 @@ import ClassBrowserIcon from './Icons/ClassBrowserIcon';
 import MethodBrowserIcon from './Icons/MethodBrowserIcon';
 import WorkspaceIcon from './Icons/WorkspaceIcon';
 import InspectorIcon from './Icons/InspectorIcon';
+import ChangesBrowserIcon from './Icons/ChangesBrowserIcon';
 import Titlebar from './components/Titlebar'
 import Sidebar from './components/Sidebar';
 import TabControl from './components/TabControl';
@@ -29,6 +30,7 @@ import ClassBrowser from './components/ClassBrowser';
 import MethodBrowser from './components/MethodBrowser';
 import Inspector from './components/Inspector';
 import Workspace from './components/Workspace';
+import ChangesBrowser from './components/ChangesBrowser';
 
 const smalltalk = 'Bee';
 var port;
@@ -293,6 +295,16 @@ class App extends Component {
     this.addPage(object.class + ': ' + object.id, <InspectorIcon className={this.props.classes.workspaceIcon} />, inspector);
   }
 
+  openChangesBrowser = () => {
+    const browser = <ChangesBrowser
+      api={this.api}
+      globalOptions={this.globalOptions}
+      classes={this.props.classes}
+      onError={this.reportError}
+      />;
+    this.addPage('Last Changes', <ChangesBrowserIcon className={this.props.classes.changesBrowserIcon} />, browser);
+  }
+
   browseSenders = (selector) => {
     this.api.getSenders(selector)
       .then(methods => this.openMethodBrowser(methods, 'Senders of ' + selector)); 
@@ -352,6 +364,7 @@ class App extends Component {
               classes={this.props.classes}
               expanded={this.state.sidebarExpanded}
               onTranscript={this.toggleShowTranscript}
+              onChanges={this.openChangesBrowser}
               onClose={this.collapseSidebar}/>
             <main className={this.props.classes.content}>
               <div className={this.props.classes.appBarSpacer} />

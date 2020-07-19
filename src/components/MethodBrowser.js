@@ -63,7 +63,7 @@ class MethodBrowser extends Component {
                 </Grid> 
             </Grid>
         )
-    };
+    }
 }
 
 export default MethodBrowser;

@@ -56,7 +56,7 @@ class CustomTree extends Component {
       }
 
     getItemLabel = (item) => {
-        const getter = this.props.label;
+        const getter = this.props.itemLabel;
         if (getter === undefined) {return item}    
         if (typeof getter == "string")  {return item[getter]}
         return getter(item)
@@ -73,17 +73,12 @@ class CustomTree extends Component {
         event.preventDefault();
         this.setState({selectedItem: item});
         const handler = this.props.onSelect;
-        if (handler !== undefined) {
-
-            handler(item);
-        }
+        if (handler !== undefined) {handler(item)}
     };
 
     itemToggled = (event, item) => {
         const handler = this.props.onExpand;
-        if (handler !== undefined) {
-            handler(item);
-        }
+        if (handler !== undefined) {handler(item)}
     };
 
     menuOptions() {

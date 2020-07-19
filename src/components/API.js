@@ -59,7 +59,7 @@ class API {
             const response = await axios.get(this.baseUri + '/classes/' + classname + '/instance-variables');
             return response.data;
         }
-        catch (error) {this.handleError('Cannot fecth instance variables of class ' + classname, error) }
+        catch (error) {this.handleError('Cannot fecth instance variables of class ' + classname, error)}
     }
     
     async getVariables(classname) {
@@ -75,7 +75,7 @@ class API {
             const response = await axios.get(this.baseUri + '/classes/' + classname + '/categories');
             return response.data;
         }
-        catch (error) {this.handleError('Cannot fecth categories of class ' + classname, error) }
+        catch (error) {this.handleError('Cannot fecth categories of class ' + classname, error)}
     }
 
     async getMethods(classname) {
@@ -84,7 +84,7 @@ class API {
             const response = await axios.get(url);
             return response.data;
         }
-        catch (error) {this.handleError('Cannot fecth methods of class ' + classname, error) }
+        catch (error) {this.handleError('Cannot fecth methods of class ' + classname, error)}
     }
 
     async getMethodsUsing(classname, variable) {
@@ -93,7 +93,7 @@ class API {
             const response = await axios.get(url);
             return response.data;
         }
-        catch (error) {this.handleError('Cannot fecth methods of class ' + classname + ' using ' + variable, error) }
+        catch (error) {this.handleError('Cannot fecth methods of class ' + classname + ' using ' + variable, error)}
     }
 
     async getMethod(classname, selector) {
@@ -102,7 +102,7 @@ class API {
             const response = await axios.get(this.baseUri + '/classes/' + classname + '/methods?selector=' + encoded);
             return response.data.length === 0 ? null : response.data[0];
         }
-        catch (error) {this.handleError('Cannot fetch method ' + classname + '>>#' + selector, error) }
+        catch (error) {this.handleError('Cannot fetch method ' + classname + '>>#' + selector, error)}
     }
 
     async getSenders(selector) {
@@ -118,7 +118,7 @@ class API {
            const response = await axios.get(this.baseUri + '/methods?referencing=' + classname);
            return response.data;
        }
-       catch (error) {this.handleError('Cannot fetch references to ' + classname, error) }
+       catch (error) {this.handleError('Cannot fetch references to ' + classname, error)}
     }
 
     async getImplementors(selector) {
@@ -126,10 +126,18 @@ class API {
             const response = await axios.get(this.baseUri + '/methods?selector=' + selector);
             return response.data;
         }
-        catch (error) {this.handleError('Cannot fetch implementors of ' + selector, error) }
+        catch (error) {this.handleError('Cannot fetch implementors of ' + selector, error)}
     }
 
     // Changes...
+    async getChanges() {
+        try {
+           const response = await axios.get(this.baseUri + '/changes');
+           return response.data;
+       }
+       catch (error) {this.handleError('Cannot fetch changes ', error)}
+    }
+
     newChange(type) {
         return {
             type: type,
@@ -142,7 +150,7 @@ class API {
             const response = await axios.post(this.baseUri + '/changes', change);
             return response.data;
         }
-        catch (error) {this.handleError('Cannot apply change ' + change, error) }
+        catch (error) {this.handleError('Cannot apply change ' + change, error)}
     }
 
     //Helpers...
@@ -153,7 +161,7 @@ class API {
         try {
             return await this.postChange(change);
         }
-        catch (error) {this.handleError('Cannot define class ' + classname, error) }
+        catch (error) {this.handleError('Cannot define class ' + classname, error)}
     }
 
     async commentClass(classname, comment) {
@@ -163,7 +171,7 @@ class API {
         try {
             return await this.postChange(change);
         }
-        catch (error) {this.handleError('Cannot comment class ' + classname, error) }
+        catch (error) {this.handleError('Cannot comment class ' + classname, error)}
     }
 
     async deleteClass(classname) {
@@ -172,7 +180,7 @@ class API {
         try {
             return await this.postChange(change);
         }
-        catch (error) {this.handleError('Cannot remove class ' + classname, error) }
+        catch (error) {this.handleError('Cannot remove class ' + classname, error)}
     }
 
     async deleteCategory(classname, category) {
@@ -182,7 +190,7 @@ class API {
         try {
             return await this.postChange(change);
         }
-        catch (error) {this.handleError('Cannot remove category ' + category + ' from class ' + classname, error) }
+        catch (error) {this.handleError('Cannot remove category ' + category + ' from class ' + classname, error)}
     }
 
     async compileMethod(classname, category, source) {
@@ -190,7 +198,7 @@ class API {
             const change = this.newChange('MethodDefinition');
             change.class = classname;
             change.category = category;
-            change.source = source;
+            change.sourceCode = source;
             return await this.postChange(change);
         }
         catch (error) {this.handleError('Cannot compile ' + source + ' in ' + classname, error)}
@@ -203,7 +211,7 @@ class API {
         try {
             return await this.postChange(change);
         }
-        catch (error) {this.handleError('Cannot remove methodd ' + classname + '>>#' + selector, error) }
+        catch (error) {this.handleError('Cannot remove methodd ' + classname + '>>#' + selector, error)}
     }
 
     // Objects...
@@ -213,7 +221,7 @@ class API {
             const response = await axios.post(this.baseUri + '/objects?pins=' + value, expression);
             return response.data;
         }
-        catch (error) {this.handleError('Cannot evaluate ' + expression, error) }
+        catch (error) {this.handleError('Cannot evaluate ' + expression, error)}
     }
 
     async getObjects() {
@@ -245,7 +253,7 @@ class API {
             const response = await axios.get(this.baseUri + '/objects/' + id + path);
             return response.data
         }
-        catch (error) {this.handleError('Cannot fecth variable ' + path + ' of object with id ' + id, error) }
+        catch (error) {this.handleError('Cannot fecth variable ' + path + ' of object with id ' + id, error)}
     }
 
 }

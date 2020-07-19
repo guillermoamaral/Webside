@@ -50,16 +50,13 @@ class CustomList extends Component {
   itemSelected = (event, index, item) => {
     this.setState({selectedItem: item, selectedIndex: index});
     const handler = this.props.onSelect;
-    if (handler !== undefined) {
-        handler(item);
-    }
-  };
+    if (handler !== undefined) {handler(item)}
+  }
 
   getItemLabel = (item) => {
-    const getter = this.props.label;
+    const getter = this.props.itemLabel;
     if (getter === undefined) {return item}    
     if (typeof getter == "string")  {return item[getter]}
-    //getter.bind(this);
     return getter(item)
   }
 

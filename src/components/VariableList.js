@@ -5,8 +5,8 @@ class VariableList extends Component {
     render() {
         return (
             <CustomList
+                itemLabel="name"
                 items={this.props.variables}
-                label="name"
                 selectedItem={this.props.selectedVariable}
                 onSelect={this.props.onSelect}
                 menuOptions={[

@@ -71,7 +71,7 @@ class Inspector extends Component {
                             <Paper className={fixedHeightPaper} variant="outlined">
                                 <CustomTree
                                     items={objectTree}
-                                    label="name"
+                                    itemLabel="name"
                                     id="id"
                                     children={"variables"}
                                     onExpand={this.variableExpanded}

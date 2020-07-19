@@ -38,12 +38,27 @@ class MethodList extends Component {
         }
     }
 
+    menuOptions() {
+        const local = 
+            [
+                {label: 'Rename', action: this.renameMethod},
+                {label: 'Remove', action: this.removeMethod},
+                null,
+                {label: 'Senders', action: this.browseSenders},
+                {label: 'Implementors', action: this.browseImplementors},
+                {label: 'Class references', action: this.browseReferences}
+            ];
+        const external = this.props.menuOptions; 
+        if (external === undefined) {return local}
+        return external.concat(local);
+    }
+
     render() {
         const size = 12;
         const methods = this.props.methods == null ? [] : this.props.methods;
         return (
             <CustomList
-                label={this.props.showClass === true ? (m => {return m.class + '>>#' + m.selector}) : "selector"}
+                itemLabel={this.props.showClass === true ? (m => {return m.class + '>>#' + m.selector}) : "selector"}
                 items={methods}
                 selectedItem={this.props.selectedMethod}
                 onSelect={this.props.onSelect}
@@ -59,14 +74,7 @@ class MethodList extends Component {
                     }
                     return null
                 })}
-                menuOptions={[
-                    {label: 'New', action: this.newMethod},
-                    {label: 'Rename', action: this.renameMethod},
-                    {label: 'Remove', action: this.removeMethod},
-                    null,
-                    {label: 'Senders', action: this.browseSenders},
-                    {label: 'Implementors', action: this.browseImplementors},
-                    {label: 'Class references', action: this.browseReferences}]}
+                menuOptions={this.menuOptions()}
             />
         )
     }

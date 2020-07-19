@@ -9,8 +9,8 @@ import {
     IconButton
 } from '@material-ui/core';
 import TranscriptIcon from '../Icons/TranscriptIcon';
+import ChangesBrowserIcon from '../Icons/ChangesBrowserIcon';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChangesIcon from '@material-ui/icons/List';
 import PeopleIcon from '@material-ui/icons/People';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -36,9 +36,9 @@ class Sidebar extends Component {
                         </ListItemIcon>
                         <ListItemText primary="Transcript" />
                     </ListItem>
-                    <ListItem button>
+                    <ListItem button onClick={this.props.onChanges.bind()}>
                         <ListItemIcon>
-                            <ChangesIcon />
+                            <ChangesBrowserIcon />
                         </ListItemIcon>
                         <ListItemText primary="Changes" />
                     </ListItem>                    

@@ -37,7 +37,7 @@ class ClassBrowser extends Component {
     }
 
     changeRoot = async (classname) => {
-        const tree = await this.props.api.getClassTree(classname, 2);
+        const tree = await this.props.api.getClassTree(classname, 3);
         const species = tree[0];
         this.setState(
             {root: classname, classes: {[classname]: species}},
@@ -163,8 +163,10 @@ class ClassBrowser extends Component {
         const species = selections.class;
         if (force) {
             const method = await this.props.api.getMethod(species.name, selections.method.selector);
-            species.methods = species.methods.map(m => {return m.selector === method.selector? method : m})
-            selections.method = method;
+            if (method !== null) { 
+                species.methods = species.methods.map(m => {return m.selector === method.selector? method : m})
+                selections.method = method;
+            }
         }
     }
 
@@ -285,6 +287,16 @@ class ClassBrowser extends Component {
         this.applySelections(selections)  
     }
 
+    newMethod = () => {
+        console.log('a')
+        const template = {
+            class: this.state.selectedClass !== null? this.state.selectedClass.name : null,
+            category: this.state.selectedCategory,
+            source: 'messagePattern\r\t\"comment\"\r\t| temporaries |\r\tstatements'
+        }
+        this.setState({selectedMethod: template})
+    }
+
     render() {
         const {
             root,
@@ -365,6 +377,7 @@ class ClassBrowser extends Component {
                                             <MethodList
                                                 api={this.props.api}
                                                 globalOptions={this.props.globalOptions}
+                                                menuOptions={[{label: 'New', action: this.newMethod}]}
                                                 methods={this.currentMethods()}
                                                 selectedMethod={selectedMethod}
                                                 onSelect={this.methodSelected}
