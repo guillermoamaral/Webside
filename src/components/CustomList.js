@@ -15,13 +15,12 @@ class CustomList extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (
-        props.selecteItem !== state.selectedItem) {
-          return {
-              items: props.items,
-              selectedItem: props.selectedItem,
-              selectedIndex: props.selectedItem == null ? null : props.items.indexOf(props.selectedItem), 
-          };
+    if (props.selecteItem !== undefined && props.selectedItem !== state.selectedItem) {
+        return {
+            items: props.items,
+            selectedItem: props.selectedItem,
+            selectedIndex: props.selectedItem == null ? null : props.items.indexOf(props.selectedItem), 
+        };
     }
     return null
   }
@@ -30,17 +29,23 @@ class CustomList extends Component {
     if (this.props.items === undefined) {return []};
     return (
       this.props.items.map((item, index) => {
+        const label = this.getItemLabel(item);
+        const icon = this.getItemIcon(index);
+        const divider = this.getItemDivider(item);
         return (
           <ListItem
+            disableGutters={divider}
+            //autoFocus
             style={{paddingTop: 0, paddingBottom: 0}}
             button
+            divider={divider}
             key={"item" + index}
             selected={this.state.selectedIndex === index}
             onClick={event => this.itemSelected(event, index, item)}
             onContextMenu={this.openMenu}
             >
-              {this.getItemIcon(index)}
-              <ListItemText primary={this.getItemLabel(item)} />
+              {icon}
+              <ListItemText primary={label} />
           </ListItem>
         )
       })
@@ -51,6 +56,13 @@ class CustomList extends Component {
     this.setState({selectedItem: item, selectedIndex: index});
     const handler = this.props.onSelect;
     if (handler !== undefined) {handler(item)}
+  }
+
+  getItemDivider = (item) => {
+    const getter = this.props.itemDivider;
+    if (getter === undefined) {return false}    
+    if (typeof getter == "string")  {return item[getter]}
+    return getter(item)
   }
 
   getItemLabel = (item) => {

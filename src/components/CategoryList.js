@@ -2,6 +2,17 @@ import React, { Component } from 'react';
 import CustomList from './CustomList';
 
 class CategoryList extends Component {
+    constructor(props) {
+        super(props);
+        this.all = 'All selectors'; 
+    }
+
+    categorySelected = (category) => {
+        const selected = category === this.all? null : category;
+        const handler = this.props.onSelect;
+        if (handler !== undefined) {handler(selected)}
+    }
+
     addCategory = (category) => {
         if (this.props.onAdded !== undefined) {
             this.props.onAdded(category)
@@ -19,11 +30,16 @@ class CategoryList extends Component {
     }
 
     render() {
+        let categories = this.props.categories;
+        if (categories !== undefined) {
+            categories = [...categories];
+            categories.unshift(this.all)};
         return (
             <CustomList
-                items={this.props.categories}
+                items={categories}
+                itemDivider={item => {return item === this.all}}
                 selectedItem={this.props.selectedCategory}
-                onSelect={this.props.onSelect}
+                onSelect={this.categorySelected}
                 menuOptions={[
                     {label: 'Add', action: this.addCategory},
                     {label: 'Rename', action: this.renameCategory},

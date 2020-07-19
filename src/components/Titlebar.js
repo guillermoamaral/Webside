@@ -43,7 +43,7 @@ class Titlebar extends Component {
                 {this.props.title} 
               </Typography>
               <Avatar
-                alt="Uddeshya Singh"
+                alt="guest"
               />
             </Toolbar>
           </AppBar>
