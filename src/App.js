@@ -213,10 +213,9 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // this.openTranscript();
     // this.openInspectors();
     // this.openWorkspace();
-    this.openClassBrowser('Magnitude');
+    // this.openClassBrowser('Magnitude');
   }
 
   addPage(label, icon, component) {
@@ -357,6 +356,7 @@ class App extends Component {
             <CssBaseline/>
             <Titlebar
               title={smalltalk + ' Web IDE'}
+              appName={smalltalk}
               classes={this.props.classes}
               sidebarExpanded={this.state.sidebarExpanded}
               expandSidebar={this.expandSidebar}/>

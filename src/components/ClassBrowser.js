@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { Grid, Box, Paper, RadioGroup, FormControlLabel, Radio } from '@material-ui/core';
+import {
+    Grid,
+    Box,
+    Paper,
+    RadioGroup,
+    FormControlLabel,
+    Radio
+} from '@material-ui/core';
+import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import clsx from 'clsx';
 
 import SearchList from './SearchList';
@@ -21,7 +29,8 @@ class ClassBrowser extends Component {
             selectedVariable: null,
             selectedCategory: null,
             selectedMethod: null,
-            side: "instance"
+            selectedSide: "instance",
+            selectedMode: "definition",
         }
     }
 
@@ -51,6 +60,7 @@ class ClassBrowser extends Component {
             variable: this.state.selectedVariable,
             category: this.state.selectedCategory,
             method: this.state.selectedMethod,
+            mode: this.state.selectedMode,
         };
     }
 
@@ -66,7 +76,8 @@ class ClassBrowser extends Component {
                 selectedClass: selections.class,
                 selectedVariable: selections.variable,
                 selectedCategory: selections.category,
-                selectedMethod: selections.method,            
+                selectedMethod: selections.method,
+                selectedMode: selections.mode,         
             }
         })
     }
@@ -93,6 +104,25 @@ class ClassBrowser extends Component {
             return species.methods.filter(m => {return m.category === category});
         }
         return species[variable.name].filter(m => {return m.category === category});
+    }
+
+    currentSource = () => {
+        console.log('yeah')
+        const {selectedMode, selectedClass, selectedMethod} = this.state;
+        let source;
+        switch (selectedMode) {
+            case "comment":
+                source = selectedClass === null ? '' : selectedClass.comment;
+                break;
+            case "definition":
+                source = selectedClass === null ? '' : selectedClass.definition;
+                break;
+            case "source":    
+                source = selectedMethod === null ? '' : selectedMethod.source;
+                break;
+            default:
+        }
+        return source
     }
 
     // Updating...
@@ -179,6 +209,9 @@ class ClassBrowser extends Component {
         await this.updateVariables(selections);
         await this.updateCategories(selections);
         await this.updateMethods(selections);
+        if (selections.method === null) {
+            selections.mode = "definition"
+        }
         this.applySelections(selections)
     }
 
@@ -249,6 +282,7 @@ class ClassBrowser extends Component {
         const selections = this.currentSelections();
         selections.method = method;
         await this.updateMethod(selections);
+        selections.mode = "source";
         this.applySelections(selections);
     }
 
@@ -260,7 +294,7 @@ class ClassBrowser extends Component {
 
     sideChanged = (event, side) => {
         if (side == null) return;
-        this.setState({side: side});
+        this.setState({selectedSide: side});
         if (side === "instance") {
             const name = this.state.root;
             this.changeRoot(name.slice(0, name.length - 6))
@@ -288,7 +322,6 @@ class ClassBrowser extends Component {
     }
 
     newMethod = () => {
-        console.log('a')
         const template = {
             class: this.state.selectedClass !== null? this.state.selectedClass.name : null,
             category: this.state.selectedCategory,
@@ -297,14 +330,35 @@ class ClassBrowser extends Component {
         this.setState({selectedMethod: template})
     }
 
+    modeChanged = (event, mode) => {
+        this.setState({selectedMode: mode})
+    }
+
+    saveClicked = (source) => {
+        switch (this.state.selectedMode) {
+            case "comment":
+                this.commentClass(source);
+                break;
+            case "definition":
+                this.defineClass(source);
+                break;
+            case "source":    
+                this.compileMethod(source);
+                break;
+            default:
+        }
+    }
+
     render() {
         const {
             root,
             classes,
+            selectedSide,
             selectedClass,
             selectedVariable,
             selectedCategory,
-            selectedMethod} = this.state;
+            selectedMethod,
+            selectedMode} = this.state;
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         return (
             <Grid container spacing={1}>
@@ -324,7 +378,7 @@ class ClassBrowser extends Component {
                                         <Box display="flex" justifyContent="center">
                                             <RadioGroup
                                                 name="side"
-                                                value={this.state.side}
+                                                value={selectedSide}
                                                 onChange={this.sideChanged}
                                                 defaultValue="instance"
                                                 row
@@ -388,24 +442,40 @@ class ClassBrowser extends Component {
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Grid item xs={1} md={1} lg={1}
-                        ></Grid>
+                        <Grid item xs={1} md={1} lg={1}></Grid>
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
-                    <CodeEditor
-                        classes={this.props.classes}
-                        api={this.props.api}
-                        globalOptions={this.props.globalOptions}
-                        definition={selectedClass == null ? '' : selectedClass.definition}
-                        comment={selectedClass == null ? '' : selectedClass.comment}
-                        source={selectedMethod == null ? '' : selectedMethod.source}
-                        onError={this.reportError}
-                        onDefine={this.defineClass}
-                        onComment={this.commentClass}
-                        onCompile={this.compileMethod}
-                        />
-                </Grid> 
+                    <Grid container spacing={1}>
+                        <Grid item xs={12} md={12} lg={12}>
+                            <ToggleButtonGroup
+                                label="primary"
+                                value={selectedMode}
+                                exclusive
+                                onChange={this.modeChanged}>
+                                <ToggleButton value="source" variant="outlined" size="small">
+                                    Method defintion
+                                </ToggleButton>
+                                <ToggleButton value="definition" variant="outlined" size="small">
+                                    Class definition
+                                </ToggleButton>
+                                <ToggleButton value="comment" variant="outlined" size="small">
+                                    Class comment
+                                </ToggleButton>
+                            </ToggleButtonGroup>    
+                        </Grid>
+                        <Grid item xs={12} md={12} lg={12}>
+                            <CodeEditor
+                                classes={this.props.classes}
+                                api={this.props.api}
+                                globalOptions={this.props.globalOptions}
+                                source={this.currentSource()}
+                                onError={this.reportError}
+                                onSave={this.saveClicked}
+                                />
+                        </Grid>
+                    </Grid>
+                </Grid>
             </Grid>
         )
     };

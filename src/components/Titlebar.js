@@ -5,11 +5,11 @@ import {
     Avatar,
     Typography,
     IconButton,
-    SvgIcon
+    Link,
+    Image
   } from '@material-ui/core';
 import clsx from 'clsx';  
 import MenuIcon from '@material-ui/icons/Menu';
-import { ReactComponent as Logo } from "../resources/bee.svg";
 
 class Titlebar extends Component {
     render() {
@@ -30,9 +30,13 @@ class Titlebar extends Component {
               >
                 <MenuIcon />
               </IconButton>
-              {/* <SvgIcon>
-                <Logo height={30} width={30}/>
-              </SvgIcon> */}
+              <Link to="http://localhost:3000">
+              <img
+                src={require("../resources/" + this.props.appName + ".png")}
+                width={28}
+                height={28}
+                alt={"Open"}/>
+              </Link>
               <Typography
                 component="h1"
                 variant="h6"
