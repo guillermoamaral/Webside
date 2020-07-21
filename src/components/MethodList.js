@@ -25,7 +25,7 @@ class MethodList extends Component {
                 null,
                 {label: 'Senders', action: m => this.context.browseSenders(m.selector)},
                 {label: 'Implementors', action: m => this.context.browseImplementors(m.selector)},
-                {label: 'Class references', action: m => this.context.browseReferences(m.selector)}
+                {label: 'Class references', action: m => this.context.browseReferences(m.class)}
             ];
         const external = this.props.menuOptions; 
         if (external === undefined) {return local}
