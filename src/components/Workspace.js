@@ -23,7 +23,6 @@ class Workspace extends Component {
 
     constructor(props) {
         super(props);
-        this.reportError=props.onError.bind();
         this.state = {
             expression: '1 @ 2 extent: 10',
             opensInspector: true,
@@ -36,9 +35,7 @@ class Workspace extends Component {
           key={object.id}
           classes={this.props.classes}
           root={object}
-          onClose={this.closeInspector}
-          onError={this.reportError}
-          />;
+          onClose={this.closeInspector}/>;
         const inspectors = this.state.inspectors;
         inspectors.unshift(inspector);
         this.setState({inspectors: inspectors})
@@ -72,7 +69,6 @@ class Workspace extends Component {
                             <CodeEditor
                                 classes={this.props.classes}
                                 source={this.state.expression}
-                                onError={this.reportError}
                                 onAccept={this.evaluateClicked}
                                 onChange={this.expressionChanged}
                             />

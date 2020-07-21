@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Grid, Paper, Box, IconButton } from '@material-ui/core';
 import AcceptIcon from '@material-ui/icons/CheckCircle';
 import { Controlled as CodeMirror } from 'react-codemirror2';
+import PopupMenu from './PopupMenu';
 import { AppContext } from '../AppContext';
 
 require('codemirror/lib/codemirror.css');
@@ -14,7 +15,6 @@ class CodeEditor extends Component {
     constructor(props){
         super(props);
         this.instance = null;
-        this.reportError = props.onError.bind();
         this.state = {
             source: props.source,
             dirty: false,

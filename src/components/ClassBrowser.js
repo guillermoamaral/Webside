@@ -23,7 +23,6 @@ class ClassBrowser extends Component {
 
     constructor(props) {
         super(props);
-        this.reportError = props.onError.bind();
         this.state = {
             root: this.props.root,
             classes: {},
@@ -464,7 +463,6 @@ class ClassBrowser extends Component {
                             <CodeEditor
                                 classes={this.props.classes}
                                 source={this.currentSource()}
-                                onError={this.reportError}
                                 onAccept={this.saveClicked}
                                 />
                         </Grid>

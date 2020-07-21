@@ -10,7 +10,6 @@ class Inspector extends Component {
 
     constructor(props) {
         super(props);
-        this.reportError = props.onError.bind();
         if (this.props.onClose !== undefined) {this.props.onClose.bind()};
         const root = this.props.root;
         root.name = 'self';

@@ -12,7 +12,6 @@ class MethodBrowser extends Component {
 
     constructor(props) {
         super(props);
-        this.reportError = props.onError.bind();
         this.state = {
             selectedMethod: null,
             selectedMode: null,
@@ -110,7 +109,6 @@ class MethodBrowser extends Component {
                             <CodeEditor
                                 classes={this.props.classes}
                                 source={this.currentSource()}
-                                onError={this.reportError}
                                 onAccept={this.saveClicked}
                                 />
                         </Grid>
