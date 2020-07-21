@@ -9,19 +9,23 @@ import {
   Menu,
   MenuItem,
   Drawer,
-  ClickAwayListener
+  Dialog
 } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { amber , blue } from '@material-ui/core/colors';
 import AddIcon from '@material-ui/icons/AddCircle';
 
+
 import API from './components/API';
+import { AppContext } from './AppContext';
 import TranscriptIcon from './Icons/TranscriptIcon';
 import ClassBrowserIcon from './Icons/ClassBrowserIcon';
 import MethodBrowserIcon from './Icons/MethodBrowserIcon';
 import WorkspaceIcon from './Icons/WorkspaceIcon';
 import InspectorIcon from './Icons/InspectorIcon';
 import ChangesBrowserIcon from './Icons/ChangesBrowserIcon';
+
+import ConfirmDialog from './components/ConfirmDialog';
 import Titlebar from './components/Titlebar'
 import Sidebar from './components/Sidebar';
 import TabControl from './components/TabControl';
@@ -51,6 +55,7 @@ switch (smalltalk) {
     mainPrimaryColor = blue[300];
     mainSecondaryColor = blue[800];
     break;
+  default:
 }
 
 const drawerWidth = 240;
@@ -197,11 +202,6 @@ class App extends Component {
   constructor(props){
     super(props);
     this.api = new API(baseUri, 'guest', this.reportError);
-    this.globalOptions = {
-      browseSenders: this.browseSenders,
-      browseImplementors: this.browseImplementors,
-      browseReferences: this.browseReferences,
-      inspectObject: this.openInspector}
     this.state = {
       sidebarExpanded: false,
       addPageMenuOpen: false,
@@ -216,6 +216,17 @@ class App extends Component {
     // this.openInspectors();
     // this.openWorkspace();
     // this.openClassBrowser('Magnitude');
+  }
+
+  confirm = (title, question) => {
+    return new Promise((resolve, reject) => {
+      this.confirmDialog.setState({
+        title: title,
+        question: question,
+        onConfirm: () => resolve(true),
+        onCancel: () => resolve(false)
+      })
+    }) 
   }
 
   addPage(label, icon, component) {
@@ -235,8 +246,6 @@ class App extends Component {
 
   openTranscript() {
     const transcript = <Transcript
-      api={this.api}
-      globalOptions={this.globalOptions}
       classes={this.props.classes}      
       text={this.state.transcriptText}
       />;
@@ -252,8 +261,6 @@ class App extends Component {
   openClassBrowser = (classname) => {
     const root = (classname === undefined)? 'Magnitude' : classname;
     const browser = <ClassBrowser
-      api={this.api}
-      globalOptions={this.globalOptions}
       classes={this.props.classes}
       root={root}
       onError={this.reportError}
@@ -263,8 +270,6 @@ class App extends Component {
 
   openMethodBrowser = (methods, title = 'Methods') => {
     const browser = <MethodBrowser
-      api={this.api}
-      globalOptions={this.globalOptions}
       classes={this.props.classes}
       methods={methods}
       onError={this.reportError}
@@ -274,8 +279,6 @@ class App extends Component {
 
   openWorkspace = () => {
     const workspace = <Workspace
-      api={this.api}
-      globalOptions={this.globalOptions}
       classes={this.props.classes}
       onError={this.reportError}
       />;
@@ -284,8 +287,6 @@ class App extends Component {
 
   openInspector = (object) => {
     const inspector = <Inspector
-      api={this.api}
-      globalOptions={this.globalOptions}
       classes={this.props.classes}
       key={object.id}
       root={object}
@@ -296,8 +297,6 @@ class App extends Component {
 
   openChangesBrowser = () => {
     const browser = <ChangesBrowser
-      api={this.api}
-      globalOptions={this.globalOptions}
       classes={this.props.classes}
       onError={this.reportError}
       />;
@@ -349,9 +348,16 @@ class App extends Component {
     this.setState({transcriptOpen: !this.state.transcriptOpen});
   }
 
-  render () {
+  render() {
+    const context = {
+      api: this.api,
+      browseSenders: this.browseSenders,
+      browseImplementors: this.browseImplementors,
+      browseReferences: this.browseReferences,
+      reportError: this.reportError};
     return (
       <ThemeProvider theme={theme}>
+        <AppContext.Provider value={context}>
           <div className={this.props.classes.root}>
             <CssBaseline/>
             <Titlebar
@@ -386,8 +392,7 @@ class App extends Component {
                       anchorEl={document.getElementById("addPageButton")}
                       keepMounted
                       open={this.state.addPageMenuOpen}
-                      onClose={() => {this.setState({addPageMenuOpen: false})}}
-                    >
+                      onClose={() => {this.setState({addPageMenuOpen: false})}}>
                       <MenuItem onClick={this.addClassBrowserClicked}>
                         <ClassBrowserIcon />
                         Class Browse
@@ -407,8 +412,6 @@ class App extends Component {
                       //onOpen={() => this.setState({transcriptOpen: true})}
                     >
                       <Transcript
-                        api={this.api}
-                        globalOptions={this.globalOptions}
                         classes={this.props.classes}      
                         text={this.state.transcriptText}
                         />
@@ -418,6 +421,7 @@ class App extends Component {
               </Container>
             </main>
           </div>
+        </AppContext.Provider>
       </ThemeProvider>
     )
   }

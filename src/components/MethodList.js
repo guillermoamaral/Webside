@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import CustomList from './CustomList';
 import { ArrowUpDownBold, ArrowUpBold, ArrowDownBold } from 'mdi-material-ui';
+import { AppContext } from '../AppContext';
 
 class MethodList extends Component {
+    static contextType = AppContext;
+
     removeMethod = (method) => {
-        this.props.api.deleteMethod(method.class, method.selector)
+        this.context.api.deleteMethod(method.class, method.selector)
             .then(response => {
                 const handler = this.props.onRemoved;
                 if (handler !== undefined) {
@@ -14,39 +17,15 @@ class MethodList extends Component {
             .catch(error => {})
     }
 
-    browseSenders = (method) => {
-        if (this.props.globalOptions === undefined) {return}
-        const option = this.props.globalOptions.browseSenders;
-        if (option !== undefined) {
-            option(method.selector)
-        }
-    }
-
-    browseImplementors = (method) => {
-        if (this.props.globalOptions === undefined) {return}
-        const option = this.props.globalOptions.browseImplementors;
-        if (option !== undefined) {
-            option(method.selector)
-        }
-    }
-
-    browseReferences = (method) => {
-        if (this.props.globalOptions === undefined) {return}
-        const option = this.props.globalOptions.browseReferences;
-        if (option !== undefined) {
-            option(method.class)
-        }
-    }
-
     menuOptions() {
         const local = 
             [
                 {label: 'Rename', action: this.renameMethod},
                 {label: 'Remove', action: this.removeMethod},
                 null,
-                {label: 'Senders', action: this.browseSenders},
-                {label: 'Implementors', action: this.browseImplementors},
-                {label: 'Class references', action: this.browseReferences}
+                {label: 'Senders', action: m => this.context.browseSenders(m.selector)},
+                {label: 'Implementors', action: m => this.context.browseImplementors(m.selector)},
+                {label: 'Class references', action: m => this.context.browseReferences(m.selector)}
             ];
         const external = this.props.menuOptions; 
         if (external === undefined) {return local}

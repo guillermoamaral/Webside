@@ -3,8 +3,11 @@ import { Grid, Paper } from '@material-ui/core';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import CustomTable from './CustomTable';
 import clsx from 'clsx';
+import { AppContext } from '../AppContext';
 
 class ChangesBrowser extends Component {
+    static contextType = AppContext;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -14,11 +17,11 @@ class ChangesBrowser extends Component {
     }
 
     componentDidMount() {
-        this.updateChanges();
+        this.updateChanges()
     }
 
     updateChanges() {
-        this.props.api.getChanges()
+        this.context.api.getChanges()
             .then(changes =>
                 this.setState({changes: changes, selectedChange: null}));
     }

@@ -1,4 +1,4 @@
-import React from 'react';
+import { React, Component } from 'react';
 import {
     Button,
     Dialog,
@@ -7,35 +7,45 @@ import {
     DialogTitle }
  from '@material-ui/core';
 
-const ConfirmDialog = (props) => {
-  const {title, children, open, setOpen, onConfirm} = props;
-  return (
-    <Dialog
-      open={open}
-      onClose={() => setOpen(false)}
-    >
-      <DialogTitle id="confirm-dialog">{title}</DialogTitle>
-      <DialogContent>{children}</DialogContent>
-      <DialogActions>
-        <Button
-          variant="contained"
-          onClick={() => setOpen(false)}
-          color="secondary"
-        >
-          No
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => {
-            setOpen(false);
-            onConfirm();
-          }}
-          color="default"
-        >
-          Yes
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
+class ConfirmDialog extends Component {
+  yesClicked = () => {
+    const handler = this.props.onConfirm;
+    if (handler !== undefined) {handler()}
+  }
+
+  noClicked = () => {
+    const handler = this.props.onCancel;
+    if (handler !== undefined) {handler()}
+  }
+
+  render() {
+    const {title, question, open} = this.props;
+    return (
+      <Dialog
+        open={open}
+        onClose={this.noClicked}
+      >
+        <DialogTitle id="confirm-dialog">{title}</DialogTitle>
+        <DialogContent>{question}</DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            onClick={this.noClicked}
+            color="secondary"
+          >
+            No
+          </Button>
+          <Button
+            variant="contained"
+            onClick={this.yesClicked}
+            color="default"
+          >
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  }
+}
+
 export default ConfirmDialog;

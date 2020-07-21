@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import { Box, Grid, Paper } from '@material-ui/core';
 import clsx from 'clsx';
 
+import { AppContext } from '../AppContext';
 import CustomTree from './CustomTree';
 
 class Inspector extends Component {
+    static contextType = AppContext;
+
     constructor(props) {
         super(props);
         this.reportError = props.onError.bind();
@@ -30,12 +33,12 @@ class Inspector extends Component {
 
     updateVariables = (object) => {
         if (object.variables !== undefined) {return object.variables}
-        this.props.api.getInstanceVariables(object.class)
+        this.context.api.getInstanceVariables(object.class)
             .then(variables => {
                 object.variables = [];
                 variables.forEach(v => {
                     const path = object.path + '/' + v.name;
-                    this.props.api.getVariable(this.props.root.id, path)
+                    this.context.api.getVariable(this.props.root.id, path)
                         .then(variable => {
                             variable.name = v.name;
                             variable.path = path;

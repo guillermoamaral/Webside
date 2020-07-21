@@ -15,11 +15,11 @@ class CustomList extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (props.selecteItem !== undefined && props.selectedItem !== state.selectedItem) {
+    if (props.selectedItem !== state.selectedItem) {
         return {
             items: props.items,
             selectedItem: props.selectedItem,
-            selectedIndex: props.selectedItem == null ? null : props.items.indexOf(props.selectedItem), 
+            selectedIndex: props.selectedItem === null ? null : props.items.indexOf(props.selectedItem), 
         };
     }
     return null

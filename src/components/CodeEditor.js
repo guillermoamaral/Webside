@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import { Grid, Paper, Box, IconButton } from '@material-ui/core';
-import SaveIcon from '@material-ui/icons/CheckCircle';
+import AcceptIcon from '@material-ui/icons/CheckCircle';
 import { Controlled as CodeMirror } from 'react-codemirror2';
+import { AppContext } from '../AppContext';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
 require('codemirror/mode/smalltalk/smalltalk.js');
 
 class CodeEditor extends Component {
+    static contextType = AppContext;
+
     constructor(props){
         super(props);
         this.instance = null;
@@ -15,7 +18,7 @@ class CodeEditor extends Component {
         this.state = {
             source: props.source,
             dirty: false,
-            value: ''
+            value: props.source
         }
     }
 
@@ -30,28 +33,29 @@ class CodeEditor extends Component {
     }
 
     valueChanged = (value) => {
+        const handler = this.props.onChange;
+        if (handler !== undefined) {handler(value)}
         this.setState({value: value, dirty: true})
     }
     
-    saveClicked = (event) => {
-        const handler = this.props.onSave;
-        if (handler !== undefined) {
-            handler(this.state.value);
-        }
+    acceptClicked = (event) => {
+        const handler = this.props.onAccept;
+        if (handler !== undefined) {handler(this.state.value)}
     }
 
     browseSenders = () => {
         const selector = this.instance.getSelection();
-        if (this.props.globalOptions === undefined) {return}
-        const option = this.props.globalOptions.browseSenders;
-        if (option !== undefined) {option(selector)}
+        this.context.browseSenders(selector);
     }
 
     browseImplementors = () => {
         const selector = this.instance.getSelection();
-        if (this.props.globalOptions === undefined) {return}
-        const option = this.props.globalOptions.browseImplementors;
-        if (option !== undefined) {option(selector)}
+        this.context.browseImplementors(selector);
+    }
+
+    browseReferences = () => {
+        const global = this.instance.getSelection();
+        this.context.browseReferences(global);
     }
 
     evaluableExpression() {
@@ -63,22 +67,19 @@ class CodeEditor extends Component {
 
     evaluate = () => {
         const expression = this.evaluableExpression();
-        this.props.api.evaluate(expression, false)
+        this.context.api.evaluate(expression, false)
     }
 
-    inspectEvaluation = () => {
-        if (this.props.globalOptions === undefined) {return}
+    inspect = () => {
         const expression = this.evaluableExpression();
-        this.props.api.evaluate(expression, true)
+        this.context.api.evaluate(expression, true)
             .then(object => {
-                const option = this.props.globalOptions.inspectObject;
-                if (option !== undefined) {option(object)}
-            })
+                this.context.inspectObject(object);            })
     }
 
-    showEvaluation = () => {
+    show = () => {
         const expression = this.evaluableExpression();
-        this.props.api.evaluate(expression, false)
+        this.context.api.evaluate(expression, false)
             .then(object => {
                 const cursor = this.instance.getCursor("to");
                 this.instance.replaceRange(" " + object.printString, cursor);
@@ -111,11 +112,12 @@ class CodeEditor extends Component {
                                 lineWrapping: true, 
                                 extraKeys: {
                                     "Ctrl-D": this.evaluate,
-                                    "Ctrl-I": this.inspectEvaluation,
-                                    "Ctrl-S": this.showEvaluation,
-                                    "Alt-S": this.saveClicked,
+                                    "Ctrl-I": this.inspect,
+                                    "Ctrl-S": this.show,
+                                    "Alt-S": this.acceptClicked,
                                     "Alt-N": this.browseSenders,
-                                    "Alt-M": this.browseImplementors
+                                    "Alt-M": this.browseImplementors,
+                                    "Alt-R": this.browseReferences
                                 }}}
                             editorDidMount={editor => {this.instance = editor}}
                             onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
@@ -124,9 +126,9 @@ class CodeEditor extends Component {
                     </Paper>
                 </Grid>
                 <Grid item xs={1} md={1} lg={1}>
-                    <Box display="flex" justifyContent="center"> 
-                        <IconButton color="inherit" onClick={this.saveClicked}>
-                            <SaveIcon size="large" style={{fontSize: 30}}/>
+                    <Box display="flex" justifyContent="center" > 
+                        <IconButton color="inherit" onClick={this.acceptClicked}>
+                            <AcceptIcon size="large" style={{fontSize: 30}}/>
                         </IconButton>
                     </Box>
                 </Grid>

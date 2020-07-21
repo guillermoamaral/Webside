@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import CustomList from './CustomList';
+import { AppContext } from '../AppContext';
 
 class CategoryList extends Component {
+    static contextType = AppContext;
+
     constructor(props) {
         super(props);
         this.all = 'All selectors'; 
@@ -20,7 +23,7 @@ class CategoryList extends Component {
     }
 
     removeCategory = (category) => {
-        this.props.api.deleteCategory(this.props.class.name, category)
+        this.context.api.deleteCategory(this.props.class.name, category)
             .then(response => {
                 if (this.props.onRemoved !== undefined) {
                     this.props.onRemoved(category)

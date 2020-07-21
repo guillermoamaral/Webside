@@ -5,8 +5,7 @@ import {
     Avatar,
     Typography,
     IconButton,
-    Link,
-    Image
+    Link
   } from '@material-ui/core';
 import clsx from 'clsx';  
 import MenuIcon from '@material-ui/icons/Menu';

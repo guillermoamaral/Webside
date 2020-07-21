@@ -10,6 +10,7 @@ import {
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import clsx from 'clsx';
 
+import { AppContext } from '../AppContext';
 import SearchList from './SearchList';
 import ClassTree from './ClassTree';
 import VariableList from './VariableList';
@@ -18,6 +19,8 @@ import MethodList from './MethodList';
 import CodeEditor from './CodeEditor';
 
 class ClassBrowser extends Component {
+    static contextType = AppContext;
+
     constructor(props) {
         super(props);
         this.reportError = props.onError.bind();
@@ -40,13 +43,13 @@ class ClassBrowser extends Component {
     }
 
     getClassNames = () => {
-        this.props.api.getClassNames()
+        this.context.api.getClassNames()
             .then(names => {this.setState({classNames: names})})
             .catch(error => {})
     }
 
     changeRoot = async (classname) => {
-        const tree = await this.props.api.getClassTree(classname, 3);
+        const tree = await this.context.api.getClassTree(classname, 3);
         const species = tree[0];
         this.setState(
             {root: classname, classes: {[classname]: species}},
@@ -107,7 +110,6 @@ class ClassBrowser extends Component {
     }
 
     currentSource = () => {
-        console.log('yeah')
         const {selectedMode, selectedClass, selectedMethod} = this.state;
         let source;
         switch (selectedMode) {
@@ -129,13 +131,13 @@ class ClassBrowser extends Component {
     async updateClass(selections, force = false) {
         const species = selections.class;
         if (force || species.definition === undefined) {
-            const definition = await this.props.api.getClass(species.name);
+            const definition = await this.context.api.getClass(species.name);
             species.definition = definition.definition;
             species.comment = definition.comment;
             species.superclass = definition.superclass;
         }
         if (force || species.subclasses === undefined) {
-            species.subclasses = await this.props.api.getSubclasses(species.name);
+            species.subclasses = await this.context.api.getSubclasses(species.name);
         }
     }
 
@@ -143,7 +145,7 @@ class ClassBrowser extends Component {
         if (species.subclasses !== undefined) {
             await Promise.all(species.subclasses.map (async c => {
                 if (c.subclasses === undefined) {
-                    c.subclasses = await this.props.api.getSubclasses(c.name);
+                    c.subclasses = await this.context.api.getSubclasses(c.name);
                 }
             }))
         }
@@ -152,7 +154,7 @@ class ClassBrowser extends Component {
     async updateVariables(selections, force = false) {
         const species = selections.class;
         if (force || species.variables === undefined) {
-            species.variables = await this.props.api.getVariables(species.name);
+            species.variables = await this.context.api.getVariables(species.name);
         }
         var variable = selections.variable;
         if (variable !== null) {
@@ -164,7 +166,7 @@ class ClassBrowser extends Component {
     async updateCategories(selections, force = false) {
         const species = selections.class; 
         if (force || species.categories === undefined) {
-            const categories = await this.props.api.getCategories(species.name);
+            const categories = await this.context.api.getCategories(species.name);
             species.categories = categories.sort();
         }
         if (!species.categories.includes(selections.category)) {
@@ -175,12 +177,12 @@ class ClassBrowser extends Component {
     async updateMethods(selections, force = false) {
         const species = selections.class;
         if (force || species.methods === undefined) {
-            const methods = await this.props.api.getMethods(species.name);
+            const methods = await this.context.api.getMethods(species.name);
             species.methods = methods.sort((a, b) => {return a.selector <= b.selector? -1 : 1});
         }
         const variable = selections.variable;
         if (variable !== null && (force || species[variable.name] === undefined)) {
-            species[variable.name] = await this.props.api.getMethodsUsing(species.name, variable.name);            
+            species[variable.name] = await this.context.api.getMethodsUsing(species.name, variable.name);            
         }
         var method = selections.method;
         if (method !== null) {
@@ -192,7 +194,7 @@ class ClassBrowser extends Component {
     async updateMethod(selections, force = true) {
         const species = selections.class;
         if (force) {
-            const method = await this.props.api.getMethod(species.name, selections.method.selector);
+            const method = await this.context.api.getMethod(species.name, selections.method.selector);
             if (method !== null) { 
                 species.methods = species.methods.map(m => {return m.selector === method.selector? method : m})
                 selections.method = method;
@@ -221,7 +223,7 @@ class ClassBrowser extends Component {
     }
 
     defineClass = async (definition) => {
-        const species = await this.props.api.defineClass(this.state.selectedClass.name, definition);    
+        const species = await this.context.api.defineClass(this.state.selectedClass.name, definition);    
         const classes = this.state.classes;
         const current = classes[species.name];
         if (current !== undefined) {
@@ -239,7 +241,7 @@ class ClassBrowser extends Component {
     }
     
     commentClass = async (comment) => {
-        const species = await this.props.api.commentClass(this.state.selectedClass.name, comment);
+        const species = await this.context.api.commentClass(this.state.selectedClass.name, comment);
         const classes = this.state.classes;
         classes[species.name].comment = species.comment;
         this.setState({classes: classes})
@@ -306,7 +308,7 @@ class ClassBrowser extends Component {
     compileMethod = async (source) => {
         const species = this.state.selectedClass;
         const category = this.state.selectedCategory;
-        const method = await this.props.api.compileMethod(species.name, category, source);
+        const method = await this.context.api.compileMethod(species.name, category, source);
         const selections = this.currentSelections();
         if (!species.categories.includes(method.category)) {
             await this.updateCategories(selections, true);
@@ -325,7 +327,7 @@ class ClassBrowser extends Component {
         const template = {
             class: this.state.selectedClass !== null? this.state.selectedClass.name : null,
             category: this.state.selectedCategory,
-            source: 'messagePattern\r\t\"comment\"\r\t| temporaries |\r\tstatements'
+            source: 'messagePattern\r\t"comment"\r\t| temporaries |\r\tstatements'
         }
         this.setState({selectedMethod: template})
     }
@@ -397,8 +399,6 @@ class ClassBrowser extends Component {
                                     <Grid item xs={12} md={3} lg={3}>
                                         <Paper className={fixedHeightPaper} variant="outlined">
                                             <ClassTree
-                                                api={this.props.api}
-                                                globalOptions={this.props.globalOptions}
                                                 root={classes[root]}
                                                 selectedClass={selectedClass}
                                                 onExpand={this.classExpanded}
@@ -409,7 +409,6 @@ class ClassBrowser extends Component {
                                     <Grid item xs={12} md={3} lg={3}>
                                         <Paper className={fixedHeightPaper} variant="outlined">
                                             <VariableList
-                                                api={this.props.api}
                                                 variables={this.currentVariables()}
                                                 selectedVariable={selectedVariable}
                                                 onSelect={this.variableSelected}/>
@@ -418,7 +417,6 @@ class ClassBrowser extends Component {
                                     <Grid item xs={12} md={3} lg={3}>
                                         <Paper className={fixedHeightPaper} variant="outlined">
                                             <CategoryList
-                                                api={this.props.api}
                                                 class={selectedClass}
                                                 categories={this.currentCategories()}
                                                 selectedCategory={selectedCategory}
@@ -429,8 +427,6 @@ class ClassBrowser extends Component {
                                     <Grid item xs={12} md={3} lg={3}>
                                         <Paper className={fixedHeightPaper} variant="outlined">
                                             <MethodList
-                                                api={this.props.api}
-                                                globalOptions={this.props.globalOptions}
                                                 menuOptions={[{label: 'New', action: this.newMethod}]}
                                                 methods={this.currentMethods()}
                                                 selectedMethod={selectedMethod}
@@ -467,11 +463,9 @@ class ClassBrowser extends Component {
                         <Grid item xs={12} md={12} lg={12}>
                             <CodeEditor
                                 classes={this.props.classes}
-                                api={this.props.api}
-                                globalOptions={this.props.globalOptions}
                                 source={this.currentSource()}
                                 onError={this.reportError}
-                                onSave={this.saveClicked}
+                                onAccept={this.saveClicked}
                                 />
                         </Grid>
                     </Grid>

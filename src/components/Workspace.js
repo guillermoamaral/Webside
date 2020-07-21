@@ -2,18 +2,16 @@ import React, { Component } from 'react';
 import {
     Grid,
     Paper,
-    Toolbar,
-    IconButton,
     Accordion,
     AccordionSummary,
     AccordionDetails,
     Typography
 } from '@material-ui/core';
-import PlayIcon from '@material-ui/icons/PlayArrow';
+
+import { AppContext } from '../AppContext';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import InspectorIcon from '../Icons/InspectorIcon';
-import { Controlled as CodeMirror } from 'react-codemirror2';
-
+import CodeEditor from './CodeEditor';
 import Inspector from './Inspector';
 
 require('codemirror/lib/codemirror.css');
@@ -21,6 +19,8 @@ require('codemirror/theme/material.css');
 require('codemirror/mode/smalltalk/smalltalk.js');
 
 class Workspace extends Component {
+    static contextType = AppContext;
+
     constructor(props) {
         super(props);
         this.reportError=props.onError.bind();
@@ -33,7 +33,6 @@ class Workspace extends Component {
 
     openInspector(object) {
         const inspector = <Inspector
-          api={this.props.api}
           key={object.id}
           classes={this.props.classes}
           root={object}
@@ -49,12 +48,12 @@ class Workspace extends Component {
         this.setState({inspectors: this.state.inspectors.filter((i) => {return i.props.root.id !== id})});
     }
     
-    expressionChanged(text) {
+    expressionChanged = (text) => {
         this.setState({expression: text})
     }
 
     evaluateClicked = () => {
-        this.props.api.evaluate(this.state.expression, true)
+        this.context.api.evaluate(this.state.expression, true)
             .then(object => {
                 if (this.state.opensInspector) {
                     this.openInspector(object)
@@ -69,34 +68,13 @@ class Workspace extends Component {
             <Grid container spacing={1}>
                 <Grid item xs={12} md={8} lg={8}>
                     <Grid item xs={12} md={12} lg={12}>
-                        <Toolbar>
-                            <div className={this.props.classes.grow} />
-                            <IconButton color="inherit" onClick={this.evaluateClicked}>
-                                <PlayIcon size="large"/>
-                            </IconButton>
-                        </Toolbar>
-                    </Grid>
-                    <Grid item xs={12} md={12} lg={12}>
                         <Paper variant="outlined">
-                            <CodeMirror
-                                className={this.props.classes.codeMirror}
-                                value={this.state.expression}
-                                options={{
-                                    mode: 'smalltalk',
-                                    theme: 'material',
-                                    lineNumbers: true,
-                                    matchBrackets: true, 
-                                    indentUnit: 10, 
-                                    highlightSelectionMatches: true, 
-                                    styleActiveLine: true, 
-                                    matchTags: {bothTags: true}, 
-                                    lineWrapping: true, 
-                                    extraKeys: {
-                                        "Alt-I": "inspectClicked", 
-                                        "Ctrl-P": "printClicked"
-                                    }}}
-                                onBeforeChange={(editor, data, value) => {this.expressionChanged(value)}}
-                                onChange={(editor, data, value) => {this.expressionChanged(value)}}
+                            <CodeEditor
+                                classes={this.props.classes}
+                                source={this.state.expression}
+                                onError={this.reportError}
+                                onAccept={this.evaluateClicked}
+                                onChange={this.expressionChanged}
                             />
                         </Paper>
                     </Grid>

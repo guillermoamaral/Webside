@@ -3,10 +3,13 @@ import { Grid, Paper } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import clsx from 'clsx';
 
+import { AppContext } from '../AppContext';
 import MethodList from './MethodList';
 import CodeEditor from './CodeEditor';
 
 class MethodBrowser extends Component {
+    static contextType = AppContext;
+
     constructor(props) {
         super(props);
         this.reportError = props.onError.bind();
@@ -23,7 +26,7 @@ class MethodBrowser extends Component {
 
     updateClass = (method) => {
         if (method.classDefinition === undefined) {
-            this.props.api.getClass(method.class)
+            this.context.api.getClass(method.class)
                 .then(definition => {
                     method.classDefinition = definition.definition;
                     method.classComment = definition.comment;
@@ -33,7 +36,6 @@ class MethodBrowser extends Component {
     }
 
     currentSource = () => {
-        console.log('yeah')
         const {selectedMethod, selectedMode} = this.state;
         if (selectedMethod === null) {return ''}
         let source;
@@ -79,8 +81,6 @@ class MethodBrowser extends Component {
                 <Grid item xs={12} md={12} lg={12}>
                     <Paper className={fixedHeightPaper} variant="outlined">
                         <MethodList
-                            api={this.props.api}
-                            globalOptions={this.props.globalOptions}
                             showClass={true}
                             selectedMethod={selectedMethod}
                             methods={this.props.methods}
@@ -109,11 +109,9 @@ class MethodBrowser extends Component {
                         <Grid item xs={12} md={12} lg={12}>
                             <CodeEditor
                                 classes={this.props.classes}
-                                api={this.props.api}
-                                globalOptions={this.props.globalOptions}
                                 source={this.currentSource()}
                                 onError={this.reportError}
-                                onSave={this.saveClicked}
+                                onAccept={this.saveClicked}
                                 />
                         </Grid>
                     </Grid>
