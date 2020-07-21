@@ -245,10 +245,7 @@ class App extends Component {
   }
 
   openTranscript() {
-    const transcript = <Transcript
-      classes={this.props.classes}      
-      text={this.state.transcriptText}
-      />;
+    const transcript = <Transcript classes={this.props.classes} text={this.state.transcriptText}/>;
     this.addPage('Transcript', <TranscriptIcon />, transcript);
   }
 
@@ -260,28 +257,17 @@ class App extends Component {
 
   openClassBrowser = (classname) => {
     const root = (classname === undefined)? 'Magnitude' : classname;
-    const browser = <ClassBrowser
-      classes={this.props.classes}
-      root={root}
-      onError={this.reportError}
-      />;
+    const browser = <ClassBrowser classes={this.props.classes} root={root}/>;
     this.addPage(root, <ClassBrowserIcon className={this.props.classes.classBrowserIcon} />, browser);
   }
 
   openMethodBrowser = (methods, title = 'Methods') => {
-    const browser = <MethodBrowser
-      classes={this.props.classes}
-      methods={methods}
-      onError={this.reportError}
-      />;
+    const browser = <MethodBrowser classes={this.props.classes} methods={methods}/>;
     this.addPage(title + '(' + methods.length + ')', <MethodBrowserIcon className={this.props.classes.methodBrowserIcon} />, browser);
   }
 
   openWorkspace = () => {
-    const workspace = <Workspace
-      classes={this.props.classes}
-      onError={this.reportError}
-      />;
+    const workspace = <Workspace classes={this.props.classes}/>;
     this.addPage('Workspace', <WorkspaceIcon className={this.props.classes.workspaceIcon} />, workspace);
   }
 
@@ -289,17 +275,12 @@ class App extends Component {
     const inspector = <Inspector
       classes={this.props.classes}
       key={object.id}
-      root={object}
-      onError={this.reportError}
-      />;
+      root={object}/>;
     this.addPage(object.class + ': ' + object.id, <InspectorIcon className={this.props.classes.workspaceIcon} />, inspector);
   }
 
   openChangesBrowser = () => {
-    const browser = <ChangesBrowser
-      classes={this.props.classes}
-      onError={this.reportError}
-      />;
+    const browser = <ChangesBrowser classes={this.props.classes}/>;
     this.addPage('Last Changes', <ChangesBrowserIcon className={this.props.classes.changesBrowserIcon} />, browser);
   }
 
@@ -355,6 +336,7 @@ class App extends Component {
       browseImplementors: this.browseImplementors,
       browseReferences: this.browseReferences,
       reportError: this.reportError};
+
     return (
       <ThemeProvider theme={theme}>
         <AppContext.Provider value={context}>
