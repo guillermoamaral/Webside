@@ -115,12 +115,11 @@ class CustomList extends Component {
         <List style={{paddingTop: 0, paddingBottom: 0}}>
           {this.createItems()}
         </List>
-        {
-          <PopupMenu
-            options={this.menuOptions()}
-            open={this.state.menuOpen}
-            position={this.state.menuPosition}
-            onClose={this.closeMenu}/>}
+        <PopupMenu
+          options={this.menuOptions()}
+          open={this.state.menuOpen}
+          position={this.state.menuPosition}
+          onClose={this.closeMenu}/>
       </div>
     )
   };

@@ -335,6 +335,7 @@ class App extends Component {
       browseSenders: this.browseSenders,
       browseImplementors: this.browseImplementors,
       browseReferences: this.browseReferences,
+      inspectObject: this.openInspector,
       reportError: this.reportError};
 
     return (

@@ -110,20 +110,19 @@ class CustomTree extends Component {
     render() {
         return (
             <div>
-            <TreeView
-                defaultCollapseIcon={<ArrowDropDownIcon />}
-                defaultExpanded={['root']}
-                defaultExpandIcon={<ArrowRightIcon />}
-                selected={this.state.selectedItem === null ? null : this.getItemId(this.state.selectedItem)}
-                >
-                {this.createItems(this.props.items)}
-            </TreeView>
-            {
-              <PopupMenu
-                options={this.menuOptions()}
-                open={this.state.menuOpen}
-                position={this.state.menuPosition}
-                onClose={this.closeMenu}/>}
+                <TreeView
+                    defaultCollapseIcon={<ArrowDropDownIcon />}
+                    defaultExpanded={['root']}
+                    defaultExpandIcon={<ArrowRightIcon />}
+                    selected={this.state.selectedItem === null ? null : this.getItemId(this.state.selectedItem)}
+                    >
+                    {this.createItems(this.props.items)}
+                </TreeView>
+                <PopupMenu
+                    options={this.menuOptions()}
+                    open={this.state.menuOpen}
+                    position={this.state.menuPosition}
+                    onClose={this.closeMenu}/>
           </div>
         )
     };

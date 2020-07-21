@@ -18,7 +18,9 @@ class CodeEditor extends Component {
         this.state = {
             source: props.source,
             dirty: false,
-            value: props.source
+            value: props.source,
+            menuOpen: false,
+            menuPosition: {x: null, y: null}
         }
     }
 
@@ -30,6 +32,34 @@ class CodeEditor extends Component {
             }
         };
         return null;
+    }
+
+    openMenu = (event) => {
+        event.preventDefault();
+        this.setState({menuOpen: true, menuPosition: {x: event.clientX - 2, y: event.clientY - 4}})
+      };
+    
+    closeMenu = () => {
+        this.setState({menuOpen: false});
+    }
+    
+    menuOptionClicked(option) {
+        if (option.action !== undefined) {
+          option.action(this.state.selectedItem);
+        }
+    }
+
+    menuOptions() {
+        const options = [
+            {label: 'Do it', action: this.evaluate},
+            {label: 'Show it', action: this.show},
+            {label: 'Inspect it', action: this.inspect},
+            null,
+            {label: 'Senders', action: this.browseSenders},
+            {label: 'Implementors', action: this.browseImplementors},
+            {label: 'Class references', action: this.browseReferences}
+        ];
+        return options;
     }
 
     valueChanged = (value) => {
@@ -70,13 +100,6 @@ class CodeEditor extends Component {
         this.context.api.evaluate(expression, false)
     }
 
-    inspect = () => {
-        const expression = this.evaluableExpression();
-        this.context.api.evaluate(expression, true)
-            .then(object => {
-                this.context.inspectObject(object);            })
-    }
-
     show = () => {
         const expression = this.evaluableExpression();
         this.context.api.evaluate(expression, false)
@@ -87,6 +110,13 @@ class CodeEditor extends Component {
                 const to = {ch: from.ch + object.printString.length, line: from.line};
                 this.instance.setSelection(from, to)
             })
+    }
+
+    inspect = () => {
+        const expression = this.evaluableExpression();
+        this.context.api.evaluate(expression, true)
+            .then(object => {
+                this.context.inspectObject(object);            })
     }
   
     render() {
@@ -122,6 +152,7 @@ class CodeEditor extends Component {
                             editorDidMount={editor => {this.instance = editor}}
                             onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
                             onChange={(editor, data, value) => {this.valueChanged(value)}}
+                            onContextMenu={(editor, event) => {this.openMenu(event)}}
                         />
                     </Paper>
                 </Grid>
@@ -132,6 +163,11 @@ class CodeEditor extends Component {
                         </IconButton>
                     </Box>
                 </Grid>
+                <PopupMenu
+                    options={this.menuOptions()}
+                    open={this.state.menuOpen}
+                    position={this.state.menuPosition}
+                    onClose={this.closeMenu}/>
             </Grid>
         )
     }
