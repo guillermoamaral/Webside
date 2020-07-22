@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import CustomList from './CustomList';
+import CustomList from '../controls/CustomList';
 
 class VariableList extends Component {
     extendedVariables(variables) {

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import TreeView from '@material-ui/lab/TreeView';
 import TreeItem from '@material-ui/lab/TreeItem';
-import PopupMenu from './PopupMenu';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import PopupMenu from './PopupMenu';
 
 class CustomTree extends Component {
     constructor(props) {

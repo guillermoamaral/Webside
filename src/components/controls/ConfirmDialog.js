@@ -48,4 +48,4 @@ class ConfirmDialog extends Component {
   }
 }
 
-export default ConfirmDialog;
+export default ConfirmDialog; 

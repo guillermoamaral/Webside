@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { TableContainer, Table, TableHead, TableBody, TableRow, TableCell } from '@material-ui/core';
+import {
+    TableContainer,
+    Table,
+    TableHead,
+    TableBody,
+    TableRow,
+    TableCell } from '@material-ui/core';
 
 class CustomTable extends Component {
     constructor(props) {

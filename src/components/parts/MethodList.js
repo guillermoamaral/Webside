@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import CustomList from './CustomList';
+import CustomList from '../controls/CustomList';
 import { ArrowUpDownBold, ArrowUpBold, ArrowDownBold } from 'mdi-material-ui';
-import { AppContext } from '../AppContext';
+import { AppContext } from '../../AppContext';
 
 class MethodList extends Component {
     static contextType = AppContext;

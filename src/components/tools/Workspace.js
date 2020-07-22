@@ -8,11 +8,11 @@ import {
     Typography
 } from '@material-ui/core';
 
-import { AppContext } from '../AppContext';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import InspectorIcon from '../Icons/InspectorIcon';
-import CodeEditor from './CodeEditor';
+import InspectorIcon from '../icons/InspectorIcon';
+import CodeEditor from '../parts/CodeEditor';
 import Inspector from './Inspector';
+import { AppContext } from '../../AppContext';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import CustomList from './CustomList';
-import { AppContext } from '../AppContext';
+import CustomList from '../controls/CustomList';
+import { AppContext } from '../../AppContext';
 
 class CategoryList extends Component {
     static contextType = AppContext;

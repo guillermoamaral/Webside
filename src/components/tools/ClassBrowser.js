@@ -10,13 +10,13 @@ import {
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import clsx from 'clsx';
 
-import { AppContext } from '../AppContext';
-import SearchList from './SearchList';
-import ClassTree from './ClassTree';
-import VariableList from './VariableList';
-import CategoryList from './CategoryList';
-import MethodList from './MethodList';
-import CodeEditor from './CodeEditor';
+import { AppContext } from '../../AppContext';
+import SearchList from '../parts/SearchList';
+import ClassTree from '../parts/ClassTree';
+import VariableList from '../parts/VariableList';
+import CategoryList from '../parts/CategoryList';
+import MethodList from '../parts/MethodList';
+import CodeEditor from '../parts/CodeEditor';
 
 class ClassBrowser extends Component {
     static contextType = AppContext;
@@ -463,6 +463,7 @@ class ClassBrowser extends Component {
                             <CodeEditor
                                 classes={this.props.classes}
                                 source={this.currentSource()}
+                                showAccept={true}
                                 onAccept={this.saveClicked}
                                 />
                         </Grid>

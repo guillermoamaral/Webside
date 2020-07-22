@@ -3,9 +3,9 @@ import { Grid, Paper } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import clsx from 'clsx';
 
-import { AppContext } from '../AppContext';
-import MethodList from './MethodList';
-import CodeEditor from './CodeEditor';
+import { AppContext } from '../../AppContext';
+import MethodList from '../parts/MethodList';
+import CodeEditor from '../parts/CodeEditor';
 
 class MethodBrowser extends Component {
     static contextType = AppContext;
@@ -29,8 +29,7 @@ class MethodBrowser extends Component {
                 .then(definition => {
                     method.classDefinition = definition.definition;
                     method.classComment = definition.comment;
-                    this.setState({selectedMethod: method})})
-                .catch(error => {})
+                })
         }
     }
 

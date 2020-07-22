@@ -31,7 +31,7 @@ class Titlebar extends Component {
               </IconButton>
               <Link to="http://localhost:3000">
               <img
-                src={require("../resources/" + this.props.appName + ".png")}
+                src={require("../../resources/" + this.props.appName + ".png")}
                 width={28}
                 height={28}
                 alt={"Open"}/>

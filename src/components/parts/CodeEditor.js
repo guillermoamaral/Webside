@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Grid, Paper, Box, IconButton } from '@material-ui/core';
 import AcceptIcon from '@material-ui/icons/CheckCircle';
 import { Controlled as CodeMirror } from 'react-codemirror2';
-import PopupMenu from './PopupMenu';
-import { AppContext } from '../AppContext';
+import PopupMenu from '../controls/PopupMenu';
+import { AppContext } from '../../AppContext';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
@@ -120,16 +120,18 @@ class CodeEditor extends Component {
     }
   
     render() {
+        const showAccept = this.props.showAccept;
         return (
             <Grid container spacing={1}>
-                <Grid item xs={11} md={11} lg={11}>
+                <Grid item xs={11} md={showAccept? 11 : 12} lg={showAccept? 11 : 12}>
                     <Paper variant="outlined">
                         <CodeMirror
                             className={this.props.classes.codeMirror}
                             value={this.state.value}
                             options={{
-                                mode: 'smalltalk',
-                                theme: 'material',
+                                //viewportMargin: "Infinity",
+                                mode: "smalltalk",
+                                theme: "material",
                                 lineSeparator: '\r',
                                 lineNumbers: true,
                                 matchBrackets: true, 
@@ -149,20 +151,20 @@ class CodeEditor extends Component {
                                     "Alt-M": this.browseImplementors,
                                     "Alt-R": this.browseReferences
                                 }}}
-                            editorDidMount={editor => {this.instance = editor}}
+                            editorDidMount={editor => {this.instance = editor; editor.setSize("100%", "100%")}}
                             onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
                             onChange={(editor, data, value) => {this.valueChanged(value)}}
                             onContextMenu={(editor, event) => {this.openMenu(event)}}
                         />
                     </Paper>
                 </Grid>
-                <Grid item xs={1} md={1} lg={1}>
+                {showAccept && (<Grid item xs={1} md={1} lg={1}>
                     <Box display="flex" justifyContent="center" > 
                         <IconButton color="inherit" onClick={this.acceptClicked}>
                             <AcceptIcon size="large" style={{fontSize: 30}}/>
                         </IconButton>
                     </Box>
-                </Grid>
+                </Grid>)}
                 <PopupMenu
                     options={this.menuOptions()}
                     open={this.state.menuOpen}

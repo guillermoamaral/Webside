@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import CustomTree from './CustomTree';
-import ConfirmDialog from './ConfirmDialog';
-import { AppContext } from '../AppContext';
+import CustomTree from '../controls/CustomTree';
+import ConfirmDialog from '../controls/ConfirmDialog';
+import { AppContext } from '../../AppContext';
 
 class ClassTree extends Component {
     static contextType = AppContext;

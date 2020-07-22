@@ -15,26 +15,25 @@ import { ThemeProvider } from '@material-ui/styles';
 import { amber , blue } from '@material-ui/core/colors';
 import AddIcon from '@material-ui/icons/AddCircle';
 
-
 import API from './components/API';
 import { AppContext } from './AppContext';
-import TranscriptIcon from './Icons/TranscriptIcon';
-import ClassBrowserIcon from './Icons/ClassBrowserIcon';
-import MethodBrowserIcon from './Icons/MethodBrowserIcon';
-import WorkspaceIcon from './Icons/WorkspaceIcon';
-import InspectorIcon from './Icons/InspectorIcon';
-import ChangesBrowserIcon from './Icons/ChangesBrowserIcon';
+import TranscriptIcon from './components/icons/TranscriptIcon';
+import ClassBrowserIcon from './components/icons/ClassBrowserIcon';
+import MethodBrowserIcon from './components/icons/MethodBrowserIcon';
+import WorkspaceIcon from './components/icons/WorkspaceIcon';
+import InspectorIcon from './components/icons/InspectorIcon';
+import ChangesBrowserIcon from './components/icons/ChangesBrowserIcon';
 
-import ConfirmDialog from './components/ConfirmDialog';
-import Titlebar from './components/Titlebar'
-import Sidebar from './components/Sidebar';
-import TabControl from './components/TabControl';
-import Transcript from './components/Transcript';
-import ClassBrowser from './components/ClassBrowser';
-import MethodBrowser from './components/MethodBrowser';
-import Inspector from './components/Inspector';
-import Workspace from './components/Workspace';
-import ChangesBrowser from './components/ChangesBrowser';
+import ConfirmDialog from './components/controls/ConfirmDialog';
+import Titlebar from './components/layout/Titlebar'
+import Sidebar from './components/layout/Sidebar';
+import TabControl from './components/controls/TabControl';
+import Transcript from './components/tools/Transcript';
+import ClassBrowser from './components/tools/ClassBrowser';
+import MethodBrowser from './components/tools/MethodBrowser';
+import Inspector from './components/tools/Inspector';
+import Workspace from './components/tools/Workspace';
+import ChangesBrowser from './components/tools/ChangesBrowser';
 
 const smalltalk = 'Bee';
 var port;
@@ -137,6 +136,7 @@ const styles = theme => ({
     //maxHeight: 240,
     //flexDirection: "row."
     //color: theme.palette.secondary.main,
+    backgroundColor: theme.palette.primary.background,
   },
   box: {
     //backgroundColor: 'white',
@@ -144,7 +144,7 @@ const styles = theme => ({
   tabControl: {
     flexGrow: 1,
     width: '100%',
-    //backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.primary.background,
   },
   tabIcon: {
     display: "flex",
@@ -159,10 +159,14 @@ const styles = theme => ({
   },
   codeMirror: {
     fontFamily: theme.typography.fontFamily,
-    fontSize: "16px",
-    backgroundColor: theme.palette.background.paper,
-    //height: "100%",
-//    maxHeight: 200,
+    fontSize: theme.typography.fontSize + 2,
+    minHeight: 200,
+    //position: "inherit",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: "auto",
   },
   grow: {
     flexGrow: 1
@@ -174,14 +178,14 @@ const theme = createMuiTheme({
     fontFamily: '"Segoe UI"',
     fontSize: 13,
     button: {
-      textTransform: 'none'
+      textTransform: "none"
     }
   },
   palette: {
     type: "dark",
     primary: {
       main: mainPrimaryColor,
-      background: 'black'
+      //background: "303030"
     },
     secondary: {
       main: mainSecondaryColor,
@@ -191,9 +195,7 @@ const theme = createMuiTheme({
       secondary: "#00000"
     },
     background: {
-      main: 'red',
       paper: '#303030',
-      grid: 'red'
     }
   }
 });

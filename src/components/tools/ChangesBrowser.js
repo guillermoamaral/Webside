@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Grid, Paper } from '@material-ui/core';
 import { Controlled as CodeMirror } from 'react-codemirror2';
-import CustomTable from './CustomTable';
+import CustomTable from '../controls/CustomTable';
 import clsx from 'clsx';
-import { AppContext } from '../AppContext';
+import { AppContext } from '../../AppContext';
 
 class ChangesBrowser extends Component {
     static contextType = AppContext;
