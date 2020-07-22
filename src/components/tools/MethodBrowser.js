@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Grid, Paper } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import clsx from 'clsx';
-
 import { AppContext } from '../../AppContext';
 import MethodList from '../parts/MethodList';
 import CodeEditor from '../parts/CodeEditor';
@@ -108,8 +107,7 @@ class MethodBrowser extends Component {
                             <CodeEditor
                                 classes={this.props.classes}
                                 source={this.currentSource()}
-                                onAccept={this.saveClicked}
-                                />
+                                onAccept={this.saveClicked}/>
                         </Grid>
                     </Grid>
                 </Grid>

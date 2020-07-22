@@ -9,7 +9,6 @@ import {
 } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import clsx from 'clsx';
-
 import { AppContext } from '../../AppContext';
 import SearchList from '../parts/SearchList';
 import ClassTree from '../parts/ClassTree';
@@ -382,8 +381,7 @@ class ClassBrowser extends Component {
                                                 value={selectedSide}
                                                 onChange={this.sideChanged}
                                                 defaultValue="instance"
-                                                row
-                                                >
+                                                row>
                                                 <FormControlLabel value="instance" control={<Radio size="small" color="primary"/>} label="Instance"/>
                                                 <FormControlLabel value="class" control={<Radio size="small" color="primary"/>} label="Class" />
                                             </RadioGroup>
@@ -430,8 +428,7 @@ class ClassBrowser extends Component {
                                                 methods={this.currentMethods()}
                                                 selectedMethod={selectedMethod}
                                                 onSelect={this.methodSelected}
-                                                onRemoved={this.methodRemoved}
-                                                />
+                                                onRemoved={this.methodRemoved}/>
                                         </Paper>
                                     </Grid>
                                 </Grid>
@@ -464,8 +461,7 @@ class ClassBrowser extends Component {
                                 classes={this.props.classes}
                                 source={this.currentSource()}
                                 showAccept={true}
-                                onAccept={this.saveClicked}
-                                />
+                                onAccept={this.saveClicked}/>
                         </Grid>
                     </Grid>
                 </Grid>

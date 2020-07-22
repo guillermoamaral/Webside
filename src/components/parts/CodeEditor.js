@@ -4,7 +4,6 @@ import AcceptIcon from '@material-ui/icons/CheckCircle';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import PopupMenu from '../controls/PopupMenu';
 import { AppContext } from '../../AppContext';
-
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
 require('codemirror/mode/smalltalk/smalltalk.js');
@@ -83,6 +82,11 @@ class CodeEditor extends Component {
         this.context.browseImplementors(selector);
     }
 
+    browseClass = () => {
+        const classname = this.instance.getSelection();
+        this.context.browseClass(classname);
+    }
+
     browseReferences = () => {
         const global = this.instance.getSelection();
         this.context.browseReferences(global);
@@ -147,6 +151,7 @@ class CodeEditor extends Component {
                                     "Ctrl-I": this.inspect,
                                     "Ctrl-S": this.show,
                                     "Alt-S": this.acceptClicked,
+                                    "Ctrl-B": this.browseClass,
                                     "Alt-N": this.browseSenders,
                                     "Alt-M": this.browseImplementors,
                                     "Alt-R": this.browseReferences

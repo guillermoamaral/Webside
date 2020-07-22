@@ -209,7 +209,7 @@ class App extends Component {
       addPageMenuOpen: false,
       selectedPage: null,
       transcriptOpen: false,
-      transcriptText: 'Wellcome! \n\n This is Webtalk, a web Smalltalk IDE built with React.',
+      transcriptText: 'Wellcome!\r\rThis is Webtalk, a web Smalltalk IDE built with React.',
       pages: []
     }
   }
@@ -336,6 +336,7 @@ class App extends Component {
       api: this.api,
       browseSenders: this.browseSenders,
       browseImplementors: this.browseImplementors,
+      browseClass: this.openClassBrowser,
       browseReferences: this.browseReferences,
       inspectObject: this.openInspector,
       reportError: this.reportError};

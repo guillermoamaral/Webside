@@ -45,7 +45,8 @@ class ClassTree extends Component {
                         {label: 'Rename', action: this.renameClass},
                         {label: 'Remove', action: this.removeClass},
                         null,
-                        {label: 'References', action: c => this.browseReferences(c.name)}]}
+                        {label: 'Browse', action: c => this.context.browseClass(c.name)},
+                        {label: 'References', action: c => this.context.browseReferences(c.name)}]}
                 />
                 {/* <ConfirmDialog
                     title="Delete Class"

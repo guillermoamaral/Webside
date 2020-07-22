@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Box, Grid, Paper } from '@material-ui/core';
 import clsx from 'clsx';
-
 import { AppContext } from '../../AppContext';
 import CustomTree from '../controls/CustomTree';
 

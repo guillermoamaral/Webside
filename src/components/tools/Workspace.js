@@ -1,22 +1,16 @@
 import React, { Component } from 'react';
 import {
     Grid,
-    Paper,
     Accordion,
     AccordionSummary,
     AccordionDetails,
     Typography
 } from '@material-ui/core';
-
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import InspectorIcon from '../icons/InspectorIcon';
 import CodeEditor from '../parts/CodeEditor';
 import Inspector from './Inspector';
 import { AppContext } from '../../AppContext';
-
-require('codemirror/lib/codemirror.css');
-require('codemirror/theme/material.css');
-require('codemirror/mode/smalltalk/smalltalk.js');
 
 class Workspace extends Component {
     static contextType = AppContext;
@@ -65,14 +59,11 @@ class Workspace extends Component {
             <Grid container spacing={1}>
                 <Grid item xs={12} md={8} lg={8}>
                     <Grid item xs={12} md={12} lg={12}>
-                        <Paper variant="outlined">
-                            <CodeEditor
-                                classes={this.props.classes}
-                                source={this.state.expression}
-                                onAccept={this.evaluateClicked}
-                                onChange={this.expressionChanged}
-                            />
-                        </Paper>
+                        <CodeEditor
+                            classes={this.props.classes}
+                            source={this.state.expression}
+                            onAccept={this.evaluateClicked}
+                            onChange={this.expressionChanged}/>
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={4} lg={4}>
