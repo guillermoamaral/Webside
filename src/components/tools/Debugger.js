@@ -33,8 +33,7 @@ class Debugger extends Component {
     }
 
     frameSelected = async (frame) => {
-        await this.updateMethod(frame);
-        await this.updateClass(frame);
+        await this.updateFrame(frame);
         this.setState({selectedFrame: frame, selectedMode: "source"});
     }
 
@@ -42,13 +41,8 @@ class Debugger extends Component {
         if (frame.method === undefined) {
             const info = await this.context.api.getFrame(this.props.id, frame.index);
             frame.method = info.method;
-        }
-    }
-
-    updateClass = async (frame) => {
-        if (frame.class === undefined && frame.method !== null) {
-            const definition = await this.context.api.getClass(frame.method.class);
-            frame.class = definition;
+            frame.class = info.class;
+            frame.interval = info.interval;
         }
     }
 

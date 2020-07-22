@@ -17,18 +17,16 @@ class MethodBrowser extends Component {
         }
     }
 
-    methodSelected = (method) => {
-        this.updateClass(method);
+    methodSelected = async (method) => {
+        await this.updateClass(method);
         this.setState({selectedMethod: method, selectedMode: "source"});
     }
 
-    updateClass = (method) => {
+    updateClass = async (method) => {
         if (method.classDefinition === undefined) {
-            this.context.api.getClass(method.class)
-                .then(definition => {
-                    method.classDefinition = definition.definition;
-                    method.classComment = definition.comment;
-                })
+            const definition = await this.context.api.getClass(method.class);
+            method.classDefinition = definition.definition;
+            method.classComment = definition.comment;
         }
     }
 
