@@ -10,13 +10,14 @@ class API {
     handleError(prefix, error) {
         var reason;
         if (error.response) {
-            reason = 'Response error: ' + error.response.status + ': ' + error.response.statusText;
+            reason = 'Response error ' + error.response.status + ' - ' + error.response.statusText +
+                '\r on request to ' + error.request.responseURL;
         } else if (error.request) {
-            reason = 'Request error: ' + error.request;
+            reason = 'Request error ' + error.request;
         } else {
-            reason = 'Could not send request: ' + error.message;
+            reason = 'Could not send request ' + error.message;
         }
-        this.reportError(prefix +  '\n' + reason);
+        this.reportError(prefix +  '\r' + reason);
         throw(error);
     }
 
@@ -127,6 +128,23 @@ class API {
             return response.data;
         }
         catch (error) {this.handleError('Cannot fetch implementors of ' + selector, error)}
+    }
+
+    // Debugger...
+    async getFrames(id) {
+        try {
+           const response = await axios.get(this.baseUri + '/debuggers/' + id + '/frames');
+           return response.data;
+       }
+       catch (error) {this.handleError('Cannot fetch frames of debugger ' + id, error)}
+    }
+
+    async getFrame(id, index) {
+        try {
+           const response = await axios.get(this.baseUri + '/debuggers/' + id + '/frames/' + index);
+           return response.data;
+       }
+       catch (error) {this.handleError('Cannot fetch frame ' + index + ' of debugger ' + id, error)}
     }
 
     // Changes...

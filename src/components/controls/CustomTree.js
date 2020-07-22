@@ -16,15 +16,15 @@ class CustomTree extends Component {
         }
     }
 
-    // static getDerivedStateFromProps(props, state) {
-    //     if (props.selecteItem !== state.selectedItem) {
-    //         return {
-    //             items: props.items,
-    //             selectedItem: props.selectedItem === undefined ? null : props.selectedItem,
-    //         };
-    //     }
-    //     return null
-    // }
+    static getDerivedStateFromProps(props, state) {
+        if (props.selecteItem !== state.selectedItem) {
+            return {
+                items: props.items,
+                selectedItem: props.selectedItem === undefined ? null : props.selectedItem,
+            };
+        }
+        return null
+    }
 
     createItems = (items) => {
         return (

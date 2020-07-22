@@ -23,6 +23,7 @@ import MethodBrowserIcon from './components/icons/MethodBrowserIcon';
 import WorkspaceIcon from './components/icons/WorkspaceIcon';
 import InspectorIcon from './components/icons/InspectorIcon';
 import ChangesBrowserIcon from './components/icons/ChangesBrowserIcon';
+import DebuggerIcon from './components/icons/DebuggerIcon';
 
 import ConfirmDialog from './components/controls/ConfirmDialog';
 import Titlebar from './components/layout/Titlebar'
@@ -34,6 +35,7 @@ import MethodBrowser from './components/tools/MethodBrowser';
 import Inspector from './components/tools/Inspector';
 import Workspace from './components/tools/Workspace';
 import ChangesBrowser from './components/tools/ChangesBrowser';
+import Debugger from './components/tools/Debugger';
 
 const smalltalk = 'Bee';
 var port;
@@ -215,6 +217,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.openDebugger(56378);
     // this.openInspectors();
     // this.openWorkspace();
     // this.openClassBrowser('Magnitude');
@@ -273,6 +276,14 @@ class App extends Component {
     this.addPage('Workspace', <WorkspaceIcon className={this.props.classes.workspaceIcon} />, workspace);
   }
 
+  openDebugger = (id) => {
+    const tool = <Debugger
+      classes={this.props.classes}
+      key={id}
+      id={id}/>;
+    this.addPage('Debugger: ' + id, <DebuggerIcon className={this.props.classes.debuggerIcon} />, tool);
+  }
+
   openInspector = (object) => {
     const inspector = <Inspector
       classes={this.props.classes}
@@ -312,7 +323,7 @@ class App extends Component {
   reportError = (text) => {
     this.setState(
       {
-        transcriptText: this.state.transcriptText + '\n' + text,
+        transcriptText: this.state.transcriptText + '\r' + text,
         transcriptOpen: true,
     })
   }
@@ -394,13 +405,10 @@ class App extends Component {
                       anchor="bottom"
                       variant="persistent"
                       open={this.state.transcriptOpen}
-                      onClose={() => this.setState({transcriptOpen: false})}
-                      //onOpen={() => this.setState({transcriptOpen: true})}
-                    >
+                      onClose={() => this.setState({transcriptOpen: false})}>
                       <Transcript
                         classes={this.props.classes}      
-                        text={this.state.transcriptText}
-                        />
+                        text={this.state.transcriptText}/>
                     </Drawer>
                   </React.Fragment>
                 </Grid>

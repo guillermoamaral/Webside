@@ -3,6 +3,7 @@ import { Grid, Paper } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import clsx from 'clsx';
 import { AppContext } from '../../AppContext';
+import CustomList from '../controls/CustomList';
 import CodeEditor from '../parts/CodeEditor';
 
 class Debugger extends Component {
@@ -22,7 +23,7 @@ class Debugger extends Component {
     }
 
     close = () => {
-        this.props.onClose(this.props.root.id);
+        this.props.onClose(this.props.id);
     }
 
     updateFrames() {
@@ -31,18 +32,23 @@ class Debugger extends Component {
             .catch(error => {})
     }
 
-    frameSelected = (frame) => {
-        this.updateClass(frame);
+    frameSelected = async (frame) => {
+        await this.updateMethod(frame);
+        await this.updateClass(frame);
         this.setState({selectedFrame: frame, selectedMode: "source"});
     }
 
-    updateClass = (frame) => {
-        if (frame.classDefinition === undefined) {
-            this.context.api.getClass(frame.class)
-                .then(definition => {
-                    frame.classDefinition = definition.definition;
-                    frame.classComment = definition.comment;
-                })
+    updateMethod = async (frame) => {
+        if (frame.method === undefined) {
+            const info = await this.context.api.getFrame(this.props.id, frame.index);
+            frame.method = info.method;
+        }
+    }
+
+    updateClass = async (frame) => {
+        if (frame.class === undefined && frame.method !== null) {
+            const definition = await this.context.api.getClass(frame.method.class);
+            frame.class = definition;
         }
     }
 
@@ -52,13 +58,13 @@ class Debugger extends Component {
         let source;
         switch (selectedMode) {
             case "comment":
-                source = selectedFrame.classComment;
+                source = selectedFrame.class === null? "can't access class" : selectedFrame.class.comment;
                 break;
             case "definition":
-                source = selectedFrame.classDefinition;
+                source = selectedFrame.class === null? "can't access class" : selectedFrame.class.definition;
                 break;
             case "source":    
-                source = selectedFrame.source;
+                source = selectedFrame.method === null? "can't access source" : selectedFrame.method.source;
                 break;
             default:
         }
@@ -97,6 +103,7 @@ class Debugger extends Component {
                         <Grid item xs={12} md={6} lg={6}>
                             <Paper className={fixedHeightPaper} variant="outlined">
                                 <CustomList
+                                    itemLabel="label"
                                     selectedItem ={selectedFrame}
                                     items={frames}
                                     onSelect={this.frameSelected}/>
@@ -106,7 +113,7 @@ class Debugger extends Component {
                             Variables
                         </Grid>
                         <Grid item xs={12} md={3} lg={3}>
-                            Variables
+                            Inspector
                         </Grid>
                     </Grid>
                 </Grid>
