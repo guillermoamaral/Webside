@@ -11,13 +11,15 @@ class Inspector extends Component {
         super(props);
         if (this.props.onClose !== undefined) {this.props.onClose.bind()};
         const root = this.props.root;
-        root.name = 'self';
-        root.path = '';
+        if (root !== null) {
+            root.name = 'self';
+            root.path = '';    
+        }
         this.state = {
             root: root,
-            objectTree: [root],
+            objectTree: root === null ? [] : [root],
             objects: {},
-            selectedObject: root,
+            selectedObject: root === null ? null : root,
         }
     }
 
@@ -30,6 +32,7 @@ class Inspector extends Component {
     }
 
     updateVariables = (object) => {
+        if (object === null) {return []}
         if (object.variables !== undefined) {return object.variables}
         this.context.api.getInstanceVariables(object.class)
             .then(variables => {
@@ -82,7 +85,7 @@ class Inspector extends Component {
                         </Grid>
                         <Grid item xs={12} md={6} lg={6}>
                             <Paper className={fixedHeightPaper} variant="outlined">
-                                {selectedObject.printString}
+                                {selectedObject === null? "" : selectedObject.printString}
                             </Paper>
                         </Grid>
                     </Grid>

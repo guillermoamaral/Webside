@@ -13,11 +13,12 @@ class CodeEditor extends Component {
 
     constructor(props){
         super(props);
-        this.instance = null;
+        this.editor = null;
         this.state = {
             source: props.source,
             dirty: false,
             value: props.source,
+            selectedRanges: [],
             menuOpen: false,
             menuPosition: {x: null, y: null}
         }
@@ -28,10 +29,29 @@ class CodeEditor extends Component {
             return {
                 source: props.source,
                 value: props.source,
+                selectedRanges: props.selectedRanges === undefined ? [] : props.selectedRanges,
             }
         };
         return null;
     }
+
+    selectRange(range) {
+        this.selectRanges([range]);
+    }
+
+    selectRanges(ranges){
+        if (ranges.length > 0) {
+            const selections = ranges.map(r => {
+                return {anchor: this.lineChAt(r.start), head: this.lineChAt(r.end)}
+            });
+            this.editor.setSelections(selections)
+        }
+    }
+    
+    lineChAt(index) {
+        var lines = this.state.value.slice(0, index).split("\r");
+		return {line: lines.length - 1, ch: lines[lines.length - 1].length - 1};
+	}
 
     openMenu = (event) => {
         event.preventDefault();
@@ -73,30 +93,30 @@ class CodeEditor extends Component {
     }
 
     browseSenders = () => {
-        const selector = this.instance.getSelection();
+        const selector = this.editor.getSelection();
         this.context.browseSenders(selector);
     }
 
     browseImplementors = () => {
-        const selector = this.instance.getSelection();
+        const selector = this.editor.getSelection();
         this.context.browseImplementors(selector);
     }
 
     browseClass = () => {
-        const classname = this.instance.getSelection();
+        const classname = this.editor.getSelection();
         this.context.browseClass(classname);
     }
 
     browseReferences = () => {
-        const global = this.instance.getSelection();
+        const global = this.editor.getSelection();
         this.context.browseReferences(global);
     }
 
     evaluableExpression() {
-        const expression = this.instance.getSelection();
+        const expression = this.editor.getSelection();
         if (expression.length > 0) {return expression}
-        const cursor = this.instance.getCursor("to");
-        return this.instance.getRange({ch: 0, line: cursor.line}, cursor)
+        const cursor = this.editor.getCursor("to");
+        return this.editor.getRange({ch: 0, line: cursor.line}, cursor)
     }
 
     evaluate = () => {
@@ -108,11 +128,11 @@ class CodeEditor extends Component {
         const expression = this.evaluableExpression();
         this.context.api.evaluate(expression, false)
             .then(object => {
-                const cursor = this.instance.getCursor("to");
-                this.instance.replaceRange(" " + object.printString, cursor);
+                const cursor = this.editor.getCursor("to");
+                this.editor.replaceRange(" " + object.printString, cursor);
                 const from = {ch: cursor.ch + 1, line: cursor.line};
                 const to = {ch: from.ch + object.printString.length, line: from.line};
-                this.instance.setSelection(from, to)
+                this.editor.setSelection(from, to)
             })
     }
 
@@ -125,13 +145,14 @@ class CodeEditor extends Component {
   
     render() {
         const showAccept = this.props.showAccept;
+        const ranges = this.state.selectedRanges; 
+        if (ranges.length > 0) {this.selectRanges(ranges)}
         return (
             <Grid container spacing={1}>
                 <Grid item xs={11} md={showAccept? 11 : 12} lg={showAccept? 11 : 12}>
                     <Paper variant="outlined">
                         <CodeMirror
                             className={this.props.classes.codeMirror}
-                            value={this.state.value}
                             options={{
                                 //viewportMargin: "Infinity",
                                 mode: "smalltalk",
@@ -156,7 +177,16 @@ class CodeEditor extends Component {
                                     "Alt-M": this.browseImplementors,
                                     "Alt-R": this.browseReferences
                                 }}}
-                            editorDidMount={editor => {this.instance = editor; editor.setSize("100%", "100%")}}
+                            value={this.state.value}
+                            // selection={{
+                            //     ranges: [{
+                            //       anchor: {ch: 0, line: 0},
+                            //       head: {ch: 5, line: 1}
+                            //     }],
+                            //     focus: true
+                            //   }}
+                            //onSelection={(editor, data) => {}}
+                            editorDidMount={editor => {this.editor = editor; editor.setSize("100%", "100%")}}
                             onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
                             onChange={(editor, data, value) => {this.valueChanged(value)}}
                             onContextMenu={(editor, event) => {this.openMenu(event)}}

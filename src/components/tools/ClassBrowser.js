@@ -180,7 +180,7 @@ class ClassBrowser extends Component {
         }
         const variable = selections.variable;
         if (variable !== null && (force || species[variable.name] === undefined)) {
-            species[variable.name] = await this.context.api.getMethodsUsing(species.name, variable.name);            
+            species[variable.name] = await this.context.api.getMethodsReferencing(species.name, variable.name);            
         }
         var method = selections.method;
         if (method !== null) {

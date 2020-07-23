@@ -14,7 +14,6 @@ import {
 import { ThemeProvider } from '@material-ui/styles';
 import { amber , blue } from '@material-ui/core/colors';
 import AddIcon from '@material-ui/icons/AddCircle';
-
 import API from './components/API';
 import { AppContext } from './AppContext';
 import TranscriptIcon from './components/icons/TranscriptIcon';
@@ -217,7 +216,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.openDebugger(56378);
+    this.openDebugger(61849);
     // this.openInspectors();
     // this.openWorkspace();
     // this.openClassBrowser('Magnitude');

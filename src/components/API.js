@@ -88,9 +88,9 @@ class API {
         catch (error) {this.handleError('Cannot fecth methods of class ' + classname, error)}
     }
 
-    async getMethodsUsing(classname, variable) {
+    async getMethodsReferencing(classname, variable) {
         try {
-            var url = this.baseUri + '/classes/' + classname + '/methods?using=' + variable;
+            var url = this.baseUri + '/classes/' + classname + '/methods?referencingVariable=' + variable;
             const response = await axios.get(url);
             return response.data;
         }
@@ -116,7 +116,7 @@ class API {
 
     async getReferences(classname) {
         try {
-           const response = await axios.get(this.baseUri + '/methods?referencing=' + classname);
+           const response = await axios.get(this.baseUri + '/methods?referencingClass=' + classname);
            return response.data;
        }
        catch (error) {this.handleError('Cannot fetch references to ' + classname, error)}
@@ -145,6 +145,46 @@ class API {
            return response.data;
        }
        catch (error) {this.handleError('Cannot fetch frame ' + index + ' of debugger ' + id, error)}
+    }
+
+    async hop(id, index) {
+        try {
+           const response = await axios.post(this.baseUri + '/debuggers/' + id + '/hop?frame=' + index);
+           return response.data;
+       }
+       catch (error) {this.handleError('Cannot hop on frame '+ index + ' of debugger ' + id, error)}
+    }
+
+    async skip(id, index) {
+        try {
+           const response = await axios.post(this.baseUri + '/debuggers/' + id + '/skip?frame=' + index);
+           return response.data;
+       }
+       catch (error) {this.handleError('Cannot skip on frame '+ index + ' of debugger ' + id, error)}
+    }
+
+    async restart(id, index) {
+        try {
+           const response = await axios.post(this.baseUri + '/debuggers/' + id + '/restart?frame=' + index);
+           return response.data;
+       }
+       catch (error) {this.handleError('Cannot skip on frame '+ index + ' of debugger ' + id, error)}
+    }
+
+    async resume(id) {
+        try {
+           const response = await axios.post(this.baseUri + '/debuggers/' + id + '/resume');
+           return response.data;
+       }
+       catch (error) {this.handleError('Cannot resume debugger ' + id, error)}
+    }
+
+    async terminate(id) {
+        try {
+           const response = await axios.post(this.baseUri + '/debuggers/' + id + '/terminate');
+           return response.data;
+       }
+       catch (error) {this.handleError('Cannot terminate debugger ' + id, error)}
     }
 
     // Changes...

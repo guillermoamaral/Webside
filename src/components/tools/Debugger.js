@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
-import { Grid, Paper } from '@material-ui/core';
+import { Grid, Paper, IconButton } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import clsx from 'clsx';
+import { Icon, InlineIcon } from "@iconify/react";
+import RestartIcon from '@iconify/icons-mdi/replay';
+import HopIcon from '@iconify/icons-mdi/debug-step-into';
+import SkipIcon from '@iconify/icons-mdi/debug-step-over';
+import ResumeIcon from '@iconify/icons-mdi/play';
+import TerminateIcon from '@iconify/icons-mdi/stop';
 import { AppContext } from '../../AppContext';
 import CustomList from '../controls/CustomList';
 import CodeEditor from '../parts/CodeEditor';
+import Inspector from './Inspector';
 
 class Debugger extends Component {
     static contextType = AppContext;
@@ -14,7 +21,7 @@ class Debugger extends Component {
         this.state = {
             frames: [],
             selectedFrame: null,
-            selectedMode: null,
+            selectedMode: "source",
         }
     }
 
@@ -26,10 +33,14 @@ class Debugger extends Component {
         this.props.onClose(this.props.id);
     }
 
-    updateFrames() {
-        this.context.api.getFrames(this.props.id)
-            .then(frames => {this.setState({frames: frames})})
-            .catch(error => {})
+    async updateFrames() {
+        const frames = await this.context.api.getFrames(this.props.id);
+        let selected = null;
+        if (frames.length > 0) {
+            selected = frames[0];
+            await this.updateFrame(selected)
+        }
+        this.setState({frames: frames, selectedFrame: selected});
     }
 
     frameSelected = async (frame) => {
@@ -37,7 +48,7 @@ class Debugger extends Component {
         this.setState({selectedFrame: frame, selectedMode: "source"});
     }
 
-    updateMethod = async (frame) => {
+    updateFrame = async (frame) => {
         if (frame.method === undefined) {
             const info = await this.context.api.getFrame(this.props.id, frame.index);
             frame.method = info.method;
@@ -65,6 +76,12 @@ class Debugger extends Component {
         return source
     }
 
+    currentSelection = () => {
+        const {selectedFrame, selectedMode} = this.state;
+        if (selectedFrame === null || selectedMode !== "source") {return []}
+        return [selectedFrame.interval];
+    }
+
     modeChanged = (event, mode) => {
         this.setState({selectedMode: mode})
     }
@@ -84,17 +101,57 @@ class Debugger extends Component {
         }
     }
 
+    hopClicked = async () => {
+        await this.context.api.hop(this.props.id, this.state.selectedFrame.index);
+        this.updateFrames();
+    }
+
+
+    skipClicked = async () => {
+        await this.context.api.skip(this.props.id, this.state.selectedFrame.index);
+        this.updateFrames();
+    }
+
+    restartClicked = async () => {
+        await this.context.api.restart(this.props.id, this.state.selectedFrame.index);
+        this.updateFrames();
+    }
+
+    resumeClicked = async () => {
+        await this.context.api.resume(this.props.id);
+        this.updateFrames();
+    }
+
+    terminateClicked = async () => {
+        await this.context.api.skip(this.props.id);
+        this.updateFrames();
+    }
+
     render() {
         const {frames, selectedFrame, selectedMode} = this.state;
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
-                    Controls
+                    <IconButton color="inherit" onClick={this.hopClicked}>
+                        <Icon icon={HopIcon} width={30} height={30}/>
+                    </IconButton>
+                    <IconButton color="inherit" onClick={this.skipClicked}>
+                        <Icon icon={SkipIcon} width={30} height={30}/>
+                    </IconButton>
+                    <IconButton color="inherit" onClick={this.restartClicked}>
+                        <Icon icon={RestartIcon} width={30} height={30}/>
+                    </IconButton>
+                    <IconButton color="inherit" onClick={this.resumeClicked}>
+                        <Icon icon={ResumeIcon} width={30} height={30}/>
+                    </IconButton>
+                    <IconButton color="inherit" onClick={this.terminateClicked}>
+                        <Icon icon={TerminateIcon} width={30} height={30}/>
+                    </IconButton>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     <Grid container spacing={1}>
-                        <Grid item xs={12} md={6} lg={6}>
+                        <Grid item xs={12} md={8} lg={8}>
                             <Paper className={fixedHeightPaper} variant="outlined">
                                 <CustomList
                                     itemLabel="label"
@@ -103,11 +160,10 @@ class Debugger extends Component {
                                     onSelect={this.frameSelected}/>
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} md={3} lg={3}>
-                            Variables
-                        </Grid>
-                        <Grid item xs={12} md={3} lg={3}>
-                            Inspector
+                        <Grid item xs={12} md={4} lg={4}>
+                            <Inspector
+                                root={null}
+                                classes={this.props.classes}/>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -134,6 +190,8 @@ class Debugger extends Component {
                             <CodeEditor
                                 classes={this.props.classes}
                                 source={this.currentSource()}
+                                selectedRanges={this.currentSelection()}
+                                showAccept={true}
                                 onAccept={this.saveClicked}
                                 />
                         </Grid>

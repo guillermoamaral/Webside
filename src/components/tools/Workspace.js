@@ -62,6 +62,7 @@ class Workspace extends Component {
                         <CodeEditor
                             classes={this.props.classes}
                             source={this.state.expression}
+                            showAccept={true}
                             onAccept={this.evaluateClicked}
                             onChange={this.expressionChanged}/>
                     </Grid>
