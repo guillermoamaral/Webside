@@ -25,7 +25,7 @@ class CodeEditor extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.source !== state.source) {
+        if (props.source !== state.source || props.selectedRanges !== state.selectedRanges) {
             return {
                 source: props.source,
                 value: props.source,
@@ -42,7 +42,7 @@ class CodeEditor extends Component {
     selectRanges(ranges){
         if (ranges.length > 0) {
             const selections = ranges.map(r => {
-                return {anchor: this.lineChAt(r.start), head: this.lineChAt(r.end)}
+                return {anchor: this.lineChAt(r.start), head: this.lineChAt(r.end + 1)}
             });
             this.editor.setSelections(selections)
         }
@@ -119,28 +119,34 @@ class CodeEditor extends Component {
         return this.editor.getRange({ch: 0, line: cursor.line}, cursor)
     }
 
-    evaluate = () => {
+    evaluate = async () => {
         const expression = this.evaluableExpression();
-        this.context.api.evaluate(expression, false)
+        try {
+            await this.context.evaluateExpression(expression, false);
+        }
+        catch (error) {}
     }
 
-    show = () => {
+    show = async () => {
         const expression = this.evaluableExpression();
-        this.context.api.evaluate(expression, false)
-            .then(object => {
-                const cursor = this.editor.getCursor("to");
-                this.editor.replaceRange(" " + object.printString, cursor);
-                const from = {ch: cursor.ch + 1, line: cursor.line};
-                const to = {ch: from.ch + object.printString.length, line: from.line};
-                this.editor.setSelection(from, to)
-            })
+        try {
+            const object = await this.context.evaluateExpression(expression, false);
+            const cursor = this.editor.getCursor("to");
+            this.editor.replaceRange(" " + object.printString, cursor);
+            const from = {ch: cursor.ch + 1, line: cursor.line};
+            const to = {ch: from.ch + object.printString.length, line: from.line};
+            this.editor.setSelection(from, to)
+        }
+        catch (error) {}
     }
 
-    inspect = () => {
+    inspect = async () => {
         const expression = this.evaluableExpression();
-        this.context.api.evaluate(expression, true)
-            .then(object => {
-                this.context.inspectObject(object);            })
+        try {
+            const object = await this.context.evaluateExpression(expression, true);
+            this.context.inspectObject(object);          
+        }
+        catch (error) {}
     }
   
     render() {
@@ -171,6 +177,7 @@ class CodeEditor extends Component {
                                     "Ctrl-D": this.evaluate,
                                     "Ctrl-I": this.inspect,
                                     "Ctrl-S": this.show,
+                                    "Ctrl-u": this.debug,
                                     "Alt-S": this.acceptClicked,
                                     "Ctrl-B": this.browseClass,
                                     "Alt-N": this.browseSenders,
@@ -178,14 +185,6 @@ class CodeEditor extends Component {
                                     "Alt-R": this.browseReferences
                                 }}}
                             value={this.state.value}
-                            // selection={{
-                            //     ranges: [{
-                            //       anchor: {ch: 0, line: 0},
-                            //       head: {ch: 5, line: 1}
-                            //     }],
-                            //     focus: true
-                            //   }}
-                            //onSelection={(editor, data) => {}}
                             editorDidMount={editor => {this.editor = editor; editor.setSize("100%", "100%")}}
                             onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
                             onChange={(editor, data, value) => {this.valueChanged(value)}}

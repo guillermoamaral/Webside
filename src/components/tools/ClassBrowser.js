@@ -102,9 +102,9 @@ class ClassBrowser extends Component {
         if (category == null && variable === null) {return species.methods}
         if (category == null) {return species[variable.name]}
         if (variable == null) {
-            return species.methods.filter(m => {return m.category === category});
+            return species.methods.filter(m => m.category === category);
         }
-        return species[variable.name].filter(m => {return m.category === category});
+        return species[variable.name].filter(m => m.category === category);
     }
 
     currentSource = () => {
@@ -156,7 +156,7 @@ class ClassBrowser extends Component {
         }
         var variable = selections.variable;
         if (variable !== null) {
-            variable = species.variables.find(v => {return v.name === variable.name});
+            variable = species.variables.find(v => v.name === variable.name);
             selections.variable = variable === undefined ? null : variable;
         }
     }
@@ -176,7 +176,7 @@ class ClassBrowser extends Component {
         const species = selections.class;
         if (force || species.methods === undefined) {
             const methods = await this.context.api.getMethods(species.name);
-            species.methods = methods.sort((a, b) => {return a.selector <= b.selector? -1 : 1});
+            species.methods = methods.sort((a, b) => a.selector <= b.selector? -1 : 1);
         }
         const variable = selections.variable;
         if (variable !== null && (force || species[variable.name] === undefined)) {
@@ -184,7 +184,7 @@ class ClassBrowser extends Component {
         }
         var method = selections.method;
         if (method !== null) {
-            method = species.methods.find(m => {return m.selector === method.selector});
+            method = species.methods.find(m => m.selector === method.selector);
             selections.method = method === undefined ? null : method;    
         }
     }
@@ -194,7 +194,7 @@ class ClassBrowser extends Component {
         if (force) {
             const method = await this.context.api.getMethod(species.name, selections.method.selector);
             if (method !== null) { 
-                species.methods = species.methods.map(m => {return m.selector === method.selector? method : m})
+                species.methods = species.methods.map(m =>  m.selector === method.selector? method : m)
                 selections.method = method;
             }
         }
@@ -232,7 +232,7 @@ class ClassBrowser extends Component {
             const superclass = classes[species.superclass];
             if (superclass !== undefined) {
                 superclass.subclasses.push(species);
-                superclass.subclasses.sort((a, b) => {return a.name <= b.name? -1 : 1});
+                superclass.subclasses.sort((a, b) => a.name <= b.name? -1 : 1);
             }
             this.classSelected(species);
         }
@@ -250,7 +250,7 @@ class ClassBrowser extends Component {
         delete classes[species.name];
         const superclass = classes[species.superclass];
         if (superclass !== undefined) {
-            superclass.subclasses = superclass.subclasses.filter(c => {return c !== species});
+            superclass.subclasses = superclass.subclasses.filter(c => c !== species);
             this.classSelected(superclass);
         } else {
             this.changeRoot('Object')
@@ -288,7 +288,7 @@ class ClassBrowser extends Component {
 
     methodRemoved = (method) => {
         const classes = this.state.classes;
-        classes[method.class].methods = classes[method.class].methods.filter(m => {return m.selector !== method.selector});
+        classes[method.class].methods = classes[method.class].methods.filter(m => m.selector !== method.selector);
         this.setState({classes: classes})
     }
 
@@ -314,10 +314,10 @@ class ClassBrowser extends Component {
         selections.category = method.category;
         const methods = species.methods;
         if (methods === undefined ||
-            methods.find(m => {return m.selector === method.selector}) === undefined) {
+            methods.find(m => m.selector === method.selector) === undefined) {
             await this.updateMethods(selections, true);
         }
-        selections.method = species.methods.find(m => {return m.selector === method.selector});
+        selections.method = species.methods.find(m => m.selector === method.selector);
         this.applySelections(selections)  
     }
 

@@ -30,7 +30,7 @@ class VariableList extends Component {
         return (
             <CustomList
                 itemLabel="name"
-                itemDivider={(item) => {return item.type === 'separator'}}
+                itemDivider={item => item.type === 'separator'}
                 items={variables}
                 selectedItem={this.props.selectedVariable}
                 onSelect={this.variableSelected}

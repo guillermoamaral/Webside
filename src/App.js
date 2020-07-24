@@ -8,11 +8,10 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Drawer,
-  Dialog
+  Drawer
 } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
-import { amber , blue } from '@material-ui/core/colors';
+import { amber, blue } from '@material-ui/core/colors';
 import AddIcon from '@material-ui/icons/AddCircle';
 import API from './components/API';
 import { AppContext } from './AppContext';
@@ -211,26 +210,32 @@ class App extends Component {
       selectedPage: null,
       transcriptOpen: false,
       transcriptText: 'Wellcome!\r\rThis is Webtalk, a web Smalltalk IDE built with React.',
-      pages: []
+      pages: [],
+      confirm: {title: 'Question', question: 'Are you sure?', open: false, answer: null}
     }
   }
 
   componentDidMount() {
-    this.openDebugger(61849);
+    console.log(this.confirm('farting hard?'))
+    console.log(this.confirm('are you lying to me?'))
+    // this.openDebugger(61849);
     // this.openInspectors();
     // this.openWorkspace();
     // this.openClassBrowser('Magnitude');
   }
 
-  confirm = (title, question) => {
-    return new Promise((resolve, reject) => {
-      this.confirmDialog.setState({
-        title: title,
-        question: question,
-        onConfirm: () => resolve(true),
-        onCancel: () => resolve(false)
-      })
-    }) 
+  confirm = async (title, question) => {
+    let handler;
+    const promise = new Promise(resolve => handler = resolve);
+    this.setState({confirm: {
+      title: title,
+      question: question,
+      open: true,
+      answer: handler}});
+    const answer = await promise;
+    console.log(answer)
+    this.setState({confirm: {open: false}});
+    return answer;
   }
 
   addPage(label, icon, component) {
@@ -245,7 +250,7 @@ class App extends Component {
 
   removePage = (page) => {
     //console.log(page.component.type === Inspector)
-    this.setState({pages: this.state.pages.filter(p => {return p !== page})})
+    this.setState({pages: this.state.pages.filter(p => p !== page)})
   }
 
   openTranscript() {
@@ -311,6 +316,17 @@ class App extends Component {
       .then(methods => this.openMethodBrowser(methods, 'References to ' + classname)); 
   }
 
+  evaluateExpression = async (expression, pin) => {
+    try {
+      const object = await this.api.evaluate(expression, pin);
+      return object;
+    }
+    catch (error) {
+      console.log(error.response.data.stack);
+      this.openDebugger(error.response.data.debugger);
+    }
+  }
+
   expandSidebar = () => {
     this.setState({sidebarExpanded: true});
   };
@@ -348,6 +364,7 @@ class App extends Component {
       browseImplementors: this.browseImplementors,
       browseClass: this.openClassBrowser,
       browseReferences: this.browseReferences,
+      evaluateExpression: this.evaluateExpression,
       inspectObject: this.openInspector,
       reportError: this.reportError};
 
@@ -355,6 +372,11 @@ class App extends Component {
       <ThemeProvider theme={theme}>
         <AppContext.Provider value={context}>
           <div className={this.props.classes.root}>
+            <ConfirmDialog
+              open={this.state.confirm.open}
+              title={this.state.confirm.title}
+              question={this.state.confirm.question}
+              answer={this.state.confirm.answer}/>
             <CssBaseline/>
             <Titlebar
               title={smalltalk + ' Web IDE'}

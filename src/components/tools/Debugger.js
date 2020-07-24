@@ -133,20 +133,20 @@ class Debugger extends Component {
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
-                    <IconButton color="inherit" onClick={this.hopClicked}>
-                        <Icon icon={HopIcon} width={30} height={30}/>
+                    <IconButton color="inherit" onClick={this.hopClicked} size="medium">
+                        <Icon icon={HopIcon}/>
                     </IconButton>
-                    <IconButton color="inherit" onClick={this.skipClicked}>
-                        <Icon icon={SkipIcon} width={30} height={30}/>
+                    <IconButton color="inherit" onClick={this.skipClicked} size="medium">
+                        <Icon icon={SkipIcon}/>
                     </IconButton>
-                    <IconButton color="inherit" onClick={this.restartClicked}>
-                        <Icon icon={RestartIcon} width={30} height={30}/>
+                    <IconButton color="inherit" onClick={this.restartClicked} size="medium">
+                        <Icon icon={RestartIcon}/>
                     </IconButton>
-                    <IconButton color="inherit" onClick={this.resumeClicked}>
-                        <Icon icon={ResumeIcon} width={30} height={30}/>
+                    <IconButton color="inherit" onClick={this.resumeClicked} size="medium">
+                        <Icon icon={ResumeIcon}/>
                     </IconButton>
-                    <IconButton color="inherit" onClick={this.terminateClicked}>
-                        <Icon icon={TerminateIcon} width={30} height={30}/>
+                    <IconButton color="inherit" onClick={this.terminateClicked} size="medium">
+                        <Icon icon={TerminateIcon}/>
                     </IconButton>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>

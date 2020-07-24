@@ -37,7 +37,7 @@ class MethodList extends Component {
         const methods = this.props.methods == null ? [] : this.props.methods;
         return (
             <CustomList
-                itemLabel={this.props.showClass === true ? (m => {return m.class + '>>#' + m.selector}) : "selector"}
+                itemLabel={this.props.showClass === true ? (m => m.class + '>>#' + m.selector) : "selector"}
                 items={methods}
                 selectedItem={this.props.selectedMethod}
                 onSelect={this.props.onSelect}

@@ -211,7 +211,7 @@ class API {
         catch (error) {this.handleError('Cannot apply change ' + change, error)}
     }
 
-    //Helpers...
+    // Change helpers...
     async defineClass(classname, definition) {
         const change = this.newChange('ClassDefinition');
         change.class = classname;

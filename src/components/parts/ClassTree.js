@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import CustomTree from '../controls/CustomTree';
-import ConfirmDialog from '../controls/ConfirmDialog';
 import { AppContext } from '../../AppContext';
 
 class ClassTree extends Component {
@@ -48,13 +47,6 @@ class ClassTree extends Component {
                         {label: 'Browse', action: c => this.context.browseClass(c.name)},
                         {label: 'References', action: c => this.context.browseReferences(c.name)}]}
                 />
-                {/* <ConfirmDialog
-                    title="Delete Class"
-                    open={this.state.confirmOpen}
-                    question="Are you sure you want to delete this class?"
-                    onCancel={() => {this.setState({confirmOpen: false})}}
-                    onConfirm={() => this.removeClass(this.state.classToRemove)}>
-                </ConfirmDialog> */}
             </div>
         )
     }

@@ -36,7 +36,7 @@ class Workspace extends Component {
     }
 
     closeInspector = (id) => {
-        this.setState({inspectors: this.state.inspectors.filter((i) => {return i.props.root.id !== id})});
+        this.setState({inspectors: this.state.inspectors.filter(i => i.props.root.id !== id)});
     }
     
     expressionChanged = (text) => {
@@ -44,7 +44,7 @@ class Workspace extends Component {
     }
 
     evaluateClicked = () => {
-        this.context.api.evaluate(this.state.expression, true)
+        this.context.evaluateExpression(this.state.expression, true)
             .then(object => {
                 if (this.state.opensInspector) {
                     this.openInspector(object)

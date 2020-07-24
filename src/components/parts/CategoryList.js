@@ -40,7 +40,7 @@ class CategoryList extends Component {
         return (
             <CustomList
                 items={categories}
-                itemDivider={item => {return item === this.all}}
+                itemDivider={item => item === this.all}
                 selectedItem={this.props.selectedCategory}
                 onSelect={this.categorySelected}
                 menuOptions={[
