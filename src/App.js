@@ -22,7 +22,6 @@ import WorkspaceIcon from './components/icons/WorkspaceIcon';
 import InspectorIcon from './components/icons/InspectorIcon';
 import ChangesBrowserIcon from './components/icons/ChangesBrowserIcon';
 import DebuggerIcon from './components/icons/DebuggerIcon';
-
 import ConfirmDialog from './components/controls/ConfirmDialog';
 import Titlebar from './components/layout/Titlebar'
 import Sidebar from './components/layout/Sidebar';
