@@ -216,9 +216,9 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.openWorkspace();
     // this.openDebugger(61849);
     // this.openInspectors();
-    // this.openWorkspace();
     // this.openClassBrowser('Magnitude');
   }
 
@@ -327,8 +327,9 @@ class App extends Component {
       return object;
     }
     catch (error) {
-      this.confirm('There was an error', 'Stack tracke:\r' + error.response.data.stack + '\r\rDo you want to debug it?')
-        .then(debug => (debug)? this.openDebugger(error.response.data.debugger) : this.reportError(error))
+      const data = error.response.data; 
+      this.confirm(data.description, 'Stack tracke:\r' + data.stack + '\r\rDo you want to debug it?')
+        .then(debug => (debug)? this.openDebugger(data.debugger) : this.reportError(error))
     }
   }
 
@@ -435,7 +436,8 @@ class App extends Component {
                       onClose={() => this.setState({transcriptOpen: false})}>
                       <Transcript
                         classes={this.props.classes}      
-                        text={this.state.transcriptText}/>
+                        text={this.state.transcriptText}
+                        onChange={text => this.setState({transcriptText: text})}/>
                     </Drawer>
                   </React.Fragment>
                 </Grid>

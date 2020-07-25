@@ -7,6 +7,11 @@ import { AppContext } from '../../AppContext';
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
 require('codemirror/mode/smalltalk/smalltalk.js');
+require('codemirror/addon/search/searchcursor.js');
+require('codemirror/addon/search/search.js');
+require('codemirror/addon/search/match-highlighter.js');
+require('codemirror/addon/edit/matchbrackets.js');
+require('codemirror/addon/edit/closebrackets.js');
 
 class CodeEditor extends Component {
     static contextType = AppContext;
@@ -35,6 +40,21 @@ class CodeEditor extends Component {
         };
         return null;
     }
+
+    markOcurrences = () => {
+        const keyword = this.editor.getSelection();
+        console.log(keyword)
+        var cursor = this.editor.getSearchCursor(keyword);
+        while (cursor.findNext()) {
+            console.log(cursor.from())
+            console.log(cursor.to())
+            this.editor.markText(
+              cursor.from(),
+              cursor.to(),
+              {className: 'highlight'}
+            )
+        }
+      }
 
     selectRange(range) {
         this.selectRanges([range]);
@@ -116,8 +136,8 @@ class CodeEditor extends Component {
     evaluableExpression() {
         const expression = this.editor.getSelection();
         if (expression.length > 0) {return expression}
-        const cursor = this.editor.getCursor("to");
-        return this.editor.getRange({ch: 0, line: cursor.line}, cursor)
+        const cursor = this.editor.getCursor();
+        return this.editor.getLine(cursor.line);
     }
 
     evaluate = async () => {
@@ -133,6 +153,10 @@ class CodeEditor extends Component {
         try {
             const object = await this.context.evaluateExpression(expression, false);
             const cursor = this.editor.getCursor("to");
+            if (this.editor.getSelection().length === 0) {
+                cursor.ch = this.editor.getLine(cursor.line).length;
+            }
+            console.log(cursor)
             this.editor.replaceRange(" " + object.printString, cursor);
             const from = {ch: cursor.ch + 1, line: cursor.line};
             const to = {ch: from.ch + object.printString.length, line: from.line};
@@ -166,9 +190,11 @@ class CodeEditor extends Component {
                                 theme: "material",
                                 lineSeparator: '\r',
                                 lineNumbers: true,
-                                matchBrackets: true, 
+                                matchBrackets: true,
+                                autoCloseBrackets: true,
+                                //highlightSelectionMatches: true,
+                                highlightSelectionMatches: {annotateScrollbar: true},
                                 indentUnit: 10, 
-                                highlightSelectionMatches: true, 
                                 styleActiveLine: true, 
                                 matchTags: {
                                     bothTags: true
@@ -183,7 +209,8 @@ class CodeEditor extends Component {
                                     "Ctrl-B": this.browseClass,
                                     "Alt-N": this.browseSenders,
                                     "Alt-M": this.browseImplementors,
-                                    "Alt-R": this.browseReferences
+                                    "Alt-R": this.browseReferences,
+                                    "Ctrl-Q": this.markOcurrences,
                                 }}}
                             value={this.state.value}
                             editorDidMount={editor => {this.editor = editor; editor.setSize("100%", "100%")}}

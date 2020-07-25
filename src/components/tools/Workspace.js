@@ -18,7 +18,7 @@ class Workspace extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            expression: '1 @ 2 extent: 10',
+            expression: '(1 @ 2 extent: 10) area',
             opensInspector: true,
             inspectors: [],
         };

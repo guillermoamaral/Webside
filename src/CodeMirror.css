@@ -1,0 +1,6 @@
+.highlight {
+    color: orange;
+  }
+
+.cm-matchhighlight {background-color: lightblue}
+.CodeMirror-selection-highlight-scrollbar {background-color: darkblue}

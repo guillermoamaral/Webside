@@ -91,7 +91,7 @@ class CustomList extends Component {
 
   menuOptionClicked(option) {
     if (option.action !== undefined) {
-      option.action(this.state.selectedItem);
+      option.action(this.props.selectedItem);
     }
   }
 
