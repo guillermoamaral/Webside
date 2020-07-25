@@ -123,7 +123,7 @@ class Debugger extends Component {
     }
 
     terminateClicked = async () => {
-        await this.context.api.skip(this.props.id);
+        await this.context.api.terminate(this.props.id);
         this.updateFrames();
     }
 

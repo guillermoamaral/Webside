@@ -197,7 +197,7 @@ const theme = createMuiTheme({
     background: {
       paper: '#303030',
     }
-  }
+  },
 });
 
 class App extends Component {
@@ -216,8 +216,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log(this.confirm('farting hard?'))
-    console.log(this.confirm('are you lying to me?'))
     // this.openDebugger(61849);
     // this.openInspectors();
     // this.openWorkspace();
@@ -233,7 +231,6 @@ class App extends Component {
       open: true,
       answer: handler}});
     const answer = await promise;
-    console.log(answer)
     this.setState({confirm: {open: false}});
     return answer;
   }
@@ -245,12 +242,20 @@ class App extends Component {
       component: component};
     const pages = this.state.pages;
     pages.push(page);
-    this.setState({pages: pages, selectedPage: pages.length - 1})
+    this.setState({pages: pages, selectedPage: page})
+  }
+
+  pageSelected = (page) => {
+    this.setState({selectedPage: page})
   }
 
   removePage = (page) => {
     //console.log(page.component.type === Inspector)
-    this.setState({pages: this.state.pages.filter(p => p !== page)})
+    const {pages, selectedPage} = this.state;
+    let i = pages.indexOf(page);
+    const j = pages.indexOf(selectedPage);
+    const selected = (i <= j)? pages[Math.max(i - 1, 0)] : selectedPage;
+    this.setState({pages: pages.filter(p => p !== page), selectedPage: selected})
   }
 
   openTranscript() {
@@ -322,8 +327,8 @@ class App extends Component {
       return object;
     }
     catch (error) {
-      console.log(error.response.data.stack);
-      this.openDebugger(error.response.data.debugger);
+      this.confirm('There was an error', 'Stack tracke:\r' + error.response.data.stack + '\r\rDo you want to debug it?')
+        .then(debug => (debug)? this.openDebugger(error.response.data.debugger) : this.reportError(error))
     }
   }
 
@@ -399,6 +404,7 @@ class App extends Component {
                         classes={this.props.classes}
                         selectedPage={this.state.selectedPage}
                         pages={this.state.pages}
+                        onSelect={this.pageSelected}
                         onClose={this.removePage}/>
                   </Grid>
                   <Grid item xs={1} md={1} lg={1}>

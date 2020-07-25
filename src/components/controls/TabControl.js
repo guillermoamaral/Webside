@@ -10,106 +10,89 @@ function TabPanel(props) {
       role="tabpanel"
       hidden={!visible}
       id={id}
-      {...other}
-    >
-      {visible && (
-        <Box className={props.classes.box} p={1}>
-          {children}
-        </Box>
-      )}
+      {...other}>
+        {visible && (
+          <Box className={props.classes.box} p={1}>
+            {children}
+          </Box>
+        )}
     </div>
-  );
+  )
 }
 
 TabPanel.propTypes = {
   children: PropTypes.node,
   id: PropTypes.any.isRequired,
   visible: PropTypes.any.isRequired,
-};
+}
 
 class TabControl extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            selectedIndex: props.selectedIndex === undefined ? 0 : props.selectedIndex
-        }
+  tabLabel = (page, index) => {
+    return (
+      <span>
+        {React.cloneElement(page.icon, {className: this.props.classes.tabIcon})}
+        {page.label}
+        <IconButton 
+          onClick={event => {this.tabClosed(event, index)}}
+          id={index}
+          value={index}
+          size="small">
+            <CloseIcon fontSize="small" id={index} value={index}/>
+        </IconButton>
+      </span>
+    )
+  }
+
+  tabChanged = (event, index) => {
+    event.preventDefault();
+    const handler = this.props.onSelect;
+    if (handler !== undefined) {
+      handler(this.props.pages[index])}
+  }
+
+  tabClosed = (event, index) => {
+    event.stopPropagation();
+    const handler = this.props.onClose;
+    if (handler !== undefined) {
+      handler(this.props.pages[index]);
     }
+  }
 
-    tabChanged = (event, index) => {
-      event.preventDefault();
-      this.setState({selectedIndex: index});
-    }
-
-    tabLabel = (index) => {
-      const page = this.props.pages[index];
-      return (
-        <span>
-          {React.cloneElement(page.icon, {className: this.props.classes.tabIcon})}
-          {page.label}
-          <IconButton 
-            onClick={event => {this.tabClosed(event, index)}}
-            id={index}
-            value={index}
-            size="small">
-              <CloseIcon fontSize="small" id={index} value={index}/>
-          </IconButton>
-        </span>
-      )
-    }
-
-    tabClosed = (event, index) => {
-      event.stopPropagation();
-      if (this.props !== null) {
-        const handler = this.props.onClose;
-        if (handler !== undefined) {
-            handler(this.props.pages[index]);
-            if (index <= this.state.selectedIndex) {
-              index = Math.max(index - 1, 0)
-              this.setState({selectedIndex: index})
-            }
-        }
-      }
-    };    
-
-    render() {
-        return (
-            <div className={this.props.classes.tabControl}>
-                <Tabs
-                    value={this.state.selectedIndex}
-                    onChange={this.tabChanged}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    variant="scrollable"
-                    scrollButtons="auto"
-                    >
-                        {this.props.pages.map((p, i) => {
-                            return (
-                              <Tab
-                                component="div"
-                                key={i.toString()}
-                                label={this.tabLabel(i)}
-                                id= {`tab-${i}`}
-                              />
-                            );
-                        })}
-                </Tabs>
-                  {this.props.pages.map((p, i) => {
-                    return (
-                        <TabPanel
-                            id={`tabpanel-${i}`}
-                            key={i.toString()}
-                            index={i}
-                            classes={this.props.classes}
-                            visible={i === this.state.selectedIndex}
-                          >
-                            {p.component}
-                        </TabPanel>
-                    );
+  render() {
+    const {pages, selectedPage} = this.props;
+    const selectedIndex = pages.indexOf(selectedPage);
+    return (
+        <div className={this.props.classes.tabControl}>
+            <Tabs
+              value={Math.max(selectedIndex, 0)}
+              onChange={this.tabChanged}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="scrollable"
+              scrollButtons="auto">
+                {pages.map((p, i) => {
+                  return (
+                    <Tab
+                      component="div"
+                      key={i.toString()}
+                      label={this.tabLabel(p, i)}
+                      id= {`tab-${i}`}/>)
                 })}
-
-            </div>
-        );
-    };
-};
+            </Tabs>
+            {pages.map((p, i) => {
+              return (
+                <TabPanel
+                  id={`tabpanel-${i}`}
+                  key={i.toString()}
+                  index={i}
+                  classes={this.props.classes}
+                  visible={p === selectedPage}>
+                    {p.component}
+                </TabPanel>)
+            })}
+        </div>
+    )
+  }
+}
 
 export default TabControl;

@@ -43,15 +43,16 @@ class Workspace extends Component {
         this.setState({expression: text})
     }
 
-    evaluateClicked = () => {
-        this.context.evaluateExpression(this.state.expression, true)
-            .then(object => {
-                if (this.state.opensInspector) {
-                    this.openInspector(object)
-                } else {
-                    this.setState({expression: this.state.expression + ' -> ' + object.printString})
-                }
-            })
+    evaluateClicked = async () => {
+        try {
+            const object = await this.context.evaluateExpression(this.state.expression, true)
+            if (this.state.opensInspector) {
+                this.openInspector(object)
+            } else {
+                this.setState({expression: this.state.expression + ' -> ' + object.printString})
+            }
+        }
+        catch (error) {}
     }
 
     render() {

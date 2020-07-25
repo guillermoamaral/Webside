@@ -6,23 +6,9 @@ class CustomList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: props.items,
-      selectedItem: props.selectedItem,
-      selectedIndex: props.selectedItem == null ? null : props.items.indexOf(props.selectedItem),
       menuOpen: false,
       menuPosition: {x: null, y: null}
     }
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    if (props.selectedItem !== state.selectedItem) {
-        return {
-            items: props.items,
-            selectedItem: props.selectedItem,
-            selectedIndex: props.selectedItem === null ? null : props.items.indexOf(props.selectedItem), 
-        };
-    }
-    return null
   }
 
   createItems = () => {
@@ -40,8 +26,9 @@ class CustomList extends Component {
             button
             divider={divider}
             key={"item" + index}
-            selected={this.state.selectedIndex === index}
-            onClick={event => this.itemSelected(event, index, item)}
+            selected={this.props.selectedItem === item}
+            onClick={event => this.itemSelected(item)}
+            onKeyDown={this.keyPressed}
             onContextMenu={this.openMenu}
             >
               {icon}
@@ -52,8 +39,7 @@ class CustomList extends Component {
     )
   }
 
-  itemSelected = (event, index, item) => {
-    this.setState({selectedItem: item, selectedIndex: index});
+  itemSelected = (item) => {
     const handler = this.props.onSelect;
     if (handler !== undefined) {handler(item)}
   }
@@ -106,6 +92,32 @@ class CustomList extends Component {
   menuOptionClicked(option) {
     if (option.action !== undefined) {
       option.action(this.state.selectedItem);
+    }
+  }
+
+  moveUp = () => {
+    const items = this.props.items;
+    const index = items.indexOf(this.props.selectedItem);
+    if (index > 0) {
+      this.itemSelected(items[index - 1]);
+    }
+  }
+
+  moveDown = () => {
+    const items = this.props.items;
+    const index = items.indexOf(this.props.selectedItem);
+    if (index < items.length - 1) {
+      this.itemSelected(items[index + 1]);
+    }
+  }
+
+  keyPressed = (e) => {
+    console.log(e.keyCode)
+    if (e.keyCode == '38') {
+        this.moveUp();
+    }
+    else if (e.keyCode == '40') {
+        this.moveDown();
     }
   }
 

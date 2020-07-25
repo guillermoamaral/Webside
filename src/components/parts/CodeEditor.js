@@ -25,7 +25,8 @@ class CodeEditor extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.source !== state.source || props.selectedRanges !== state.selectedRanges) {
+        if (props.source !== state.source 
+            || (props.selectedRanges !== undefined && props.selectedRanges !== state.selectedRanges)) {
             return {
                 source: props.source,
                 value: props.source,
