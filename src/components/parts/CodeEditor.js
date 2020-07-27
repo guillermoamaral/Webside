@@ -12,6 +12,11 @@ require('codemirror/addon/search/search.js');
 require('codemirror/addon/search/match-highlighter.js');
 require('codemirror/addon/edit/matchbrackets.js');
 require('codemirror/addon/edit/closebrackets.js');
+require('codemirror/addon/comment/comment.js');
+require('codemirror/addon/selection/active-line.js');
+require('codemirror/addon/display/fullscreen.js');
+require('codemirror/addon/display/fullscreen.css');
+require('codemirror/addon/scroll/annotatescrollbar.js');
 
 class CodeEditor extends Component {
     static contextType = AppContext;
@@ -113,24 +118,32 @@ class CodeEditor extends Component {
         if (handler !== undefined) {handler(this.state.value)}
     }
 
+    toggleFullScreen = (event) => {
+        console.log('fight')
+        this.editor.setOption("fullScreen", !this.editor.getOption("fullScreen"));
+    }
+
+    targetWord() {
+        const word = this.editor.getSelection();
+        if (word.length > 0) {return word}
+        const stretch = this.editor.findWordAt(this.editor.getCursor());
+        return this.editor.getRange(stretch.anchor, stretch.head);    
+    }
+
     browseSenders = () => {
-        const selector = this.editor.getSelection();
-        this.context.browseSenders(selector);
+        this.context.browseSenders(this.targetWord());
     }
 
     browseImplementors = () => {
-        const selector = this.editor.getSelection();
-        this.context.browseImplementors(selector);
+        this.context.browseImplementors(this.targetWord());
     }
 
     browseClass = () => {
-        const classname = this.editor.getSelection();
-        this.context.browseClass(classname);
+        this.context.browseClass(this.targetWord());
     }
 
     browseReferences = () => {
-        const global = this.editor.getSelection();
-        this.context.browseReferences(global);
+        this.context.browseReferences(this.targetWord());
     }
 
     evaluableExpression() {
@@ -211,6 +224,7 @@ class CodeEditor extends Component {
                                     "Alt-M": this.browseImplementors,
                                     "Alt-R": this.browseReferences,
                                     "Ctrl-Q": this.markOcurrences,
+                                    "Alt-Z": this.toggleFullScreen,
                                 }}}
                             value={this.state.value}
                             editorDidMount={editor => {this.editor = editor; editor.setSize("100%", "100%")}}

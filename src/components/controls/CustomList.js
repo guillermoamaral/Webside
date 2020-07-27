@@ -112,7 +112,6 @@ class CustomList extends Component {
   }
 
   keyPressed = (e) => {
-    console.log(e.keyCode)
     if (e.keyCode == '38') {
         this.moveUp();
     }

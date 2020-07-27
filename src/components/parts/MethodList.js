@@ -6,15 +6,12 @@ import { AppContext } from '../../AppContext';
 class MethodList extends Component {
     static contextType = AppContext;
 
-    removeMethod = (method) => {
-        this.context.api.deleteMethod(method.class, method.selector)
-            .then(response => {
-                const handler = this.props.onRemoved;
-                if (handler !== undefined) {
-                    handler(method)
-                }
-            })
-            .catch(error => {})
+    removeMethod = async (method) => {
+        await this.context.api.deleteMethod(method.class, method.selector);
+        const handler = this.props.onRemoved;
+        if (handler !== undefined) {
+            handler(method)
+        }
     }
 
     menuOptions() {

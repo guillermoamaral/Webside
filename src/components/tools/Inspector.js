@@ -24,43 +24,44 @@ class Inspector extends Component {
     }
 
     componentDidMount() {
-        this.updateVariables(this.state.root)
+        this.updateSlots(this.state.root)
     }
 
     close = () => {
         this.props.onClose(this.props.root.id);
     }
 
-    updateVariables = (object) => {
+    updateSlots = async (object) => {
         if (object === null) {return []}
-        if (object.variables !== undefined) {return object.variables}
-        this.context.api.getInstanceVariables(object.class)
-            .then(variables => {
-                object.variables = [];
-                variables.forEach(v => {
-                    const path = object.path + '/' + v.name;
-                    this.context.api.getVariable(this.props.root.id, path)
-                        .then(variable => {
-                            variable.name = v.name;
-                            variable.path = path;
-                            object.variables.push(variable);
-                            const objects = this.state.objects;
-                            objects[variable.id] = variable;
-                            this.setState({objectTree: this.state.objectTree, objects: objects});
-                        })
-                        .catch(error => {})    
-                });
-            })
-            .catch(error => {return []})
+        if (object.slots !== undefined) {return object.slots}
+        let slots;
+        if (object.indexable) {
+            slots = [];
+            for(var i = 0; i < object.size; i++) {slots.push(i + 1)}
+        } else {
+            slots = await this.context.api.getInstanceVariables(object.class);
+            slots = slots.map(s => s.name)
+        }
+        object.slots = [];
+        slots.forEach(async s => {
+            const path = object.path + '/' + s;
+            const slot = await this.context.api.getVariable(this.props.root.id, path);
+            slot.name = s;
+            slot.path = path;
+            object.slots.push(slot);
+            const objects = this.state.objects;
+            objects[slot.id] = slot;
+            this.setState({objectTree: this.state.objectTree, objects: objects});
+        })
     }
 
-    variableSelected = (object) => {
+    slotSelected = (object) => {
         this.setState({selectedObject: object})
     }
 
-    variableExpanded = (object) => {
+    slotExpanded = (object) => {
         if (object !== undefined) {
-            object.variables.forEach(v => this.updateVariables(v))
+            object.slots.forEach(s => this.updateSlots(s))
         }
     }
 
@@ -77,9 +78,10 @@ class Inspector extends Component {
                                     items={objectTree}
                                     itemLabel="name"
                                     id="id"
-                                    children={"variables"}
-                                    onExpand={this.variableExpanded}
-                                    onSelect={this.variableSelected}
+                                    children={"slots"}
+                                    selectedItem={this.selectedObject}
+                                    onExpand={this.slotExpanded}
+                                    onSelect={this.slotSelected}
                                 />
                             </Paper>
                         </Grid>

@@ -199,12 +199,13 @@ class API {
     newChange(type) {
         return {
             type: type,
-            author: this.user,
+            author: this.author,
         }
     }
 
     async postChange(change) {
         try {
+            console.log(change)
             const response = await axios.post(this.baseUri + '/changes', change);
             return response.data;
         }
