@@ -283,6 +283,14 @@ class API {
         catch (error) {this.handleError('Cannot evaluate ' + expression, error)}
     }
 
+    async debug(expression) {
+        try {
+            const response = await axios.post(this.baseUri + '/debuggers', expression);
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot debug ' + expression, error)}
+    }
+
     async getObjects() {
         try {
             const response = await axios.get(this.baseUri + '/objects')
@@ -307,12 +315,12 @@ class API {
         catch (error) {this.handleError('Cannot fetch object with id ' + id, error)}
     }
 
-    async getVariable(id, path) {
+    async getSlot(id, path) {
         try {
             const response = await axios.get(this.baseUri + '/objects/' + id + path);
             return response.data
         }
-        catch (error) {this.handleError('Cannot fecth variable ' + path + ' of object with id ' + id, error)}
+        catch (error) {this.handleError('Cannot fecth slot ' + path + ' of object with id ' + id, error)}
     }
 
 }

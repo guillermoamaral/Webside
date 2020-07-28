@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Paper, IconButton } from '@material-ui/core';
+import { Grid, Paper, IconButton, Tooltip } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import clsx from 'clsx';
 import { Icon, InlineIcon } from "@iconify/react";
@@ -119,12 +119,12 @@ class Debugger extends Component {
 
     resumeClicked = async () => {
         await this.context.api.resume(this.props.id);
-        this.updateFrames();
+        this.context.closeDebugger(this.props.id);
     }
 
     terminateClicked = async () => {
         await this.context.api.terminate(this.props.id);
-        this.updateFrames();
+        this.context.closeDebugger(this.props.id);
     }
 
     render() {
@@ -133,21 +133,31 @@ class Debugger extends Component {
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
-                    <IconButton color="inherit" onClick={this.hopClicked} size="medium">
-                        <Icon icon={HopIcon}/>
-                    </IconButton>
-                    <IconButton color="inherit" onClick={this.skipClicked} size="medium">
-                        <Icon icon={SkipIcon}/>
-                    </IconButton>
-                    <IconButton color="inherit" onClick={this.restartClicked} size="medium">
-                        <Icon icon={RestartIcon}/>
-                    </IconButton>
-                    <IconButton color="inherit" onClick={this.resumeClicked} size="medium">
-                        <Icon icon={ResumeIcon}/>
-                    </IconButton>
-                    <IconButton color="inherit" onClick={this.terminateClicked} size="medium">
-                        <Icon icon={TerminateIcon}/>
-                    </IconButton>
+                    <Tooltip title="Hop" placement="top">
+                        <IconButton color="inherit" onClick={this.hopClicked} size="medium">
+                            <Icon icon={HopIcon}/>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Skip" placement="top">
+                        <IconButton color="inherit" onClick={this.skipClicked} size="medium">
+                            <Icon icon={SkipIcon}/>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Restart" placement="top">
+                        <IconButton color="inherit" onClick={this.restartClicked} size="medium">
+                            <Icon icon={RestartIcon}/>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Resume" placement="top">
+                        <IconButton color="inherit" onClick={this.resumeClicked} size="medium">
+                            <Icon icon={ResumeIcon}/>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Terminate" placement="top">
+                        <IconButton color="inherit" onClick={this.terminateClicked} size="medium">
+                            <Icon icon={TerminateIcon}/>
+                        </IconButton>
+                    </Tooltip>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     <Grid container spacing={1}>

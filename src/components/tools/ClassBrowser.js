@@ -25,7 +25,6 @@ class ClassBrowser extends Component {
         this.state = {
             root: this.props.root,
             classes: {},
-            classNames: [],
             selectedClass: null,
             selectedVariable: null,
             selectedCategory: null,
@@ -36,14 +35,7 @@ class ClassBrowser extends Component {
     }
 
     componentDidMount(){
-        this.getClassNames();
         this.changeRoot(this.state.root);
-    }
-
-    getClassNames = () => {
-        this.context.api.getClassNames()
-            .then(names => {this.setState({classNames: names})})
-            .catch(error => {})
     }
 
     changeRoot = async (classname) => {
@@ -369,7 +361,7 @@ class ClassBrowser extends Component {
                                 <Grid container spacing={1}>
                                     <Grid item xs={3} md={3} lg={3}>
                                         <SearchList
-                                            options={this.state.classNames}
+                                            options={this.context.classNames}
                                             onChange={classname => {this.changeRoot(classname)}}/>
                                     </Grid>                        
                                     <Grid item xs={3} md={3} lg={3}>

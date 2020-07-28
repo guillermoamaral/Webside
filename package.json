@@ -1,7 +1,7 @@
 {
-  "name": "bee",
+  "name": "beside",
   "version": "1.0.0",
-  "description": "Bee Web",
+  "description": "Web Smalltalk IDE",
   "main": "index.js",
   "dependencies": {
     "@material-ui/core": "^4.11.0",

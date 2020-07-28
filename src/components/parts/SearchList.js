@@ -17,14 +17,14 @@ function renderRow(props) {
       ...style,
       top: style.top + LISTBOX_PADDING,
     },
-  });
+  })
 }
 
 const OuterElementContext = React.createContext({});
 const OuterElementType = React.forwardRef((props, ref) => {
   const outerProps = React.useContext(OuterElementContext);
   return <div ref={ref} {...props} {...outerProps} />;
-});
+})
 
 function useResetCache(data) {
   const ref = React.useRef(null);
@@ -50,14 +50,14 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(props, ref) 
       return 48;
     }
     return itemSize;
-  };
+  }
 
   const getHeight = () => {
     if (itemCount > 8) {
       return 8 * itemSize;
     }
     return itemData.map(getChildSize).reduce((a, b) => a + b, 0);
-  };
+  }
 
   const gridRef = useResetCache(itemCount);
   return (
@@ -78,12 +78,12 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(props, ref) 
         </VariableSizeList>
       </OuterElementContext.Provider>
     </div>
-  );
-});
+  )
+})
 
 ListboxComponent.propTypes = {
   children: PropTypes.node,
-};
+}
 
 class SearchList extends Component {
     valueChanged(value) {
@@ -94,21 +94,20 @@ class SearchList extends Component {
     }
 
     render () {
-        return (
-            <Autocomplete
-                id="autocomplete"
-                ListboxComponent={ListboxComponent}
-                renderGroup={params => [
-                    <ListSubheader key={params.key} component="div">
-                      {params.group}
-                    </ListSubheader>,
-                    params.children,
-                ]}
-                onChange={(event, value) => {this.valueChanged(value)}}
-                options={this.props.options}
-                renderInput={params => <TextField {...params} size="small" variant="outlined"/>}
-                renderOption={option => <Typography noWrap>{option}</Typography>}
-            />);
+      return (
+        <Autocomplete
+          id="autocomplete"
+          ListboxComponent={ListboxComponent}
+          renderGroup={params => [
+            <ListSubheader key={params.key} component="div">
+              {params.group}
+            </ListSubheader>,
+            params.children,
+          ]}
+          onChange={(event, value) => {this.valueChanged(value)}}
+          options={this.props.options}
+          renderInput={params => <TextField {...params} size="small" variant="outlined"/>}
+          renderOption={option => <Typography noWrap>{option}</Typography>}/>)
     }
 }
 

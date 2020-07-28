@@ -153,6 +153,14 @@ class CodeEditor extends Component {
         return this.editor.getLine(cursor.line);
     }
 
+    debug = async () => {
+        const expression = this.evaluableExpression();
+        try {
+            await this.context.debugExpression(expression);
+        }
+        catch (error) {}
+    }
+
     evaluate = async () => {
         const expression = this.evaluableExpression();
         try {
@@ -217,7 +225,7 @@ class CodeEditor extends Component {
                                     "Ctrl-D": this.evaluate,
                                     "Ctrl-I": this.inspect,
                                     "Ctrl-S": this.show,
-                                    "Ctrl-u": this.debug,
+                                    "Ctrl-U": this.debug,
                                     "Alt-S": this.acceptClicked,
                                     "Ctrl-B": this.browseClass,
                                     "Alt-N": this.browseSenders,

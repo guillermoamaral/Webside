@@ -45,7 +45,7 @@ class Inspector extends Component {
         object.slots = [];
         slots.forEach(async s => {
             const path = object.path + '/' + s;
-            const slot = await this.context.api.getVariable(this.props.root.id, path);
+            const slot = await this.context.api.getSlot(this.props.root.id, path);
             slot.name = s;
             slot.path = path;
             object.slots.push(slot);

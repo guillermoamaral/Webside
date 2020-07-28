@@ -208,17 +208,23 @@ class App extends Component {
       addPageMenuOpen: false,
       selectedPage: null,
       transcriptOpen: false,
-      transcriptText: 'Wellcome!\r\rThis is Webtalk, a web Smalltalk IDE built with React.',
+      transcriptText: 'Wellcome!\r\rThis is BESIDE, a web Smalltalk IDE built with React.',
       pages: [],
       confirm: {title: 'Question', question: 'Are you sure?', open: false, answer: null}
     }
   }
 
   componentDidMount() {
+    this.getClassNames();
     this.openWorkspace();
     // this.openDebugger(61849);
     // this.openInspectors();
     // this.openClassBrowser('Magnitude');
+  }
+
+  getClassNames = async () => {
+    const names = await this.api.getClassNames();
+    this.setState({classNames: names})
   }
 
   confirm = async (title, question) => {
@@ -292,6 +298,13 @@ class App extends Component {
     this.addPage('Debugger: ' + id, <DebuggerIcon className={this.props.classes.debuggerIcon} />, tool);
   }
 
+  closeDebugger = (id) => {
+    console.log(id)
+    console.log(this.state.pages.component.type[1])
+    const page = this.state.pages.find(p => p.component.type === Debugger && p.component.id === id);
+    if (page !== undefined) {this.removePage(page)}
+  }
+
   openInspector = (object) => {
     const inspector = <Inspector
       classes={this.props.classes}
@@ -318,6 +331,11 @@ class App extends Component {
   browseReferences = (classname) => {
     this.api.getReferences(classname)
       .then(methods => this.openMethodBrowser(methods, 'References to ' + classname)); 
+  }
+
+  debugExpression = async (expression) => {
+    const id = await this.api.debug(expression);
+    this.openDebugger(id)
   }
 
   evaluateExpression = async (expression, pin) => {
@@ -365,11 +383,14 @@ class App extends Component {
   render() {
     const context = {
       api: this.api,
+      classNames: this.state.classNames,
       browseSenders: this.browseSenders,
       browseImplementors: this.browseImplementors,
       browseClass: this.openClassBrowser,
       browseReferences: this.browseReferences,
       evaluateExpression: this.evaluateExpression,
+      debugExpression: this.debugExpression,
+      closeDebugger: this.closeDebugger,
       inspectObject: this.openInspector,
       reportError: this.reportError};
 
@@ -384,7 +405,7 @@ class App extends Component {
               answer={this.state.confirm.answer}/>
             <CssBaseline/>
             <Titlebar
-              title={smalltalk + ' Web IDE'}
+              title={smalltalk + ' Web IDE (Powered by BESIDE)'}
               appName={smalltalk}
               classes={this.props.classes}
               sidebarExpanded={this.state.sidebarExpanded}
