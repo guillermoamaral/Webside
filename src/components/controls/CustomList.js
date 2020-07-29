@@ -112,10 +112,10 @@ class CustomList extends Component {
   }
 
   keyPressed = (e) => {
-    if (e.keyCode == '38') {
+    if (e.keyCode === '38') {
         this.moveUp();
     }
-    else if (e.keyCode == '40') {
+    else if (e.keyCode === '40') {
         this.moveDown();
     }
   }

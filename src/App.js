@@ -15,6 +15,8 @@ import { amber, blue } from '@material-ui/core/colors';
 import AddIcon from '@material-ui/icons/AddCircle';
 import API from './components/API';
 import { AppContext } from './AppContext';
+import { DialogProvider } from './components/dialogs';
+
 import TranscriptIcon from './components/icons/TranscriptIcon';
 import ClassBrowserIcon from './components/icons/ClassBrowserIcon';
 import MethodBrowserIcon from './components/icons/MethodBrowserIcon';
@@ -22,7 +24,7 @@ import WorkspaceIcon from './components/icons/WorkspaceIcon';
 import InspectorIcon from './components/icons/InspectorIcon';
 import ChangesBrowserIcon from './components/icons/ChangesBrowserIcon';
 import DebuggerIcon from './components/icons/DebuggerIcon';
-import ConfirmDialog from './components/controls/ConfirmDialog';
+
 import Titlebar from './components/layout/Titlebar'
 import Sidebar from './components/layout/Sidebar';
 import TabControl from './components/controls/TabControl';
@@ -209,8 +211,7 @@ class App extends Component {
       selectedPage: null,
       transcriptOpen: false,
       transcriptText: 'Wellcome!\r\rThis is BESIDE, a web Smalltalk IDE built with React.',
-      pages: [],
-      confirm: {title: 'Question', question: 'Are you sure?', open: false, answer: null}
+      pages: []
     }
   }
 
@@ -225,19 +226,6 @@ class App extends Component {
   getClassNames = async () => {
     const names = await this.api.getClassNames();
     this.setState({classNames: names})
-  }
-
-  confirm = async (title, question) => {
-    let handler;
-    const promise = new Promise(resolve => handler = resolve);
-    this.setState({confirm: {
-      title: title,
-      question: question,
-      open: true,
-      answer: handler}});
-    const answer = await promise;
-    this.setState({confirm: {open: false}});
-    return answer;
   }
 
   addPage(label, icon, component) {
@@ -409,73 +397,70 @@ class App extends Component {
     return (
       <ThemeProvider theme={theme}>
         <AppContext.Provider value={context}>
-          <div className={this.props.classes.root}>
-            <ConfirmDialog
-              open={this.state.confirm.open}
-              title={this.state.confirm.title}
-              question={this.state.confirm.question}
-              answer={this.state.confirm.answer}/>
-            <CssBaseline/>
-            <Titlebar
-              title={smalltalk + ' Web IDE (Powered by BESIDE)'}
-              appName={smalltalk}
-              classes={this.props.classes}
-              sidebarExpanded={this.state.sidebarExpanded}
-              expandSidebar={this.expandSidebar}/>
-            <Sidebar
-              classes={this.props.classes}
-              expanded={this.state.sidebarExpanded}
-              onTranscript={this.toggleShowTranscript}
-              onChanges={this.openChangesBrowser}
-              onClose={this.collapseSidebar}/>
-            <main className={this.props.classes.content}>
-              <div className={this.props.classes.appBarSpacer} />
-              <Container className={this.props.classes.container}>
-                <Grid container spacing={1}>
-                  <Grid item xs={11} md={11} lg={11}>
-                      <TabControl
-                        classes={this.props.classes}
-                        selectedPage={this.state.selectedPage}
-                        pages={this.state.pages}
-                        onSelect={this.pageSelected}
-                        onClose={this.removePage}/>
+          <DialogProvider>
+            <div className={this.props.classes.root}>           
+              <CssBaseline/>
+              <Titlebar
+                title={smalltalk + ' Web IDE (Powered by BESIDE)'}
+                appName={smalltalk}
+                classes={this.props.classes}
+                sidebarExpanded={this.state.sidebarExpanded}
+                expandSidebar={this.expandSidebar}/>
+              <Sidebar
+                classes={this.props.classes}
+                expanded={this.state.sidebarExpanded}
+                onTranscript={this.toggleShowTranscript}
+                onChanges={this.openChangesBrowser}
+                onClose={this.collapseSidebar}/>
+              <main className={this.props.classes.content}>
+                <div className={this.props.classes.appBarSpacer} />
+                <Container className={this.props.classes.container}>
+                  <Grid container spacing={1}>
+                    <Grid item xs={11} md={11} lg={11}>
+                        <TabControl
+                          classes={this.props.classes}
+                          selectedPage={this.state.selectedPage}
+                          pages={this.state.pages}
+                          onSelect={this.pageSelected}
+                          onClose={this.removePage}/>
+                    </Grid>
+                    <Grid item xs={1} md={1} lg={1}>
+                      <IconButton id="addPageButton" color="primary" onClick={() => {this.setState({addPageMenuOpen: true})}}>
+                        <AddIcon style={{fontSize: 40}}/>
+                      </IconButton>
+                      <Menu
+                        id="addPageMenu"
+                        anchorEl={document.getElementById("addPageButton")}
+                        keepMounted
+                        open={this.state.addPageMenuOpen}
+                        onClose={() => {this.setState({addPageMenuOpen: false})}}>
+                        <MenuItem onClick={this.addClassBrowserClicked}>
+                          <ClassBrowserIcon />
+                          Class Browse
+                        </MenuItem>
+                        <MenuItem onClick={this.addWorkspaceClicked}>
+                          <WorkspaceIcon />
+                          New Workspace
+                        </MenuItem>
+                      </Menu>
+                    </Grid>
+                    <React.Fragment key="bottom">
+                      <Drawer
+                        anchor="bottom"
+                        variant="persistent"
+                        open={this.state.transcriptOpen}
+                        onClose={() => this.setState({transcriptOpen: false})}>
+                        <Transcript
+                          classes={this.props.classes}      
+                          text={this.state.transcriptText}
+                          onChange={text => this.setState({transcriptText: text})}/>
+                      </Drawer>
+                    </React.Fragment>
                   </Grid>
-                  <Grid item xs={1} md={1} lg={1}>
-                    <IconButton id="addPageButton" color="primary" onClick={() => {this.setState({addPageMenuOpen: true})}}>
-                      <AddIcon style={{fontSize: 40}}/>
-                    </IconButton>
-                    <Menu
-                      id="addPageMenu"
-                      anchorEl={document.getElementById("addPageButton")}
-                      keepMounted
-                      open={this.state.addPageMenuOpen}
-                      onClose={() => {this.setState({addPageMenuOpen: false})}}>
-                      <MenuItem onClick={this.addClassBrowserClicked}>
-                        <ClassBrowserIcon />
-                        Class Browse
-                      </MenuItem>
-                      <MenuItem onClick={this.addWorkspaceClicked}>
-                        <WorkspaceIcon />
-                        New Workspace
-                      </MenuItem>
-                    </Menu>
-                  </Grid>
-                  <React.Fragment key="bottom">
-                    <Drawer
-                      anchor="bottom"
-                      variant="persistent"
-                      open={this.state.transcriptOpen}
-                      onClose={() => this.setState({transcriptOpen: false})}>
-                      <Transcript
-                        classes={this.props.classes}      
-                        text={this.state.transcriptText}
-                        onChange={text => this.setState({transcriptText: text})}/>
-                    </Drawer>
-                  </React.Fragment>
-                </Grid>
-              </Container>
-            </main>
-          </div>
+                </Container>
+              </main>
+            </div>
+          </DialogProvider>
         </AppContext.Provider>
       </ThemeProvider>
     )

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Grid } from '@material-ui/core';
 import CodeEditor from '../parts/CodeEditor';
 
 class Transcript extends Component {

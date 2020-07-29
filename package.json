@@ -30,7 +30,7 @@
     "eject": "react-scripts eject"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "browserslist": {
     "production": [
       ">0.2%",

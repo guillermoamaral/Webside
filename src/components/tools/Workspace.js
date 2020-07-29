@@ -11,6 +11,8 @@ import InspectorIcon from '../icons/InspectorIcon';
 import CodeEditor from '../parts/CodeEditor';
 import Inspector from './Inspector';
 import { AppContext } from '../../AppContext';
+import { withDialog } from '../dialogs';
+
 
 class Workspace extends Component {
     static contextType = AppContext;
@@ -22,6 +24,12 @@ class Workspace extends Component {
             opensInspector: true,
             inspectors: [],
         };
+    }
+
+    componentDidMount() {
+        this.props.dialog.prompt('Fighter:')
+            .then((value) => console.log('clicked ok', value))
+            .catch(() => console.log('clicked cancel'))
     }
 
     openInspector(object) {
@@ -91,4 +99,4 @@ class Workspace extends Component {
     }
 }
 
-export default Workspace;
+export default withDialog()(Workspace);
