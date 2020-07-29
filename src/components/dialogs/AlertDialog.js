@@ -59,7 +59,7 @@ AlertDialog.defaultProps = {
   ok: {
     text: 'OK',
     color: 'primary',
-    variant: 'text'
+    variant: 'outlined'
   }
 }
 

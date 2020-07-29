@@ -16,7 +16,8 @@
     "react-dom": "^16.13.1",
     "react-split-pane": "^0.1.91",
     "react-swipeable-views": "^0.13.9",
-    "react-window": "^1.8.5"
+    "react-window": "^1.8.5",
+    "recompose": "^0.30.0"
   },
   "devDependencies": {
     "@iconify/icons-mdi": "^1.0.120",

@@ -94,12 +94,12 @@ PromptDialog.defaultProps = {
   ok: {
     text: 'OK',
     color: 'primary',
-    variant: 'text'
+    variant: 'outlined'
   },
   cancel: {
     text: 'Cancel',
-    color: 'primary',
-    variant: 'text'
+    color: 'default',
+    variant: 'outlined'
   },
   required: false
 }
