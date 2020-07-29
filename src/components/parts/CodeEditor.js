@@ -36,11 +36,11 @@ class CodeEditor extends Component {
 
     static getDerivedStateFromProps(props, state) {
         if (props.source !== state.source 
-            || (props.selectedRanges !== undefined && props.selectedRanges !== state.selectedRanges)) {
+            || (props.selectedRanges && props.selectedRanges !== state.selectedRanges)) {
             return {
                 source: props.source,
                 value: props.source,
-                selectedRanges: props.selectedRanges === undefined ? [] : props.selectedRanges,
+                selectedRanges: props.selectedRanges || [],
             }
         };
         return null;
@@ -89,9 +89,7 @@ class CodeEditor extends Component {
     }
     
     menuOptionClicked(option) {
-        if (option.action !== undefined) {
-          option.action(this.state.selectedItem);
-        }
+        if (option.action) {option.action(this.state.selectedItem)}
     }
 
     menuOptions() {
@@ -109,13 +107,13 @@ class CodeEditor extends Component {
 
     valueChanged = (value) => {
         const handler = this.props.onChange;
-        if (handler !== undefined) {handler(value)}
+        if (handler) {handler(value)}
         this.setState({value: value, dirty: true})
     }
     
     acceptClicked = (event) => {
         const handler = this.props.onAccept;
-        if (handler !== undefined) {handler(this.state.value)}
+        if (handler) {handler(this.state.value)}
     }
 
     toggleFullScreen = (event) => {

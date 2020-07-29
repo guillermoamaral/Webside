@@ -9,17 +9,17 @@ class Inspector extends Component {
 
     constructor(props) {
         super(props);
-        if (this.props.onClose !== undefined) {this.props.onClose.bind()};
+        if (this.props.onClose) {this.props.onClose.bind()};
         const root = this.props.root;
-        if (root !== null) {
+        if (root) {
             root.name = 'self';
             root.path = '';    
         }
         this.state = {
             root: root,
-            objectTree: root === null ? [] : [root],
+            objectTree: !root? [] : [root],
             objects: {},
-            selectedObject: root === null ? null : root,
+            selectedObject: !root? null : root,
         }
     }
 
@@ -32,8 +32,8 @@ class Inspector extends Component {
     }
 
     updateSlots = async (object) => {
-        if (object === null) {return []}
-        if (object.slots !== undefined) {return object.slots}
+        if (!object) {return []}
+        if (object.slots) {return object.slots}
         let slots;
         if (object.indexable) {
             slots = [];
@@ -60,9 +60,7 @@ class Inspector extends Component {
     }
 
     slotExpanded = (object) => {
-        if (object !== undefined) {
-            object.slots.forEach(s => this.updateSlots(s))
-        }
+        if (object) {object.slots.forEach(s => this.updateSlots(s))}
     }
 
     render() {
@@ -87,7 +85,7 @@ class Inspector extends Component {
                         </Grid>
                         <Grid item xs={12} md={6} lg={6}>
                             <Paper className={fixedHeightPaper} variant="outlined">
-                                {selectedObject === null? "" : selectedObject.printString}
+                                {!selectedObject? "" : selectedObject.printString}
                             </Paper>
                         </Grid>
                     </Grid>

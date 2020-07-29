@@ -49,7 +49,7 @@ class Debugger extends Component {
     }
 
     updateFrame = async (frame) => {
-        if (frame.method === undefined) {
+        if (!frame.method) {
             const info = await this.context.api.getFrame(this.props.id, frame.index);
             frame.method = info.method;
             frame.class = info.class;
@@ -59,17 +59,17 @@ class Debugger extends Component {
 
     currentSource = () => {
         const {selectedFrame, selectedMode} = this.state;
-        if (selectedFrame === null) {return ''}
+        if (!selectedFrame) {return ''}
         let source;
         switch (selectedMode) {
             case "comment":
-                source = selectedFrame.class === null? "can't access class" : selectedFrame.class.comment;
+                source = !selectedFrame.class? "can't access class" : selectedFrame.class.comment;
                 break;
             case "definition":
-                source = selectedFrame.class === null? "can't access class" : selectedFrame.class.definition;
+                source = !selectedFrame.class? "can't access class" : selectedFrame.class.definition;
                 break;
             case "source":    
-                source = selectedFrame.method === null? "can't access source" : selectedFrame.method.source;
+                source = !selectedFrame.method? "can't access source" : selectedFrame.method.source;
                 break;
             default:
         }
@@ -78,7 +78,7 @@ class Debugger extends Component {
 
     currentSelection = () => {
         const {selectedFrame, selectedMode} = this.state;
-        if (selectedFrame === null || selectedMode !== "source") {return []}
+        if (!selectedFrame || selectedMode !== "source") {return []}
         return [selectedFrame.interval];
     }
 

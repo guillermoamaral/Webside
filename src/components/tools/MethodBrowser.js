@@ -23,16 +23,37 @@ class MethodBrowser extends Component {
     }
 
     updateClass = async (method) => {
-        if (method.classDefinition === undefined) {
+        if (!method.classDefinition) {
             const definition = await this.context.api.getClass(method.class);
             method.classDefinition = definition.definition;
             method.classComment = definition.comment;
         }
     }
 
+    defineClass = async (definition) => {
+        const selected = this.state.selectedMethod;
+        const species = await this.context.api.defineClass(selected.class, definition);   
+        selected.classDefinition = species.definition; 
+    }
+
+    commentClass = async (comment) => {
+        const selected = this.state.selectedMethod;
+        const species = await this.context.api.commentClass(selected.class, comment);   
+        selected.classComment = species.comment; 
+    }
+
+    compileMethod = async (source) => {
+        const selected = this.state.selectedMethod;
+        const method = await this.context.api.compileMethod(selected.class, selected.category, source);
+        if (method.selector === selected.selector) {
+            selected.source = method.source;
+            this.setState({selectedMethod: selected})
+        }
+    }
+
     currentSource = () => {
         const {selectedMethod, selectedMode} = this.state;
-        if (selectedMethod === null) {return ''}
+        if (!selectedMethod) {return ''}
         let source;
         switch (selectedMode) {
             case "comment":
@@ -105,6 +126,7 @@ class MethodBrowser extends Component {
                             <CodeEditor
                                 classes={this.props.classes}
                                 source={this.currentSource()}
+                                showAccept
                                 onAccept={this.saveClicked}/>
                         </Grid>
                     </Grid>

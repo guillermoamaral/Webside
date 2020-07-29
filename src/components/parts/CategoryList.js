@@ -13,28 +13,24 @@ class CategoryList extends Component {
     categorySelected = (category) => {
         const selected = category === this.all? null : category;
         const handler = this.props.onSelect;
-        if (handler !== undefined) {handler(selected)}
+        if (handler) {handler(selected)}
     }
 
     addCategory = (category) => {
-        if (this.props.onAdded !== undefined) {
-            this.props.onAdded(category)
-        }
+        if (this.props.onAdded) {this.props.onAdded(category)}
     }
 
     removeCategory = (category) => {
         this.context.api.deleteCategory(this.props.class.name, category)
             .then(response => {
-                if (this.props.onRemoved !== undefined) {
-                    this.props.onRemoved(category)
-                }
+                if (this.props.onRemoved) {this.props.onRemoved(category)}
             })
             .catch(error => {})
     }
 
     render() {
         let categories = this.props.categories;
-        if (categories !== undefined) {
+        if (categories) {
             categories = [...categories];
             categories.unshift(this.all)};
         return (

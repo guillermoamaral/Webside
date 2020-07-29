@@ -63,7 +63,7 @@ class ChangesBrowser extends Component {
                     <Paper variant="outlined">
                         <CodeMirror
                             className={this.props.classes.codeMirror}
-                            value={change !== null? change.sourceCode : ''}
+                            value={change? change.sourceCode : ''}
                             options={{
                                 mode: 'smalltalk',
                                 theme: 'material',

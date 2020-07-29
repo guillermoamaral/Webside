@@ -3,10 +3,10 @@ import { Menu, MenuItem, Divider } from '@material-ui/core';
 
 class PopupMenu extends Component {
     createItems = () => {
-        if (this.props.options === undefined) {return []};
+        if (!this.props.options) {return []};
         return (
             this.props.options.map(option => {
-                 if (option == null) {
+                 if (!option) {
                     return <Divider key="divider"/>
                 } else {
                     return (
@@ -25,10 +25,9 @@ class PopupMenu extends Component {
     }
 
     position() {
-        if (this.props.position == null || this.props.position.x == null || this.props.position.y == null) {
-            return undefined;
+        if (this.props.position && this.props.position.x && this.props.position.y) {
+            return {left: this.props.position.x, top: this.props.position.y};
         }
-        return {left: this.props.position.x, top: this.props.position.y};
     }
     
     itemClicked = (event, option) => {
@@ -40,7 +39,7 @@ class PopupMenu extends Component {
     
     close = () => {
         const handler = this.props.onClose;
-        if (handler !== undefined) {
+        if (handler) {
             handler.bind(this);
             handler()
         }

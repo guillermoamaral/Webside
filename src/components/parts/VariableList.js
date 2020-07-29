@@ -4,10 +4,10 @@ import CustomList from '../controls/CustomList';
 class VariableList extends Component {
     extendedVariables(variables) {
         let extended = [];
-        if (variables !== undefined) {
+        if (variables) {
             const groups = {};
             variables.forEach(v => {
-                if (groups[v.class] === undefined) {groups[v.class] = []}
+                if (!groups[v.class]) {groups[v.class] = []}
                 groups[v.class].push(v);
             })
             Object.keys(groups).forEach(c => {
@@ -22,7 +22,7 @@ class VariableList extends Component {
     variableSelected = (variable) => {
         const selected = variable.type === 'separator' ? null : variable;
         const handler = this.props.onSelect;
-        if (handler !== undefined) {handler(selected)}
+        if (handler) {handler(selected)}
     }
 
     render() {

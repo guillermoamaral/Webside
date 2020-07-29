@@ -25,7 +25,7 @@ class ClassTree extends Component {
  //       (species) => this.setState({confirmOpen: true, classToRemove: species})
         await this.context.api.deleteClass(species.name);
         const handler = this.props.onRemoved; 
-        if (handler !== undefined) {handler(species)}
+        if (handler) {handler(species)}
     }
 
     render() {
@@ -33,7 +33,7 @@ class ClassTree extends Component {
         return (
             <div>
                 <CustomTree
-                    items={root !== undefined ? [root] : []}
+                    items={root? [root] : []}
                     itemLabel="name"
                     children={"subclasses"}
                     onExpand={this.props.onExpand}

@@ -61,7 +61,7 @@ class ClassBrowser extends Component {
         this.setState((prevState, props) => {
             const species = selections.class;
             const classes = prevState.classes;
-            if (species !== undefined && classes[species.name] === undefined) {
+            if (species && !classes[species.name]) {
                 classes[species.name] = species;
             }
             return {
@@ -78,22 +78,22 @@ class ClassBrowser extends Component {
     // Contents..
     currentVariables() {
         const species = this.state.selectedClass;
-        return (species == null || species.variables === undefined)? [] : species.variables;
+        return (!species || !species.variables)? [] : species.variables;
     }
 
     currentCategories = () => {
         const species = this.state.selectedClass;
-        return (species == null || species.categories === undefined)? [] : species.categories;
+        return (!species || !species.categories)? [] : species.categories;
     }
 
     currentMethods = () => {
         const species = this.state.selectedClass;
         const category = this.state.selectedCategory;
         const variable = this.state.selectedVariable;
-        if (species == null) {return []}
-        if (category == null && variable === null) {return species.methods}
-        if (category == null) {return species[variable.name]}
-        if (variable == null) {
+        if (!species) {return []}
+        if (!category && !variable) {return species.methods}
+        if (!category) {return species[variable.name]}
+        if (!variable) {
             return species.methods.filter(m => m.category === category);
         }
         return species[variable.name].filter(m => m.category === category);
@@ -104,13 +104,13 @@ class ClassBrowser extends Component {
         let source;
         switch (selectedMode) {
             case "comment":
-                source = selectedClass === null ? '' : selectedClass.comment;
+                source = !selectedClass? '' : selectedClass.comment;
                 break;
             case "definition":
-                source = selectedClass === null ? '' : selectedClass.definition;
+                source = !selectedClass? '' : selectedClass.definition;
                 break;
             case "source":    
-                source = selectedMethod === null ? '' : selectedMethod.source;
+                source = !selectedMethod? '' : selectedMethod.source;
                 break;
             default:
         }
@@ -120,21 +120,21 @@ class ClassBrowser extends Component {
     // Updating...
     async updateClass(selections, force = false) {
         const species = selections.class;
-        if (force || species.definition === undefined) {
+        if (force || !species.definition) {
             const definition = await this.context.api.getClass(species.name);
             species.definition = definition.definition;
             species.comment = definition.comment;
             species.superclass = definition.superclass;
         }
-        if (force || species.subclasses === undefined) {
+        if (force || !species.subclasses) {
             species.subclasses = await this.context.api.getSubclasses(species.name);
         }
     }
 
     async updateSubclasses(species) { 
-        if (species.subclasses !== undefined) {
+        if (species.subclasses) {
             await Promise.all(species.subclasses.map (async c => {
-                if (c.subclasses === undefined) {
+                if (!c.subclasses) {
                     c.subclasses = await this.context.api.getSubclasses(c.name);
                 }
             }))
@@ -143,19 +143,19 @@ class ClassBrowser extends Component {
     
     async updateVariables(selections, force = false) {
         const species = selections.class;
-        if (force || species.variables === undefined) {
+        if (force || !species.variables) {
             species.variables = await this.context.api.getVariables(species.name);
         }
         var variable = selections.variable;
-        if (variable !== null) {
+        if (variable) {
             variable = species.variables.find(v => v.name === variable.name);
-            selections.variable = variable === undefined ? null : variable;
+            selections.variable = !variable? null : variable;
         }
     }
 
     async updateCategories(selections, force = false) {
         const species = selections.class; 
-        if (force || species.categories === undefined) {
+        if (force || !species.categories) {
             const categories = await this.context.api.getCategories(species.name);
             species.categories = categories.sort();
         }
@@ -166,18 +166,18 @@ class ClassBrowser extends Component {
 
     async updateMethods(selections, force = false) {
         const species = selections.class;
-        if (force || species.methods === undefined) {
+        if (force || !species.methods) {
             const methods = await this.context.api.getMethods(species.name);
             species.methods = methods.sort((a, b) => a.selector <= b.selector? -1 : 1);
         }
         const variable = selections.variable;
-        if (variable !== null && (force || species[variable.name] === undefined)) {
+        if (variable && (force || !species[variable.name])) {
             species[variable.name] = await this.context.api.getMethodsReferencing(species.name, variable.name);            
         }
         var method = selections.method;
-        if (method !== null) {
+        if (method) {
             method = species.methods.find(m => m.selector === method.selector);
-            selections.method = method === undefined ? null : method;    
+            selections.method = !method? null : method;    
         }
     }
 
@@ -185,7 +185,7 @@ class ClassBrowser extends Component {
         const species = selections.class;
         if (force) {
             const method = await this.context.api.getMethod(species.name, selections.method.selector);
-            if (method !== null) { 
+            if (method) { 
                 species.methods = species.methods.map(m =>  m.selector === method.selector? method : m)
                 selections.method = method;
             }
@@ -201,7 +201,7 @@ class ClassBrowser extends Component {
         await this.updateVariables(selections);
         await this.updateCategories(selections);
         await this.updateMethods(selections);
-        if (selections.method === null) {
+        if (!selections.method) {
             selections.mode = "definition"
         }
         this.applySelections(selections)
@@ -216,13 +216,13 @@ class ClassBrowser extends Component {
         const species = await this.context.api.defineClass(this.state.selectedClass.name, definition);    
         const classes = this.state.classes;
         const current = classes[species.name];
-        if (current !== undefined) {
+        if (current) {
             current.definition = species.definition;
             this.classSelected(current);
         } else {
             classes[species.name] = species;
             const superclass = classes[species.superclass];
-            if (superclass !== undefined) {
+            if (superclass) {
                 superclass.subclasses.push(species);
                 superclass.subclasses.sort((a, b) => a.name <= b.name? -1 : 1);
             }
@@ -241,7 +241,7 @@ class ClassBrowser extends Component {
         const classes = this.state.classes;
         delete classes[species.name];
         const superclass = classes[species.superclass];
-        if (superclass !== undefined) {
+        if (superclass) {
             superclass.subclasses = superclass.subclasses.filter(c => c !== species);
             this.classSelected(superclass);
         } else {
@@ -285,7 +285,7 @@ class ClassBrowser extends Component {
     }
 
     sideChanged = (event, side) => {
-        if (side == null) return;
+        if (!side) return;
         this.setState({selectedSide: side});
         if (side === "instance") {
             const name = this.state.root;
@@ -305,8 +305,7 @@ class ClassBrowser extends Component {
         }
         selections.category = method.category;
         const methods = species.methods;
-        if (methods === undefined ||
-            methods.find(m => m.selector === method.selector) === undefined) {
+        if (!methods || !methods.find(m => m.selector === method.selector)) {
             await this.updateMethods(selections, true);
         }
         selections.method = species.methods.find(m => m.selector === method.selector);
@@ -315,7 +314,7 @@ class ClassBrowser extends Component {
 
     newMethod = () => {
         const template = {
-            class: this.state.selectedClass !== null? this.state.selectedClass.name : null,
+            class: this.state.selectedClass? this.state.selectedClass.name : null,
             category: this.state.selectedCategory,
             source: 'messagePattern\r\t"comment"\r\t| temporaries |\r\tstatements'
         }

@@ -46,16 +46,13 @@ class TabControl extends Component {
   tabChanged = (event, index) => {
     event.preventDefault();
     const handler = this.props.onSelect;
-    if (handler !== undefined) {
-      handler(this.props.pages[index])}
+    if (handler) {handler(this.props.pages[index])}
   }
 
   tabClosed = (event, index) => {
     event.stopPropagation();
     const handler = this.props.onClose;
-    if (handler !== undefined) {
-      handler(this.props.pages[index]);
-    }
+    if (handler) {handler(this.props.pages[index])}
   }
 
   render() {

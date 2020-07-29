@@ -10,7 +10,7 @@ class CustomTree extends Component {
         super(props);
         this.state = {
             items: props.items,
-            selectedItem: props.selectedItem === undefined ? null : props.selectedItem,
+            selectedItem: !props.selectedItem? null : props.selectedItem,
             menuOpen: false,
             menuPosition: {x: null, y: null}
         }
@@ -20,7 +20,7 @@ class CustomTree extends Component {
         if (props.selecteItem !== state.selectedItem) {
             return {
                 items: props.items,
-                selectedItem: props.selectedItem === undefined ? null : props.selectedItem,
+                selectedItem: !props.selectedItem? null : props.selectedItem,
             };
         }
         return null
@@ -50,21 +50,21 @@ class CustomTree extends Component {
 
     getItemId = (item) => {
         const getter = this.props.id;
-        if (getter === undefined) {return this.getItemLabel(item)}    
+        if (!getter) {return this.getItemLabel(item)}    
         if (typeof getter == "string")  {return item[getter].toString()}
         return getter(item)
       }
 
     getItemLabel = (item) => {
         const getter = this.props.itemLabel;
-        if (getter === undefined) {return item}    
+        if (!getter) {return item}    
         if (typeof getter == "string")  {return item[getter]}
         return getter(item)
       }
 
     getItemChildren = (item) => {
         const getter = this.props.children;
-        if (getter === undefined) {return null}    
+        if (!getter) {return null}    
         if (typeof getter == "string")  {return item[getter]}
         return getter(item)
     }
@@ -73,23 +73,23 @@ class CustomTree extends Component {
         event.preventDefault();
         this.setState({selectedItem: item});
         const handler = this.props.onSelect;
-        if (handler !== undefined) {handler(item)}
+        if (handler) {handler(item)}
     };
 
     itemToggled = (event, item) => {
         const handler = this.props.onExpand;
-        if (handler !== undefined) {handler(item)}
+        if (handler) {handler(item)}
     };
 
     menuOptions() {
-        if (this.props.menuOptions === undefined) {return undefined};
-        return this.props.menuOptions.map(o => {
-            return o == null ? null : {
-              label: o.label,
-              action: () => {this.menuOptionClicked(o)}
-            }
-          }
-        )
+        if (this.props.menuOptions) {
+            return this.props.menuOptions.map(o => {
+                return !o? null : {
+                    label: o.label,
+                    action: () => {this.menuOptionClicked(o)}
+                }
+            })
+        }
     }
 
     openMenu = (event) => {
@@ -102,7 +102,7 @@ class CustomTree extends Component {
     }
     
     menuOptionClicked(option) {
-        if (option.action !== undefined) {
+        if (option.action) {
             option.action(this.state.selectedItem);
         }
     }
@@ -114,7 +114,7 @@ class CustomTree extends Component {
                     defaultCollapseIcon={<ArrowDropDownIcon />}
                     defaultExpanded={['root']}
                     defaultExpandIcon={<ArrowRightIcon />}
-                    selected={this.state.selectedItem === null ? null : this.getItemId(this.state.selectedItem)}
+                    selected={!this.state.selectedItem? null : this.getItemId(this.state.selectedItem)}
                     >
                     {this.createItems(this.props.items)}
                 </TreeView>

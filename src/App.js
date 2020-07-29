@@ -275,7 +275,7 @@ class App extends Component {
   }
 
   openClassBrowser = (classname) => {
-    const root = (classname === undefined)? 'Magnitude' : classname;
+    const root = classname || 'Magnitude';
     const browser = <ClassBrowser classes={this.props.classes} root={root}/>;
     this.addPage(root, <ClassBrowserIcon className={this.props.classes.classBrowserIcon} />, browser);
   }
@@ -302,7 +302,7 @@ class App extends Component {
     console.log(id)
     console.log(this.state.pages.component.type[1])
     const page = this.state.pages.find(p => p.component.type === Debugger && p.component.id === id);
-    if (page !== undefined) {this.removePage(page)}
+    if (page) {this.removePage(page)}
   }
 
   openInspector = (object) => {
@@ -323,9 +323,19 @@ class App extends Component {
       .then(methods => this.openMethodBrowser(methods, 'Senders of ' + selector)); 
   }
 
+  browseLocalSenders = (selector, classname) => {
+    this.api.getLocalSenders(selector, classname)
+      .then(methods => this.openMethodBrowser(methods, 'Local senders of ' + selector)); 
+  }
+
   browseImplementors = (selector) => {
     this.api.getImplementors(selector)
       .then(methods => this.openMethodBrowser(methods, 'Implementors of ' + selector)); 
+  }
+
+  browseLocalImplementors = (selector, classname) => {
+    this.api.getLocalImplementors(selector, classname)
+      .then(methods => this.openMethodBrowser(methods, 'Local implementors of ' + selector)); 
   }
 
   browseReferences = (classname) => {
@@ -385,7 +395,9 @@ class App extends Component {
       api: this.api,
       classNames: this.state.classNames,
       browseSenders: this.browseSenders,
+      browseLocalSenders: this.browseLocalSenders,
       browseImplementors: this.browseImplementors,
+      browseLocalImplementors: this.browseLocalImplementors,
       browseClass: this.openClassBrowser,
       browseReferences: this.browseReferences,
       evaluateExpression: this.evaluateExpression,

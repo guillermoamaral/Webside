@@ -9,9 +9,7 @@ class MethodList extends Component {
     removeMethod = async (method) => {
         await this.context.api.deleteMethod(method.class, method.selector);
         const handler = this.props.onRemoved;
-        if (handler !== undefined) {
-            handler(method)
-        }
+        if (handler) {handler(method)}
     }
 
     menuOptions() {
@@ -21,17 +19,18 @@ class MethodList extends Component {
                 {label: 'Remove', action: this.removeMethod},
                 null,
                 {label: 'Senders', action: m => this.context.browseSenders(m.selector)},
+                {label: 'Local senders', action: m => this.context.browseLocalSenders(m.selector, m.class)},
                 {label: 'Implementors', action: m => this.context.browseImplementors(m.selector)},
+                {label: 'Local implementors', action: m => this.context.browseLocalImplementors(m.selector, m.class)},
                 {label: 'Class references', action: m => this.context.browseReferences(m.class)}
             ];
         const external = this.props.menuOptions; 
-        if (external === undefined) {return local}
-        return external.concat(local);
+        return !external? local : external.concat(local);
     }
 
     render() {
         const size = 12;
-        const methods = this.props.methods == null ? [] : this.props.methods;
+        const methods = !this.props.methods? [] : this.props.methods;
         return (
             <CustomList
                 itemLabel={this.props.showClass === true ? (m => m.class + '>>#' + m.selector) : "selector"}

@@ -114,6 +114,14 @@ class API {
        catch (error) {this.handleError('Cannot fetch senders of ' + selector, error) }
     }
 
+    async getLocalSenders(selector, classname) {
+        try {
+           const response = await axios.get(this.baseUri + '/methods?sending=' + selector + '&scope=' + classname);
+           return response.data;
+       }
+       catch (error) {this.handleError('Cannot fetch senders of ' + selector + ' in class ' + classname, error) }
+    }
+
     async getReferences(classname) {
         try {
            const response = await axios.get(this.baseUri + '/methods?referencingClass=' + classname);
@@ -129,6 +137,14 @@ class API {
         }
         catch (error) {this.handleError('Cannot fetch implementors of ' + selector, error)}
     }
+
+    async getLocalImplementors(selector, classname) {
+        try {
+           const response = await axios.get(this.baseUri + '/methods?selector=' + selector + '&scope=' + classname);
+           return response.data;
+       }
+       catch (error) {this.handleError('Cannot fetch local implementors of ' + selector + ' in class ' + classname, error)}
+   }
 
     // Debugger...
     async getFrames(id) {
@@ -274,10 +290,9 @@ class API {
     }
 
     // Objects...
-    async evaluate(expression, pins) {
+    async evaluate(expression, pins = false) {
         try {
-            const value = pins === undefined ? false : pins;
-            const response = await axios.post(this.baseUri + '/objects?pins=' + value, expression);
+            const response = await axios.post(this.baseUri + '/objects?pins=' + pins, expression);
             return response.data;
         }
         catch (error) {this.handleError('Cannot evaluate ' + expression, error)}

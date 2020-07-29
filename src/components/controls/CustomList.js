@@ -12,7 +12,7 @@ class CustomList extends Component {
   }
 
   createItems = () => {
-    if (this.props.items === undefined) {return []};
+    if (!this.props.items) {return []};
     return (
       this.props.items.map((item, index) => {
         const label = this.getItemLabel(item);
@@ -41,26 +41,26 @@ class CustomList extends Component {
 
   itemSelected = (item) => {
     const handler = this.props.onSelect;
-    if (handler !== undefined) {handler(item)}
+    if (handler) {handler(item)}
   }
 
   getItemDivider = (item) => {
     const getter = this.props.itemDivider;
-    if (getter === undefined) {return false}    
+    if (!getter) {return false}    
     if (typeof getter == "string")  {return item[getter]}
     return getter(item)
   }
 
   getItemLabel = (item) => {
     const getter = this.props.itemLabel;
-    if (getter === undefined) {return item}    
+    if (!getter) {return item}    
     if (typeof getter == "string")  {return item[getter]}
     return getter(item)
   }
 
   getItemIcon = (index) => {
     const icons = this.props.icons;
-    if (icons !== undefined && index < icons.length) {
+    if (icons && index < icons.length) {
       return (
         <ListItemIcon style={{minWidth: 0}}>
           {icons[index]}
@@ -70,14 +70,14 @@ class CustomList extends Component {
   }
 
   menuOptions() {
-    if (this.props.menuOptions === undefined) {return undefined};
-    return this.props.menuOptions.map(o => {
-        return o == null? null : {
+    if (this.props.menuOptions) {
+      return this.props.menuOptions.map(o => {
+        return !o? null : {
           label: o.label,
           action: () => {this.menuOptionClicked(o)}
         }
-      }
-    )
+      })
+    }
   }
 
   openMenu = (event) => {
@@ -90,7 +90,7 @@ class CustomList extends Component {
   }
 
   menuOptionClicked(option) {
-    if (option.action !== undefined) {
+    if (option.action) {
       option.action(this.props.selectedItem);
     }
   }
