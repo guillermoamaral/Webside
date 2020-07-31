@@ -18,8 +18,11 @@ class CategoryList extends Component {
     }
 
     addCategory = () => {
-        const category = this.props.dialog.prompt('New category');
-        if (category && this.props.onAdded) {this.props.onAdded(category)}
+        this.props.dialog.prompt('New category')
+            .then(category => {
+                if (category && this.props.onAdded) {this.props.onAdded(category)}
+            })
+            .catch(() => {})
     }
 
     renameCategory = (category) => {

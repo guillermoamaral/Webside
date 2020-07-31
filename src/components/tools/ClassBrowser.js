@@ -21,9 +21,9 @@ class ClassBrowser extends Component {
 
     constructor(props) {
         super(props);
+        this.cache = {};
         this.state = {
             root: this.props.root,
-            classes: {},
             selectedClass: null,
             selectedVariable: null,
             selectedCategory: null,
@@ -39,8 +39,9 @@ class ClassBrowser extends Component {
     changeRoot = async (classname) => {
         const tree = await this.context.api.getClassTree(classname, 3);
         const species = tree[0];
+        this.cache[classname] = species;
         this.setState(
-            {root: classname, classes: {[classname]: species}},
+            {root: classname},
             () => {this.classSelected(species)}
         )
     }
@@ -57,12 +58,10 @@ class ClassBrowser extends Component {
     applySelections(selections) {
         this.setState((prevState, props) => {
             const species = selections.class;
-            const classes = prevState.classes;
-            if (species && !classes[species.name]) {
-                classes[species.name] = species;
+            if (species && !this.cache[species.name]) {
+                this.cache[species.name] = species;
             }
             return {
-                classes: classes,
                 selectedClass: selections.class,
                 selectedVariable: selections.variable,
                 selectedCategory: selections.category,
@@ -183,20 +182,18 @@ class ClassBrowser extends Component {
     }
 
     classExpanded = async (species) => {
-        await this.updateSubclasses(species);
-        this.setState({classes: this.state.classes});
+        await this.updateSubclasses(species)
     }
 
     defineClass = async (definition) => {
         const species = await this.context.api.defineClass(this.state.selectedClass.name, definition);    
-        const classes = this.state.classes;
-        const current = classes[species.name];
+        const current = this.cache[species.name];
         if (current) {
             current.definition = species.definition;
             this.classSelected(current);
         } else {
-            classes[species.name] = species;
-            const superclass = classes[species.superclass];
+            this.cache[species.name] = species;
+            const superclass = this.cache[species.superclass];
             if (superclass) {
                 superclass.subclasses.push(species);
                 superclass.subclasses.sort((a, b) => a.name <= b.name? -1 : 1);
@@ -207,15 +204,12 @@ class ClassBrowser extends Component {
     
     commentClass = async (comment) => {
         const species = await this.context.api.commentClass(this.state.selectedClass.name, comment);
-        const classes = this.state.classes;
-        classes[species.name].comment = species.comment;
-        this.setState({classes: classes})
+        this.cache[species.name].comment = species.comment;
     }
     
     classRemoved = (species) => {
-        const classes = this.state.classes;
-        delete classes[species.name];
-        const superclass = classes[species.superclass];
+        delete this.cache[species.name];
+        const superclass = this.cache[species.superclass];
         if (superclass) {
             superclass.subclasses = superclass.subclasses.filter(c => c !== species);
             this.classSelected(superclass);
@@ -238,6 +232,14 @@ class ClassBrowser extends Component {
         this.applySelections(selections);
     }
 
+    categoryAdded = async (category) => {        
+        const selections = this.currentSelections();
+        selections.category = category;
+        selections.class.categories.push(category);
+        selections.class.categories.sort();
+        this.applySelections(selections);
+    }
+
     categoryRenamed = async (category, renamed) => {
         const selections = this.currentSelections();
         await this.updateCategories(selections, true);
@@ -248,6 +250,7 @@ class ClassBrowser extends Component {
     categoryRemoved = async (category) => {        
         const selections = this.currentSelections();
         selections.category = null;
+        await this.updateCategories(selections, true);
         await this.updateMethods(selections);
         this.applySelections(selections);
     }    
@@ -260,9 +263,8 @@ class ClassBrowser extends Component {
     }
 
     methodRemoved = (method) => {
-        const classes = this.state.classes;
-        classes[method.class].methods = classes[method.class].methods.filter(m => m.selector !== method.selector);
-        this.setState({classes: classes})
+        this.cache[method.class].methods = this.cache[method.class].methods.filter(m => m.selector !== method.selector);
+        this.setState({selectedMethod: null})
     }
 
     sideChanged = (event, side) => {
@@ -305,7 +307,6 @@ class ClassBrowser extends Component {
     render() {
         const {
             root,
-            classes,
             selectedSide,
             selectedClass,
             selectedVariable,
@@ -348,7 +349,7 @@ class ClassBrowser extends Component {
                                     <Grid item xs={12} md={3} lg={3}>
                                         <Paper className={fixedHeightPaper} variant="outlined">
                                             <ClassTree
-                                                root={classes[root]}
+                                                root={this.cache[root]}
                                                 selectedClass={selectedClass}
                                                 onExpand={this.classExpanded}
                                                 onSelect={this.classSelected}
@@ -369,6 +370,7 @@ class ClassBrowser extends Component {
                                                 class={selectedClass}
                                                 categories={this.currentCategories()}
                                                 selectedCategory={selectedCategory}
+                                                onAdded={this.categoryAdded}
                                                 onRenamed={this.categoryRenamed}
                                                 onSelect={this.categorySelected}
                                                 onRemoved={this.categoryRemoved}/>

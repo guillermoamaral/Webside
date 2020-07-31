@@ -217,7 +217,7 @@ class App extends Component {
 
   componentDidMount() {
     this.getClassNames();
-    this.openWorkspace();
+    // this.openWorkspace();
     // this.openDebugger(61849);
     // this.openInspectors();
     // this.openClassBrowser('Magnitude');

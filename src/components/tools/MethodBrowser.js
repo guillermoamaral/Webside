@@ -22,11 +22,11 @@ class MethodBrowser extends Component {
     }
 
     defineClass = async (definition) => {
-        const species = await this.context.api.defineClass(this.state.selectedClass, definition);
+        await this.context.api.defineClass(this.state.selectedClass, definition);
     }
 
     commentClass = async (comment) => {
-        const species = await this.context.api.commentClass(this.state.selectedClass, comment);   
+        await this.context.api.commentClass(this.state.selectedClass, comment);   
     }
 
     compileMethod = async (source) => {
