@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { Grid, Paper } from '@material-ui/core';
-import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import clsx from 'clsx';
 import { AppContext } from '../../AppContext';
 import MethodList from '../parts/MethodList';
-import CodeEditor from '../parts/CodeEditor';
+import CodeBrowser from '../parts/CodeBrowser';
 
 class MethodBrowser extends Component {
     static contextType = AppContext;
@@ -13,33 +12,21 @@ class MethodBrowser extends Component {
         super(props);
         this.state = {
             selectedMethod: null,
-            selectedMode: null,
+            selectedClass: null,
         }
     }
 
     methodSelected = async (method) => {
-        await this.updateClass(method);
-        this.setState({selectedMethod: method, selectedMode: "source"});
-    }
-
-    updateClass = async (method) => {
-        if (!method.classDefinition) {
-            const definition = await this.context.api.getClass(method.class);
-            method.classDefinition = definition.definition;
-            method.classComment = definition.comment;
-        }
+        const species = await this.context.api.getClass(method.class);
+        this.setState({selectedMethod: method, selectedClass: species});
     }
 
     defineClass = async (definition) => {
-        const selected = this.state.selectedMethod;
-        const species = await this.context.api.defineClass(selected.class, definition);   
-        selected.classDefinition = species.definition; 
+        const species = await this.context.api.defineClass(this.state.selectedClass, definition);
     }
 
     commentClass = async (comment) => {
-        const selected = this.state.selectedMethod;
-        const species = await this.context.api.commentClass(selected.class, comment);   
-        selected.classComment = species.comment; 
+        const species = await this.context.api.commentClass(this.state.selectedClass, comment);   
     }
 
     compileMethod = async (source) => {
@@ -51,46 +38,8 @@ class MethodBrowser extends Component {
         }
     }
 
-    currentSource = () => {
-        const {selectedMethod, selectedMode} = this.state;
-        if (!selectedMethod) {return ''}
-        let source;
-        switch (selectedMode) {
-            case "comment":
-                source = selectedMethod.classComment;
-                break;
-            case "definition":
-                source = selectedMethod.classDefinition;
-                break;
-            case "source":    
-                source = selectedMethod.source;
-                break;
-            default:
-        }
-        return source
-    }
-
-    modeChanged = (event, mode) => {
-        this.setState({selectedMode: mode})
-    }
-
-    saveClicked = (source) => {
-        switch (this.state.selectedMode) {
-            case "comment":
-                this.commentClass(source);
-                break;
-            case "definition":
-                this.defineClass(source);
-                break;
-            case "source":    
-                this.compileMethod(source);
-                break;
-            default:
-        }
-    }
-
     render() {
-        const {selectedMethod, selectedMode} = this.state;
+        const {selectedMethod, selectedClass} = this.state;
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         return (
             <Grid container spacing={1}>
@@ -104,32 +53,13 @@ class MethodBrowser extends Component {
                     </Paper>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
-                    <Grid container spacing={1}>
-                        <Grid item xs={12} md={12} lg={12}>
-                            <ToggleButtonGroup
-                                label="primary"
-                                value={selectedMode}
-                                exclusive
-                                onChange={this.modeChanged}>
-                                <ToggleButton value="source" variant="outlined" size="small">
-                                    Method defintion
-                                </ToggleButton>
-                                <ToggleButton value="definition" variant="outlined" size="small">
-                                    Class definition
-                                </ToggleButton>
-                                <ToggleButton value="comment" variant="outlined" size="small">
-                                    Class comment
-                                </ToggleButton>
-                            </ToggleButtonGroup>    
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={12}>
-                            <CodeEditor
-                                classes={this.props.classes}
-                                source={this.currentSource()}
-                                showAccept
-                                onAccept={this.saveClicked}/>
-                        </Grid>
-                    </Grid>
+                    <CodeBrowser
+                        classes={this.props.classes}
+                        class={selectedClass}
+                        method={selectedMethod}
+                        onCompileMethod={this.compileMethod}
+                        onDefineClass={this.defineClass}
+                        onCommentClass={this.commentClass}/>
                 </Grid>
             </Grid>
         )

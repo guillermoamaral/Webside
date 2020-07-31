@@ -7,15 +7,14 @@ import {
     FormControlLabel,
     Radio
 } from '@material-ui/core';
-import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import clsx from 'clsx';
 import { AppContext } from '../../AppContext';
-import SearchList from '../parts/SearchList';
+import SearchList from '../controls/SearchList';
 import ClassTree from '../parts/ClassTree';
 import VariableList from '../parts/VariableList';
 import CategoryList from '../parts/CategoryList';
 import MethodList from '../parts/MethodList';
-import CodeEditor from '../parts/CodeEditor';
+import CodeBrowser from '../parts/CodeBrowser';
 
 class ClassBrowser extends Component {
     static contextType = AppContext;
@@ -29,8 +28,7 @@ class ClassBrowser extends Component {
             selectedVariable: null,
             selectedCategory: null,
             selectedMethod: null,
-            selectedSide: "instance",
-            selectedMode: "definition",
+            selectedSide: "instance"
         }
     }
 
@@ -52,8 +50,7 @@ class ClassBrowser extends Component {
             class: this.state.selectedClass,
             variable: this.state.selectedVariable,
             category: this.state.selectedCategory,
-            method: this.state.selectedMethod,
-            mode: this.state.selectedMode,
+            method: this.state.selectedMethod
         };
     }
 
@@ -69,8 +66,7 @@ class ClassBrowser extends Component {
                 selectedClass: selections.class,
                 selectedVariable: selections.variable,
                 selectedCategory: selections.category,
-                selectedMethod: selections.method,
-                selectedMode: selections.mode,         
+                selectedMethod: selections.method       
             }
         })
     }
@@ -97,24 +93,6 @@ class ClassBrowser extends Component {
             return species.methods.filter(m => m.category === category);
         }
         return species[variable.name].filter(m => m.category === category);
-    }
-
-    currentSource = () => {
-        const {selectedMode, selectedClass, selectedMethod} = this.state;
-        let source;
-        switch (selectedMode) {
-            case "comment":
-                source = !selectedClass? '' : selectedClass.comment;
-                break;
-            case "definition":
-                source = !selectedClass? '' : selectedClass.definition;
-                break;
-            case "source":    
-                source = !selectedMethod? '' : selectedMethod.source;
-                break;
-            default:
-        }
-        return source
     }
 
     // Updating...
@@ -201,9 +179,6 @@ class ClassBrowser extends Component {
         await this.updateVariables(selections);
         await this.updateCategories(selections);
         await this.updateMethods(selections);
-        if (!selections.method) {
-            selections.mode = "definition"
-        }
         this.applySelections(selections)
     }
 
@@ -281,7 +256,6 @@ class ClassBrowser extends Component {
         const selections = this.currentSelections();
         selections.method = method;
         await this.updateMethod(selections);
-        selections.mode = "source";
         this.applySelections(selections);
     }
 
@@ -328,25 +302,6 @@ class ClassBrowser extends Component {
         this.setState({selectedMethod: template})
     }
 
-    modeChanged = (event, mode) => {
-        this.setState({selectedMode: mode})
-    }
-
-    saveClicked = (source) => {
-        switch (this.state.selectedMode) {
-            case "comment":
-                this.commentClass(source);
-                break;
-            case "definition":
-                this.defineClass(source);
-                break;
-            case "source":    
-                this.compileMethod(source);
-                break;
-            default:
-        }
-    }
-
     render() {
         const {
             root,
@@ -355,8 +310,7 @@ class ClassBrowser extends Component {
             selectedClass,
             selectedVariable,
             selectedCategory,
-            selectedMethod,
-            selectedMode} = this.state;
+            selectedMethod} = this.state;
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         return (
             <Grid container spacing={1}>
@@ -437,32 +391,13 @@ class ClassBrowser extends Component {
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
-                    <Grid container spacing={1}>
-                        <Grid item xs={12} md={12} lg={12}>
-                            <ToggleButtonGroup
-                                label="primary"
-                                value={selectedMode}
-                                exclusive
-                                onChange={this.modeChanged}>
-                                <ToggleButton value="source" variant="outlined" size="small">
-                                    Method defintion
-                                </ToggleButton>
-                                <ToggleButton value="definition" variant="outlined" size="small">
-                                    Class definition
-                                </ToggleButton>
-                                <ToggleButton value="comment" variant="outlined" size="small">
-                                    Class comment
-                                </ToggleButton>
-                            </ToggleButtonGroup>    
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={12}>
-                            <CodeEditor
-                                classes={this.props.classes}
-                                source={this.currentSource()}
-                                showAccept={true}
-                                onAccept={this.saveClicked}/>
-                        </Grid>
-                    </Grid>
+                    <CodeBrowser
+                        classes={this.props.classes}
+                        class={selectedClass}
+                        method={selectedMethod}
+                        onCompileMethod={this.compileMethod}
+                        onDefineClass={this.defineClass}
+                        onCommentClass={this.commentClass}/>
                 </Grid>
             </Grid>
         )

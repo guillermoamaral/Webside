@@ -382,6 +382,7 @@ class App extends Component {
     const context = {
       api: this.api,
       classNames: this.state.classNames,
+      browseClass: this.openClassBrowser,
       browseSenders: this.browseSenders,
       browseLocalSenders: this.browseLocalSenders,
       browseImplementors: this.browseImplementors,
