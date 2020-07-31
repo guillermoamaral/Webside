@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import CustomList from '../controls/CustomList';
 import { AppContext } from '../../AppContext';
+import { withDialog } from '../dialogs';
 
 class CategoryList extends Component {
     static contextType = AppContext;
@@ -16,16 +17,24 @@ class CategoryList extends Component {
         if (handler) {handler(selected)}
     }
 
-    addCategory = (category) => {
-        if (this.props.onAdded) {this.props.onAdded(category)}
+    addCategory = () => {
+        const category = this.props.dialog.prompt('New category');
+        if (category && this.props.onAdded) {this.props.onAdded(category)}
     }
 
-    removeCategory = (category) => {
-        this.context.api.deleteCategory(this.props.class.name, category)
-            .then(response => {
-                if (this.props.onRemoved) {this.props.onRemoved(category)}
+    renameCategory = (category) => {
+        if (!category) {return}
+        this.props.dialog.prompt({title: 'Rename category', defaultValue: category})
+            .then(async renamed => {
+                await this.context.api.renameCategory(this.props.class.name, category, renamed);
+                if (renamed && this.props.onRenamed) {this.props.onRenamed(category, renamed)}
             })
-            .catch(error => {})
+            .catch(() => {})
+    }
+
+    removeCategory = async (category) => {
+        await this.context.api.deleteCategory(this.props.class.name, category);
+        if (this.props.onRemoved) {this.props.onRemoved(category)}
     }
 
     render() {
@@ -48,4 +57,4 @@ class CategoryList extends Component {
     }
 };
 
-export default CategoryList;
+export default withDialog()(CategoryList);

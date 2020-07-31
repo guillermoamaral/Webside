@@ -6,6 +6,16 @@ import { AppContext } from '../../AppContext';
 class MethodList extends Component {
     static contextType = AppContext;
 
+    renameMethod = async (method) => {
+        if (!method) {return}
+        this.props.dialog.prompt({title: 'Rename selector', defaultValue: method.selector})
+            .then(async renamed => {
+                await this.context.api.renameSelector(this.props.class.name, method.selector, renamed);
+                if (renamed && this.props.onRenamed) {this.props.onRenamed(method.selector, renamed)}
+            })
+            .catch(() => {})
+    }
+
     removeMethod = async (method) => {
         await this.context.api.deleteMethod(method.class, method.selector);
         const handler = this.props.onRemoved;

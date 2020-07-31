@@ -263,6 +263,13 @@ class ClassBrowser extends Component {
         this.applySelections(selections);
     }
 
+    categoryRenamed = async (category, renamed) => {
+        const selections = this.currentSelections();
+        await this.updateCategories(selections, true);
+        await this.updateMethods(selections, true);
+        this.categorySelected(selections.class.categories.find(c => c === renamed));
+    }
+
     categoryRemoved = async (category) => {        
         const selections = this.currentSelections();
         selections.category = null;
@@ -303,7 +310,7 @@ class ClassBrowser extends Component {
         if (!species.categories.includes(method.category)) {
             await this.updateCategories(selections, true);
         }
-        selections.category = method.category;
+        selections.category = species.categories.find(c => c === method.category);
         const methods = species.methods;
         if (!methods || !methods.find(m => m.selector === method.selector)) {
             await this.updateMethods(selections, true);
@@ -408,6 +415,7 @@ class ClassBrowser extends Component {
                                                 class={selectedClass}
                                                 categories={this.currentCategories()}
                                                 selectedCategory={selectedCategory}
+                                                onRenamed={this.categoryRenamed}
                                                 onSelect={this.categorySelected}
                                                 onRemoved={this.categoryRemoved}/>
                                         </Paper>

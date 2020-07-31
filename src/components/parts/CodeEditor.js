@@ -117,7 +117,6 @@ class CodeEditor extends Component {
     }
 
     toggleFullScreen = (event) => {
-        console.log('fight')
         this.editor.setOption("fullScreen", !this.editor.getOption("fullScreen"));
     }
 

@@ -221,7 +221,6 @@ class API {
 
     async postChange(change) {
         try {
-            console.log(change)
             const response = await axios.post(this.baseUri + '/changes', change);
             return response.data;
         }
@@ -256,6 +255,16 @@ class API {
             return await this.postChange(change);
         }
         catch (error) {this.handleError('Cannot remove class ' + classname, error)}
+    }
+    async renameCategory(classname, category, renamed) {
+        const change = this.newChange('CategoryRename');
+        change.class = classname;
+        change.category = category;
+        change.newName = renamed;
+        try {
+            return await this.postChange(change);
+        }
+        catch (error) {this.handleError('Cannot rename category ' + category + ' from class ' + classname + ' to ' + renamed, error)}
     }
 
     async deleteCategory(classname, category) {
