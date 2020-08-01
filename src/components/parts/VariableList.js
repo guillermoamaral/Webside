@@ -25,6 +25,16 @@ class VariableList extends Component {
         if (handler) {handler(selected)}
     }
 
+    menuOptions() {
+        return [
+            {label: 'Add', action: this.addVariable},
+            {label: 'Rename', action: this.renameVariable},
+            {label: 'Remove', action: this.removeVariable},
+            {label: 'Move to superclass', action: this.moveVariableUp},
+            {label: 'Move to subclass', action: this.moveVariableDown}
+        ]
+    }
+
     render() {
         const variables = this.extendedVariables(this.props.variables);
         return (
@@ -34,12 +44,7 @@ class VariableList extends Component {
                 items={variables}
                 selectedItem={this.props.selectedVariable}
                 onSelect={this.variableSelected}
-                menuOptions={[
-                    {label: 'Add', action: this.addVariable},
-                    {label: 'Rename', action: this.renameVariable},
-                    {label: 'Remove', action: this.removeVariable},
-                    {label: 'Move to superclass', action: this.moveVariableUp},
-                    {label: 'Move to subclass', action: this.moveVariableDown}]}
+                menuOptions={this.menuOptions()}
             />
         )
     }

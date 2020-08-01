@@ -39,14 +39,6 @@ function PromptDialog (props, context) {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={() => onClose(null)}
-          color={cancel.color}
-          variant={cancel.variant}
-          startIcon={cancel.startIcon}
-          endIcon={cancel.endIcon}>
-            {cancel.text}
-        </Button>
-        <Button
           onClick={() => onClose(value)}
           color={ok.color}
           variant={ok.variant}
@@ -54,7 +46,15 @@ function PromptDialog (props, context) {
           startIcon={ok.startIcon}
           endIcon={ok.endIcon}>
             {ok.text}
-          </Button>
+        </Button>
+        <Button
+          onClick={() => onClose(null)}
+          color={cancel.color}
+          variant={cancel.variant}
+          startIcon={cancel.startIcon}
+          endIcon={cancel.endIcon}>
+            {cancel.text}
+        </Button>
       </DialogActions>
     </Dialog>
   )

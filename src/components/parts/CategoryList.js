@@ -20,24 +20,32 @@ class CategoryList extends Component {
     addCategory = () => {
         this.props.dialog.prompt('New category')
             .then(category => {
-                if (category && this.props.onAdded) {this.props.onAdded(category)}
+                if (category && this.props.onAdd) {this.props.onAdd(category)}
             })
             .catch(() => {})
     }
 
-    renameCategory = (category) => {
+    renameCategory = async (category) => {
         if (!category) {return}
-        this.props.dialog.prompt({title: 'Rename category', defaultValue: category})
-            .then(async renamed => {
-                await this.context.api.renameCategory(this.props.class.name, category, renamed);
-                if (renamed && this.props.onRenamed) {this.props.onRenamed(category, renamed)}
-            })
-            .catch(() => {})
+        try {
+            const newName = this.props.dialog.prompt({title: 'Rename category', defaultValue: category});
+            await this.context.api.renameCategory(this.props.class.name, category, newName);
+            if (this.props.onRename) {this.props.onRename(category, newName)}
+        }
+        catch (error) {}
     }
 
     removeCategory = async (category) => {
         await this.context.api.deleteCategory(this.props.class.name, category);
-        if (this.props.onRemoved) {this.props.onRemoved(category)}
+        if (this.props.onRemove) {this.props.onRemove(category)}
+    }
+
+    menuOptions() {
+        return [
+            {label: 'Add', action: this.addCategory},
+            {label: 'Rename', action: this.renameCategory},
+            {label: 'Remove', action: this.removeCategory}
+        ]
     }
 
     render() {
@@ -51,10 +59,7 @@ class CategoryList extends Component {
                 itemDivider={item => item === this.all}
                 selectedItem={this.props.selectedCategory}
                 onSelect={this.categorySelected}
-                menuOptions={[
-                    {label: 'Add', action: this.addCategory},
-                    {label: 'Rename', action: this.renameCategory},
-                    {label: 'Remove', action: this.removeCategory}]}
+                menuOptions={this.menuOptions()}
             />
         )
     }

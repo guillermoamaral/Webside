@@ -9,16 +9,20 @@ class API {
 
     handleError(prefix, error) {
         var reason;
+        var data;
         if (error.response) {
             reason = 'Response error ' + error.response.status + ' - ' + error.response.statusText +
                 '\r on request to ' + error.request.responseURL;
+            data = error.response.data;
         } else if (error.request) {
             reason = 'Request error ' + error.request;
+            data = error.request;
         } else {
             reason = 'Could not send request ' + error.message;
+            data = error;
         }
         this.reportError(prefix +  '\r' + reason);
-        throw(error);
+        throw(data);
     }
 
     // Queries...
@@ -220,11 +224,8 @@ class API {
     }
 
     async postChange(change) {
-        try {
-            const response = await axios.post(this.baseUri + '/changes', change);
-            return response.data;
-        }
-        catch (error) {this.handleError('Cannot apply change ' + change, error)}
+        const response = await axios.post(this.baseUri + '/changes', change);
+        return response.data;
     }
 
     // Change helpers...
@@ -256,15 +257,15 @@ class API {
         }
         catch (error) {this.handleError('Cannot remove class ' + classname, error)}
     }
-    async renameCategory(classname, category, renamed) {
+    async renameCategory(classname, category, newName) {
         const change = this.newChange('CategoryRename');
         change.class = classname;
         change.category = category;
-        change.newName = renamed;
+        change.newName = newName;
         try {
             return await this.postChange(change);
         }
-        catch (error) {this.handleError('Cannot rename category ' + category + ' from class ' + classname + ' to ' + renamed, error)}
+        catch (error) {this.handleError('Cannot rename category ' + category + ' to ' + newName, error)}
     }
 
     async deleteCategory(classname, category) {
@@ -296,6 +297,17 @@ class API {
             return await this.postChange(change);
         }
         catch (error) {this.handleError('Cannot remove methodd ' + classname + '>>#' + selector, error)}
+    }
+
+    async renameSelector(classname, selector, newSelector) {
+        const change = this.newChange('SelectorRename');
+        change.class = classname;
+        change.selector = selector;
+        change.newSelector = newSelector;
+        try {
+            return await this.postChange(change);
+        }
+        catch (error) {this.handleError('Cannot rename selector ' + selector + ' to ' + newSelector, error)}
     }
 
     // Objects...

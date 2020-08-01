@@ -21,7 +21,7 @@ class CodeBrowser extends Component {
             selectedMode: mode,
             method: props.method
         }
-    }    
+    }
 
     defineClass = async (definition) => {
         const handler = this.props.onDefineClass;
@@ -56,6 +56,14 @@ class CodeBrowser extends Component {
             default:
         }
         return source;
+    }
+
+    currentAnnotations = () => {
+        if (this.state.selectedMode === "source") {
+            const method = this.props.method; 
+            return method? Date(method.timestamp) + ' by ' + method.author : '';
+        }
+        return ''
     }
 
     modeChanged = (event, mode) => {
@@ -102,8 +110,12 @@ class CodeBrowser extends Component {
                     <CodeEditor
                         classes={this.props.classes}
                         source={this.currentSource()}
+                        selectedRanges={!this.props.selectedInterval? [] : [this.props.selectedInterval]}
                         showAccept
                         onAccept={this.acceptClicked}/>
+                </Grid>
+                <Grid item xs={12} md={12} lg={12}>
+                    {this.currentAnnotations()}
                 </Grid>
             </Grid>
         )

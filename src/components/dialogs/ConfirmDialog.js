@@ -26,14 +26,6 @@ function ConfirmDialog (props, context) {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={() => onClose(false)}
-          color={cancel.color}
-          variant={cancel.variant}
-          startIcon={cancel.startIcon}
-          endIcon={cancel.endIcon}>
-            {cancel.text}
-        </Button>
-        <Button
           onClick={() => onClose(true)}
           color={ok.color}
           variant={ok.variant}
@@ -41,7 +33,15 @@ function ConfirmDialog (props, context) {
           endIcon={ok.endIcon}
           autoFocus>
             {ok.text}
-          </Button>
+        </Button>
+        <Button
+          onClick={() => onClose(false)}
+          color={cancel.color}
+          variant={cancel.variant}
+          startIcon={cancel.startIcon}
+          endIcon={cancel.endIcon}>
+            {cancel.text}
+        </Button>
       </DialogActions>
     </Dialog>
   )

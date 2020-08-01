@@ -11,11 +11,9 @@ function TabPanel(props) {
       hidden={!visible}
       id={id}
       {...other}>
-        {visible && (
-          <Box className={props.classes.box} p={1}>
-            {children}
-          </Box>
-        )}
+        <Box className={props.classes.box} p={1}>
+          {children}
+        </Box>
     </div>
   )
 }

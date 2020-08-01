@@ -270,7 +270,7 @@ class App extends Component {
 
   openMethodBrowser = (methods, title = 'Methods') => {
     const browser = <MethodBrowser classes={this.props.classes} methods={methods}/>;
-    this.addPage(title + '(' + methods.length + ')', <MethodBrowserIcon className={this.props.classes.methodBrowserIcon} />, browser);
+    this.addPage(title + ' (' + methods.length + ')', <MethodBrowserIcon className={this.props.classes.methodBrowserIcon} />, browser);
   }
 
   openWorkspace = () => {
@@ -342,9 +342,9 @@ class App extends Component {
       return object;
     }
     catch (error) {
-      const data = error.response.data; 
-      this.confirm(data.description, 'Stack tracke:\r' + data.stack + '\r\rDo you want to debug it?')
-        .then(debug => (debug)? this.openDebugger(data.debugger) : this.reportError(error))
+      this.openDebugger(error.debugger)
+      // const debug = await this.confirm(error.description, 'Stack tracke:\r' + error.stack + '\r\rDo you want to debug it?');
+      // (debug)? this.openDebugger(error.debugger) : this.reportError(error.description);
     }
   }
 
@@ -387,7 +387,6 @@ class App extends Component {
       browseLocalSenders: this.browseLocalSenders,
       browseImplementors: this.browseImplementors,
       browseLocalImplementors: this.browseLocalImplementors,
-      browseClass: this.openClassBrowser,
       browseReferences: this.browseReferences,
       evaluateExpression: this.evaluateExpression,
       debugExpression: this.debugExpression,

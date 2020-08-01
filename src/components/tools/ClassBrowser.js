@@ -28,6 +28,7 @@ class ClassBrowser extends Component {
             selectedVariable: null,
             selectedCategory: null,
             selectedMethod: null,
+            selectedInterval: null,
             selectedSide: "instance"
         }
     }
@@ -51,7 +52,8 @@ class ClassBrowser extends Component {
             class: this.state.selectedClass,
             variable: this.state.selectedVariable,
             category: this.state.selectedCategory,
-            method: this.state.selectedMethod
+            method: this.state.selectedMethod,
+            interval: this.state.selectedInterval,
         };
     }
 
@@ -65,7 +67,8 @@ class ClassBrowser extends Component {
                 selectedClass: selections.class,
                 selectedVariable: selections.variable,
                 selectedCategory: selections.category,
-                selectedMethod: selections.method       
+                selectedMethod: selections.method,
+                selectedInterval: selections.interval,
             }
         })
     }
@@ -163,13 +166,24 @@ class ClassBrowser extends Component {
         if (force) {
             const method = await this.context.api.getMethod(species.name, selections.method.selector);
             if (method) { 
-                species.methods = species.methods.map(m =>  m.selector === method.selector? method : m)
+                species.methods = species.methods.map(m => m.selector === method.selector? method : m)
                 selections.method = method;
             }
         }
     }
 
     // Events...
+    sideChanged = (event, side) => {
+        if (!side) return;
+        this.setState({selectedSide: side});
+        if (side === "instance") {
+            const name = this.state.root;
+            this.changeRoot(name.slice(0, name.length - 6))
+        } else {
+            this.changeRoot(this.state.root + " class")
+        }
+    }
+
     classSelected = async (species) => {
         const selections = this.currentSelections();
         selections.class = species;
@@ -262,46 +276,39 @@ class ClassBrowser extends Component {
         this.applySelections(selections);
     }
 
+    methodRenamed = (method) => {
+        this.methodSelected(method);
+    }
+
     methodRemoved = (method) => {
         this.cache[method.class].methods = this.cache[method.class].methods.filter(m => m.selector !== method.selector);
         this.setState({selectedMethod: null})
     }
 
-    sideChanged = (event, side) => {
-        if (!side) return;
-        this.setState({selectedSide: side});
-        if (side === "instance") {
-            const name = this.state.root;
-            this.changeRoot(name.slice(0, name.length - 6))
-        } else {
-            this.changeRoot(this.state.root + " class")
-        }
-    }
-
     compileMethod = async (source) => {
-        const species = this.state.selectedClass;
-        const category = this.state.selectedCategory;
-        const method = await this.context.api.compileMethod(species.name, category, source);
         const selections = this.currentSelections();
-        if (!species.categories.includes(method.category)) {
-            await this.updateCategories(selections, true);
+        const species = selections.class;
+        const category = selections.category;
+        try{
+            const method = await this.context.api.compileMethod(species.name, category, source);
+            if (!species.categories.includes(method.category)) {
+                await this.updateCategories(selections, true);
+            }
+            selections.category = species.categories.find(c => c === method.category);
+            const methods = species.methods;
+            if (!methods || !methods.find(m => m.selector === method.selector)) {
+                await this.updateMethods(selections, true);
+            }
+            selections.method = species.methods.find(m => m.selector === method.selector);
+            this.applySelections(selections);
         }
-        selections.category = species.categories.find(c => c === method.category);
-        const methods = species.methods;
-        if (!methods || !methods.find(m => m.selector === method.selector)) {
-            await this.updateMethods(selections, true);
+        catch (error) {
+            const method = selections.method;
+            const interval = error.interval;
+            method.source = source.slice(0, interval.end) + "->'" + error.description + "'" + source.slice(interval.end + 1, source.length);
+            selections.interval = error.interval;
+            this.applySelections(selections);
         }
-        selections.method = species.methods.find(m => m.selector === method.selector);
-        this.applySelections(selections)  
-    }
-
-    newMethod = () => {
-        const template = {
-            class: this.state.selectedClass? this.state.selectedClass.name : null,
-            category: this.state.selectedCategory,
-            source: 'messagePattern\r\t"comment"\r\t| temporaries |\r\tstatements'
-        }
-        this.setState({selectedMethod: template})
     }
 
     render() {
@@ -311,7 +318,8 @@ class ClassBrowser extends Component {
             selectedClass,
             selectedVariable,
             selectedCategory,
-            selectedMethod} = this.state;
+            selectedMethod,
+            selectedInterval} = this.state;
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         return (
             <Grid container spacing={1}>
@@ -353,7 +361,7 @@ class ClassBrowser extends Component {
                                                 selectedClass={selectedClass}
                                                 onExpand={this.classExpanded}
                                                 onSelect={this.classSelected}
-                                                onRemoved={this.classRemoved}/>
+                                                onRemove={this.classRemoved}/>
                                         </Paper>
                                     </Grid>
                                     <Grid item xs={12} md={3} lg={3}>
@@ -370,20 +378,20 @@ class ClassBrowser extends Component {
                                                 class={selectedClass}
                                                 categories={this.currentCategories()}
                                                 selectedCategory={selectedCategory}
-                                                onAdded={this.categoryAdded}
-                                                onRenamed={this.categoryRenamed}
+                                                onAdd={this.categoryAdded}
+                                                onRename={this.categoryRenamed}
                                                 onSelect={this.categorySelected}
-                                                onRemoved={this.categoryRemoved}/>
+                                                onRemove={this.categoryRemoved}/>
                                         </Paper>
                                     </Grid>
                                     <Grid item xs={12} md={3} lg={3}>
                                         <Paper className={fixedHeightPaper} variant="outlined">
                                             <MethodList
-                                                menuOptions={[{label: 'New', action: this.newMethod}]}
                                                 methods={this.currentMethods()}
                                                 selectedMethod={selectedMethod}
                                                 onSelect={this.methodSelected}
-                                                onRemoved={this.methodRemoved}/>
+                                                onRename={this.methodRenamed}
+                                                onRemove={this.methodRemoved}/>
                                         </Paper>
                                     </Grid>
                                 </Grid>
@@ -397,6 +405,7 @@ class ClassBrowser extends Component {
                         classes={this.props.classes}
                         class={selectedClass}
                         method={selectedMethod}
+                        //selectedInterval={selectedInterval}
                         onCompileMethod={this.compileMethod}
                         onDefineClass={this.defineClass}
                         onCommentClass={this.commentClass}/>

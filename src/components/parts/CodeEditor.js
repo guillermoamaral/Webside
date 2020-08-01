@@ -93,7 +93,7 @@ class CodeEditor extends Component {
     }
 
     menuOptions() {
-        const options = [
+        return [
             {label: 'Do it', action: this.evaluate},
             {label: 'Show it', action: this.show},
             {label: 'Inspect it', action: this.inspect},
@@ -101,8 +101,7 @@ class CodeEditor extends Component {
             {label: 'Senders', action: this.browseSenders},
             {label: 'Implementors', action: this.browseImplementors},
             {label: 'Class references', action: this.browseReferences}
-        ];
-        return options;
+        ]
     }
 
     valueChanged = (value) => {
@@ -174,7 +173,6 @@ class CodeEditor extends Component {
             if (this.editor.getSelection().length === 0) {
                 cursor.ch = this.editor.getLine(cursor.line).length;
             }
-            console.log(cursor)
             this.editor.replaceRange(" " + object.printString, cursor);
             const from = {ch: cursor.ch + 1, line: cursor.line};
             const to = {ch: from.ch + object.printString.length, line: from.line};

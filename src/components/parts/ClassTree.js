@@ -24,8 +24,19 @@ class ClassTree extends Component {
     removeClass = async (species) => {
  //       (species) => this.setState({confirmOpen: true, classToRemove: species})
         await this.context.api.deleteClass(species.name);
-        const handler = this.props.onRemoved; 
+        const handler = this.props.onRemove; 
         if (handler) {handler(species)}
+    }
+
+    menuOptions() {
+        return [
+            {label: 'New', action: this.newClass},
+            {label: 'Rename', action: this.renameClass},
+            {label: 'Remove', action: this.removeClass},
+            null,
+            {label: 'Browse', action: c => this.context.browseClass(c.name)},
+            {label: 'References', action: c => this.context.browseReferences(c.name)}
+        ]
     }
 
     render() {
@@ -39,13 +50,7 @@ class ClassTree extends Component {
                     onExpand={this.props.onExpand}
                     onSelect={this.props.onSelect}
                     selectedItem={this.props.selectedClass}
-                    menuOptions={[
-                        {label: 'New', action: this.newClass},
-                        {label: 'Rename', action: this.renameClass},
-                        {label: 'Remove', action: this.removeClass},
-                        null,
-                        {label: 'Browse', action: c => this.context.browseClass(c.name)},
-                        {label: 'References', action: c => this.context.browseReferences(c.name)}]}
+                    menuOptions={this.menuOptions()}
                 />
             </div>
         )
