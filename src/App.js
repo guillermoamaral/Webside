@@ -93,7 +93,7 @@ class App extends Component {
       addPageMenuOpen: false,
       selectedPage: null,
       transcriptOpen: false,
-      transcriptText: 'Wellcome!\r\rThis is BESIDE, a web Smalltalk IDE built with React.',
+      transcriptText: 'Wellcome to Webside!\r\rA web Smalltalk IDE built with ReactJS.',
       pages: []
     }
   }
