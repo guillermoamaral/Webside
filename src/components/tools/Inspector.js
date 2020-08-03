@@ -3,6 +3,7 @@ import { Box, Grid, Paper } from '@material-ui/core';
 import clsx from 'clsx';
 import { AppContext } from '../../AppContext';
 import CustomTree from '../controls/CustomTree';
+import CodeEditor from '../parts/CodeEditor';
 
 class Inspector extends Component {
     static contextType = AppContext;
@@ -84,9 +85,12 @@ class Inspector extends Component {
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={6} lg={6}>
-                            <Paper className={fixedHeightPaper} variant="outlined">
-                                {!selectedObject? "" : selectedObject.printString}
-                            </Paper>
+                            <CodeEditor
+                                classes={this.props.classes}
+                                lineNumbers={false}
+                                source={!selectedObject? "" : selectedObject.printString}
+                                onChange={this.props.onChange}
+                                onAccept={this.props.onAccept}/>
                         </Grid>
                     </Grid>
                 </Grid>

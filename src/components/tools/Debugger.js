@@ -10,7 +10,7 @@ import ResumeIcon from '@iconify/icons-mdi/play';
 import TerminateIcon from '@iconify/icons-mdi/stop';
 import { AppContext } from '../../AppContext';
 import CustomList from '../controls/CustomList';
-import CodeEditor from '../parts/CodeEditor';
+import CodeBrowser from '../parts/CodeBrowser';
 import Inspector from './Inspector';
 
 class Debugger extends Component {
@@ -21,7 +21,6 @@ class Debugger extends Component {
         this.state = {
             frames: [],
             selectedFrame: null,
-            selectedMode: "source",
         }
     }
 
@@ -57,50 +56,6 @@ class Debugger extends Component {
         }
     }
 
-    currentSource = () => {
-        const {selectedFrame, selectedMode} = this.state;
-        if (!selectedFrame) {return ''}
-        let source;
-        switch (selectedMode) {
-            case "comment":
-                source = !selectedFrame.class? "can't access class" : selectedFrame.class.comment;
-                break;
-            case "definition":
-                source = !selectedFrame.class? "can't access class" : selectedFrame.class.definition;
-                break;
-            case "source":    
-                source = !selectedFrame.method? "can't access source" : selectedFrame.method.source;
-                break;
-            default:
-        }
-        return source
-    }
-
-    currentSelection = () => {
-        const {selectedFrame, selectedMode} = this.state;
-        if (!selectedFrame || selectedMode !== "source") {return []}
-        return [selectedFrame.interval];
-    }
-
-    modeChanged = (event, mode) => {
-        this.setState({selectedMode: mode})
-    }
-
-    saveClicked = (source) => {
-        switch (this.state.selectedMode) {
-            case "comment":
-                this.commentClass(source);
-                break;
-            case "definition":
-                this.defineClass(source);
-                break;
-            case "source":    
-                this.compileMethod(source);
-                break;
-            default:
-        }
-    }
-
     hopClicked = async () => {
         await this.context.api.hop(this.props.id, this.state.selectedFrame.index);
         this.updateFrames();
@@ -128,7 +83,7 @@ class Debugger extends Component {
     }
 
     render() {
-        const {frames, selectedFrame, selectedMode} = this.state;
+        const {frames, selectedFrame} = this.state;
         const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
         return (
             <Grid container spacing={1}>
@@ -178,34 +133,14 @@ class Debugger extends Component {
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
-                    <Grid container spacing={1}>
-                        <Grid item xs={12} md={12} lg={12}>
-                            <ToggleButtonGroup
-                                label="primary"
-                                value={selectedMode}
-                                exclusive
-                                onChange={this.modeChanged}>
-                                <ToggleButton value="source" variant="outlined" size="small">
-                                    Method defintion
-                                </ToggleButton>
-                                <ToggleButton value="definition" variant="outlined" size="small">
-                                    Class definition
-                                </ToggleButton>
-                                <ToggleButton value="comment" variant="outlined" size="small">
-                                    Class comment
-                                </ToggleButton>
-                            </ToggleButtonGroup>    
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={12}>
-                            <CodeEditor
-                                classes={this.props.classes}
-                                source={this.currentSource()}
-                                selectedRanges={this.currentSelection()}
-                                showAccept={true}
-                                onAccept={this.saveClicked}
-                                />
-                        </Grid>
-                    </Grid>
+                    <CodeBrowser
+                        classes={this.props.classes}
+                        class={selectedFrame? selectedFrame.class : null}
+                        method={selectedFrame? selectedFrame.method : null}
+                        selectedInterval={selectedFrame? selectedFrame.interval : null}
+                        onCompileMethod={this.compileMethod}
+                        onDefineClass={this.defineClass}
+                        onCommentClass={this.commentClass}/>
                 </Grid>
             </Grid>
         )

@@ -26,9 +26,10 @@ class CodeEditor extends Component {
         this.editor = null;
         this.state = {
             source: props.source,
+            selectedRanges: [],
             dirty: false,
             value: props.source,
-            selectedRanges: [],
+            ranges: [],
             menuOpen: false,
             menuPosition: {x: null, y: null}
         }
@@ -39,8 +40,9 @@ class CodeEditor extends Component {
             || (props.selectedRanges && props.selectedRanges !== state.selectedRanges)) {
             return {
                 source: props.source,
+                selectedRanges: props.selectedRanges,
                 value: props.source,
-                selectedRanges: props.selectedRanges || [],
+                ranges: props.selectedRanges,
             }
         };
         return null;
@@ -48,11 +50,8 @@ class CodeEditor extends Component {
 
     markOcurrences = () => {
         const keyword = this.editor.getSelection();
-        console.log(keyword)
         var cursor = this.editor.getSearchCursor(keyword);
         while (cursor.findNext()) {
-            console.log(cursor.from())
-            console.log(cursor.to())
             this.editor.markText(
               cursor.from(),
               cursor.to(),
@@ -68,7 +67,7 @@ class CodeEditor extends Component {
     selectRanges(ranges){
         if (ranges.length > 0) {
             const selections = ranges.map(r => {
-                return {anchor: this.lineChAt(r.start), head: this.lineChAt(r.end + 1)}
+                return {anchor: this.lineChAt(r.start - 1), head: this.lineChAt(r.end)}
             });
             this.editor.setSelections(selections)
         }
@@ -76,7 +75,7 @@ class CodeEditor extends Component {
     
     lineChAt(index) {
         var lines = this.state.value.slice(0, index).split("\r");
-		return {line: lines.length - 1, ch: lines[lines.length - 1].length - 1};
+		return {line: lines.length - 1, ch: lines[lines.length - 1].length};
 	}
 
     openMenu = (event) => {
@@ -107,7 +106,8 @@ class CodeEditor extends Component {
     valueChanged = (value) => {
         const handler = this.props.onChange;
         if (handler) {handler(value)}
-        this.setState({value: value, dirty: true})
+        const ranges = value === this.state.value? this.state.ranges : null;
+        this.setState({value: value, dirty: true, ranges: ranges})
     }
     
     acceptClicked = (event) => {
@@ -192,8 +192,8 @@ class CodeEditor extends Component {
   
     render() {
         const showAccept = this.props.showAccept;
-        const ranges = this.state.selectedRanges; 
-        if (ranges.length > 0) {this.selectRanges(ranges)}
+        const ranges = this.state.ranges;
+        if (ranges && ranges.length > 0) {this.selectRanges(ranges)}
         return (
             <Grid container spacing={1}>
                 <Grid item xs={11} md={showAccept? 11 : 12} lg={showAccept? 11 : 12}>
@@ -205,7 +205,7 @@ class CodeEditor extends Component {
                                 mode: "smalltalk",
                                 theme: "material",
                                 lineSeparator: '\r',
-                                lineNumbers: true,
+                                lineNumbers: this.props.lineNumbers,
                                 matchBrackets: true,
                                 autoCloseBrackets: true,
                                 //highlightSelectionMatches: true,
@@ -233,8 +233,7 @@ class CodeEditor extends Component {
                             editorDidMount={editor => {this.editor = editor; editor.setSize("100%", "100%")}}
                             onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
                             onChange={(editor, data, value) => {this.valueChanged(value)}}
-                            onContextMenu={(editor, event) => {this.openMenu(event)}}
-                        />
+                            onContextMenu={(editor, event) => {this.openMenu(event)}}/>
                     </Paper>
                 </Grid>
                 {showAccept && (<Grid item xs={1} md={1} lg={1}>

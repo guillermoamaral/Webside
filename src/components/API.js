@@ -210,7 +210,7 @@ class API {
     // Changes...
     async getChanges() {
         try {
-           const response = await axios.get(this.baseUri + '/changes');
+           const response = await axios.get(this.baseUri + '/changes?author=' + this.author);
            return response.data;
        }
        catch (error) {this.handleError('Cannot fetch changes ', error)}
