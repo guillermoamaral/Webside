@@ -343,12 +343,12 @@ class API {
         catch (error) {this.handleError('Cannot fetch object with id ' + id, error)}
     }
 
-    async deleteObject(id) {
+    async unpinObject(id) {
         try {
             const response = await axios.delete(this.baseUri + '/objects/' + id)
             return response.data
         }
-        catch (error) {this.handleError('Cannot fetch object with id ' + id, error)}
+        catch (error) {this.handleError('Cannot unpin object with id ' + id, error)}
     }
 
     async getSlot(id, path) {

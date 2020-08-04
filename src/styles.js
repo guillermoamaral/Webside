@@ -92,7 +92,7 @@ const styles = theme => ({
     color: "secondary",
     alignItems: "left",
     justifyContent: "flex-end",
-    paddingTop: "8px",
+    paddingTop: "12px",
     fontSize: "small", 
   },
   fixedHeight: {

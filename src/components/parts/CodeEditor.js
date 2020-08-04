@@ -199,7 +199,7 @@ class CodeEditor extends Component {
                 <Grid item xs={11} md={showAccept? 11 : 12} lg={showAccept? 11 : 12}>
                     <Paper variant="outlined">
                         <CodeMirror
-                            className={this.props.classes.codeMirror}
+                            className={this.props.styles.codeMirror}
                             options={{
                                 //viewportMargin: "Infinity",
                                 mode: "smalltalk",

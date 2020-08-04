@@ -320,7 +320,8 @@ class ClassBrowser extends Component {
             selectedCategory,
             selectedMethod,
             selectedInterval} = this.state;
-        const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
+        const styles = this.props.styles;
+        const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
@@ -402,7 +403,7 @@ class ClassBrowser extends Component {
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     <CodeBrowser
-                        classes={this.props.classes}
+                        styles={styles}
                         class={selectedClass}
                         method={selectedMethod}
                         //selectedInterval={selectedInterval}

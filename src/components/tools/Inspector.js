@@ -10,7 +10,6 @@ class Inspector extends Component {
 
     constructor(props) {
         super(props);
-        if (this.props.onClose) {this.props.onClose.bind()};
         const root = this.props.root;
         if (root) {
             root.name = 'self';
@@ -26,10 +25,6 @@ class Inspector extends Component {
 
     componentDidMount() {
         this.updateSlots(this.state.root)
-    }
-
-    close = () => {
-        this.props.onClose(this.props.root.id);
     }
 
     updateSlots = async (object) => {
@@ -66,9 +61,10 @@ class Inspector extends Component {
 
     render() {
         const {objectTree, selectedObject} = this.state;
-        const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
+        const styles = this.props.styles;
+        const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
         return (
-            <Box className={this.props.classes.box}>
+            <Box className={styles.box}>
                 <Grid container spacing={1}>
                     <Grid container spacing={1}>
                         <Grid item xs={12} md={6} lg={6}>
@@ -86,7 +82,7 @@ class Inspector extends Component {
                         </Grid>
                         <Grid item xs={12} md={6} lg={6}>
                             <CodeEditor
-                                classes={this.props.classes}
+                                styles={styles}
                                 lineNumbers={false}
                                 source={!selectedObject? "" : selectedObject.printString}
                                 onChange={this.props.onChange}

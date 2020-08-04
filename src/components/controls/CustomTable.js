@@ -26,7 +26,7 @@ class CustomTable extends Component {
         const columns = this.props.columns;
         const rows = this.props.rows;
         return (
-            <TableContainer className={this.props.classes.container}>
+            <TableContainer className={this.props.styles.container}>
                 <Table stickyHeader size="small">
                     <TableHead>
                         <TableRow>

@@ -19,12 +19,13 @@ import ChangesBrowserIcon from '../icons/ChangesBrowserIcon';
 
 class Sidebar extends Component {
     render() {
+        const styles = this.props.styles;
         return (
             <Drawer
                 variant="permanent"
-                classes={{paper: clsx(this.props.classes.drawerPaper, !this.props.expanded && this.props.classes.drawerPaperClose)}}
+                classes={{paper: clsx(styles.drawerPaper, !this.props.expanded && styles.drawerPaperClose)}}
                 open={this.props.expanded}>
-                <div className={this.props.classes.toolbarIcon}>
+                <div className={styles.toolbarIcon}>
                     <IconButton onClick={this.props.onClose.bind()}>
                         <ChevronLeftIcon />
                     </IconButton>

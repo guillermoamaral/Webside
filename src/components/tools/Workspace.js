@@ -4,8 +4,10 @@ import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
-    Typography
+    Typography,
+    IconButton
 } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import InspectorIcon from '../icons/InspectorIcon';
 import CodeEditor from '../parts/CodeEditor';
@@ -18,7 +20,7 @@ class Workspace extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            expression: '(1 @ 2 extent: 10) area',
+            expression: '1 @ 2 extent: 10',
             opensInspector: true,
             inspectors: [],
         };
@@ -27,16 +29,16 @@ class Workspace extends Component {
     openInspector(object) {
         const inspector = <Inspector
           key={object.id}
-          classes={this.props.classes}
-          root={object}
-          onClose={this.closeInspector}/>;
+          styles={this.props.styles}
+          root={object}/>;
         const inspectors = this.state.inspectors;
         inspectors.unshift(inspector);
         this.setState({inspectors: inspectors})
     }
 
-    closeInspector = (id) => {
-        this.setState({inspectors: this.state.inspectors.filter(i => i.props.root.id !== id)});
+    closeInspector = (event, id) => {
+        event.stopPropagation();
+        this.setState({inspectors: this.state.inspectors.filter(i => i.key !== id)});
     }
     
     expressionChanged = (text) => {
@@ -61,7 +63,7 @@ class Workspace extends Component {
                 <Grid item xs={12} md={8} lg={8}>
                     <Grid item xs={12} md={12} lg={12}>
                         <CodeEditor
-                            classes={this.props.classes}
+                            styles={this.props.styles}
                             lineNumbers={true}
                             source={this.state.expression}
                             showAccept={true}
@@ -75,8 +77,12 @@ class Workspace extends Component {
                             <Accordion key={inspector.key} defaultExpanded>
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
-                                    id="panel1a-header"
-                                    >
+                                    id="panel1a-header">
+                                    <IconButton 
+                                        onClick={event => {this.closeInspector(event, inspector.key)}}
+                                        size="small">
+                                            <CloseIcon fontSize="small"/>
+                                    </IconButton>
                                     <InspectorIcon/>
                                     <Typography>
                                         {inspector.props.root.class + ': ' + inspector.props.root.id}

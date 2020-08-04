@@ -108,7 +108,7 @@ class CodeBrowser extends Component {
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     <CodeEditor
-                        classes={this.props.classes}
+                        styles={this.props.styles}
                         lineNumbers={true}
                         source={this.currentSource()}
                         selectedRanges={!this.props.selectedInterval? [] : [this.props.selectedInterval]}

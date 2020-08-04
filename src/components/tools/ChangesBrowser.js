@@ -46,13 +46,14 @@ class ChangesBrowser extends Component {
               format: (value) => value.toLocaleString('en-US'),
             },
           ];
-        const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
+        const styles = this.props.styles;
+        const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
                     <Paper className={fixedHeightPaper} variant="outlined">      
                         <CustomTable
-                            classes={this.props.classes}
+                            styles={styles}
                             columns={columns}
                             rows={rows}
                             onSelect={this.changeSelected}>
@@ -62,7 +63,7 @@ class ChangesBrowser extends Component {
                 <Grid item xs={12} md={12} lg={12}>
                     <Paper variant="outlined">
                         <CodeMirror
-                            className={this.props.classes.codeMirror}
+                            className={styles.codeMirror}
                             value={change? change.sourceCode : ''}
                             options={{
                                 mode: 'smalltalk',
@@ -73,8 +74,7 @@ class ChangesBrowser extends Component {
                                 highlightSelectionMatches: true, 
                                 styleActiveLine: true,
                                 matchTags: {bothTags: true}, 
-                                lineWrapping: true}}
-                        />
+                                lineWrapping: true}}/>
                     </Paper>
                 </Grid> 
             </Grid>

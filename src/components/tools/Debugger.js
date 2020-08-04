@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Grid, Paper, IconButton, Tooltip } from '@material-ui/core';
-import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import clsx from 'clsx';
 import { Icon, InlineIcon } from "@iconify/react";
 import RestartIcon from '@iconify/icons-mdi/replay';
@@ -84,7 +83,8 @@ class Debugger extends Component {
 
     render() {
         const {frames, selectedFrame} = this.state;
-        const fixedHeightPaper = clsx(this.props.classes.paper, this.props.classes.fixedHeight);
+        const styles = this.props.styles;
+        const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
@@ -128,13 +128,13 @@ class Debugger extends Component {
                         <Grid item xs={12} md={4} lg={4}>
                             <Inspector
                                 root={null}
-                                classes={this.props.classes}/>
+                                styles={styles}/>
                         </Grid>
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     <CodeBrowser
-                        classes={this.props.classes}
+                        styles={styles}
                         class={selectedFrame? selectedFrame.class : null}
                         method={selectedFrame? selectedFrame.method : null}
                         selectedInterval={selectedFrame? selectedFrame.interval : null}

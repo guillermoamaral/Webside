@@ -11,7 +11,7 @@ function TabPanel(props) {
       hidden={!visible}
       id={id}
       {...other}>
-        <Box className={props.classes.box} p={1}>
+        <Box className={props.styles.box} p={1}>
           {children}
         </Box>
     </div>
@@ -28,10 +28,10 @@ class TabControl extends Component {
   tabLabel = (page, index) => {
     return (
       <span>
-        {React.cloneElement(page.icon, {className: this.props.classes.tabIcon})}
+        {React.cloneElement(page.icon, {className: this.props.styles.tabIcon})}
         {page.label}
         <IconButton 
-          onClick={event => {this.tabClosed(event, index)}}
+          onClick={event => {this.closeTab(event, index)}}
           id={index}
           value={index}
           size="small">
@@ -47,17 +47,19 @@ class TabControl extends Component {
     if (handler) {handler(this.props.pages[index])}
   }
 
-  tabClosed = (event, index) => {
+  closeTab = (event, index) => {
     event.stopPropagation();
-    const handler = this.props.onClose;
-    if (handler) {handler(this.props.pages[index])}
+    const page = this.props.pages[index];
+    const handler = this.props.onClose;  
+    if (handler) {handler(page)}
   }
 
   render() {
     const {pages, selectedPage} = this.props;
     const selectedIndex = pages.indexOf(selectedPage);
+    const styles = this.props.styles;
     return (
-        <div className={this.props.classes.tabControl}>
+        <div className={styles.tabControl}>
             <Tabs
               value={Math.max(selectedIndex, 0)}
               onChange={this.tabChanged}
@@ -80,7 +82,7 @@ class TabControl extends Component {
                   id={`tabpanel-${i}`}
                   key={i.toString()}
                   index={i}
-                  classes={this.props.classes}
+                  styles={styles}
                   visible={p === selectedPage}>
                     {p.component}
                 </TabPanel>)

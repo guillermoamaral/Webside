@@ -126,7 +126,9 @@ class App extends Component {
   }
 
   removePage = (page) => {
-    //console.log(page.component.type === Inspector)
+    if (page.component.type.name === 'Inspector') {
+      this.api.unpinObject(page.component.props.root.id)
+    }
     const {pages, selectedPage} = this.state;
     let i = pages.indexOf(page);
     const j = pages.indexOf(selectedPage);
@@ -135,7 +137,7 @@ class App extends Component {
   }
 
   openTranscript() {
-    const transcript = <Transcript classes={this.props.classes} text={this.state.transcriptText}/>;
+    const transcript = <Transcript styles={this.props.classes} text={this.state.transcriptText}/>;
     this.addPage('Transcript', <TranscriptIcon />, transcript);
   }
 
@@ -147,45 +149,37 @@ class App extends Component {
 
   openClassBrowser = (classname) => {
     const root = classname || 'Magnitude';
-    const browser = <ClassBrowser classes={this.props.classes} root={root}/>;
+    const browser = <ClassBrowser styles={this.props.classes} root={root}/>;
     this.addPage(root, <ClassBrowserIcon className={this.props.classes.classBrowserIcon} />, browser);
   }
 
   openMethodBrowser = (methods, title = 'Methods') => {
-    const browser = <MethodBrowser classes={this.props.classes} methods={methods}/>;
+    const browser = <MethodBrowser styles={this.props.classes} methods={methods}/>;
     this.addPage(title + ' (' + methods.length + ')', <MethodBrowserIcon className={this.props.classes.methodBrowserIcon} />, browser);
   }
 
   openWorkspace = () => {
-    const workspace = <Workspace classes={this.props.classes}/>;
+    const workspace = <Workspace styles={this.props.classes}/>;
     this.addPage('Workspace', <WorkspaceIcon className={this.props.classes.workspaceIcon} />, workspace);
   }
 
   openDebugger = (id) => {
-    const tool = <Debugger
-      classes={this.props.classes}
-      key={id}
-      id={id}/>;
+    const tool = <Debugger styles={this.props.classes} key={id} id={id}/>;
     this.addPage('Debugger: ' + id, <DebuggerIcon className={this.props.classes.debuggerIcon} />, tool);
   }
 
   closeDebugger = (id) => {
-    console.log(id)
-    console.log(this.state.pages.component.type[1])
-    const page = this.state.pages.find(p => p.component.type === Debugger && p.component.id === id);
+    const page = this.state.pages.find(p => p.component.type.name === 'Debugger' && p.component.props.id === id);
     if (page) {this.removePage(page)}
   }
 
   openInspector = (object) => {
-    const inspector = <Inspector
-      classes={this.props.classes}
-      key={object.id}
-      root={object}/>;
+    const inspector = <Inspector styles={this.props.classes} key={object.id} root={object}/>;
     this.addPage(object.class + ': ' + object.id, <InspectorIcon className={this.props.classes.workspaceIcon} />, inspector);
   }
 
   openChangesBrowser = () => {
-    const browser = <ChangesBrowser classes={this.props.classes}/>;
+    const browser = <ChangesBrowser styles={this.props.classes}/>;
     this.addPage('Last Changes', <ChangesBrowserIcon className={this.props.classes.changesBrowserIcon} />, browser);
   }
 
@@ -276,32 +270,32 @@ class App extends Component {
       closeDebugger: this.closeDebugger,
       inspectObject: this.openInspector,
       reportError: this.reportError};
-
+    const styles = this.props.classes;
     return (
       <ThemeProvider theme={theme}>
         <AppContext.Provider value={context}>
           <DialogProvider>
-            <div className={this.props.classes.root}>           
+            <div className={styles.root}>           
               <CssBaseline/>
               <Titlebar
                 title={smalltalk + ' Web IDE (Powered by BESIDE)'}
                 appName={smalltalk}
-                classes={this.props.classes}
+                styles={styles}
                 sidebarExpanded={this.state.sidebarExpanded}
                 expandSidebar={this.expandSidebar}/>
               <Sidebar
-                classes={this.props.classes}
+                styles={styles}
                 expanded={this.state.sidebarExpanded}
                 onTranscript={this.toggleShowTranscript}
                 onChanges={this.openChangesBrowser}
                 onClose={this.collapseSidebar}/>
-              <main className={this.props.classes.content}>
-                <div className={this.props.classes.appBarSpacer} />
-                <Container className={this.props.classes.container}>
+              <main className={styles.content}>
+                <div className={styles.appBarSpacer} />
+                <Container className={styles.container}>
                   <Grid container spacing={1}>
                     <Grid item xs={11} md={11} lg={11}>
                         <TabControl
-                          classes={this.props.classes}
+                          styles={styles}
                           selectedPage={this.state.selectedPage}
                           pages={this.state.pages}
                           onSelect={this.pageSelected}
@@ -334,7 +328,7 @@ class App extends Component {
                         open={this.state.transcriptOpen}
                         onClose={() => this.setState({transcriptOpen: false})}>
                         <Transcript
-                          classes={this.props.classes}      
+                          styles={styles}
                           text={this.state.transcriptText}
                           onChange={text => this.setState({transcriptText: text})}/>
                       </Drawer>
