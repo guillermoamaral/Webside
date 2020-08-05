@@ -1,9 +1,10 @@
 import axios from 'axios';
 
 class API {
-    constructor(uri, user, reportError){
+    constructor(uri, user, reportError, reportChange){
         this.baseUri = uri;
         this.reportError = reportError.bind();
+        this.reportChange = reportChange.bind();
         this.author = user;
     };
 
@@ -225,6 +226,7 @@ class API {
 
     async postChange(change) {
         const response = await axios.post(this.baseUri + '/changes', change);
+        this.reportChange(change);
         return response.data;
     }
 

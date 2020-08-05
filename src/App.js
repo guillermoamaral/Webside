@@ -87,7 +87,7 @@ const theme = createMuiTheme({
 class App extends Component {
   constructor(props){
     super(props);
-    this.api = new API(baseUri, 'guest', this.reportError);
+    this.api = new API(baseUri, 'guest', this.reportError, this.reportChange);
     this.state = {
       sidebarExpanded: false,
       addPageMenuOpen: false,
@@ -178,9 +178,9 @@ class App extends Component {
     this.addPage(object.class + ': ' + object.id, <InspectorIcon className={this.props.classes.workspaceIcon} />, inspector);
   }
 
-  openChangesBrowser = () => {
-    const browser = <ChangesBrowser styles={this.props.classes}/>;
-    this.addPage('Last Changes', <ChangesBrowserIcon className={this.props.classes.changesBrowserIcon} />, browser);
+  openChangesBrowser = (changes, title = 'Changes') => {
+    const browser = <ChangesBrowser styles={this.props.classes} changes={changes}/>;
+    this.addPage(title + ' (' + changes.length + ')', <ChangesBrowserIcon className={this.props.classes.changesBrowserIcon} />, browser);
   }
 
   browseSenders = (selector) => {
@@ -206,6 +206,11 @@ class App extends Component {
   browseReferences = (classname) => {
     this.api.getReferences(classname)
       .then(methods => this.openMethodBrowser(methods, 'References to ' + classname)); 
+  }
+
+  browseLastChanges = async () => {
+    const changes = await this.api.getChanges();
+    this.openChangesBrowser(changes, 'Last changes');
   }
 
   debugExpression = async (expression) => {
@@ -239,6 +244,11 @@ class App extends Component {
         transcriptText: this.state.transcriptText + '\r' + text,
         transcriptOpen: true,
     })
+  }
+
+  reportChange = async (change) => {
+    const changes = await this.api.getChanges(); 
+    this.setState({changesCount: changes.length})
   }
 
   addClassBrowserClicked = () => {
@@ -278,7 +288,7 @@ class App extends Component {
             <div className={styles.root}>           
               <CssBaseline/>
               <Titlebar
-                title={smalltalk + ' Web IDE (Powered by BESIDE)'}
+                title={smalltalk + ' Web IDE (Powered by Webside)'}
                 appName={smalltalk}
                 styles={styles}
                 sidebarExpanded={this.state.sidebarExpanded}
@@ -287,7 +297,8 @@ class App extends Component {
                 styles={styles}
                 expanded={this.state.sidebarExpanded}
                 onTranscript={this.toggleShowTranscript}
-                onChanges={this.openChangesBrowser}
+                changesCount={this.state.changesCount}
+                onChanges={this.browseLastChanges}
                 onClose={this.collapseSidebar}/>
               <main className={styles.content}>
                 <div className={styles.appBarSpacer} />
@@ -311,14 +322,14 @@ class App extends Component {
                         keepMounted
                         open={this.state.addPageMenuOpen}
                         onClose={() => {this.setState({addPageMenuOpen: false})}}>
-                        <MenuItem onClick={this.addClassBrowserClicked}>
-                          <ClassBrowserIcon />
-                          Class Browse
-                        </MenuItem>
-                        <MenuItem onClick={this.addWorkspaceClicked}>
-                          <WorkspaceIcon />
-                          New Workspace
-                        </MenuItem>
+                          <MenuItem onClick={this.addClassBrowserClicked}>
+                            <ClassBrowserIcon />
+                            Class Browse
+                          </MenuItem>
+                          <MenuItem onClick={this.addWorkspaceClicked}>
+                            <WorkspaceIcon />
+                            New Workspace
+                          </MenuItem>
                       </Menu>
                     </Grid>
                     <React.Fragment key="bottom">

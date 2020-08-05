@@ -6,14 +6,14 @@ import {
     ListItem,
     ListItemText,
     Divider,
-    IconButton
+    IconButton,
+    Badge
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import PeopleIcon from '@material-ui/icons/People';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import SettingsIcon from '@material-ui/icons/Settings';
 import clsx from 'clsx';
-
 import TranscriptIcon from '../icons/TranscriptIcon';
 import ChangesBrowserIcon from '../icons/ChangesBrowserIcon';
 
@@ -26,21 +26,23 @@ class Sidebar extends Component {
                 classes={{paper: clsx(styles.drawerPaper, !this.props.expanded && styles.drawerPaperClose)}}
                 open={this.props.expanded}>
                 <div className={styles.toolbarIcon}>
-                    <IconButton onClick={this.props.onClose.bind()}>
+                    <IconButton onClick={this.props.onClose}>
                         <ChevronLeftIcon />
                     </IconButton>
                 </div>
                 <Divider />
                 <List>
-                    <ListItem button onClick={this.props.onTranscript.bind()}>
+                    <ListItem button onClick={this.props.onTranscript}>
                         <ListItemIcon>
                             <TranscriptIcon />
                         </ListItemIcon>
                         <ListItemText primary="Transcript" />
                     </ListItem>
-                    <ListItem button onClick={this.props.onChanges.bind()}>
-                        <ListItemIcon>
-                            <ChangesBrowserIcon />
+                    <ListItem button onClick={this.props.onChanges}>
+                        <ListItemIcon>                                
+                            <Badge badgeContent={this.props.changesCount} color="secondary">
+                                <ChangesBrowserIcon />
+                            </Badge>
                         </ListItemIcon>
                         <ListItemText primary="Changes" />
                     </ListItem>                    

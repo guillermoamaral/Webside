@@ -11,19 +11,8 @@ class ChangesBrowser extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            changes: [],
             selectedChange: null
         }
-    }
-
-    componentDidMount() {
-        this.updateChanges()
-    }
-
-    updateChanges() {
-        this.context.api.getChanges()
-            .then(changes =>
-                this.setState({changes: changes, selectedChange: null}));
     }
 
     changeSelected = (change) => {
@@ -32,7 +21,7 @@ class ChangesBrowser extends Component {
 
     render() {
         const change = this.state.selectedChange;
-        const rows = this.state.changes;
+        const rows = this.props.changes;
         const columns = [
             {id: 'type', label: 'Type', minWidth: 170, align: 'left'},
             {id: 'label', label: 'Target', minWidth: 100, align: 'left'},

@@ -300,13 +300,16 @@ class ClassBrowser extends Component {
                 await this.updateMethods(selections, true);
             }
             selections.method = species.methods.find(m => m.selector === method.selector);
+            selections.method.source = method.source;
             this.applySelections(selections);
         }
         catch (error) {
             const method = selections.method;
             const interval = error.interval;
-            method.source = source.slice(0, interval.end) + "->'" + error.description + "'" + source.slice(interval.end + 1, source.length);
-            selections.interval = error.interval;
+            if (interval) {
+                method.source = source.slice(0, interval.end) + "->'" + error.description + "'" + source.slice(interval.end + 1, source.length);
+                selections.interval = error.interval;    
+            }
             this.applySelections(selections);
         }
     }
