@@ -18,7 +18,6 @@ class Inspector extends Component {
         this.state = {
             root: root,
             objectTree: !root? [] : [root],
-            objects: {},
             selectedObject: !root? null : root,
         }
     }
@@ -38,16 +37,15 @@ class Inspector extends Component {
             slots = await this.context.api.getInstanceVariables(object.class);
             slots = slots.map(s => s.name)
         }
+        if (slots.length === 0) {return}
         object.slots = [];
         slots.forEach(async s => {
             const path = object.path + '/' + s;
             const slot = await this.context.api.getSlot(this.props.root.id, path);
-            slot.name = s;
+            slot.name = s.toString();
             slot.path = path;
             object.slots.push(slot);
-            const objects = this.state.objects;
-            objects[slot.id] = slot;
-            this.setState({objectTree: this.state.objectTree, objects: objects});
+            this.setState({objectTree: this.state.objectTree});
         })
     }
 
@@ -72,7 +70,7 @@ class Inspector extends Component {
                                 <CustomTree
                                     items={objectTree}
                                     itemLabel="name"
-                                    id="id"
+                                    id="path"
                                     children={"slots"}
                                     selectedItem={this.selectedObject}
                                     onExpand={this.slotExpanded}

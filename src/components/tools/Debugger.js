@@ -10,7 +10,7 @@ import TerminateIcon from '@iconify/icons-mdi/stop';
 import { AppContext } from '../../AppContext';
 import CustomList from '../controls/CustomList';
 import CodeBrowser from '../parts/CodeBrowser';
-import Inspector from './Inspector';
+import CodeEditor from '../parts/CodeEditor';
 
 class Debugger extends Component {
     static contextType = AppContext;
@@ -20,15 +20,12 @@ class Debugger extends Component {
         this.state = {
             frames: [],
             selectedFrame: null,
+            selectedBinding: null,
         }
     }
 
     componentDidMount() {
         this.updateFrames()
-    }
-
-    close = () => {
-        this.props.onClose(this.props.id);
     }
 
     async updateFrames() {
@@ -43,7 +40,11 @@ class Debugger extends Component {
 
     frameSelected = async (frame) => {
         await this.updateFrame(frame);
-        this.setState({selectedFrame: frame, selectedMode: "source"});
+        this.setState({selectedFrame: frame});
+    }
+
+    bindingSelected = async (binding) => {
+        this.setState({selectedBinding: binding});
     }
 
     updateFrame = async (frame) => {
@@ -52,6 +53,10 @@ class Debugger extends Component {
             frame.method = info.method;
             frame.class = info.class;
             frame.interval = info.interval;
+        }
+        if (!frame.bindings) {
+            const bindings = await this.context.api.getBindings(this.props.id, frame.index);
+            frame.bindings = bindings;
         }
     }
 
@@ -82,7 +87,7 @@ class Debugger extends Component {
     }
 
     render() {
-        const {frames, selectedFrame} = this.state;
+        const {frames, selectedFrame, selectedBinding} = this.state;
         const styles = this.props.styles;
         const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
         return (
@@ -125,10 +130,21 @@ class Debugger extends Component {
                                     onSelect={this.frameSelected}/>
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} md={4} lg={4}>
-                            <Inspector
-                                root={null}
-                                styles={styles}/>
+                        <Grid item xs={12} md={2} lg={2}>
+                            <Paper className={fixedHeightPaper} variant="outlined">
+                                <CustomList
+                                    itemLabel="name"
+                                    selectedItem ={selectedBinding}
+                                    items={selectedFrame? selectedFrame.bindings : []}
+                                    onSelect={this.bindingSelected}/>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} md={2} lg={2}>
+                            <CodeEditor
+                                styles={this.props.styles}
+                                lineNumbers={false}
+                                source={selectedBinding? selectedBinding.value : ''}
+                                onAccept={this.saveBinding}/>
                         </Grid>
                     </Grid>
                 </Grid>

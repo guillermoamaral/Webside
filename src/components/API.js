@@ -165,7 +165,15 @@ class API {
            const response = await axios.get(this.baseUri + '/debuggers/' + id + '/frames/' + index);
            return response.data;
        }
-       catch (error) {this.handleError('Cannot fetch frame ' + index + ' of debugger ' + id, error)}
+       catch (error) {this.handleError('Cannot fetch frame ' + index + ' in debugger ' + id, error)}
+    }
+
+    async getBindings(id, index) {
+        try {
+           const response = await axios.get(this.baseUri + '/debuggers/' + id + '/frames/' + index + '/bindings');
+           return response.data;
+       }
+       catch (error) {this.handleError('Cannot fetch bindings of frame ' + index + ' in debugger ' + id, error)}
     }
 
     async hop(id, index) {

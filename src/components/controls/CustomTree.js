@@ -39,8 +39,7 @@ class CustomTree extends Component {
                         label={label}
                         onLabelClick={event => this.itemSelected(event, item)}
                         onIconClick={event => this.itemToggled(event, item)}
-                        onContextMenu={this.openMenu}
-                        >
+                        onContextMenu={this.openMenu}>
                             {Array.isArray(children) ? this.createItems(children) : null}
                     </TreeItem>
                 )
@@ -51,7 +50,9 @@ class CustomTree extends Component {
     getItemId = (item) => {
         const getter = this.props.id;
         if (!getter) {return this.getItemLabel(item)}    
-        if (typeof getter == "string")  {return item[getter].toString()}
+        if (typeof getter == "string")  {
+            const id = item[getter];
+            return id? id.toString() : ''}
         return getter(item)
       }
 
@@ -114,9 +115,8 @@ class CustomTree extends Component {
                     defaultCollapseIcon={<ArrowDropDownIcon />}
                     defaultExpanded={['root']}
                     defaultExpandIcon={<ArrowRightIcon />}
-                    selected={!this.state.selectedItem? null : this.getItemId(this.state.selectedItem)}
-                    >
-                    {this.createItems(this.props.items)}
+                    selected={!this.state.selectedItem? null : this.getItemId(this.state.selectedItem)}>
+                        {this.createItems(this.props.items)}
                 </TreeView>
                 <PopupMenu
                     options={this.menuOptions()}
