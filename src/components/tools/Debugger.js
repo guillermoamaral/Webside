@@ -158,9 +158,9 @@ class Debugger extends Component {
                         class={selectedFrame? selectedFrame.class : null}
                         method={selectedFrame? selectedFrame.method : null}
                         selectedInterval={selectedFrame? selectedFrame.interval : null}
-                        onCompileMethod={this.compileMethod}
-                        onDefineClass={this.defineClass}
-                        onCommentClass={this.commentClass}/>
+                        onMethodCompiled={this.methodCompiled}
+                        onClassDefined={this.classDefined}
+                        onClassCommented={this.classCommented}/>
                 </Grid>
             </Grid>
         )

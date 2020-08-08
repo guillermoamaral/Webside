@@ -196,12 +196,11 @@ class ClassBrowser extends Component {
         await this.updateSubclasses(species)
     }
 
-    defineClass = async (definition) => {
-        const species = await this.context.api.defineClass(this.state.selectedClass.name, definition);    
-        const current = this.cache[species.name];
-        if (current) {
-            current.definition = species.definition;
-            this.classSelected(current);
+    classDefined = async (species) => {   
+        const cached = this.cache[species.name];
+        if (cached) {
+            cached.definition = species.definition;
+            this.classSelected(cached);
         } else {
             this.cache[species.name] = species;
             const superclass = this.cache[species.superclass];
@@ -213,8 +212,7 @@ class ClassBrowser extends Component {
         }
     }
     
-    commentClass = async (comment) => {
-        const species = await this.context.api.commentClass(this.state.selectedClass.name, comment);
+    classCommented = async (species) => {
         this.cache[species.name].comment = species.comment;
     }
     
@@ -282,36 +280,21 @@ class ClassBrowser extends Component {
         this.setState({selectedMethod: null})
     }
 
-    compileMethod = async (source) => {
+    methodCompiled = async (method) => {
         const selections = this.currentSelections();
-        const species = selections.class;
-        const category = selections.category;
-        try {
-            const method = await this.context.api.compileMethod(species.name, category, source);
-            if (!species.categories.includes(method.category)) {
-                await this.updateCategories(selections, true);
-            }
-            selections.category = species.categories.find(c => c === method.category);
-            const methods = species.methods;
-            if (!methods || !methods.find(m => m.selector === method.selector)) {
-                await this.updateMethods(selections, true);
-            }
-            selections.method = species.methods.find(m => m.selector === method.selector);
-            selections.method.source = method.source;
-            this.applySelections(selections);
+        const species = this.cache[method.class];
+        selections.class = species;
+        if (!species.categories.includes(method.category)) {
+            await this.updateCategories(selections, true);
         }
-        catch (error) {
-            const selections = this.currentSelections();
-            selections.method.source = source;
-            if (error.interval) {
-                selections.method.lintAnnotations = [{
-                    from: error.interval.start,
-                    to: error.interval.end,
-                    severity: 'error',
-                    description: error.description}]
-                }
-            this.applySelections(selections);
+        selections.category = species.categories.find(c => c === method.category);
+        const methods = species.methods;
+        if (!methods || !methods.find(m => m.selector === method.selector)) {
+            await this.updateMethods(selections, true);
         }
+        selections.method = species.methods.find(m => m.selector === method.selector);
+        selections.method.source = method.source;
+        this.applySelections(selections);
     }
 
     render() {
@@ -408,9 +391,9 @@ class ClassBrowser extends Component {
                         styles={styles}
                         class={selectedClass}
                         method={selectedMethod}
-                        onCompileMethod={this.compileMethod}
-                        onDefineClass={this.defineClass}
-                        onCommentClass={this.commentClass}/>
+                        onMethodCompiled={this.methodCompiled}
+                        onClassDefined={this.classDefined}
+                        onClassCommented={this.classCommented}/>
                 </Grid>
             </Grid>
         )

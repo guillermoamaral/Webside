@@ -21,20 +21,24 @@ class MethodBrowser extends Component {
         this.setState({selectedMethod: method, selectedClass: species});
     }
 
-    defineClass = async (definition) => {
-        await this.context.api.defineClass(this.state.selectedClass, definition);
+    classDefined = async (species) => {
+        const selected = this.state.selectedClass;
+        if (species.name === selected.name) {
+            selected.definition = species.definition;
+        }
     }
 
-    commentClass = async (comment) => {
-        await this.context.api.commentClass(this.state.selectedClass, comment);   
+    classCommented = async (species) => {
+        const selected = this.state.selectedClass;
+        if (species.name === selected.name) {
+            selected.comment = species.comment;
+        }
     }
 
-    compileMethod = async (source) => {
+    methodCompiled = async (method) => {
         const selected = this.state.selectedMethod;
-        const method = await this.context.api.compileMethod(selected.class, selected.category, source);
         if (method.selector === selected.selector) {
             selected.source = method.source;
-            this.setState({selectedMethod: selected})
         }
     }
 
@@ -58,9 +62,9 @@ class MethodBrowser extends Component {
                         styles={styles}
                         class={selectedClass}
                         method={selectedMethod}
-                        onCompileMethod={this.compileMethod}
-                        onDefineClass={this.defineClass}
-                        onCommentClass={this.commentClass}/>
+                        onMethodCompiled={this.methodCompiled}
+                        onClassDefined={this.classDefined}
+                        onClassCommented={this.classCommented}/>
                 </Grid>
             </Grid>
         )

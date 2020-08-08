@@ -11,31 +11,53 @@ class CodeBrowser extends Component {
         super(props);
         this.state = {
             method: null,
-            selectedMode: "source",
+            selectedMode: 'source',
         }
     }
 
     static getDerivedStateFromProps(props, state) {
-        const mode = !props.method? "definition" : !state.method? "source" : state.selectedMode;
+        const mode = !props.method && state.selectedMode === 'source'? 
+            'definition' : props.method !== state.method? 'source' : state.selectedMode;
         return {
             selectedMode: mode,
-            method: props.method
+            method: props.method,
         }
     }
 
     defineClass = async (definition) => {
-        const handler = this.props.onDefineClass;
-        if (handler) {handler(definition)}
+        const classname = this.props.class? this.props.class.name : null;
+        const species = await this.context.api.defineClass(classname, definition);
+        const handler = this.props.onClassDefined;
+        if (handler) {handler(species)}
     }
 
     commentClass = async (comment) => {
-        const handler = this.props.onCommentClass;
-        if (handler) {handler(comment)}
+        if (!this.props.class) {return}
+        const species = await this.context.api.commentClass(this.props.class.name, comment);
+        const handler = this.props.onClassCommented;
+        if (handler) {handler(species)}
     }
 
     compileMethod = async (source) => {
-        const handler = this.props.onCompileMethod;
-        if (handler) {handler(source)}
+        if (!this.props.class) {return}
+        try {
+            const category = this.props.method? this.props.method.category : null;
+            const method = await this.context.api.compileMethod(this.props.class.name, category, source);
+            const handler = this.props.onMethodCompiled;
+            if (handler) {handler(method)}
+        }
+        catch (error) {
+            const method = this.props.method;
+            method.source = source;
+            if (error.interval) {
+                method.lintAnnotations = [{
+                    from: error.interval.start,
+                    to: error.interval.end,
+                    severity: 'error',
+                    description: error.description}]
+                }
+            this.setState({method: method});
+        }
     }
 
     currentSource = () => {
@@ -44,13 +66,13 @@ class CodeBrowser extends Component {
         const mode = this.state.selectedMode;
         let source;
         switch (mode) {
-            case "comment":
+            case 'comment':
                 source = !species? '' : species.comment;
                 break;
-            case "definition":
+            case 'definition':
                 source = !species? '' : species.definition;
                 break;
-            case "source":    
+            case 'source':
                 source = !method? '' : method.source;
                 break;
             default:
@@ -59,7 +81,7 @@ class CodeBrowser extends Component {
     }
 
     currentAnnotations = () => {
-        if (this.state.selectedMode === "source") {
+        if (this.state.selectedMode === 'source') {
             const method = this.props.method; 
             return method? Date(method.timestamp) + ' by ' + method.author : '';
         }
@@ -67,7 +89,7 @@ class CodeBrowser extends Component {
     }
 
     currentLintAnnotations = () => {
-        if (this.state.selectedMode === "source") {
+        if (this.state.selectedMode === 'source') {
             const method = this.props.method; 
             return method? method.lintAnnotations : [];
         }
@@ -80,13 +102,13 @@ class CodeBrowser extends Component {
 
     acceptClicked = (source) => {
         switch (this.state.selectedMode) {
-            case "comment":
+            case 'comment':
                 this.commentClass(source);
                 break;
-            case "definition":
+            case 'definition':
                 this.defineClass(source);
                 break;
-            case "source":    
+            case 'source':
                 this.compileMethod(source);
                 break;
             default:
@@ -99,17 +121,17 @@ class CodeBrowser extends Component {
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
                     <ToggleButtonGroup
-                        label="primary"
+                        label='primary'
                         value={mode}
                         exclusive
                         onChange={this.modeChanged}>
-                        <ToggleButton value="source" variant="outlined" size="small">
+                        <ToggleButton value='source' variant='outlined' size='small'>
                             Method defintion
                         </ToggleButton>
-                        <ToggleButton value="definition" variant="outlined" size="small">
+                        <ToggleButton value='definition' variant='outlined' size='small'>
                             Class definition
                         </ToggleButton>
-                        <ToggleButton value="comment" variant="outlined" size="small">
+                        <ToggleButton value='comment' variant='outlined' size='small'>
                             Class comment
                         </ToggleButton>
                     </ToggleButtonGroup>    
