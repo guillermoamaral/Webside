@@ -66,6 +66,14 @@ class CodeBrowser extends Component {
         return ''
     }
 
+    currentLintAnnotations = () => {
+        if (this.state.selectedMode === "source") {
+            const method = this.props.method; 
+            return method? method.lintAnnotations : [];
+        }
+        return ''
+    }
+
     modeChanged = (event, mode) => {
         this.setState({selectedMode: mode})
     }
@@ -111,6 +119,7 @@ class CodeBrowser extends Component {
                         styles={this.props.styles}
                         lineNumbers={true}
                         source={this.currentSource()}
+                        lintAnnotations={this.currentLintAnnotations()}
                         selectedRanges={!this.props.selectedInterval? [] : [this.props.selectedInterval]}
                         showAccept
                         onAccept={this.acceptClicked}/>

@@ -35,12 +35,16 @@ class Debugger extends Component {
             selected = frames[0];
             await this.updateFrame(selected)
         }
-        this.setState({frames: frames, selectedFrame: selected});
+        this.setState({
+            frames: frames,
+            selectedFrame: selected,
+            selectedBinding: selected.bindings.find(b => b.name = 'self')
+        });
     }
 
     frameSelected = async (frame) => {
         await this.updateFrame(frame);
-        this.setState({selectedFrame: frame});
+        this.setState({selectedFrame: frame, selectedBinding: frame.bindings.find(b => b.name = 'self')});
     }
 
     bindingSelected = async (binding) => {

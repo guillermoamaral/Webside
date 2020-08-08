@@ -7,7 +7,8 @@ class CustomList extends Component {
     super(props);
     this.state = {
       menuOpen: false,
-      menuPosition: {x: null, y: null}
+      menuPosition: {x: null, y: null},
+      filterText: '',
     }
   }
 
@@ -18,17 +19,18 @@ class CustomList extends Component {
         const label = this.getItemLabel(item);
         const icon = this.getItemIcon(index);
         const divider = this.getItemDivider(item);
+        const selected = this.props.selectedItem === item;
         return (
           <ListItem
             disableGutters={divider}
-            //autoFocus
+            autoFocus={selected}
             style={{paddingTop: 0, paddingBottom: 0}}
             button
             divider={divider}
             key={"item" + index}
-            selected={this.props.selectedItem === item}
+            selected={selected}
             onClick={event => this.itemSelected(item)}
-            onKeyDown={this.keyPressed}
+            //onKeyDown={this.keyPressed}
             onContextMenu={this.openMenu}
             >
               {icon}
@@ -111,20 +113,31 @@ class CustomList extends Component {
     }
   }
 
-  keyPressed = (e) => {
-    if (e.keyCode === '38') {
-        this.moveUp();
-    }
-    else if (e.keyCode === '40') {
-        this.moveDown();
+  clearFilter() {
+    this.setState({filterText: ''})
+  }
+
+  keyPressed = (event) => {
+    event.preventDefault();
+    if (event.key === 'ArrowUp') {this.moveUp()}
+    if (event.key === 'ArrowDown') {this.moveDown()}
+    if (event.key === 'Escape') {
+      this.clearFilter()
+    } else {
+      const prefix = this.state.filterText + event.key;
+      this.setState({filterText: prefix})
+      const item = this.props.items.find(i => this.getItemLabel(i).startsWith(prefix));  
+      if (item) {this.itemSelected(item)}
     }
   }
 
   render () {
     return (
       <div>
-        <List style={{paddingTop: 0, paddingBottom: 0}}>
-          {this.createItems()}
+        <List
+          onKeyDown={this.keyPressed}
+          style={{paddingTop: 0, paddingBottom: 0}}>
+            {this.createItems()}
         </List>
         <PopupMenu
           options={this.menuOptions()}

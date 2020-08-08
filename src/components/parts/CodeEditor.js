@@ -17,6 +17,8 @@ require('codemirror/addon/selection/active-line.js');
 require('codemirror/addon/display/fullscreen.js');
 require('codemirror/addon/display/fullscreen.css');
 require('codemirror/addon/scroll/annotatescrollbar.js');
+require('codemirror/addon/lint/lint.js');
+require('codemirror/addon/lint/lint.css');
 
 class CodeEditor extends Component {
     static contextType = AppContext;
@@ -47,6 +49,12 @@ class CodeEditor extends Component {
         };
         return null;
     }
+
+    editorDidMount(editor) {
+        this.editor = editor; 
+        this.editor.setSize("100%", "100%");
+    }
+    
 
     markOcurrences = () => {
         const keyword = this.editor.getSelection();
@@ -189,6 +197,29 @@ class CodeEditor extends Component {
         }
         catch (error) {}
     }
+
+    lintAnnotations = ()  => {
+        if (!this.props.lintAnnotations) {return []}
+        return this.props.lintAnnotations.map(a => {
+            return {
+                from: this.lineChAt(a.from - 1),
+                to: this.lineChAt(a.to - 1),
+                severity: a.severity,
+                message: a.description}
+            })
+    }
+
+    setBreakpoint = (n) => {
+        var info = this.editor.lineInfo(n);
+        this.editor.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : this.makeMarker());
+    }
+      
+    makeMarker() {
+        var marker = document.createElement('div');
+        marker.style.color = 'red';
+        marker.innerHTML = "●";
+        return marker;
+      }
   
     render() {
         const showAccept = this.props.showAccept;
@@ -212,10 +243,10 @@ class CodeEditor extends Component {
                                 highlightSelectionMatches: {annotateScrollbar: true},
                                 indentUnit: 10, 
                                 styleActiveLine: true, 
-                                matchTags: {
-                                    bothTags: true
-                                }, 
-                                lineWrapping: true, 
+                                matchTags: {bothTags: true}, 
+                                lineWrapping: true,
+                                gutters: ['CodeMirror-lint-markers', 'breakpoints'],
+                                lint: {'getAnnotations': this.lintAnnotations},
                                 extraKeys: {
                                     "Ctrl-D": this.evaluate,
                                     "Ctrl-I": this.inspect,
@@ -227,10 +258,10 @@ class CodeEditor extends Component {
                                     "Alt-M": this.browseImplementors,
                                     "Alt-R": this.browseReferences,
                                     "Ctrl-Q": this.markOcurrences,
-                                    "Alt-Z": this.toggleFullScreen,
-                                }}}
+                                    "Alt-Z": this.toggleFullScreen}}}
                             value={this.state.value}
-                            editorDidMount={editor => {this.editor = editor; editor.setSize("100%", "100%")}}
+                            editorDidMount={editor => {this.editorDidMount(editor)}}
+                            onGutterClick={(editor, n) => {this.setBreakpoint(n)}}
                             onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
                             onChange={(editor, data, value) => {this.valueChanged(value)}}
                             onContextMenu={(editor, event) => {this.openMenu(event)}}/>

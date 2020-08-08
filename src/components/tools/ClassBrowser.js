@@ -28,7 +28,6 @@ class ClassBrowser extends Component {
             selectedVariable: null,
             selectedCategory: null,
             selectedMethod: null,
-            selectedInterval: null,
             selectedSide: "instance"
         }
     }
@@ -53,7 +52,6 @@ class ClassBrowser extends Component {
             variable: this.state.selectedVariable,
             category: this.state.selectedCategory,
             method: this.state.selectedMethod,
-            interval: this.state.selectedInterval,
         };
     }
 
@@ -68,7 +66,6 @@ class ClassBrowser extends Component {
                 selectedVariable: selections.variable,
                 selectedCategory: selections.category,
                 selectedMethod: selections.method,
-                selectedInterval: selections.interval,
             }
         })
     }
@@ -289,7 +286,7 @@ class ClassBrowser extends Component {
         const selections = this.currentSelections();
         const species = selections.class;
         const category = selections.category;
-        try{
+        try {
             const method = await this.context.api.compileMethod(species.name, category, source);
             if (!species.categories.includes(method.category)) {
                 await this.updateCategories(selections, true);
@@ -304,12 +301,15 @@ class ClassBrowser extends Component {
             this.applySelections(selections);
         }
         catch (error) {
-            const method = selections.method;
-            const interval = error.interval;
-            if (interval) {
-                method.source = source.slice(0, interval.end) + "->'" + error.description + "'" + source.slice(interval.end + 1, source.length);
-                selections.interval = error.interval;    
-            }
+            const selections = this.currentSelections();
+            selections.method.source = source;
+            if (error.interval) {
+                selections.method.lintAnnotations = [{
+                    from: error.interval.start,
+                    to: error.interval.end,
+                    severity: 'error',
+                    description: error.description}]
+                }
             this.applySelections(selections);
         }
     }
@@ -321,8 +321,7 @@ class ClassBrowser extends Component {
             selectedClass,
             selectedVariable,
             selectedCategory,
-            selectedMethod,
-            selectedInterval} = this.state;
+            selectedMethod} = this.state;
         const styles = this.props.styles;
         const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
         return (
@@ -409,7 +408,6 @@ class ClassBrowser extends Component {
                         styles={styles}
                         class={selectedClass}
                         method={selectedMethod}
-                        //selectedInterval={selectedInterval}
                         onCompileMethod={this.compileMethod}
                         onDefineClass={this.defineClass}
                         onCommentClass={this.commentClass}/>

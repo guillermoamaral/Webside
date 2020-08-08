@@ -36,8 +36,9 @@ class Workspace extends Component {
         this.setState({inspectors: inspectors})
     }
 
-    closeInspector = (event, id) => {
+    closeInspector = async (event, id) => {
         event.stopPropagation();
+        await this.context.api.unpinObject(id);
         this.setState({inspectors: this.state.inspectors.filter(i => i.key !== id)});
     }
     
@@ -85,7 +86,7 @@ class Workspace extends Component {
                                     </IconButton>
                                     <InspectorIcon/>
                                     <Typography>
-                                        {inspector.props.root.class + ': ' + inspector.props.root.id}
+                                        {'Inspecting: ' + inspector.props.root.class}
                                     </Typography>
                                 </AccordionSummary>
                                 {inspector}

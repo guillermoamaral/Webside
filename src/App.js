@@ -93,7 +93,7 @@ class App extends Component {
       addPageMenuOpen: false,
       selectedPage: null,
       transcriptOpen: false,
-      transcriptText: 'Wellcome to Webside!\r\rA web Smalltalk IDE built with ReactJS.',
+      transcriptText: 'Welcome to Webside!\r\rA web Smalltalk IDE built with ReactJS.',
       pages: []
     }
   }
@@ -175,7 +175,7 @@ class App extends Component {
 
   openInspector = (object) => {
     const inspector = <Inspector styles={this.props.classes} key={object.id} root={object}/>;
-    this.addPage(object.class + ': ' + object.id, <InspectorIcon className={this.props.classes.workspaceIcon} />, inspector);
+    this.addPage('Inspecting: ' + object.class, <InspectorIcon className={this.props.classes.workspaceIcon} />, inspector);
   }
 
   openChangesBrowser = (changes, title = 'Changes') => {

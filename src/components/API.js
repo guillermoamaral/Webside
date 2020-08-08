@@ -321,9 +321,9 @@ class API {
     }
 
     // Objects...
-    async evaluate(expression, pins = false) {
+    async evaluate(expression, pin = false) {
         try {
-            const response = await axios.post(this.baseUri + '/objects?pins=' + pins, expression);
+            const response = await axios.post(this.baseUri + '/evaluations?pin=' + pin, expression);
             return response.data;
         }
         catch (error) {this.handleError('Cannot evaluate ' + expression, error)}
