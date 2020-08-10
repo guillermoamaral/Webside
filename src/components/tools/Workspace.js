@@ -8,6 +8,7 @@ import {
     IconButton
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import PlayIcon from '@material-ui/icons/PlayArrow';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import InspectorIcon from '../icons/InspectorIcon';
 import CodeEditor from '../parts/CodeEditor';
@@ -23,6 +24,7 @@ class Workspace extends Component {
             expression: '1 @ 2 extent: 10',
             opensInspector: true,
             inspectors: [],
+            evaluating: false,
         };
     }
 
@@ -48,14 +50,18 @@ class Workspace extends Component {
 
     evaluateClicked = async () => {
         try {
-            const object = await this.context.evaluateExpression(this.state.expression, true)
+            this.setState({evaluating: true});
+            const object = await this.context.evaluateExpression(this.state.expression, true);
             if (this.state.opensInspector) {
-                this.openInspector(object)
+                this.setState({evaluating: false});
+                this.openInspector(object);
             } else {
-                this.setState({expression: this.state.expression + ' -> ' + object.printString})
+                this.setState({
+                    expression: this.state.expression + ' -> ' + object.printString,
+                    evaluating: false})
             }
         }
-        catch (error) {}
+        catch (error) {this.setState({evaluating: false})}
     }
 
     render() {
@@ -68,8 +74,10 @@ class Workspace extends Component {
                             lineNumbers={true}
                             source={this.state.expression}
                             showAccept={true}
+                            acceptIcon={<PlayIcon/>}
                             onAccept={this.evaluateClicked}
-                            onChange={this.expressionChanged}/>
+                            onChange={this.expressionChanged}
+                            evaluating={this.state.evaluating}/>
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={4} lg={4}>

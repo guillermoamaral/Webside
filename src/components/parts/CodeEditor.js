@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Paper, Box, IconButton } from '@material-ui/core';
+import { Grid, Paper, Box, IconButton, LinearProgress } from '@material-ui/core';
 import AcceptIcon from '@material-ui/icons/CheckCircle';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import PopupMenu from '../controls/PopupMenu';
@@ -33,18 +33,21 @@ class CodeEditor extends Component {
             value: props.source,
             ranges: [],
             menuOpen: false,
-            menuPosition: {x: null, y: null}
+            menuPosition: {x: null, y: null},
+            evaluating: false,
         }
     }
 
     static getDerivedStateFromProps(props, state) {
         if (props.source !== state.source 
-            || (props.selectedRanges && props.selectedRanges !== state.selectedRanges)) {
+            || (props.selectedRanges && props.selectedRanges !== state.selectedRanges)
+            || props.evaluating !== state.evaluating) {
             return {
                 source: props.source,
                 selectedRanges: props.selectedRanges,
                 value: props.source,
                 ranges: props.selectedRanges,
+                evaluating: props.evaluating,
             }
         };
         return null;
@@ -55,7 +58,6 @@ class CodeEditor extends Component {
         this.editor.setSize("100%", "100%");
     }
     
-
     markOcurrences = () => {
         const keyword = this.editor.getSelection();
         var cursor = this.editor.getSearchCursor(keyword);
@@ -168,15 +170,19 @@ class CodeEditor extends Component {
     evaluateExpression = async () => {
         const expression = this.selectedExpression();
         try {
+            this.setState({evaluating: true});
             await this.context.evaluateExpression(expression, false);
+            this.setState({evaluating: false});
         }
-        catch (error) {}
+        catch (error) {this.setState({evaluating: false})}
     }
 
     showEvaluation = async () => {
         const expression = this.selectedExpression();
         try {
+            this.setState({evaluating: true});
             const object = await this.context.evaluateExpression(expression, false);
+            this.setState({evaluating: false});
             const cursor = this.editor.getCursor("to");
             if (this.editor.getSelection().length === 0) {
                 cursor.ch = this.editor.getLine(cursor.line).length;
@@ -186,16 +192,18 @@ class CodeEditor extends Component {
             const to = {ch: from.ch + object.printString.length, line: from.line};
             this.editor.setSelection(from, to)
         }
-        catch (error) {}
+        catch (error) {this.setState({evaluating: false})}
     }
 
     inspectEvaluation = async () => {
         const expression = this.selectedExpression();
         try {
+            this.setState({evaluating: true});
             const object = await this.context.evaluateExpression(expression, true);
+            this.setState({evaluating: false});
             this.context.inspectObject(object);          
         }
-        catch (error) {}
+        catch (error) {this.setState({evaluating: false})}
     }
 
     lintAnnotations = ()  => {
@@ -223,6 +231,9 @@ class CodeEditor extends Component {
   
     render() {
         const showAccept = this.props.showAccept;
+        const acceptIcon = this.props.acceptIcon?
+            React.cloneElement(this.props.acceptIcon)
+            : <AcceptIcon size="large" style={{fontSize: 30}}/>;
         const ranges = this.state.ranges;
         if (ranges && ranges.length > 0) {this.selectRanges(ranges)}
         return (
@@ -265,12 +276,13 @@ class CodeEditor extends Component {
                             onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
                             onChange={(editor, data, value) => {this.valueChanged(value)}}
                             onContextMenu={(editor, event) => {this.openMenu(event)}}/>
+                            {this.state.evaluating && <LinearProgress variant="indeterminate"/>}
                     </Paper>
                 </Grid>
                 {showAccept && (<Grid item xs={1} md={1} lg={1}>
                     <Box display="flex" justifyContent="center" > 
                         <IconButton color="inherit" onClick={this.acceptClicked}>
-                            <AcceptIcon size="large" style={{fontSize: 30}}/>
+                            {acceptIcon}
                         </IconButton>
                     </Box>
                 </Grid>)}
