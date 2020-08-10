@@ -29,7 +29,7 @@ class Debugger extends Component {
     }
 
     async updateFrames() {
-        const frames = await this.context.api.getFrames(this.props.id);
+        const frames = await this.context.api.getDebuggerFrames(this.props.id);
         let selected = null;
         if (frames.length > 0) {
             selected = frames[0];
@@ -53,40 +53,40 @@ class Debugger extends Component {
 
     updateFrame = async (frame) => {
         if (!frame.method) {
-            const info = await this.context.api.getFrame(this.props.id, frame.index);
+            const info = await this.context.api.getDebuggerFrame(this.props.id, frame.index);
             frame.method = info.method;
             frame.class = info.class;
             frame.interval = info.interval;
         }
         if (!frame.bindings) {
-            const bindings = await this.context.api.getBindings(this.props.id, frame.index);
+            const bindings = await this.context.api.getFrameBindings(this.props.id, frame.index);
             frame.bindings = bindings;
         }
     }
 
     hopClicked = async () => {
-        await this.context.api.hop(this.props.id, this.state.selectedFrame.index);
+        await this.context.api.hopDebugger(this.props.id, this.state.selectedFrame.index);
         this.updateFrames();
     }
 
 
     skipClicked = async () => {
-        await this.context.api.skip(this.props.id, this.state.selectedFrame.index);
+        await this.context.api.skipDebugger(this.props.id, this.state.selectedFrame.index);
         this.updateFrames();
     }
 
     restartClicked = async () => {
-        await this.context.api.restart(this.props.id, this.state.selectedFrame.index);
+        await this.context.api.restartDebugger(this.props.id, this.state.selectedFrame.index);
         this.updateFrames();
     }
 
     resumeClicked = async () => {
-        await this.context.api.resume(this.props.id);
+        await this.context.api.resumeDebugger(this.props.id);
         this.context.closeDebugger(this.props.id);
     }
 
     terminateClicked = async () => {
-        await this.context.api.terminate(this.props.id);
+        await this.context.api.terminateDebugger(this.props.id);
         this.context.closeDebugger(this.props.id);
     }
 

@@ -8,7 +8,7 @@ class API {
         this.author = user;
     };
 
-    handleError(prefix, error) {
+    handleError(prefix, error, report = true) {
         var reason;
         var data;
         if (error.response) {
@@ -22,7 +22,7 @@ class API {
             reason = 'Could not send request ' + error.message;
             data = error;
         }
-        this.reportError(prefix +  '\r' + reason);
+        if (report) {this.reportError(prefix +  '\r' + reason)}
         throw(data);
     }
 
@@ -152,7 +152,16 @@ class API {
    }
 
     // Debugger...
-    async getFrames(id) {
+    async createDebugger(id) {
+        try {
+            const process = {process: id};
+            const response = await axios.post(this.baseUri + '/debuggers', process);
+            return response.data;
+       }
+       catch (error) {this.handleError('Cannot delete debugger ' + id, error)}
+    }
+
+    async getDebuggerFrames(id) {
         try {
            const response = await axios.get(this.baseUri + '/debuggers/' + id + '/frames');
            return response.data;
@@ -160,7 +169,7 @@ class API {
        catch (error) {this.handleError('Cannot fetch frames of debugger ' + id, error)}
     }
 
-    async getFrame(id, index) {
+    async getDebuggerFrame(id, index) {
         try {
            const response = await axios.get(this.baseUri + '/debuggers/' + id + '/frames/' + index);
            return response.data;
@@ -168,7 +177,7 @@ class API {
        catch (error) {this.handleError('Cannot fetch frame ' + index + ' in debugger ' + id, error)}
     }
 
-    async getBindings(id, index) {
+    async getFrameBindings(id, index) {
         try {
            const response = await axios.get(this.baseUri + '/debuggers/' + id + '/frames/' + index + '/bindings');
            return response.data;
@@ -176,7 +185,7 @@ class API {
        catch (error) {this.handleError('Cannot fetch bindings of frame ' + index + ' in debugger ' + id, error)}
     }
 
-    async hop(id, index) {
+    async hopDebugger(id, index) {
         try {
            const response = await axios.post(this.baseUri + '/debuggers/' + id + '/hop?frame=' + index);
            return response.data;
@@ -184,7 +193,7 @@ class API {
        catch (error) {this.handleError('Cannot hop on frame '+ index + ' of debugger ' + id, error)}
     }
 
-    async skip(id, index) {
+    async skipDebugger(id, index) {
         try {
            const response = await axios.post(this.baseUri + '/debuggers/' + id + '/skip?frame=' + index);
            return response.data;
@@ -192,7 +201,7 @@ class API {
        catch (error) {this.handleError('Cannot skip on frame '+ index + ' of debugger ' + id, error)}
     }
 
-    async restart(id, index) {
+    async restartDebugger(id, index) {
         try {
            const response = await axios.post(this.baseUri + '/debuggers/' + id + '/restart?frame=' + index);
            return response.data;
@@ -200,7 +209,7 @@ class API {
        catch (error) {this.handleError('Cannot skip on frame '+ index + ' of debugger ' + id, error)}
     }
 
-    async resume(id) {
+    async resumeDebugger(id) {
         try {
            const response = await axios.post(this.baseUri + '/debuggers/' + id + '/resume');
            return response.data;
@@ -208,12 +217,20 @@ class API {
        catch (error) {this.handleError('Cannot resume debugger ' + id, error)}
     }
 
-    async terminate(id) {
+    async terminateDebugger(id) {
         try {
            const response = await axios.post(this.baseUri + '/debuggers/' + id + '/terminate');
            return response.data;
        }
        catch (error) {this.handleError('Cannot terminate debugger ' + id, error)}
+    }
+
+    async deleteDebugger(id) {
+        try {
+           const response = await axios.delete(this.baseUri + '/debuggers/' + id);
+           return response.data;
+       }
+       catch (error) {this.handleError('Cannot delete debugger ' + id, error)}
     }
 
     // Changes...
@@ -320,16 +337,20 @@ class API {
         catch (error) {this.handleError('Cannot rename selector ' + selector + ' to ' + newSelector, error)}
     }
 
-    // Objects...
-    async evaluate(expression, pin = false) {
+    // Evaluations...
+    async evaluateExpression(expression, synch = false, pin = false) {
         try {
-            const response = await axios.post(this.baseUri + '/evaluations?pin=' + pin, expression);
+            const evaluation = {
+                expression: expression,
+                context: null
+            }
+            const response = await axios.post(this.baseUri + '/evaluations?synch=' + synch + '&pin=' + pin, evaluation);
             return response.data;
         }
-        catch (error) {this.handleError('Cannot evaluate ' + expression, error)}
+        catch (error) {this.handleError('Cannot evaluate ' + expression, error, false)}
     }
 
-    async debug(expression) {
+    async debugExpression(expression) {
         try {
             const response = await axios.post(this.baseUri + '/debuggers', expression);
             return response.data;
@@ -337,6 +358,7 @@ class API {
         catch (error) {this.handleError('Cannot debug ' + expression, error)}
     }
 
+    // Objects...
     async getObjects() {
         try {
             const response = await axios.get(this.baseUri + '/objects')
@@ -350,7 +372,9 @@ class API {
             const response = await axios.get(this.baseUri + '/objects/' + id)
             return response.data
         }
-        catch (error) {this.handleError('Cannot fetch object with id ' + id, error)}
+        catch (error) {
+            const report = !error.response || !error.response.data || !error.response.data.process;
+            this.handleError('Cannot fetch object with id ' + id, error, report)}
     }
 
     async unpinObject(id) {

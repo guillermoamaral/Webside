@@ -101,9 +101,9 @@ class CodeEditor extends Component {
 
     menuOptions() {
         return [
-            {label: 'Do it', action: this.evaluate},
-            {label: 'Show it', action: this.show},
-            {label: 'Inspect it', action: this.inspect},
+            {label: 'Do it', action: this.evaluateExpression},
+            {label: 'Show it', action: this.showEvaluation},
+            {label: 'Inspect it', action: this.inspectEvaluation},
             null,
             {label: 'Senders', action: this.browseSenders},
             {label: 'Implementors', action: this.browseImplementors},
@@ -150,31 +150,31 @@ class CodeEditor extends Component {
         this.context.browseReferences(this.targetWord());
     }
 
-    evaluableExpression() {
+    selectedExpression() {
         const expression = this.editor.getSelection();
         if (expression.length > 0) {return expression}
         const cursor = this.editor.getCursor();
         return this.editor.getLine(cursor.line);
     }
 
-    debug = async () => {
-        const expression = this.evaluableExpression();
+    debugExpression = async () => {
+        const expression = this.selectedExpression();
         try {
             await this.context.debugExpression(expression);
         }
         catch (error) {}
     }
 
-    evaluate = async () => {
-        const expression = this.evaluableExpression();
+    evaluateExpression = async () => {
+        const expression = this.selectedExpression();
         try {
             await this.context.evaluateExpression(expression, false);
         }
         catch (error) {}
     }
 
-    show = async () => {
-        const expression = this.evaluableExpression();
+    showEvaluation = async () => {
+        const expression = this.selectedExpression();
         try {
             const object = await this.context.evaluateExpression(expression, false);
             const cursor = this.editor.getCursor("to");
@@ -189,8 +189,8 @@ class CodeEditor extends Component {
         catch (error) {}
     }
 
-    inspect = async () => {
-        const expression = this.evaluableExpression();
+    inspectEvaluation = async () => {
+        const expression = this.selectedExpression();
         try {
             const object = await this.context.evaluateExpression(expression, true);
             this.context.inspectObject(object);          
@@ -248,10 +248,10 @@ class CodeEditor extends Component {
                                 gutters: ['CodeMirror-lint-markers', 'breakpoints'],
                                 lint: {'getAnnotations': this.lintAnnotations},
                                 extraKeys: {
-                                    "Ctrl-D": this.evaluate,
-                                    "Ctrl-I": this.inspect,
-                                    "Ctrl-S": this.show,
-                                    "Ctrl-U": this.debug,
+                                    "Ctrl-D": this.evaluateExpression,
+                                    "Ctrl-I": this.inspectEvaluation,
+                                    "Ctrl-S": this.showEvaluation,
+                                    "Ctrl-U": this.debugExpression,
                                     "Alt-S": this.acceptClicked,
                                     "Ctrl-B": this.browseClass,
                                     "Alt-N": this.browseSenders,

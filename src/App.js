@@ -129,6 +129,9 @@ class App extends Component {
     if (page.component.type.name === 'Inspector') {
       this.api.unpinObject(page.component.props.root.id)
     }
+    if (page.component.type.name === 'Debugger') {
+      this.api.deleteDebugger(page.component.props.id)
+    }
     const {pages, selectedPage} = this.state;
     let i = pages.indexOf(page);
     const j = pages.indexOf(selectedPage);
@@ -163,9 +166,9 @@ class App extends Component {
     this.addPage('Workspace', <WorkspaceIcon className={this.props.classes.workspaceIcon} />, workspace);
   }
 
-  openDebugger = (id) => {
+  openDebugger = (id, title = 'Debugger') => {
     const tool = <Debugger styles={this.props.classes} key={id} id={id}/>;
-    this.addPage('Debugger: ' + id, <DebuggerIcon className={this.props.classes.debuggerIcon} />, tool);
+    this.addPage(title, <DebuggerIcon className={this.props.classes.debuggerIcon} />, tool);
   }
 
   closeDebugger = (id) => {
@@ -214,17 +217,20 @@ class App extends Component {
   }
 
   debugExpression = async (expression) => {
-    const id = await this.api.debug(expression);
-    this.openDebugger(id)
+    const id = await this.api.debugExpression(expression);
+    this.openDebugger(id, 'Debugging expression')
   }
 
   evaluateExpression = async (expression, pin) => {
     try {
-      const object = await this.api.evaluate(expression, pin);
+      const evaluation = await this.api.evaluateExpression(expression, false, pin);
+      const object = await this.api.getObject(evaluation.id);
       return object;
     }
     catch (error) {
-      this.openDebugger(error.debugger)
+      console.log('ya reporto?')
+      const id = await this.api.createDebugger(error.process)
+      this.openDebugger(id)
       // const debug = await this.confirm(error.description, 'Stack tracke:\r' + error.stack + '\r\rDo you want to debug it?');
       // (debug)? this.openDebugger(error.debugger) : this.reportError(error.description);
     }
