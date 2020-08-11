@@ -4,6 +4,7 @@ import TreeItem from '@material-ui/lab/TreeItem';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import PopupMenu from './PopupMenu';
+import Scrollable from './Scrollable';
 
 class CustomTree extends Component {
     constructor(props) {
@@ -84,10 +85,10 @@ class CustomTree extends Component {
 
     menuOptions() {
         if (this.props.menuOptions) {
-            return this.props.menuOptions.map(o => {
-                return !o? null : {
-                    label: o.label,
-                    action: () => {this.menuOptionClicked(o)}
+            return this.props.menuOptions.map(option => {
+                return !option? null : {
+                    label: option.label,
+                    action: () => {this.menuOptionClicked(option)}
                 }
             })
         }
@@ -103,19 +104,18 @@ class CustomTree extends Component {
     }
     
     menuOptionClicked(option) {
-        if (option.action) {
-            option.action(this.state.selectedItem);
-        }
+        if (option.action) {option.action(this.state.selectedItem)}
     }
 
     render() {
+        const selected = !this.state.selectedItem? null : this.getItemId(this.state.selectedItem);
         return (
-            <div>
+            <Scrollable>
                 <TreeView
                     defaultCollapseIcon={<ArrowDropDownIcon />}
                     defaultExpanded={['root']}
                     defaultExpandIcon={<ArrowRightIcon />}
-                    selected={!this.state.selectedItem? null : this.getItemId(this.state.selectedItem)}>
+                    selected={selected}>
                         {this.createItems(this.props.items)}
                 </TreeView>
                 <PopupMenu
@@ -123,9 +123,9 @@ class CustomTree extends Component {
                     open={this.state.menuOpen}
                     position={this.state.menuPosition}
                     onClose={this.closeMenu}/>
-          </div>
+            </Scrollable>
         )
-    };
+    }
 }
 
 export default CustomTree;

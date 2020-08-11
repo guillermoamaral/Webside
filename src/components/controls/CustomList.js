@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { List, ListItem, ListItemText, ListItemIcon } from '@material-ui/core';
 import PopupMenu from './PopupMenu';
+import Scrollable from './Scrollable';
 
 class CustomList extends Component {
   constructor(props) {
@@ -133,20 +134,20 @@ class CustomList extends Component {
 
   render () {
     return (
-      <div>
-        <List
-          onKeyDown={this.keyPressed}
-          style={{paddingTop: 0, paddingBottom: 0}}>
-            {this.createItems()}
-        </List>
-        <PopupMenu
-          options={this.menuOptions()}
-          open={this.state.menuOpen}
-          position={this.state.menuPosition}
-          onClose={this.closeMenu}/>
-      </div>
+      <Scrollable>
+          <List
+            onKeyDown={this.keyPressed}
+            style={{paddingTop: 0, paddingBottom: 0}}>
+                {this.createItems()}
+          </List>
+          <PopupMenu
+            options={this.menuOptions()}
+            open={this.state.menuOpen}
+            position={this.state.menuPosition}
+            onClose={this.closeMenu}/>
+      </Scrollable>
     )
-  };
+  }
 }
 
 export default CustomList;

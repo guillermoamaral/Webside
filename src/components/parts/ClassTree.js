@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import CustomTree from '../controls/CustomTree';
 import { AppContext } from '../../AppContext';
+import Scrollable from '../controls/Scrollable';
 
 class ClassTree extends Component {
     static contextType = AppContext;
@@ -42,17 +43,15 @@ class ClassTree extends Component {
     render() {
         const root = this.props.root;
         return (
-            <div>
-                <CustomTree
-                    items={root? [root] : []}
-                    itemLabel="name"
-                    children={"subclasses"}
-                    onExpand={this.props.onExpand}
-                    onSelect={this.props.onSelect}
-                    selectedItem={this.props.selectedClass}
-                    menuOptions={this.menuOptions()}
-                />
-            </div>
+            <CustomTree
+                items={root? [root] : []}
+                itemLabel="name"
+                children={"subclasses"}
+                onExpand={this.props.onExpand}
+                onSelect={this.props.onSelect}
+                selectedItem={this.props.selectedClass}
+                menuOptions={this.menuOptions()}
+            />
         )
     }
 }
