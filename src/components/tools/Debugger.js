@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Grid, Paper, IconButton, Tooltip } from '@material-ui/core';
 import clsx from 'clsx';
 import { Icon, InlineIcon } from "@iconify/react";
@@ -12,7 +12,7 @@ import CustomList from '../controls/CustomList';
 import CodeBrowser from '../parts/CodeBrowser';
 import CodeEditor from '../parts/CodeEditor';
 
-class Debugger extends Component {
+class Debugger extends PureComponent {
     static contextType = AppContext;
 
     constructor(props) {
@@ -88,6 +88,14 @@ class Debugger extends Component {
     terminateClicked = async () => {
         await this.context.api.terminateDebugger(this.props.id);
         this.context.closeDebugger(this.props.id);
+    }
+
+    methodCompiled = async (method) => {
+        const selected = this.state.selectedFrame.method;
+        if (method.selector === selected.selector) {
+            await this.context.api.restartDebugger(this.props.id, this.state.selectedFrame.index, true);;
+            this.updateFrames();
+        }
     }
 
     render() {

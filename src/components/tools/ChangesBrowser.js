@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Grid, Paper } from '@material-ui/core';
-import { Controlled as CodeMirror } from 'react-codemirror2';
 import CustomTable from '../controls/CustomTable';
+import CodeEditor from '../parts/CodeEditor';
 import clsx from 'clsx';
 import { AppContext } from '../../AppContext';
 
@@ -50,21 +50,11 @@ class ChangesBrowser extends Component {
                     </Paper>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
-                    <Paper variant="outlined">
-                        <CodeMirror
-                            className={styles.codeMirror}
-                            value={change? change.sourceCode : ''}
-                            options={{
-                                mode: 'smalltalk',
-                                theme: 'material',
-                                lineNumbers: true,
-                                matchBrackets: true, 
-                                indentUnit: 10, 
-                                highlightSelectionMatches: true, 
-                                styleActiveLine: true,
-                                matchTags: {bothTags: true}, 
-                                lineWrapping: true}}/>
-                    </Paper>
+                    <CodeEditor
+                        styles={this.props.styles}
+                        lineNumbers
+                        source={change? change.sourceCode : ''}
+                        showAccept={false}/>
                 </Grid> 
             </Grid>
         )

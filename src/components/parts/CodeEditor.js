@@ -262,6 +262,7 @@ class CodeEditor extends Component {
                                     "Ctrl-D": this.evaluateExpression,
                                     "Ctrl-I": this.inspectEvaluation,
                                     "Ctrl-S": this.showEvaluation,
+                                    "Ctrl-P": this.showEvaluation,
                                     "Ctrl-U": this.debugExpression,
                                     "Alt-S": this.acceptClicked,
                                     "Ctrl-B": this.browseClass,
@@ -274,7 +275,7 @@ class CodeEditor extends Component {
                             editorDidMount={editor => {this.editorDidMount(editor)}}
                             onGutterClick={(editor, n) => {this.setBreakpoint(n)}}
                             onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
-                            onChange={(editor, data, value) => {this.valueChanged(value)}}
+                            //onChange={(editor, data, value) => {this.valueChanged(value)}}
                             onContextMenu={(editor, event) => {this.openMenu(event)}}/>
                             {this.state.evaluating && <LinearProgress variant="indeterminate"/>}
                     </Paper>

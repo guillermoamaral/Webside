@@ -160,10 +160,11 @@ class ClassBrowser extends Component {
 
     async updateMethod(selections, force = true) {
         const species = selections.class;
+        const selector = selections.method.selector;    
         if (force) {
-            const method = await this.context.api.getMethod(species.name, selections.method.selector);
+            const method = await this.context.api.getMethod(species.name, selector);
             if (method) { 
-                species.methods = species.methods.map(m => m.selector === method.selector? method : m)
+                species.methods = species.methods.map(m => m.selector === selector? method : m)
                 selections.method = method;
             }
         }

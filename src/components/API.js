@@ -163,10 +163,10 @@ class API {
 
     async getDebuggerFrames(id) {
         try {
-           const response = await axios.get(this.baseUri + '/debuggers/' + id + '/frames');
-           return response.data;
-       }
-       catch (error) {this.handleError('Cannot fetch frames of debugger ' + id, error)}
+            const response = await axios.get(this.baseUri + '/debuggers/' + id + '/frames');
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot fetch frames of debugger ' + id, error)}
     }
 
     async getDebuggerFrame(id, index) {
@@ -201,12 +201,12 @@ class API {
        catch (error) {this.handleError('Cannot skip on frame '+ index + ' of debugger ' + id, error)}
     }
 
-    async restartDebugger(id, index) {
+    async restartDebugger(id, index, update = false) {
         try {
-           const response = await axios.post(this.baseUri + '/debuggers/' + id + '/restart?frame=' + index);
+           const response = await axios.post(this.baseUri + '/debuggers/' + id + '/restart?frame=' + index + '&update=' + update);
            return response.data;
        }
-       catch (error) {this.handleError('Cannot skip on frame '+ index + ' of debugger ' + id, error)}
+       catch (error) {this.handleError('Cannot restart on frame '+ index + ' of debugger ' + id, error)}
     }
 
     async resumeDebugger(id) {

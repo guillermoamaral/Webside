@@ -1,30 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import { Tabs, Tab, Box, IconButton } from '@material-ui/core';
+import TabPanel from './TabPanel';
 import CloseIcon from '@material-ui/icons/Close';
 
-function TabPanel(props) {
-  const {id, children, visible, ...other} = props;
-  return (
-    <div
-      role="tabpanel"
-      hidden={!visible}
-      id={id}
-      {...other}>
-        <Box className={props.styles.box} p={1}>
-          {children}
-        </Box>
-    </div>
-  )
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  id: PropTypes.any.isRequired,
-  visible: PropTypes.any.isRequired,
-}
-
-class TabControl extends Component {
+class TabControl extends PureComponent {
   tabLabel = (page, index) => {
     return (
       <span>

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import {
   Container,
@@ -84,7 +84,7 @@ const theme = createMuiTheme({
   },
 });
 
-class App extends Component {
+class App extends PureComponent {
   constructor(props){
     super(props);
     this.api = new API(baseUri, 'guest', this.reportError, this.reportChange);
@@ -228,7 +228,6 @@ class App extends Component {
       return object;
     }
     catch (error) {
-      console.log('ya reporto?')
       const id = await this.api.createDebugger(error.process)
       this.openDebugger(id)
       // const debug = await this.confirm(error.description, 'Stack tracke:\r' + error.stack + '\r\rDo you want to debug it?');
@@ -253,8 +252,9 @@ class App extends Component {
   }
 
   reportChange = async (change) => {
-    const changes = await this.api.getChanges(); 
-    this.setState({changesCount: changes.length})
+    //this triggers unnecessary renders!!!
+    // const changes = await this.api.getChanges(); 
+    // this.setState({changesCount: changes.length})
   }
 
   addClassBrowserClicked = () => {
@@ -272,6 +272,7 @@ class App extends Component {
   }
 
   render() {
+    console.log('render app')
     const context = {
       api: this.api,
       classNames: this.state.classNames,
@@ -330,11 +331,11 @@ class App extends Component {
                         onClose={() => {this.setState({addPageMenuOpen: false})}}>
                           <MenuItem onClick={this.addClassBrowserClicked}>
                             <ClassBrowserIcon />
-                            Class Browse
+                            Class Browser
                           </MenuItem>
                           <MenuItem onClick={this.addWorkspaceClicked}>
                             <WorkspaceIcon />
-                            New Workspace
+                            Workspace
                           </MenuItem>
                       </Menu>
                     </Grid>

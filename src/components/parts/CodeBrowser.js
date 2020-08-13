@@ -18,6 +18,7 @@ class CodeBrowser extends Component {
     static getDerivedStateFromProps(props, state) {
         const mode = !props.method && state.selectedMode === 'source'? 
             'definition' : props.method !== state.method? 'source' : state.selectedMode;
+        if (props.method === state.method && mode == state.selectedMode) {return null}
         return {
             selectedMode: mode,
             method: props.method,
