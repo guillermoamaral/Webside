@@ -27,6 +27,7 @@ class API {
     }
 
     // Queries...
+
     async getClassTree(root, depth) {
         try {
             const response = await axios.get(this.baseUri + '/classes?root=' + root + '&tree=true&depth=' + depth);     
@@ -152,6 +153,21 @@ class API {
    }
 
     // Debugger...
+
+    async debugExpression(expression) {
+        try {
+            const evaluation = {
+                expression: expression,
+                context: null,
+                debug: true,
+                pin: false
+            }
+            const response = await axios.post(this.baseUri + '/evaluations', evaluation);
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot debug ' + expression, error, false)}
+    }
+
     async createDebugger(id) {
         try {
             const process = {process: id};
@@ -234,6 +250,7 @@ class API {
     }
 
     // Changes...
+
     async getChanges() {
         try {
            const response = await axios.get(this.baseUri + '/changes?author=' + this.author);
@@ -256,6 +273,7 @@ class API {
     }
 
     // Change helpers...
+
     async defineClass(classname, definition) {
         const change = this.newChange('ClassDefinition');
         change.class = classname;
@@ -338,27 +356,23 @@ class API {
     }
 
     // Evaluations...
+
     async evaluateExpression(expression, synch = false, pin = false) {
         try {
             const evaluation = {
                 expression: expression,
-                context: null
+                context: null,
+                synch: synch,
+                pin: pin
             }
-            const response = await axios.post(this.baseUri + '/evaluations?synch=' + synch + '&pin=' + pin, evaluation);
+            const response = await axios.post(this.baseUri + '/evaluations', evaluation);
             return response.data;
         }
         catch (error) {this.handleError('Cannot evaluate ' + expression, error, false)}
     }
 
-    async debugExpression(expression) {
-        try {
-            const response = await axios.post(this.baseUri + '/debuggers', expression);
-            return response.data;
-        }
-        catch (error) {this.handleError('Cannot debug ' + expression, error)}
-    }
-
     // Objects...
+
     async getObjects() {
         try {
             const response = await axios.get(this.baseUri + '/objects')

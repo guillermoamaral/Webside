@@ -106,7 +106,9 @@ class CodeEditor extends Component {
             {label: 'Do it', action: this.evaluateExpression},
             {label: 'Show it', action: this.showEvaluation},
             {label: 'Inspect it', action: this.inspectEvaluation},
+            {label: 'Debug it', action: this.debugExpression},
             null,
+            {label: 'Browse', action: this.browseClass},
             {label: 'Senders', action: this.browseSenders},
             {label: 'Implementors', action: this.browseImplementors},
             {label: 'Class references', action: this.browseReferences}
