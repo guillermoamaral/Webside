@@ -24,6 +24,7 @@ import WorkspaceIcon from './components/icons/WorkspaceIcon';
 import InspectorIcon from './components/icons/InspectorIcon';
 import ChangesBrowserIcon from './components/icons/ChangesBrowserIcon';
 import DebuggerIcon from './components/icons/DebuggerIcon';
+import TestRunnerIcon from './components/icons/TestRunnerIcon';
 import Titlebar from './components/layout/Titlebar'
 import Sidebar from './components/layout/Sidebar';
 import TabControl from './components/controls/TabControl';
@@ -34,6 +35,7 @@ import Inspector from './components/tools/Inspector';
 import Workspace from './components/tools/Workspace';
 import ChangesBrowser from './components/tools/ChangesBrowser';
 import Debugger from './components/tools/Debugger';
+import TestRunner from './components/tools/TestRunner';
 
 const smalltalk = 'Bee';
 var port;
@@ -132,6 +134,9 @@ class App extends PureComponent {
     if (page.component.type.name === 'Debugger') {
       this.api.deleteDebugger(page.component.props.id)
     }
+    if (page.component.type.name === 'TestRunner') {
+      this.api.deleteTestRun(page.component.props.id)
+    }
     const {pages, selectedPage} = this.state;
     let i = pages.indexOf(page);
     const j = pages.indexOf(selectedPage);
@@ -186,6 +191,11 @@ class App extends PureComponent {
     this.addPage(title + ' (' + changes.length + ')', <ChangesBrowserIcon className={this.props.classes.changesBrowserIcon} />, browser);
   }
 
+  openTestRunner = (id, title = 'Test Runner') => {
+    const tool = <TestRunner styles={this.props.classes} key={id} id={id}/>;
+    this.addPage(title, <TestRunnerIcon className={this.props.classes.testRunnerIcon} />, tool);
+  }
+
   browseSenders = (selector) => {
     this.api.getSenders(selector)
       .then(methods => this.openMethodBrowser(methods, 'Senders of ' + selector)); 
@@ -233,6 +243,16 @@ class App extends PureComponent {
       // const debug = await this.confirm(error.description, 'Stack tracke:\r' + error.stack + '\r\rDo you want to debug it?');
       // (debug)? this.openDebugger(error.debugger) : this.reportError(error.description);
     }
+  }
+
+  runTest = (classname, selector) => {
+    this.api.runTest(classname, selector)
+      .then(status => this.openTestRunner(status.id, 'Test ' + selector)); 
+  }
+
+  runTestClass = (classname) => {
+    this.api.runTestClass(classname)
+      .then(status => this.openTestRunner(status.id, 'Test ' + classname)); 
   }
 
   expandSidebar = () => {
@@ -284,6 +304,8 @@ class App extends PureComponent {
       browseReferences: this.browseReferences,
       evaluateExpression: this.evaluateExpression,
       debugExpression: this.debugExpression,
+      runTest: this.runTest,
+      runTestClass: this.runTestClass,
       closeDebugger: this.closeDebugger,
       inspectObject: this.openInspector,
       reportError: this.reportError};
