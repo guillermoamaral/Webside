@@ -36,7 +36,9 @@ class ClassTree extends Component {
             {label: 'Remove', action: this.removeClass},
             null,
             {label: 'Browse', action: c => this.context.browseClass(c.name)},
-            {label: 'References', action: c => this.context.browseReferences(c.name)}
+            {label: 'References', action: c => this.context.browseReferences(c.name)},
+            null,
+            {label: 'Test', action: c => this.context.runTestClass(c.name)},
         ]
     }
 

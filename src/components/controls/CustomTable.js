@@ -22,7 +22,6 @@ class CustomTable extends Component {
         if (handler) {handler(row)}
     }
     
-
     render() {
         const columns = this.props.columns;
         const rows = this.props.rows;
@@ -36,8 +35,7 @@ class CustomTable extends Component {
                                     <TableCell
                                         key={column.id}
                                         align={column.align}
-                                        style={{minWidth: column.minWith}}
-                                    >
+                                        style={{minWidth: column.minWith}}>
                                         {column.label}
                                     </TableCell>
                                 ))}

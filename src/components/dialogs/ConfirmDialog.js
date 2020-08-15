@@ -16,8 +16,7 @@ function ConfirmDialog (props, context) {
       onClose={() => onClose(false)}
       onExited={onExited}
       aria-labelledby="confirm-dialog-title"
-      aria-describedby="confirm-dialog-message"
-    >
+      aria-describedby="confirm-dialog-message">
       <DialogTitle id="confirm-dialog-title">{title}</DialogTitle>
       <DialogContent>
         {typeof message === `string`

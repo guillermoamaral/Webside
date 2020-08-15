@@ -18,8 +18,7 @@ function PromptDialog (props, context) {
       onClose={() => onClose(null)}
       onExited={onExited}
       aria-labelledby="prompt-dialog-title"
-      aria-describedby="prompt-dialog-message"
-    >
+      aria-describedby="prompt-dialog-message">
       <DialogTitle id="prompt-dialog-title">{title}</DialogTitle>
       <DialogContent>
         {typeof message === `string`
@@ -34,8 +33,7 @@ function PromptDialog (props, context) {
           margin="dense"
           fullWidth
           autoFocus
-          variant="outlined"
-        />
+          variant="outlined"/>
       </DialogContent>
       <DialogActions>
         <Button

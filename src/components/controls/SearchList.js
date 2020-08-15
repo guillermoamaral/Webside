@@ -95,6 +95,7 @@ class SearchList extends Component {
     render () {
       return (
         <Autocomplete
+          freeSolo
           id="autocomplete"
           ListboxComponent={ListboxComponent}
           renderGroup={params => [

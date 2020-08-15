@@ -34,7 +34,7 @@ class ChangesBrowser extends Component {
               align: 'left',
               format: (value) => value.toLocaleString('en-US'),
             },
-          ];
+        ];
         const styles = this.props.styles;
         const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
         return (

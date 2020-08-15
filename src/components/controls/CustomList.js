@@ -74,10 +74,10 @@ class CustomList extends Component {
 
   menuOptions() {
     if (this.props.menuOptions) {
-      return this.props.menuOptions.map(o => {
-        return !o? null : {
-          label: o.label,
-          action: () => {this.menuOptionClicked(o)}
+      return this.props.menuOptions.map(option => {
+        return !option? null : {
+          label: option.label,
+          action: () => {this.menuOptionClicked(option)}
         }
       })
     }

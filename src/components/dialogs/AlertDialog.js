@@ -16,8 +16,7 @@ function AlertDialog (props, context) {
       onClose={() => onClose()}
       onExited={onExited}
       aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-message"
-    >
+      aria-describedby="alert-dialog-message">
       <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogContent>
         {typeof message === `string`
@@ -31,7 +30,8 @@ function AlertDialog (props, context) {
           variant={ok.variant}
           startIcon={ok.startIcon}
           endIcon={ok.endIcon}
-          autoFocus>{ok.text}
+          autoFocus>
+            {ok.text}
         </Button>
       </DialogActions>
     </Dialog>

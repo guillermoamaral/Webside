@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Tabs, Tab, Box, IconButton } from '@material-ui/core';
+import { Tabs, Tab, IconButton } from '@material-ui/core';
 import TabPanel from './TabPanel';
 import CloseIcon from '@material-ui/icons/Close';
 

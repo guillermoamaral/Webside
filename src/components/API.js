@@ -158,7 +158,7 @@ class API {
         try {
             const evaluation = {
                 expression: expression,
-                context: null,
+                scope: null,
                 debug: true,
                 pin: false
             }
@@ -361,7 +361,7 @@ class API {
         try {
             const evaluation = {
                 expression: expression,
-                context: null,
+                scope: null,
                 synch: synch,
                 pin: pin
             }
@@ -407,6 +407,61 @@ class API {
         catch (error) {this.handleError('Cannot fecth slot ' + path + ' of object with id ' + id, error)}
     }
 
+       // Tests...
+    
+    async runTest(classname, selector) {
+        try {
+            const run = {
+                methods: [{class: classname, selector: selector}],
+            }
+            const response = await axios.post(this.baseUri + '/test-runs', run);
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot run test ' + selector + ' in ' + classname, error)}
+    }
+
+    async runTestClass(classname) {
+        try {
+            const run = {
+                classes: [classname],
+            }
+            const response = await axios.post(this.baseUri + '/test-runs', run);
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot run test class ' + classname, error)}
+    }
+
+    async getTestRunStatus(id) {
+        try {
+            const response = await axios.get(this.baseUri + '/test-runs/' + id + '/status');
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot get the status of test run ' + id, error)}
+    }
+
+    async runTestRun(id) {
+        try {
+            const response = await axios.post(this.baseUri + '/test-runs/' + id + '/run');
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot run test run ' + id, error)}
+    }    
+
+    async stopTestRun(id) {
+        try {
+            const response = await axios.post(this.baseUri + '/test-runs/' + id + '/stop');
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot stop test run ' + id, error)}
+    }
+
+    async deleteTestRun(id) {
+        try {
+            const response = await axios.delete(this.baseUri + '/test-runs/' + id);
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot delete test run ' + id, error)}
+    }
 }
 
 export default API;

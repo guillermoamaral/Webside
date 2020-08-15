@@ -45,7 +45,9 @@ class MethodList extends Component {
             {label: 'Local senders', action: m => this.context.browseLocalSenders(m.selector, m.class)},
             {label: 'Implementors', action: m => this.context.browseImplementors(m.selector)},
             {label: 'Local implementors', action: m => this.context.browseLocalImplementors(m.selector, m.class)},
-            {label: 'Class references', action: m => this.context.browseReferences(m.class)}
+            {label: 'Class references', action: m => this.context.browseReferences(m.class)},
+            null,
+            {label: 'Test', action: m => this.context.runTest(m.class, m.selector)},
         ]
     }
 

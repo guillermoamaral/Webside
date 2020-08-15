@@ -5,9 +5,9 @@ class PopupMenu extends Component {
     createItems = () => {
         if (!this.props.options) {return []};
         return (
-            this.props.options.map(option => {
+            this.props.options.map((option, index) => {
                  if (!option) {
-                    return <Divider key="divider"/>
+                    return <Divider key={"divider-" + index}/>
                 } else {
                     return (
                         <MenuItem
@@ -52,8 +52,7 @@ class PopupMenu extends Component {
                 open={this.props.open}
                 onClose={this.close}
                 anchorReference="anchorPosition"
-                anchorPosition={this.position()}
-                >
+                anchorPosition={this.position()}>
                 {this.createItems()}
             </Menu>
         )
