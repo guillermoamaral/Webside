@@ -32,10 +32,9 @@ class CustomList extends Component {
             selected={selected}
             onClick={event => this.itemSelected(item)}
             //onKeyDown={this.keyPressed}
-            onContextMenu={this.openMenu}
-            >
+            onContextMenu={this.openMenu}>
               {icon}
-              <ListItemText primary={label} />
+              <ListItemText primary={label}/>
           </ListItem>
         )
       })

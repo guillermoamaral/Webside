@@ -19,6 +19,12 @@ class ChangesBrowser extends Component {
         this.setState({selectedChange: change});
     }
 
+    menuOptions() {
+        return [
+            {label: 'Browse', action: ch => this.context.browseClass(ch.class)},
+        ]
+    }
+
     render() {
         const change = this.state.selectedChange;
         const rows = this.props.changes;
@@ -45,7 +51,8 @@ class ChangesBrowser extends Component {
                             styles={styles}
                             columns={columns}
                             rows={rows}
-                            onSelect={this.changeSelected}>
+                            onSelect={this.changeSelected}
+                            menuOptions={this.menuOptions()}>
                         </CustomTable>
                     </Paper>
                 </Grid>

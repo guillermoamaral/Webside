@@ -126,6 +126,18 @@ class TestRunner extends Component {
         this.setState({filter: type})
     }
 
+    menuOptions() {
+        return [
+            {label: 'Debug', action: this.debugTest},
+            {label: 'Browse', action: test => this.context.browseClass(test.class)},
+        ]
+    }
+
+    debugTest = async (test) => {
+        const id = await this.context.api.debugTest(this.props.id, test.class, test.selector);
+        this.context.openDebugger(id, 'Debugging expression');
+    }
+
     render() {
         const styles = this.props.styles;
         const {status, results} = this.state;
@@ -147,7 +159,7 @@ class TestRunner extends Component {
             <div>
                 <Grid container spacing={1} display="flex" alignItems="center" justify="center">
                     <Grid item xs={12} md={12} lg={12}>
-                        <Typography>
+                        <Typography variant="h6">
                             Suite: {status.name}
                         </Typography>
                     </Grid>
@@ -227,7 +239,8 @@ class TestRunner extends Component {
                                             <CustomTable
                                                 styles={styles}
                                                 columns={testColumns}
-                                                rows={rows}>
+                                                rows={rows}
+                                                menuOptions={this.menuOptions()}>
                                             </CustomTable>
                                         </Grid>
                                     </Grid>

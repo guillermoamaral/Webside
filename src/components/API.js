@@ -470,6 +470,18 @@ class API {
         }
         catch (error) {this.handleError('Cannot delete test run ' + id, error)}
     }
+
+    async debugTest(id, classname, selector) {
+        try {
+            const test = {
+                class: classname,
+                selector: selector,
+            }
+            const response = await axios.post(this.baseUri + '/test-runs/' + id + '/debug', test);
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot debug test ' + selector + ' in ' + classname, error)}
+    }
 }
 
 export default API;

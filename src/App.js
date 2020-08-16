@@ -228,7 +228,7 @@ class App extends PureComponent {
 
   debugExpression = async (expression) => {
     const id = await this.api.debugExpression(expression);
-    this.openDebugger(id, 'Debugging expression')
+    this.openDebugger(id, 'Debugging expression');
   }
 
   evaluateExpression = async (expression, pin) => {
@@ -306,6 +306,7 @@ class App extends PureComponent {
       debugExpression: this.debugExpression,
       runTest: this.runTest,
       runTestClass: this.runTestClass,
+      openDebugger: this.openDebugger,
       closeDebugger: this.closeDebugger,
       inspectObject: this.openInspector,
       reportError: this.reportError};
