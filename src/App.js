@@ -156,7 +156,7 @@ class App extends PureComponent {
   }
 
   openClassBrowser = (classname) => {
-    const root = classname || 'ProbabilityDistributionTest';
+    const root = classname || 'DateTest';
     const browser = <ClassBrowser styles={this.props.classes} root={root}/>;
     this.addPage(root, <ClassBrowserIcon className={this.props.classes.classBrowserIcon} />, browser);
   }

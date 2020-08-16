@@ -439,6 +439,14 @@ class API {
         catch (error) {this.handleError('Cannot get the status of test run ' + id, error)}
     }
 
+    async getTestRunResults(id) {
+        try {
+            const response = await axios.get(this.baseUri + '/test-runs/' + id + '/results');
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot get the results of test run ' + id, error)}
+    }
+
     async runTestRun(id) {
         try {
             const response = await axios.post(this.baseUri + '/test-runs/' + id + '/run');

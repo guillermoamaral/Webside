@@ -85,17 +85,17 @@ class Workspace extends Component {
                         return (
                             <Accordion key={inspector.key} defaultExpanded>
                                 <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
+                                    expandIcon={<ExpandMoreIcon/>}
                                     id="panel1a-header">
-                                    <IconButton 
-                                        onClick={event => {this.closeInspector(event, inspector.key)}}
-                                        size="small">
-                                            <CloseIcon fontSize="small"/>
-                                    </IconButton>
-                                    <InspectorIcon/>
-                                    <Typography>
-                                        {'Inspecting: ' + inspector.props.root.class}
-                                    </Typography>
+                                        <IconButton 
+                                            onClick={event => {this.closeInspector(event, inspector.key)}}
+                                            size="small">
+                                                <CloseIcon fontSize="small"/>
+                                        </IconButton>
+                                        <InspectorIcon/>
+                                        <Typography>
+                                            {'Inspecting: ' + inspector.props.root.class}
+                                        </Typography>
                                 </AccordionSummary>
                                 {inspector}
                             </Accordion>

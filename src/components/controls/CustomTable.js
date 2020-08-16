@@ -26,21 +26,21 @@ class CustomTable extends Component {
         const columns = this.props.columns;
         const rows = this.props.rows;
         return (
-            <Scrollable>
+            //<Scrollable>
                 <TableContainer className={this.props.styles.container}>
                     <Table stickyHeader size="small">
-                        <TableHead>
+                        {!this.props.noHeaders && <TableHead>
                             <TableRow>
                                 {columns.map((column) => (
                                     <TableCell
                                         key={column.id}
                                         align={column.align}
                                         style={{minWidth: column.minWith}}>
-                                        {column.label}
+                                            {column.label}
                                     </TableCell>
                                 ))}
-                            </TableRow>
-                        </TableHead>
+                            </TableRow> 
+                        </TableHead>}
                         <TableBody>
                             {rows.map((row, index) => {
                                 return (
@@ -53,7 +53,7 @@ class CustomTable extends Component {
                                             {columns.map((column) => {
                                                 const value = row[column.id];
                                                 return (
-                                                    <TableCell key={column.id} align={column.align}>
+                                                    <TableCell key={column.id} align={column.align} style={{color: row.color || "default"}}>
                                                         {column.format ? column.format(value) : value}
                                                     </TableCell>)
                                                 })}
@@ -62,7 +62,7 @@ class CustomTable extends Component {
                         </TableBody>
                     </Table>
                 </TableContainer>
-            </Scrollable>
+            //</Scrollable>
         )
     }
 }
