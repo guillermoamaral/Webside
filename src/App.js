@@ -183,7 +183,7 @@ class App extends PureComponent {
   }
 
   openInspector = (object) => {
-    const inspector = <Inspector styles={this.props.classes} key={object.id} root={object}/>;
+    const inspector = <Inspector styles={this.props.classes} key={object.id} root={object} showWorkspace/>;
     this.addPage('Inspecting: ' + object.class, <InspectorIcon className={this.props.classes.workspaceIcon} />, inspector);
   }
 

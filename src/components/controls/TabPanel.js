@@ -11,7 +11,7 @@ class TabPanel extends PureComponent {
                 hidden={!visible}
                 id={id}
                 {...other}>
-                <Box className={this.props.styles.box} p={1}>
+                <Box p={1}>
                     {children}
                 </Box>
             </div>

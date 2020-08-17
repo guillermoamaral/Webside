@@ -59,36 +59,36 @@ class Inspector extends Component {
 
     render() {
         const {objectTree, selectedObject} = this.state;
-        const styles = this.props.styles;
+        const {styles, showWorkspace} = this.props;
         const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
         return (
-            <Box className={styles.box}>
-                <Grid container spacing={1}>
-                    <Grid container spacing={1}>
-                        <Grid item xs={12} md={6} lg={6}>
-                            <Paper className={fixedHeightPaper} variant="outlined">
-                                <CustomTree
-                                    items={objectTree}
-                                    itemLabel="name"
-                                    id="path"
-                                    children={"slots"}
-                                    selectedItem={this.selectedObject}
-                                    onExpand={this.slotExpanded}
-                                    onSelect={this.slotSelected}
-                                />
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={6}>
-                            <CodeEditor
-                                styles={styles}
-                                lineNumbers={false}
-                                source={!selectedObject? "" : selectedObject.printString}
-                                onChange={this.props.onChange}
-                                onAccept={this.props.onAccept}/>
-                        </Grid>
-                    </Grid>
+            <Grid container spacing={1}>
+                <Grid item xs={12} md={6} lg={6}>
+                    <Paper className={fixedHeightPaper} variant="outlined">
+                        <CustomTree
+                            items={objectTree}
+                            itemLabel="name"
+                            id="path"
+                            children={"slots"}
+                            selectedItem={this.selectedObject}
+                            onExpand={this.slotExpanded}
+                            onSelect={this.slotSelected}/>
+                    </Paper>
                 </Grid>
-            </Box>
+                <Grid item xs={12} md={6} lg={6}>
+                    <CodeEditor
+                        styles={styles}
+                        lineNumbers={false}
+                        source={!selectedObject? "" : selectedObject.printString}
+                        onChange={this.props.onChange}
+                        onAccept={this.props.onAccept}/>
+                </Grid>
+                {showWorkspace && <Grid item xs={12} md={12} lg={12}>
+                     <CodeEditor
+                        styles={styles}
+                        lineNumbers={false}/>
+                </Grid>}
+            </Grid>
         )
     };
 }

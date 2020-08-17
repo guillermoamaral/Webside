@@ -46,7 +46,7 @@ class Titlebar extends Component {
             noWrap>
               {this.props.title} 
           </Typography>
-          <div className={styles.grow}/>
+          <Box flexGrow={1}/>
           <div className={styles.globalSearch}>
             <div className={styles.globalSearchIcon}>
               <SearchIcon />
@@ -54,12 +54,12 @@ class Titlebar extends Component {
             <InputBase
               placeholder="Search…"
               classes={{
-                root: styles.inputRoot,
-                input: styles.inputInput,
+                root: styles.globalSearchInputRoot,
+                input: styles.globalSearchInputInput,
               }}
               inputProps={{'aria-label': 'search'}}/>
           </div>
-          <div className={styles.grow}/>
+          <Box flexGrow={1}/>
           <Avatar
             alt="guest"
           />

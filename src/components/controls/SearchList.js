@@ -109,7 +109,7 @@ class SearchList extends Component {
           ]}
           onChange={(event, value) => {this.valueChanged(value)}}
           options={this.props.options}
-          renderInput={params => <TextField {...params} size="small" variant="outlined"/>}
+          renderInput={params => <TextField {...params} size="small" variant="outlined" label="Search..."/>}
           renderOption={option => <Typography noWrap>{option}</Typography>}/>)
     }
 }

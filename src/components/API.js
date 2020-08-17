@@ -307,7 +307,6 @@ class API {
         const change = this.newChange('ClassRename');
         change.class = classname;
         change.newName = newName;
-        console.log(newName)
         try {
             return await this.postChange(change);
         }

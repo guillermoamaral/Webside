@@ -16,6 +16,7 @@
     "react-dom": "^16.13.1",
     "react-scrollbars-custom": "^4.0.25",
     "react-swipeable-views": "^0.13.9",
+    "react-virtualized-auto-sizer": "^1.0.2",
     "react-window": "^1.8.5",
     "recompose": "^0.30.0"
   },

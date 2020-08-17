@@ -23,7 +23,7 @@ class TabControl extends PureComponent {
     const selectedIndex = pages.indexOf(selectedPage);
     const styles = this.props.styles;
     return (
-        <div className={styles.tabControl}>
+        <Box flexGrow={1} width="100%">
             <Tabs
               value={Math.max(selectedIndex, 0)}
               onChange={this.tabChanged}
@@ -51,7 +51,7 @@ class TabControl extends PureComponent {
                     {page.component}
                 </TabPanel>)
             })}
-        </div>
+        </Box>
     )
   }
 }

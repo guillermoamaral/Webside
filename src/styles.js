@@ -1,4 +1,4 @@
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { fade } from '@material-ui/core/styles';
 
 const drawerWidth = 240;
 const styles = theme => ({
@@ -78,22 +78,6 @@ const styles = theme => ({
     //color: theme.palette.secondary.main,
     backgroundColor: theme.palette.primary.background,
   },
-  box: {
-    //backgroundColor: 'white',
-  },
-  tabControl: {
-    flexGrow: 1,
-    width: '100%',
-    backgroundColor: theme.palette.primary.background,
-  },
-  tabIcon: {
-    display: "flex",
-    color: "secondary",
-    alignItems: "left",
-    justifyContent: "flex-end",
-    paddingTop: "12px",
-    fontSize: "small", 
-  },
   fixedHeight: {
     height: 200
   },
@@ -107,9 +91,6 @@ const styles = theme => ({
     left: 0,
     right: 0,
     height: "auto",
-  },
-  grow: {
-    flexGrow: 1
   },
   globalSearch: {
     position: 'relative',
@@ -134,10 +115,10 @@ const styles = theme => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  inputRoot: {
+  globalSearchInputRoot: {
     color: 'inherit',
   },
-  inputInput: {
+  globalSearchInputInput: {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,

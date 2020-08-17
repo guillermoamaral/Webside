@@ -5,7 +5,8 @@ import {
     AccordionSummary,
     AccordionDetails,
     Typography,
-    IconButton
+    IconButton,
+    Box
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import PlayIcon from '@material-ui/icons/PlayArrow';
@@ -32,7 +33,8 @@ class Workspace extends Component {
         const inspector = <Inspector
           key={object.id}
           styles={this.props.styles}
-          root={object}/>;
+          root={object}
+          showWorkspace={false}/>;
         const inspectors = this.state.inspectors;
         inspectors.unshift(inspector);
         this.setState({inspectors: inspectors})
@@ -87,15 +89,22 @@ class Workspace extends Component {
                                 <AccordionSummary
                                     expandIcon={<ExpandMoreIcon/>}
                                     id="panel1a-header">
-                                        <IconButton 
-                                            onClick={event => {this.closeInspector(event, inspector.key)}}
-                                            size="small">
-                                                <CloseIcon fontSize="small"/>
-                                        </IconButton>
-                                        <InspectorIcon/>
-                                        <Typography>
-                                            {'Inspecting: ' + inspector.props.root.class}
-                                        </Typography>
+                                        <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center"></Box>
+                                            <Box>
+                                                <IconButton 
+                                                    onClick={event => {this.closeInspector(event, inspector.key)}}
+                                                    size="small">
+                                                        <CloseIcon fontSize="small"/>
+                                                </IconButton>
+                                            </Box>
+                                            <Box pt={0.5} pr={1}>
+                                                <InspectorIcon/>
+                                            </Box>
+                                            <Box>
+                                                <Typography>
+                                                    {'Inspecting: ' + inspector.props.root.class}
+                                                </Typography>
+                                            </Box>
                                 </AccordionSummary>
                                 {inspector}
                             </Accordion>

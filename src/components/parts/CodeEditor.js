@@ -40,13 +40,17 @@ class CodeEditor extends Component {
 
     static getDerivedStateFromProps(props, state) {
         if (props.source !== state.source 
-            || (props.selectedRanges && props.selectedRanges !== state.selectedRanges)
-            || props.evaluating !== state.evaluating) {
+            || (props.selectedRanges && props.selectedRanges !== state.selectedRanges)) {
             return {
                 source: props.source,
                 selectedRanges: props.selectedRanges,
                 value: props.source,
                 ranges: props.selectedRanges,
+                evaluating: props.evaluating,
+            }
+        }
+        if (props.evaluating !== state.evaluating) {
+            return {
                 evaluating: props.evaluating,
             }
         };
@@ -195,7 +199,7 @@ class CodeEditor extends Component {
             this.editor.replaceRange(" " + object.printString, cursor);
             const from = {ch: cursor.ch + 1, line: cursor.line};
             const to = {ch: from.ch + object.printString.length, line: from.line};
-            this.editor.setSelection(from, to)
+            this.editor.setSelection(from, to);
         }
         catch (error) {this.setState({evaluating: false})}
     }
