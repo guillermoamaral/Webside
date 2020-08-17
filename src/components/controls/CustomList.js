@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { List, ListItem, ListItemText, ListItemIcon } from '@material-ui/core';
+import {
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Box,
+  Typography} from '@material-ui/core';
 import PopupMenu from './PopupMenu';
 import Scrollable from './Scrollable';
 
@@ -33,8 +39,8 @@ class CustomList extends Component {
             onClick={event => this.itemSelected(item)}
             //onKeyDown={this.keyPressed}
             onContextMenu={this.openMenu}>
-              {icon}
-              <ListItemText primary={label}/>
+              {icon && <Box pr={1}>{icon}</Box>}
+              <ListItemText primary={<Box fontWeight={selected? "fontWeightMedium" : "fontWeightRegular"}>{label}</Box>}/>
           </ListItem>
         )
       })
@@ -62,7 +68,7 @@ class CustomList extends Component {
 
   getItemIcon = (index) => {
     const icons = this.props.icons;
-    if (icons && index < icons.length) {
+    if (icons && index < icons.length && icons[index]) {
       return (
         <ListItemIcon style={{minWidth: 0}}>
           {icons[index]}
@@ -92,8 +98,9 @@ class CustomList extends Component {
   }
 
   menuOptionClicked(option) {
-    if (option.action) {
-      option.action(this.props.selectedItem);
+    const selected = this.props.selectedItem; 
+    if (option.action && selected) {
+      option.action(selected);
     }
   }
 

@@ -17,12 +17,12 @@ class CategoryList extends Component {
         if (handler) {handler(selected)}
     }
 
-    addCategory = () => {
-        this.props.dialog.prompt('New category')
-            .then(category => {
-                if (category && this.props.onAdd) {this.props.onAdd(category)}
-            })
-            .catch(() => {})
+    addCategory = async () => {
+        try {
+            const category = await this.props.dialog.prompt('New category');
+            if (category && this.props.onAdd) {this.props.onAdd(category)}
+        }
+        catch (error) {}
     }
 
     renameCategory = async (category) => {

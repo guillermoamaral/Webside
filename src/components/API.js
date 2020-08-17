@@ -302,6 +302,18 @@ class API {
         }
         catch (error) {this.handleError('Cannot remove class ' + classname, error)}
     }
+
+    async renameClass(classname, newName) {
+        const change = this.newChange('ClassRename');
+        change.class = classname;
+        change.newName = newName;
+        console.log(newName)
+        try {
+            return await this.postChange(change);
+        }
+        catch (error) {this.handleError('Cannot rename class ' + classname, error)}
+    }
+
     async renameCategory(classname, category, newName) {
         const change = this.newChange('CategoryRename');
         change.class = classname;

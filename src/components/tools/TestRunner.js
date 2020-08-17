@@ -129,7 +129,8 @@ class TestRunner extends Component {
     menuOptions() {
         return [
             {label: 'Debug', action: this.debugTest},
-            {label: 'Browse', action: test => this.context.browseClass(test.class)},
+            {label: 'Implementors', action: test => this.context.browseImplementors(test.selector)},
+            {label: 'Browse class', action: test => this.context.browseClass(test.class)},
         ]
     }
 

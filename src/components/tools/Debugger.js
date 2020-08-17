@@ -9,6 +9,7 @@ import ResumeIcon from '@iconify/icons-mdi/play';
 import TerminateIcon from '@iconify/icons-mdi/stop';
 import { AppContext } from '../../AppContext';
 import CustomList from '../controls/CustomList';
+import FrameList from '../parts/FrameList';
 import CodeBrowser from '../parts/CodeBrowser';
 import CodeEditor from '../parts/CodeEditor';
 
@@ -135,10 +136,9 @@ class Debugger extends PureComponent {
                     <Grid container spacing={1}>
                         <Grid item xs={12} md={8} lg={8}>
                             <Paper className={fixedHeightPaper} variant="outlined">
-                                <CustomList
-                                    itemLabel="label"
-                                    selectedItem ={selectedFrame}
-                                    items={frames}
+                                <FrameList
+                                    frames={frames}
+                                    selectedFrame ={selectedFrame}
                                     onSelect={this.frameSelected}/>
                             </Paper>
                         </Grid>

@@ -1,25 +1,10 @@
 import React, { PureComponent } from 'react';
-import { Tabs, Tab, IconButton } from '@material-ui/core';
+import { Tabs, Tab, IconButton, Box } from '@material-ui/core';
 import TabPanel from './TabPanel';
+import TabLabel from './TabLabel';
 import CloseIcon from '@material-ui/icons/Close';
 
 class TabControl extends PureComponent {
-  tabLabel = (page, index) => {
-    return (
-      <span>
-        {React.cloneElement(page.icon, {className: this.props.styles.tabIcon})}
-        {page.label}
-        <IconButton 
-          onClick={event => {this.closeTab(event, index)}}
-          id={index}
-          value={index}
-          size="small">
-            <CloseIcon fontSize="small" id={index} value={index}/>
-        </IconButton>
-      </span>
-    )
-  }
-
   tabChanged = (event, index) => {
     event.preventDefault();
     const handler = this.props.onSelect;
@@ -46,24 +31,24 @@ class TabControl extends PureComponent {
               textColor="primary"
               variant="scrollable"
               scrollButtons="auto">
-                {pages.map((p, i) => {
+                {pages.map((page, index) => {
                   return (
                     <Tab
                       component="div"
-                      key={i.toString()}
-                      label={this.tabLabel(p, i)}
-                      id= {`tab-${i}`}/>)
+                      key={index.toString()}
+                      label={<TabLabel index={index} icon={page.icon} label={page.label} onClose={this.closeTab}/>}
+                      id= {`tab-${index}`}/>)
                 })}
             </Tabs>
-            {pages.map((p, i) => {
+            {pages.map((page, index) => {
               return (
                 <TabPanel
-                  id={`tabpanel-${i}`}
-                  key={i.toString()}
-                  index={i}
+                  id={`tabpanel-${index}`}
+                  key={index.toString()}
+                  index={index}
                   styles={styles}
-                  visible={p === selectedPage}>
-                    {p.component}
+                  visible={page === selectedPage}>
+                    {page.component}
                 </TabPanel>)
             })}
         </div>

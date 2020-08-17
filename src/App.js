@@ -8,7 +8,8 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Drawer
+  Drawer,
+  Box
 } from '@material-ui/core';
 import styles from './styles';
 import { ThemeProvider } from '@material-ui/styles';
@@ -322,7 +323,8 @@ class App extends PureComponent {
                 appName={smalltalk}
                 styles={styles}
                 sidebarExpanded={this.state.sidebarExpanded}
-                expandSidebar={this.expandSidebar}/>
+                expandSidebar={this.expandSidebar}
+                searchOptions={this.state.classNames || []}/>
               <Sidebar
                 styles={styles}
                 expanded={this.state.sidebarExpanded}
@@ -353,12 +355,24 @@ class App extends PureComponent {
                         open={this.state.addPageMenuOpen}
                         onClose={() => {this.setState({addPageMenuOpen: false})}}>
                           <MenuItem onClick={this.addClassBrowserClicked}>
-                            <ClassBrowserIcon />
-                            Class Browser
+                            <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
+                              <Box pt={1} pr={1}>
+                                <ClassBrowserIcon/>
+                              </Box>
+                              <Box>
+                                Class Browser
+                              </Box>
+                            </Box>
                           </MenuItem>
                           <MenuItem onClick={this.addWorkspaceClicked}>
-                            <WorkspaceIcon />
-                            Workspace
+                            <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
+                              <Box pt={1} pr={1}>
+                                <WorkspaceIcon/>
+                              </Box>
+                              <Box>
+                                Workspace
+                              </Box>
+                            </Box>
                           </MenuItem>
                       </Menu>
                     </Grid>

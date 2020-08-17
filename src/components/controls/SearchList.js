@@ -7,7 +7,7 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import { useTheme } from '@material-ui/core/styles';
 import { VariableSizeList } from 'react-window';
 import { Typography } from '@material-ui/core';
-import Scrollable from './Scrollable';
+import Scrollbar from "react-scrollbars-custom";
 
 const LISTBOX_PADDING = 0; // px
 
@@ -24,7 +24,9 @@ function renderRow(props) {
 const OuterElementContext = React.createContext({});
 const OuterElementType = React.forwardRef((props, ref) => {
   const outerProps = React.useContext(OuterElementContext);
-  return <div ref={ref} {...props} {...outerProps} />;
+  return (
+    <div ref={ref} {...props} {...outerProps} />
+  )
 })
 
 function useResetCache(data) {
@@ -61,8 +63,7 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(props, ref) 
   }
 
   const gridRef = useResetCache(itemCount);
-  return (
-    
+  return (   
     <div ref={ref}>
       <OuterElementContext.Provider value={other}>
         <VariableSizeList
@@ -95,7 +96,9 @@ class SearchList extends Component {
     render () {
       return (
         <Autocomplete
-          freeSolo
+          popupIcon={null}
+          autoHighlight
+          clearOnEscape
           id="autocomplete"
           ListboxComponent={ListboxComponent}
           renderGroup={params => [

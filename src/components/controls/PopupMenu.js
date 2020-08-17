@@ -53,7 +53,7 @@ class PopupMenu extends Component {
                 onClose={this.close}
                 anchorReference="anchorPosition"
                 anchorPosition={this.position()}>
-                {this.createItems()}
+                    {this.createItems()}
             </Menu>
         )
     }

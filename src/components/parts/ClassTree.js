@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import CustomTree from '../controls/CustomTree';
 import { AppContext } from '../../AppContext';
+import { withDialog } from '../dialogs';
 import Scrollable from '../controls/Scrollable';
 
 class ClassTree extends Component {
@@ -27,6 +28,16 @@ class ClassTree extends Component {
         await this.context.api.deleteClass(species.name);
         const handler = this.props.onRemove; 
         if (handler) {handler(species)}
+    }
+
+    renameClass = async (species) => {
+        if (!species) {return}
+        try {
+            const newName = await this.props.dialog.prompt({title: 'Rename class', defaultValue: species.name});
+            await this.context.api.renameClass(species.name, newName);
+            if (this.props.onRename) {this.props.onRename(species.name, newName)}
+        }
+        catch (error) {}
     }
 
     menuOptions() {
@@ -57,4 +68,4 @@ class ClassTree extends Component {
         )
     }
 }
-export default ClassTree;
+export default withDialog()(ClassTree);
