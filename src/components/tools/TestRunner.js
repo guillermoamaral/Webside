@@ -119,6 +119,7 @@ class TestRunner extends Component {
         Object.keys(groups).forEach(c => {
             groups[c].tests.forEach(t => {
                 groups[c].summary[t.type] = groups[c].summary[t.type] + 1 || 1;
+                groups[c].summary.run = groups[c].summary.run + 1 || 1;
             })
         })
         this.setState({results: {updated: true, groups: groups}});
@@ -189,13 +190,15 @@ class TestRunner extends Component {
                         </Typography>}
                     </Grid>
                     <Grid item xs={12} md={12} lg={12}>
-                        <Grid container spacing={1} justify="space-around" alignItems="center">
+                        <Grid container spacing={1} justify="space-around" alignItems="flex-end">
                             {this.summaryLabels().map(l => {
                                 return (
                                     <Grid item xs={2} md={2} lg={2} key={"grid-" + l.type}>
                                         <Card id={"card-" + l.type}>
                                             <CardContent key={"card-content-" + l.type}>
-                                                <Typography variant="h3" style={{color: this.typeColor(l.type)}}>
+                                                <Typography
+                                                    variant={l.type === 'run'? "h2" : "h3"}
+                                                    style={{color: this.typeColor(l.type)}}>
                                                     {summary[l.type] || 0}
                                                 </Typography>
                                             </CardContent>
