@@ -63,6 +63,7 @@ class TestRunner extends Component {
                 color = '#007bff';
                 break;
             default:
+                color = 'default'
         }
         return color;
     }
@@ -74,6 +75,7 @@ class TestRunner extends Component {
             {type: 'error', label: 'Errors'},
             {type: 'skipped', label: 'Skipped'},
             {type: 'knownIssue', label: 'Known Issues'},
+            {type: 'run', label: 'Run'}
         ]
     }
   
@@ -123,7 +125,8 @@ class TestRunner extends Component {
     }
 
     filterTests(type) {
-        this.setState({filter: type})
+        const filter = type === 'run'? null : type;
+        this.setState({filter: filter})
     }
 
     menuOptions() {
