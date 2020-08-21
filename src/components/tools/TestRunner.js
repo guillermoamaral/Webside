@@ -13,9 +13,6 @@ import {
     Card,
     CardContent,
     CardActions } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
-import RunIcon from '@material-ui/icons/PlayArrow';
-import StopIcon from '@material-ui/icons/Stop';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CustomTable from '../controls/CustomTable';
 
@@ -168,7 +165,7 @@ class TestRunner extends Component {
                             Suite: {status.name}
                         </Typography>
                     </Grid>
-                    <Grid item xs={10} md={10} lg={10} >
+                    <Grid item xs={10} md={10} lg={10}>
                         {running && <LinearProgress variant="determinate" value={percent}/>}
                     </Grid>
                     <Grid item xs={1} md={1} lg={1}>

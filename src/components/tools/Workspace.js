@@ -67,6 +67,7 @@ class Workspace extends Component {
     }
 
     render() {
+        const {expression, inspectors, evaluating} = this.state;
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={8} lg={8}>
@@ -74,16 +75,16 @@ class Workspace extends Component {
                         <CodeEditor
                             styles={this.props.styles}
                             lineNumbers={true}
-                            source={this.state.expression}
+                            source={expression}
                             showAccept={true}
                             acceptIcon={<PlayIcon/>}
                             onAccept={this.evaluateClicked}
                             onChange={this.expressionChanged}
-                            evaluating={this.state.evaluating}/>
+                            evaluating={evaluating}/>
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={4} lg={4}>
-                    {this.state.inspectors.map((inspector, index) => {
+                    {inspectors.map((inspector, index) => {
                         return (
                             <Accordion key={inspector.key} defaultExpanded>
                                 <AccordionSummary

@@ -114,6 +114,7 @@ class CodeEditor extends Component {
             {label: 'Show it', action: this.showEvaluation},
             {label: 'Inspect it', action: this.inspectEvaluation},
             {label: 'Debug it', action: this.debugExpression},
+            {label: 'Profile it', action: this.profileExpression},
             null,
             {label: 'Browse', action: this.browseClass},
             {label: 'Senders', action: this.browseSenders},
@@ -172,6 +173,14 @@ class CodeEditor extends Component {
         const expression = this.selectedExpression();
         try {
             await this.context.debugExpression(expression);
+        }
+        catch (error) {}
+    }
+
+    profileExpression = async () => {
+        const expression = this.selectedExpression();
+        try {
+            await this.context.profileExpression(expression);
         }
         catch (error) {}
     }
@@ -243,7 +252,7 @@ class CodeEditor extends Component {
         const acceptIcon = this.props.acceptIcon?
             React.cloneElement(this.props.acceptIcon)
             : <AcceptIcon size="large" style={{fontSize: 30}}/>;
-        const ranges = this.state.ranges;
+        const {value, ranges, evaluating} = this.state;
         if (ranges && ranges.length > 0) {this.selectRanges(ranges)}
         return (
             <Grid container spacing={1}>
@@ -280,13 +289,13 @@ class CodeEditor extends Component {
                                     "Alt-R": this.browseReferences,
                                     "Ctrl-Q": this.markOcurrences,
                                     "Alt-Z": this.toggleFullScreen}}}
-                            value={this.state.value}
+                            value={value}
                             editorDidMount={editor => {this.editorDidMount(editor)}}
                             onGutterClick={(editor, n) => {this.setBreakpoint(n)}}
                             onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
                             //onChange={(editor, data, value) => {this.valueChanged(value)}}
                             onContextMenu={(editor, event) => {this.openMenu(event)}}/>
-                            {this.state.evaluating && <LinearProgress variant="indeterminate"/>}
+                            {evaluating && <LinearProgress variant="indeterminate"/>}
                     </Paper>
                 </Grid>
                 {showAccept && (<Grid item xs={1} md={1} lg={1}>

@@ -152,21 +152,7 @@ class API {
        catch (error) {this.handleError('Cannot fetch local implementors of ' + selector + ' in class ' + classname, error)}
    }
 
-    // Debugger...
-
-    async debugExpression(expression) {
-        try {
-            const evaluation = {
-                expression: expression,
-                scope: null,
-                debug: true,
-                pin: false
-            }
-            const response = await axios.post(this.baseUri + '/evaluations', evaluation);
-            return response.data;
-        }
-        catch (error) {this.handleError('Cannot debug ' + expression, error, false)}
-    }
+    // Debugging...
 
     async createDebugger(id) {
         try {
@@ -382,6 +368,34 @@ class API {
         catch (error) {this.handleError('Cannot evaluate ' + expression, error, false)}
     }
 
+    async debugExpression(expression) {
+        try {
+            const evaluation = {
+                expression: expression,
+                scope: null,
+                debug: true,
+                pin: false
+            }
+            const response = await axios.post(this.baseUri + '/evaluations', evaluation);
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot debug ' + expression, error, false)}
+    }
+
+    async profileExpression(expression) {
+        try {
+            const evaluation = {
+                expression: expression,
+                scope: null,
+                profile: true,
+                pin: false
+            }
+            const response = await axios.post(this.baseUri + '/evaluations', evaluation);
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot profile ' + expression, error, false)}
+    }
+
     // Objects...
 
     async getObjects() {
@@ -418,8 +432,8 @@ class API {
         catch (error) {this.handleError('Cannot fecth slot ' + path + ' of object with id ' + id, error)}
     }
 
-       // Tests...
-    
+    // Tests...
+
     async runTest(classname, selector) {
         try {
             const run = {
@@ -492,6 +506,16 @@ class API {
             return response.data;
         }
         catch (error) {this.handleError('Cannot debug test ' + selector + ' in ' + classname, error)}
+    }
+
+    // Profiling...
+
+    async getProfilerResults(id) {
+        try {
+            const response = await axios.get(this.baseUri + '/profilers/' + id + '/results');
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot fetch results of profiler ' + id, error)}
     }
 }
 

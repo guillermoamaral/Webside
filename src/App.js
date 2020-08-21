@@ -37,6 +37,7 @@ import Workspace from './components/tools/Workspace';
 import ChangesBrowser from './components/tools/ChangesBrowser';
 import Debugger from './components/tools/Debugger';
 import TestRunner from './components/tools/TestRunner';
+import Profiler from './components/tools/Profiler';
 
 const smalltalk = 'Bee';
 var port;
@@ -103,6 +104,7 @@ class App extends PureComponent {
 
   componentDidMount() {
     this.getClassNames();
+    this.profileExpression('1000 timesRepeat: [100 factorial. 100 raisedTo: 15]')
     // this.openWorkspace();
     // this.openDebugger(61849);
     // this.openInspectors();
@@ -197,6 +199,11 @@ class App extends PureComponent {
     this.addPage(title, <TestRunnerIcon className={this.props.classes.testRunnerIcon} />, tool);
   }
 
+  openProfiler = (id, title = 'Profiler') => {
+    const tool = <Profiler styles={this.props.classes} key={id} id={id}/>;
+    this.addPage(title, <TestRunnerIcon className={this.props.classes.testRunnerIcon} />, tool);
+  }
+
   browseSenders = (selector) => {
     this.api.getSenders(selector)
       .then(methods => this.openMethodBrowser(methods, 'Senders of ' + selector)); 
@@ -246,14 +253,19 @@ class App extends PureComponent {
     }
   }
 
-  runTest = (classname, selector) => {
-    this.api.runTest(classname, selector)
-      .then(status => this.openTestRunner(status.id, 'Test ' + selector)); 
+  runTest = async (classname, selector) => {
+    const status = await this.api.runTest(classname, selector);
+    this.openTestRunner(status.id, 'Test ' + selector); 
   }
 
-  runTestClass = (classname) => {
-    this.api.runTestClass(classname)
-      .then(status => this.openTestRunner(status.id, 'Test ' + classname)); 
+  runTestClass = async (classname) => {
+    const status = await this.api.runTestClass(classname);
+    this.openTestRunner(status.id, 'Test ' + classname);
+  }
+
+  profileExpression = async (expression) => {
+    const id = await this.api.profileExpression(expression);
+    this.openProfiler(id)
   }
 
   expandSidebar = () => {
@@ -305,6 +317,7 @@ class App extends PureComponent {
       browseReferences: this.browseReferences,
       evaluateExpression: this.evaluateExpression,
       debugExpression: this.debugExpression,
+      profileExpression: this.profileExpression,
       runTest: this.runTest,
       runTestClass: this.runTestClass,
       openDebugger: this.openDebugger,
