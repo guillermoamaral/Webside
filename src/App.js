@@ -104,11 +104,7 @@ class App extends PureComponent {
 
   componentDidMount() {
     this.getClassNames();
-    this.profileExpression('1000 timesRepeat: [100 factorial. 100 raisedTo: 15]')
-    // this.openWorkspace();
-    // this.openDebugger(61849);
-    // this.openInspectors();
-    // this.openClassBrowser('Magnitude');
+    //this.profileExpression('1000 timesRepeat: [100 factorial. 100 raisedTo: 15]')
   }
 
   getClassNames = async () => {
@@ -132,13 +128,16 @@ class App extends PureComponent {
 
   removePage = (page) => {
     if (page.component.type.name === 'Inspector') {
-      this.api.unpinObject(page.component.props.root.id)
+      this.api.unpinObject(page.component.props.id)
     }
     if (page.component.type.name === 'Debugger') {
       this.api.deleteDebugger(page.component.props.id)
     }
     if (page.component.type.name === 'TestRunner') {
       this.api.deleteTestRun(page.component.props.id)
+    }
+    if (page.component.type.name === 'Workspace') {
+      this.api.deleteWorkspace(page.component.props.id)
     }
     const {pages, selectedPage} = this.state;
     let i = pages.indexOf(page);
@@ -169,8 +168,8 @@ class App extends PureComponent {
     this.addPage(title + ' (' + methods.length + ')', <MethodBrowserIcon className={this.props.classes.methodBrowserIcon} />, browser);
   }
 
-  openWorkspace = () => {
-    const workspace = <Workspace styles={this.props.classes}/>;
+  openWorkspace = (id) => {
+    const workspace = <Workspace styles={this.props.classes} key={id} id={id}/>;
     this.addPage('Workspace', <WorkspaceIcon className={this.props.classes.workspaceIcon} />, workspace);
   }
 
@@ -185,7 +184,7 @@ class App extends PureComponent {
   }
 
   openInspector = (object) => {
-    const inspector = <Inspector styles={this.props.classes} key={object.id} root={object} showWorkspace/>;
+    const inspector = <Inspector styles={this.props.classes} key={object.id} root={object} id={object.id} showWorkspace/>;
     this.addPage('Inspecting: ' + object.class, <InspectorIcon className={this.props.classes.workspaceIcon} />, inspector);
   }
 
@@ -234,14 +233,14 @@ class App extends PureComponent {
     this.openChangesBrowser(changes, 'Last changes');
   }
 
-  debugExpression = async (expression) => {
-    const id = await this.api.debugExpression(expression);
+  debugExpression = async (expression, context) => {
+    const id = await this.api.debugExpression(expression, context);
     this.openDebugger(id, 'Debugging expression');
   }
 
-  evaluateExpression = async (expression, pin) => {
+  evaluateExpression = async (expression, pin, context) => {
     try {
-      const evaluation = await this.api.evaluateExpression(expression, false, pin);
+      const evaluation = await this.api.evaluateExpression(expression, false, pin, context);
       const object = await this.api.getObject(evaluation.id);
       return object;
     }
@@ -263,8 +262,8 @@ class App extends PureComponent {
     this.openTestRunner(status.id, 'Test ' + classname);
   }
 
-  profileExpression = async (expression) => {
-    const id = await this.api.profileExpression(expression);
+  profileExpression = async (expression, context) => {
+    const id = await this.api.profileExpression(expression, context);
     this.openProfiler(id)
   }
 
@@ -295,9 +294,10 @@ class App extends PureComponent {
     this.openClassBrowser()
   }
 
-  addWorkspaceClicked = () => {
+  addWorkspaceClicked = async () => {
     this.setState({addPageMenuOpen: false})
-    this.openWorkspace()
+    const id = await this.api.createWorkspace();
+    this.openWorkspace(id)
   }
 
   toggleShowTranscript = () => {

@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { AppContext } from '../../AppContext';
-import { FlameGraph } from 'react-flame-graph';
 import { Grid, LinearProgress } from '@material-ui/core';
 import CodeEditor from '../parts/CodeEditor';
-import AutoSizedFlameGraph from '../controls/AutoSizedFlameGraph';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import { FlameGraph } from 'react-flame-graph';
 
 class Profiler extends Component {
     static contextType = AppContext;
@@ -27,8 +27,7 @@ class Profiler extends Component {
     }
 
     async nodeChange(node) {
-        const signature = node.name.split('>>');
-        console.log(signature)
+        const signature = node.name.split(')')[1].split('>>');
         const method = await this.context.api.getMethod(signature[0], signature[1]);
         this.setState({selectedMethod: method})
     }
@@ -39,12 +38,19 @@ class Profiler extends Component {
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
                     {loading && <LinearProgress variant="indeterminate"/>}
-                    {!loading &&
-                        <AutoSizedFlameGraph
-                            data={results}
-                            height={300}
-                            disableScroll
-                            onChange={node => this.nodeChange(node)}/>}
+                    {!loading && 
+                        <div style={{height: 300}}>
+                            <AutoSizer>
+                                {({height: autoSizerHeight, width}) => (
+                                    <Fragment>
+                                        <FlameGraph
+                                            data={results}
+                                            height={autoSizerHeight}
+                                            width={width}
+                                            onChange={node => this.nodeChange(node)}/>
+                                    </Fragment>)}
+                            </AutoSizer>
+                        </div>}
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     {!loading &&

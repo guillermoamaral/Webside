@@ -53,7 +53,7 @@ class Workspace extends Component {
     evaluateClicked = async () => {
         try {
             this.setState({evaluating: true});
-            const object = await this.context.evaluateExpression(this.state.expression, true);
+            const object = await this.context.evaluateExpression(this.state.expression, true, {workspace: this.props.id});
             if (this.state.opensInspector) {
                 this.setState({evaluating: false});
                 this.openInspector(object);
@@ -73,6 +73,7 @@ class Workspace extends Component {
                 <Grid item xs={12} md={8} lg={8}>
                     <Grid item xs={12} md={12} lg={12}>
                         <CodeEditor
+                            context={{workspace: this.props.id}}
                             styles={this.props.styles}
                             lineNumbers={true}
                             source={expression}

@@ -162,6 +162,7 @@ class Debugger extends PureComponent {
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     <CodeBrowser
+                        context={{debugger: this.props.id, frame: selectedFrame? selectedFrame.index : null}}
                         styles={styles}
                         class={selectedFrame? selectedFrame.class : null}
                         method={selectedFrame? selectedFrame.method : null}

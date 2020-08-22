@@ -160,7 +160,7 @@ class API {
             const response = await axios.post(this.baseUri + '/debuggers', process);
             return response.data;
        }
-       catch (error) {this.handleError('Cannot delete debugger ' + id, error)}
+       catch (error) {this.handleError('Cannot create debugger on evaluation ' + id, error)}
     }
 
     async getDebuggerFrames(id) {
@@ -233,6 +233,24 @@ class API {
            return response.data;
        }
        catch (error) {this.handleError('Cannot delete debugger ' + id, error)}
+    }
+
+    // Workspaces...
+
+    async createWorkspace() {
+        try {
+            const response = await axios.post(this.baseUri + '/workspaces');
+            return response.data;
+       }
+       catch (error) {this.handleError('Cannot create workspace ', error)}
+    }    
+
+    async deleteWorkspace(id) {
+        try {
+            const response = await axios.delete(this.baseUri + '/workspaces/' + id);
+            return response.data;
+       }
+       catch (error) {this.handleError('Cannot delete workspace ', error)}
     }
 
     // Changes...
@@ -354,11 +372,11 @@ class API {
 
     // Evaluations...
 
-    async evaluateExpression(expression, synch = false, pin = false) {
+    async evaluateExpression(expression, synch = false, pin = false, context) {
         try {
             const evaluation = {
                 expression: expression,
-                scope: null,
+                context: context,
                 synch: synch,
                 pin: pin
             }
@@ -368,11 +386,11 @@ class API {
         catch (error) {this.handleError('Cannot evaluate ' + expression, error, false)}
     }
 
-    async debugExpression(expression) {
+    async debugExpression(expression, context) {
         try {
             const evaluation = {
                 expression: expression,
-                scope: null,
+                context: context,
                 debug: true,
                 pin: false
             }
@@ -382,11 +400,11 @@ class API {
         catch (error) {this.handleError('Cannot debug ' + expression, error, false)}
     }
 
-    async profileExpression(expression) {
+    async profileExpression(expression, context) {
         try {
             const evaluation = {
                 expression: expression,
-                scope: null,
+                context: context,
                 profile: true,
                 pin: false
             }

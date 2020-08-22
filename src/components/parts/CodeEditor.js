@@ -172,7 +172,7 @@ class CodeEditor extends Component {
     debugExpression = async () => {
         const expression = this.selectedExpression();
         try {
-            await this.context.debugExpression(expression);
+            await this.context.debugExpression(expression, this.props.context);
         }
         catch (error) {}
     }
@@ -180,7 +180,7 @@ class CodeEditor extends Component {
     profileExpression = async () => {
         const expression = this.selectedExpression();
         try {
-            await this.context.profileExpression(expression);
+            await this.context.profileExpression(expression, this.props.context);
         }
         catch (error) {}
     }
@@ -189,7 +189,7 @@ class CodeEditor extends Component {
         const expression = this.selectedExpression();
         try {
             this.setState({evaluating: true});
-            await this.context.evaluateExpression(expression, false);
+            await this.context.evaluateExpression(expression, false, this.props.context);
             this.setState({evaluating: false});
         }
         catch (error) {this.setState({evaluating: false})}
@@ -199,7 +199,7 @@ class CodeEditor extends Component {
         const expression = this.selectedExpression();
         try {
             this.setState({evaluating: true});
-            const object = await this.context.evaluateExpression(expression, false);
+            const object = await this.context.evaluateExpression(expression, false, this.props.context);
             this.setState({evaluating: false});
             const cursor = this.editor.getCursor("to");
             if (this.editor.getSelection().length === 0) {
@@ -217,7 +217,7 @@ class CodeEditor extends Component {
         const expression = this.selectedExpression();
         try {
             this.setState({evaluating: true});
-            const object = await this.context.evaluateExpression(expression, true);
+            const object = await this.context.evaluateExpression(expression, true, this.props.context);
             this.setState({evaluating: false});
             this.context.inspectObject(object);          
         }
@@ -293,7 +293,7 @@ class CodeEditor extends Component {
                             editorDidMount={editor => {this.editorDidMount(editor)}}
                             onGutterClick={(editor, n) => {this.setBreakpoint(n)}}
                             onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
-                            //onChange={(editor, data, value) => {this.valueChanged(value)}}
+                            onChange={(editor, data, value) => {this.valueChanged(value)}}
                             onContextMenu={(editor, event) => {this.openMenu(event)}}/>
                             {evaluating && <LinearProgress variant="indeterminate"/>}
                     </Paper>

@@ -389,6 +389,7 @@ class ClassBrowser extends Component {
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     <CodeBrowser
+                        context={{class: selectedClass? selectedClass.name : null}}
                         styles={styles}
                         class={selectedClass}
                         method={selectedMethod}

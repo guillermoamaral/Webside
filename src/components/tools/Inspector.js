@@ -77,6 +77,7 @@ class Inspector extends Component {
                 </Grid>
                 <Grid item xs={12} md={6} lg={6}>
                     <CodeEditor
+                        context={{object: this.props.id}}
                         styles={styles}
                         lineNumbers={false}
                         source={!selectedObject? "" : selectedObject.printString}
@@ -85,6 +86,7 @@ class Inspector extends Component {
                 </Grid>
                 {showWorkspace && <Grid item xs={12} md={12} lg={12}>
                      <CodeEditor
+                        context={{object: this.props.id}}
                         styles={styles}
                         lineNumbers={false}/>
                 </Grid>}

@@ -139,6 +139,7 @@ class CodeBrowser extends Component {
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     <CodeEditor
+                        context={this.props.context}
                         styles={this.props.styles}
                         lineNumbers={true}
                         source={this.currentSource()}
