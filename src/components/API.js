@@ -94,9 +94,9 @@ class API {
         catch (error) {this.handleError('Cannot fecth methods of class ' + classname, error)}
     }
 
-    async getMethodsReferencing(classname, variable) {
+    async getMethodsAccessing(classname, variable, access) {
         try {
-            var url = this.baseUri + '/classes/' + classname + '/methods?referencingVariable=' + variable;
+            var url = this.baseUri + '/classes/' + classname + '/methods?' + access + 'Variable=' + variable;
             const response = await axios.get(url);
             return response.data;
         }
@@ -528,12 +528,20 @@ class API {
 
     // Profiling...
 
-    async getProfilerResults(id) {
+    async getProfilerTreeResults(id) {
         try {
-            const response = await axios.get(this.baseUri + '/profilers/' + id + '/results');
+            const response = await axios.get(this.baseUri + '/profilers/' + id + '/tree');
             return response.data;
         }
-        catch (error) {this.handleError('Cannot fetch results of profiler ' + id, error)}
+        catch (error) {this.handleError('Cannot fetch tree results of profiler ' + id, error)}
+    }
+
+    async getProfilerRankingResults(id) {
+        try {
+            const response = await axios.get(this.baseUri + '/profilers/' + id + '/ranking');
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot fetch ranking results of profiler ' + id, error)}
     }
 }
 

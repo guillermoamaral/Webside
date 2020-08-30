@@ -72,12 +72,12 @@ ConfirmDialog.defaultProps = {
   open: false,
   title: '',
   ok: {
-    text: 'OK',
+    text: 'Yes',
     color: 'primary',
     variant: 'outlined'
   },
   cancel: {
-    text: 'Cancel',
+    text: 'No',
     color: 'default',
     variant: 'outlined'
   }

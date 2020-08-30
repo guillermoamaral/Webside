@@ -103,7 +103,7 @@ class CodeEditor extends Component {
     
     menuOptionClicked(option) {
         const selected = this.state.selectedItem;
-        if (option.action) {
+        if (option.action && selected) {
             option.action(selected)
         }
     }

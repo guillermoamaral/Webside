@@ -5,7 +5,10 @@ import {
     Paper,
     RadioGroup,
     FormControlLabel,
-    Radio
+    Radio,
+    Select,
+    MenuItem,
+    OutlinedInput
 } from '@material-ui/core';
 import clsx from 'clsx';
 import { AppContext } from '../../AppContext';
@@ -25,6 +28,7 @@ class ClassBrowser extends Component {
         this.state = {
             root: this.props.root,
             selectedClass: null,
+            selectedVariableAccess: "referencing",
             selectedVariable: null,
             selectedCategory: null,
             selectedMethod: null,
@@ -33,10 +37,12 @@ class ClassBrowser extends Component {
     }
 
     componentDidMount(){
-        this.changeRoot(this.state.root);
+        const root = this.state.root;
+        if (root) {this.changeRoot(root)}
     }
 
     changeRoot = async (classname) => {
+        if (!classname) {return}
         const tree = await this.context.api.getClassTree(classname, 3);
         const species = tree[0];
         this.cache[classname] = species;
@@ -49,6 +55,7 @@ class ClassBrowser extends Component {
     currentSelections() {
         return {
             class: this.state.selectedClass,
+            variableAccess: this.state.selectedVariableAccess,
             variable: this.state.selectedVariable,
             category: this.state.selectedCategory,
             method: this.state.selectedMethod,
@@ -63,6 +70,7 @@ class ClassBrowser extends Component {
             }
             return {
                 selectedClass: selections.class,
+                selectedVariableAccess: selections.variableAccess,
                 selectedVariable: selections.variable,
                 selectedCategory: selections.category,
                 selectedMethod: selections.method,
@@ -85,13 +93,14 @@ class ClassBrowser extends Component {
         const species = this.state.selectedClass;
         const category = this.state.selectedCategory;
         const variable = this.state.selectedVariable;
+        const access = this.state.selectedVariableAccess;
         if (!species) {return []}
         if (!category && !variable) {return species.methods}
-        if (!category) {return species[variable.name]}
+        if (!category) {return species[variable.name][access]}
         if (!variable) {
             return species.methods.filter(m => m.category === category);
         }
-        return species[variable.name].filter(m => m.category === category);
+        return species[variable.name][access].filter(m => m.category === category);
     }
 
     // Updating...
@@ -110,7 +119,7 @@ class ClassBrowser extends Component {
 
     async updateSubclasses(species) { 
         if (species.subclasses) {
-            await Promise.all(species.subclasses.map (async c => {
+            await Promise.all(species.subclasses.map(async c => {
                 if (!c.subclasses) {
                     c.subclasses = await this.context.api.getSubclasses(c.name);
                 }
@@ -148,8 +157,11 @@ class ClassBrowser extends Component {
             species.methods = methods.sort((a, b) => a.selector <= b.selector? -1 : 1);
         }
         const variable = selections.variable;
-        if (variable && (force || !species[variable.name])) {
-            species[variable.name] = await this.context.api.getMethodsReferencing(species.name, variable.name);            
+        const variableAccess = selections.variableAccess;
+        if (variable && (force || !species[variable.name] || !species[variable.name][variableAccess])) {
+            const accessors = await this.context.api.getMethodsAccessing(species.name, variable.name, variableAccess);
+            species[variable.name] = {};
+            species[variable.name][variableAccess] = accessors.sort((a, b) => a.selector <= b.selector? -1 : 1);
         }
         var method = selections.method;
         if (method) {
@@ -228,6 +240,18 @@ class ClassBrowser extends Component {
         }
     }
 
+    classRenamed = (species) => {
+        this.classSelected(species)
+    }
+
+    variableAccessSelected = async (event) => {
+        const access = event.target.value;
+        const selections = this.currentSelections();
+        selections.variableAccess = access;
+        await this.updateMethods(selections);
+        this.applySelections(selections);
+    } 
+
     variableSelected = async (variable) => {
         const selections = this.currentSelections();
         selections.variable = variable;
@@ -303,6 +327,7 @@ class ClassBrowser extends Component {
             root,
             selectedSide,
             selectedClass,
+            selectedVariableAccess,
             selectedVariable,
             selectedCategory,
             selectedMethod} = this.state;
@@ -313,74 +338,78 @@ class ClassBrowser extends Component {
                 <Grid item xs={12} md={12} lg={12}>
                     <Grid container spacing={0}>
                         <Grid item xs={11} md={11} lg={11}>
-                            <Grid item xs={12} md={12} lg={12}>
-                                <Grid container spacing={1}>
-                                    <Grid item xs={3} md={3} lg={3}>
-                                        <SearchList
-                                            options={this.context.classNames}
-                                            onChange={classname => {this.changeRoot(classname)}}/>
-                                    </Grid>                        
-                                    <Grid item xs={3} md={3} lg={3}>
-                                    </Grid>
-                                    <Grid item xs={3} md={3} lg={3}>
-                                        <Box display="flex" justifyContent="center">
-                                            <RadioGroup
-                                                name="side"
-                                                value={selectedSide}
-                                                onChange={this.sideChanged}
-                                                defaultValue="instance"
-                                                row>
-                                                <FormControlLabel value="instance" control={<Radio size="small" color="primary"/>} label="Instance"/>
-                                                <FormControlLabel value="class" control={<Radio size="small" color="primary"/>} label="Class" />
-                                            </RadioGroup>
-                                        </Box>
-                                    </Grid>
-                                    <Grid item xs={3} md={3} lg={3}>
-                                    </Grid>                            
+                            <Grid container spacing={1}>
+                                <Grid item xs={3} md={3} lg={3}>
+                                    <SearchList
+                                        options={this.context.classNames}
+                                        onChange={classname => {this.changeRoot(classname)}}/>
+                                </Grid>                        
+                                <Grid item xs={3} md={3} lg={3}>
+                                    <Select
+                                        value={selectedVariableAccess}
+                                        input={<OutlinedInput margin='dense' fullWidth/>}
+                                        onChange={this.variableAccessSelected}>
+                                            <MenuItem value={"using"}>using</MenuItem>
+                                            <MenuItem value={"assigning"}>assigning</MenuItem>
+                                            <MenuItem value={"referencing"}>referencing</MenuItem>
+                                            <MenuItem value={"unusing"}>unusing</MenuItem>
+                                    </Select>
                                 </Grid>
-                            </Grid>
-                            <Grid item xs={12} md={12} lg={12}>
-                                <Grid container spacing={1}>
-                                    <Grid item xs={12} md={3} lg={3}>
-                                        <Paper className={fixedHeightPaper} variant="outlined">
-                                            <ClassTree
-                                                root={this.cache[root]}
-                                                selectedClass={selectedClass}
-                                                onExpand={this.classExpanded}
-                                                onSelect={this.classSelected}
-                                                onRemove={this.classRemoved}/>
-                                        </Paper>
-                                    </Grid>
-                                    <Grid item xs={12} md={3} lg={3}>
-                                        <Paper className={fixedHeightPaper} variant="outlined">
-                                            <VariableList
-                                                variables={this.currentVariables()}
-                                                selectedVariable={selectedVariable}
-                                                onSelect={this.variableSelected}/>
-                                        </Paper>
-                                    </Grid>
-                                    <Grid item xs={12} md={3} lg={3}>
-                                        <Paper className={fixedHeightPaper} variant="outlined">
-                                            <CategoryList
-                                                class={selectedClass}
-                                                categories={this.currentCategories()}
-                                                selectedCategory={selectedCategory}
-                                                onAdd={this.categoryAdded}
-                                                onRename={this.categoryRenamed}
-                                                onSelect={this.categorySelected}
-                                                onRemove={this.categoryRemoved}/>
-                                        </Paper>
-                                    </Grid>
-                                    <Grid item xs={12} md={3} lg={3}>
-                                        <Paper className={fixedHeightPaper} variant="outlined">
-                                            <MethodList
-                                                methods={this.currentMethods()}
-                                                selectedMethod={selectedMethod}
-                                                onSelect={this.methodSelected}
-                                                onRename={this.methodRenamed}
-                                                onRemove={this.methodRemoved}/>
-                                        </Paper>
-                                    </Grid>
+                                <Grid item xs={3} md={3} lg={3}>
+                                    <Box display="flex" justifyContent="center">
+                                        <RadioGroup
+                                            name="side"
+                                            value={selectedSide}
+                                            onChange={this.sideChanged}
+                                            defaultValue="instance"
+                                            row>
+                                            <FormControlLabel value="instance" control={<Radio size="small" color="primary"/>} label="Instance"/>
+                                            <FormControlLabel value="class" control={<Radio size="small" color="primary"/>} label="Class" />
+                                        </RadioGroup>
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={3} md={3} lg={3}/>                            
+                                <Grid item xs={12} md={3} lg={3}>
+                                    <Paper className={fixedHeightPaper} variant="outlined">
+                                        <ClassTree
+                                            root={this.cache[root]}
+                                            selectedClass={selectedClass}
+                                            onExpand={this.classExpanded}
+                                            onSelect={this.classSelected}
+                                            onRemove={this.classRemoved}
+                                            onRename={this.classRenamed}
+                                            onCreate={this.classDefined}/>
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12} md={3} lg={3}>
+                                    <Paper className={fixedHeightPaper} variant="outlined">
+                                        <VariableList
+                                            variables={this.currentVariables()}
+                                            selectedVariable={selectedVariable}
+                                            onSelect={this.variableSelected}/>
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12} md={3} lg={3}>
+                                    <Paper className={fixedHeightPaper} variant="outlined">
+                                        <CategoryList
+                                            class={selectedClass}
+                                            categories={this.currentCategories()}
+                                            selectedCategory={selectedCategory}
+                                            onAdd={this.categoryAdded}
+                                            onRename={this.categoryRenamed}
+                                            onSelect={this.categorySelected}
+                                            onRemove={this.categoryRemoved}/>
+                                    </Paper>
+                                </Grid>
+                                <Grid item xs={12} md={3} lg={3}>
+                                    <Paper className={fixedHeightPaper} variant="outlined">
+                                        <MethodList
+                                            methods={this.currentMethods()}
+                                            selectedMethod={selectedMethod}
+                                            onSelect={this.methodSelected}
+                                            onRename={this.methodRenamed}
+                                            onRemove={this.methodRemoved}/>
+                                    </Paper>
                                 </Grid>
                             </Grid>
                         </Grid>

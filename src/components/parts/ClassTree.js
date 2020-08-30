@@ -9,9 +9,7 @@ class ClassTree extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            root: props.root,
-            confirmOpen: false        }
+        this.state = {root: props.root}
     }
 
     // static getDerivedStateFromProps(props, state) {
@@ -23,8 +21,21 @@ class ClassTree extends Component {
     //     return null
     // }
 
+    createClass = async (superclass) => {
+        const name = await this.props.dialog.prompt({title: 'Create subclass'});
+        if (!name) {return}
+        const definition = superclass.name + ' subclass: #' + name + 
+            ' instanceVariableNames: \'\' classVariableNames: \'\' poolDictionaries: \'\'';
+        const species = await this.context.api.defineClass(name, definition);
+        const handler = this.props.onCreate; 
+        if (handler) {handler(species)}
+    }
+
     removeClass = async (species) => {
- //       (species) => this.setState({confirmOpen: true, classToRemove: species})
+        const confirm = await this.props.dialog.confirm({
+            title: 'Delete ' + species.name + '?',
+            ok: {text: 'Delete', color: "secondary", variant: "outlined"}});
+        if (!confirm) {return}
         await this.context.api.deleteClass(species.name);
         const handler = this.props.onRemove; 
         if (handler) {handler(species)}
@@ -35,14 +46,16 @@ class ClassTree extends Component {
         try {
             const newName = await this.props.dialog.prompt({title: 'Rename class', defaultValue: species.name});
             await this.context.api.renameClass(species.name, newName);
-            if (this.props.onRename) {this.props.onRename(species.name, newName)}
+            species.name = newName;
+            const handler = this.props.onRename; 
+            if (handler) {handler(species)}
         }
         catch (error) {}
     }
 
     menuOptions() {
         return [
-            {label: 'New', action: this.newClass},
+            {label: 'New', action: this.createClass},
             {label: 'Rename', action: this.renameClass},
             {label: 'Remove', action: this.removeClass},
             null,
@@ -63,8 +76,7 @@ class ClassTree extends Component {
                 onExpand={this.props.onExpand}
                 onSelect={this.props.onSelect}
                 selectedItem={this.props.selectedClass}
-                menuOptions={this.menuOptions()}
-            />
+                menuOptions={this.menuOptions()}/>
         )
     }
 }

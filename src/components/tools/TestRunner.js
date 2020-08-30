@@ -144,7 +144,7 @@ class TestRunner extends Component {
         const styles = this.props.styles;
         const {status, results} = this.state;
         const {total, running, current, summary} = status;
-        const percent = total > 0? summary.run / total * 100 : 0;
+        const percent = total > 0 && summary? summary.run / total * 100 : 0;
         const groups = results.groups;
         const ranking = Object.keys(groups).sort((c1, c2) => {
             const n1 = groups[c1].summary.failed || 0 + groups[c1].summary.error || 0;

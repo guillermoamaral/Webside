@@ -58,7 +58,7 @@ class ChangesBrowser extends Component {
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     <CodeEditor
-                        context={{class: change.class}}
+                        context={{class: change? change.class : null}}
                         styles={this.props.styles}
                         lineNumbers
                         source={change? change.sourceCode : ''}

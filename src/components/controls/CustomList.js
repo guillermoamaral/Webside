@@ -4,8 +4,7 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  Box,
-  Typography} from '@material-ui/core';
+  Box} from '@material-ui/core';
 import PopupMenu from './PopupMenu';
 import Scrollable from './Scrollable';
 
@@ -142,8 +141,10 @@ class CustomList extends Component {
     return (
       <Scrollable>
           <List
+            onContextMenu={this.openMenu}
             onKeyDown={this.keyPressed}
-            style={{paddingTop: 0, paddingBottom: 0}}>
+            style={{paddingTop: 0, paddingBottom: 0}}
+            >
                 {this.createItems()}
           </List>
           <PopupMenu

@@ -47,7 +47,7 @@ class CustomTable extends Component {
     
     menuOptionClicked(option) {
         const selected = this.state.selectedRow;
-        if (option.action) {
+        if (option.action && selected) {
           option.action(selected);
         }
     }

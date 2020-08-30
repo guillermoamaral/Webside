@@ -107,6 +107,7 @@ class SearchList extends Component {
             </ListSubheader>,
             params.children,
           ]}
+          vallue="pirulo"
           onChange={(event, value) => {this.valueChanged(value)}}
           options={this.props.options}
           renderInput={params => <TextField {...params} size="small" variant="outlined" label="Search..."/>}
