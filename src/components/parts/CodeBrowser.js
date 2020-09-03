@@ -3,6 +3,7 @@ import { Grid } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import { AppContext } from '../../AppContext';
 import CodeEditor from './CodeEditor';
+import { withDialog } from '../dialogs';
 
 class CodeBrowser extends Component {
     static contextType = AppContext;
@@ -48,6 +49,14 @@ class CodeBrowser extends Component {
             if (handler) {handler(method)}
         }
         catch (error) {
+            if (error.suggestion && error.change) {
+                const retry  = await this.props.dialog.confirm(error.suggestion + '?');
+                if (retry) {
+                    const method = await this.context.api.postChange(error.change);
+                    const handler = this.props.onMethodCompiled;
+                    if (handler) {handler(method)}
+                }
+            }
             const method = this.props.method;
             method.source = source;
             if (error.interval) {
@@ -156,4 +165,4 @@ class CodeBrowser extends Component {
     }
 }
 
-export default CodeBrowser;
+export default withDialog()(CodeBrowser);
