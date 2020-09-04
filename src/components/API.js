@@ -317,6 +317,37 @@ class API {
         catch (error) {this.handleError('Cannot rename class ' + classname, error)}
     }
 
+    async addInstanceVariable(classname, variable) {
+        const change = this.newChange('InstanceVariableAddition');
+        change.class = classname;
+        change.variable = variable;
+        try {
+            return await this.postChange(change);
+        }
+        catch (error) {this.handleError('Cannot add variable ' + variable + ' to ' + classname, error)}
+    }
+
+    async renameInstanceVariable(classname, variable, newName) {
+        const change = this.newChange('InstanceVariableRename');
+        change.class = classname;
+        change.variable = variable;
+        change.newName = newName;
+        try {
+            return await this.postChange(change);
+        }
+        catch (error) {this.handleError('Cannot rename variable ' + variable + ' to ' + newName + ' of class ' + classname, error)}
+    }
+
+    async deleteInstanceVariable(classname, variable) {
+        const change = this.newChange('InstanceVariableRemove');
+        change.class = classname;
+        change.variable = variable;
+        try {
+            return await this.postChange(change);
+        }
+        catch (error) {this.handleError('Cannot remove variable ' + variable + ' from class ' + classname, error)}
+    }
+    
     async renameCategory(classname, category, newName) {
         const change = this.newChange('CategoryRename');
         change.class = classname;
@@ -325,7 +356,7 @@ class API {
         try {
             return await this.postChange(change);
         }
-        catch (error) {this.handleError('Cannot rename category ' + category + ' to ' + newName, error)}
+        catch (error) {this.handleError('Cannot rename category ' + category + ' to ' + newName + ' of class ' + classname, error)}
     }
 
     async deleteCategory(classname, category) {

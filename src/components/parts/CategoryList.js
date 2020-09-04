@@ -26,9 +26,8 @@ class CategoryList extends Component {
     }
 
     renameCategory = async (category) => {
-        if (!category) {return}
         try {
-            const newName = this.props.dialog.prompt({title: 'Rename category', defaultValue: category});
+            const newName = await this.props.dialog.prompt({title: 'Rename category', defaultValue: category});
             await this.context.api.renameCategory(this.props.class.name, category, newName);
             if (this.props.onRename) {this.props.onRename(category, newName)}
         }

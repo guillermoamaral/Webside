@@ -259,6 +259,27 @@ class ClassBrowser extends Component {
         this.applySelections(selections);
     }
 
+    variableAdded = async (variable) => {        
+        const selections = this.currentSelections();
+        await this.updateVariables(selections, true);
+        await this.updateMethods(selections, true);
+        this.variableSelected(selections.class.variables.find(v => v.name === variable.name));
+    }
+
+    variableRenamed = async (variable) => {
+        const selections = this.currentSelections();
+        await this.updateVariables(selections, true);
+        await this.updateMethods(selections, true);
+        this.variableSelected(selections.class.variables.find(v => v.name === variable.name));
+    }
+
+    variableRemoved = async (variable) => {        
+        const selections = this.currentSelections();
+        await this.updateVariables(selections, true);
+        await this.updateMethods(selections);
+        this.applySelections(selections);
+    }
+
     categorySelected = async (category) => {
         const selections = this.currentSelections();
         selections.category = category;
@@ -384,9 +405,13 @@ class ClassBrowser extends Component {
                                 <Grid item xs={12} md={3} lg={3}>
                                     <Paper className={fixedHeightPaper} variant="outlined">
                                         <VariableList
+                                            class={selectedClass}
                                             variables={this.currentVariables()}
                                             selectedVariable={selectedVariable}
-                                            onSelect={this.variableSelected}/>
+                                            onAdd={this.variableAdded}
+                                            onRename={this.variableRenamed}
+                                            onSelect={this.variableSelected}
+                                            onRemove={this.variableRemoved}/>
                                     </Paper>
                                 </Grid>
                                 <Grid item xs={12} md={3} lg={3}>

@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import CustomList from '../controls/CustomList';
+import { AppContext } from '../../AppContext';
+import { withDialog } from '../dialogs';
 
 class VariableList extends Component {
+    static contextType = AppContext;
+
     extendedVariables(variables) {
         let extended = [];
         if (variables) {
@@ -18,11 +22,34 @@ class VariableList extends Component {
         return extended;
     }
 
-
     variableSelected = (variable) => {
         const selected = variable.type === 'separator' ? null : variable;
         const handler = this.props.onSelect;
         if (handler) {handler(selected)}
+    }
+
+    addVariable = async () => {
+        try {
+            const name = await this.props.dialog.prompt('New variable');
+            const variable = await this.context.api.addInstanceVariable(this.props.class.name, name);
+            if (variable && this.props.onAdd) {this.props.onAdd(variable)}
+        }
+        catch (error) {}
+    }
+
+    renameVariable = async (variable) => {
+        try {
+            const newName = await this.props.dialog.prompt({title: 'Rename variable', defaultValue: variable.name});
+            await this.context.api.renameInstanceVariable(this.props.class.name, variable.name, newName);
+            variable.name = newName;
+            if (this.props.onRename) {this.props.onRename(variable, newName)}
+        }
+        catch (error) {}
+    }
+
+    removeVariable = async (variable) => {
+        await this.context.api.deleteInstanceVariable(this.props.class.name, variable.name);
+        if (this.props.onRemove) {this.props.onRemove(variable)}
     }
 
     menuOptions() {
@@ -50,4 +77,4 @@ class VariableList extends Component {
     }
 };
 
-export default VariableList;
+export default withDialog()(VariableList);
