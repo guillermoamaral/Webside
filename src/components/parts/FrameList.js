@@ -10,14 +10,38 @@ class FrameList extends Component {
         if (handler) {handler(frame)}
     }
 
+    browseClass = (frame) => {
+        if (frame) {this.context.browseClass(frame.class.name)}
+    }
+
+    browseSenders = (frame) => {
+        if (frame) {this.context.browseSenders(frame.method.selector)}
+    }
+
+    browseSenders = (frame) => {
+        if (frame) {this.context.browseLocalSenders(frame.method.selector, frame.class.name)}
+    }
+
+    browseImplementors = (frame) => {
+        if (frame) {this.context.browseImplementors(frame.method.selector)}
+    }
+
+    browseLocalImplementors = (frame) => {
+        if (frame) {this.context.browseLocalImplementors(frame.method.selector, frame.class.name)}
+    }
+
+    browseReferences = (frame) => {
+        if (frame) {this.context.browseReferences(frame.class.name)}
+    }
+
     menuOptions() {
         return [
-            {label: 'Browse', action: f => this.context.browseClass(f.class.name)},
-            {label: 'Senders', action: f => this.context.browseSenders(f.method.selector)},
-            {label: 'Local senders', action: f => this.context.browseLocalSenders(f.method.selector, f.class.name)},
-            {label: 'Implementors', action: f => this.context.browseImplementors(f.method.selector)},
-            {label: 'Local implementors', action: f => this.context.browseLocalImplementors(f.method.selector, f.class.name)},
-            {label: 'Class references', action: f => this.context.browseReferences(f.class.name)},
+            {label: 'Browse', action: this.browseClass},
+            {label: 'Senders', action: this.browseSenders},
+            {label: 'Local senders', action: this.browseSenders},
+            {label: 'Implementors', action: this.browseImplementors},
+            {label: 'Local implementors', action: this.browseLocalImplementors},
+            {label: 'Class references', action: this.browseReferences},
         ]
     }
 

@@ -34,20 +34,22 @@ class VariableList extends Component {
             const variable = await this.context.api.addInstanceVariable(this.props.class.name, name);
             if (variable && this.props.onAdd) {this.props.onAdd(variable)}
         }
-        catch (error) {}
+        catch (error) {console.log(error)}
     }
 
     renameVariable = async (variable) => {
+        if (!variable) {return}
         try {
             const newName = await this.props.dialog.prompt({title: 'Rename variable', defaultValue: variable.name});
             await this.context.api.renameInstanceVariable(this.props.class.name, variable.name, newName);
             variable.name = newName;
             if (this.props.onRename) {this.props.onRename(variable, newName)}
         }
-        catch (error) {}
+        catch (error) {console.log(error)}
     }
 
     removeVariable = async (variable) => {
+        if (!variable) {return}
         await this.context.api.deleteInstanceVariable(this.props.class.name, variable.name);
         if (this.props.onRemove) {this.props.onRemove(variable)}
     }

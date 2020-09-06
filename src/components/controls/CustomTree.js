@@ -105,9 +105,7 @@ class CustomTree extends Component {
     
     menuOptionClicked(option) {
         const selected = this.state.selectedItem;
-        if (option.action && selected) {
-            option.action(selected)
-        }
+        if (option.action) {option.action(selected)}
     }
 
     render() {

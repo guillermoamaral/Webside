@@ -127,11 +127,19 @@ class TestRunner extends Component {
         this.setState({filter: filter})
     }
 
+    browseImplementors = (test) => {
+        if (test) {this.context.browseImplementors(test.selector)}
+    }
+
+    browseClass = (test) => {
+        if (test) {this.context.browseClass(test.class)}
+    }
+
     menuOptions() {
         return [
             {label: 'Debug', action: this.debugTest},
-            {label: 'Implementors', action: test => this.context.browseImplementors(test.selector)},
-            {label: 'Browse class', action: test => this.context.browseClass(test.class)},
+            {label: 'Implementors', action: this.browseImplementors},
+            {label: 'Browse class', action: this.browseClass},
         ]
     }
 

@@ -19,9 +19,13 @@ class ChangesBrowser extends Component {
         this.setState({selectedChange: change});
     }
 
+    browseClass = (change) => {
+        if (change) {this.context.browseClass(change.class)}
+    }
+
     menuOptions() {
         return [
-            {label: 'Browse', action: ch => this.context.browseClass(ch.class)},
+            {label: 'Browse', action: this.browseClass},
         ]
     }
 

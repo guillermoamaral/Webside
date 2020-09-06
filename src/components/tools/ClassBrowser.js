@@ -152,6 +152,7 @@ class ClassBrowser extends Component {
 
     async updateMethods(selections, force = false) {
         const species = selections.class;
+        if (!species) {return}
         if (force || !species.methods) {
             const methods = await this.context.api.getMethods(species.name);
             species.methods = methods.sort((a, b) => a.selector <= b.selector? -1 : 1);
@@ -263,6 +264,7 @@ class ClassBrowser extends Component {
         const selections = this.currentSelections();
         await this.updateVariables(selections, true);
         await this.updateMethods(selections, true);
+        console.log(selections.class.variables.find(v => v.name === variable.name))
         this.variableSelected(selections.class.variables.find(v => v.name === variable.name));
     }
 

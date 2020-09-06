@@ -22,6 +22,7 @@ class ClassTree extends Component {
     // }
 
     createClass = async (superclass) => {
+        if (!superclass) {return}
         const name = await this.props.dialog.prompt({title: 'Create subclass'});
         if (!name) {return}
         const definition = superclass.name + ' subclass: #' + name + 
@@ -32,6 +33,7 @@ class ClassTree extends Component {
     }
 
     removeClass = async (species) => {
+        if (!species) {return}
         const confirm = await this.props.dialog.confirm({
             title: 'Delete ' + species.name + '?',
             ok: {text: 'Delete', color: "secondary", variant: "outlined"}});
@@ -53,16 +55,28 @@ class ClassTree extends Component {
         catch (error) {}
     }
 
+    browseClass = (species) => {
+        if (species) {this.context.browseClass(species.name)}
+    }
+
+    browseReferences = (species) => {
+        if (species) {this.context.browseReferences(species.name)}
+    }
+
+    runTests = (species) => {
+        if (species) {this.context.runTestClass(species.name)}
+    }
+
     menuOptions() {
         return [
             {label: 'New', action: this.createClass},
             {label: 'Rename', action: this.renameClass},
             {label: 'Remove', action: this.removeClass},
             null,
-            {label: 'Browse', action: c => this.context.browseClass(c.name)},
-            {label: 'References', action: c => this.context.browseReferences(c.name)},
+            {label: 'Browse', action: this.browseClass},
+            {label: 'References', action: this.browseReferences},
             null,
-            {label: 'Test', action: c => this.context.runTestClass(c.name)},
+            {label: 'Test', action: this.runTests},
         ]
     }
 

@@ -34,22 +34,50 @@ class MethodList extends Component {
         await this.context.api.deleteMethod(method.class, method.selector);
         const handler = this.props.onRemove;
         if (handler) {handler(method)}
+    }   
+
+    browseClass = (method) => {
+        if (method) {this.context.browseClass(method.class)}
+    }
+    
+    browseSenders = (method) => {
+        if (method) {this.context.browseSenders(method.selector)}
+    }
+    
+    browseLocalSenders = (method) => {
+        if (method) {this.context.browseLocalSenders(method.selector, method.class)}
+    }
+    
+    browseImplementors = (method) => {
+        if (method) {this.context.browseImplementors(method.selector)}
+    }
+    
+    browseLocalImplementors = (method) => {
+        if (method) {this.context.browseLocalImplementors(method.selector, method.class)}
+    }
+    
+    browseReferences = (method) => {
+        if (method) {this.context.browseReferences(method.class)}
     }
 
+    runTest = (method) => {
+        if (method) {this.context.runTest(method.class, method.selector)}
+    }
+    
     menuOptions() {
         return [
             {label: 'New', action: this.newMethod},
             {label: 'Rename', action: this.renameMethod},
             {label: 'Remove', action: this.removeMethod},
             null,
-            {label: 'Browse', action: m => this.context.browseClass(m.class)},
-            {label: 'Senders', action: m => this.context.browseSenders(m.selector)},
-            {label: 'Local senders', action: m => this.context.browseLocalSenders(m.selector, m.class)},
-            {label: 'Implementors', action: m => this.context.browseImplementors(m.selector)},
-            {label: 'Local implementors', action: m => this.context.browseLocalImplementors(m.selector, m.class)},
-            {label: 'Class references', action: m => this.context.browseReferences(m.class)},
+            {label: 'Browse', action: this.browseClass},
+            {label: 'Senders', action: this.browseSenders},
+            {label: 'Local senders', action: this.browseLocalSenders},
+            {label: 'Implementors', action: this.browseImplementors},
+            {label: 'Local implementors', action: this.browseLocalImplementors},
+            {label: 'Class references', action: this.browseReferences},
             null,
-            {label: 'Test', action: m => this.context.runTest(m.class, m.selector)},
+            {label: 'Test', action: this.runTest},
         ]
     }
 

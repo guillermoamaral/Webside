@@ -98,9 +98,7 @@ class CustomList extends Component {
 
   menuOptionClicked(option) {
     const selected = this.props.selectedItem; 
-    if (option.action && selected) {
-      option.action(selected);
-    }
+    if (option.action) {option.action(selected)}
   }
 
   moveUp = () => {

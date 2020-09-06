@@ -100,13 +100,6 @@ class CodeEditor extends Component {
     closeMenu = () => {
         this.setState({menuOpen: false});
     }
-    
-    menuOptionClicked(option) {
-        const selected = this.state.selectedItem;
-        if (option.action && selected) {
-            option.action(selected)
-        }
-    }
 
     menuOptions() {
         return [
