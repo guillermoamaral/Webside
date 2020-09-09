@@ -1,29 +1,37 @@
 import axios from 'axios';
 
+class APIError extends Error {
+    constructor(message, request, status, reason, data) {
+      super(message);
+      this.name = "APIError";
+      this.request = request;
+      this.status = status;
+      this.reason = reason;
+      this.data = data;
+    }
+}
+
 class API {
     constructor(uri, user, reportError, reportChange){
         this.baseUri = uri;
         this.reportError = reportError.bind();
         this.reportChange = reportChange.bind();
         this.author = user;
-    };
+    }
 
-    handleError(prefix, error, report = true) {
-        var reason;
-        var data;
+    handleError(message, error) {
+        var request, status, reason, data;
+        request = error.request;
         if (error.response) {
-            reason = 'Response error ' + error.response.status + ' - ' + error.response.statusText +
-                '\r on request to ' + error.request.responseURL;
+            status = error.response.status;
+            reason = error.response.statusText;
             data = error.response.data;
         } else if (error.request) {
-            reason = 'Request error ' + error.request;
-            data = error.request;
-        } else {
-            reason = 'Could not send request ' + error.message;
-            data = error;
+            reason = 'Could not send request due to ' + error.message;
         }
-        if (report) {this.reportError(prefix +  '\r' + reason)}
-        throw(data);
+        const exception = new APIError(message, request, status, reason, data);
+        console.error(exception);
+        throw exception;
     }
 
     // Queries...
@@ -270,10 +278,13 @@ class API {
         }
     }
 
-    async postChange(change) {
-        const response = await axios.post(this.baseUri + '/changes', change);
-        this.reportChange(change);
-        return response.data;
+    async postChange(change, description) {
+        try {
+            const response = await axios.post(this.baseUri + '/changes', change);
+            this.reportChange(change);
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot ' + description, error)}
     }
 
     // Change helpers...
@@ -282,49 +293,34 @@ class API {
         const change = this.newChange('ClassDefinition');
         change.class = classname;
         change.definition = definition;
-        try {
-            return await this.postChange(change);
-        }
-        catch (error) {this.handleError('Cannot define class ' + classname, error)}
+        return await this.postChange(change, 'define class ' + classname);
     }
 
     async commentClass(classname, comment) {
         const change = this.newChange('ClassCommentDefinition');
         change.class = classname;
         change.comment = comment;
-        try {
-            return await this.postChange(change);
-        }
-        catch (error) {this.handleError('Cannot comment class ' + classname, error)}
+        return await this.postChange(change, 'comment class ' + classname);
     }
 
     async deleteClass(classname) {
         const change = this.newChange('ClassRemove');
         change.class = classname;
-        try {
-            return await this.postChange(change);
-        }
-        catch (error) {this.handleError('Cannot remove class ' + classname, error)}
+        return await this.postChange(change, 'remove class ' + classname);
     }
 
     async renameClass(classname, newName) {
         const change = this.newChange('ClassRename');
         change.class = classname;
         change.newName = newName;
-        try {
-            return await this.postChange(change);
-        }
-        catch (error) {this.handleError('Cannot rename class ' + classname, error)}
+        return await this.postChange(change, 'rename class ' + classname);
     }
 
     async addInstanceVariable(classname, variable) {
         const change = this.newChange('InstanceVariableAddition');
         change.class = classname;
         change.variable = variable;
-        try {
-            return await this.postChange(change);
-        }
-        catch (error) {this.handleError('Cannot add variable ' + variable + ' to ' + classname, error)}
+        return await this.postChange(change, 'add variable ' + variable + ' to ' + classname);
     }
 
     async renameInstanceVariable(classname, variable, newName) {
@@ -332,20 +328,14 @@ class API {
         change.class = classname;
         change.variable = variable;
         change.newName = newName;
-        try {
-            return await this.postChange(change);
-        }
-        catch (error) {this.handleError('Cannot rename variable ' + variable + ' to ' + newName + ' of class ' + classname, error)}
+        return await this.postChange(change, 'rename variable ' + variable + ' to ' + newName + ' of class ' + classname);
     }
 
     async deleteInstanceVariable(classname, variable) {
         const change = this.newChange('InstanceVariableRemove');
         change.class = classname;
         change.variable = variable;
-        try {
-            return await this.postChange(change);
-        }
-        catch (error) {this.handleError('Cannot remove variable ' + variable + ' from class ' + classname, error)}
+        return await this.postChange(change, 'remove variable ' + variable + ' from class ' + classname);
     }
     
     async renameCategory(classname, category, newName) {
@@ -353,41 +343,29 @@ class API {
         change.class = classname;
         change.category = category;
         change.newName = newName;
-        try {
-            return await this.postChange(change);
-        }
-        catch (error) {this.handleError('Cannot rename category ' + category + ' to ' + newName + ' of class ' + classname, error)}
+        return await this.postChange(change, 'rename category ' + category + ' to ' + newName + ' of class ' + classname);
     }
 
     async deleteCategory(classname, category) {
         const change = this.newChange('CategoryRemove');
         change.class = classname;
         change.category = category;
-        try {
-            return await this.postChange(change);
-        }
-        catch (error) {this.handleError('Cannot remove category ' + category + ' from class ' + classname, error)}
+        return await this.postChange(change, 'remove category ' + category + ' from class ' + classname);
     }
 
     async compileMethod(classname, category, source) {
-        try {
-            const change = this.newChange('MethodDefinition');
-            change.class = classname;
-            change.category = category;
-            change.sourceCode = source;
-            return await this.postChange(change);
-        }
-        catch (error) {this.handleError('Cannot compile ' + source + ' in ' + classname, error)}
+        const change = this.newChange('MethodDefinition');
+        change.class = classname;
+        change.category = category;
+        change.sourceCode = source;
+        return await this.postChange(change, 'compile ' + source + ' in ' + classname);
     }
 
     async deleteMethod(classname, selector) {
         const change = this.newChange('MethodRemove');
         change.class = classname;
         change.selector = selector;
-        try {
-            return await this.postChange(change);
-        }
-        catch (error) {this.handleError('Cannot remove methodd ' + classname + '>>#' + selector, error)}
+        return await this.postChange(change, 'remove methodd ' + classname + '>>#' + selector);
     }
 
     async renameSelector(classname, selector, newSelector) {
@@ -395,10 +373,7 @@ class API {
         change.class = classname;
         change.selector = selector;
         change.newSelector = newSelector;
-        try {
-            return await this.postChange(change);
-        }
-        catch (error) {this.handleError('Cannot rename selector ' + selector + ' to ' + newSelector, error)}
+        return await this.postChange(change, 'rename selector ' + selector + ' to ' + newSelector);
     }
 
     // Evaluations...
@@ -414,7 +389,7 @@ class API {
             const response = await axios.post(this.baseUri + '/evaluations', evaluation);
             return response.data;
         }
-        catch (error) {this.handleError('Cannot evaluate ' + expression, error, false)}
+        catch (error) {this.handleError('Cannot evaluate ' + expression, error)}
     }
 
     async debugExpression(expression, context) {
@@ -428,7 +403,7 @@ class API {
             const response = await axios.post(this.baseUri + '/evaluations', evaluation);
             return response.data;
         }
-        catch (error) {this.handleError('Cannot debug ' + expression, error, false)}
+        catch (error) {this.handleError('Cannot debug ' + expression, error)}
     }
 
     async profileExpression(expression, context) {
@@ -442,7 +417,7 @@ class API {
             const response = await axios.post(this.baseUri + '/evaluations', evaluation);
             return response.data;
         }
-        catch (error) {this.handleError('Cannot profile ' + expression, error, false)}
+        catch (error) {this.handleError('Cannot profile ' + expression, error)}
     }
 
     // Objects...
@@ -461,8 +436,7 @@ class API {
             return response.data
         }
         catch (error) {
-            const report = !error.response || !error.response.data || !error.response.data.process;
-            this.handleError('Cannot fetch object with id ' + id, error, report)}
+            this.handleError('Cannot fetch object with id ' + id, error)}
     }
 
     async unpinObject(id) {

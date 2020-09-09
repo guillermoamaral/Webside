@@ -187,6 +187,7 @@ class ClassBrowser extends Component {
     sideChanged = (event, side) => {
         if (!side) return;
         this.setState({selectedSide: side});
+        if (!this.state.root) {return}
         if (side === "instance") {
             const name = this.state.root;
             this.changeRoot(name.slice(0, name.length - 6))
@@ -264,7 +265,6 @@ class ClassBrowser extends Component {
         const selections = this.currentSelections();
         await this.updateVariables(selections, true);
         await this.updateMethods(selections, true);
-        console.log(selections.class.variables.find(v => v.name === variable.name))
         this.variableSelected(selections.class.variables.find(v => v.name === variable.name));
     }
 

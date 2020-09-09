@@ -98,18 +98,21 @@ class App extends PureComponent {
       selectedPage: null,
       transcriptOpen: false,
       transcriptText: 'Welcome to Webside!\r\rA web Smalltalk IDE built with ReactJS.',
-      pages: []
+      pages: [],
+      classNames: [],
     }
   }
 
   componentDidMount() {
     this.getClassNames();
-    //this.profileExpression('1000 timesRepeat: [100 factorial. 100 raisedTo: 15]')
   }
 
   getClassNames = async () => {
-    const names = await this.api.getClassNames();
-    this.setState({classNames: names})
+    try {
+      const names = await this.api.getClassNames();
+      this.setState({classNames: names})
+    }
+    catch (error) {this.reportError(error)}
   }
 
   addPage(label, icon, component) {
@@ -229,8 +232,11 @@ class App extends PureComponent {
   }
 
   browseLastChanges = async () => {
-    const changes = await this.api.getChanges();
-    this.openChangesBrowser(changes, 'Last changes');
+    try {
+      const changes = await this.api.getChanges();
+      this.openChangesBrowser(changes, 'Last changes');
+    }
+    catch (error) {this.reportError(error)}
   }
 
   debugExpression = async (expression, context) => {
@@ -245,10 +251,12 @@ class App extends PureComponent {
       return object;
     }
     catch (error) {
-      const id = await this.api.createDebugger(error.process)
-      this.openDebugger(id)
-      // const debug = await this.confirm(error.description, 'Stack tracke:\r' + error.stack + '\r\rDo you want to debug it?');
-      // (debug)? this.openDebugger(error.debugger) : this.reportError(error.description);
+      if (error.data && error.data.process) {
+        // const debug = await this.confirm(error.description, 'Stack tracke:\r' + error.stack + '\r\rDo you want to debug it?');
+        // (debug)? this.openDebugger(error.debugger) : this.reportError(error.description);
+        const id = await this.api.createDebugger(error.data.process)
+        this.openDebugger(id);
+      }
     }
   }
 
@@ -296,8 +304,11 @@ class App extends PureComponent {
 
   addWorkspaceClicked = async () => {
     this.setState({addPageMenuOpen: false})
-    const id = await this.api.createWorkspace();
-    this.openWorkspace(id)
+    try {
+      const id = await this.api.createWorkspace();
+      this.openWorkspace(id)
+    }
+    catch (error) {this.reportError(error)}
   }
 
   toggleShowTranscript = () => {

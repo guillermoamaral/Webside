@@ -27,6 +27,7 @@ class CodeBrowser extends Component {
     }
 
     defineClass = async (definition) => {
+        if (!this.props.class) {return}
         const classname = this.props.class? this.props.class.name : null;
         const species = await this.context.api.defineClass(classname, definition);
         const handler = this.props.onClassDefined;
@@ -49,22 +50,33 @@ class CodeBrowser extends Component {
             if (handler) {handler(method)}
         }
         catch (error) {
-            if (error.suggestion && error.change) {
-                const retry  = await this.props.dialog.confirm(error.suggestion + '?');
-                if (retry) {
-                    const method = await this.context.api.postChange(error.change);
+            this.handlerCompilationError(error, source)
+        }
+    }
+
+    async handlerCompilationError(error, source) {
+        const method = this.props.method;
+        method.source = source;
+        const data = error.data;
+        if (data && data.suggestion && data.change) {
+            const retry  = await this.props.dialog.confirm(data.suggestion + '?');
+            if (retry) {
+                try {
+                    const method = await this.context.api.postChange(data.change);
                     const handler = this.props.onMethodCompiled;
                     if (handler) {handler(method)}
                 }
+                catch (error) {
+                    this.handlerCompilationError(error, data.change.sourceCode)
+                }
             }
-            const method = this.props.method;
-            method.source = source;
-            if (error.interval) {
+        } else {
+            if (data && data.interval) {
                 method.lintAnnotations = [{
-                    from: error.interval.start,
-                    to: error.interval.end,
+                    from: data.interval.start,
+                    to: data.interval.end,
                     severity: 'error',
-                    description: error.description}]
+                    description: data.description}]
                 }
             this.setState({method: method});
         }
@@ -126,6 +138,7 @@ class CodeBrowser extends Component {
     }
 
     render() {
+        console.log('rendering code browser')
         const mode = this.state.selectedMode;
         return (
             <Grid container spacing={1}>
