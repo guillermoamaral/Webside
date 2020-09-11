@@ -141,7 +141,6 @@ class CodeBrowser extends Component {
     }
 
     render() {
-        console.log('rendering code browser')
         const mode = this.state.selectedMode;
         return (
             <Grid container spacing={1}>

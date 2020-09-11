@@ -103,6 +103,7 @@ class Profiler extends Component {
                 <Grid item xs={12} md={12} lg={12}>
                     {!loading && selectedMode === 'ranking' &&
                         <HorizontalBar
+                            height={80}
                             onElementsClick={elems => {this.rankingClicked(elems[0])}}
                             data={rankingData}
                             options={{legend: {display: false}}}/>}
