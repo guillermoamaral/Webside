@@ -4,4 +4,4 @@ const DialogContext = React.createContext({
   dialog: {}
 })
 
-export default DialogContext
+export default DialogContext;

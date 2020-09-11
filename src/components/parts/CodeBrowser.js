@@ -58,16 +58,19 @@ class CodeBrowser extends Component {
         const method = this.props.method;
         method.source = source;
         const data = error.data;
-        if (data && data.suggestion && data.change) {
+        if (data && data.suggestion && data.changes) {
             const retry  = await this.props.dialog.confirm(data.suggestion + '?');
             if (retry) {
                 try {
-                    const method = await this.context.api.postChange(data.change);
+                    let method;
+                    for (const change of data.changes) {
+                        method = await this.context.api.postChange(change);
+                    }
                     const handler = this.props.onMethodCompiled;
                     if (handler) {handler(method)}
                 }
                 catch (error) {
-                    this.handlerCompilationError(error, data.change.sourceCode)
+                    this.handlerCompilationError(error, data.changes[data.changes.length - 1].sourceCode)
                 }
             }
         } else {

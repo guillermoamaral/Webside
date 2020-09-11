@@ -13,19 +13,19 @@ class DialogProvider extends React.PureComponent {
 
   handleAlertDialogClose = (value) => {
     const { alertDialog } = this.state
-    this.setState({ alertDialog: { ...alertDialog, open: false } })
+    this.setState({ alertDialog: { ...alertDialog, open: false }})
     return alertDialog.resolve(value)
   }
 
   handleConfirmDialogClose = (value) => {
     const { confirmDialog } = this.state
-    this.setState({ confirmDialog: { ...confirmDialog, open: false } })
+    this.setState({ confirmDialog: { ...confirmDialog, open: false }})
     return value ? confirmDialog.resolve(value) : confirmDialog.reject()
   }
 
   handlePromptDialogClose = (value) => {
     const { promptDialog } = this.state
-    this.setState({ promptDialog: { ...promptDialog, open: false } })
+    this.setState({ promptDialog: { ...promptDialog, open: false }})
     return value ? promptDialog.resolve(value) : promptDialog.reject()
   }
 
@@ -64,7 +64,6 @@ class DialogProvider extends React.PureComponent {
   render () {
     const { children } = this.props
     const { alertDialog, confirmDialog, promptDialog } = this.state
-
     return (
       <DialogContext.Provider value={{ dialog: this.dialog }}>
         {children}
