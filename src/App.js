@@ -30,6 +30,7 @@ import Titlebar from './components/layout/Titlebar'
 import Sidebar from './components/layout/Sidebar';
 import TabControl from './components/controls/TabControl';
 import Transcript from './components/tools/Transcript';
+import ProjectBrowser from './components/tools/ProjectBrowser';
 import ClassBrowser from './components/tools/ClassBrowser';
 import MethodBrowser from './components/tools/MethodBrowser';
 import Inspector from './components/tools/Inspector';
@@ -158,6 +159,12 @@ class App extends PureComponent {
     this.api.getObjects()
       .then(objects => {objects.forEach(o => this.openInspector(o))})
       .catch(error => {})
+  }
+
+  openProjectBrowser = (classname) => {
+    const root = classname;
+    const browser = <ProjectBrowser styles={this.props.classes} root={root}/>;
+    this.addPage(browser.props.root || 'Project Browser', <ClassBrowserIcon className={this.props.classes.classBrowserIcon} />, browser);
   }
 
   openClassBrowser = (classname) => {
@@ -299,7 +306,8 @@ class App extends PureComponent {
 
   addClassBrowserClicked = () => {
     this.setState({addPageMenuOpen: false})
-    this.openClassBrowser()
+    //this.openClassBrowser()
+    this.openProjectBrowser();
   }
 
   addWorkspaceClicked = async () => {
