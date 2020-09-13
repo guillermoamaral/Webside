@@ -32,9 +32,10 @@ class VariableList extends Component {
         try {
             const name = await this.props.dialog.prompt('New variable');
             const variable = await this.context.api.addInstanceVariable(this.props.class.name, name);
-            if (variable && this.props.onAdd) {this.props.onAdd(variable)}
+            const handler = this.props.onAdd;
+            if (variable && handler) {handler(variable)}
         }
-        catch (error) {console.log(error)}
+        catch (error) {this.context.reportError(error)}
     }
 
     renameVariable = async (variable) => {
@@ -43,25 +44,59 @@ class VariableList extends Component {
             const newName = await this.props.dialog.prompt({title: 'Rename variable', defaultValue: variable.name});
             await this.context.api.renameInstanceVariable(this.props.class.name, variable.name, newName);
             variable.name = newName;
-            if (this.props.onRename) {this.props.onRename(variable, newName)}
+            const handler = this.props.onRename;
+            if (handler) {handler(variable, newName)}
         }
-        catch (error) {console.log(error)}
+        catch (error) {this.context.reportError(error)}
     }
 
     removeVariable = async (variable) => {
         if (!variable) {return}
-        await this.context.api.deleteInstanceVariable(this.props.class.name, variable.name);
-        if (this.props.onRemove) {this.props.onRemove(variable)}
+        try {
+            await this.context.api.deleteInstanceVariable(this.props.class.name, variable.name);
+            const handler = this.props.onRemove; 
+            if (handler) {handler(variable)}
+        }
+        catch (error) {this.context.reportError(error)}
+    }
+
+    moveVariableUp = async (variable) => {
+        if (!variable) {return}
+        try {
+            await this.context.api.moveInstanceVariableUp(this.props.class.name, variable.name);
+            const handler = this.props.onMoveUp;
+            if (handler) {handler(variable)}
+        }
+        catch (error) {this.context.reportError(error)}
+    }
+
+    moveVariableDown = async (variable) => {
+        if (!variable) {return}
+        try {
+            await this.context.api.moveInstanceDown(this.props.class.name, variable.name);
+            const handler = this.props.onRemove;
+            if (handler) {handler(variable)}
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     menuOptions() {
-        return [
+        const options = [
             {label: 'Add', action: this.addVariable},
             {label: 'Rename', action: this.renameVariable},
             {label: 'Remove', action: this.removeVariable},
-            {label: 'Move to superclass', action: this.moveVariableUp},
-            {label: 'Move to subclass', action: this.moveVariableDown}
-        ]
+            {label: 'Move to superclass', action: this.moveVariableUp}];
+        if (this.props.class) {
+            options.push(
+                {
+                    label: 'Move to subclass',
+                    suboptions: this.props.class.subclasses.map(c => {
+                        return {label: c.name, action: this.moveVariableDown}})
+                }
+            )
+        }
+        console.log(options)
+        return options;
     }
 
     render() {

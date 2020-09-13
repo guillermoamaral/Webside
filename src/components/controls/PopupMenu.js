@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Menu, MenuItem, Divider } from '@material-ui/core';
 
 class PopupMenu extends Component {
-    createItems = () => {
-        if (!this.props.options) {return []};
+    createItems = (options) => {
+        if (!options) {return []};
         return (
-            this.props.options.map((option, index) => {
+            options.map((option, index) => {
                  if (!option) {
                     return <Divider key={"divider-" + index}/>
                 } else {
@@ -13,12 +13,11 @@ class PopupMenu extends Component {
                         <MenuItem
                             key={option.label}
                             id={option.id}
-                            onClick={event => this.itemClicked(event, option)}
-                            style={{paddingTop: 0, paddingBottom: 0}}
-                        >
-                            {option.label}
-                        </MenuItem>
-                    )
+                            onClick={option.suboptions? null : event => this.itemClicked(event, option)}
+                            children= {this.createItems(option.suboptions)}
+                            style={{paddingTop: 0, paddingBottom: 0}}>
+                                {option.label}
+                        </MenuItem>)
                 }
             })
         )
@@ -53,7 +52,7 @@ class PopupMenu extends Component {
                 onClose={this.close}
                 anchorReference="anchorPosition"
                 anchorPosition={this.position()}>
-                    {this.createItems()}
+                    {this.createItems(this.props.options)}
             </Menu>
         )
     }

@@ -337,7 +337,21 @@ class API {
         change.variable = variable;
         return await this.postChange(change, 'remove variable ' + variable + ' from class ' + classname);
     }
+
+    async moveInstanceVariableUp(classname, variable) {
+        const change = this.newChange('InstanceVariableMoveUp');
+        change.class = classname;
+        change.variable = variable;
+        return await this.postChange(change, 'move up variable ' + variable + ' from class ' + classname);
+    }
     
+    async moveInstanceVariableDown(classname, variable) {
+        const change = this.newChange('InstanceVariableMoveDown');
+        change.class = classname;
+        change.variable = variable;
+        return await this.postChange(change, 'move down variable ' + variable + ' from class ' + classname);
+    }
+
     async renameCategory(classname, category, newName) {
         const change = this.newChange('CategoryRename');
         change.class = classname;
