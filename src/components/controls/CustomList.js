@@ -76,27 +76,16 @@ class CustomList extends Component {
     }
   }
 
-  menuOptions() {
-    if (this.props.menuOptions) {
-      return this.props.menuOptions.map(option => {
-        return !option? null : {
-          label: option.label,
-          action: () => {this.menuOptionClicked(option)}
-        }
-      })
-    }
-  }
-
   openMenu = (event) => {
     event.preventDefault();
     this.setState({menuOpen: true, menuPosition: {x: event.clientX - 2, y: event.clientY - 4}})
-  };
+  }
 
   closeMenu = () => {
     this.setState({menuOpen: false});
   }
 
-  menuOptionClicked(option) {
+  menuOptionClicked = (option) => {
     const selected = this.props.selectedItem; 
     if (option.action) {option.action(selected)}
   }
@@ -141,14 +130,14 @@ class CustomList extends Component {
           <List
             onContextMenu={this.openMenu}
             onKeyDown={this.keyPressed}
-            style={{paddingTop: 0, paddingBottom: 0}}
-            >
+            style={{paddingTop: 0, paddingBottom: 0}}>
                 {this.createItems()}
           </List>
           <PopupMenu
-            options={this.menuOptions()}
+            options={this.props.menuOptions}
             open={this.state.menuOpen}
             position={this.state.menuPosition}
+            onOptionClick={this.menuOptionClicked}
             onClose={this.closeMenu}/>
       </Scrollable>
     )

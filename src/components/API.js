@@ -309,10 +309,11 @@ class API {
         return await this.postChange(change, 'remove class ' + classname);
     }
 
-    async renameClass(classname, newName) {
+    async renameClass(classname, newName, renameReferences = true) {
         const change = this.newChange('ClassRename');
         change.class = classname;
         change.newName = newName;
+        change.renameReferences = renameReferences;
         return await this.postChange(change, 'rename class ' + classname);
     }
 
@@ -345,10 +346,11 @@ class API {
         return await this.postChange(change, 'move up variable ' + variable + ' from class ' + classname);
     }
     
-    async moveInstanceVariableDown(classname, variable) {
+    async moveInstanceVariableDown(classname, variable, target) {
         const change = this.newChange('InstanceVariableMoveDown');
         change.class = classname;
         change.variable = variable;
+        change.target = target;
         return await this.postChange(change, 'move down variable ' + variable + ' from class ' + classname);
     }
 

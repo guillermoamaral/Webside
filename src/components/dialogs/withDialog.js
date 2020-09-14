@@ -5,7 +5,7 @@ function withDialog () {
   return WrappedComponent => {
     const ComponentWithDialog = props => (
       <DialogContext.Consumer>
-        {({ dialog }) => <WrappedComponent dialog={dialog} {...props} />}
+        {({ dialog }) => <WrappedComponent dialog={dialog} {...props}/>}
       </DialogContext.Consumer>
     )
     return ComponentWithDialog

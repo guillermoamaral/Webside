@@ -55,14 +55,14 @@ class CustomTree extends Component {
             const id = item[getter];
             return id? id.toString() : ''}
         return getter(item)
-      }
+    }
 
     getItemLabel = (item) => {
         const getter = this.props.itemLabel;
         if (!getter) {return item}    
         if (typeof getter == "string")  {return item[getter]}
         return getter(item)
-      }
+    }
 
     getItemChildren = (item) => {
         const getter = this.props.children;
@@ -76,29 +76,18 @@ class CustomTree extends Component {
         this.setState({selectedItem: item});
         const handler = this.props.onSelect;
         if (handler) {handler(item)}
-    };
+    }
 
     itemToggled = (event, item) => {
         const handler = this.props.onExpand;
         if (handler) {handler(item)}
-    };
-
-    menuOptions() {
-        if (this.props.menuOptions) {
-            return this.props.menuOptions.map(option => {
-                return !option? null : {
-                    label: option.label,
-                    action: () => {this.menuOptionClicked(option)}
-                }
-            })
-        }
     }
 
     openMenu = (event) => {
         event.preventDefault();
         this.setState({menuOpen: true, menuPosition: {x: event.clientX - 2, y: event.clientY - 4}})
-    };
-    
+    }
+
     closeMenu = () => {
         this.setState({menuOpen: false});
     }
@@ -120,9 +109,10 @@ class CustomTree extends Component {
                         {this.createItems(this.props.items)}
                 </TreeView>
                 <PopupMenu
-                    options={this.menuOptions()}
+                    options={this.props.menuOptions}
                     open={this.state.menuOpen}
                     position={this.state.menuPosition}
+                    onOptionClick={this.menuOptionClicked}
                     onClose={this.closeMenu}/>
             </Scrollable>
         )

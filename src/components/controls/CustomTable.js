@@ -24,22 +24,11 @@ class CustomTable extends Component {
         const handler = this.props.onSelect;
         if (handler) {handler(row)}
     }
-
-    menuOptions() {
-        if (this.props.menuOptions) {
-          return this.props.menuOptions.map(option => {
-            return !option? null : {
-              label: option.label,
-              action: () => {this.menuOptionClicked(option)}
-            }
-          })
-        }
-    }
     
     openMenu = (event) => {
         event.preventDefault();
         this.setState({menuOpen: true, menuPosition: {x: event.clientX - 2, y: event.clientY - 4}})
-    };
+    }
     
     closeMenu = () => {
         this.setState({menuOpen: false});
@@ -93,9 +82,10 @@ class CustomTable extends Component {
                     </Table>
                 </TableContainer>
                 <PopupMenu
-                    options={this.menuOptions()}
+                    options={this.props.menuOptions}
                     open={this.state.menuOpen}
                     position={this.state.menuPosition}
+                    onOptionClick={this.menuOptionClicked}
                     onClose={this.closeMenu}/>
             </div>
             //</Scrollable>

@@ -106,6 +106,7 @@ class App extends PureComponent {
 
   componentDidMount() {
     this.getClassNames();
+    this.openClassBrowser('Fraction')
   }
 
   getClassNames = async () => {

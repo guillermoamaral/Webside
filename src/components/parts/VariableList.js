@@ -70,10 +70,10 @@ class VariableList extends Component {
         catch (error) {this.context.reportError(error)}
     }
 
-    moveVariableDown = async (variable) => {
+    moveVariableDown = async (variable, target) => {
         if (!variable) {return}
         try {
-            await this.context.api.moveInstanceDown(this.props.class.name, variable.name);
+            await this.context.api.moveInstanceVariableDown(this.props.class.name, variable.name, target);
             const handler = this.props.onRemove;
             if (handler) {handler(variable)}
         }
@@ -91,11 +91,10 @@ class VariableList extends Component {
                 {
                     label: 'Move to subclass',
                     suboptions: this.props.class.subclasses.map(c => {
-                        return {label: c.name, action: this.moveVariableDown}})
+                        return {label: c.name, action: v => this.moveVariableDown(v, c.name)}})
                 }
             )
         }
-        console.log(options)
         return options;
     }
 
