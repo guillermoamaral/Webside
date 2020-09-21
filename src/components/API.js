@@ -36,9 +36,35 @@ class API {
 
     // Queries...
 
+    async getProjectTree(root) {
+        try {
+            const response = await axios.get(this.baseUri + '/projects?root=' + root + '&tree=true');     
+            return response.data;
+
+         }
+        catch (error) {this.handleError('Cannot fetch project tree from ' + root, error)}
+    }
+
+    async getProjectNames() {
+        try {
+            const response = await axios.get(this.baseUri + '/projects?names=true')
+            return response.data; 
+        }
+        catch (error) {this.handleError('Cannot fetch project names', error)}
+    }
+
+    async getProjectClasses(name) {
+        try {
+            const response = await axios.get(this.baseUri + '/projects/' + name + '/classes?tree=true');     
+            return response.data;
+
+         }
+        catch (error) {this.handleError('Cannot fetch classes from project ' + name, error)}
+    }
+
     async getClassTree(root, depth) {
         try {
-            const response = await axios.get(this.baseUri + '/classes?root=' + root + '&tree=true&depth=' + depth);     
+            const response = await axios.get(this.baseUri + '/classes?names=true&root=' + root + '&tree=true&depth=' + depth);     
             return response.data;
 
          }

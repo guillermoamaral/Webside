@@ -30,7 +30,7 @@ import Titlebar from './components/layout/Titlebar'
 import Sidebar from './components/layout/Sidebar';
 import TabControl from './components/controls/TabControl';
 import Transcript from './components/tools/Transcript';
-import ProjectBrowser from './components/tools/ProjectBrowser';
+import SystemBrowser from './components/tools/SystemBrowser';
 import ClassBrowser from './components/tools/ClassBrowser';
 import MethodBrowser from './components/tools/MethodBrowser';
 import Inspector from './components/tools/Inspector';
@@ -100,19 +100,21 @@ class App extends PureComponent {
       transcriptOpen: false,
       transcriptText: 'Welcome to Webside!\r\rA web Smalltalk IDE built with ReactJS.',
       pages: [],
+      projectNames: [],
       classNames: [],
     }
   }
 
   componentDidMount() {
-    this.getClassNames();
+    this.getNames();
     this.openClassBrowser('Fraction')
   }
 
-  getClassNames = async () => {
+  getNames = async () => {
     try {
-      const names = await this.api.getClassNames();
-      this.setState({classNames: names})
+      const projectNames = await this.api.getProjectNames();
+      const classNames = await this.api.getClassNames();
+      this.setState({projectNames: projectNames, classNames: classNames})
     }
     catch (error) {this.reportError(error)}
   }
@@ -162,15 +164,13 @@ class App extends PureComponent {
       .catch(error => {})
   }
 
-  openProjectBrowser = (classname) => {
-    const root = classname;
-    const browser = <ProjectBrowser styles={this.props.classes} root={root}/>;
-    this.addPage(browser.props.root || 'Project Browser', <ClassBrowserIcon className={this.props.classes.classBrowserIcon} />, browser);
+  openSystemBrowser = (projectname) => {
+    const browser = <SystemBrowser styles={this.props.classes} root={projectname}/>;
+    this.addPage(browser.props.root || 'System Browser', <ClassBrowserIcon className={this.props.classes.classBrowserIcon} />, browser);
   }
 
   openClassBrowser = (classname) => {
-    const root = classname;
-    const browser = <ClassBrowser styles={this.props.classes} root={root}/>;
+    const browser = <ClassBrowser styles={this.props.classes} root={classname}/>;
     this.addPage(browser.props.root || 'Class Browser', <ClassBrowserIcon className={this.props.classes.classBrowserIcon} />, browser);
   }
 
@@ -305,10 +305,14 @@ class App extends PureComponent {
     // this.setState({changesCount: changes.length})
   }
 
+  addSystemBrowserClicked = () => {
+    this.setState({addPageMenuOpen: false})
+    this.openSystemBrowser()
+  }
+
   addClassBrowserClicked = () => {
     this.setState({addPageMenuOpen: false})
-    //this.openClassBrowser()
-    this.openProjectBrowser();
+    this.openClassBrowser()
   }
 
   addWorkspaceClicked = async () => {
@@ -328,6 +332,7 @@ class App extends PureComponent {
     console.log('render app')
     const context = {
       api: this.api,
+      projectNames: this.state.projectNames,
       classNames: this.state.classNames,
       browseClass: this.openClassBrowser,
       browseSenders: this.browseSenders,
@@ -387,6 +392,16 @@ class App extends PureComponent {
                         keepMounted
                         open={this.state.addPageMenuOpen}
                         onClose={() => {this.setState({addPageMenuOpen: false})}}>
+                          <MenuItem onClick={this.addSystemBrowserClicked}>
+                            <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
+                              <Box pt={1} pr={1}>
+                                <ClassBrowserIcon/>
+                              </Box>
+                              <Box>
+                                System Browser
+                              </Box>
+                            </Box>
+                          </MenuItem>
                           <MenuItem onClick={this.addClassBrowserClicked}>
                             <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
                               <Box pt={1} pr={1}>

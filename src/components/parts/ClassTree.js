@@ -7,21 +7,7 @@ import Scrollable from '../controls/Scrollable';
 class ClassTree extends Component {
     static contextType = AppContext;
 
-    constructor(props) {
-        super(props);
-        this.state = {root: props.root}
-    }
-
-    // static getDerivedStateFromProps(props, state) {
-    //     if (props.root !== state.root) {
-    //         return {
-    //             items: props.items,
-    //         };
-    //     }
-    //     return null
-    // }
-
-    createClass = async (superclass) => {
+    newSubclass = async (superclass) => {
         if (!superclass) {return}
         const name = await this.props.dialog.prompt({title: 'Create subclass'});
         if (!name) {return}
@@ -69,7 +55,7 @@ class ClassTree extends Component {
 
     menuOptions() {
         return [
-            {label: 'New', action: this.createClass},
+            {label: 'New', action: this.newSubclass},
             {label: 'Rename', action: this.renameClass},
             {label: 'Remove', action: this.removeClass},
             null,
@@ -81,10 +67,10 @@ class ClassTree extends Component {
     }
 
     render() {
-        const root = this.props.root;
+        const roots = this.props.roots;
         return (
             <CustomTree
-                items={root? [root] : []}
+                items={roots? roots : []}
                 itemLabel="name"
                 children={"subclasses"}
                 onExpand={this.props.onExpand}

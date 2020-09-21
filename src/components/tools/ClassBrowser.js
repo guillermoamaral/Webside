@@ -38,18 +38,15 @@ class ClassBrowser extends Component {
 
     componentDidMount(){
         const root = this.state.root;
-        if (root) {this.changeRoot(root)}
+        if (root) {this.changeRootClass(root)}
     }
 
-    changeRoot = async (classname) => {
-        if (!classname) {return}
-        const tree = await this.context.api.getClassTree(classname, 3);
+    changeRootClass = async (name) => {
+        if (!name) {return}
+        const tree = await this.context.api.getClassTree(name, 3);
         const species = tree[0];
-        this.cache[classname] = species;
-        this.setState(
-            {root: classname},
-            () => {this.classSelected(species)}
-        )
+        this.cache[name] = species;
+        this.setState({root: name}, () => {this.classSelected(species)});
     }
 
     currentSelections() {
@@ -95,12 +92,13 @@ class ClassBrowser extends Component {
         const variable = this.state.selectedVariable;
         const access = this.state.selectedVariableAccess;
         if (!species) {return []}
-        if (!category && !variable) {return species.methods}
-        if (!category) {return species[variable.name][access]}
-        if (!variable) {
-            return species.methods.filter(m => m.category === category);
+        var methods = species.methods;
+        if (category) {methods = methods.filter(m => m.category === category)}
+        if (variable) {
+            const accessors = species[variable.name][access];
+            methods = methods.filter(m => accessors.some(n => n.selector === m.selector))
         }
-        return species[variable.name][access].filter(m => m.category === category);
+        return methods;
     }
 
     // Updating...
@@ -190,9 +188,9 @@ class ClassBrowser extends Component {
         if (!this.state.root) {return}
         if (side === "instance") {
             const name = this.state.root;
-            this.changeRoot(name.slice(0, name.length - 6))
+            this.changeRootClass(name.slice(0, name.length - 6))
         } else {
-            this.changeRoot(this.state.root + " class")
+            this.changeRootClass(this.state.root + " class")
         }
     }
 
@@ -238,7 +236,7 @@ class ClassBrowser extends Component {
             superclass.subclasses = superclass.subclasses.filter(c => c !== species);
             this.classSelected(superclass);
         } else {
-            this.changeRoot('Object')
+            this.changeRootClass('Object')
         }
     }
 
@@ -365,7 +363,7 @@ class ClassBrowser extends Component {
                                 <Grid item xs={3} md={3} lg={3}>
                                     <SearchList
                                         options={this.context.classNames}
-                                        onChange={classname => {this.changeRoot(classname)}}/>
+                                        onChange={classname => {this.changeRootClass(classname)}}/>
                                 </Grid>                        
                                 <Grid item xs={3} md={3} lg={3}>
                                     <Select
@@ -391,11 +389,11 @@ class ClassBrowser extends Component {
                                         </RadioGroup>
                                     </Box>
                                 </Grid>
-                                <Grid item xs={3} md={3} lg={3}/>                            
+                                <Grid item xs={3} md={3} lg={3}/>
                                 <Grid item xs={12} md={3} lg={3}>
                                     <Paper className={fixedHeightPaper} variant="outlined">
                                         <ClassTree
-                                            root={this.cache[root]}
+                                            roots={root? this.cache[root]? [this.cache[root]] : [] : []}
                                             selectedClass={selectedClass}
                                             onExpand={this.classExpanded}
                                             onSelect={this.classSelected}
@@ -455,7 +453,7 @@ class ClassBrowser extends Component {
                 </Grid>
             </Grid>
         )
-    };
+    }
 }
 
 export default ClassBrowser;

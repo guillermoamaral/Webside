@@ -13,6 +13,7 @@ import {
 import clsx from 'clsx';
 import { AppContext } from '../../AppContext';
 import SearchList from '../controls/SearchList';
+import ProjectTree from '../parts/ProjectTree';
 import ClassTree from '../parts/ClassTree';
 import VariableList from '../parts/VariableList';
 import CategoryList from '../parts/CategoryList';
@@ -27,6 +28,7 @@ class ProjectBrowser extends Component {
         this.cache = {};
         this.state = {
             root: this.props.root,
+            selectedProject: null,
             selectedClass: null,
             selectedVariableAccess: "referencing",
             selectedVariable: null,
@@ -38,37 +40,36 @@ class ProjectBrowser extends Component {
 
     componentDidMount(){
         const root = this.state.root;
-        if (root) {this.changeRoot(root)}
+        if (root) {this.changeRootProject(root)}
     }
 
-    changeRoot = async (classname) => {
-        if (!classname) {return}
-        const tree = await this.context.api.getClassTree(classname, 3);
-        const species = tree[0];
-        this.cache[classname] = species;
-        this.setState(
-            {root: classname},
-            () => {this.classSelected(species)}
-        )
+    changeRootProject = async (name) => {
+        if (!name) {return}
+        const tree = await this.context.api.getProjectTree(name);
+        const project = tree[0];
+        this.cache[name] = project;
+        this.setState({root: name}, () => {this.projectSelected(project)})
     }
 
     currentSelections() {
         return {
+            project: this.state.selectedProject,
             class: this.state.selectedClass,
             variableAccess: this.state.selectedVariableAccess,
             variable: this.state.selectedVariable,
             category: this.state.selectedCategory,
             method: this.state.selectedMethod,
-        };
+        }
     }
 
     applySelections(selections) {
         this.setState((prevState, props) => {
-            const species = selections.class;
-            if (species && !this.cache[species.name]) {
-                this.cache[species.name] = species;
+            const project = selections.project;
+            if (project && !this.cache[project.name]) {
+                this.cache[project.name] = project;
             }
             return {
+                selectedProject: selections.project,
                 selectedClass: selections.class,
                 selectedVariableAccess: selections.variableAccess,
                 selectedVariable: selections.variable,
@@ -79,6 +80,11 @@ class ProjectBrowser extends Component {
     }
 
     // Contents..
+    currentClasses() {
+        const project = this.state.selectedProject;
+        return (!project)? [] : project.classes;
+    }
+
     currentVariables() {
         const species = this.state.selectedClass;
         return (!species || !species.variables)? [] : species.variables;
@@ -90,20 +96,29 @@ class ProjectBrowser extends Component {
     }
 
     currentMethods = () => {
+        const project = this.state.selectedProject;
         const species = this.state.selectedClass;
         const category = this.state.selectedCategory;
         const variable = this.state.selectedVariable;
         const access = this.state.selectedVariableAccess;
-        if (!species) {return []}
-        if (!category && !variable) {return species.methods}
-        if (!category) {return species[variable.name][access]}
-        if (!variable) {
-            return species.methods.filter(m => m.category === category);
+        if (!project || !species) {return []}
+        var methods = species.methods.filter(m => m.project = project.name); 
+        if (category) {methods = methods.filter(m => m.category === category)}
+        if (variable) {
+            const accessors = species[variable.name][access];
+            methods = methods.filter(m => accessors.some(n => n.selector === m.selector))
         }
-        return species[variable.name][access].filter(m => m.category === category);
+        return methods;
     }
 
     // Updating...
+    async updateClasses(selections, force = false) {
+        const project = selections.project;
+        if (force || !project.classes) {
+            project.classes = await this.context.api.getProjectClasses(project.name);
+        }
+    }
+
     async updateClass(selections, force = false) {
         const species = selections.class;
         if (force || !species.definition) {
@@ -151,8 +166,9 @@ class ProjectBrowser extends Component {
     }
 
     async updateMethods(selections, force = false) {
+        const project = selections.project;
         const species = selections.class;
-        if (!species) {return}
+        if (!project || !species) {return}
         if (force || !species.methods) {
             const methods = await this.context.api.getMethods(species.name);
             species.methods = methods.sort((a, b) => a.selector <= b.selector? -1 : 1);
@@ -190,10 +206,17 @@ class ProjectBrowser extends Component {
         if (!this.state.root) {return}
         if (side === "instance") {
             const name = this.state.root;
-            this.changeRoot(name.slice(0, name.length - 6))
+            this.changeRootProject(name.slice(0, name.length - 6))
         } else {
-            this.changeRoot(this.state.root + " class")
+            this.changeRootProject(this.state.root + " class")
         }
+    }
+
+    projectSelected = async (project) => {
+        const selections = this.currentSelections();
+        selections.project = project;
+        await this.updateClasses(selections);
+        this.applySelections(selections);
     }
 
     classSelected = async (species) => {
@@ -204,14 +227,14 @@ class ProjectBrowser extends Component {
         await this.updateVariables(selections);
         await this.updateCategories(selections);
         await this.updateMethods(selections);
-        this.applySelections(selections)
+        this.applySelections(selections);
     }
 
     classExpanded = async (species) => {
         await this.updateSubclasses(species)
     }
 
-    classDefined = async (species) => {   
+    classDefined = async (species) => {
         const cached = this.cache[species.name];
         if (cached) {
             cached.definition = species.definition;
@@ -238,7 +261,7 @@ class ProjectBrowser extends Component {
             superclass.subclasses = superclass.subclasses.filter(c => c !== species);
             this.classSelected(superclass);
         } else {
-            this.changeRoot('Object')
+            this.changeRootProject('Object')
         }
     }
 
@@ -349,6 +372,7 @@ class ProjectBrowser extends Component {
         const {
             root,
             selectedSide,
+            selectedProject,
             selectedClass,
             selectedVariableAccess,
             selectedVariable,
@@ -364,20 +388,10 @@ class ProjectBrowser extends Component {
                             <Grid container spacing={1}>
                                 <Grid item xs={3} md={3} lg={3}>
                                     <SearchList
-                                        options={this.context.classNames}
-                                        onChange={classname => {this.changeRoot(classname)}}/>
-                                </Grid>                        
-                                <Grid item xs={3} md={3} lg={3}>
-                                    <Select
-                                        value={selectedVariableAccess}
-                                        input={<OutlinedInput margin='dense' fullWidth/>}
-                                        onChange={this.variableAccessSelected}>
-                                            <MenuItem value={"using"}>using</MenuItem>
-                                            <MenuItem value={"assigning"}>assigning</MenuItem>
-                                            <MenuItem value={"referencing"}>referencing</MenuItem>
-                                            <MenuItem value={"unusing"}>unusing</MenuItem>
-                                    </Select>
+                                        options={this.context.projectNames}
+                                        onChange={projectname => {this.changeRootProject(projectname)}}/>
                                 </Grid>
+                                <Grid item xs={3} md={3} lg={3}/>
                                 <Grid item xs={3} md={3} lg={3}>
                                     <Box display="flex" justifyContent="center">
                                         <RadioGroup
@@ -391,29 +405,25 @@ class ProjectBrowser extends Component {
                                         </RadioGroup>
                                     </Box>
                                 </Grid>
-                                <Grid item xs={3} md={3} lg={3}/>                            
+                                <Grid item xs={3} md={3} lg={3}/>
+                                <Grid item xs={12} md={3} lg={3}>
+                                    <Paper className={fixedHeightPaper} variant="outlined">
+                                        <ProjectTree
+                                            roots={root? [this.cache[root]] : []}
+                                            selectedProject={selectedProject}
+                                            onSelect={this.projectSelected}/>
+                                    </Paper>
+                                </Grid>
                                 <Grid item xs={12} md={3} lg={3}>
                                     <Paper className={fixedHeightPaper} variant="outlined">
                                         <ClassTree
-                                            root={this.cache[root]}
+                                            roots={selectedProject? selectedProject.classes : []}
                                             selectedClass={selectedClass}
                                             onExpand={this.classExpanded}
                                             onSelect={this.classSelected}
                                             onRemove={this.classRemoved}
                                             onRename={this.classRenamed}
                                             onCreate={this.classDefined}/>
-                                    </Paper>
-                                </Grid>
-                                <Grid item xs={12} md={3} lg={3}>
-                                    <Paper className={fixedHeightPaper} variant="outlined">
-                                        <VariableList
-                                            class={selectedClass}
-                                            variables={this.currentVariables()}
-                                            selectedVariable={selectedVariable}
-                                            onAdd={this.variableAdded}
-                                            onRename={this.variableRenamed}
-                                            onSelect={this.variableSelected}
-                                            onRemove={this.variableRemoved}/>
                                     </Paper>
                                 </Grid>
                                 <Grid item xs={12} md={3} lg={3}>
@@ -455,7 +465,7 @@ class ProjectBrowser extends Component {
                 </Grid>
             </Grid>
         )
-    };
+    }
 }
 
 export default ProjectBrowser;
