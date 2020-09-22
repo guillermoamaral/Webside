@@ -34,7 +34,7 @@ class CustomTable extends Component {
         this.setState({menuOpen: false});
     }
     
-    menuOptionClicked(option) {
+    menuOptionClicked = (option) => {
         const selected = this.state.selectedRow;
         if (option.action) {option.action(selected)}
     }

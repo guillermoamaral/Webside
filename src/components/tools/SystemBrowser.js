@@ -20,7 +20,7 @@ import CategoryList from '../parts/CategoryList';
 import MethodList from '../parts/MethodList';
 import CodeBrowser from '../parts/CodeBrowser';
 
-class ProjectBrowser extends Component {
+class SystemBrowser extends Component {
     static contextType = AppContext;
 
     constructor(props) {
@@ -409,7 +409,7 @@ class ProjectBrowser extends Component {
                                 <Grid item xs={12} md={3} lg={3}>
                                     <Paper className={fixedHeightPaper} variant="outlined">
                                         <ProjectTree
-                                            roots={root? [this.cache[root]] : []}
+                                            roots={root? this.cache[root]? [this.cache[root]] : [] : []}
                                             selectedProject={selectedProject}
                                             onSelect={this.projectSelected}/>
                                     </Paper>
@@ -468,4 +468,4 @@ class ProjectBrowser extends Component {
     }
 }
 
-export default ProjectBrowser;
+export default SystemBrowser;

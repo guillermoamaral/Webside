@@ -45,6 +45,11 @@ class ClassTree extends Component {
         if (species) {this.context.browseClass(species.name)}
     }
 
+    browseProject = (species) => {
+        console.log(species)
+        if (species) {this.context.browseProject(species.project)}
+    }
+
     browseReferences = (species) => {
         if (species) {this.context.browseReferences(species.name)}
     }
@@ -60,6 +65,7 @@ class ClassTree extends Component {
             {label: 'Remove', action: this.removeClass},
             null,
             {label: 'Browse', action: this.browseClass},
+            {label: 'Browse project', action: this.browseProject},
             {label: 'References', action: this.browseReferences},
             null,
             {label: 'Test', action: this.runTests},

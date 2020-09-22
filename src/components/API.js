@@ -30,7 +30,6 @@ class API {
             reason = 'Could not send request due to ' + error.message;
         }
         const exception = new APIError(message, request, status, reason, data);
-        console.error(exception);
         throw exception;
     }
 
@@ -519,6 +518,17 @@ class API {
             return response.data;
         }
         catch (error) {this.handleError('Cannot run test class ' + classname, error)}
+    }
+
+    async runTestProject(projectname) {
+        try {
+            const run = {
+                project: projectname,
+            }
+            const response = await axios.post(this.baseUri + '/test-runs', run);
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot run test project ' + projectname, error)}
     }
 
     async getTestRunStatus(id) {

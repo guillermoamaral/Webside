@@ -107,7 +107,6 @@ class App extends PureComponent {
 
   componentDidMount() {
     this.getNames();
-    this.openClassBrowser('Fraction')
   }
 
   getNames = async () => {
@@ -278,6 +277,11 @@ class App extends PureComponent {
     this.openTestRunner(status.id, 'Test ' + classname);
   }
 
+  runTestProject = async (projectname) => {
+    const status = await this.api.runTestProject(projectname);
+    this.openTestRunner(status.id, 'Test ' + projectname);
+  }
+
   profileExpression = async (expression, context) => {
     const id = await this.api.profileExpression(expression, context);
     this.openProfiler(id)
@@ -285,11 +289,11 @@ class App extends PureComponent {
 
   expandSidebar = () => {
     this.setState({sidebarExpanded: true});
-  };
+  }
   
   collapseSidebar = () => {
     this.setState({sidebarExpanded: false});
-  };
+  }
 
   reportError = (text) => {
     this.setState(
@@ -306,13 +310,13 @@ class App extends PureComponent {
   }
 
   addSystemBrowserClicked = () => {
-    this.setState({addPageMenuOpen: false})
-    this.openSystemBrowser()
+    this.setState({addPageMenuOpen: false});
+    this.openSystemBrowser();
   }
 
   addClassBrowserClicked = () => {
-    this.setState({addPageMenuOpen: false})
-    this.openClassBrowser()
+    this.setState({addPageMenuOpen: false});
+    this.openClassBrowser();
   }
 
   addWorkspaceClicked = async () => {
@@ -334,6 +338,7 @@ class App extends PureComponent {
       api: this.api,
       projectNames: this.state.projectNames,
       classNames: this.state.classNames,
+      browseProject: this.openSystemBrowser,
       browseClass: this.openClassBrowser,
       browseSenders: this.browseSenders,
       browseLocalSenders: this.browseLocalSenders,
@@ -345,6 +350,7 @@ class App extends PureComponent {
       profileExpression: this.profileExpression,
       runTest: this.runTest,
       runTestClass: this.runTestClass,
+      runTestProject: this.runTestProject,
       openDebugger: this.openDebugger,
       closeDebugger: this.closeDebugger,
       inspectObject: this.openInspector,

@@ -92,7 +92,7 @@ class CustomTree extends Component {
         this.setState({menuOpen: false});
     }
     
-    menuOptionClicked(option) {
+    menuOptionClicked = (option) => {
         const selected = this.state.selectedItem;
         if (option.action) {option.action(selected)}
     }
