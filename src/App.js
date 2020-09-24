@@ -19,6 +19,7 @@ import API from './components/API';
 import { AppContext } from './AppContext';
 import { DialogProvider } from './components/dialogs';
 import TranscriptIcon from './components/icons/TranscriptIcon';
+import SystemBrowserIcon from './components/icons/SystemBrowserIcon';
 import ClassBrowserIcon from './components/icons/ClassBrowserIcon';
 import MethodBrowserIcon from './components/icons/MethodBrowserIcon';
 import WorkspaceIcon from './components/icons/WorkspaceIcon';
@@ -165,7 +166,7 @@ class App extends PureComponent {
 
   openSystemBrowser = (projectname) => {
     const browser = <SystemBrowser styles={this.props.classes} root={projectname}/>;
-    this.addPage(browser.props.root || 'System Browser', <ClassBrowserIcon className={this.props.classes.classBrowserIcon} />, browser);
+    this.addPage(browser.props.root || 'System Browser', <SystemBrowserIcon className={this.props.classes.systemBrowserIcon} />, browser);
   }
 
   openClassBrowser = (classname) => {
@@ -401,7 +402,7 @@ class App extends PureComponent {
                           <MenuItem onClick={this.addSystemBrowserClicked}>
                             <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
                               <Box pt={1} pr={1}>
-                                <ClassBrowserIcon/>
+                                <SystemBrowserIcon/>
                               </Box>
                               <Box>
                                 System Browser
