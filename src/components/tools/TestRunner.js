@@ -144,8 +144,10 @@ class TestRunner extends Component {
     }
 
     debugTest = async (test) => {
-        const id = await this.context.api.debugTest(this.props.id, test.class, test.selector);
-        this.context.openDebugger(id, 'Debugging expression');
+        try {
+            const id = await this.context.api.debugTest(this.props.id, test.class, test.selector);
+            this.context.openDebugger(id, 'Debugging expression');
+        } catch (error) {this.context.reportError(error)}
     }
 
     render() {

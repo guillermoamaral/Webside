@@ -9,6 +9,7 @@ require('codemirror/theme/material.css');
 require('codemirror/mode/smalltalk/smalltalk.js');
 require('codemirror/addon/search/searchcursor.js');
 require('codemirror/addon/search/search.js');
+require('codemirror/addon/search/jump-to-line.js');
 require('codemirror/addon/search/match-highlighter.js');
 require('codemirror/addon/edit/matchbrackets.js');
 require('codemirror/addon/edit/closebrackets.js');
