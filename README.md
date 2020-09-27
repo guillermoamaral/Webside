@@ -1,2 +1,2 @@
-# Smalltalk Web IDE
-Smalltalk IDE implemented using ReactJS and Material-UI
+# Webside
+Smalltalk IDE for the web, implemented using ReactJS and Material-UI
