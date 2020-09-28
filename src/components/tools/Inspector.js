@@ -34,8 +34,16 @@ class Inspector extends Component {
             slots = [];
             for(var i = 0; i < object.size; i++) {slots.push(i + 1)}
         } else {
-            slots = await this.context.api.getInstanceVariables(object.class);
-            slots = slots.map(s => s.name)
+            const dictionary = await this.context.evaluateExpression('self isKindOf: Dictionary', false, {object: this.props.id});
+            if (dictionary.printString === 'true') {
+                const keys = await this.context.evaluateExpression('self keys', false, {object: this.props.id});
+                console.log(keys);
+                slots = await this.context.api.getInstanceVariables(object.class);
+                console.log(slots)
+            } else {
+                slots = await this.context.api.getInstanceVariables(object.class);
+                slots = slots.map(s => s.name)
+            }
         }
         if (slots.length === 0) {return}
         object.slots = [];
