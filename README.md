@@ -20,7 +20,7 @@
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
 
-* [About the Project](#about-the-project)
+* [About the project](#about-the-project)
   * [Built With](#built-with)
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
@@ -30,16 +30,15 @@
 * [Contact](#contact)
 
 <!-- ABOUT THE PROJECT -->
-## About The Project
+## About the project
+This project was born as a motivation to learn React in particular and to improve my JavaScript skills in general.
+As long-term (20 years+) passionate smalltalker and having implemented several web APIs (in Smalltalk) in professional contexts, I decided to expose Smalltalk itself thru a web API and see how far I could go implementing some of the Smalltalk IDE tools using React based on such such API. Starting by the "static" side (code) I implementied a class browser (more or less like any class browser available in a Smalltalk implementation). Then went for the "dynamic" side (objects), and implement an inspector, the debugger, profiler and more.
+At some point in the project I realized that the main goal should be to keep the API as simple as possible so it would be relatively easy to implement it in any Smalltalk (Bee, Pharo, Dolphin, Squeak, etc.) and have Webside for free.
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-There are many great README templates available on GitHub, however, I didn't find one that really suit my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need.
-
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should element DRY principles to the rest of your life :smile:
+Here's the some aspects I found intersting along the project:
+* Having a simple API would easy the implementation in any Smalltalk falvor to get Webside working on such Smalltalk.
+* Having a Smalltalk IDE implemented in JavaScript would allow contributions from the JavaScript community (much greater than the Smalltalk one) to enhance, change and/or extend Webside in any direction.
+* Not only this IDE could be used to work on any Smalltalk back-end but also it could allow several developers to work on the same Smalltalk instance (image), making Webside a collaborative environment naturally.
 
 Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue.
 
