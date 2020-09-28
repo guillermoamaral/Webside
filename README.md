@@ -37,7 +37,7 @@ I used Bee Smalltalk as the back-end (porting the API to other Smalltalks later)
 At some point in the project I realized that the emphasis and effort should be put on keeping the API as simple as possible so as to make the port to other Smalltalks (relatively) easy.
 
 Here's the some aspects I found intersting along the project:
-* Having a simple API would ease its implementation in any Smalltalk falvor (Bee, Pharo, Squeak, Cuis, Dolphin) and get Webside for Smalltalk for free.
+* Having a simple API would ease its implementation in any Smalltalk falvor (Bee, Pharo, Squeak, Cuis, Dolphin) and get Webside for free.
 * Far from being a downside, having a Smalltalk IDE implemented in JavaScript would enable contributions from the JavaScript community (much greater than the Smalltalk one) to either enhance, change or extend Webside in any direction.
 * Not only this IDE could be used to work upong different Smalltalk images as its back-end but also it could allow several developers to work on the same Smalltalk instance (image) simulataneously, making Webside a collaborative environment naturally.
 
