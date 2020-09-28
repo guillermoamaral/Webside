@@ -32,17 +32,15 @@
 <!-- ABOUT THE PROJECT -->
 ## About the project
 This project was born as a motivation to learn React in particular and to improve my JavaScript skills in general.
-As long-term (20 years+) passionate smalltalker and having implemented several web APIs (in Smalltalk) in professional contexts, I decided to expose Smalltalk itself thru a web API and see how far I could go implementing some of the Smalltalk IDE tools using React based on such such API. Starting by the "static" side (code) I implementied a class browser (more or less like any class browser available in a Smalltalk implementation). Then went for the "dynamic" side (objects), and implement an inspector, the debugger, profiler and more.
-At some point in the project I realized that the main goal should be to keep the API as simple as possible so it would be relatively easy to implement it in any Smalltalk (Bee, Pharo, Dolphin, Squeak, etc.) and have Webside for free.
+Being a passionate smalltalker for more than 20 years now and having implemented several web APIs using it, I decided to expose Smalltalk itself thru a web API and see how far I could go implementing some of the Smalltalk IDE tools as a front-end of such API using React.
+I used Bee Smalltalk as the back-end (porting the API to other Smalltalks later) and made the API evolve as I went progressing with the front-end tools, starting by the "static" side (code) and then moving to the "dynamic" side (objects).
+At some point in the project I realized that the emphasis and effort should be put on keeping the API as simple as possible so as to make the port to other Smalltalks (relatively) easy.
 
 Here's the some aspects I found intersting along the project:
-* Having a simple API would easy the implementation in any Smalltalk falvor to get Webside working on such Smalltalk.
-* Having a Smalltalk IDE implemented in JavaScript would allow contributions from the JavaScript community (much greater than the Smalltalk one) to enhance, change and/or extend Webside in any direction.
-* Not only this IDE could be used to work on any Smalltalk back-end but also it could allow several developers to work on the same Smalltalk instance (image), making Webside a collaborative environment naturally.
+* Having a simple API would ease its implementation in any Smalltalk falvor (Bee, Pharo, Squeak, Cuis, Dolphin) and get Webside for Smalltalk for free.
+* Far from being a downside, having a Smalltalk IDE implemented in JavaScript would enable contributions from the JavaScript community (much greater than the Smalltalk one) to either enhance, change or extend Webside in any direction.
+* Not only this IDE could be used to work upong different Smalltalk images as its back-end but also it could allow several developers to work on the same Smalltalk instance (image) simulataneously, making Webside a collaborative environment naturally.
 
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue.
-
-A list of commonly used resources that I find helpful are listed in the acknowledgements.
 
 ### Built With
 Webside is built using:
