@@ -111,6 +111,6 @@ class VariableList extends Component {
             />
         )
     }
-};
+}
 
 export default withDialog()(VariableList);

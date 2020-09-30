@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import {
   Container,
-  createMuiTheme,
   CssBaseline,
   Grid,
   IconButton,
@@ -11,13 +9,11 @@ import {
   Drawer,
   Box
 } from '@material-ui/core';
-import styles from './styles';
-import { ThemeProvider } from '@material-ui/styles';
+import { withCookies } from 'react-cookie';
 import { amber, blue } from '@material-ui/core/colors';
 import AddIcon from '@material-ui/icons/AddCircle';
 import API from './components/API';
 import { AppContext } from './AppContext';
-import { DialogProvider } from './components/dialogs';
 import TranscriptIcon from './components/icons/TranscriptIcon';
 import SystemBrowserIcon from './components/icons/SystemBrowserIcon';
 import ClassBrowserIcon from './components/icons/ClassBrowserIcon';
@@ -63,33 +59,6 @@ switch (smalltalk) {
   default:
 }
 
-const theme = createMuiTheme({
-  typography: {
-    fontFamily: '"Segoe UI"',
-    fontSize: 13,
-    button: {
-      textTransform: "none"
-    }
-  },
-  palette: {
-    type: "dark",
-    primary: {
-      main: mainPrimaryColor,
-      //background: "303030"
-    },
-    secondary: {
-      main: mainSecondaryColor,
-    },
-    text: {
-      primary: "#aaaaaa",
-      secondary: "#00000"
-    },
-    background: {
-      paper: '#303030',
-    }
-  },
-});
-
 class IDE extends PureComponent {
   constructor(props){
     super(props);
@@ -108,6 +77,9 @@ class IDE extends PureComponent {
 
   componentDidMount() {
     this.getNames();
+
+    const cookies = this.props.cookies;
+    console.log(cookies.get('baseUri'));
   }
 
   getNames = async () => {
@@ -154,7 +126,7 @@ class IDE extends PureComponent {
   }
 
   openTranscript() {
-    const transcript = <Transcript styles={this.props.classes} text={this.state.transcriptText}/>;
+    const transcript = <Transcript styles={this.props.styles} text={this.state.transcriptText}/>;
     this.addPage('Transcript', <TranscriptIcon />, transcript);
   }
 
@@ -165,28 +137,28 @@ class IDE extends PureComponent {
   }
 
   openSystemBrowser = (projectname) => {
-    const browser = <SystemBrowser styles={this.props.classes} root={projectname}/>;
-    this.addPage(browser.props.root || 'System Browser', <SystemBrowserIcon className={this.props.classes.systemBrowserIcon} />, browser);
+    const browser = <SystemBrowser styles={this.props.styles} root={projectname}/>;
+    this.addPage(browser.props.root || 'System Browser', <SystemBrowserIcon className={this.props.styles.systemBrowserIcon} />, browser);
   }
 
   openClassBrowser = (classname) => {
-    const browser = <ClassBrowser styles={this.props.classes} root={classname}/>;
-    this.addPage(browser.props.root || 'Class Browser', <ClassBrowserIcon className={this.props.classes.classBrowserIcon} />, browser);
+    const browser = <ClassBrowser styles={this.props.styles} root={classname}/>;
+    this.addPage(browser.props.root || 'Class Browser', <ClassBrowserIcon className={this.props.styles.classBrowserIcon} />, browser);
   }
 
   openMethodBrowser = (methods, title = 'Methods') => {
-    const browser = <MethodBrowser styles={this.props.classes} methods={methods}/>;
-    this.addPage(title + ' (' + methods.length + ')', <MethodBrowserIcon className={this.props.classes.methodBrowserIcon} />, browser);
+    const browser = <MethodBrowser styles={this.props.styles} methods={methods}/>;
+    this.addPage(title + ' (' + methods.length + ')', <MethodBrowserIcon className={this.props.styles.methodBrowserIcon} />, browser);
   }
 
   openWorkspace = (id) => {
-    const workspace = <Workspace styles={this.props.classes} key={id} id={id}/>;
-    this.addPage('Workspace', <WorkspaceIcon className={this.props.classes.workspaceIcon} />, workspace);
+    const workspace = <Workspace styles={this.props.styles} key={id} id={id}/>;
+    this.addPage('Workspace', <WorkspaceIcon className={this.props.styles.workspaceIcon} />, workspace);
   }
 
   openDebugger = (id, title = 'Debugger') => {
-    const tool = <Debugger styles={this.props.classes} key={id} id={id}/>;
-    this.addPage(title, <DebuggerIcon className={this.props.classes.debuggerIcon} />, tool);
+    const tool = <Debugger styles={this.props.styles} key={id} id={id}/>;
+    this.addPage(title, <DebuggerIcon className={this.props.styles.debuggerIcon} />, tool);
   }
 
   closeDebugger = (id) => {
@@ -195,23 +167,23 @@ class IDE extends PureComponent {
   }
 
   openInspector = (object) => {
-    const inspector = <Inspector styles={this.props.classes} key={object.id} root={object} id={object.id} showWorkspace/>;
-    this.addPage('Inspecting: ' + object.class, <InspectorIcon className={this.props.classes.workspaceIcon} />, inspector);
+    const inspector = <Inspector styles={this.props.styles} key={object.id} root={object} id={object.id} showWorkspace/>;
+    this.addPage('Inspecting: ' + object.class, <InspectorIcon className={this.props.styles.workspaceIcon} />, inspector);
   }
 
   openChangesBrowser = (changes, title = 'Changes') => {
-    const browser = <ChangesBrowser styles={this.props.classes} changes={changes}/>;
-    this.addPage(title + ' (' + changes.length + ')', <ChangesBrowserIcon className={this.props.classes.changesBrowserIcon} />, browser);
+    const browser = <ChangesBrowser styles={this.props.styles} changes={changes}/>;
+    this.addPage(title + ' (' + changes.length + ')', <ChangesBrowserIcon className={this.props.styles.changesBrowserIcon} />, browser);
   }
 
   openTestRunner = (id, title = 'Test Runner') => {
-    const tool = <TestRunner styles={this.props.classes} key={id} id={id}/>;
-    this.addPage(title, <TestRunnerIcon className={this.props.classes.testRunnerIcon} />, tool);
+    const tool = <TestRunner styles={this.props.styles} key={id} id={id}/>;
+    this.addPage(title, <TestRunnerIcon className={this.props.styles.testRunnerIcon} />, tool);
   }
 
   openProfiler = (id, title = 'Profiler') => {
-    const tool = <Profiler styles={this.props.classes} key={id} id={id}/>;
-    this.addPage(title, <TestRunnerIcon className={this.props.classes.testRunnerIcon} />, tool);
+    const tool = <Profiler styles={this.props.styles} key={id} id={id}/>;
+    this.addPage(title, <TestRunnerIcon className={this.props.styles.testRunnerIcon} />, tool);
   }
 
   browseSenders = (selector) => {
@@ -334,7 +306,6 @@ class IDE extends PureComponent {
   }
 
   render() {
-    console.log('render app')
     const context = {
       api: this.api,
       projectNames: this.state.projectNames,
@@ -356,102 +327,98 @@ class IDE extends PureComponent {
       closeDebugger: this.closeDebugger,
       inspectObject: this.openInspector,
       reportError: this.reportError};
-    const styles = this.props.classes;
+    const styles = this.props.styles;
     return (
-      <ThemeProvider theme={theme}>
-        <AppContext.Provider value={context}>
-          <DialogProvider>
-            <div className={styles.root}>           
-              <CssBaseline/>
-              <Titlebar
-                title={smalltalk + ' Web IDE (Powered by Webside)'}
-                appName={smalltalk}
-                styles={styles}
-                sidebarExpanded={this.state.sidebarExpanded}
-                expandSidebar={this.expandSidebar}
-                searchOptions={this.state.classNames || []}/>
-              <Sidebar
-                styles={styles}
-                expanded={this.state.sidebarExpanded}
-                onTranscript={this.toggleShowTranscript}
-                changesCount={this.state.changesCount}
-                onChanges={this.browseLastChanges}
-                onClose={this.collapseSidebar}/>
-              <main className={styles.content}>
-                <div className={styles.appBarSpacer} />
-                <Container className={styles.container}>
-                  <Grid container spacing={1}>
-                    <Grid item xs={11} md={11} lg={11}>
-                        <TabControl
-                          styles={styles}
-                          selectedPage={this.state.selectedPage}
-                          pages={this.state.pages}
-                          onSelect={this.pageSelected}
-                          onClose={this.removePage}/>
-                    </Grid>
-                    <Grid item xs={1} md={1} lg={1}>
-                      <IconButton id="addPageButton" color="primary" onClick={() => {this.setState({addPageMenuOpen: true})}}>
-                        <AddIcon style={{fontSize: 40}}/>
-                      </IconButton>
-                      <Menu
-                        id="addPageMenu"
-                        anchorEl={document.getElementById("addPageButton")}
-                        keepMounted
-                        open={this.state.addPageMenuOpen}
-                        onClose={() => {this.setState({addPageMenuOpen: false})}}>
-                          <MenuItem onClick={this.addSystemBrowserClicked}>
-                            <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
-                              <Box pt={1} pr={1}>
-                                <SystemBrowserIcon/>
-                              </Box>
-                              <Box>
-                                System Browser
-                              </Box>
-                            </Box>
-                          </MenuItem>
-                          <MenuItem onClick={this.addClassBrowserClicked}>
-                            <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
-                              <Box pt={1} pr={1}>
-                                <ClassBrowserIcon/>
-                              </Box>
-                              <Box>
-                                Class Browser
-                              </Box>
-                            </Box>
-                          </MenuItem>
-                          <MenuItem onClick={this.addWorkspaceClicked}>
-                            <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
-                              <Box pt={1} pr={1}>
-                                <WorkspaceIcon/>
-                              </Box>
-                              <Box>
-                                Workspace
-                              </Box>
-                            </Box>
-                          </MenuItem>
-                      </Menu>
-                    </Grid>
-                    <React.Fragment key="bottom">
-                      <Drawer
-                        anchor="bottom"
-                        variant="persistent"
-                        open={this.state.transcriptOpen}
-                        onClose={() => this.setState({transcriptOpen: false})}>
-                        <Transcript
-                          styles={styles}
-                          text={this.state.transcriptText}
-                          onChange={text => this.setState({transcriptText: text})}/>
-                      </Drawer>
-                    </React.Fragment>
+      <AppContext.Provider value={context}>
+          <div className={styles.root}>           
+            <CssBaseline/>
+            <Titlebar
+              title={smalltalk + ' Web IDE (Powered by Webside)'}
+              appName={smalltalk}
+              styles={styles}
+              sidebarExpanded={this.state.sidebarExpanded}
+              expandSidebar={this.expandSidebar}
+              searchOptions={this.state.classNames || []}/>
+            <Sidebar
+              styles={styles}
+              expanded={this.state.sidebarExpanded}
+              onTranscript={this.toggleShowTranscript}
+              changesCount={this.state.changesCount}
+              onChanges={this.browseLastChanges}
+              onClose={this.collapseSidebar}/>
+            <main className={styles.content}>
+              <div className={styles.appBarSpacer} />
+              <Container className={styles.container}>
+                <Grid container spacing={1}>
+                  <Grid item xs={11} md={11} lg={11}>
+                      <TabControl
+                        styles={styles}
+                        selectedPage={this.state.selectedPage}
+                        pages={this.state.pages}
+                        onSelect={this.pageSelected}
+                        onClose={this.removePage}/>
                   </Grid>
-                </Container>
-              </main>
-            </div>
-          </DialogProvider>
+                  <Grid item xs={1} md={1} lg={1}>
+                    <IconButton id="addPageButton" color="primary" onClick={() => {this.setState({addPageMenuOpen: true})}}>
+                      <AddIcon style={{fontSize: 40}}/>
+                    </IconButton>
+                    <Menu
+                      id="addPageMenu"
+                      anchorEl={document.getElementById("addPageButton")}
+                      keepMounted
+                      open={this.state.addPageMenuOpen}
+                      onClose={() => {this.setState({addPageMenuOpen: false})}}>
+                        <MenuItem onClick={this.addSystemBrowserClicked}>
+                          <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
+                            <Box pt={1} pr={1}>
+                              <SystemBrowserIcon/>
+                            </Box>
+                            <Box>
+                              System Browser
+                            </Box>
+                          </Box>
+                        </MenuItem>
+                        <MenuItem onClick={this.addClassBrowserClicked}>
+                          <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
+                            <Box pt={1} pr={1}>
+                              <ClassBrowserIcon/>
+                            </Box>
+                            <Box>
+                              Class Browser
+                            </Box>
+                          </Box>
+                        </MenuItem>
+                        <MenuItem onClick={this.addWorkspaceClicked}>
+                          <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
+                            <Box pt={1} pr={1}>
+                              <WorkspaceIcon/>
+                            </Box>
+                            <Box>
+                              Workspace
+                            </Box>
+                          </Box>
+                        </MenuItem>
+                    </Menu>
+                  </Grid>
+                  <React.Fragment key="bottom">
+                    <Drawer
+                      anchor="bottom"
+                      variant="persistent"
+                      open={this.state.transcriptOpen}
+                      onClose={() => this.setState({transcriptOpen: false})}>
+                      <Transcript
+                        styles={styles}
+                        text={this.state.transcriptText}
+                        onChange={text => this.setState({transcriptText: text})}/>
+                    </Drawer>
+                  </React.Fragment>
+                </Grid>
+              </Container>
+            </main>
+          </div>
         </AppContext.Provider>
-      </ThemeProvider>
     )
   }
 }
 
-export default withStyles(styles)(IDE);
+export default withCookies(IDE);
