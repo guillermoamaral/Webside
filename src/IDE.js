@@ -62,7 +62,10 @@ switch (smalltalk) {
 class IDE extends PureComponent {
   constructor(props){
     super(props);
-    this.api = new API(baseUri, 'guest', this.reportError, this.reportChange);
+    const cookies = this.props.cookies;
+    const baseUri = cookies.get('baseUri');
+    const developer = cookies.set('developer');
+    this.api = new API(baseUri, developer, this.reportError, this.reportChange);
     this.state = {
       sidebarExpanded: false,
       addPageMenuOpen: false,
