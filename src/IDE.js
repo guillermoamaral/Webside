@@ -76,7 +76,6 @@ class IDE extends Component {
   componentDidMount() {
     this.getNames();
     const cookies = this.props.cookies;
-    console.log(cookies);
   }
 
   getNames = async () => {
@@ -325,11 +324,9 @@ class IDE extends Component {
       inspectObject: this.openInspector,
       reportError: this.reportError};
     const styles = this.props.styles;
-    console.log(this.developer)
     return (
       <AppContext.Provider value={context}>
-          <div className={styles.root}>           
-            <CssBaseline/>
+          <div className={styles.root}>
             <Titlebar
               developer={this.developer}
               smalltalk={this.smalltalk}

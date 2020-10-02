@@ -60,18 +60,16 @@ class Titlebar extends Component {
               inputProps={{'aria-label': 'search'}}/>
           </div>
           <Box flexGrow={1}/>
+          <Avatar alt={this.props.developer}/>
           <Box p={1}>
             <Typography
-              component="h6"
-              variant="h6"
+              variant="subtitle1"
+              gutterBottom
               color="inherit"
               noWrap>
                 {this.props.developer}
             </Typography>
           </Box>
-          <Avatar
-            alt={this.props.developer}
-          />
         </Toolbar>
       </AppBar>)
     }

@@ -48,7 +48,6 @@ class Connect extends Component {
         const {smalltalk, baseUri, developer} = this.state;
         return (
             <div className={this.props.styles.root}>
-                <CssBaseline/>
                 <Grid container direction="column" justify="center" spacing={1} style={{minHeight: '80vh'}}>
                     <Grid item>
                         <Grid container direction="row" justify="center" spacing={1}>
@@ -97,7 +96,7 @@ class Connect extends Component {
                                                 required/>
                                         </Grid>
                                         <Grid item>
-                                            <Button variant="outlined" color="primary" type="submit">
+                                            <Button variant="outlined" type="submit">
                                                 Connect
                                             </Button>
                                         </Grid>

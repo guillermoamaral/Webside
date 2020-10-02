@@ -5,7 +5,7 @@ import {
   Route,
   } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
-import { createMuiTheme } from '@material-ui/core';
+import { createMuiTheme, CssBaseline } from '@material-ui/core';
 import styles from './styles';
 import { ThemeProvider } from '@material-ui/styles';
 import { DialogProvider } from './components/dialogs';
@@ -60,6 +60,7 @@ class App extends Component {
   render() { 
     return (
       <ThemeProvider theme={theme}>
+        <CssBaseline/>
         <DialogProvider>
           <CookiesProvider>
             <div className={styles.root}>           
