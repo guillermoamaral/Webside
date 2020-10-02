@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import {
   Container,
   CssBaseline,
@@ -38,34 +38,29 @@ import TestRunner from './components/tools/TestRunner';
 import Profiler from './components/tools/Profiler';
 
 const smalltalk = 'Bee';
-var port;
-var baseUri;
 var mainPrimaryColor;
 var mainSecondaryColor;
 
 switch (smalltalk) {
   case "Bee": 
-    port = 9000 //window.location.port;
-    baseUri = `http://${window.location.hostname}:${port}/bee`;
     mainPrimaryColor = amber[300];
     mainSecondaryColor = amber[800];
     break;  
   case "Pharo":
-    port = 9001 //window.location.port;
-    baseUri = `http://${window.location.hostname}:${port}/pharo`;
     mainPrimaryColor = blue[300];
     mainSecondaryColor = blue[800];
     break;
   default:
 }
 
-class IDE extends PureComponent {
+class IDE extends Component {
   constructor(props){
     super(props);
     const cookies = this.props.cookies;
-    const baseUri = cookies.get('baseUri');
-    const developer = cookies.set('developer');
-    this.api = new API(baseUri, developer, this.reportError, this.reportChange);
+    this.smalltalk = cookies.get('smalltalk');
+    this.baseUri = cookies.get('baseUri');
+    this.developer = cookies.get('developer');
+    this.api = new API(this.baseUri, this.developer, this.reportError, this.reportChange);
     this.state = {
       sidebarExpanded: false,
       addPageMenuOpen: false,
@@ -80,9 +75,8 @@ class IDE extends PureComponent {
 
   componentDidMount() {
     this.getNames();
-
     const cookies = this.props.cookies;
-    console.log(cookies.get('baseUri'));
+    console.log(cookies);
   }
 
   getNames = async () => {
@@ -331,13 +325,14 @@ class IDE extends PureComponent {
       inspectObject: this.openInspector,
       reportError: this.reportError};
     const styles = this.props.styles;
+    console.log(this.developer)
     return (
       <AppContext.Provider value={context}>
           <div className={styles.root}>           
             <CssBaseline/>
             <Titlebar
-              title={smalltalk + ' Web IDE (Powered by Webside)'}
-              appName={smalltalk}
+              developer={this.developer}
+              smalltalk={this.smalltalk}
               styles={styles}
               sidebarExpanded={this.state.sidebarExpanded}
               expandSidebar={this.expandSidebar}

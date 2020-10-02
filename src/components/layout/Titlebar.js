@@ -31,9 +31,9 @@ class Titlebar extends Component {
           <MenuIcon />
           </IconButton>
           <Box p={2}>
-            <Link to="http://localhost:3000">
+            <Link to={this.props.baseUri}>
               <img
-                src={require("../../resources/" + this.props.appName + ".png")}
+                src={this.props.smalltalk? require("../../resources/" + this.props.smalltalk + ".png") : null}
                 width={28}
                 height={28}
                 alt={"Open"}/>
@@ -44,7 +44,7 @@ class Titlebar extends Component {
             variant="h6"
             color="inherit"
             noWrap>
-              {this.props.title} 
+              {this.props.smalltalk + ' Web IDE (Powered by Webside)'}
           </Typography>
           <Box flexGrow={1}/>
           <div className={styles.globalSearch}>
@@ -60,8 +60,17 @@ class Titlebar extends Component {
               inputProps={{'aria-label': 'search'}}/>
           </div>
           <Box flexGrow={1}/>
+          <Box p={1}>
+            <Typography
+              component="h6"
+              variant="h6"
+              color="inherit"
+              noWrap>
+                {this.props.developer}
+            </Typography>
+          </Box>
           <Avatar
-            alt="guest"
+            alt={this.props.developer}
           />
         </Toolbar>
       </AppBar>)

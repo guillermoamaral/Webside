@@ -6,15 +6,20 @@ import {
     Button,
     TextField,
     Grid,
-    Typography
+    Typography,
+    Select,
+    MenuItem
     } from "@material-ui/core";
 import { withCookies } from 'react-cookie';
 import { withRouter } from "react-router-dom"
+
+const dialects = ['Bee', 'Pharo'];
 
 class Connect extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            smalltalk: "Bee",
             baseUri: "",
             developer: ""
         }
@@ -22,13 +27,15 @@ class Connect extends Component {
 
     handleChange = (event) => {
         this.setState({[event.target.name]: event.target.value});
+        console.log(this.state)
     }
 
     handleSubmit = (event) => {
         event.preventDefault();
-        const {baseUri, developer} = this.state;
+        const {smalltalk, baseUri, developer} = this.state;
         if (baseUri && baseUri !== "" && developer && developer !== "") {
             const cookies = this.props.cookies;
+            cookies.set('smalltalk', smalltalk, { path: '/' });
             cookies.set('baseUri', baseUri, { path: '/' });
             cookies.set('developer', developer, { path: '/' });
             this.props.history.push("/ide");
@@ -38,18 +45,31 @@ class Connect extends Component {
     }
 
     render() {
+        const {smalltalk, baseUri, developer} = this.state;
         return (
             <div className={this.props.styles.root}>
                 <CssBaseline/>
-                <Grid container direction="column" justify="center" spacing={2} style={{minHeight: '100vh'}}>
+                <Grid container direction="column" justify="center" spacing={1} style={{minHeight: '80vh'}}>
                     <Grid item>
-                        <Paper variant="outlined">
-                        <Grid container direction="row" justify="center" spacing={2}>
+                        <Grid container direction="row" justify="center" spacing={1}>
                             <Grid item>
                                 <form onSubmit={this.handleSubmit}>
                                     <Grid container direction="column" spacing={1} alignItems="flex-end">
                                         <Grid item>
+                                            <Select
+                                                id="smalltalk"
+                                                name="smalltalk"
+                                                value={smalltalk}
+                                                variant="outlined"
+                                                fullWidth
+                                                margin="dense"
+                                                onChange={this.handleChange}>
+                                                    {dialects.map(s => {return <MenuItem key={s} value={s}>{s}</MenuItem>})}
+                                            </Select>
+                                        </Grid>
+                                        <Grid item>
                                             <TextField
+                                                id="baseUri"
                                                 label="Host Smalltalk (URL)"
                                                 type="url"
                                                 placeholder="URL"
@@ -57,13 +77,14 @@ class Connect extends Component {
                                                 fullWidth
                                                 name="baseUri"
                                                 variant="outlined"
-                                                value={this.state.baseUri}
+                                                value={baseUri}
                                                 onChange={this.handleChange}
                                                 required
                                                 autoFocus/>
                                         </Grid>
                                         <Grid item>
                                             <TextField
+                                                id="developer"
                                                 label="Nickname"
                                                 type="text"
                                                 placeholder="developer"
@@ -71,7 +92,7 @@ class Connect extends Component {
                                                 fullWidth
                                                 name="developer"
                                                 variant="outlined"
-                                                value={this.state.developer}
+                                                value={developer}
                                                 onChange={this.handleChange}
                                                 required/>
                                         </Grid>
@@ -84,7 +105,6 @@ class Connect extends Component {
                                 </form>
                             </Grid>
                         </Grid>
-                        </Paper>
                     </Grid>
                 </Grid>
             </div>
