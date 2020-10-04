@@ -33,7 +33,7 @@ class Titlebar extends Component {
           <Box p={2}>
             <Link to={this.props.baseUri}>
               <img
-                src={this.props.smalltalk? require("../../resources/" + this.props.smalltalk + ".png") : null}
+                src={this.props.dialect? require("../../resources/" + this.props.dialect + ".png") : null}
                 width={28}
                 height={28}
                 alt={"Open"}/>
@@ -44,7 +44,7 @@ class Titlebar extends Component {
             variant="h6"
             color="inherit"
             noWrap>
-              {this.props.smalltalk + ' Web IDE (Powered by Webside)'}
+              {this.props.dialect + ' Web IDE (Powered by Webside)'}
           </Typography>
           <Box flexGrow={1}/>
           <div className={styles.globalSearch}>

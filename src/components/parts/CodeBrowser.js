@@ -107,8 +107,8 @@ class CodeBrowser extends Component {
 
     currentAnnotations = () => {
         if (this.state.selectedMode === 'source') {
-            const method = this.props.method; 
-            return method? Date(method.timestamp) + ' by ' + method.author : '';
+            const method = this.props.method;
+            return method? new Date(method.timestamp).toLocaleString() + ' by ' + method.author : '';
         }
         return ''
     }

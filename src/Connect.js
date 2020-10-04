@@ -11,15 +11,13 @@ import {
     MenuItem
     } from "@material-ui/core";
 import { withCookies } from 'react-cookie';
-import { withRouter } from "react-router-dom"
-
-const dialects = ['Bee', 'Pharo'];
+import { withRouter } from "react-router-dom";
+import axios from 'axios';
 
 class Connect extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            smalltalk: "Bee",
             baseUri: "",
             developer: ""
         }
@@ -27,15 +25,20 @@ class Connect extends Component {
 
     handleChange = (event) => {
         this.setState({[event.target.name]: event.target.value});
-        console.log(this.state)
     }
 
-    handleSubmit = (event) => {
+    handleSubmit = async (event) => {
         event.preventDefault();
-        const {smalltalk, baseUri, developer} = this.state;
+        const {baseUri, developer} = this.state;
         if (baseUri && baseUri !== "" && developer && developer !== "") {
             const cookies = this.props.cookies;
-            cookies.set('smalltalk', smalltalk, { path: '/' });
+            var dialect;
+            try {
+                const response = await axios.get(baseUri + '/dialect');
+                dialect = response.data;
+            }
+            catch(error) {console.log(error)}
+            cookies.set('dialect', dialect, { path: '/' });
             cookies.set('baseUri', baseUri, { path: '/' });
             cookies.set('developer', developer, { path: '/' });
             this.props.history.push("/ide");
@@ -44,8 +47,16 @@ class Connect extends Component {
         }
     }
 
+    getDialect = async () => {
+        try {
+          this.dialect = await this.api.getDialect();
+          this.theme = this.createTheme();
+        }
+        catch (error) {this.reportError(error)}
+    }
+
     render() {
-        const {smalltalk, baseUri, developer} = this.state;
+        const {baseUri, developer} = this.state;
         return (
             <div className={this.props.styles.root}>
                 <Grid container direction="column" justify="center" spacing={1} style={{minHeight: '80vh'}}>
@@ -54,18 +65,6 @@ class Connect extends Component {
                             <Grid item>
                                 <form onSubmit={this.handleSubmit}>
                                     <Grid container direction="column" spacing={1} alignItems="flex-end">
-                                        <Grid item>
-                                            <Select
-                                                id="smalltalk"
-                                                name="smalltalk"
-                                                value={smalltalk}
-                                                variant="outlined"
-                                                fullWidth
-                                                margin="dense"
-                                                onChange={this.handleChange}>
-                                                    {dialects.map(s => {return <MenuItem key={s} value={s}>{s}</MenuItem>})}
-                                            </Select>
-                                        </Grid>
                                         <Grid item>
                                             <TextField
                                                 id="baseUri"

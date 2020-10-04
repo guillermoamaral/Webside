@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   Container,
-  CssBaseline,
+  createMuiTheme,
   Grid,
   IconButton,
   Menu,
@@ -9,11 +9,13 @@ import {
   Drawer,
   Box
 } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/styles';
 import { withCookies } from 'react-cookie';
 import { amber, blue } from '@material-ui/core/colors';
 import AddIcon from '@material-ui/icons/AddCircle';
 import API from './components/API';
 import { AppContext } from './AppContext';
+
 import TranscriptIcon from './components/icons/TranscriptIcon';
 import SystemBrowserIcon from './components/icons/SystemBrowserIcon';
 import ClassBrowserIcon from './components/icons/ClassBrowserIcon';
@@ -37,36 +39,21 @@ import Debugger from './components/tools/Debugger';
 import TestRunner from './components/tools/TestRunner';
 import Profiler from './components/tools/Profiler';
 
-const smalltalk = 'Bee';
-var mainPrimaryColor;
-var mainSecondaryColor;
-
-switch (smalltalk) {
-  case "Bee": 
-    mainPrimaryColor = amber[300];
-    mainSecondaryColor = amber[800];
-    break;  
-  case "Pharo":
-    mainPrimaryColor = blue[300];
-    mainSecondaryColor = blue[800];
-    break;
-  default:
-}
-
 class IDE extends Component {
   constructor(props){
     super(props);
     const cookies = this.props.cookies;
-    this.smalltalk = cookies.get('smalltalk');
+    this.dialect = cookies.get('dialect');
     this.baseUri = cookies.get('baseUri');
     this.developer = cookies.get('developer');
+    this.theme = this.createTheme();
     this.api = new API(this.baseUri, this.developer, this.reportError, this.reportChange);
     this.state = {
       sidebarExpanded: false,
       addPageMenuOpen: false,
       selectedPage: null,
       transcriptOpen: false,
-      transcriptText: 'Welcome to Webside!\r\rA web Smalltalk IDE built with ReactJS.',
+      transcriptText: 'Welcome to Webside!\r\rA web Smalltalk IDE built with React.',
       pages: [],
       projectNames: [],
       classNames: [],
@@ -75,7 +62,49 @@ class IDE extends Component {
 
   componentDidMount() {
     this.getNames();
-    const cookies = this.props.cookies;
+  }
+
+  createTheme() {
+    var mainPrimaryColor;
+    var mainSecondaryColor;
+    switch (this.dialect) {
+      case "Bee": 
+        mainPrimaryColor = amber[300];
+        mainSecondaryColor = amber[800];
+        break;  
+      case "Pharo":
+        mainPrimaryColor = blue[300];
+        mainSecondaryColor = blue[800];
+        break;
+      default:
+        mainPrimaryColor = "#00000";
+        mainSecondaryColor = "#00000";
+    }
+    return createMuiTheme({
+      typography: {
+        fontFamily: '"Segoe UI"',
+        fontSize: 13,
+        button: {
+          textTransform: "none"
+        }
+      },
+      palette: {
+        type: "dark",
+        primary: {
+          main: mainPrimaryColor,
+        },
+        secondary: {
+          main: mainSecondaryColor,
+        },
+        text: {
+          primary: "#aaaaaa",
+          secondary: "#00000"
+        },
+        background: {
+          paper: '#303030',
+        }
+      },
+    })
   }
 
   getNames = async () => {
@@ -326,10 +355,11 @@ class IDE extends Component {
     const styles = this.props.styles;
     return (
       <AppContext.Provider value={context}>
+        <ThemeProvider theme={this.theme}>
           <div className={styles.root}>
             <Titlebar
               developer={this.developer}
-              smalltalk={this.smalltalk}
+              dialect={this.dialect}
               styles={styles}
               sidebarExpanded={this.state.sidebarExpanded}
               expandSidebar={this.expandSidebar}
@@ -411,7 +441,8 @@ class IDE extends Component {
               </Container>
             </main>
           </div>
-        </AppContext.Provider>
+        </ThemeProvider>
+      </AppContext.Provider>
     )
   }
 }

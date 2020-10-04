@@ -33,7 +33,15 @@ class API {
         throw exception;
     }
 
-    // Queries...
+    async getDialect() {
+        try {
+            const response = await axios.get(this.baseUri + '/dialect');     
+            return response.data;
+         }
+        catch (error) {this.handleError('Cannot get dialect ', error)}
+    }
+
+    // Code...
 
     async getProjectTree(root) {
         try {
