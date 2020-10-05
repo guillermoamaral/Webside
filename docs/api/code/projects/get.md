@@ -21,7 +21,7 @@ It is also possible get a tree-like structure as well as to limit the depth in t
     "name": "string",
     "classNames": "[string]",
     "methodSignatures": "[method signature]"
-},
+}
 ```
 
 _Note: properties common to every `object` are also included_
@@ -45,10 +45,6 @@ _Note: properties common to every `object` are also included_
         "methodSignatures": []
     },
     {
-        "class": "BeeProject",
-        "indexable": false,
-        "size": 0,
-        "printString": "Webside Extensions",
         "name": "Webside Extensions",
         "classNames": [],
         "methodSignatures": [
