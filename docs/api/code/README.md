@@ -1,6 +1,12 @@
 # Code
 
-These are the endpoints used to retrieve the system code (classes and methods).
+These are the endpoints used to retrieve the system code: projects, classes and methods.
+
+## Projects
+
+Endpoints for retrieving project definitions.
+
+* [Retrieve system projects](projects/get.md) : `GET /projects`
 
 ## Classes
 
