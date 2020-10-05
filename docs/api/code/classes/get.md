@@ -28,9 +28,9 @@ It is also possible get a tree-like structure as well as to limit the depth in t
     "project": "string"
 }
 ```
-_Note: properties common to every `object` are also included_ 
+_Note: properties common to every `object` are also included._ 
 
-**Example: _Number subclasses_**: `GET /classes?root=Number`.
+**Example:**: `Number` subclasses `GET /classes?root=Number`.
 ```json
 [
     {

@@ -25,7 +25,7 @@ Retrieve all methods satisfying the conditions specified in the query (or all me
     "project": "string"
 }
 ```
-_Note: properties common to every `object` are also included_ 
+_Note: properties common to every `object` are also included._ 
 
 **Example: _Number subclasses_**: `GET /classes?root=Number`.
 ```json

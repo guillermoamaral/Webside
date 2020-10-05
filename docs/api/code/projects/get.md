@@ -26,9 +26,9 @@ It is also possible get a tree-like structure as well as to limit the depth in t
 }
 ```
 
-_Note: properties common to every `object` are also included_
+_Note: properties common to every `object` are also included._
 
-**Example: _Webside projects_**: `GET /projects?root=Webside`.
+**Example:**: `Webside` projects `GET /projects?root=Webside`.
 ```json
 [
     {
