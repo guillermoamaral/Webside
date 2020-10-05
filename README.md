@@ -57,7 +57,7 @@ Webside is built using:
 npm install npm@latest -g
 ```
 
-* Your Smalltalk image implementing the [API](docs/api/code)
+* Your Smalltalk image implementing the [API](docs/api)
 
 ### Installation
 
