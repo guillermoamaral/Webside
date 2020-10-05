@@ -54,7 +54,7 @@ class IDE extends Component {
       addPageMenuOpen: false,
       selectedPage: null,
       transcriptOpen: false,
-      transcriptText: 'Welcome to Webside!\r\rA web Smalltalk IDE built with React.',
+      transcriptText: '\'Welcome to Webside!\'\r\r\'A web Smalltalk IDE built with React.\'',
       pages: [],
       projectNames: [],
       classNames: [],
