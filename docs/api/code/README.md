@@ -1,21 +1,17 @@
 # Code
-
-These are the endpoints used to retrieve the system code: projects, classes and methods.
+These are the endpoints used to retrieve system code: projects, classes and methods.
 
 ## Projects
+Endpoints to retrive project definitions, classes and methods.
 
-Endpoints for retrieving project definitions.
-
-* [Retrieve system projects](projects/get.md) : `GET /projects`
+* [Retrieve system projects](projects/get.md): `GET /projects`
 
 ## Classes
+Endpoints to retrieve class definitions, variables, categories and methods.
 
-Endpoints for retrieving class definitions, variables, categories and methods.
-
-* [Retrieve system classes](classes/get.md) : `GET /classes`
+* [Retrieve system classes](classes/get.md): `GET /classes`
 
 ## Methods
+Endpoints to retrieve methods.
 
-Endpoints for retrieving methods.
-
-* [Retrieve system classes](methods/get.md) : `GET /methods`
+* [Retrieve system methods](methods/get.md): `GET /methods`

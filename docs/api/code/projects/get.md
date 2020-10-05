@@ -1,33 +1,35 @@
-# Retrieve classes
+# Retrieve projects
+Retrieve all subprojects of a given root project (if no root is provided, the uppermost project in the system is used).
+It is also possible get a tree-like structure as well as to limit the depth in the projects hierarchy.    
 
-Retrieve all subprojects of a given root project (the uppermost project in the system if no root is provided).
-It is also possible get a tree structure by using `tree=true` option as well as to limit the depth in the hierarchy by using `depth=[n]` option.    
+**URL**: `/projects`
 
-**URL** : `/projects`
+**Method**: `GET`
 
-**Method** : `GET`
-
-**Auth required** : No
-
-**Permissions required** : None
-
-**Data constraints** : `{}`
+**Query Options**
+    `names=true`: to get only project names
+    `tree=true`: to get a tree-like structure
+    `depth=[n]`: to limit the hierarchy depth to `n`
 
 ## Success Responses
 
 **Code** : `200 OK`
 
-**Content** : `{[]}`
+**Content**: `[projet]` where `project` is defined as
+```json
+{
+    "name": "string",
+    "classNames": "[string]",
+    "methodSignatures": "[method signature]"
+},
+```
 
-**Example 1: Webside projects** : `GET /projects?root=Webside`.
+_Note: properties common to every `object` are also included_
 
+**Example: _Webside projects_**: `GET /projects?root=Webside`.
 ```json
 [
     {
-        "class": "BeeProject",
-        "indexable": false,
-        "size": 0,
-        "printString": "Webside Base",
         "name": "Webside Base",
         "classNames": [
             "WebsideWorkspace",
