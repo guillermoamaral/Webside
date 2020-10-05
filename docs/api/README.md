@@ -1,6 +1,9 @@
 # API
 These are the different sections of the API required by Webside. That is, the "host" Smalltalk image must implement this API for Webside to work properly.
 
+_Note: paths are documented without a base URI_
+
+
 [Code](code): Endpoints to retrieve the code (projects, classes and methods).
 
 [Changes](changes): Endpoints to change code (projects, classes and methods).
