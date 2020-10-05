@@ -7,9 +7,11 @@ It is also possible get a tree-like structure as well as to limit the depth in t
 **Method**: `GET`
 
 **Query Options**
-    `names=true`: to get only project names
-    `tree=true`: to get a tree-like structure
-    `depth=[n]`: to limit the hierarchy depth to `n`
+| Parameter | Type | Description |
+| ------------- | ------------- | ------------- |
+| names | boolean | true to get only project names | 
+| tree | boolean | true to get a tree-like structure |
+| depth | number | to limit the hierarchy depth |
 
 ## Success Responses
 

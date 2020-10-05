@@ -11,7 +11,7 @@ It is also possible get a tree-like structure as well as to limit the depth in t
 | ------------- | ------------- | ------------- |
 | names | boolean | true to get only class names | 
 | tree | boolean | true to get a tree-like structure |
-| tree | boolean | to limit the hierarchy depth to `n` |
+| depth | number | to limit the hierarchy depth |
 
 ## Success Responses
 
