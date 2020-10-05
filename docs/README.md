@@ -1,3 +1,3 @@
-#API
+# API
 
-[API](api): documentation of the API required by Webside.
+Documentation of the [API](api) required by Webside.

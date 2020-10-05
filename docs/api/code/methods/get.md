@@ -1,8 +1,7 @@
-# Retrieve classes
-Retrieve all subclasses of a given root superclass (if no root is provided, the uppermost class in the system is used).
-It is also possible get a tree-like structure as well as to limit the depth in the classes hierarchy.    
+# Retrieve methods
+Retrieve all methods satisfying the conditions specified in the query (or all methods in the system if no condition is provided).    
 
-**URL**: `/classes`
+**URL**: `/methods`
 
 **Method**: `GET`
 
@@ -15,7 +14,7 @@ It is also possible get a tree-like structure as well as to limit the depth in t
 
 **Code** : `200 OK`
 
-**Content**: `[class]` where `class` is defined as
+**Content**: `[method]` where `method` is defined as
 ```json
 {
     "name": "string",
