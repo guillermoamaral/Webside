@@ -15,6 +15,7 @@ import { amber, blue } from '@material-ui/core/colors';
 import AddIcon from '@material-ui/icons/AddCircle';
 import API from './components/API';
 import { AppContext } from './AppContext';
+import { DialogProvider } from './components/dialogs';
 
 import TranscriptIcon from './components/icons/TranscriptIcon';
 import SystemBrowserIcon from './components/icons/SystemBrowserIcon';
@@ -356,91 +357,93 @@ class IDE extends Component {
     return (
       <AppContext.Provider value={context}>
         <ThemeProvider theme={this.theme}>
-          <div className={styles.root}>
-            <Titlebar
-              developer={this.developer}
-              dialect={this.dialect}
-              styles={styles}
-              sidebarExpanded={this.state.sidebarExpanded}
-              expandSidebar={this.expandSidebar}
-              searchOptions={this.state.classNames || []}/>
-            <Sidebar
-              styles={styles}
-              expanded={this.state.sidebarExpanded}
-              onTranscript={this.toggleShowTranscript}
-              changesCount={this.state.changesCount}
-              onChanges={this.browseLastChanges}
-              onClose={this.collapseSidebar}/>
-            <main className={styles.content}>
-              <div className={styles.appBarSpacer} />
-              <Container className={styles.container}>
-                <Grid container spacing={1}>
-                  <Grid item xs={11} md={11} lg={11}>
-                      <TabControl
-                        styles={styles}
-                        selectedPage={this.state.selectedPage}
-                        pages={this.state.pages}
-                        onSelect={this.pageSelected}
-                        onClose={this.removePage}/>
+          <DialogProvider>
+            <div className={styles.root}>
+              <Titlebar
+                developer={this.developer}
+                dialect={this.dialect}
+                styles={styles}
+                sidebarExpanded={this.state.sidebarExpanded}
+                expandSidebar={this.expandSidebar}
+                searchOptions={this.state.classNames || []}/>
+              <Sidebar
+                styles={styles}
+                expanded={this.state.sidebarExpanded}
+                onTranscript={this.toggleShowTranscript}
+                changesCount={this.state.changesCount}
+                onChanges={this.browseLastChanges}
+                onClose={this.collapseSidebar}/>
+              <main className={styles.content}>
+                <div className={styles.appBarSpacer} />
+                <Container className={styles.container}>
+                  <Grid container spacing={1}>
+                    <Grid item xs={11} md={11} lg={11}>
+                        <TabControl
+                          styles={styles}
+                          selectedPage={this.state.selectedPage}
+                          pages={this.state.pages}
+                          onSelect={this.pageSelected}
+                          onClose={this.removePage}/>
+                    </Grid>
+                    <Grid item xs={1} md={1} lg={1}>
+                      <IconButton id="addPageButton" color="primary" onClick={() => {this.setState({addPageMenuOpen: true})}}>
+                        <AddIcon style={{fontSize: 40}}/>
+                      </IconButton>
+                      <Menu
+                        id="addPageMenu"
+                        anchorEl={document.getElementById("addPageButton")}
+                        keepMounted
+                        open={this.state.addPageMenuOpen}
+                        onClose={() => {this.setState({addPageMenuOpen: false})}}>
+                          <MenuItem onClick={this.addSystemBrowserClicked}>
+                            <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
+                              <Box pt={1} pr={1}>
+                                <SystemBrowserIcon/>
+                              </Box>
+                              <Box>
+                                System Browser
+                              </Box>
+                            </Box>
+                          </MenuItem>
+                          <MenuItem onClick={this.addClassBrowserClicked}>
+                            <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
+                              <Box pt={1} pr={1}>
+                                <ClassBrowserIcon/>
+                              </Box>
+                              <Box>
+                                Class Browser
+                              </Box>
+                            </Box>
+                          </MenuItem>
+                          <MenuItem onClick={this.addWorkspaceClicked}>
+                            <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
+                              <Box pt={1} pr={1}>
+                                <WorkspaceIcon/>
+                              </Box>
+                              <Box>
+                                Workspace
+                              </Box>
+                            </Box>
+                          </MenuItem>
+                      </Menu>
+                    </Grid>
+                    <React.Fragment key="bottom">
+                      <Drawer
+                        anchor="bottom"
+                        variant="persistent"
+                        open={this.state.transcriptOpen}
+                        onClose={() => this.setState({transcriptOpen: false})}>
+                        <Transcript
+                          styles={styles}
+                          text={this.state.transcriptText}
+                          onChange={text => this.setState({transcriptText: text})}/>
+                      </Drawer>
+                    </React.Fragment>
                   </Grid>
-                  <Grid item xs={1} md={1} lg={1}>
-                    <IconButton id="addPageButton" color="primary" onClick={() => {this.setState({addPageMenuOpen: true})}}>
-                      <AddIcon style={{fontSize: 40}}/>
-                    </IconButton>
-                    <Menu
-                      id="addPageMenu"
-                      anchorEl={document.getElementById("addPageButton")}
-                      keepMounted
-                      open={this.state.addPageMenuOpen}
-                      onClose={() => {this.setState({addPageMenuOpen: false})}}>
-                        <MenuItem onClick={this.addSystemBrowserClicked}>
-                          <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
-                            <Box pt={1} pr={1}>
-                              <SystemBrowserIcon/>
-                            </Box>
-                            <Box>
-                              System Browser
-                            </Box>
-                          </Box>
-                        </MenuItem>
-                        <MenuItem onClick={this.addClassBrowserClicked}>
-                          <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
-                            <Box pt={1} pr={1}>
-                              <ClassBrowserIcon/>
-                            </Box>
-                            <Box>
-                              Class Browser
-                            </Box>
-                          </Box>
-                        </MenuItem>
-                        <MenuItem onClick={this.addWorkspaceClicked}>
-                          <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
-                            <Box pt={1} pr={1}>
-                              <WorkspaceIcon/>
-                            </Box>
-                            <Box>
-                              Workspace
-                            </Box>
-                          </Box>
-                        </MenuItem>
-                    </Menu>
-                  </Grid>
-                  <React.Fragment key="bottom">
-                    <Drawer
-                      anchor="bottom"
-                      variant="persistent"
-                      open={this.state.transcriptOpen}
-                      onClose={() => this.setState({transcriptOpen: false})}>
-                      <Transcript
-                        styles={styles}
-                        text={this.state.transcriptText}
-                        onChange={text => this.setState({transcriptText: text})}/>
-                    </Drawer>
-                  </React.Fragment>
-                </Grid>
-              </Container>
-            </main>
-          </div>
+                </Container>
+              </main>
+            </div>
+          </DialogProvider>
         </ThemeProvider>
       </AppContext.Provider>
     )

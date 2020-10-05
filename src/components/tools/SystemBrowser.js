@@ -80,6 +80,7 @@ class SystemBrowser extends Component {
     }
 
     // Contents..
+
     currentClasses() {
         const project = this.state.selectedProject;
         return (!project)? [] : project.classes;
@@ -235,19 +236,22 @@ class SystemBrowser extends Component {
     }
 
     classDefined = async (species) => {
-        const cached = this.cache[species.name];
+        var cached = this.cache[species.name];
         if (cached) {
             cached.definition = species.definition;
-            this.classSelected(cached);
         } else {
             this.cache[species.name] = species;
+            cached = species;
             const superclass = this.cache[species.superclass];
             if (superclass) {
                 superclass.subclasses.push(species);
                 superclass.subclasses.sort((a, b) => a.name <= b.name? -1 : 1);
             }
-            this.classSelected(species);
         }
+        const selections = this.currentSelections();
+        selections.class = cached;
+        await this.updateVariables(selections, true);
+        this.classSelected(cached);
     }
     
     classCommented = async (species) => {

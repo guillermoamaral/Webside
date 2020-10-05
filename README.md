@@ -57,7 +57,7 @@ Webside is built using:
 npm install npm@latest -g
 ```
 
-* Your Smalltalk image implementing the API
+* Your Smalltalk image implementing the [API](api/code/classes)
 
 ### Installation
 
@@ -76,7 +76,6 @@ npm install
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
 _For more examples, please refer to the [Documentation](https://example.com)_
-
 
 
 <!-- LICENSE -->
