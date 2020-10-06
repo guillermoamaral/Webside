@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Grid, Paper, IconButton, Tooltip } from '@material-ui/core';
 import clsx from 'clsx';
-import { Icon, InlineIcon } from "@iconify/react";
+import { Icon } from "@iconify/react";
 import RestartIcon from '@iconify/icons-mdi/replay';
 import HopIcon from '@iconify/icons-mdi/debug-step-into';
 import SkipIcon from '@iconify/icons-mdi/debug-step-over';
@@ -69,7 +69,6 @@ class Debugger extends PureComponent {
         await this.context.api.hopDebugger(this.props.id, this.state.selectedFrame.index);
         this.updateFrames();
     }
-
 
     skipClicked = async () => {
         await this.context.api.skipDebugger(this.props.id, this.state.selectedFrame.index);

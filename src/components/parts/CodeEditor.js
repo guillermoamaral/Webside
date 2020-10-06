@@ -73,7 +73,7 @@ class CodeEditor extends Component {
               {className: 'highlight'}
             )
         }
-      }
+    }
 
     selectRange(range) {
         this.selectRanges([range]);
@@ -96,7 +96,7 @@ class CodeEditor extends Component {
     openMenu = (event) => {
         event.preventDefault();
         this.setState({menuOpen: true, menuPosition: {x: event.clientX - 2, y: event.clientY - 4}})
-      };
+    }
     
     closeMenu = () => {
         this.setState({menuOpen: false});
@@ -226,7 +226,8 @@ class CodeEditor extends Component {
                 to: this.lineChAt(a.to - 1),
                 severity: a.severity,
                 message: a.description}
-            })
+            }
+        )
     }
 
     setBreakpoint = (n) => {
@@ -239,7 +240,7 @@ class CodeEditor extends Component {
         marker.style.color = 'red';
         marker.innerHTML = "●";
         return marker;
-      }
+    }
   
     render() {
         const showAccept = this.props.showAccept;
@@ -307,7 +308,7 @@ class CodeEditor extends Component {
             </Grid>
         )
     }
-};
+}
 
 export default CodeEditor;
 
