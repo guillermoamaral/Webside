@@ -42,7 +42,6 @@ class API {
     }
 
     // Code...
-
     async getProjectTree(root) {
         try {
             const response = await axios.get(this.baseUri + '/projects?root=' + root + '&tree=true');     
@@ -194,7 +193,6 @@ class API {
    }
 
     // Debugging...
-
     async createDebugger(id) {
         try {
             const process = {process: id};
@@ -277,7 +275,6 @@ class API {
     }
 
     // Workspaces...
-
     async createWorkspace() {
         try {
             const response = await axios.post(this.baseUri + '/workspaces');
@@ -295,7 +292,6 @@ class API {
     }
 
     // Changes...
-
     async getChanges() {
         try {
            const response = await axios.get(this.baseUri + '/changes?author=' + this.author);
@@ -321,7 +317,6 @@ class API {
     }
 
     // Change helpers...
-
     async defineClass(classname, definition) {
         const change = this.newChange('ClassDefinition');
         change.class = classname;
@@ -426,7 +421,6 @@ class API {
     }
 
     // Evaluations...
-
     async evaluateExpression(expression, synch = false, pin = false, context) {
         try {
             const evaluation = {
@@ -470,7 +464,6 @@ class API {
     }
 
     // Objects...
-
     async getObjects() {
         try {
             const response = await axios.get(this.baseUri + '/objects')
@@ -505,7 +498,6 @@ class API {
     }
 
     // Tests...
-
     async runTest(classname, selector) {
         try {
             const run = {
@@ -592,7 +584,6 @@ class API {
     }
 
     // Profiling...
-
     async getProfilerTreeResults(id) {
         try {
             const response = await axios.get(this.baseUri + '/profilers/' + id + '/tree');
@@ -608,6 +599,32 @@ class API {
         }
         catch (error) {this.handleError('Cannot fetch ranking results of profiler ' + id, error)}
     }
+
+    //Native debugging...
+    async getNativeDebuggerFrames(id) {
+        try {
+            const response = await axios.get(this.baseUri + '/native-debuggers/' + id + '/frames');
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot fetch frames of native debugger ' + id, error)}
+    }
+
+    async getNativeDebuggerRegisters(id) {
+        try {
+            const response = await axios.get(this.baseUri + '/native-debuggers/' + id + '/registers');
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot fetch registers of native debugger ' + id, error)}
+    }
+
+    async getNativeDebuggerFrame(id, index) {
+        try {
+           const response = await axios.get(this.baseUri + '/native-debuggers/' + id + '/frames/' + index);
+           return response.data;
+       }
+       catch (error) {this.handleError('Cannot fetch frame ' + index + ' in native debugger ' + id, error)}
+    }
+
 }
 
 export default API;

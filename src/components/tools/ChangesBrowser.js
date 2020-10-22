@@ -56,8 +56,7 @@ class ChangesBrowser extends Component {
                             columns={columns}
                             rows={rows}
                             onSelect={this.changeSelected}
-                            menuOptions={this.menuOptions()}>
-                        </CustomTable>
+                            menuOptions={this.menuOptions()}/>
                     </Paper>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>

@@ -39,6 +39,7 @@ import ChangesBrowser from './components/tools/ChangesBrowser';
 import Debugger from './components/tools/Debugger';
 import TestRunner from './components/tools/TestRunner';
 import Profiler from './components/tools/Profiler';
+import NativeDebugger from './components/tools/NativeDebugger';
 
 class IDE extends Component {
   constructor(props){
@@ -63,6 +64,7 @@ class IDE extends Component {
 
   componentDidMount() {
     this.getNames();
+    this.openNativeDebugger('{B3AE5087-3EBC-43E2-B4A5-95DD37D802FE}')
   }
 
   createTheme() {
@@ -212,6 +214,11 @@ class IDE extends Component {
     this.addPage(title, <TestRunnerIcon className={this.props.styles.testRunnerIcon} />, tool);
   }
 
+  openNativeDebugger = (id, title = 'Native Debugger') => {
+    const tool = <NativeDebugger styles={this.props.styles} key={id} id={id}/>;
+    this.addPage(title, <DebuggerIcon className={this.props.styles.debuggerIcon} />, tool);
+  }
+  
   browseSenders = (selector) => {
     this.api.getSenders(selector)
       .then(methods => this.openMethodBrowser(methods, 'Senders of ' + selector)); 
