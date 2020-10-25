@@ -1,58 +1,26 @@
 {
-  "name": "webside",
+  "name": "react-material-ui-chatbox",
   "version": "1.0.0",
-  "description": "Web Smalltalk IDE",
+  "description": "",
   "main": "index.js",
-  "dependencies": {
-    "@material-ui/core": "^4.11.0",
-    "@material-ui/icons": "^4.9.1",
-    "@material-ui/lab": "^4.0.0-alpha.56",
-    "axios": "^0.19.2",
-    "chart.js": "^2.9.3",
-    "codemirror": "^5.55.0",
-    "express": "^4.17.1",
-    "fuzzysort": "^1.1.4",
-    "http": "0.0.1-security",
-    "material-ui-nested-menu-item": "^1.0.2",
-    "mdi-material-ui": "^6.16.0",
-    "react": "^16.13.1",
-    "react-ace": "^9.1.1",
-    "react-chartjs-2": "^2.10.0",
-    "react-codemirror2": "^7.2.1",
-    "react-cookie": "^4.0.3",
-    "react-dom": "^16.13.1",
-    "react-flame-graph": "^1.4.0",
-    "react-router-dom": "^5.2.0",
-    "react-scrollbars-custom": "^4.0.25",
-    "react-swipeable-views": "^0.13.9",
-    "react-virtualized-auto-sizer": "^1.0.2",
-    "react-window": "^1.8.5",
-    "recompose": "^0.30.0",
-    "socket.io": "^2.3.0"
-  },
-  "devDependencies": {
-    "@iconify/icons-mdi": "^1.0.120",
-    "@iconify/react": "^1.1.3",
-    "react-scripts": "^3.4.3"
-  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "start": "nodemon index"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RachelAbaniwo/react-material-ui-chatbox.git"
+  },
+  "keywords": [],
   "author": "",
-  "license": "MIT",
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RachelAbaniwo/react-material-ui-chatbox/issues"
+  },
+  "homepage": "https://github.com/RachelAbaniwo/react-material-ui-chatbox#readme",
+  "dependencies": {
+    "@material-ui/core": "^3.0.3",
+    "express": "^4.16.3",
+    "nodemon": "^1.19.4",
+    "socket.io": "^2.1.1"
   }
 }
