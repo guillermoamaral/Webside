@@ -29,7 +29,7 @@ class API {
         } else if (error.request) {
             reason = 'Could not send request due to ' + error.message;
         }
-        const exception = new APIError(message, request, status, reason, data);
+        const exception = new APIError('\"' + message + '\"', request, status, reason, data);
         throw exception;
     }
 
@@ -601,6 +601,14 @@ class API {
     }
 
     //Native debugging...
+    async getNativeDebugger(id) {
+        try {
+            const response = await axios.get(this.baseUri + '/native-debuggers/' + id);
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot fetch native debugger ' + id, error)}
+    }
+
     async getNativeDebuggerFrames(id) {
         try {
             const response = await axios.get(this.baseUri + '/native-debuggers/' + id + '/frames');
@@ -623,6 +631,22 @@ class API {
            return response.data;
        }
        catch (error) {this.handleError('Cannot fetch frame ' + index + ' in native debugger ' + id, error)}
+    }
+
+    async resumeNativeDebugger(id) {
+        try {
+           const response = await axios.post(this.baseUri + '/native-debuggers/' + id + '/resume');
+           return response.data;
+       }
+       catch (error) {this.handleError('Cannot resume native debugger ' + id, error)}
+    }
+
+    async suspendNativeDebugger(id) {
+        try {
+           const response = await axios.post(this.baseUri + '/native-debuggers/' + id + '/suspend');
+           return response.data;
+       }
+       catch (error) {this.handleError('Cannot suspend native debugger ' + id, error)}
     }
 
 }

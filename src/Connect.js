@@ -1,14 +1,8 @@
 import React, { Component } from 'react';
 import {
-    CssBaseline,
-    Paper,
-    Box,
     Button,
     TextField,
-    Grid,
-    Typography,
-    Select,
-    MenuItem
+    Grid
     } from "@material-ui/core";
 import { withCookies } from 'react-cookie';
 import { withRouter } from "react-router-dom";
