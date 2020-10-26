@@ -10,61 +10,91 @@ class Chat extends Component {
         super(props);
         this.io = socketio('http://localhost:4200');
         this.state = {
-            message: '',
-            messages: []
+            id: null,
+            contacts: [],
+            selectedContact: null,
+            messages: [],
+            text: '',
           }
     }
 
     componentDidMount() {
-        this.io.on('NEW_MESSAGE_RECEIVED', payload => {
-            this.setState({
-            messages: [
-                ...this.state.messages,
-                payload
-            ]
-            })
-        })
+        this.io.emit('login', {username: this.props.username});
+        this.io.on('logged', data => this.setState({id: data.id}));
+        this.io.on('users', users => {
+            const contacts = users.filter(u => u.username !== this.props.username);
+            contacts.push({username: '<all>'})
+            this.setState({contacts: contacts})});
+        this.io.on('receive', message => this.setState({messages: [...this.state.messages, message]}));
     }
 
     sendMessage = () => {
-        this.setState({message: ''})
-        this.io.emit('NEW_MESSAGE', {
-            username: this.props.username,
-            message: this.state.message
-        })
+        const contact = this.state.selectedContact;
+        const to = !contact || contact.username === '<all>'? null : contact; 
+        const message = {
+            to: to,
+            from: {id: this.state.id, username: this.props.username},
+            text: this.state.text
+        };
+        this.setState({text: '', messages: [...this.state.messages, message]});
+        this.io.emit('send', message);
+    }
+
+    contactSelected = (contact) => {
+        this.setState({selectedContact: contact})
     }
 
     render() {
-        const messages = this.state.messages;
+        const {contacts, selectedContact, messages, text} = this.state;
+        const filtered = messages.filter(m => 
+            selectedContact && (
+                (m.from.username === selectedContact.username) ||
+                (m.to && m.to.username === selectedContact.username) ||
+                (!m.to && selectedContact.username === '<all>')
+            )
+        );
         const styles = this.props.styles;
         const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
         return (
-            <Grid container spacing={0}>
-                <Grid item xs={12} md={12} lg={12}>
+            <Grid container spacing={1}>
+                <Grid item xs={4} md={4} lg={4}>
                     <Paper className={fixedHeightPaper} variant="outlined">
                         <CustomList
-                            itemLabel={m => m.username + ": " + m.message}
-                            items={messages}/>
-                    </Paper>
+                            itemLabel="username"
+                            items={contacts}
+                            selectedItem={selectedContact}
+                            onSelect={this.contactSelected}/>
+                    </Paper>                    
                 </Grid>
-                <Grid item xs={11} md={11} lg={11}>
-                    <TextField
-                        value={this.state.message}
-                        onChange={event => this.setState({message: event.target.value})}
-                        placeholder="Send a message ...."
-                        name="message"
-                        variant="outlined"
-                        fullWidth
-                        margin="dense"
-                        autoFocus
-                        type="text"/>
-                </Grid>
-                <Grid item xs={1} md={1} lg={1}>
-                    <Box display="flex" justifyContent="center" > 
-                        <IconButton onClick={this.sendMessage}>
-                            <SendIcon size="small"/>
-                        </IconButton>
-                    </Box>
+                <Grid item xs={8} md={8} lg={8}>
+                    <Grid container spacing={1}>
+                        <Grid item xs={12} md={12} lg={12}>
+                            <Paper className={fixedHeightPaper} variant="outlined">
+                                <CustomList
+                                    itemLabel={m => m.from.username + ": " + m.text}
+                                    items={filtered}/>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={11} md={11} lg={11}>
+                            <TextField
+                                value={text}
+                                onChange={event => this.setState({text: event.target.value})}
+                                placeholder="Send a message ...."
+                                name="text"
+                                variant="outlined"
+                                fullWidth
+                                margin="dense"
+                                autoFocus
+                                type="text"/>
+                        </Grid>
+                        <Grid item xs={1} md={1} lg={1}>
+                        <Box display="flex" justifyContent="center" > 
+                            <IconButton onClick={this.sendMessage}>
+                                <SendIcon size="small"/>
+                            </IconButton>
+                        </Box>
+                    </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
         )
