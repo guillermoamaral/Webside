@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { AppContext } from '../../AppContext';
+import { IDEContext } from '../../IDEContext';
 import { Grid, LinearProgress } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import CodeEditor from '../parts/CodeEditor';
@@ -8,7 +8,7 @@ import { FlameGraph } from 'react-flame-graph';
 import { HorizontalBar } from 'react-chartjs-2';
 
 class Profiler extends Component {
-    static contextType = AppContext;
+    static contextType = IDEContext;
 
     constructor(props) {
         super(props);

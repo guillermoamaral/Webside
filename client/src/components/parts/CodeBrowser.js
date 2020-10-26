@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Grid } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
-import { AppContext } from '../../AppContext';
+import { IDEContext } from '../../IDEContext';
 import CodeEditor from './CodeEditor';
 import { withDialog } from '../dialogs';
 
 class CodeBrowser extends Component {
-    static contextType = AppContext;
+    static contextType = IDEContext;
 
     constructor(props) {
         super(props);

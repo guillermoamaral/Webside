@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AppContext } from '../../AppContext';
+import { IDEContext } from '../../IDEContext';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import {
     Accordion,
@@ -17,7 +17,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CustomTable from '../controls/CustomTable';
 
 class TestRunner extends Component {
-    static contextType = AppContext;
+    static contextType = IDEContext;
 
     constructor(props) {
         super(props);

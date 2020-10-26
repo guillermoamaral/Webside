@@ -14,10 +14,10 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import InspectorIcon from '../icons/InspectorIcon';
 import CodeEditor from '../parts/CodeEditor';
 import Inspector from './Inspector';
-import { AppContext } from '../../AppContext';
+import { IDEContext } from '../../IDEContext';
 
 class Workspace extends Component {
-    static contextType = AppContext;
+    static contextType = IDEContext;
 
     constructor(props) {
         super(props);

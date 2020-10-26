@@ -14,9 +14,8 @@ import { withCookies } from 'react-cookie';
 import { amber, blue } from '@material-ui/core/colors';
 import AddIcon from '@material-ui/icons/AddCircle';
 import API from './components/API';
-import { AppContext } from './AppContext';
+import { IDEContext } from './IDEContext';
 import { DialogProvider } from './components/dialogs';
-import socketio from 'socket.io-client';
 import TranscriptIcon from './components/icons/TranscriptIcon';
 import SystemBrowserIcon from './components/icons/SystemBrowserIcon';
 import ClassBrowserIcon from './components/icons/ClassBrowserIcon';
@@ -49,6 +48,7 @@ class IDE extends Component {
     this.dialect = cookies.get('dialect');
     this.baseUri = cookies.get('baseUri');
     this.developer = cookies.get('developer');
+    this.chatUrl = 'http://localhost:4200';
     this.theme = this.createTheme();
     this.api = new API(this.baseUri, this.developer, this.reportError, this.reportChange);
     this.state = {
@@ -222,7 +222,7 @@ class IDE extends Component {
   }
 
   openChat = () => {
-    const tool = <Chat styles={this.props.styles} username={this.developer}/>;
+    const tool = <Chat styles={this.props.styles} url={this.chatUrl} username={this.developer}/>;
     this.addPage('Chat', <DebuggerIcon className={this.props.styles.debuggerIcon} />, tool);
   }
   
@@ -369,7 +369,7 @@ class IDE extends Component {
       reportError: this.reportError};
     const styles = this.props.styles;
     return (
-      <AppContext.Provider value={context}>
+      <IDEContext.Provider value={context}>
         <ThemeProvider theme={this.theme}>
           <DialogProvider>
             <div className={styles.root}>
@@ -459,7 +459,7 @@ class IDE extends Component {
             </div>
           </DialogProvider>
         </ThemeProvider>
-      </AppContext.Provider>
+      </IDEContext.Provider>
     )
   }
 }

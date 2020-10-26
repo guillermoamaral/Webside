@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import CustomTree from '../controls/CustomTree';
-import { AppContext } from '../../AppContext';
+import { IDEContext } from '../../IDEContext';
 import { withDialog } from '../dialogs';
 import Scrollable from '../controls/Scrollable';
 
 class ClassTree extends Component {
-    static contextType = AppContext;
+    static contextType = IDEContext;
 
     newSubclass = async (superclass) => {
         if (!superclass) {return}

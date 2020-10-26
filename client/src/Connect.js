@@ -17,11 +17,11 @@ class Connect extends Component {
         }
     }
 
-    handleChange = (event) => {
+    textChanged = (event) => {
         this.setState({[event.target.name]: event.target.value});
     }
 
-    handleSubmit = async (event) => {
+    connectClicked = async (event) => {
         event.preventDefault();
         const {baseUri, developer} = this.state;
         if (baseUri && baseUri !== "" && developer && developer !== "") {
@@ -37,7 +37,7 @@ class Connect extends Component {
             cookies.set('developer', developer, { path: '/' });
             this.props.history.push("/ide");
         } else {
-            alert('You should fill the fields');
+            alert('You must complete the fields');
         }
     }
 
@@ -57,7 +57,7 @@ class Connect extends Component {
                     <Grid item>
                         <Grid container direction="row" justify="center" spacing={1}>
                             <Grid item>
-                                <form onSubmit={this.handleSubmit}>
+                                <form onSubmit={this.connectClicked}>
                                     <Grid container direction="column" spacing={1} alignItems="flex-end">
                                         <Grid item>
                                             <TextField
@@ -70,7 +70,7 @@ class Connect extends Component {
                                                 name="baseUri"
                                                 variant="outlined"
                                                 value={baseUri}
-                                                onChange={this.handleChange}
+                                                onChange={this.textChanged}
                                                 required
                                                 autoFocus/>
                                         </Grid>
@@ -85,7 +85,7 @@ class Connect extends Component {
                                                 name="developer"
                                                 variant="outlined"
                                                 value={developer}
-                                                onChange={this.handleChange}
+                                                onChange={this.textChanged}
                                                 required/>
                                         </Grid>
                                         <Grid item>

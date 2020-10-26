@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import CustomList from '../controls/CustomList';
-import { AppContext } from '../../AppContext';
+import { IDEContext } from '../../IDEContext';
 import { withDialog } from '../dialogs';
 
 class CategoryList extends Component {
-    static contextType = AppContext;
+    static contextType = IDEContext;
 
     constructor(props) {
         super(props);

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Grid, Paper } from '@material-ui/core';
 import clsx from 'clsx';
-import { AppContext } from '../../AppContext';
+import { IDEContext } from '../../IDEContext';
 import MethodList from '../parts/MethodList';
 import CodeBrowser from '../parts/CodeBrowser';
 
 class MethodBrowser extends Component {
-    static contextType = AppContext;
+    static contextType = IDEContext;
 
     constructor(props) {
         super(props);

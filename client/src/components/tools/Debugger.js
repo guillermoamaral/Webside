@@ -7,14 +7,14 @@ import HopIcon from '@iconify/icons-mdi/debug-step-into';
 import SkipIcon from '@iconify/icons-mdi/debug-step-over';
 import ResumeIcon from '@iconify/icons-mdi/play';
 import TerminateIcon from '@iconify/icons-mdi/stop';
-import { AppContext } from '../../AppContext';
+import { IDEContext } from '../../IDEContext';
 import CustomList from '../controls/CustomList';
 import FrameList from '../parts/FrameList';
 import CodeBrowser from '../parts/CodeBrowser';
 import CodeEditor from '../parts/CodeEditor';
 
 class Debugger extends PureComponent {
-    static contextType = AppContext;
+    static contextType = IDEContext;
 
     constructor(props) {
         super(props);

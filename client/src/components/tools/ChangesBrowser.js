@@ -3,10 +3,10 @@ import { Grid, Paper } from '@material-ui/core';
 import CustomTable from '../controls/CustomTable';
 import CodeEditor from '../parts/CodeEditor';
 import clsx from 'clsx';
-import { AppContext } from '../../AppContext';
+import { IDEContext } from '../../IDEContext';
 
 class ChangesBrowser extends Component {
-    static contextType = AppContext;
+    static contextType = IDEContext;
 
     constructor(props) {
         super(props);

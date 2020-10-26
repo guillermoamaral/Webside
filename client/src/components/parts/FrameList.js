@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import CustomList from '../controls/CustomList';
-import { AppContext } from '../../AppContext';
+import { IDEContext } from '../../IDEContext';
 
 class FrameList extends Component {
-    static contextType = AppContext;
+    static contextType = IDEContext;
 
     frameSelected = (frame) => {
         const handler = this.props.onSelect;

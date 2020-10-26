@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Box, Grid, Paper } from '@material-ui/core';
 import clsx from 'clsx';
-import { AppContext } from '../../AppContext';
+import { IDEContext } from '../../IDEContext';
 import CustomTree from '../controls/CustomTree';
 import CodeEditor from '../parts/CodeEditor';
 
 class Inspector extends Component {
-    static contextType = AppContext;
+    static contextType = IDEContext;
 
     constructor(props) {
         super(props);

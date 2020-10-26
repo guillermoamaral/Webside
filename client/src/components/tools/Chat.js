@@ -8,10 +8,10 @@ import SendIcon from '@material-ui/icons/Send';
 class Chat extends Component {
     constructor(props) {
         super(props);
-        this.io = socketio('http://localhost:4200');
+        this.io = socketio(this.props.url);
         this.state = {
             id: null,
-            contacts: [],
+            contacts: this.props.contacts,
             selectedContact: null,
             messages: [],
             text: '',
@@ -32,11 +32,16 @@ class Chat extends Component {
         const contact = this.state.selectedContact;
         const to = !contact || contact.username === '<all>'? null : contact; 
         const message = {
-            to: to,
+            date: new Date(Date.now()).toUTCString(),
             from: {id: this.state.id, username: this.props.username},
+            to: to,
             text: this.state.text
         };
-        this.setState({text: '', messages: [...this.state.messages, message]});
+        if (to) {
+            this.setState({text: '', messages: [...this.state.messages, message]});
+        } else {
+            this.setState({text: ''});
+        }
         this.io.emit('send', message);
     }
 
@@ -71,7 +76,7 @@ class Chat extends Component {
                         <Grid item xs={12} md={12} lg={12}>
                             <Paper className={fixedHeightPaper} variant="outlined">
                                 <CustomList
-                                    itemLabel={m => m.from.username + ": " + m.text}
+                                    itemLabel={m => m.from.username + " (" + new Date(m.date).toLocaleTimeString() + "): " + m.text}
                                     items={filtered}/>
                             </Paper>
                         </Grid>

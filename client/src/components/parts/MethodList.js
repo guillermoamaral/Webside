@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import CustomList from '../controls/CustomList';
 import { ArrowUpDownBold, ArrowUpBold, ArrowDownBold } from 'mdi-material-ui';
-import { AppContext } from '../../AppContext';
+import { IDEContext } from '../../IDEContext';
 import { withDialog } from '../dialogs';
 import { Grid } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 
 class MethodList extends Component {
-    static contextType = AppContext;
+    static contextType = IDEContext;
 
     newMethod = () => {
         const method = {

@@ -11,7 +11,7 @@ import {
     OutlinedInput
 } from '@material-ui/core';
 import clsx from 'clsx';
-import { AppContext } from '../../AppContext';
+import { IDEContext } from '../../IDEContext';
 import SearchList from '../controls/SearchList';
 import ClassTree from '../parts/ClassTree';
 import VariableList from '../parts/VariableList';
@@ -20,7 +20,7 @@ import MethodList from '../parts/MethodList';
 import CodeBrowser from '../parts/CodeBrowser';
 
 class ClassBrowser extends Component {
-    static contextType = AppContext;
+    static contextType = IDEContext;
 
     constructor(props) {
         super(props);
