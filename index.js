@@ -8,7 +8,6 @@ const socketServer = http.createServer(app)
 const io = socketio.listen(socketServer)
 
 io.on('connection', socket => {
-  console.log('user connected.')
   socket.on('NEW_MESSAGE', payload => {
     io.emit('NEW_MESSAGE_RECEIVED', payload)
   })

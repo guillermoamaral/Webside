@@ -107,8 +107,7 @@ class VariableList extends Component {
                 items={variables}
                 selectedItem={this.props.selectedVariable}
                 onSelect={this.variableSelected}
-                menuOptions={this.menuOptions()}
-            />
+                menuOptions={this.menuOptions()}/>
         )
     }
 }

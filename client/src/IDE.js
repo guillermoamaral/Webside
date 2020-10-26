@@ -16,7 +16,7 @@ import AddIcon from '@material-ui/icons/AddCircle';
 import API from './components/API';
 import { AppContext } from './AppContext';
 import { DialogProvider } from './components/dialogs';
-
+import socketio from 'socket.io-client';
 import TranscriptIcon from './components/icons/TranscriptIcon';
 import SystemBrowserIcon from './components/icons/SystemBrowserIcon';
 import ClassBrowserIcon from './components/icons/ClassBrowserIcon';
@@ -40,6 +40,7 @@ import Debugger from './components/tools/Debugger';
 import TestRunner from './components/tools/TestRunner';
 import Profiler from './components/tools/Profiler';
 import NativeDebugger from './components/tools/NativeDebugger';
+import Chat from './components/tools/Chat';
 
 class IDE extends Component {
   constructor(props){
@@ -64,7 +65,8 @@ class IDE extends Component {
 
   componentDidMount() {
     this.getNames();
-    this.openNativeDebugger('{B3AE5087-3EBC-43E2-B4A5-95DD37D802FE}')
+    //this.openNativeDebugger('{B3AE5087-3EBC-43E2-B4A5-95DD37D802FE}')
+    this.openChat();
   }
 
   createTheme() {
@@ -217,6 +219,11 @@ class IDE extends Component {
   openNativeDebugger = (id, title = 'Native Debugger') => {
     const tool = <NativeDebugger styles={this.props.styles} key={id} id={id}/>;
     this.addPage(title, <DebuggerIcon className={this.props.styles.debuggerIcon} />, tool);
+  }
+
+  openChat = () => {
+    const tool = <Chat styles={this.props.styles} username={this.developer}/>;
+    this.addPage('Chat', <DebuggerIcon className={this.props.styles.debuggerIcon} />, tool);
   }
   
   browseSenders = (selector) => {
