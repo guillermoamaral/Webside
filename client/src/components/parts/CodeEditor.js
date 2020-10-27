@@ -3,7 +3,7 @@ import { Grid, Paper, Box, IconButton, LinearProgress } from '@material-ui/core'
 import AcceptIcon from '@material-ui/icons/CheckCircle';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import PopupMenu from '../controls/PopupMenu';
-import { IDEContext } from '../../IDEContext';
+import { IDEContext } from '../IDEContext';
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
 require('codemirror/mode/smalltalk/smalltalk.js');

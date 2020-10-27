@@ -11,7 +11,7 @@ import {
     OutlinedInput
 } from '@material-ui/core';
 import clsx from 'clsx';
-import { IDEContext } from '../../IDEContext';
+import { IDEContext } from '../IDEContext';
 import SearchList from '../controls/SearchList';
 import ClassTree from '../parts/ClassTree';
 import VariableList from '../parts/VariableList';

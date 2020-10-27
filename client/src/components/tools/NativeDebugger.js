@@ -8,7 +8,7 @@ import SkipIcon from '@iconify/icons-mdi/debug-step-over';
 import SuspendIcon from '@iconify/icons-mdi/pause';
 import ResumeIcon from '@iconify/icons-mdi/play';
 import TerminateIcon from '@iconify/icons-mdi/stop';
-import { IDEContext } from '../../IDEContext';
+import { IDEContext } from '../IDEContext';
 import CustomList from '../controls/CustomList';
 import CustomTable from '../controls/CustomTable';
 import NativeCodeEditor from '../parts/NativeCodeEditor';

@@ -10,8 +10,8 @@ import styles from './styles';
 import { ThemeProvider } from '@material-ui/styles';
 import { DialogProvider } from './components/dialogs';
 import { CookiesProvider } from 'react-cookie';
-import Connect from './Connect';
-import IDE from './IDE';
+import Connect from './components/Connect';
+import IDE from './components/IDE';
 
 const theme = createMuiTheme({
   typography: {

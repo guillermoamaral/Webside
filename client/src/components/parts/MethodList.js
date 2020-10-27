@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import CustomList from '../controls/CustomList';
 import { ArrowUpDownBold, ArrowUpBold, ArrowDownBold } from 'mdi-material-ui';
-import { IDEContext } from '../../IDEContext';
+import { IDEContext } from '../IDEContext';
 import { withDialog } from '../dialogs';
 import { Grid } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
@@ -85,28 +85,28 @@ class MethodList extends Component {
         const usePagination = this.props.usePagination || true;
         const size = 12;
         const methods = !this.props.methods? [] : this.props.methods;
+        const icons = methods.map(m => {
+            if (m.overriding && m.overriden) {
+                return <ArrowUpDownBold style={{fontSize: size}}/>
+            }
+            if (m.overrriding) {
+                return <ArrowUpBold style={{fontSize: size}}/>
+            }
+            if (m.overriden) {
+                return <ArrowDownBold style={{fontSize: size}}/>    
+            }
+            return null
+        });
         return (
             <CustomList
                 itemLabel={this.props.showClass === true ? (m => m.class + '>>#' + m.selector) : "selector"}
                 items={methods}
+                icons={icons}
                 selectedItem={this.props.selectedMethod}
                 onSelect={this.props.onSelect}
-                icons={methods.map(m => {
-                    if (m.overriding && m.overriden) {
-                        return <ArrowUpDownBold style={{fontSize: size}} />
-                    }
-                    if (m.overrriding) {
-                        return <ArrowUpBold style={{fontSize: size}} />
-                    }
-                    if (m.overriden) {
-                        return <ArrowDownBold style={{fontSize: size}} />    
-                    }
-                    return null
-                })}
-                menuOptions={this.menuOptions()}
-            />
+                menuOptions={this.menuOptions()}/>
         )
     }
-};
+}
 
 export default withDialog()(MethodList);

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Grid, Paper } from '@material-ui/core';
 import clsx from 'clsx';
-import { IDEContext } from '../../IDEContext';
+import { IDEContext } from '../IDEContext';
 import MethodList from '../parts/MethodList';
 import CodeBrowser from '../parts/CodeBrowser';
 

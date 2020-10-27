@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Grid } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
-import { IDEContext } from '../../IDEContext';
+import { IDEContext } from '../IDEContext';
 import CodeEditor from './CodeEditor';
 import { withDialog } from '../dialogs';
 

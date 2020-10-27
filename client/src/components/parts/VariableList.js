@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import CustomList from '../controls/CustomList';
-import { IDEContext } from '../../IDEContext';
+import { IDEContext } from '../IDEContext';
 import { withDialog } from '../dialogs';
 
 class VariableList extends Component {

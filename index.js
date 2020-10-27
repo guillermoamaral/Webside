@@ -2,8 +2,8 @@ const http = require('http');
 const express = require('express');
 const socketio = require('socket.io');
 
-const app = express();
-const socketServer = http.createServer(app);
+const server = express();
+const socketServer = http.createServer(server);
 const io = socketio.listen(socketServer);
 const users = [];
 

@@ -32,13 +32,13 @@ class Sidebar extends Component {
                 </div>
                 <Divider />
                 <List>
-                    <ListItem button onClick={this.props.onTranscript}>
+                    <ListItem button onClick={this.props.onTranscriptClicked}>
                         <ListItemIcon>
                             <TranscriptIcon />
                         </ListItemIcon>
                         <ListItemText primary="Transcript" />
                     </ListItem>
-                    <ListItem button onClick={this.props.onChanges}>
+                    <ListItem button onClick={this.props.onChangesClicked}>
                         <ListItemIcon>                                
                             <Badge badgeContent={this.props.changesCount} color="secondary">
                                 <ChangesBrowserIcon />
@@ -46,11 +46,11 @@ class Sidebar extends Component {
                         </ListItemIcon>
                         <ListItemText primary="Changes" />
                     </ListItem>                    
-                    <ListItem button>
+                    <ListItem button onClick={this.props.onPeersClicked}>
                         <ListItemIcon>
                             <PeopleIcon />
                         </ListItemIcon>
-                        <ListItemText primary="People" />
+                        <ListItemText primary="Peers" />
                     </ListItem>
                     <ListItem button>
                         <ListItemIcon>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import CustomTree from '../controls/CustomTree';
-import { IDEContext } from '../../IDEContext';
+import { IDEContext } from '../IDEContext';
 import { withDialog } from '../dialogs';
 import Scrollable from '../controls/Scrollable';
 

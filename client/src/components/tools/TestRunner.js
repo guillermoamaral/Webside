@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { IDEContext } from '../../IDEContext';
+import { IDEContext } from '../IDEContext';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import {
     Accordion,

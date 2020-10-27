@@ -17,10 +17,6 @@ class Connect extends Component {
         }
     }
 
-    textChanged = (event) => {
-        this.setState({[event.target.name]: event.target.value});
-    }
-
     connectClicked = async (event) => {
         event.preventDefault();
         const {baseUri, developer} = this.state;
@@ -70,7 +66,7 @@ class Connect extends Component {
                                                 name="baseUri"
                                                 variant="outlined"
                                                 value={baseUri}
-                                                onChange={this.textChanged}
+                                                onChange={event => this.setState({baseUri: event.target.value})}
                                                 required
                                                 autoFocus/>
                                         </Grid>
@@ -85,7 +81,7 @@ class Connect extends Component {
                                                 name="developer"
                                                 variant="outlined"
                                                 value={developer}
-                                                onChange={this.textChanged}
+                                                onChange={event => this.setState({developer: event.target.value})}
                                                 required/>
                                         </Grid>
                                         <Grid item>

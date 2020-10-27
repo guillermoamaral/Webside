@@ -13,33 +13,33 @@ import { ThemeProvider } from '@material-ui/styles';
 import { withCookies } from 'react-cookie';
 import { amber, blue } from '@material-ui/core/colors';
 import AddIcon from '@material-ui/icons/AddCircle';
-import API from './components/API';
+import API from './API';
 import { IDEContext } from './IDEContext';
-import { DialogProvider } from './components/dialogs';
-import TranscriptIcon from './components/icons/TranscriptIcon';
-import SystemBrowserIcon from './components/icons/SystemBrowserIcon';
-import ClassBrowserIcon from './components/icons/ClassBrowserIcon';
-import MethodBrowserIcon from './components/icons/MethodBrowserIcon';
-import WorkspaceIcon from './components/icons/WorkspaceIcon';
-import InspectorIcon from './components/icons/InspectorIcon';
-import ChangesBrowserIcon from './components/icons/ChangesBrowserIcon';
-import DebuggerIcon from './components/icons/DebuggerIcon';
-import TestRunnerIcon from './components/icons/TestRunnerIcon';
-import Titlebar from './components/layout/Titlebar'
-import Sidebar from './components/layout/Sidebar';
-import TabControl from './components/controls/TabControl';
-import Transcript from './components/tools/Transcript';
-import SystemBrowser from './components/tools/SystemBrowser';
-import ClassBrowser from './components/tools/ClassBrowser';
-import MethodBrowser from './components/tools/MethodBrowser';
-import Inspector from './components/tools/Inspector';
-import Workspace from './components/tools/Workspace';
-import ChangesBrowser from './components/tools/ChangesBrowser';
-import Debugger from './components/tools/Debugger';
-import TestRunner from './components/tools/TestRunner';
-import Profiler from './components/tools/Profiler';
-import NativeDebugger from './components/tools/NativeDebugger';
-import Chat from './components/tools/Chat';
+import { DialogProvider } from './dialogs';
+import TranscriptIcon from './icons/TranscriptIcon';
+import SystemBrowserIcon from './icons/SystemBrowserIcon';
+import ClassBrowserIcon from './icons/ClassBrowserIcon';
+import MethodBrowserIcon from './icons/MethodBrowserIcon';
+import WorkspaceIcon from './icons/WorkspaceIcon';
+import InspectorIcon from './icons/InspectorIcon';
+import ChangesBrowserIcon from './icons/ChangesBrowserIcon';
+import DebuggerIcon from './icons/DebuggerIcon';
+import TestRunnerIcon from './icons/TestRunnerIcon';
+import Titlebar from './layout/Titlebar'
+import Sidebar from './layout/Sidebar';
+import TabControl from './controls/TabControl';
+import Transcript from './tools/Transcript';
+import SystemBrowser from './tools/SystemBrowser';
+import ClassBrowser from './tools/ClassBrowser';
+import MethodBrowser from './tools/MethodBrowser';
+import Inspector from './tools/Inspector';
+import Workspace from './tools/Workspace';
+import ChangesBrowser from './tools/ChangesBrowser';
+import Debugger from './tools/Debugger';
+import TestRunner from './tools/TestRunner';
+import Profiler from './tools/Profiler';
+import NativeDebugger from './tools/NativeDebugger';
+import Chat from './tools/Chat';
 
 class IDE extends Component {
   constructor(props){
@@ -66,7 +66,6 @@ class IDE extends Component {
   componentDidMount() {
     this.getNames();
     //this.openNativeDebugger('{B3AE5087-3EBC-43E2-B4A5-95DD37D802FE}')
-    this.openChat();
   }
 
   createTheme() {
@@ -383,9 +382,9 @@ class IDE extends Component {
               <Sidebar
                 styles={styles}
                 expanded={this.state.sidebarExpanded}
-                onTranscript={this.toggleShowTranscript}
-                changesCount={this.state.changesCount}
-                onChanges={this.browseLastChanges}
+                onTranscriptClicked={this.toggleShowTranscript}
+                onChangesClicked={this.browseLastChanges}
+                onPeersClicked={this.openChat}o
                 onClose={this.collapseSidebar}/>
               <main className={styles.content}>
                 <div className={styles.appBarSpacer} />

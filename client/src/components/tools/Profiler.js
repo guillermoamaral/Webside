@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { IDEContext } from '../../IDEContext';
+import { IDEContext } from '../IDEContext';
 import { Grid, LinearProgress } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import CodeEditor from '../parts/CodeEditor';

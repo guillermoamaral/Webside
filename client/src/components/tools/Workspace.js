@@ -14,7 +14,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import InspectorIcon from '../icons/InspectorIcon';
 import CodeEditor from '../parts/CodeEditor';
 import Inspector from './Inspector';
-import { IDEContext } from '../../IDEContext';
+import { IDEContext } from '../IDEContext';
 
 class Workspace extends Component {
     static contextType = IDEContext;

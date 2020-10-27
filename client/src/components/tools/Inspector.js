@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Box, Grid, Paper } from '@material-ui/core';
 import clsx from 'clsx';
-import { IDEContext } from '../../IDEContext';
+import { IDEContext } from '../IDEContext';
 import CustomTree from '../controls/CustomTree';
 import CodeEditor from '../parts/CodeEditor';
 
