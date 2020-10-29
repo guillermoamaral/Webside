@@ -364,11 +364,14 @@ class SystemBrowser extends Component {
         }
         selections.category = species.categories.find(c => c === method.category);
         const methods = species.methods;
-        if (!methods || !methods.find(m => m.selector === method.selector)) {
+        const index = methods? methods.findIndex(m => m.selector === method.selector) : -1;
+        if (index === -1) {
             await this.updateMethods(selections, true);
+            selections.method = species.methods.find(m => m.selector === method.selector);
+        } else {
+            methods.splice(index, 1, method);
+            selections.method = method;
         }
-        selections.method = species.methods.find(m => m.selector === method.selector);
-        selections.method.source = method.source;
         this.applySelections(selections);
     }
 

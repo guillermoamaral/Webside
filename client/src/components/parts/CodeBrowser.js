@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, Link } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import { IDEContext } from '../IDEContext';
 import CodeEditor from './CodeEditor';
@@ -105,10 +105,18 @@ class CodeBrowser extends Component {
         return source;
     }
 
-    currentAnnotations = () => {
+    currentAuthor = () => {
         if (this.state.selectedMode === 'source') {
             const method = this.props.method;
-            return method? new Date(method.timestamp).toLocaleString() + ' by ' + method.author : '';
+            return method? method.author : '';
+        }
+        return ''
+    }
+
+    currentTimestamp = () => {
+        if (this.state.selectedMode === 'source') {
+            const method = this.props.method;
+            return method? new Date(method.timestamp).toLocaleString() : '';
         }
         return ''
     }
@@ -142,6 +150,8 @@ class CodeBrowser extends Component {
 
     render() {
         const mode = this.state.selectedMode;
+        const author = this.currentAuthor();
+        const timestamp = this.currentTimestamp();
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
@@ -173,7 +183,12 @@ class CodeBrowser extends Component {
                         onAccept={this.acceptClicked}/>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
-                    {this.currentAnnotations()}
+                    {timestamp? 'Modified on ' : ''}
+                    {timestamp}
+                    {author? ' by ' : ''} 
+                    <Link href="#" onClick={() => this.context.openChat(author)}>
+                        {author}
+                    </Link>
                 </Grid>
             </Grid>
         )

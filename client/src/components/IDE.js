@@ -39,6 +39,7 @@ import Debugger from './tools/Debugger';
 import TestRunner from './tools/TestRunner';
 import Profiler from './tools/Profiler';
 import NativeDebugger from './tools/NativeDebugger';
+import ChatClient from './ChatClient';
 import Chat from './tools/Chat';
 
 class IDE extends Component {
@@ -48,7 +49,8 @@ class IDE extends Component {
     this.dialect = cookies.get('dialect');
     this.baseUri = cookies.get('baseUri');
     this.developer = cookies.get('developer');
-    this.chatUrl = 'http://localhost:4200';
+    this.chatClient = new ChatClient('http://localhost:4200');
+    this.chatClient.login(this.developer);
     this.theme = this.createTheme();
     this.api = new API(this.baseUri, this.developer, this.reportError, this.reportChange);
     this.state = {
@@ -220,8 +222,11 @@ class IDE extends Component {
     this.addPage(title, <DebuggerIcon className={this.props.styles.debuggerIcon} />, tool);
   }
 
-  openChat = () => {
-    const tool = <Chat styles={this.props.styles} url={this.chatUrl} username={this.developer}/>;
+  openChat = (contactname) => {
+    if (contactname === this.developer) return;
+    const contact = this.chatClient.contactNamed(contactname);
+    if (contactname && !contact) return;
+    const tool = <Chat styles={this.props.styles} client={this.chatClient} initialContact={contact}/>;
     this.addPage('Chat', <DebuggerIcon className={this.props.styles.debuggerIcon} />, tool);
   }
   
@@ -349,6 +354,7 @@ class IDE extends Component {
       api: this.api,
       projectNames: this.state.projectNames,
       classNames: this.state.classNames,
+      openChat: this.openChat,
       browseProject: this.openSystemBrowser,
       browseClass: this.openClassBrowser,
       browseSenders: this.browseSenders,

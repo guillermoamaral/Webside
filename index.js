@@ -10,7 +10,7 @@ const users = [];
 io.on('connection', socket => {
 
   socket.on('login', data => {
-    socket.broadcast.to(socket.id).emit('logged', {id: socket.id});
+    io.to(socket.id).emit('logged', {id: socket.id});
     users.push({id: socket.id, username: data.username});
     io.emit('users', users); 
   });
