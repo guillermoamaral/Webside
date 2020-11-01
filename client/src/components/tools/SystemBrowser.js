@@ -79,8 +79,7 @@ class SystemBrowser extends Component {
         })
     }
 
-    // Contents..
-
+    // Contents...
     currentClasses() {
         const project = this.state.selectedProject;
         return (!project)? [] : project.classes;

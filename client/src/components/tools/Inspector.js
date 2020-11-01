@@ -27,34 +27,49 @@ class Inspector extends Component {
     }
 
     updateSlots = async (object) => {
-        if (!object) {return []}
-        if (object.slots) {return object.slots}
-        let slots;
-        if (object.indexable) {
-            slots = [];
-            for(var i = 0; i < object.size; i++) {slots.push(i + 1)}
-        } else {
-            const dictionary = await this.context.evaluateExpression('self isKindOf: Dictionary', false, {object: this.props.id});
-            if (dictionary.printString === 'true') {
-                const keys = await this.context.evaluateExpression('self keys', false, {object: this.props.id});
-                console.log(keys);
-                slots = await this.context.api.getInstanceVariables(object.class);
-                console.log(slots)
+        if (!object) {return}
+        if (object.slots) {return}
+        const slots = [];
+        try {
+            if (object.indexable) {
+                for(var i = 0; i < object.size; i++) {slots.push(i + 1)}
             } else {
-                slots = await this.context.api.getInstanceVariables(object.class);
-                slots = slots.map(s => s.name)
+                const dictionary = await this.context.evaluateExpression('self isKindOf: Dictionary', true, false, {object: this.props.id});
+                if (dictionary.printString === 'true') {return this.updateDictionarySlots(object)}
+                const vars = await this.context.api.getInstanceVariables(object.class);
+                vars.forEach(v => slots.push(v.name));
             }
+            object.slots = [];
+            if (slots.length === 0) {return}
+            slots.forEach(async s => {
+                const path = object.path + '/' + s;
+                const slot = await this.context.api.getSlot(this.props.root.id, path);
+                slot.name = s.toString();
+                slot.path = path;
+                object.slots.push(slot);
+                this.setState({objectTree: this.state.objectTree});
+            })
         }
-        if (slots.length === 0) {return}
-        object.slots = [];
-        slots.forEach(async s => {
-            const path = object.path + '/' + s;
-            const slot = await this.context.api.getSlot(this.props.root.id, path);
-            slot.name = s.toString();
-            slot.path = path;
-            object.slots.push(slot);
-            this.setState({objectTree: this.state.objectTree});
-        })
+        catch (error) {this.context.reportError(error)}
+    }
+
+    updateDictionarySlots = async (object) => {
+        try {
+            const keys = await this.context.evaluateExpression('self keys asArray', true, true, {object: this.props.id});
+            const values = await this.context.evaluateExpression('self values asArray', true, true, {object: this.props.id});
+            object.slots = [];
+            for(var i = 1; i <= keys.size; i++) {
+                const key = await this.context.api.getSlot(keys.id, '/' + i);
+                const value = await this.context.api.getSlot(values.id, '/' + i);
+                value.name = key.printString;
+                value.path = '/' + value.name;
+                object.slots.push(value);
+                this.setState({objectTree: this.state.objectTree});
+            }
+            await this.context.api.unpinObject(keys.id);
+            await this.context.api.unpinObject(values.id);
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     slotSelected = (object) => {

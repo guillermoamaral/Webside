@@ -183,7 +183,7 @@ class CodeEditor extends Component {
         const expression = this.selectedExpression();
         try {
             this.setState({evaluating: true});
-            await this.context.evaluateExpression(expression, false, this.props.context);
+            await this.context.evaluateExpression(expression, false, false, this.props.context);
             this.setState({evaluating: false});
         }
         catch (error) {this.setState({evaluating: false})}
@@ -193,7 +193,7 @@ class CodeEditor extends Component {
         const expression = this.selectedExpression();
         try {
             this.setState({evaluating: true});
-            const object = await this.context.evaluateExpression(expression, false, this.props.context);
+            const object = await this.context.evaluateExpression(expression, false, false, this.props.context);
             this.setState({evaluating: false});
             const cursor = this.editor.getCursor("to");
             if (this.editor.getSelection().length === 0) {
@@ -211,7 +211,7 @@ class CodeEditor extends Component {
         const expression = this.selectedExpression();
         try {
             this.setState({evaluating: true});
-            const object = await this.context.evaluateExpression(expression, true, this.props.context);
+            const object = await this.context.evaluateExpression(expression, false, true, this.props.context);
             this.setState({evaluating: false});
             this.context.inspectObject(object);          
         }

@@ -268,10 +268,11 @@ class IDE extends Component {
     this.openDebugger(id, 'Debugging expression');
   }
 
-  evaluateExpression = async (expression, pin, context) => {
+  evaluateExpression = async (expression, sync, pin, context) => {
     try {
-      const evaluation = await this.api.evaluateExpression(expression, false, pin, context);
-      const object = await this.api.getObject(evaluation.id);
+      const result = await this.api.evaluateExpression(expression, sync, pin, context);
+      if (sync) {return result}
+      const object = await this.api.getObject(result.id);
       return object;
     }
     catch (error) {

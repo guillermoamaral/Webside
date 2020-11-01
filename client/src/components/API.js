@@ -421,12 +421,12 @@ class API {
     }
 
     // Evaluations...
-    async evaluateExpression(expression, synch = false, pin = false, context) {
+    async evaluateExpression(expression, sync = false, pin = false, context) {
         try {
             const evaluation = {
                 expression: expression,
                 context: context,
-                synch: synch,
+                sync: sync,
                 pin: pin
             }
             const response = await axios.post(this.baseUri + '/evaluations', evaluation);

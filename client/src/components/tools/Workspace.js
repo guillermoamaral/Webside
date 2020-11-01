@@ -53,7 +53,7 @@ class Workspace extends Component {
     evaluateClicked = async () => {
         try {
             this.setState({evaluating: true});
-            const object = await this.context.evaluateExpression(this.state.expression, true, {workspace: this.props.id});
+            const object = await this.context.evaluateExpression(this.state.expression, false, true, {workspace: this.props.id});
             if (this.state.opensInspector) {
                 this.setState({evaluating: false});
                 this.openInspector(object);
