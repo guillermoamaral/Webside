@@ -46,7 +46,7 @@ class Sidebar extends Component {
                         </ListItemIcon>
                         <ListItemText primary="Changes" />
                     </ListItem>                    
-                    <ListItem button onClick={this.props.onPeersClicked}>
+                    <ListItem button onClick={e => this.props.onPeersClicked()}>
                         <ListItemIcon>
                             <PeopleIcon />
                         </ListItemIcon>

@@ -136,19 +136,21 @@ class IDE extends Component {
     this.setState({selectedPage: page})
   }
 
-  removePage = (page) => {
-    if (page.component.type.name === 'Inspector') {
-      this.api.unpinObject(page.component.props.id)
-    }
-    if (page.component.type.name === 'Debugger') {
-      this.api.deleteDebugger(page.component.props.id)
-    }
-    if (page.component.type.name === 'TestRunner') {
-      this.api.deleteTestRun(page.component.props.id)
-    }
-    if (page.component.type.name === 'Workspace') {
-      this.api.deleteWorkspace(page.component.props.id)
-    }
+  removePage = async (page) => {
+    try {
+      if (page.component.type.name === 'Inspector') {
+        await this.api.unpinObject(page.component.props.id)
+      }
+      if (page.component.type.name === 'Debugger') {
+        await this.api.deleteDebugger(page.component.props.id)
+      }
+      if (page.component.type.name === 'TestRunner') {
+        await this.api.deleteTestRun(page.component.props.id)
+      }
+      if (page.component.type.name === 'Workspace') {
+        await this.api.deleteWorkspace(page.component.props.id)
+      }
+    } catch(error) {this.reportError(error)}
     const {pages, selectedPage} = this.state;
     let i = pages.indexOf(page);
     const j = pages.indexOf(selectedPage);
@@ -223,6 +225,7 @@ class IDE extends Component {
   }
 
   openChat = (contactname) => {
+    console.log(contactname)
     if (contactname === this.developer) return;
     const contact = this.chatClient.contactNamed(contactname);
     if (contactname && !contact) return;
@@ -391,7 +394,7 @@ class IDE extends Component {
                 expanded={this.state.sidebarExpanded}
                 onTranscriptClicked={this.toggleShowTranscript}
                 onChangesClicked={this.browseLastChanges}
-                onPeersClicked={this.openChat}o
+                onPeersClicked={this.openChat}
                 onClose={this.collapseSidebar}/>
               <main className={styles.content}>
                 <div className={styles.appBarSpacer} />

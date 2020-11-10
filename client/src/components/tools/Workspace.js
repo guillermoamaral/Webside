@@ -22,7 +22,7 @@ class Workspace extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            expression: '1 @ 2 extent: 10',
+            expression: 'Dictionary new\r\tat: \'number\' put: 1;\r\tat: \'boolean\' put: false;\r\tat: \'date\' put: Date today;\r\tyourself.\r\r1 @ 2 extent: 10',
             opensInspector: true,
             inspectors: [],
             evaluating: false,

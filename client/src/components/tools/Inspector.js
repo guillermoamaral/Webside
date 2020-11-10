@@ -35,7 +35,7 @@ class Inspector extends Component {
                 for(var i = 0; i < object.size; i++) {slots.push(i + 1)}
             } else {
                 const dictionary = await this.context.evaluateExpression('self isKindOf: Dictionary', true, false, {object: this.props.id});
-                if (dictionary.printString === 'true') {return this.updateDictionarySlots(object)}
+                if (dictionary.printString === 'true_') {return this.updateDictionarySlots(object)}
                 const vars = await this.context.api.getInstanceVariables(object.class);
                 vars.forEach(v => slots.push(v.name));
             }
@@ -60,14 +60,14 @@ class Inspector extends Component {
             object.slots = [];
             for(var i = 1; i <= keys.size; i++) {
                 const key = await this.context.api.getSlot(keys.id, '/' + i);
-                const value = await this.context.api.getSlot(values.id, '/' + i);
+                const path = values.id + '/' + i;
+                const value = await this.context.api.getSlot(path);
                 value.name = key.printString;
-                value.path = '/' + value.name;
+                value.path = path;
                 object.slots.push(value);
                 this.setState({objectTree: this.state.objectTree});
             }
             await this.context.api.unpinObject(keys.id);
-            await this.context.api.unpinObject(values.id);
         }
         catch (error) {this.context.reportError(error)}
     }
