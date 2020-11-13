@@ -37,8 +37,8 @@
 Webside is both the specification of an API to interact with a Smalltalk system (back-end) and a web IDE (front-end) built on top of such API.
 
 The API could be divided into two conceptually different subsets of endpoints:
-* Static: the ones that are used to browse and change the code (more about the tools)
-* Dynamic: the ones that are used to evaluate, both synchronically and asynchronically, get resulting objects, as well as debug and profile expressions.
+* Static: used to browse and change the code (more about the tools)
+* Dynamic: used to evaluate (both synchronically and asynchronically), get resulting objects, as well as debug and profile expressions.
 
 ## A bit of history
 This started as a personal project with the  motivation of learning React in particular, and improving my JavaScript skills in general.
@@ -61,6 +61,7 @@ Webside is built using these frameworks and components (plus a set of packages n
 * [ReactJS](https://reactjs.org): the main framework used to build Webside.
 * [Material-UI](https://material-ui.com): a set of React useful components with handy interfaces and a coherent style.  
 * [CodeMirror](https://codemirror.net/): the component used to display and edit code.
+
 The IDE used to code JavaScript was [Visual Studio Code](https://code.visualstudio.com)
 
 <!-- GETTING STARTED -->
