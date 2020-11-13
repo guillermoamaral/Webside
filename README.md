@@ -23,7 +23,7 @@
 * [About the project](#about-the-project)
   * [A bit of history](#a-bit-of-history)
   * [Lessons learned](#lessons-learned)
-  * [Tooling](#tooling)
+  * [Frameworks](#frameworks)
 * [Tools](#tools)  
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
@@ -38,7 +38,7 @@ Webside is both the specification of an API to interact with a Smalltalk system 
 
 The [API](docs/api) could be divided into two conceptually different subsets of endpoints:
 * Static: used to browse and change the code (more about the tools)
-* Dynamic: used to evaluate (both synchronically and asynchronically), get resulting objects, as well as debug and profile expressions.
+* Dynamic: used to evaluate expression (both synchronically and asynchronically) and retrieve the resulting object, as well as debug and profile expressions.
 
 ## A bit of history
 This started as a personal project with the  motivation of learning React in particular, and improving my JavaScript skills in general.
@@ -55,8 +55,7 @@ As an extra lesson derived from the latter, I saw that:
 * Far from being a downside, having a Smalltalk IDE implemented in JavaScript would enable contributions from the JavaScript community to either enhance, change or extend Webside in any direction.
 * Not only this IDE could be used to work upon different Smalltalk images as its back-end but also it could allow several developers to work on the same Smalltalk system (image) simulataneously, making Webside a collaborative environment.
 
-
-### Tooling
+### Frameworks
 Webside is built using these frameworks and components (plus a set of packages not listed here):
 * [ReactJS](https://reactjs.org): the main framework used to build Webside.
 * [Material-UI](https://material-ui.com): a set of React useful components with handy interfaces and a coherent style.  
