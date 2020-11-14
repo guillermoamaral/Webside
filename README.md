@@ -23,7 +23,7 @@
 * [About the project](#about-the-project)
   * [A bit of history](#a-bit-of-history)
   * [Lessons learned](#lessons-learned)
-  * [Frameworks](#frameworks)
+  * [Frameworks](#tools-and-frameworks)
 * [Tools](#tools)  
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
@@ -55,13 +55,13 @@ As an extra lesson derived from the latter, I saw that:
 * Far from being a downside, having a Smalltalk IDE implemented in JavaScript would enable contributions from the JavaScript community to either enhance, change or extend Webside in any direction.
 * Not only this IDE could be used to work upon different Smalltalk images as its back-end but also it could allow several developers to work on the same Smalltalk system (image) simulataneously, making Webside a collaborative environment.
 
-### Frameworks
+### Tools and frameworks
 Webside is built using these frameworks and components (plus a set of packages not listed here):
 * [ReactJS](https://reactjs.org): the main framework used to build Webside.
 * [Material-UI](https://material-ui.com): a set of React useful components with handy interfaces and a coherent style.  
 * [CodeMirror](https://codemirror.net/): the component used to display and edit code.
 
-The IDE used to code JavaScript was [Visual Studio Code](https://code.visualstudio.com)
+The IDE used for JavaScript was [Visual Studio Code](https://code.visualstudio.com)
 
 <!-- GETTING STARTED -->
 ## Getting Started
