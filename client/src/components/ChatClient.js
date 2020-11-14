@@ -1,12 +1,9 @@
 import socketio from 'socket.io-client';
 
 class ChatClient {
-    constructor(url){
-        this.url = url;
-        this.io = socketio(this.url);
-        this.io.on('logged', data => this.userLogged(data));
-        this.io.on('users', users => this.updateContacts(users));
-        this.io.on('receive', message => this.receiveMessage(message));
+    constructor(){
+        this.connected = false;
+        this.socket = null;
         this.me = {username: null, id: null};
         this.contacts = [];
         this.messages = {};
@@ -41,9 +38,17 @@ class ChatClient {
         this.onErrorHandler = handler.bind();
     }
 
-    login(username) {
-        this.io.emit('login', {username: username});        
-        this.me = {username: username};
+    login(url, username) {
+        try {
+            this.socket = socketio(url);
+            this.socket.on('logged', data => this.userLogged(data));
+            this.socket.on('users', users => this.updateContacts(users));
+            this.socket.on('receive', message => this.receiveMessage(message));
+            this.socket.emit('login', {username: username});        
+            this.me = {username: username};
+            this.connected = true;
+        }
+        catch (error) {this.connected = false}
     }
 
     userLogged(data) {
@@ -70,7 +75,7 @@ class ChatClient {
             if (!this.messages[message.to.id]) {this.messages[message.to.id]={unseen: 0, messages: []}}
             this.messages[message.to.id].messages.push(message);
         }
-        this.io.emit('send', message);
+        this.socket.emit('send', message);
     }
 
     sendText(text, contact) {

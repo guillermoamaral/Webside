@@ -49,16 +49,21 @@ class IDE extends Component {
     this.dialect = cookies.get('dialect');
     this.baseUri = cookies.get('baseUri');
     this.developer = cookies.get('developer');
-    this.chatClient = new ChatClient('http://localhost:4200');
-    this.chatClient.login(this.developer);
+    this.chatClient = new ChatClient();
+    this.chatClient.login('http://localhost:4200', this.developer);
     this.theme = this.createTheme();
     this.api = new API(this.baseUri, this.developer, this.reportError, this.reportChange);
+    console.log(this.dialect)
+    const backend = this.dialect !== 'undefined'? this.dialect : 'It looks like the Smalltalk system could not be determined';
+    const welcome = '\'Welcome to Webside ' + this.developer + '!\'\r\'A web Smalltalk IDE built with React.\'\r\r' + 
+    '\'Backend: ' + backend + '\'\r' +
+    '\'@' + this.baseUri + '\'';
     this.state = {
       sidebarExpanded: false,
       addPageMenuOpen: false,
       selectedPage: null,
       transcriptOpen: false,
-      transcriptText: '\'Welcome to Webside!\'\r\r\'A web Smalltalk IDE built with React.\'\r',
+      transcriptText: welcome,
       pages: [],
       projectNames: [],
       classNames: [],
