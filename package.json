@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "devDependencies": {
+    "react-scripts": "^3.4.3"
+  },
   "scripts": {
-    "start": "nodemon index",
-    "build": "react-scripts build"
+    "start": "nodemon index"
   },
   "repository": {
     "type": "git",
