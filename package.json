@@ -1,5 +1,5 @@
 {
-  "name": "react-material-ui-chatbox",
+  "name": "webside-server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,17 +9,9 @@
   "scripts": {
     "start": "nodemon index"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/RachelAbaniwo/react-material-ui-chatbox.git"
-  },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/RachelAbaniwo/react-material-ui-chatbox/issues"
-  },
-  "homepage": "https://github.com/RachelAbaniwo/react-material-ui-chatbox#readme",
+  "license": "MIT",
   "dependencies": {
     "@material-ui/core": "^3.0.3",
     "express": "^4.16.3",
