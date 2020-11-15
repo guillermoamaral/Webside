@@ -6,7 +6,7 @@
   <p align="center">
     Smalltalk IDE for the web
     <br />
-    <a href="https://github.com/guillermoamaral/Webside/docs"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/guillermoamaral/Webside/blob/master/docs/README.md"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/guillermoamaral/Webside">View Demo</a>
