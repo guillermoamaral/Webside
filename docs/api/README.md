@@ -1,7 +1,11 @@
 # API
-These are the different sections of the API required by Webside. That is, the "host" Smalltalk image must implement this API for Webside to work properly.
+Webside is based on a Smalltalk system exposing the following API.
+It worths mentioning that this API is not "pure" REST at the moment of writing this documentation. However, extending it to be a REST-full API could bring some benefits to both Webside and other potential consumers interested in inspect or control a Smalltalk system through HTTP. Of course, such a change would require upgrading Webside and this documentation accordingly.
 
-_Note: the segments in each case do not include the base URI._
+# Sections
+These are the different sections of the API. The target Smalltalk system must implement this API in order to use Webside upon it.
+
+_Note: the segments in each case do not include the base URI. This will be prompted to the user at the moment of connecting Webside to the target Smalltalk._
 
 * [Code](code): Endpoints to retrieve the code (projects, classes and methods).
 
