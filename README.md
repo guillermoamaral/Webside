@@ -18,7 +18,9 @@
 </p>
 
 ## Webside
-Webside is both the specification of an API to interact with a Smalltalk system (back-end) and a web IDE (front-end) built on top of such [API](docs/api). [Read more](docs).
+Webside is both the specification of an API to interact with a Smalltalk system (back-end) and a web IDE (front-end) built on top of such [API](docs/api).
+
+Read more [here](docs).
 
 ## Getting Started
 
