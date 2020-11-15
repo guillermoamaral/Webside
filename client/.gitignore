@@ -1,2 +1,2 @@
-/node_modules
-!/node_modules/codemirror/theme/smalltalk.css
+node_modules/
+!node_modules/codemirror/theme/smalltalk.css
