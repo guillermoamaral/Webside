@@ -3,7 +3,7 @@
 
 * [About the project](#about-the-project)
   * [A bit of history](#a-bit-of-history)
-  * [Lessons learned](#lessons-learned)
+  * [Key aspects](#key-aspects)
   * [Frameworks](#tools-and-frameworks)
 * [Tools](#tools)  
 * [Getting Started](#getting-started)
@@ -27,7 +27,7 @@ As a passionate smalltalker and having implemented several web APIs in Smalltalk
 
 I used Bee Smalltalk as the first back-end (starting to port the API to other Smalltalk dialects later) and made the API evolve as I went progressing with the front-end tools, starting by the "static" side (code) and then adding the "dynamic" side (objects).
 
-## Lessons learned
+## Key aspects
 At some point in time, I realized that all the effort should be invested on keeping the API as simple as possible as this would bring two major benefits:
 * It would enable the implementation in a any Smalltalk system (Bee, Pharo, Squeak, Cuis, Dolphin) without a major effort,
 * It would make any improvement, change, or even a complete revamping of the IDE easier.
@@ -42,4 +42,4 @@ Webside is built using these frameworks and components (plus a set of packages n
 * [Material-UI](https://material-ui.com): a set of React useful components with handy interfaces and a coherent style.  
 * [CodeMirror](https://codemirror.net/): the component used to display and edit code.
 
-The IDE used for JavaScript was [Visual Studio Code](https://code.visualstudio.com)
+The IDE used for JavaScript was [Visual Studio Code](https://code.visualstudio.com).

@@ -1,6 +1,6 @@
 # API
 Webside is based on a Smalltalk system exposing the following API.
-It worths mentioning that this API is not "pure" REST at the moment of writing this documentation. However, extending it to be a REST-full API could bring some benefits to both Webside and other potential consumers interested in inspect or control a Smalltalk system through HTTP. Of course, such a change would require upgrading Webside and this documentation accordingly.
+It's worth mentioning that this API is not "pure" REST at the moment of writing this documentation. However, extending it to be a REST-full API could bring some benefits to both Webside and other potential consumers interested in inspecting or controlling a Smalltalk system through HTTP. Of course, such a change would require upgrading Webside and this documentation accordingly.
 
 # Sections
 These are the different sections of the API. The target Smalltalk system must implement this API in order to use Webside upon it.
