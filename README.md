@@ -20,9 +20,11 @@
 ## Webside
 Webside is both the specification of an [API](docs/api) to interact with a Smalltalk system (back-end) and a web IDE (front-end) built on top of such API.
 
-The IDE is a fully operational IDE, offering Smalltalk IDE's traditional tools such as class browser, workspace, inspector, debugger and more.
+The IDE is a fully operational IDE, offering traditional Smalltalk IDE tools such as class browser, workspace, inspector, debugger and more.
 
 ![](docs/images/WebsideBee.png?raw=true "Webside on Bee")
+
+<img align="left" width="200" src="docs/images/ClassBrowser.png"> <img align="left" width="200" src="docs/images/ClassBrowser.png">
 
 ![](docs/images/ClassBrowser.png) ![](docs/images/MethodBrowser.png)
 
