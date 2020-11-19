@@ -24,7 +24,7 @@ The IDE is a fully operational IDE, offering traditional Smalltalk IDE tools suc
 
 ![](docs/images/WebsideBee.png?raw=true "Webside on Bee")
 
-![Papa](docs/images/ClassBrowser.png) ![](docs/images/MethodBrowser.png)
+![](docs/images/ClassBrowser.png) ![](docs/images/MethodBrowser.png)
 
 ![](docs/images/Workspace.png) ![](docs/images/Inspector.png)
 

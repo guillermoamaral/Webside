@@ -17,7 +17,7 @@
 ## About the project
 Webside is both the specification of an API to interact with a Smalltalk system (back-end) and a web IDE (front-end) built on top of such API.
 
-The [API](docs/api) could be divided into two conceptually different subsets of endpoints:
+The [API](api) could be divided into two conceptually different subsets of endpoints:
 * Static: used to browse and change the code (more about the tools)
 * Dynamic: used to evaluate expression (both synchronically and asynchronically) and retrieve the resulting object, as well as debug and profile expressions.
 
