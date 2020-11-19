@@ -24,7 +24,7 @@ The IDE is a fully operational IDE, offering traditional Smalltalk IDE tools suc
 
 ![](docs/images/WebsideBee.png?raw=true "Webside on Bee")
 
-<img align="left" width="400" src="docs/images/ClassBrowser.png"> <img align="right" width="400" src="docs/images/MethodBrowser.png">
+<img align="left" width="400" src="docs/images/ClassBrowser.png"> <img align="left" width="400" src="docs/images/MethodBrowser.png">
 
 ![](docs/images/ClassBrowser.png) ![](docs/images/MethodBrowser.png)
 
