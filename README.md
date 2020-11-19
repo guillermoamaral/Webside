@@ -20,6 +20,8 @@
 ## Webside
 Webside is both the specification of an [API](docs/api) to interact with a Smalltalk system (back-end) and a web IDE (front-end) built on top of such API.
 
+The IDE is a fully operational IDE, offering Smalltalk IDE's traditional tools such as class browser, workspace, inspector, debugger and more.
+
 Read more [here](docs).
 
 ## Getting Started
