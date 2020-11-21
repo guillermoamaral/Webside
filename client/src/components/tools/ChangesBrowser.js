@@ -7,7 +7,6 @@ import { IDEContext } from '../IDEContext';
 
 class ChangesBrowser extends Component {
     static contextType = IDEContext;
-
     constructor(props) {
         super(props);
         this.state = {

@@ -16,6 +16,7 @@
     "@material-ui/core": "^3.0.3",
     "express": "^4.16.3",
     "nodemon": "^1.19.4",
+    "react-autosuggest": "^10.0.3",
     "socket.io": "^2.1.1"
   }
 }

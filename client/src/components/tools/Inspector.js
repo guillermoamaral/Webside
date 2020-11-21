@@ -7,7 +7,6 @@ import CodeEditor from '../parts/CodeEditor';
 
 class Inspector extends Component {
     static contextType = IDEContext;
-
     constructor(props) {
         super(props);
         const root = this.props.root;

@@ -15,7 +15,6 @@ import NativeCodeEditor from '../parts/NativeCodeEditor';
 
 class NativeDebugger extends Component {
     static contextType = IDEContext;
-
     constructor(props) {
         super(props);
         this.state = {

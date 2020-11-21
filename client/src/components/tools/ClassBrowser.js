@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import { IDEContext } from '../IDEContext';
-import SearchList from '../controls/SearchList';
+import SearchList2 from '../controls/SearchList2';
 import ClassTree from '../parts/ClassTree';
 import VariableList from '../parts/VariableList';
 import CategoryList from '../parts/CategoryList';
@@ -21,7 +21,6 @@ import CodeBrowser from '../parts/CodeBrowser';
 
 class ClassBrowser extends Component {
     static contextType = IDEContext;
-
     constructor(props) {
         super(props);
         this.cache = {};
@@ -367,7 +366,7 @@ class ClassBrowser extends Component {
                         <Grid item xs={11} md={11} lg={11}>
                             <Grid container spacing={1}>
                                 <Grid item xs={3} md={3} lg={3}>
-                                    <SearchList
+                                    <SearchList2
                                         options={this.context.classNames}
                                         onChange={classname => {this.changeRootClass(classname)}}/>
                                 </Grid>                        

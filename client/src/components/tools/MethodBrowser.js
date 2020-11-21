@@ -7,7 +7,6 @@ import CodeBrowser from '../parts/CodeBrowser';
 
 class MethodBrowser extends Component {
     static contextType = IDEContext;
-
     constructor(props) {
         super(props);
         this.state = {
