@@ -3,6 +3,25 @@ import Autosuggest from 'react-autosuggest';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 import { TextField, Paper, MenuItem } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = theme => ({
+    container: {
+      flexGrow: 1,
+      position: 'relative',
+      //height: 250,
+    },
+    suggestion: {
+      display: 'block',
+    },
+    suggestionsList: {
+      margin: 0,
+      padding: 0,
+      listStyleType: 'none',
+    },
+})
+
+const suggestionLimit = 5;
 
 class SearchList2 extends React.Component {
     constructor(props) {
@@ -20,7 +39,7 @@ class SearchList2 extends React.Component {
         return inputLength === 0
             ? []
             : this.props.options.filter(o => {
-                const keep = count < 5 && o.toLowerCase().slice(0, inputLength) === inputValue;
+                const keep = count < suggestionLimit && o.toLowerCase().slice(0, inputLength) === inputValue;
                 if (keep) {count += 1}
                 return keep;
             })
@@ -68,7 +87,11 @@ class SearchList2 extends React.Component {
         const matches = match(suggestion, query);
         const parts = parse(suggestion, matches);
         return (
-            <MenuItem selected={isHighlighted} component="div" onClick={event => this.valueChanged(suggestion)} style={{listStyleType: 'none'}}>
+            <MenuItem
+                selected={isHighlighted}
+                component="div"
+                onClick={event => this.valueChanged(suggestion)}
+                style={{listStyleType: 'none'}}>
                 <div>
                     {parts.map((part, index) => {
                         return part.highlight ? (
@@ -86,8 +109,14 @@ class SearchList2 extends React.Component {
     }
 
     render() {
+        const { classes } = this.props;
         return (
             <Autosuggest
+                theme={{
+                    container: classes.container,
+                    suggestionsList: classes.suggestionsList,
+                    //suggestion: classes.suggestion,
+                }}
                 renderInputComponent={this.renderInput}
                 suggestions={this.state.suggestions}
                 onSuggestionsFetchRequested={this.suggestionsFetchRequested}
@@ -98,10 +127,9 @@ class SearchList2 extends React.Component {
                 inputProps={{
                     placeholder: 'Search...',
                     value: this.state.value,
-                    onChange: this.inputChanged,
-                }}/>
+                    onChange: this.inputChanged}}/>
         )
     }
 }
 
-export default SearchList2;
+export default withStyles(styles)(SearchList2);
