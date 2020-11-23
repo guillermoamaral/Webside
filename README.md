@@ -24,13 +24,13 @@ The IDE is a fully operational IDE, offering traditional Smalltalk IDE tools suc
 
 ![Webside on Bee](docs/images/WebsideBee.png)
 
-![](docs/images/ClassBrowser.png) ![](docs/images/MethodBrowser.png)
+![Class Browser](docs/images/ClassBrowser.png) ![Method Browser](docs/images/MethodBrowser.png)
 
-![](docs/images/Workspace.png) ![](docs/images/Inspector.png)
+![Workspace](docs/images/Workspace.png) ![Inspector](docs/images/Inspector.png)
 
-![](docs/images/Debugger.png) ![](docs/images/Profiler.png)
+![Debugger](docs/images/Debugger.png) ![Profiler](docs/images/Profiler.png)
 
-![](docs/images/TestRunner.png)
+![TestRunner](docs/images/TestRunner.png)
 
 Read more [here](docs).
 

@@ -1,5 +1,5 @@
 # Retrieve classes
-Retrieve all subclasses of a given root superclass (if no root is provided, the uppermost class in the system is used).
+Retrieve all subclasses of a given root class (if no root is provided, the uppermost class in the system is used).
 It is also possible get a tree-like structure as well as to limit the depth in the classes hierarchy.    
 
 **URL**: `/classes`
@@ -7,11 +7,12 @@ It is also possible get a tree-like structure as well as to limit the depth in t
 **Method**: `GET`
 
 **Query Options**
-| Parameter | Type | Description |
+| Option | Type | Description |
 | ------------- | ------------- | ------------- |
-| names | boolean | true to get only class names | 
+| root | string | the name of the root class |
+| names | boolean | true to get only project names |
 | tree | boolean | true to get a tree-like structure |
-| depth | number | to limit the hierarchy depth |
+| depth | number | to limit the hierarchy depth (only when tree=true) |
 
 ## Success Responses
 
@@ -28,7 +29,7 @@ It is also possible get a tree-like structure as well as to limit the depth in t
     "project": "string"
 }
 ```
-_Note: properties common to every `object` are also included._ 
+_Note: common properties of every `object` such as `class` are also included though they are not listed here._
 
 **Example:**: `Number` subclasses `GET /classes?root=Number`.
 ```json

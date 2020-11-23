@@ -7,11 +7,12 @@ It is also possible get a tree-like structure as well as to limit the depth in t
 **Method**: `GET`
 
 **Query Options**
-| Parameter | Type | Description |
+| Option | Type | Description |
 | ------------- | ------------- | ------------- |
-| names | boolean | true to get only project names | 
+| root | string | the name of the root project |
+| names | boolean | true to get only project names |
 | tree | boolean | true to get a tree-like structure |
-| depth | number | to limit the hierarchy depth |
+| depth | number | to limit the hierarchy depth (only when tree=true) |
 
 ## Success Responses
 
@@ -26,7 +27,7 @@ It is also possible get a tree-like structure as well as to limit the depth in t
 }
 ```
 
-_Note: properties common to every `object` are also included._
+_Note: common properties of every `object` such as `class` are also included though they are not listed here._
 
 **Example:**: `Webside` projects `GET /projects?root=Webside`.
 ```json

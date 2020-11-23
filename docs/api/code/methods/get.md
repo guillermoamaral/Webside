@@ -1,14 +1,21 @@
 # Retrieve methods
-Retrieve all methods satisfying the conditions specified in the query (or all methods in the system if no condition is provided).    
+Retrieve those methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided).    
 
 **URL**: `/methods`
 
 **Method**: `GET`
 
 **Query Options**
-    `names=true`: to get only class names
-    `tree=true`: to get a tree-like structure
-    `depth=[n]`: to limit the hierarchy depth to `n`
+| Option | Type | Description |
+| ------------- | ------------- | ------------- |
+| selector | string | to get implementors of such selector | 
+| sending | string | to get senders of such selector |
+| class | string | to get methods implemented by a given class |
+| referencingClass | string | to get those methods referencing a given class |
+| cagegory | string | to get methods under a given category |
+| referencingVariable | string | to get those methods referencing (using or assigning) a given variable |
+| usingVariable | string | to get those methods using a given variable |
+| assigningVariable | string | to get those methods assigning a given variable |
 
 ## Success Responses
 
@@ -17,90 +24,37 @@ Retrieve all methods satisfying the conditions specified in the query (or all me
 **Content**: `[method]` where `method` is defined as
 ```json
 {
-    "name": "string",
-    "definition": "string",
-    "superclass": "string",
-    "comment": "string",
-    "variable": "boolean",
+    "selector": "string",
+    "class": "string",
+    "category": "string",
+    "source": "string",
+    "author": "boolean",
+    "timestamp": "string",
     "project": "string"
 }
 ```
-_Note: properties common to every `object` are also included._ 
+_Note: common properties of every `object` such as `class` are also included though they are not listed here._
 
-**Example: _Number subclasses_**: `GET /classes?root=Number`.
+**Example:**: `Fraction` methods under `arithmetic` category and sending `reciprocal` `GET /methods?class=Fraction&category=arithmetic&sending=reciprocal`..
 ```json
 [
     {
-        "name": "Number",
-        "definition": "Magnitude\r\tsubclass: #Number\r\tinstanceVariableNames: ''\r\tclassVariableNames: ''\r\tpoolDictionaries: ''",
-        "superclass": "Magnitude",
-        "comment": "",
-        "variable": false,
-        "project": "SKernel"
+        "selector": "raisedToInteger:",
+        "class": "Fraction",
+        "category": "arithmetic",
+        "source": "raisedToInteger: anInteger\r\t| num den |\r\tanInteger = 0 ifTrue: [\r\t\t^self isZero\r\t\t\tifTrue: [(ArithmeticError on: #raisedToInteger:) signalInvalidOperation]\r\t\t\tifFalse: [1]].\r\tanInteger < 0 ifTrue: [^self reciprocal raisedToInteger: anInteger negated].\r\tnum := numerator raisedToInteger: anInteger.\r\tden := denominator raisedToInteger: anInteger.\r\t^self class numerator: num denominator: den",
+        "author": "John Doe",
+        "timestamp": "2018-11-14T15:58:20.238-03:00",
+        "project": "Kernel"
     },
     {
-        "name": "Float",
-        "definition": "Number\r\tvariableByteSubclass: #Float\r\tclassVariableNames: 'E Infinity MinusInfinity Pi RadiansPerDegree Status'\r\tpoolDictionaries: ''",
-        "superclass": "Number",
-        "comment": "",
-        "variable": true,
-        "project": "SKernel"
-    },
-    {
-        "name": "Fraction",
-        "definition": "Number\r\tsubclass: #Fraction\r\tinstanceVariableNames: 'numerator denominator'\r\tclassVariableNames: ''\r\tpoolDictionaries: ''",
-        "superclass": "Number",
-        "comment": "",
-        "variable": false,
-        "project": "SKernel"
-    },
-    {
-        "name": "ScaledDecimal",
-        "definition": "Fraction\r\tsubclass: #ScaledDecimal\r\tinstanceVariableNames: 'scale'\r\tclassVariableNames: ''\r\tpoolDictionaries: ''",
-        "superclass": "Fraction",
-        "comment": "ScaledDecimal implement a special kind of Fraction that prints in decimal notation.\rIt uses a limited number of digits (scale) after the decimal separation dot and round the result.\rNote that a ScaledDecimal does not printOn: exactly, however it will storeOn: exactly because the full precision fraction is kept in memory.\r\rThis is mostly usefull with denominators being powers of 10.",
-        "variable": false,
-        "project": "SKernel"
-    },
-    {
-        "name": "Integer",
-        "definition": "Number\r\tsubclass: #Integer\r\tinstanceVariableNames: ''\r\tclassVariableNames: ''\r\tpoolDictionaries: ''",
-        "superclass": "Number",
-        "comment": "gcd: anInteger \r\t\"See Knuth, Vol 2, 4.5.2, Algorithm L\"\r\t\"Initialize\"\r\t| higher u v k uHat vHat a b c d vPrime vPrimePrime q t |\r\thigher := SmallInteger maxVal highBit.\r\tu := self abs max: (v := anInteger abs).\r\tv := self abs min: v.\r\t[v class == SmallInteger]\r\t\twhileFalse: [(uHat := u bitShift: (k := higher - u highBit)) class == SmallInteger\r\t\t\t\tifFalse: [k := k - 1.\r\t\t\t\t\tuHat := uHat bitShift: -1].\r\t\t\tvHat := v bitShift: k.\r\t\t\ta := 1.\r\t\t\tb := 0.\r\t\t\tc := 0.\r\t\t\td := 1.\r\t\t\t\"Test quotient\"\r\t\t\t[(vPrime := vHat + d) ~= 0\r\t\t\t\tand: [(vPrimePrime := vHat + c) ~= 0\r\t\t\t\t\t\tand: [(q := uHat + a // vPrimePrime) = (uHat + b // vPrime)]]]\r\t\t\t\twhileTrue: [\"Emulate Euclid\"\r\t\t\t\t\tc := a - (q * (a := c)).\r\t\t\t\t\t\"Emulate Euclid\"\r\t\t\t\t\td := b - (q * (b := d)).\r\t\t\t\t\tvHat := uHat - (q * (uHat := vHat))].\r\t\t\t\"Multiprecision step\"\r\t\t\tb = 0\r\t\t\t\tifTrue: [v := u rem: (u := v)]\r\t\t\t\tifFalse: [t := u * a + (v * b).\r\t\t\t\t\tv := u * c + (v * d).\r\t\t\t\t\tu := t]].\r\t^ v gcd: u",
-        "variable": false,
-        "project": "SKernel"
-    },
-    {
-        "name": "LargeInteger",
-        "definition": "Integer\r\tvariableByteSubclass: #LargeInteger\r\tclassVariableNames: 'Base Bits DigitLength'\r\tpoolDictionaries: ''",
-        "superclass": "Integer",
-        "comment": "",
-        "variable": true,
-        "project": "SKernel"
-    },
-    {
-        "name": "LargeNegativeInteger",
-        "definition": "LargeInteger\r\tvariableByteSubclass: #LargeNegativeInteger\r\tclassVariableNames: 'LeftLimit'\r\tpoolDictionaries: ''",
-        "superclass": "LargeInteger",
-        "comment": "",
-        "variable": true,
-        "project": "SKernel"
-    },
-    {
-        "name": "LargePositiveInteger",
-        "definition": "LargeInteger\r\tvariableByteSubclass: #LargePositiveInteger\r\tclassVariableNames: ''\r\tpoolDictionaries: ''",
-        "superclass": "LargeInteger",
-        "comment": "(Base squared * 5 + Base - 1) asInteger2 quoRem2: Base.\r(Base squared * 5 + Base - 1) asInteger2 quoRem: Base.\r",
-        "variable": true,
-        "project": "SKernel"
-    },
-    {
-        "name": "SmallInteger",
-        "definition": "Integer\r\tsubclass: #SmallInteger\r\tinstanceVariableNames: ''\r\tclassVariableNames: 'Maximum Minimum'\r\tpoolDictionaries: ''",
-        "superclass": "Integer",
-        "comment": "",
-        "variable": false,
-        "project": "SKernel"
+        "selector": "/",
+        "class": "Fraction",
+        "category": "arithmetic",
+        "source": "/ aNumber\r\t^self * aNumber reciprocal",
+        "author": "John Doe",
+        "timestamp": "2018-11-06T15:52:59.864-03:00",
+        "project": "Kernel"
     }
 ]
 ```
