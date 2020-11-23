@@ -2,7 +2,7 @@ import React from 'react';
 import Autosuggest from 'react-autosuggest';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
-import { TextField, Paper, MenuItem } from '@material-ui/core';
+import { TextField, Paper, MenuItem, Box } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -77,9 +77,9 @@ class SearchList2 extends React.Component {
     renderSuggestionsContainer = (options) => {
         const {containerProps, children} = options;
         return (
-            <Paper {...containerProps} square>
+            <Box {...containerProps} zIndex="tooltip">
                 {children}
-            </Paper>
+            </Box>
         )
     }
 
