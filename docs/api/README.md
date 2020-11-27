@@ -27,4 +27,5 @@ _Note: URL path does not include the base URI. The base URI targeting a particul
 * [Profiling](profiling): Endpoints to manage profilers and access their results.
 
 | Section | Method | Path | Description | Parameters | Payload |
+| -- | -- | -- | -- | -- | -- 
 | Code | GET | [/methods](code/methods/get.md) | Retrieve those methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided) | - | - |
