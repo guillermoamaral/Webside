@@ -28,5 +28,4 @@ _Note: URL path does not include the base URI. The base URI targeting a particul
 
 | Section | Method | Path | Description | Parameters | Payload |
 | -- | -- | -- | -- | -- | -- 
-| [Code](code) | GET | [/methods](code/methods/get.md) | Retrieve those methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided) | selector
-sending | | - |
+| [Code](code) | GET | [/methods](code/methods/get.md) | Retrieve those methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided) | selector\sending | | - |
