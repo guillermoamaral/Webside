@@ -28,4 +28,13 @@ _Note: URL path does not include the base URI. The base URI targeting a particul
 
 | Section | Method | Path | Description | Parameters | Payload |
 | -- | -- | -- | -- | -- | -- 
-| Code | GET | [/methods](code/methods/get.md) | Retrieve those methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided) | - | - |
+| [Code](code) | GET | [/methods](code/methods/get.md) | Retrieve those methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided) | | Option | Type | Description |
+| -- | -- | -- |
+| selector | string | to get implementors of such selector | 
+| sending | string | to get senders of such selector |
+| class | string | to get methods implemented by a given class |
+| referencingClass | string | to get those methods referencing a given class |
+| cagegory | string | to get methods under a given category |
+| referencingVariable | string | to get those methods referencing (using or assigning) a given variable |
+| usingVariable | string | to get those methods using a given variable |
+| assigningVariable | string | to get those methods assigning a given variable | | - |

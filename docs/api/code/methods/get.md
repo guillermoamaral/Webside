@@ -7,7 +7,7 @@ Retrieve those methods satisfying the condition specified in the query (or all t
 
 **Query Options**
 | Option | Type | Description |
-| ------------- | ------------- | ------------- |
+| -- | -- | -- |
 | selector | string | to get implementors of such selector | 
 | sending | string | to get senders of such selector |
 | class | string | to get methods implemented by a given class |
