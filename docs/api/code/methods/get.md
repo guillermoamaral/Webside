@@ -21,14 +21,14 @@ Retrieve those methods satisfying the condition specified in the query (or all t
 
 **Code** : `200 OK`
 
-**Content**: `[method]` where `method` is defined as
+**Content**: `[method]` where `method` is defined as:
 ```json
 {
     "selector": "string",
     "class": "string",
     "category": "string",
     "source": "string",
-    "author": "boolean",
+    "author": "string",
     "timestamp": "string",
     "project": "string"
 }

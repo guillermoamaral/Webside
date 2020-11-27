@@ -18,7 +18,7 @@ It is also possible get a tree-like structure as well as to limit the depth in t
 
 **Code** : `200 OK`
 
-**Content**: `[class]` where `class` is defined as:
+**Content**: `[class]` where `class` is defined as
 ```json
 {
     "name": "string",
