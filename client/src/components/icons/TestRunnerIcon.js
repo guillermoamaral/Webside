@@ -4,6 +4,6 @@ import Icon from '@material-ui/icons/Reorder';
 
 export default function TestRunnerIcon() {
     return (
-        <Icon fontSize="small" style={{color: '#f49b22'}} />
+        <Icon fontSize="small"/>
     )
 }

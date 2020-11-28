@@ -119,12 +119,22 @@ class IDE extends Component {
   }
 
   getNames = async () => {
+    var projectNames, classNames;
     try {
-      const projectNames = await this.api.getProjectNames();
-      const classNames = await this.api.getClassNames();
-      this.setState({projectNames: projectNames, classNames: classNames})
+      projectNames = await this.api.getProjectNames();
     }
-    catch (error) {this.reportError(error)}
+    catch (error) {
+      projectNames = [];
+      this.reportError(error)
+    }
+    try {
+      classNames = await this.api.getClassNames();
+    }
+    catch (error) {
+      classNames = [];
+      this.reportError(error)
+    }
+    this.setState({projectNames: projectNames, classNames: classNames})
   }
 
   addPage(label, icon, component) {

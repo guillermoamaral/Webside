@@ -1,8 +1,8 @@
 import React from 'react';
-import Icon from '@material-ui/icons/List';
+import Icon from '@material-ui/icons/Reorder';
 
 export default function ChangesBrowserIcon() {
     return (
-        <Icon fontSize="small" style={{color: '#9c61af'}} />
+        <Icon fontSize="small"/>
     )
 }

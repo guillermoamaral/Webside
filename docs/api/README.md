@@ -29,8 +29,7 @@ _Note: URL path does not include the base URI. The base URI targeting a particul
 | Section | Method | Path | Description | Parameters | Payload |
 | -- | -- | -- | -- | -- | -- 
 | [Code](code) | GET | [/methods](code/methods/get.md) | Retrieve those methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided) | selector<br />sending<br />class<br />referencingClass<br />cagegory<br />referencingVariable<br />usingVariable<br />assigningVariable | | - |
-| [Code](code) | GET | [/classes](code/classes/get.md) | Retrieve all subclasses of a given root class (if no root is provided, the uppermost class in the system is used).
-It is also possible get a tree-like structure as well as to limit the depth in the classes hierarchy | root<br />names<br />tree<br />depth | | - |
+| [Code](code) | GET | [/classes](code/classes/get.md) | Retrieve all subclasses of a given root class (if no root is provided, the uppermost class in the system is used). It is also possible get a tree-like structure as well as to limit the depth in the classes hierarchy | root<br />names<br />tree<br />depth | | - |
 | [Code](code) | GET | [/classes/{name}/variables](code/classes/get-variables.md) | - | - | | - |
 | [Code](code) | GET | [/classes/{name}/categories](code/classes/get-categories.md) | - | - | | - |
 | [Code](code) | GET | [/classes/{name}/methods](code/classes/get-methods.md) | - | - | | - |
