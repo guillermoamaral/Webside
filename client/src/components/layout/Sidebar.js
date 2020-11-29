@@ -9,11 +9,11 @@ import {
     IconButton,
     Badge
 } from '@material-ui/core';
+import clsx from 'clsx';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import PeopleIcon from '@material-ui/icons/People';
 import GitHubIcon from '@material-ui/icons/GitHub';
 import SettingsIcon from '@material-ui/icons/Settings';
-import clsx from 'clsx';
 import TranscriptIcon from '../icons/TranscriptIcon';
 import ChangesBrowserIcon from '../icons/ChangesBrowserIcon';
 

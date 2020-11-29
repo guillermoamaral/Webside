@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '@material-ui/icons/Code';
+import Icon from '@material-ui/icons/CodeRounded';
 
 export default function TranscriptIcon() {
     return (

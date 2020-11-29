@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '@material-ui/icons/Reorder';
+import Icon from '@material-ui/icons/ReorderRounded';
 
 export default function ChangesBrowserIcon() {
     return (

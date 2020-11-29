@@ -25,6 +25,7 @@ import InspectorIcon from './icons/InspectorIcon';
 import ChangesBrowserIcon from './icons/ChangesBrowserIcon';
 import DebuggerIcon from './icons/DebuggerIcon';
 import TestRunnerIcon from './icons/TestRunnerIcon';
+import ChatIcon from './icons/ChatIcon';
 import Titlebar from './layout/Titlebar'
 import Sidebar from './layout/Sidebar';
 import TabControl from './controls/TabControl';
@@ -54,7 +55,7 @@ class IDE extends Component {
     this.theme = this.createTheme();
     this.api = new API(this.baseUri, this.developer, this.reportError, this.reportChange);
     const backend = this.dialect !== 'undefined'? this.dialect : 'It looks like the Smalltalk system could not be determined';
-    const welcome = '\'Welcome to Webside ' + this.developer + '!\'\r\'A web Smalltalk IDE built with React.\'\r\r' + 
+    const welcome = '\'Welcome to Webside ' + this.developer + '!\'\r\'A Smalltalk IDE for the web.\'\r\r' + 
     '\'Backend: ' + backend + '\'\r' +
     '\'@' + this.baseUri + '\'';
     this.state = {
@@ -243,7 +244,7 @@ class IDE extends Component {
     const contact = this.chatClient.contactNamed(contactname);
     if (contactname && !contact) return;
     const tool = <Chat styles={this.props.styles} client={this.chatClient} initialContact={contact}/>;
-    this.addPage('Chat', <DebuggerIcon className={this.props.styles.debuggerIcon} />, tool);
+    this.addPage('Chat', <ChatIcon className={this.props.styles.debuggerIcon} />, tool);
   }
   
   browseSenders = (selector) => {

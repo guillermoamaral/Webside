@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '@material-ui/icons/CallToAction';
+import Icon from '@material-ui/icons/CallToActionRounded';
 
 export default function TranscriptIcon() {
     return (

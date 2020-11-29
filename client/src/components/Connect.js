@@ -11,9 +11,12 @@ import axios from 'axios';
 class Connect extends Component {
     constructor(props) {
         super(props);
+        const cookies = this.props.cookies;
+        const baseUri = cookies.get('baseUri') || "";
+        const developer = cookies.get('developer') || "";
         this.state = {
-            baseUri: "",
-            developer: ""
+            baseUri: baseUri,
+            developer: developer,
         }
     }
 
