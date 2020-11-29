@@ -22,6 +22,8 @@ Webside is both the specification of an [API](docs/api) to interact with a Small
 
 The IDE is a fully operational IDE, offering traditional Smalltalk IDE tools such as class browser, workspace, inspector, debugger and more.
 
+![Webside on Pharo](docs/images/WebsidePharo.png)
+
 ![Webside on Bee](docs/images/WebsideBee.png)
 
 ![Class Browser](docs/images/ClassBrowser.png) ![Method Browser](docs/images/MethodBrowser.png)

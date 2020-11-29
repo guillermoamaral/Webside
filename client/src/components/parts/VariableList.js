@@ -86,7 +86,7 @@ class VariableList extends Component {
             {label: 'Rename', action: this.renameVariable},
             {label: 'Remove', action: this.removeVariable},
             {label: 'Move to superclass', action: this.moveVariableUp}];
-        if (this.props.class) {
+        if (this.props.class && this.props.class.subclasses) {
             options.push(
                 {
                     label: 'Move to subclass',
