@@ -53,7 +53,6 @@ class IDE extends Component {
     this.chatClient.login('http://localhost:4200', this.developer);
     this.theme = this.createTheme();
     this.api = new API(this.baseUri, this.developer, this.reportError, this.reportChange);
-    console.log(this.dialect)
     const backend = this.dialect !== 'undefined'? this.dialect : 'It looks like the Smalltalk system could not be determined';
     const welcome = '\'Welcome to Webside ' + this.developer + '!\'\r\'A web Smalltalk IDE built with React.\'\r\r' + 
     '\'Backend: ' + backend + '\'\r' +
@@ -240,7 +239,6 @@ class IDE extends Component {
   }
 
   openChat = (contactname) => {
-    console.log(contactname)
     if (contactname === this.developer) return;
     const contact = this.chatClient.contactNamed(contactname);
     if (contactname && !contact) return;

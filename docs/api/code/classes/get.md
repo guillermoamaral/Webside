@@ -1,6 +1,6 @@
 # Retrieve classes
 Retrieve all subclasses of a given root class (if no root is provided, the uppermost class in the system is used).
-It is also possible get a tree-like structure as well as to limit the depth in the classes hierarchy.    
+It is also possible get a tree-like structure as well as to limit the depth in the classes hierarchy.
 
 **URL**: `/classes`
 

@@ -46,7 +46,6 @@ class ClassTree extends Component {
     }
 
     browseProject = (species) => {
-        console.log(species)
         if (species) {this.context.browseProject(species.project)}
     }
 
