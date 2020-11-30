@@ -1,6 +1,18 @@
 # Code
 These are the endpoints used to retrieve system code: projects, classes and methods.
 
+It is important to mention that the JSON objects returned by these endpoints should include common properties of every `object`. This is used by Webside IDE to provide inspection services over objects of the meta-model (classes, methods, etc.).
+These are the common properties at the moment:
+
+```json
+{
+    "class": "string",
+    "indexable": "boolean",
+    "size": "number",
+    "printString": "string"
+}
+```
+
 ## Methods
 Endpoints to retrieve methods.
 

@@ -33,7 +33,6 @@ Retrieve those methods satisfying the condition specified in the query (or all t
     "project": "string"
 }
 ```
-_Note: common properties of every `object` such as `class` are also included though they are not listed here._
 
 **Example:**: `Fraction` methods under `arithmetic` category and sending `reciprocal` `GET /methods?class=Fraction&category=arithmetic&sending=reciprocal`..
 ```json
