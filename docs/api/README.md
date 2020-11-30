@@ -13,7 +13,7 @@ These are the endpoints used to retrieve system code: projects, classes and meth
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
-| GET | [/dialect](code/get-dialect.md) | - | - | | - |
+| GET | [/dialect](code/dialect/get.md) | - | - | | - |
 | GET | [/methods](code/methods/get.md) | Retrieve those methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided) | selector<br />sending<br />class<br />referencingClass<br />cagegory<br />referencingVariable<br />usingVariable<br />assigningVariable | | - |
 | GET | [/classes](code/classes/get.md) | Retrieve all subclasses of a given root class (if no root is provided, the uppermost class in the system is used). It is also possible get a tree-like structure as well as to limit the depth in the classes hierarchy | root<br />names<br />tree<br />depth | | - |
 | GET | [/classes/{name}/variables](code/classes/variables/get.md) | - | - | | - |
@@ -28,8 +28,8 @@ These endpoints are used to apply changes and retrieve changes made to the syste
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
-| GET | [/classes/changes](changes/get.md) | - | - | | - |
-| POST | [/classes/changes](changes/post.md) | - | - | | - |
+| GET | [/changes](changes/get.md) | - | - | | - |
+| POST | [/changes](changes/post.md) | - | - | | - |
 
 ## [Evaluations](evaluations)
 Endpoints to retrieve the objects in the system, either globally accessible or as the result of evaluating an expressions.
