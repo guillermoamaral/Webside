@@ -8,36 +8,61 @@ These are the different sections of the API.
 
 _Note: URL path does not include the base URI. The base URI targeting a particular Smalltalk system will be prompted at the moment of opening Webside._
 
-| Section | Method | Path | Description | Parameters | Payload |
-| -- | :--: | -- | -- | :--: | -- |
-| [Code](code) | GET | [/dialect](code/get-dialect.md) | - | - | | - |
-| [Code](code) | GET | [/methods](code/methods/get.md) | Retrieve those methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided) | selector<br />sending<br />class<br />referencingClass<br />cagegory<br />referencingVariable<br />usingVariable<br />assigningVariable | | - |
-| [Code](code) | GET | [/classes](code/classes/get.md) | Retrieve all subclasses of a given root class (if no root is provided, the uppermost class in the system is used). It is also possible get a tree-like structure as well as to limit the depth in the classes hierarchy | root<br />names<br />tree<br />depth | | - |
+* [Code](code)
+| Method | Path | Description | Parameters | Payload |
+| :--: | -- | -- | :--: | -- |
+| GET | [/dialect](code/get-dialect.md) | - | - | | - |
+| GET | [/methods](code/methods/get.md) | Retrieve those methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided) | selector<br />sending<br />class<br />referencingClass<br />cagegory<br />referencingVariable<br />usingVariable<br />assigningVariable | | - |
+| GET | [/classes](code/classes/get.md) | Retrieve all subclasses of a given root class (if no root is provided, the uppermost class in the system is used). It is also possible get a tree-like structure as well as to limit the depth in the classes hierarchy | root<br />names<br />tree<br />depth | | - |
 routeGET: '/dialect' to: #dialect;
-| [Code](code) | GET | [/classes/{name}/variables](code/classes/variables/get.md) | - | - | | - |
-| [Code](code) | GET | [/classes/{name}/instance-variables](code/classes/instance-variables/get.md) | - | - | | - |
-| [Code](code) | GET | [/classes/{name}/class-variables](code/classes/class-variables/get.md) | - | - | | - |
-| [Code](code) | GET | [/classes/{name}/categories](code/classes/categories/get.md) | - | - | | - |
-| [Code](code) | GET | [/classes/{name}/methods](code/classes/methods/get.md) | - | - | | - |
-| [Code](code) | GET | [/classes/{name}/projects](code/projects/get.md) | - | - | | - |
-| [Changes](changes) | GET | [/classes/changes](changes/get.md) | - | - | | - |
-| [Changes](changes) | POST | [/classes/changes](changes/post.md) | - | - | | - |
-| [Evaluations](evaluations) | POST | [/evaluations](evaluations/post.md) | - | - | | - |
-| [Objects](objects) | GET | [/objects](objects/get.md) | - | - | | - |
-| [Objects](objects) | GET | [/objects/{id}](objects/get-id.md) | - | - | | - |
-| [Objects](objects) | DELETE | [/objects](objects/delete.md) | - | - | | - |
-| [Objects](objects) | GET | [/objects/{id}/*](objects/get-slot.md) | - | - | | - |
-| [Workspaces](workspaces) | GET | [/workspaces](workspaces/get.md) | - | - | | - |
-| [Workspaces](workspaces) | POST | [/workspaces](workspaces/post.md) | - | - | | - |
-| [Workspaces](workspaces) | GET | [/workspaces/{id}](workspaces/get-id.md) | - | - | | - |
-| [Workspaces](workspaces) | DELETE | [/workspaces/{id}](workspaces/delete.md) | - | - | | - |
-| [Debugging](debugging) | POST | [/debuggers/{id}](debuggers/post.md) | - | - | | - |
-| [Debugging](debugging) | GET | [/debuggers/{id}/frames](debuggers/frames/get.md) | - | - | | - |
-| [Debugging](debugging) | GET | [/debuggers/{id}/frames/{index}](debuggers/frame/get.md) | - | - | | - |
-| [Debugging](debugging) | GET | [/debuggers/{id}/frames/{index}/bindings](debuggers/frame/bindings/get.md) | - | - | | - |
-| [Debugging](debugging) | POST | [/debuggers/{id}/skip](debuggers/skip.md) | - | - | | - |
-| [Debugging](debugging) | POST | [/debuggers/{id}/hop](debuggers/hop.md) | - | - | | - |
-| [Debugging](debugging) | POST | [/debuggers/{id}/restart](debuggers/restart.md) | - | - | | - |
-| [Debugging](debugging) | POST | [/debuggers/{id}/resume](debuggers/resume.md) | - | - | | - |
-| [Debugging](debugging) | POST | [/debuggers/{id}/terminate](debuggers/terminate.md) | - | - | | - |
-| [Debugging](debugging) | DELETE | [/debuggers/{id}](debuggers/delete.md) | - | - | | - |
+| GET | [/classes/{name}/variables](code/classes/variables/get.md) | - | - | | - |
+| GET | [/classes/{name}/instance-variables](code/classes/instance-variables/get.md) | - | - | | - |
+| GET | [/classes/{name}/class-variables](code/classes/class-variables/get.md) | - | - | | - |
+| GET | [/classes/{name}/categories](code/classes/categories/get.md) | - | - | | - |
+| GET | [/classes/{name}/methods](code/classes/methods/get.md) | - | - | | - |
+| GET | [/classes/{name}/projects](code/projects/get.md) | - | - | | - |
+
+* [Changes](changes)
+| Method | Path | Description | Parameters | Payload |
+| :--: | -- | -- | :--: | -- |
+| GET | [/classes/changes](changes/get.md) | - | - | | - |
+| POST | [/classes/changes](changes/post.md) | - | - | | - |
+
+* [Evaluations](evaluations)
+| Method | Path | Description | Parameters | Payload |
+| :--: | -- | -- | :--: | -- |
+| POST | [/evaluations](evaluations/post.md) | - | - | | - |
+
+* [Objects](objects)
+| Method | Path | Description | Parameters | Payload |
+| :--: | -- | -- | :--: | -- |
+| GET | [/objects](objects/get.md) | - | - | | - |
+| GET | [/objects/{id}](objects/get-id.md) | - | - | | - |
+| DELETE | [/objects](objects/delete.md) | - | - | | - |
+| GET | [/objects/{id}/*](objects/get-slot.md) | - | - | | - |
+
+* [Workspaces](workspaces)
+| Method | Path | Description | Parameters | Payload |
+| :--: | -- | -- | :--: | -- |
+| GET | [/workspaces](workspaces/get.md) | - | - | | - |
+| POST | [/workspaces](workspaces/post.md) | - | - | | - |
+| GET | [/workspaces/{id}](workspaces/get-id.md) | - | - | | - |
+| DELETE | [/workspaces/{id}](workspaces/delete.md) | - | - | | - |
+
+* [Debugging](debugging)
+| Method | Path | Description | Parameters | Payload |
+| :--: | -- | -- | :--: | -- |
+| POST | [/debuggers/{id}](debuggers/post.md) | - | - | | - |
+| GET | [/debuggers/{id}/frames](debuggers/frames/get.md) | - | - | | - |
+| GET | [/debuggers/{id}/frames/{index}](debuggers/frame/get.md) | - | - | | - |
+| GET | [/debuggers/{id}/frames/{index}/bindings](debuggers/frame/bindings/get.md) | - | - | | - |
+
+* [Debugging](debugging)
+| Method | Path | Description | Parameters | Payload |
+| :--: | -- | -- | :--: | -- |
+| POST | [/debuggers/{id}/skip](debuggers/skip.md) | - | - | | - |
+| POST | [/debuggers/{id}/hop](debuggers/hop.md) | - | - | | - |
+| POST | [/debuggers/{id}/restart](debuggers/restart.md) | - | - | | - |
+| POST | [/debuggers/{id}/resume](debuggers/resume.md) | - | - | | - |
+| POST | [/debuggers/{id}/terminate](debuggers/terminate.md) | - | - | | - |
+| DELETE | [/debuggers/{id}](debuggers/delete.md) | - | - | | - |
