@@ -9,6 +9,7 @@ These are the different sections of the API.
 _Note: URL path does not include the base URI. The base URI targeting a particular Smalltalk system will be prompted at the moment of opening Webside._
 
 * [Code](code)
+
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
 | GET | [/dialect](code/get-dialect.md) | - | - | | - |
@@ -23,17 +24,20 @@ routeGET: '/dialect' to: #dialect;
 | GET | [/classes/{name}/projects](code/projects/get.md) | - | - | | - |
 
 * [Changes](changes)
+
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
 | GET | [/classes/changes](changes/get.md) | - | - | | - |
 | POST | [/classes/changes](changes/post.md) | - | - | | - |
 
 * [Evaluations](evaluations)
+
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
 | POST | [/evaluations](evaluations/post.md) | - | - | | - |
 
 * [Objects](objects)
+
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
 | GET | [/objects](objects/get.md) | - | - | | - |
@@ -42,6 +46,7 @@ routeGET: '/dialect' to: #dialect;
 | GET | [/objects/{id}/*](objects/get-slot.md) | - | - | | - |
 
 * [Workspaces](workspaces)
+
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
 | GET | [/workspaces](workspaces/get.md) | - | - | | - |
@@ -50,6 +55,7 @@ routeGET: '/dialect' to: #dialect;
 | DELETE | [/workspaces/{id}](workspaces/delete.md) | - | - | | - |
 
 * [Debugging](debugging)
+
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
 | POST | [/debuggers/{id}](debuggers/post.md) | - | - | | - |
@@ -58,6 +64,7 @@ routeGET: '/dialect' to: #dialect;
 | GET | [/debuggers/{id}/frames/{index}/bindings](debuggers/frame/bindings/get.md) | - | - | | - |
 
 * [Debugging](debugging)
+
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
 | POST | [/debuggers/{id}/skip](debuggers/skip.md) | - | - | | - |
