@@ -8,7 +8,8 @@ These are the different sections of the API.
 
 _Note: URL path does not include the base URI. The base URI targeting a particular Smalltalk system will be prompted at the moment of opening Webside._
 
-* [Code](code)
+## [Code](code)
+These are the endpoints used to retrieve system code: projects, classes and methods.
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
