@@ -23,20 +23,23 @@ These are the endpoints used to retrieve system code: projects, classes and meth
 | GET | [/classes/{name}/methods](code/classes/methods/get.md) | - | - | | - |
 | GET | [/classes/{name}/projects](code/projects/get.md) | - | - | | - |
 
-* [Changes](changes)
+## [Changes](changes)
+These endpoints are used to apply changes and retrieve changes made to the system.
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
 | GET | [/classes/changes](changes/get.md) | - | - | | - |
 | POST | [/classes/changes](changes/post.md) | - | - | | - |
 
-* [Evaluations](evaluations)
+## [Evaluations](evaluations)
+Endpoints to retrieve the objects in the system, either globally accessible or as the result of evaluating an expressions.
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
 | POST | [/evaluations](evaluations/post.md) | - | - | | - |
 
-* [Objects](objects)
+## [Objects](objects)
+Endpoints to retrieve the objects in the system, either globally accessible or as the result of evaluating an expressions.
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
@@ -45,7 +48,8 @@ These are the endpoints used to retrieve system code: projects, classes and meth
 | DELETE | [/objects](objects/delete.md) | - | - | | - |
 | GET | [/objects/{id}/*](objects/get-slot.md) | - | - | | - |
 
-* [Workspaces](workspaces)
+## [Workspaces](workspaces)
+Endpoints to manage workspaces.
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
@@ -54,7 +58,8 @@ These are the endpoints used to retrieve system code: projects, classes and meth
 | GET | [/workspaces/{id}](workspaces/get-id.md) | - | - | | - |
 | DELETE | [/workspaces/{id}](workspaces/delete.md) | - | - | | - |
 
-* [Debugging](debugging)
+## [Debugging](debugging)
+Endpoints to manage debuggers and interact with them.
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
@@ -62,14 +67,21 @@ These are the endpoints used to retrieve system code: projects, classes and meth
 | GET | [/debuggers/{id}/frames](debuggers/frames/get.md) | - | - | | - |
 | GET | [/debuggers/{id}/frames/{index}](debuggers/frame/get.md) | - | - | | - |
 | GET | [/debuggers/{id}/frames/{index}/bindings](debuggers/frame/bindings/get.md) | - | - | | - |
-
-* [Debugging](debugging)
-
-| Method | Path | Description | Parameters | Payload |
-| :--: | -- | -- | :--: | -- |
 | POST | [/debuggers/{id}/skip](debuggers/skip.md) | - | - | | - |
 | POST | [/debuggers/{id}/hop](debuggers/hop.md) | - | - | | - |
 | POST | [/debuggers/{id}/restart](debuggers/restart.md) | - | - | | - |
 | POST | [/debuggers/{id}/resume](debuggers/resume.md) | - | - | | - |
 | POST | [/debuggers/{id}/terminate](debuggers/terminate.md) | - | - | | - |
 | DELETE | [/debuggers/{id}](debuggers/delete.md) | - | - | | - |
+
+## [Testing](tests)
+Endpoints to run tests and retrieve their results.
+
+| Method | Path | Description | Parameters | Payload |
+| :--: | -- | -- | :--: | -- |
+
+## [Profiling](profiling)
+Endpoints to manage profilers and access their results.
+
+| Method | Path | Description | Parameters | Payload |
+| :--: | -- | -- | :--: | -- |
