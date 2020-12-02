@@ -18,9 +18,9 @@
 </p>
 
 ## Webside
-Webside is both the specification of an [API](docs/api) to interact with a Smalltalk system (back-end) and a web IDE (front-end) built on top of such API.
+Webside is both the specification of an [API](docs/api) to interact with an Smalltalk system (back-end) and a web IDE (front-end) built on top of such API.
 
-The IDE is a fully operational IDE, offering traditional Smalltalk IDE tools such as class browser, workspace, inspector, debugger and more.
+The IDE is a fully operational IDE, offering traditional Smalltalk IDE tools such as code browsers, workspaces, inspectors, debugger and more.
 
 ![Webside on Pharo](docs/images/WebsidePharo.png "Webside on Pharo")
 
