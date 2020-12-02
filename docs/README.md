@@ -74,7 +74,7 @@ This is more or less the classical refactoring browser, including the hierarchy 
 
 The component implementing this tool is [ClassBrowser](../client/src/components/tools/ClassBrowser.js) and it relies in [Code](api/code) and [Changes](api/changes) endpoints to browse and make changes on the code, and in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints to evaluate expressions. 
 
-![Class Browser](docs/images/ClassBrowser.png)
+![Class Browser](../docs/images/ClassBrowser.png)
 
 
 ### Method Browser
@@ -83,7 +83,7 @@ This is a list of methods resulting from a search (senders, implementors, global
 The component implementing this tool is [MethodBrowser](../client/src/components/tools/MethodBrowser.js) and as the `ClassBrowser` component it relies in [Code](api/code) and [Changes](api/changes) endpoints to browse and make changes on the code, and in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints to evaluate expressions. 
 
 
-![Method Browser](docs/images/MethodBrowser.png)
+![Method Browser](../docs/images/MethodBrowser.png)
 
 
 ### Workspace
