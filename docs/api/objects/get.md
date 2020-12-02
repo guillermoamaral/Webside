@@ -20,17 +20,18 @@ Objects are the result of evaluating expressions. As it is described in [/evalua
     "size": "number",
     "printString": "string"
 }
+]
+```
 
-**Example:**:
+**Example:**: `GET /objects`
 ```json
 [
     {
-        "name": "numerator",
-        "class": "Fraction"
-    },
-    {
-        "name": "denominator",
-        "class": "Fraction"
+        "id": "{207CDBB1-6311-4503-A066-1A89B39A1465}",
+        "class": "Rectangle",
+        "indexable": false,
+        "size": 0,
+        "printString": "1 @ 2 rightBottom: 11 @ 12"
     }
 ]
 ```
