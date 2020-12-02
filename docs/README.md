@@ -86,20 +86,28 @@ The component implementing this tool is [MethodBrowser](../client/src/components
 
 
 ### Workspace
-Again a typical pane where the programmer can evaluate expressions (with its own variable scope to keep workspace temporaries) and print or inspect its results. Inspections triggered with the play button are embedded in the same workspace tab, while those inspections triggered with "Inspect" menu option (or its shortcut) are opened in a different tab.
+Again this is the typical pane where the programmer can evaluate expressions (with its own variable scope to keep workspace temporaries) and print or inspect its results. Inspections triggered with the play button are embedded in the same workspace tab, while those inspections triggered with "Inspect" menu option (or its shortcut) are opened in a different tab.
 
 The component implementing this tool is [Workspace](client/src/components/tools/ClassBrowser.js) and it essentially relies in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints. 
 
 ![Workspace](../docs/images/Workspace.png)
 
+
 ### Inspector
+Yet another standar Smallalk IDE tool, this inspector provides a tree view to dig into object references plus a code pane where to evaluate expressions. The evaluation context in this case contains `self` bound to the (root) object being inspected.
+
+The React component implementing this tool is [Inspector](client/src/components/tools/Inspector.js) and it uses [Objects](api/objects) endpoints, specially the one to access object slots, [/objects/{id}/*](objects/id/slots/get.md).
+
 ![Inspector](../docs/images/Inspector.png)
+
 
 ### Debugger
 ![Debugger](../docs/images/Debugger.png)
 
+
 ### Test runner
 ![TestRunner](../docs/images/TestRunner.png)
+
 
 ### Profiler
 ![Profiler](../docs/images/Profiler.png)
