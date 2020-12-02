@@ -16,7 +16,7 @@ These are the endpoints used to retrieve system code: projects, classes and meth
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
 | GET | [/dialect](code/dialect/get.md) | - | - | | - |
-| GET | [/methods](code/methods/get.md) | Retrieve those methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided) | selector<br />sending<br />class<br />referencingClass<br />cagegory<br />referencingVariable<br />usingVariable<br />assigningVariable | | - |
+| GET | [/methods](code/methods/get.md) | Retrieve methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided) | selector<br />sending<br />class<br />referencingClass<br />cagegory<br />referencingVariable<br />usingVariable<br />assigningVariable | | - |
 | GET | [/classes](code/classes/get.md) | Retrieve all subclasses of a given root class (if no root is provided, the uppermost class in the system is used). It is also possible get a tree-like structure as well as to limit the depth in the classes hierarchy | root<br />names<br />tree<br />depth | | - |
 | GET | [/classes/{name}/variables](code/classes/variables/get.md) | - | - | | - |
 | GET | [/classes/{name}/instance-variables](code/classes/instance-variables/get.md) | - | - | | - |
@@ -30,8 +30,8 @@ These endpoints are used to apply changes and retrieve changes made to the syste
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
-| GET | [/changes](changes/get.md) | - | - | | - |
-| POST | [/changes](changes/post.md) | - | - | | - |
+| GET | [/changes](changes/get.md) | Retrieve changes made to the system | author | | - |
+| POST | [/changes](changes/post.md) | Apply a change to the system | - | | - |
 
 ## [Evaluations](evaluations)
 Endpoints to retrieve the objects in the system, either globally accessible or as the result of evaluating an expressions.
@@ -45,10 +45,10 @@ Endpoints to retrieve the objects in the system, either globally accessible or a
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
-| GET | [/objects](objects/get.md) | - | - | | - |
-| GET | [/objects/{id}](objects/get-id.md) | - | - | | - |
-| DELETE | [/objects](objects/delete.md) | - | - | | - |
-| GET | [/objects/{id}/*](objects/get-slot.md) | - | - | | - |
+| GET | [/objects](objects/get.md) | Retrive pinned objects | - | | - |
+| GET | [/objects/{id}](objects/id/get.md) | Retrieve the pinned object with a given ID | - | | - |
+| DELETE | [/objects/{id}](objects/id/delete.md) | Unpin the object with a given ID | - | | - |
+| GET | [/objects/{id}/*](objects/id/slots/get.md) | Retrive an inner slot (a any depth) starting from the pinned object with ID | - | | - |
 
 ## [Workspaces](workspaces)
 Endpoints to manage workspaces.

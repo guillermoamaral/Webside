@@ -28,7 +28,7 @@ As a passionate smalltalker and having implemented several web APIs in Smalltalk
 
 Being the dialect I use for my daily duties, I started by Bee Smalltalk as the back-end (porting the API to Pharo a fterwards*). Naturally, the API evolved as I progressed at the front-end side, starting by the "static" part (code) and then moving to the "dynamic" one (objects).
 
-*_Not finished at the moment of this writing._
+*_Not finished at the moment of writing this document._
 
 ## Key aspects
 At some point in time, I realized that I shouldinvest all the effort in keeping the API simple in order to:
@@ -82,12 +82,11 @@ This is a list of methods resulting from a search (senders, implementors, global
 
 The component implementing this tool is [MethodBrowser](../client/src/components/tools/MethodBrowser.js) and as the `ClassBrowser` component it relies in [Code](api/code) and [Changes](api/changes) endpoints to browse and make changes on the code, and in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints to evaluate expressions. 
 
-
 ![Method Browser](../docs/images/MethodBrowser.png)
 
 
 ### Workspace
-Again a typical pane where the programmer can evaluate expressions (with its own variable scope to keep workspace temporaries) and print or inspect its results. Inspections triggered with the play button are embedded in the same workspace, while those inspections triggered with "Inspect" menu option (or its shortcut) are opened in a different tab.
+Again a typical pane where the programmer can evaluate expressions (with its own variable scope to keep workspace temporaries) and print or inspect its results. Inspections triggered with the play button are embedded in the same workspace tab, while those inspections triggered with "Inspect" menu option (or its shortcut) are opened in a different tab.
 
 The component implementing this tool is [Workspace](client/src/components/tools/ClassBrowser.js) and it essentially relies in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints. 
 
