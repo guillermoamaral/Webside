@@ -34,26 +34,14 @@ Retrieve those methods satisfying the condition specified in the query (or all t
 }
 ```
 
-**Example:**: `Fraction` methods under `arithmetic` category and sending `reciprocal` `GET /methods?class=Fraction&category=arithmetic&sending=reciprocal`..
+**Example:**: `Fraction` methods under `arithmetic` category and sending `reciprocal` `GET /methods?class=Fraction&category=arithmetic&sending=reciprocal`.
 ```json
 [
     {
-        "selector": "raisedToInteger:",
-        "class": "Fraction",
-        "category": "arithmetic",
-        "source": "raisedToInteger: anInteger\r\t| num den |\r\tanInteger = 0 ifTrue: [\r\t\t^self isZero\r\t\t\tifTrue: [(ArithmeticError on: #raisedToInteger:) signalInvalidOperation]\r\t\t\tifFalse: [1]].\r\tanInteger < 0 ifTrue: [^self reciprocal raisedToInteger: anInteger negated].\r\tnum := numerator raisedToInteger: anInteger.\r\tden := denominator raisedToInteger: anInteger.\r\t^self class numerator: num denominator: den",
-        "author": "John Doe",
-        "timestamp": "2018-11-14T15:58:20.238-03:00",
-        "project": "Kernel"
-    },
-    {
         "selector": "/",
+        "source": "/ aNumber\r\t\"Answer the result of dividing the receiver by aNumber.\"\r\taNumber isFraction\r\t\tifTrue: [^self * aNumber reciprocal].\r\t^ aNumber adaptToFraction: self andSend: #/",
         "class": "Fraction",
-        "category": "arithmetic",
-        "source": "/ aNumber\r\t^self * aNumber reciprocal",
-        "author": "John Doe",
-        "timestamp": "2018-11-06T15:52:59.864-03:00",
-        "project": "Kernel"
+        "category": "arithmetic"
     }
 ]
 ```
