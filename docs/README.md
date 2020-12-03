@@ -26,7 +26,7 @@ The [API](api) can be divided into two conceptually different subsets of endpoin
 This project started as a personal training with the aim of learning React in particular, and improving my JavaScript skills in general.
 As a passionate smalltalker and having implemented several web APIs in Smalltalk for differnt purposes and domains, I decided to expose Smalltalk itself thru a web API and see how far I could go implementing the classical Smalltalk IDE tools using React.
 
-Being the dialect I use for my daily duties, I started by Bee Smalltalk as the back-end (porting the API to Pharo afterwards*). Naturally, the API evolved as I progressed at the front-end side, starting by the static part and then moving to the dynamic one.
+Being the dialect I use for my daily duties, I started by Bee Smalltalk as the back-end (porting the API to [Pharo](https://github.com/guillermoamaral/Pharo-Webside) afterwards*). Naturally, the API evolved as I progressed at the front-end side, starting by the static part and then moving to the dynamic one.
 
 *_Not finished at the moment of writing this document._
 

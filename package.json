@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "devDependencies": {
-    "react-scripts": "^3.4.3"
-  },
+  "devDependencies": {},
   "scripts": {
     "start": "nodemon index"
   },
@@ -16,7 +14,6 @@
     "@material-ui/core": "^3.0.3",
     "express": "^4.16.3",
     "nodemon": "^1.19.4",
-    "react-autosuggest": "^10.0.3",
     "socket.io": "^2.1.1"
   }
 }
