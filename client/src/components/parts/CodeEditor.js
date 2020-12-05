@@ -36,6 +36,7 @@ class CodeEditor extends Component {
             menuOpen: false,
             menuPosition: {x: null, y: null},
             evaluating: false,
+            progress: false,
         }
     }
 
@@ -50,7 +51,7 @@ class CodeEditor extends Component {
                 evaluating: props.evaluating,
             }
         }
-        if (props.evaluating !== state.evaluating) {
+        if (state.evaluating !== props.evaluating) {
             return {
                 evaluating: props.evaluating,
             }
@@ -182,19 +183,19 @@ class CodeEditor extends Component {
     evaluateExpression = async () => {
         const expression = this.selectedExpression();
         try {
-            this.setState({evaluating: true});
+            this.setState({progress: true});
             await this.context.evaluateExpression(expression, false, false, this.props.context);
-            this.setState({evaluating: false});
+            this.setState({progress: false});
         }
-        catch (error) {this.setState({evaluating: false})}
+        catch (error) {this.setState({progress: false})}
     }
 
     showEvaluation = async () => {
         const expression = this.selectedExpression();
         try {
-            this.setState({evaluating: true});
+            this.setState({progress: true});
             const object = await this.context.evaluateExpression(expression, false, false, this.props.context);
-            this.setState({evaluating: false});
+            this.setState({progress: false});
             const cursor = this.editor.getCursor("to");
             if (this.editor.getSelection().length === 0) {
                 cursor.ch = this.editor.getLine(cursor.line).length;
@@ -204,18 +205,18 @@ class CodeEditor extends Component {
             const to = {ch: from.ch + object.printString.length, line: from.line};
             this.editor.setSelection(from, to);
         }
-        catch (error) {this.setState({evaluating: false})}
+        catch (error) {this.setState({progress: false})}
     }
 
     inspectEvaluation = async () => {
         const expression = this.selectedExpression();
         try {
-            this.setState({evaluating: true});
+            this.setState({progress: true});
             const object = await this.context.evaluateExpression(expression, false, true, this.props.context);
-            this.setState({evaluating: false});
+            this.setState({progress: false});
             this.context.inspectObject(object);          
         }
-        catch (error) {this.setState({evaluating: false})}
+        catch (error) {this.setState({progress: false})}
     }
 
     lintAnnotations = ()  => {
@@ -247,7 +248,7 @@ class CodeEditor extends Component {
         const acceptIcon = this.props.acceptIcon?
             React.cloneElement(this.props.acceptIcon)
             : <AcceptIcon size="large" style={{fontSize: 30}}/>;
-        const {value, ranges, evaluating} = this.state;
+        const {value, ranges, evaluating, progress} = this.state;
         if (ranges && ranges.length > 0) {this.selectRanges(ranges)}
         return (
             <Grid container spacing={1}>
@@ -257,6 +258,7 @@ class CodeEditor extends Component {
                             className={this.props.styles.codeMirror}
                             options={{
                                 //viewportMargin: "Infinity",
+                                readOnly: evaluating || progress,
                                 mode: "smalltalk",
                                 theme: "material",
                                 lineSeparator: '\r',
@@ -290,7 +292,7 @@ class CodeEditor extends Component {
                             onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
                             onChange={(editor, data, value) => {this.valueChanged(value)}}
                             onContextMenu={(editor, event) => {this.openMenu(event)}}/>
-                            {evaluating && <LinearProgress variant="indeterminate"/>}
+                            {(evaluating || progress) && <LinearProgress variant="indeterminate"/>}
                     </Paper>
                 </Grid>
                 {showAccept && (<Grid item xs={1} md={1} lg={1}>
