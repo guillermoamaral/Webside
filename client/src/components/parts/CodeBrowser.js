@@ -53,6 +53,7 @@ class CodeBrowser extends Component {
             if (handler) {handler(method)}
         }
         catch (error) {
+            console.log(error)
             this.handlerCompilationError(error, source)
         }
     }

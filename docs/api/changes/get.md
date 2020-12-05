@@ -1,5 +1,5 @@
 # Retrieve changes
-Retrieve all changes made to the system in its current session.    
+Retrieve all changes made to the system in the current session.    
 
 **URL**: `/changes`
 
