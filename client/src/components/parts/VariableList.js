@@ -31,9 +31,9 @@ class VariableList extends Component {
     addVariable = async () => {
         try {
             const name = await this.props.dialog.prompt('New variable');
-            const variable = await this.context.api.addInstanceVariable(this.props.class.name, name);
+            await this.context.api.addInstanceVariable(this.props.class.name, name);
             const handler = this.props.onAdd;
-            if (variable && handler) {handler(variable)}
+            if (handler) {handler()}
         }
         catch (error) {this.context.reportError(error)}
     }
@@ -55,7 +55,7 @@ class VariableList extends Component {
         try {
             await this.context.api.deleteInstanceVariable(this.props.class.name, variable.name);
             const handler = this.props.onRemove; 
-            if (handler) {handler(variable)}
+            if (handler) {handler()}
         }
         catch (error) {this.context.reportError(error)}
     }

@@ -13,7 +13,8 @@ class ClassTree extends Component {
         if (!name) {return}
         const definition = superclass.name + ' subclass: #' + name + 
             ' instanceVariableNames: \'\' classVariableNames: \'\' poolDictionaries: \'\'';
-        const species = await this.context.api.defineClass(name, definition);
+        await this.context.api.defineClass(name, definition);
+        const species = await this.context.api.getClass(name);
         const handler = this.props.onCreate; 
         if (handler) {handler(species)}
     }

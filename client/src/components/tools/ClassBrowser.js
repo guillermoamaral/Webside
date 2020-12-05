@@ -283,22 +283,25 @@ class ClassBrowser extends Component {
         this.applySelections(selections);
     }
 
-    variableAdded = async (variable) => {        
+    variableAdded = async () => {        
         const selections = this.currentSelections();
+        await this.updateClass(selections, true);
         await this.updateVariables(selections, true);
         await this.updateMethods(selections, true);
-        this.variableSelected(selections.class.variables.find(v => v.name === variable.name));
+        this.applySelections(selections);
     }
 
     variableRenamed = async (variable) => {
         const selections = this.currentSelections();
+        await this.updateClass(selections, true);
         await this.updateVariables(selections, true);
         await this.updateMethods(selections, true);
         this.variableSelected(selections.class.variables.find(v => v.name === variable.name));
     }
 
-    variableRemoved = async (variable) => {        
+    variableRemoved = async () => {        
         const selections = this.currentSelections();
+        await this.updateClass(selections, true);
         await this.updateVariables(selections, true);
         await this.updateMethods(selections);
         this.applySelections(selections);

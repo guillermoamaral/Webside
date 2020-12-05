@@ -3,4 +3,4 @@ Endpoints to retrieve the objects in the system, either globally accessible or a
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
-| POST | [/evaluations](post.md) | Evaluates an expression | pin | | ```json { "expression": "string" }``` |
+| POST | [/evaluations](post.md) | Evaluates an expression | - | | `evaluation` |

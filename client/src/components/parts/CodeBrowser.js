@@ -29,14 +29,16 @@ class CodeBrowser extends Component {
     defineClass = async (definition) => {
         if (!this.props.class) {return}
         const classname = this.props.class? this.props.class.name : null;
-        const species = await this.context.api.defineClass(classname, definition);
+        await this.context.api.defineClass(classname, definition);
+        const species = await this.context.api.getClass(classname);
         const handler = this.props.onClassDefined;
         if (handler) {handler(species)}
     }
 
     commentClass = async (comment) => {
         if (!this.props.class) {return}
-        const species = await this.context.api.commentClass(this.props.class.name, comment);
+        await this.context.api.commentClass(this.props.class.name, comment);
+        const species = await this.context.api.getClass(this.props.class.name);
         const handler = this.props.onClassCommented;
         if (handler) {handler(species)}
     }
@@ -45,7 +47,8 @@ class CodeBrowser extends Component {
         if (!this.props.class) {return}
         try {
             const category = this.props.method? this.props.method.category : null;
-            const method = await this.context.api.compileMethod(this.props.class.name, category, source);
+            const change = await this.context.api.compileMethod(this.props.class.name, category, source);
+            const method = await this.context.api.getMethod(this.props.class.name, change.selector)
             const handler = this.props.onMethodCompiled;
             if (handler) {handler(method)}
         }

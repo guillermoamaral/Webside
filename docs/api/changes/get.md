@@ -25,7 +25,7 @@ Retrieve all changes made to the system in its current session.
     "sourceCode": "string"
 }
 ```
-And `type` is one of the following: 
+And `type` can be one of the following: 
 
 * `"MethodDefinition"`
 * `"MethodRemove"`

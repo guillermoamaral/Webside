@@ -39,7 +39,7 @@ Endpoints to retrieve the objects in the system, either globally accessible or a
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
-| POST | [/evaluations](evaluations/post.md) | Evaluates an expression | pin | | ```json { "expression": "string" }``` |
+| POST | [/evaluations](evaluations/post.md) | Evaluates an expression | - | | ```json { "expression": "string" }``` |
 
 ## [Objects](objects)
 Endpoints to retrieve the objects in the system, either globally accessible or as the result of evaluating an expressions.

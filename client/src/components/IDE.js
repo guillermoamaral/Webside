@@ -290,6 +290,7 @@ class IDE extends Component {
       const result = await this.api.evaluateExpression(expression, sync, pin, context);
       if (sync) {return result}
       const object = await this.api.getObject(result.id);
+      if (!pin && !sync) {await this.api.unpinObject(object.id)}
       return object;
     }
     catch (error) {
