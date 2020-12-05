@@ -42,9 +42,19 @@ And `type` can be one of the following:
 * `"CategoryRename"`
 * `"CategoryRemove"`
 
-**Example:**: `GET /changes`.
+**Example:**: retrieve changes made by `guille`, `GET /changes?author=guille`.
 ```json
 [
-
+    {
+        "type": "MethodDefinition",
+        "label": "Float class ≫ phi",
+        "project": "Default",
+        "timestamp": "2020-12-05T19:13:44.166-03:00",
+        "author": "guille",
+        "sourceCode": "phi\r\t^1.0 + 5.0 sqrt / 2.0",
+        "class": "Float class",
+        "selector": "phi",
+        "category": "constants"
+    }
 ]
 ```
