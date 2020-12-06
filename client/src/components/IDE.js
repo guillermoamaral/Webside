@@ -288,6 +288,7 @@ class IDE extends Component {
   evaluateExpression = async (expression, sync, pin, context) => {
     try {
       const result = await this.api.evaluateExpression(expression, sync, pin, context);
+      console.log(result)
       if (sync) {return result}
       const object = await this.api.getObject(result.id);
       if (!pin && !sync) {await this.api.unpinObject(object.id)}

@@ -27,7 +27,7 @@ These are the endpoints used to retrieve system code: projects, classes and meth
 | GET | [/projects](code/projects/get.md) | Retrive all projects of a given root project (if no root is provided, the uppermost project in the system is used). It is also possible get a tree-like structure as well as to limit the depth in the projects hierarchy | root<br />names<br />tree<br />depth | - |
 
 ## [Changes](changes)
-These endpoints are used to apply changes and retrieve changes made to the system.
+Endpoints to apply changes and retrieve changes made to the system.
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
@@ -35,7 +35,7 @@ These endpoints are used to apply changes and retrieve changes made to the syste
 | POST | [/changes](changes/post.md) | Apply a change to the system | - | - |
 
 ## [Evaluations](evaluations)
-Endpoints to retrieve the objects in the system, either globally accessible or as the result of evaluating an expressions.
+Endpoints to evaluate expressions.
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
