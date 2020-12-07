@@ -354,6 +354,7 @@ class ClassBrowser extends Component {
     }
 
     methodCompiled = async (method) => {
+        if (!method) {return} 
         const selections = this.currentSelections();
         const species = this.cache[method.class];
         selections.class = species;
