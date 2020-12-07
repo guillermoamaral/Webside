@@ -74,8 +74,10 @@ Here `debugger` is the ID of an existing debugger and `frame` is the index of th
 ```
 Where `state` is either `pending` or `finished`.
 
+In case of a synchronic evaluation the result is the same as the one of [`/objects/{id}`](../objects/id/get.md).
+
 ### Error Codes Details
-In case of an evaluation error, be it as the response of a synchronic evaluation or as the result of trying the get the object after an asynchronic evaluation, the server should respond with code `500` and a payload with the following aspect:
+In case of an evaluation error, be it as the response of a synchronic evaluation or as the result of trying the get the resulting object after an asynchronic evaluation, the server should respond with code `500` and a payload with the following aspect:
 ```json
 {
 	"description": "string",
@@ -85,7 +87,7 @@ In case of an evaluation error, be it as the response of a synchronic evaluation
 ```
 Here, `description` is the error text describing what went wrong.  
 `process` is the ID of the process created for the evaluation and it serves as the parameter to create a debugger on that process.  
-`stack` is a string contaning the stack trace (only frame headers or labels) as separated lines (this is meant to be used as a snapshot for the user before entering in a actual debugger).
+`stack` is a string contaning the stack trace (only frame headers or labels) as separated lines (this is meant to be used as a snapshot for the user before entering in an actual debugger).
 
 For example, the following error is returned after trying to evaluate `1 + `:
 

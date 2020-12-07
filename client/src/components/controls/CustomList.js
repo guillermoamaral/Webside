@@ -119,7 +119,10 @@ class CustomList extends Component {
     } else {
       const prefix = this.state.filterText + event.key;
       this.setState({filterText: prefix})
-      const item = this.props.items.find(i => this.getItemLabel(i).startsWith(prefix));  
+      const item = this.props.items.find(i => {
+        const label = this.getItemLabel(i);
+        return label && label.startsWith(prefix);
+      });
       if (item) {this.itemSelected(item)}
     }
   }
