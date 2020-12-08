@@ -25,9 +25,12 @@ class Profiler extends Component {
     }
 
     async updateResults() {
-        const tree = await this.context.api.getProfilerTreeResults(this.props.id);
-        const ranking = await this.context.api.getProfilerRankingResults(this.props.id);
-        this.setState({tree: tree, ranking: ranking, loading: false})
+        try {
+            const tree = await this.context.api.getProfilerTreeResults(this.props.id);
+            const ranking = await this.context.api.getProfilerRankingResults(this.props.id);
+            this.setState({tree: tree, ranking: ranking, loading: false})
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     async methodSelected(signature) {
@@ -36,7 +39,10 @@ class Profiler extends Component {
             method = null 
         } else {
             const parts = signature.split(')')[1].split('>>');
-            method = await this.context.api.getMethod(parts[0], parts[1]);
+            try {
+                method = await this.context.api.getMethod(parts[0], parts[1]);
+            }
+            catch (error) {this.context.reportError(error)}
         }
         this.setState({selectedMethod: method})
     }

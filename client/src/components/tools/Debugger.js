@@ -30,17 +30,20 @@ class Debugger extends PureComponent {
     }
 
     async updateFrames() {
-        const frames = await this.context.api.getDebuggerFrames(this.props.id);
-        let selected = null;
-        if (frames.length > 0) {
-            selected = frames[0];
-            await this.updateFrame(selected)
+        try {
+            const frames = await this.context.api.getDebuggerFrames(this.props.id);
+            let selected = null;
+            if (frames.length > 0) {
+                selected = frames[0];
+                await this.updateFrame(selected)
+            }
+            this.setState({
+                frames: frames,
+                selectedFrame: selected,
+                selectedBinding: selected.bindings.find(b => b.name = 'self')
+            })
         }
-        this.setState({
-            frames: frames,
-            selectedFrame: selected,
-            selectedBinding: selected.bindings.find(b => b.name = 'self')
-        });
+        catch (error) {this.context.reportError(error)}
     }
 
     frameSelected = async (frame) => {
@@ -53,49 +56,69 @@ class Debugger extends PureComponent {
     }
 
     updateFrame = async (frame) => {
-        if (!frame.method) {
-            const info = await this.context.api.getDebuggerFrame(this.props.id, frame.index);
-            frame.method = info.method;
-            frame.class = info.class;
-            frame.interval = info.interval;
+        try {
+            if (!frame.method) {
+                const info = await this.context.api.getDebuggerFrame(this.props.id, frame.index);
+                frame.method = info.method;
+                frame.class = info.class;
+                frame.interval = info.interval;
+            }
+            if (!frame.bindings) {
+                const bindings = await this.context.api.getFrameBindings(this.props.id, frame.index);
+                frame.bindings = bindings;
+            }
         }
-        if (!frame.bindings) {
-            const bindings = await this.context.api.getFrameBindings(this.props.id, frame.index);
-            frame.bindings = bindings;
-        }
+        catch (error) {this.context.reportError(error)}
     }
 
     hopClicked = async () => {
-        await this.context.api.hopDebugger(this.props.id, this.state.selectedFrame.index);
-        this.updateFrames();
+        try {
+            await this.context.api.hopDebugger(this.props.id, this.state.selectedFrame.index);
+            this.updateFrames();
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     skipClicked = async () => {
-        await this.context.api.skipDebugger(this.props.id, this.state.selectedFrame.index);
-        this.updateFrames();
+        try {
+            await this.context.api.skipDebugger(this.props.id, this.state.selectedFrame.index);
+            this.updateFrames();
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     restartClicked = async () => {
-        await this.context.api.restartDebugger(this.props.id, this.state.selectedFrame.index);
-        this.updateFrames();
+        try {
+            await this.context.api.restartDebugger(this.props.id, this.state.selectedFrame.index);
+            this.updateFrames();
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     resumeClicked = async () => {
-        await this.context.api.resumeDebugger(this.props.id);
-        this.context.closeDebugger(this.props.id);
+        try {
+            await this.context.api.resumeDebugger(this.props.id);
+            this.context.closeDebugger(this.props.id);
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     terminateClicked = async () => {
-        await this.context.api.terminateDebugger(this.props.id);
-        this.context.closeDebugger(this.props.id);
+        try {
+            await this.context.api.terminateDebugger(this.props.id);
+            this.context.closeDebugger(this.props.id);
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     methodCompiled = async (method) => {
         const selected = this.state.selectedFrame.method;
-        if (method.selector === selected.selector) {
+        if (method.selector !== selected.selector) {return}
+        try {
             await this.context.api.restartDebugger(this.props.id, this.state.selectedFrame.index, true);;
             this.updateFrames();
         }
+        catch (error) {this.context.reportError(error)}
     }
 
     render() {

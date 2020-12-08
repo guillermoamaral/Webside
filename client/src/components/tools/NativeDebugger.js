@@ -74,9 +74,12 @@ class NativeDebugger extends Component {
 
     updateFrame = async (frame) => {
         if (!frame.method) {
-            const info = await this.context.api.getNativeDebuggerFrame(this.props.id, frame.index);
-            frame.code = info.code;
-            frame.interval = info.interval;
+            try {
+                const info = await this.context.api.getNativeDebuggerFrame(this.props.id, frame.index);
+                frame.code = info.code;
+                frame.interval = info.interval;
+            }
+            catch (error) {this.context.reportError(error)}
         }
     }
 

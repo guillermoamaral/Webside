@@ -44,10 +44,13 @@ class SystemBrowser extends Component {
 
     changeRootProject = async (name) => {
         if (!name) {return}
-        const tree = await this.context.api.getProjectTree(name);
-        const project = tree[0];
-        this.cache[name] = project;
-        this.setState({root: name}, () => {this.projectSelected(project)})
+        try {
+            const tree = await this.context.api.getProjectTree(name);
+            const project = tree[0];
+            this.cache[name] = project;
+            this.setState({root: name}, () => {this.projectSelected(project)})
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     currentSelections() {
@@ -114,88 +117,109 @@ class SystemBrowser extends Component {
     async updateClasses(selections, force = false) {
         const project = selections.project;
         if (force || !project.classes) {
-            project.classes = await this.context.api.getProjectClasses(project.name);
+            try {
+                project.classes = await this.context.api.getProjectClasses(project.name);
+            }
+            catch (error) {this.context.reportError(error)}
         }
     }
 
     async updateClass(selections, force = false) {
         const species = selections.class;
-        if (force || !species.definition) {
-            const definition = await this.context.api.getClass(species.name);
-            species.definition = definition.definition;
-            species.comment = definition.comment;
-            species.superclass = definition.superclass;
+        try {
+            if (force || !species.definition) {
+                const definition = await this.context.api.getClass(species.name);
+                species.definition = definition.definition;
+                species.comment = definition.comment;
+                species.superclass = definition.superclass;
+            }
+            if (force || !species.subclasses) {
+                species.subclasses = await this.context.api.getSubclasses(species.name);
+            }
         }
-        if (force || !species.subclasses) {
-            species.subclasses = await this.context.api.getSubclasses(species.name);
-        }
+        catch (error) {this.context.reportError(error)}
     }
 
-    async updateSubclasses(species) { 
-        if (species.subclasses) {
-            await Promise.all(species.subclasses.map(async c => {
-                if (!c.subclasses) {
-                    c.subclasses = await this.context.api.getSubclasses(c.name);
-                }
-            }))
+    async updateSubclasses(species) {
+        try {
+            if (species.subclasses) {
+                await Promise.all(species.subclasses.map(async c => {
+                    if (!c.subclasses) {
+                        c.subclasses = await this.context.api.getSubclasses(c.name);
+                    }
+                }))
+            }
         }
+        catch (error) {this.context.reportError(error)}
     }
     
     async updateVariables(selections, force = false) {
         const species = selections.class;
-        if (force || !species.variables) {
-            species.variables = await this.context.api.getVariables(species.name);
+        try {
+            if (force || !species.variables) {
+                species.variables = await this.context.api.getVariables(species.name);
+            }
+            var variable = selections.variable;
+            if (variable) {
+                variable = species.variables.find(v => v.name === variable.name);
+                selections.variable = !variable? null : variable;
+            }
         }
-        var variable = selections.variable;
-        if (variable) {
-            variable = species.variables.find(v => v.name === variable.name);
-            selections.variable = !variable? null : variable;
-        }
+        catch (error) {this.context.reportError(error)}
     }
 
     async updateCategories(selections, force = false) {
-        const species = selections.class; 
-        if (force || !species.categories) {
-            const categories = await this.context.api.getCategories(species.name);
-            species.categories = categories.sort();
+        const species = selections.class;
+        try {
+            if (force || !species.categories) {
+                const categories = await this.context.api.getCategories(species.name);
+                species.categories = categories.sort();
+            }
+            if (!species.categories.includes(selections.category)) {
+                selections.category = null;
+            }
         }
-        if (!species.categories.includes(selections.category)) {
-            selections.category = null;
-        }
+        catch (error) {this.context.reportError(error)}
     }
 
     async updateMethods(selections, force = false) {
         const project = selections.project;
         const species = selections.class;
         if (!project || !species) {return}
-        if (force || !species.methods) {
-            const methods = await this.context.api.getMethods(species.name);
-            species.methods = methods.sort((a, b) => a.selector <= b.selector? -1 : 1);
+        try {
+            if (force || !species.methods) {
+                const methods = await this.context.api.getMethods(species.name);
+                species.methods = methods.sort((a, b) => a.selector <= b.selector? -1 : 1);
+            }
+            const variable = selections.variable;
+            const variableAccess = selections.variableAccess;
+            if (variable && (force || !species[variable.name] || !species[variable.name][variableAccess])) {
+                const accessors = await this.context.api.getMethodsAccessing(species.name, variable.name, variableAccess);
+                species[variable.name] = {};
+                species[variable.name][variableAccess] = accessors.sort((a, b) => a.selector <= b.selector? -1 : 1);
+            }
+            var method = selections.method;
+            if (method) {
+                method = species.methods.find(m => m.selector === method.selector);
+                selections.method = !method? null : method;    
+            }
         }
-        const variable = selections.variable;
-        const variableAccess = selections.variableAccess;
-        if (variable && (force || !species[variable.name] || !species[variable.name][variableAccess])) {
-            const accessors = await this.context.api.getMethodsAccessing(species.name, variable.name, variableAccess);
-            species[variable.name] = {};
-            species[variable.name][variableAccess] = accessors.sort((a, b) => a.selector <= b.selector? -1 : 1);
-        }
-        var method = selections.method;
-        if (method) {
-            method = species.methods.find(m => m.selector === method.selector);
-            selections.method = !method? null : method;    
-        }
+        catch (error) {this.context.reportError(error)}
     }
 
     async updateMethod(selections, force = true) {
         const species = selections.class;
-        const selector = selections.method.selector;    
-        if (force) {
-            const method = await this.context.api.getMethod(species.name, selector);
-            if (method) { 
-                species.methods = species.methods.map(m => m.selector === selector? method : m)
-                selections.method = method;
+        const selector = selections.method.selector;
+        try {
+            if (force) {
+                const method = await this.context.api.getMethod(species.name, selector);
+                if (method) { 
+                    species.methods = species.methods.map(m => m.selector === selector? method : m)
+                    selections.method = method;
+                }
             }
         }
+        catch (error) {this.context.reportError(error)}
     }
 
     // Events...

@@ -41,8 +41,11 @@ class Workspace extends Component {
 
     closeInspector = async (event, id) => {
         event.stopPropagation();
-        await this.context.api.unpinObject(id);
-        this.setState({inspectors: this.state.inspectors.filter(i => i.key !== id)});
+        try {
+            await this.context.api.unpinObject(id);
+            this.setState({inspectors: this.state.inspectors.filter(i => i.key !== id)});
+        }
+        catch (error) {this.context.reportError(error)}
     }
     
     expressionChanged = (text) => {

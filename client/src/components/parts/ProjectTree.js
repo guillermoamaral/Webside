@@ -11,9 +11,12 @@ class ProjectTree extends Component {
         if (!parent) {return}
         const name = await this.props.dialog.prompt({title: 'Create project'});
         if (!name) {return}
-        const project = await this.context.api.createProject(name, parent);
-        const handler = this.props.onCreate; 
-        if (handler) {handler(project)}
+        try {
+            const project = await this.context.api.createProject(name, parent);
+            const handler = this.props.onCreate; 
+            if (handler) {handler(project)}
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     removeProject = async (project) => {
@@ -22,9 +25,12 @@ class ProjectTree extends Component {
             title: 'Delete ' + project.name + '?',
             ok: {text: 'Delete', color: "secondary", variant: "outlined"}});
         if (!confirm) {return}
-        await this.context.api.deleteProject(project.name);
-        const handler = this.props.onRemove; 
-        if (handler) {handler(project)}
+        try {
+            await this.context.api.deleteProject(project.name);
+            const handler = this.props.onRemove; 
+            if (handler) {handler(project)}
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     renameProject = async (project) => {
@@ -36,7 +42,7 @@ class ProjectTree extends Component {
             const handler = this.props.onRename; 
             if (handler) {handler(project)}
         }
-        catch (error) {}
+        catch (error) {this.context.reportError(error)}
     }
 
     runTests = (project) => {

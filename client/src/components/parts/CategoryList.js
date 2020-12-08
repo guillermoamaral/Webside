@@ -32,13 +32,16 @@ class CategoryList extends Component {
             await this.context.api.renameCategory(this.props.class.name, category, newName);
             if (this.props.onRename) {this.props.onRename(category, newName)}
         }
-        catch (error) {}
+        catch (error) {this.context.reportError(error)}
     }
 
     removeCategory = async (category) => {
         if (!category) {return}
-        await this.context.api.deleteCategory(this.props.class.name, category);
-        if (this.props.onRemove) {this.props.onRemove(category)}
+        try {
+            await this.context.api.deleteCategory(this.props.class.name, category);
+            if (this.props.onRemove) {this.props.onRemove(category)}
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     menuOptions() {

@@ -27,13 +27,16 @@ class MethodList extends Component {
             const handler = this.props.onRename;
             if (handler) {handler(method)}
         }
-        catch (error) {}
+        catch (error) {this.context.reportError(error)}
     }
 
     removeMethod = async (method) => {
-        await this.context.api.deleteMethod(method.class, method.selector);
-        const handler = this.props.onRemove;
-        if (handler) {handler(method)}
+        try {
+            await this.context.api.deleteMethod(method.class, method.selector);
+            const handler = this.props.onRemove;
+            if (handler) {handler(method)}
+        }
+        catch (error) {this.context.reportError(error)}
     }   
 
     browseClass = (method) => {

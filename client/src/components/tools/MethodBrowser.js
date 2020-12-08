@@ -16,8 +16,11 @@ class MethodBrowser extends Component {
     }
 
     methodSelected = async (method) => {
-        const species = await this.context.api.getClass(method.class);
-        this.setState({selectedMethod: method, selectedClass: species});
+        try {
+            const species = await this.context.api.getClass(method.class);
+            this.setState({selectedMethod: method, selectedClass: species});
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     classDefined = async (species) => {

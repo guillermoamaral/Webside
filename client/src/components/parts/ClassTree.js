@@ -13,10 +13,13 @@ class ClassTree extends Component {
         if (!name) {return}
         const definition = superclass.name + ' subclass: #' + name + 
             ' instanceVariableNames: \'\' classVariableNames: \'\' poolDictionaries: \'\'';
-        await this.context.api.defineClass(name, definition);
-        const species = await this.context.api.getClass(name);
-        const handler = this.props.onCreate; 
-        if (handler) {handler(species)}
+        try {
+            await this.context.api.defineClass(name, definition);
+            const species = await this.context.api.getClass(name);
+            const handler = this.props.onCreate; 
+            if (handler) {handler(species)}
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     removeClass = async (species) => {
@@ -25,9 +28,12 @@ class ClassTree extends Component {
             title: 'Delete ' + species.name + '?',
             ok: {text: 'Delete', color: "secondary", variant: "outlined"}});
         if (!confirm) {return}
-        await this.context.api.deleteClass(species.name);
-        const handler = this.props.onRemove; 
-        if (handler) {handler(species)}
+        try {
+            await this.context.api.deleteClass(species.name);
+            const handler = this.props.onRemove; 
+            if (handler) {handler(species)}
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     renameClass = async (species) => {
@@ -39,7 +45,7 @@ class ClassTree extends Component {
             const handler = this.props.onRename; 
             if (handler) {handler(species)}
         }
-        catch (error) {}
+        catch (error) {this.context.reportError(error)}
     }
 
     browseClass = (species) => {

@@ -84,41 +84,53 @@ class TestRunner extends Component {
                 summary: {run: 0, passed: 0, failed: 0, errors: 0, skipped: 0, knownIssues: 0}
             },
             results: {updated: false, groups: {}}
-        });        
-        await this.context.api.runTestRun(this.props.id);
-        this.updateStatus();        
+        });
+        try {
+            await this.context.api.runTestRun(this.props.id);
+            this.updateStatus();
+        }
+        catch (error) {this.context.reportError(error)}  
     }
 
     async stopClicked() {
-        await this.context.api.stopTestRun(this.props.id);
-        this.updateStatus();
-        this.updateResults();
+        try {
+            await this.context.api.stopTestRun(this.props.id);
+            this.updateStatus();
+            this.updateResults();
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     async updateStatus() {
         if (this.state.updating) {return}
         this.setState({updating: true});
-        const status = await this.context.api.getTestRunStatus(this.props.id);
-        if (status.running) {setTimeout(() => {this.updateStatus()}, 1000)}
-        this.setState({status: status, updating: false});
-        if (status.total === status.summary.run + status.summary.skipped) {this.updateResults()}
+        try {
+            const status = await this.context.api.getTestRunStatus(this.props.id);
+            if (status.running) {setTimeout(() => {this.updateStatus()}, 1000)}
+            this.setState({status: status, updating: false});
+            if (status.total === status.summary.run + status.summary.skipped) {this.updateResults()}
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     async updateResults() {
         if (this.state.results.updated) {return}
-        const tests = await this.context.api.getTestRunResults(this.props.id);
-        const groups = {};
-        tests.forEach(t => {
-            if (!groups[t.class]) {groups[t.class] = {summary: {}, tests: []}}
-            groups[t.class].tests.push(t);
-        })
-        Object.keys(groups).forEach(c => {
-            groups[c].tests.forEach(t => {
-                groups[c].summary[t.type] = groups[c].summary[t.type] + 1 || 1;
-                groups[c].summary.run = groups[c].summary.run + 1 || 1;
+        try {
+            const tests = await this.context.api.getTestRunResults(this.props.id);
+            const groups = {};
+            tests.forEach(t => {
+                if (!groups[t.class]) {groups[t.class] = {summary: {}, tests: []}}
+                groups[t.class].tests.push(t);
             })
-        })
-        this.setState({results: {updated: true, groups: groups}});
+            Object.keys(groups).forEach(c => {
+                groups[c].tests.forEach(t => {
+                    groups[c].summary[t.type] = groups[c].summary[t.type] + 1 || 1;
+                    groups[c].summary.run = groups[c].summary.run + 1 || 1;
+                })
+            })
+            this.setState({results: {updated: true, groups: groups}});
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     filterTests(type) {
@@ -146,7 +158,8 @@ class TestRunner extends Component {
         try {
             const id = await this.context.api.debugTest(this.props.id, test.class, test.selector);
             this.context.openDebugger(id, 'Debugging expression');
-        } catch (error) {this.context.reportError(error)}
+        }
+        catch (error) {this.context.reportError(error)}
     }
 
     render() {
