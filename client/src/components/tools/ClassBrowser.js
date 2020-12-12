@@ -344,8 +344,12 @@ class ClassBrowser extends Component {
         this.applySelections(selections);
     }
 
-    methodRenamed = (method) => {
-        this.methodSelected(method);
+    methodRenamed = async (method) => {
+        const selections = this.currentSelections();
+        await this.updateMethods(selections, true);
+        const species = selections.class;
+        selections.method = species.methods.find(m => m.selector === method.selector);
+        this.applySelections(selections);
     }
 
     methodRemoved = (method) => {
