@@ -118,7 +118,7 @@ The component implementing this tool is [Debugger](../client/src/components/tool
 
 
 #### Test runner
-This tool resembles some existing test runners and is launched when a test suite is run. It essentially show the progress of tests execution and summarizes the results classifying them (and filtering them) by their type (failure, error, etc.). 
+This tool resembles some existing test runners and is launched when a test suite is run (either by running a single test, a test class or a bunch of test classes). It essentially show the progress of tests execution and summarizes the results classifying them (and filtering them) by their type (failure, error, etc.).  
 This tool is the result of a first development iteration and even when it offers the basic functionality it could be extended and enhanced in many aspects.
 
 The component implementing this tool is [TestRunner](../client/src/components/tools/TestRunner.js) and it mainly relies in [Tests](api/tests) endpoints. 
@@ -127,7 +127,7 @@ The component implementing this tool is [TestRunner](../client/src/components/to
 
 
 #### Profiler
-This tool summarizes the results of profiling an expression by using two visualization approaches: a flame graph and a ranking graph. 
+This tool summarizes the results of profiling an expression by using two visualization approaches: a flame graph and a ranking graph.  
 Like other tools, this one is the result of a first development iteration at the moment of writing this documentation and its rather basic functionality could be extended.
 
 The component implementing this tool is [Profiler](../client/src/components/tools/Profiler.js) and it mainly relies in [Profiling](api/profiling) endpoints.
