@@ -38,8 +38,8 @@ Being the dialect I use for my daily duties, I started by Bee Smalltalk as the b
 *_Not finished at the moment of writing this document._
 
 ## Key aspects
-At some point in time, I realized that I shouldinvest all the effort in keeping the API simple in order to:
-* Enable its implementation in a any Smalltalk dialect without a major effort,
+At some point in time, I realized that I should invest all the effort in keeping the API simple in order to:
+* Enable its implementation in any Smalltalk dialect without a major effort,
 * Make any improvement, change, or even a complete revamping of the IDE, easier.
 
 As an extra lesson derived from the latter, I found that: 
@@ -78,9 +78,9 @@ Again, the key point here is to keep the required API as simple as possible to e
 *_This transcript is used to emit notifications from the front-end side, such as API errors, but it is not connected to the Transcript global in the back-end. To do that, the server should send notifications to the client, but it is not implemented at the moment of writing this documentation._
 
 #### Class browser
-This is more or less the classical refactoring browser, including the hierarchy of classes, their variables (plus some access filters), catetgories and methods at the top, and a code editor at the bottom.
+This is more or less the classical refactoring browser, including the hierarchy of classes, their variables (plus some access filters), categories and methods at the top, and a code editor at the bottom.
 
-The component implementing this tool is [ClassBrowser](../client/src/components/tools/ClassBrowser.js) and it relies in [Code](api/code) and [Changes](api/changes) endpoints to browse and make changes to the code, and in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints to evaluate expressions. 
+The component implementing this tool is [ClassBrowser](../client/src/components/tools/ClassBrowser.js) and it relies on [Code](api/code) and [Changes](api/changes) endpoints to browse and make changes to the code, and in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints to evaluate expressions. 
 
 ![Class Browser](../docs/images/ClassBrowser.png)
 
@@ -88,7 +88,7 @@ The component implementing this tool is [ClassBrowser](../client/src/components/
 #### Method Browser
 Another common Smalltalk IDE tool, this list of methods is use to show the result of searching senders, implementors, global references, etc.
 
-The component implementing this tool is [MethodBrowser](../client/src/components/tools/MethodBrowser.js) and as the `ClassBrowser` component it relies in [Code](api/code) and [Changes](api/changes) endpoints to browse and make changes to the code, and in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints to evaluate expressions. 
+The component implementing this tool is [MethodBrowser](../client/src/components/tools/MethodBrowser.js) and as the `ClassBrowser` component it relies on [Code](api/code) and [Changes](api/changes) endpoints to browse and make changes to the code, and in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints to evaluate expressions.
 
 ![Method Browser](../docs/images/MethodBrowser.png)
 
@@ -96,7 +96,7 @@ The component implementing this tool is [MethodBrowser](../client/src/components
 #### Workspace
 Again this is the typical pane where the programmer can evaluate expressions (with its own variable scope to hold workspace temporaries) and print or inspect their results. Inspections triggered with the play button are embedded in the same workspace tab, while those triggered with the "Inspect" menu option (or its shortcut) are opened in a different tab.
 
-The component implementing this tool is [Workspace](../client/src/components/tools/Workspace.js) and it essentially relies in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints. 
+The component implementing this tool is [Workspace](../client/src/components/tools/Workspace.js) and it essentially relies on [Evaluations](api/evaluations) and [Objects](api/objects) endpoints. 
 
 ![Workspace](../docs/images/Workspace.png)
 
@@ -112,7 +112,7 @@ The component implementing this tool is [Inspector](../client/src/components/too
 #### Debugger
 This is the basic stack debugger exposing the frame stack of the process being debugged (debuggee), and the list of reachable bindings, the code and the current statement of each frame, plus the corresponding actions buttons to hop (step into), skip (step over), restart, resume and terminate the debuggee. As any Smalltalk debugger it allows to compile a method frame, restarting the process from that point with the new method in place.
 
-The component implementing this tool is [Debugger](../client/src/components/tools/Debugger.js) and it mainly relies in [Debugging](api/debugging) endpoints to interact with a live debugger at server side. It also consumes [Code](api/code), [Evaluations](api/evaluations) and [Objects](api/objects) endpoints. 
+The component implementing this tool is [Debugger](../client/src/components/tools/Debugger.js) and it mainly relies on [Debugging](api/debugging) endpoints to interact with a live debugger at server side. It also consumes [Code](api/code), [Evaluations](api/evaluations) and [Objects](api/objects) endpoints. 
 
 ![Debugger](../docs/images/Debugger.png)
 
@@ -121,7 +121,7 @@ The component implementing this tool is [Debugger](../client/src/components/tool
 This tool resembles some existing test runners and is launched when a test suite is run (either by running a single test, a test class or a bunch of test classes). It essentially show the progress of tests execution and summarizes the results grouping them by class, and filtering them by their type (failure, error, etc.).  
 This tool is the result of a first development iteration and even when it offers the basic functionality it could be extended and enhanced in many aspects.
 
-The component implementing this tool is [TestRunner](../client/src/components/tools/TestRunner.js) and it mainly relies in [Tests](api/tests) endpoints. 
+The component implementing this tool is [TestRunner](../client/src/components/tools/TestRunner.js) and it mainly relies on [Tests](api/tests) endpoints. 
 
 ![TestRunner](../docs/images/TestRunner.png)
 
@@ -130,7 +130,7 @@ The component implementing this tool is [TestRunner](../client/src/components/to
 This tool summarizes the results of profiling an expression by using two visualization approaches: a flame graph and a ranking graph.  
 Like other tools, this one is the result of a first development iteration at the moment of writing this documentation and its rather basic functionality could be extended.
 
-The component implementing this tool is [Profiler](../client/src/components/tools/Profiler.js) and it mainly relies in [Profiling](api/profiling) endpoints.
+The component implementing this tool is [Profiler](../client/src/components/tools/Profiler.js) and it mainly relies on [Profiling](api/profiling) endpoints.
 
 ![Profiler Flame Graph](../docs/images/ProfilerFlame.png)
 
