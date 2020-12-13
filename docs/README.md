@@ -102,9 +102,9 @@ The component implementing this tool is [Workspace](../client/src/components/too
 
 
 #### Inspector
-Yet another standard Smallalk IDE tool, this inspector provides a tree view to dig into object references, plus a code pane where to evaluate expressions. The evaluation context in this case contains `self` bound to the (root) object being inspected.
+Yet another standard Smallalk IDE tool, this inspector provides a tree view to navegate object internal structur, plus a code pane to evaluate expressions. The evaluation context in this case contains `self` bound to the (root) object being inspected.
 
-The React component implementing this tool is [Inspector](client/src/components/tools/Inspector.js) and it uses [Objects](api/objects) endpoints, specially the one to access object slots, [/objects/{id}/*](objects/id/slots/get.md).
+The component implementing this tool is [Inspector](../client/src/components/tools/Inspector.js) and it uses [Objects](api/objects) endpoints, specially the one to access object slots, [/objects/{id}/*](objects/id/slots/get.md).
 
 ![Inspector](../docs/images/Inspector.png)
 
