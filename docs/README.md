@@ -80,23 +80,23 @@ Again, the key point here is to keep the required API as simple as possible to e
 #### Class browser
 This is more or less the classical refactoring browser, including the hierarchy of classes, their variables (plus some access filters), catetgories and methods at the top, and a code editor at the bottom.
 
-The component implementing this tool is [ClassBrowser](../client/src/components/tools/ClassBrowser.js) and it relies in [Code](api/code) and [Changes](api/changes) endpoints to browse and make changes on the code, and in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints to evaluate expressions. 
+The component implementing this tool is [ClassBrowser](../client/src/components/tools/ClassBrowser.js) and it relies in [Code](api/code) and [Changes](api/changes) endpoints to browse and make changes to the code, and in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints to evaluate expressions. 
 
 ![Class Browser](../docs/images/ClassBrowser.png)
 
 
 #### Method Browser
-This is a list of methods resulting from a search (senders, implementors, global references) with the corresponding method editor.
+Another common Smalltalk IDE tool, this list of methods is use to show the result of searching senders, implementors, global references, etc.
 
-The component implementing this tool is [MethodBrowser](../client/src/components/tools/MethodBrowser.js) and as the `ClassBrowser` component it relies in [Code](api/code) and [Changes](api/changes) endpoints to browse and make changes on the code, and in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints to evaluate expressions. 
+The component implementing this tool is [MethodBrowser](../client/src/components/tools/MethodBrowser.js) and as the `ClassBrowser` component it relies in [Code](api/code) and [Changes](api/changes) endpoints to browse and make changes to the code, and in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints to evaluate expressions. 
 
 ![Method Browser](../docs/images/MethodBrowser.png)
 
 
 #### Workspace
-Again this is the typical pane where the programmer can evaluate expressions (with its own variable scope to keep workspace temporaries) and print or inspect its results. Inspections triggered with the play button are embedded in the same workspace tab, while those inspections triggered with "Inspect" menu option (or its shortcut) are opened in a different tab.
+Again this is the typical pane where the programmer can evaluate expressions (with its own variable scope to hold workspace temporaries) and print or inspect their results. Inspections triggered with the play button are embedded in the same workspace tab, while those triggered with the "Inspect" menu option (or its shortcut) are opened in a different tab.
 
-The component implementing this tool is [Workspace](client/src/components/tools/ClassBrowser.js) and it essentially relies in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints. 
+The component implementing this tool is [Workspace](../client/src/components/tools/Workspace.js) and it essentially relies in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints. 
 
 ![Workspace](../docs/images/Workspace.png)
 

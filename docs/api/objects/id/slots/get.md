@@ -4,6 +4,7 @@ Retrive pinned object slots.
 This endpoint contains a _variable_ part (`/*`) in the URI that serves to indicate the path from the root object to the slot of interest by naming each slot in between.
 
 Note that slot names should be known beforehand. Webside, and the inspector in particular, makes a previous request to retrieve the instance variable names of the object class ([/classes/{name}/instance-variables](../../../classes/instance-variables/get.md)) in order to retrieve object slots. 
+In case of indexable objects, the slots correspond to the indexes of withing the container object. Webside inspector distinguishes indexable objects by the `indexable` property (common to every object) and uses `size` property accordingly.
 
 **URL**: `/objects/{id}/*`
 
