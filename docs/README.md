@@ -110,15 +110,26 @@ The React component implementing this tool is [Inspector](client/src/components/
 
 
 #### Debugger
+This is the basic stack debugger exposing the frame stack of the process being debugged (debuggee), and the list of reachable bindings, the code and the current statement of each frame, plus the corresponding actions buttons to hop (step into), skip (step over), restart, resume and terminate the debuggee. As any Smalltalk debugger it allows to compile a method frame, restarting the process from that point with the new method in place.
+
+The component implementing this tool is [Debugger](../client/src/components/tools/Debugger.js) and it mainly relies in [Debugging](api/debugging) endpoints to interact with a live debugger at server side. It also consumes [Code](api/code), [Evaluations](api/evaluations) and [Objects](api/objects) endpoints. 
+
 ![Debugger](../docs/images/Debugger.png)
-This is the basic stack debugger exposing the frame stack of the process being debugged (debuggee), and the list of reachable bindings, the code and the current statement of each frame, plus the corresponding actions buttons to hop (step into), skip (step over), restart, resume and terminate the debuggee. As any Smalltalk debugger it allows to compile a method frame, restarting the process from that point with the new method in place. 
+
 
 #### Test runner
-![TestRunner](../docs/images/TestRunner.png)
 This tool resembles some existing test runners and is launched when a test suite is run. It essentially show the progress of tests execution and summarizes the results classifying them (and filtering them) by their type (failure, error, etc.). 
 This tool is the result of a first development iteration and even when it offers the basic functionality it could be extended and enhanced in many aspects.
 
+The component implementing this tool is [TestRunner](../client/src/components/tools/TestRunner.js) and it mainly relies in [Tests](api/tests) endpoints. 
+
+![TestRunner](../docs/images/TestRunner.png)
+
+
 #### Profiler
-![Profiler](../docs/images/Profiler.png)
 This tool summarizes the results of profiling an expression by using two visualization approaches: a flame graph and a ranking graph. 
 Like other tools, this one is the result of a first development iteration at the moment of writing this documentation and its rather basic functionality could be extended.
+
+The component implementing this tool is [Profiler](../client/src/components/tools/Profiler.js) and it mainly relies in [Profiling](api/profiling) endpoints.
+
+![Profiler](../docs/images/Profiler.png)
