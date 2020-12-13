@@ -6,7 +6,14 @@
   * [Key aspects](#key-aspects)
   * [Building blocks](#building-blocks)
 * [IDE](#ide)
-  * [Tools](#ide-tools) 
+  * [Tools](#ide-tools)
+    * [Class Browser](#class-browser)
+    * [Method Browser](#method-browser)
+    * [Workspace](#workspace)
+    * [Inspector](#inspector)
+    * [Debugger](#debugger)
+    * [Test Runner](#test-runner)
+    * [Profiler](#profiler)
 * [Getting Started](#getting-started)
   * [Prerequisites](#prerequisites)
   * [Installation](#installation)
@@ -70,7 +77,7 @@ Again, the key point here is to keep the required API as simple as possible to e
 
 *_This transcript is used to emit notifications from the front-end side, such as API errors, but it is not connected to the Transcript global in the back-end. To do that, the server should send notifications to the client, but it is not implemented at the moment of writing this documentation._
 
-### Class browser
+#### Class browser
 This is more or less the classical refactoring browser, including the hierarchy of classes, their variables (plus some access filters), catetgories and methods at the top, and a code editor at the bottom.
 
 The component implementing this tool is [ClassBrowser](../client/src/components/tools/ClassBrowser.js) and it relies in [Code](api/code) and [Changes](api/changes) endpoints to browse and make changes on the code, and in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints to evaluate expressions. 
@@ -78,7 +85,7 @@ The component implementing this tool is [ClassBrowser](../client/src/components/
 ![Class Browser](../docs/images/ClassBrowser.png)
 
 
-### Method Browser
+#### Method Browser
 This is a list of methods resulting from a search (senders, implementors, global references) with the corresponding method editor.
 
 The component implementing this tool is [MethodBrowser](../client/src/components/tools/MethodBrowser.js) and as the `ClassBrowser` component it relies in [Code](api/code) and [Changes](api/changes) endpoints to browse and make changes on the code, and in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints to evaluate expressions. 
@@ -86,7 +93,7 @@ The component implementing this tool is [MethodBrowser](../client/src/components
 ![Method Browser](../docs/images/MethodBrowser.png)
 
 
-### Workspace
+#### Workspace
 Again this is the typical pane where the programmer can evaluate expressions (with its own variable scope to keep workspace temporaries) and print or inspect its results. Inspections triggered with the play button are embedded in the same workspace tab, while those inspections triggered with "Inspect" menu option (or its shortcut) are opened in a different tab.
 
 The component implementing this tool is [Workspace](client/src/components/tools/ClassBrowser.js) and it essentially relies in [Evaluations](api/evaluations) and [Objects](api/objects) endpoints. 
@@ -94,7 +101,7 @@ The component implementing this tool is [Workspace](client/src/components/tools/
 ![Workspace](../docs/images/Workspace.png)
 
 
-### Inspector
+#### Inspector
 Yet another standard Smallalk IDE tool, this inspector provides a tree view to dig into object references, plus a code pane where to evaluate expressions. The evaluation context in this case contains `self` bound to the (root) object being inspected.
 
 The React component implementing this tool is [Inspector](client/src/components/tools/Inspector.js) and it uses [Objects](api/objects) endpoints, specially the one to access object slots, [/objects/{id}/*](objects/id/slots/get.md).
@@ -102,16 +109,16 @@ The React component implementing this tool is [Inspector](client/src/components/
 ![Inspector](../docs/images/Inspector.png)
 
 
-### Debugger
+#### Debugger
 ![Debugger](../docs/images/Debugger.png)
 This is the basic stack debugger exposing the frame stack of the process being debugged (debuggee), and the list of reachable bindings, the code and the current statement of each frame, plus the corresponding actions buttons to hop (step into), skip (step over), restart, resume and terminate the debuggee. As any Smalltalk debugger it allows to compile a method frame, restarting the process from that point with the new method in place. 
 
-### Test runner
+#### Test runner
 ![TestRunner](../docs/images/TestRunner.png)
 This tool resembles some existing test runners and is launched when a test suite is run. It essentially show the progress of tests execution and summarizes the results classifying them (and filtering them) by their type (failure, error, etc.). 
 This tool is the result of a first development iteration and even when it offers the basic functionality it could be extended and enhanced in many aspects.
 
-### Profiler
+#### Profiler
 ![Profiler](../docs/images/Profiler.png)
 This tool summarizes the results of profiling an expression by using two visualization approaches: a flame graph and a ranking graph. 
 Like other tools, this one is the result of a first development iteration at the moment of writing this documentation and its rather basic functionality could be extended.
