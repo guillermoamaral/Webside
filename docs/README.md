@@ -132,4 +132,6 @@ Like other tools, this one is the result of a first development iteration at the
 
 The component implementing this tool is [Profiler](../client/src/components/tools/Profiler.js) and it mainly relies in [Profiling](api/profiling) endpoints.
 
-![Profiler](../docs/images/Profiler.png)
+![Profiler Flame Graph](../docs/images/ProfilerFlame.png)
+
+![Profiler Ranking Graph](../docs/images/ProfilerRanking.png)
