@@ -104,11 +104,14 @@ The React component implementing this tool is [Inspector](client/src/components/
 
 ### Debugger
 ![Debugger](../docs/images/Debugger.png)
-
+This is the basic stack debugger exposing the frame stack of the process being debugged (debuggee), and the list of reachable bindings, the code and the current statement of each frame, plus the corresponding actions buttons to hop (step into), skip (step over), restart, resume and terminate the debuggee. As any Smalltalk debugger it allows to compile a method frame, restarting the process from that point with the new method in place. 
 
 ### Test runner
 ![TestRunner](../docs/images/TestRunner.png)
-
+This tool resembles some existing test runners and is launched when a test suite is run. It essentially show the progress of tests execution and summarizes the results classifying them (and filtering them) by their type (failure, error, etc.). 
+This tool is the result of a first development iteration and even when it offers the basic functionality it could be extended and enhanced in many aspects.
 
 ### Profiler
 ![Profiler](../docs/images/Profiler.png)
+This tool summarizes the results of profiling an expression by using two visualization approaches: a flame graph and a ranking graph. 
+Like other tools, this one is the result of a first development iteration at the moment of writing this documentation and its rather basic functionality could be extended.
