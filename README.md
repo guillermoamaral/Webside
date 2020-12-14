@@ -45,19 +45,22 @@ npm install npm@latest -g
 ```sh
 git clone https://github.com/guillermoamaral/Webside.git
 ```
-2. Install NPM packages
+2. Install npm packages under client folder
 ```sh
+cd client
 npm install
+```
+3. Launch Webside
+```sh
+npm start
 ```
 
 ## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+The last step will open a web browser on a page asking for the `URL` where the Smalltalk system is accessible through the [API](docs/api) and the `username` to be used inside your Webside session (this is used to sign code modifications and to be identified by peers in the same session) 
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
 ## License
-
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact

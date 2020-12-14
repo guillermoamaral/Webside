@@ -4,7 +4,6 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import {
     Accordion,
     AccordionSummary,
-    AccordionDetails,
     Typography,
     Grid,
     Box,

@@ -34,7 +34,9 @@ class Sidebar extends Component {
                 <List>
                     <ListItem button onClick={this.props.onTranscriptClicked}>
                         <ListItemIcon>
-                            <TranscriptIcon />
+                            <Badge badgeContent={this.props.unreadErrorsCount} color="secondary">
+                                <TranscriptIcon />
+                            </Badge>
                         </ListItemIcon>
                         <ListItemText primary="Transcript" />
                     </ListItem>

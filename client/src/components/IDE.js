@@ -7,12 +7,14 @@ import {
   Menu,
   MenuItem,
   Drawer,
-  Box
+  Box,
+  Typography
 } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { withCookies } from 'react-cookie';
 import { amber, blue } from '@material-ui/core/colors';
 import AddIcon from '@material-ui/icons/AddCircle';
+import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import API from './API';
 import { IDEContext } from './IDEContext';
 import { DialogProvider } from './dialogs';
@@ -63,6 +65,7 @@ class IDE extends Component {
       addPageMenuOpen: false,
       selectedPage: null,
       transcriptOpen: false,
+      unreadErrorsCount: 0,
       transcriptText: welcome,
       pages: [],
       projectNames: [],
@@ -336,7 +339,7 @@ class IDE extends Component {
     this.setState(
       {
         transcriptText: this.state.transcriptText + '\r' + text,
-        transcriptOpen: true,
+        unreadErrorsCount: this.state.unreadErrorsCount + 1,
     })
   }
 
@@ -366,7 +369,7 @@ class IDE extends Component {
   }
 
   toggleShowTranscript = () => {
-    this.setState({transcriptOpen: !this.state.transcriptOpen});
+    this.setState({transcriptOpen: !this.state.transcriptOpen, unreadErrorsCount: 0});
   }
 
   render() {
@@ -408,6 +411,7 @@ class IDE extends Component {
               <Sidebar
                 styles={styles}
                 expanded={this.state.sidebarExpanded}
+                unreadErrorsCount={this.state.unreadErrorsCount}
                 onTranscriptClicked={this.toggleShowTranscript}
                 onChangesClicked={this.browseLastChanges}
                 onPeersClicked={this.openChat}
@@ -470,12 +474,22 @@ class IDE extends Component {
                       <Drawer
                         anchor="bottom"
                         variant="persistent"
-                        open={this.state.transcriptOpen}
-                        onClose={() => this.setState({transcriptOpen: false})}>
-                        <Transcript
-                          styles={styles}
-                          text={this.state.transcriptText}
-                          onChange={text => this.setState({transcriptText: text})}/>
+                        open={this.state.transcriptOpen}>
+                        <Grid container spacing={0}>
+                          <Grid item xs={11} md={11} lg={11}> 
+                            <Transcript
+                              styles={styles}
+                              text={this.state.transcriptText}
+                              onChange={text => this.setState({transcriptText: text})}/>
+                          </Grid>
+                          <Grid item xs={1} md={1} lg={1}>
+                            <Box display="flex" justifyContent="center" > 
+                              <IconButton onClick={() => this.setState({transcriptOpen: false})}>
+                                  <KeyboardArrowDown/>
+                              </IconButton>
+                            </Box>
+                          </Grid>
+                        </Grid>
                       </Drawer>
                     </React.Fragment>
                   </Grid>

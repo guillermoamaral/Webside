@@ -5,10 +5,7 @@ import {
     Paper,
     RadioGroup,
     FormControlLabel,
-    Radio,
-    Select,
-    MenuItem,
-    OutlinedInput
+    Radio
 } from '@material-ui/core';
 import clsx from 'clsx';
 import { IDEContext } from '../IDEContext';
