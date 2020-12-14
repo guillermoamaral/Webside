@@ -96,7 +96,7 @@ class IDE extends Component {
     }
     return createMuiTheme({
       typography: {
-        fontFamily: '"Segoe UI"',
+        //fontFamily: '"Segoe UI"',
         fontSize: 13,
         button: {
           textTransform: "none"

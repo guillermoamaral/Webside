@@ -15,7 +15,7 @@ import IDE from './components/IDE';
 
 const theme = createMuiTheme({
   typography: {
-    fontFamily: '"Segoe UI"',
+    //fontFamily: '"Segoe UI"',
     fontSize: 13,
     button: {
       textTransform: "none"
