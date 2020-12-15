@@ -22,9 +22,10 @@ Webside is both the specification of an [API](docs/api) to interact with an Smal
 
 The IDE is a fully operational IDE, offering traditional Smalltalk IDE tools such as code browsers, workspaces, inspectors, debugger and more.
 
+![Webside on Bee](docs/images/WebsideBee.png "Webside on Bee")
+
 ![Webside on Pharo](docs/images/WebsidePharo.png "Webside on Pharo")
 
-![Webside on Bee](docs/images/WebsideBee.png "Webside on Bee")
 
 Read more [here](docs).
 
