@@ -9,7 +9,7 @@
     <a href="https://github.com/guillermoamaral/Webside/blob/master/docs/README.md"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/guillermoamaral/Webside">View Demo</a>
+    <a href="https://websideserver.azurewebsites.net">View Demo</a>
     ·
     <a href="https://github.com/guillermoamaral/Webside">Report Bug</a>
     ·
@@ -61,6 +61,9 @@ The last step will open a web browser on a page like the one shown below, asking
 ![Connection](docs/images/Connection.png "Webside connection page")
 
 The URL (port and base URI) will correspond to the one chosen by the web server running inside the Smalltalk system (for instance, the default configuration of Webside for Pharo at the moment of writing this documentation is http://{hostname}:9001/pharo)
+
+## Demo
+There is an online version available [here](https://websideserver.azurewebsites.net). As mentioned above, it will prompt the URL where a Smalltalk system is listening. You can setup and launch Webside in Pharo as described in [Pharo-Webside](https://github.com/guillermoamaral/Pharo-Webside).
 
 ## License
 Distributed under the MIT License. See `LICENSE` for more information.
