@@ -373,6 +373,7 @@ class IDE extends Component {
   }
 
   render() {
+    console.log('rendering IDE')
     const context = {
       api: this.api,
       projectNames: this.state.projectNames,

@@ -16,6 +16,7 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 import SettingsIcon from '@material-ui/icons/Settings';
 import TranscriptIcon from '../icons/TranscriptIcon';
 import ChangesBrowserIcon from '../icons/ChangesBrowserIcon';
+import { withDialog } from '../dialogs';
 
 class Sidebar extends Component {
     render() {
@@ -40,7 +41,7 @@ class Sidebar extends Component {
                         </ListItemIcon>
                         <ListItemText primary="Transcript" />
                     </ListItem>
-                    <ListItem button onClick={this.props.onChangesClicked}>
+                    <ListItem button onClick={e => this.props.onChangesClicked()}>
                         <ListItemIcon>                                
                             <Badge badgeContent={this.props.changesCount} color="secondary">
                                 <ChangesBrowserIcon />
@@ -54,13 +55,13 @@ class Sidebar extends Component {
                         </ListItemIcon>
                         <ListItemText primary="Peers" />
                     </ListItem>
-                    <ListItem button>
+                    <ListItem button onClick={e => this.props.dialog.alert('Not implemented yet!')}>
                         <ListItemIcon>
                             <GitHubIcon />
                         </ListItemIcon>
                         <ListItemText primary="GitHub" />
                     </ListItem>
-                    <ListItem button>
+                    <ListItem button onClick={e => this.props.dialog.alert('Not implemented yet!')}>
                         <ListItemIcon>
                             <SettingsIcon />
                       </ListItemIcon>
@@ -73,4 +74,4 @@ class Sidebar extends Component {
     }
 }
 
-export default Sidebar;
+export default withDialog()(Sidebar);
