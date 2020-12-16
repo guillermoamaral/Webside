@@ -105,15 +105,15 @@ class CodeEditor extends Component {
 
     menuOptions() {
         return [
-            {label: 'Do it', action: this.evaluateExpression},
-            {label: 'Show it', action: this.showEvaluation},
-            {label: 'Inspect it', action: this.inspectEvaluation},
-            {label: 'Debug it', action: this.debugExpression},
+            {label: 'Do it (Ctrl+d)', action: this.evaluateExpression},
+            {label: 'Show it (Ctrl+s)', action: this.showEvaluation},
+            {label: 'Inspect it (Ctrl+i)', action: this.inspectEvaluation},
+            {label: 'Debug it (Ctrl+u)', action: this.debugExpression},
             {label: 'Profile it', action: this.profileExpression},
             null,
-            {label: 'Browse', action: this.browseClass},
-            {label: 'Senders', action: this.browseSenders},
-            {label: 'Implementors', action: this.browseImplementors},
+            {label: 'Browse (Ctrl+n)', action: this.browseClass},
+            {label: 'Senders (Alt+n)', action: this.browseSenders},
+            {label: 'Implementors (Alt+m)', action: this.browseImplementors},
             {label: 'Class references', action: this.browseReferences}
         ]
     }
