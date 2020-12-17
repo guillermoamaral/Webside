@@ -3,8 +3,6 @@ import CustomList from '../controls/CustomList';
 import { ArrowUpDownBold, ArrowUpBold, ArrowDownBold } from 'mdi-material-ui';
 import { IDEContext } from '../IDEContext';
 import { withDialog } from '../dialogs';
-import { Grid } from '@material-ui/core';
-import Pagination from '@material-ui/lab/Pagination';
 
 class MethodList extends Component {
     static contextType = IDEContext;
@@ -85,7 +83,6 @@ class MethodList extends Component {
     }
 
     render() {
-        const usePagination = this.props.usePagination || true;
         const size = 12;
         const methods = !this.props.methods? [] : this.props.methods;
         const icons = methods.map(m => {

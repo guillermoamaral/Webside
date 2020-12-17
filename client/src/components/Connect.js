@@ -11,12 +11,9 @@ import axios from 'axios';
 class Connect extends Component {
     constructor(props) {
         super(props);
-        const cookies = this.props.cookies;
-        const baseUri = cookies.get('baseUri') || "";
-        const developer = cookies.get('developer') || "";
         this.state = {
-            baseUri: baseUri,
-            developer: developer,
+            baseUri: this.props.baseUri || "",
+            developer: this.props.developer || "",
         }
     }
 
@@ -76,7 +73,7 @@ class Connect extends Component {
                                         <Grid item>
                                             <TextField
                                                 id="developer"
-                                                label="Nickname"
+                                                label="Developer"
                                                 type="text"
                                                 placeholder="developer"
                                                 margin="dense"

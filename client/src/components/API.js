@@ -294,7 +294,7 @@ class API {
     // Changes...
     async getChanges() {
         try {
-           const response = await axios.get(this.baseUri + '/changes?author=' + this.author);
+           const response = await axios.get(this.baseUri + '/changes');
            return response.data;
        }
        catch (error) {this.handleError('Cannot fetch changes ', error)}

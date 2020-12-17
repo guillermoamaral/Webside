@@ -7,8 +7,7 @@ import {
   Menu,
   MenuItem,
   Drawer,
-  Box,
-  Typography
+  Box
 } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { withCookies } from 'react-cookie';

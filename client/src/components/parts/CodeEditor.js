@@ -114,7 +114,7 @@ class CodeEditor extends Component {
             {label: 'Browse (Ctrl+n)', action: this.browseClass},
             {label: 'Senders (Alt+n)', action: this.browseSenders},
             {label: 'Implementors (Alt+m)', action: this.browseImplementors},
-            {label: 'Class references', action: this.browseReferences}
+            {label: 'Class references (Alt+r)', action: this.browseReferences}
         ]
     }
 
