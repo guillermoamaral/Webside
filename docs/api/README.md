@@ -10,6 +10,7 @@ These are the different sections of the API.
 
 _Note: URL path does not include the base URI. The base URI targeting a particular Smalltalk system will be prompted at the moment of opening Webside._
 
+
 ## [Code](code)
 These are the endpoints used to retrieve system code: projects, classes and methods.
 
@@ -26,6 +27,7 @@ These are the endpoints used to retrieve system code: projects, classes and meth
 | GET | [/classes/{name}/methods](code/classes/name/methods/get.md) | Retrive methods of a given class | - | - |
 | GET | [/projects](code/projects/get.md) | Retrive all projects of a given root project (if no root is provided, the uppermost project in the system is used). It is also possible get a tree-like structure as well as to limit the depth in the projects hierarchy | root<br />names<br />tree<br />depth | - |
 
+
 ## [Changes](changes)
 Endpoints to apply changes and retrieve changes made to the system.
 
@@ -34,12 +36,14 @@ Endpoints to apply changes and retrieve changes made to the system.
 | GET | [/changes](changes/get.md) | Retrieve changes made to the system | author | | - |
 | POST | [/changes](changes/post.md) | Apply a change to the system | - | - |
 
+
 ## [Evaluations](evaluations)
 Endpoints to evaluate expressions.
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
 | POST | [/evaluations](evaluations/post.md) | Evaluates an expression | - | | ```json { "expression": "string" }``` |
+
 
 ## [Objects](objects)
 Endpoints to retrieve the objects in the system, either globally accessible or as the result of evaluating an expressions.
@@ -51,6 +55,7 @@ Endpoints to retrieve the objects in the system, either globally accessible or a
 | DELETE | [/objects/{id}](objects/id/delete.md) | Unpin the object with a given ID | - | - |
 | GET | [/objects/{id}/*](objects/id/slots/get.md) | Retrive an inner slot (a any depth) starting from the pinned object with ID | - | - |
 
+
 ## [Workspaces](workspaces)
 Endpoints to manage workspaces.
 
@@ -58,8 +63,9 @@ Endpoints to manage workspaces.
 | :--: | -- | -- | :--: | -- |
 | GET | [/workspaces](workspaces/get.md) | Retrieve active workspaces | - | - |
 | POST | [/workspaces](workspaces/post.md) | Create a new workspace | - | - |
-| GET | [/workspaces/{id}](workspaces/get-id.md) | Retrieve the workspace with a given ID | - | - |
-| DELETE | [/workspaces/{id}](workspaces/delete.md) | Delete the workspece with a given ID | - | - |
+| GET | [/workspaces/{id}](workspaces/id/get.md) | Retrieve the workspace with a given ID | - | - |
+| DELETE | [/workspaces/{id}](workspaces/id/delete.md) | Delete the workspece with a given ID | - | - |
+
 
 ## [Debugging](debugging)
 Endpoints to manage debuggers and interact with them.
@@ -68,14 +74,15 @@ Endpoints to manage debuggers and interact with them.
 | :--: | -- | -- | :--: | -- |
 | POST | [/debuggers](debuggers/post.md) | Create a debugger upon an given process (evaluation) | - | ```json { "process": "string" }``` |
 | GET | [/debuggers/{id}/frames](debuggers/frames/get.md) | Retrieve frames of the debugger with a given ID | - | - |
-| GET | [/debuggers/{id}/frames/{index}](debuggers/frame/get.md) | Retrieve the i-th frame withing the debugger with a given ID | - | - |
-| GET | [/debuggers/{id}/frames/{index}/bindings](debuggers/frame/bindings/get.md) | Retrieve the bindings of the i-th frame withing the debugger with a given ID | - | - |
-| POST | [/debuggers/{id}/skip](debuggers/skip.md) | Skip the current sentence in the debugger with a given ID | - | - |
-| POST | [/debuggers/{id}/hop](debuggers/hop.md) | Goes into the current sentence in the debugger with a given ID | - | - |
-| POST | [/debuggers/{id}/restart](debuggers/restart.md) | Restart the debugger with a given ID | - | - |
-| POST | [/debuggers/{id}/resume](debuggers/resume.md) | Resume the process of the debugger with a given ID | - | - |
-| POST | [/debuggers/{id}/terminate](debuggers/terminate.md) | Terminate process being debugged and closesthe debugger with a given ID | - | - |
-| DELETE | [/debuggers/{id}](debuggers/delete.md) | Closes the debugger with a given ID (terminating the process being debugged) | - | - |
+| GET | [/debuggers/{id}/frames/{index}](debuggers/frames/index/get.md) | Retrieve the i-th frame withing the debugger with a given ID | - | - |
+| GET | [/debuggers/{id}/frames/{index}/bindings](debuggers/frames/index/bindings/get.md) | Retrieve the bindings of the i-th frame withing the debugger with a given ID | - | - |
+| POST | [/debuggers/{id}/skip](debuggers/id/skip/post.md) | Skip the current sentence in the debugger with a given ID | - | - |
+| POST | [/debuggers/{id}/hop](debuggers/id/hop/post.md) | Goes into the current sentence in the debugger with a given ID | - | - |
+| POST | [/debuggers/{id}/restart](debuggers/id/restart/post.md) | Restart the debugger with a given ID | - | - |
+| POST | [/debuggers/{id}/resume](debuggers/id/resume/post.md) | Resume the process of the debugger with a given ID | - | - |
+| POST | [/debuggers/{id}/terminate](debuggers/id/terminate/post.md) | Terminate process being debugged and closesthe debugger with a given ID | - | - |
+| DELETE | [/debuggers/{id}](debuggers/id/delete.md) | Closes the debugger with a given ID (terminating the process being debugged) | - | - |
+
 
 ## [Testing](tests)
 Endpoints to run tests and retrieve their results.
@@ -88,10 +95,14 @@ Endpoints to run tests and retrieve their results.
 | POST | [/test-runs/{id}/run](test-runs/id/run/post.md) | Re-run a given test suite | - | - |
 | POST | [/test-runs/{id}/debug](test-runs/id/debug/post.md) | Debug a test withing a test suite run | - | - |
 | POST | [/test-runs/{id}/stop](test-runs/id/stop/post.md) | Stop an active test suite run | - | - |
-| DELETE | [/test-runs/{id}](test-runs/id/restuls/get.md) | Delete a test suite run | - | - |
+| DELETE | [/test-runs/{id}](test-runs/id/delete.md) | Delete a test suite run | - | - |
+
 
 ## [Profiling](profiling)
 Endpoints to manage profilers and access their results.
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
+| GET | [/profilers/{id}/tree](profilers/id/tree/get.md) | Retrieve a tree-like results of a given profiler | - | - |
+| GET | [/profilers/{id}/ranking](profilers/id/ranking/get.md) | Retrieve ranked results of a given profiler | - | - |
+| DELETE | [/profilers/{id}](profilers/id/delete.md) | Delete a given profiler | - | - |
