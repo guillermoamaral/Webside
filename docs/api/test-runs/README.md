@@ -1,0 +1,12 @@
+# Testing
+Endpoints to run tests and retrieve their results.
+
+| Method | Path | Description | Parameters | Payload |
+| :--: | -- | -- | :--: | -- |
+| POST | [/test-runs](test-runs/post.md) | Create and run of a test suite | - | ```json { "methods": ["string"], "classes": ["string"], "project": "string" }``` |
+| GET | [/test-runs/{id}](test-runs/id/get.md) | Retrieve the status of a given test suite run | - | - |
+| GET | [/test-runs/{id}/results](test-runs/id/resutls/get.md) | Retrieve the restuls of a given test suite run | - | - |
+| POST | [/test-runs/{id}/run](test-runs/id/run/post.md) | Re-run a given test suite | - | - |
+| POST | [/test-runs/{id}/debug](test-runs/id/debug/post.md) | Debug a test withing a test suite run | - | - |
+| POST | [/test-runs/{id}/stop](test-runs/id/stop/post.md) | Stop an active test suite run | - | - |
+| DELETE | [/test-runs/{id}](test-runs/id/restuls/get.md) | Delete a test suite run | - | - |
