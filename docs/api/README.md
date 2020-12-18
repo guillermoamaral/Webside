@@ -67,15 +67,15 @@ Endpoints to manage workspaces.
 | DELETE | [/workspaces/{id}](workspaces/id/delete.md) | Delete the workspece with a given ID | - | - |
 
 
-## [Debugging](debugging)
+## [Debugging](debuggers)
 Endpoints to manage debuggers and interact with them.
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
 | POST | [/debuggers](debuggers/post.md) | Create a debugger upon an given process (evaluation) | - | ```json { "process": "string" }``` |
-| GET | [/debuggers/{id}/frames](debuggers/frames/get.md) | Retrieve frames of the debugger with a given ID | - | - |
-| GET | [/debuggers/{id}/frames/{index}](debuggers/frames/index/get.md) | Retrieve the i-th frame withing the debugger with a given ID | - | - |
-| GET | [/debuggers/{id}/frames/{index}/bindings](debuggers/frames/index/bindings/get.md) | Retrieve the bindings of the i-th frame withing the debugger with a given ID | - | - |
+| GET | [/debuggers/{id}/frames](debuggers/id/frames/get.md) | Retrieve frames of the debugger with a given ID | - | - |
+| GET | [/debuggers/{id}/frames/{index}](debuggers/id/frames/index/get.md) | Retrieve the i-th frame withing the debugger with a given ID | - | - |
+| GET | [/debuggers/{id}/frames/{index}/bindings](debuggers/id/frames/index/bindings/get.md) | Retrieve the bindings of the i-th frame withing the debugger with a given ID | - | - |
 | POST | [/debuggers/{id}/skip](debuggers/id/skip/post.md) | Skip the current sentence in the debugger with a given ID | - | - |
 | POST | [/debuggers/{id}/hop](debuggers/id/hop/post.md) | Goes into the current sentence in the debugger with a given ID | - | - |
 | POST | [/debuggers/{id}/restart](debuggers/id/restart/post.md) | Restart the debugger with a given ID | - | - |
@@ -84,7 +84,7 @@ Endpoints to manage debuggers and interact with them.
 | DELETE | [/debuggers/{id}](debuggers/id/delete.md) | Closes the debugger with a given ID (terminating the process being debugged) | - | - |
 
 
-## [Testing](tests)
+## [Testing](test-runs)
 Endpoints to run tests and retrieve their results.
 
 | Method | Path | Description | Parameters | Payload |
@@ -98,7 +98,7 @@ Endpoints to run tests and retrieve their results.
 | DELETE | [/test-runs/{id}](test-runs/id/delete.md) | Delete a test suite run | - | - |
 
 
-## [Profiling](profiling)
+## [Profiling](profilers)
 Endpoints to manage profilers and access their results.
 
 | Method | Path | Description | Parameters | Payload |
