@@ -9,11 +9,10 @@ class ClassTree extends Component {
 
     newSubclass = async (superclass) => {
         if (!superclass) {return}
-        const name = await this.props.dialog.prompt({title: 'Create subclass'});
-        if (!name) {return}
-        const definition = superclass.name + ' subclass: #' + name + 
-            ' instanceVariableNames: \'\' classVariableNames: \'\' poolDictionaries: \'\'';
         try {
+            const name = await this.props.dialog.prompt({title: 'Create subclass'});
+            const definition = superclass.name + ' subclass: #' + name + 
+                ' instanceVariableNames: \'\' classVariableNames: \'\' poolDictionaries: \'\'';
             await this.context.api.defineClass(name, definition);
             const species = await this.context.api.getClass(name);
             const handler = this.props.onCreate; 
@@ -24,11 +23,11 @@ class ClassTree extends Component {
 
     removeClass = async (species) => {
         if (!species) {return}
-        const confirm = await this.props.dialog.confirm({
-            title: 'Delete ' + species.name + '?',
-            ok: {text: 'Delete', color: "secondary", variant: "outlined"}});
-        if (!confirm) {return}
         try {
+            const confirm = await this.props.dialog.confirm({
+                title: 'Delete ' + species.name + '?',
+                ok: {text: 'Delete', color: "secondary", variant: "outlined"}});
+            if (!confirm) {return}
             await this.context.api.deleteClass(species.name);
             const handler = this.props.onRemove; 
             if (handler) {handler(species)}

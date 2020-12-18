@@ -106,7 +106,6 @@ class ChatClient {
         const data = this.messages[contact.id]; 
         if (data) {data.unseen = 0};
     }
-
 }
 
 export default ChatClient;

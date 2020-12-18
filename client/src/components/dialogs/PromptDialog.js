@@ -87,7 +87,7 @@ PromptDialog.propTypes = {
 
 PromptDialog.defaultProps = {
   open: false,
-  title: '',
+  title: 'Enter',
   placeholder: '',
   ok: {
     text: 'OK',

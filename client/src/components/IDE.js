@@ -27,6 +27,7 @@ import ChangesBrowserIcon from './icons/ChangesBrowserIcon';
 import DebuggerIcon from './icons/DebuggerIcon';
 import TestRunnerIcon from './icons/TestRunnerIcon';
 import ChatIcon from './icons/ChatIcon';
+import SettingsIcon from '@material-ui/icons/Settings';
 import Titlebar from './layout/Titlebar'
 import Sidebar from './layout/Sidebar';
 import TabControl from './controls/TabControl';
@@ -43,29 +44,22 @@ import Profiler from './tools/Profiler';
 import NativeDebugger from './tools/NativeDebugger';
 import ChatClient from './ChatClient';
 import Chat from './tools/Chat';
+import Settings from './Settings'
 
 class IDE extends Component {
   constructor(props){
     super(props);
-    const cookies = this.props.cookies;
-    this.dialect = cookies.get('dialect');
-    this.baseUri = cookies.get('baseUri');
-    this.developer = cookies.get('developer');
-    this.chatClient = new ChatClient();
-    this.chatClient.login('http://localhost:4200', this.developer);
-    this.theme = this.createTheme();
-    this.api = new API(this.baseUri, this.developer, this.reportError, this.reportChange);
-    const backend = this.dialect !== 'undefined'? this.dialect : 'It looks like the Smalltalk system could not be determined';
-    const welcome = '\'Welcome to Webside ' + this.developer + '!\'\r\'A Smalltalk IDE for the web.\'\r\r' + 
-    '\'Backend: ' + backend + '\'\r' +
-    '\'@' + this.baseUri + '\'';
+    this.updateSettings();
+    this.updateTheme(); 
+    this.initializeAPI();
+    this.initializeChat();
     this.state = {
       sidebarExpanded: false,
       addPageMenuOpen: false,
       selectedPage: null,
       transcriptOpen: false,
       unreadErrorsCount: 0,
-      transcriptText: welcome,
+      transcriptText: this.welcomeMessage(),
       pages: [],
       projectNames: [],
       classNames: [],
@@ -77,7 +71,33 @@ class IDE extends Component {
     //this.openNativeDebugger('{B3AE5087-3EBC-43E2-B4A5-95DD37D802FE}')
   }
 
-  createTheme() {
+  updateSettings() {
+    const cookies = this.props.cookies;
+    this.dialect = cookies.get('dialect');
+    this.baseUri = cookies.get('baseUri');
+    this.developer = cookies.get('developer');
+    this.chatUrl = 'http://localhost:4200';
+  }
+
+  welcomeMessage() {
+    const backend = this.dialect !== 'undefined'? this.dialect : 'It looks like the Smalltalk system could not be determined';
+    return '\'Welcome to Webside ' 
+      + this.developer
+      + '!\'\r\'A Smalltalk IDE for the web.\'\r\r'
+      + '\'Backend: ' + backend + '\'\r'
+      + '\'@' + this.baseUri + '\'';
+  }
+
+  initializeAPI() {
+    this.api = new API(this.baseUri, this.developer, this.reportError, this.reportChange);
+  }
+
+  initializeChat(){
+    this.chatClient = new ChatClient();
+    this.chatClient.login(this.chatUrl, this.developer);
+  }
+
+  updateTheme() {
     var mainPrimaryColor;
     var mainSecondaryColor;
     switch (this.dialect) {
@@ -93,7 +113,7 @@ class IDE extends Component {
         mainPrimaryColor = "#00000";
         mainSecondaryColor = "#00000";
     }
-    return createMuiTheme({
+    this.theme = createMuiTheme({
       typography: {
         //fontFamily: '"Segoe UI"',
         fontSize: 13,
@@ -149,7 +169,7 @@ class IDE extends Component {
     this.setState({pages: pages, selectedPage: page})
   }
 
-  pageSelected = (page) => {
+  selectPage = (page) => {
     this.setState({selectedPage: page})
   }
 
@@ -188,27 +208,27 @@ class IDE extends Component {
 
   openSystemBrowser = (projectname) => {
     const browser = <SystemBrowser styles={this.props.styles} root={projectname}/>;
-    this.addPage(browser.props.root || 'System Browser', <SystemBrowserIcon className={this.props.styles.systemBrowserIcon} />, browser);
+    this.addPage(browser.props.root || 'System Browser', <SystemBrowserIcon/>, browser);
   }
 
   openClassBrowser = (classname) => {
     const browser = <ClassBrowser styles={this.props.styles} root={classname}/>;
-    this.addPage(browser.props.root || 'Class Browser', <ClassBrowserIcon className={this.props.styles.classBrowserIcon} />, browser);
+    this.addPage(browser.props.root || 'Class Browser', <ClassBrowserIcon/>, browser);
   }
 
   openMethodBrowser = (methods, title = 'Methods') => {
     const browser = <MethodBrowser styles={this.props.styles} methods={methods}/>;
-    this.addPage(title + ' (' + methods.length + ')', <MethodBrowserIcon className={this.props.styles.methodBrowserIcon} />, browser);
+    this.addPage(title + ' (' + methods.length + ')', <MethodBrowserIcon/>, browser);
   }
 
   openWorkspace = (id) => {
     const workspace = <Workspace styles={this.props.styles} key={id} id={id}/>;
-    this.addPage('Workspace', <WorkspaceIcon className={this.props.styles.workspaceIcon} />, workspace);
+    this.addPage('Workspace', <WorkspaceIcon/>, workspace);
   }
 
   openDebugger = (id, title = 'Debugger') => {
     const tool = <Debugger styles={this.props.styles} key={id} id={id}/>;
-    this.addPage(title, <DebuggerIcon className={this.props.styles.debuggerIcon} />, tool);
+    this.addPage(title, <DebuggerIcon/>, tool);
   }
 
   closeDebugger = (id) => {
@@ -218,7 +238,7 @@ class IDE extends Component {
 
   openInspector = (object) => {
     const inspector = <Inspector styles={this.props.styles} key={object.id} root={object} id={object.id} showWorkspace/>;
-    this.addPage('Inspecting: ' + object.class, <InspectorIcon className={this.props.styles.workspaceIcon} />, inspector);
+    this.addPage('Inspecting: ' + object.class, <InspectorIcon/>, inspector);
   }
 
   openChangesBrowser = (changes, title = 'Changes') => {
@@ -238,15 +258,41 @@ class IDE extends Component {
 
   openNativeDebugger = (id, title = 'Native Debugger') => {
     const tool = <NativeDebugger styles={this.props.styles} key={id} id={id}/>;
-    this.addPage(title, <DebuggerIcon className={this.props.styles.debuggerIcon} />, tool);
+    this.addPage(title, <DebuggerIcon/>, tool);
   }
 
   openChat = (contactname) => {
     if (contactname === this.developer) return;
     const contact = this.chatClient.contactNamed(contactname);
     if (contactname && !contact) return;
-    const tool = <Chat styles={this.props.styles} client={this.chatClient} initialContact={contact}/>;
-    this.addPage('Chat', <ChatIcon className={this.props.styles.debuggerIcon} />, tool);
+    const page = this.state.pages.find(p => p.label === 'Chat');
+    if (page) {
+      this.selectPage(page);
+    } else {
+      const tool = <Chat styles={this.props.styles} client={this.chatClient} initialContact={contact}/>;
+      this.addPage('Chat', <ChatIcon/>, tool);
+    }
+  }
+
+  openSettings = () => {
+    var page = this.state.pages.find(p => p.label === 'Configuration');
+    if (page) {
+      this.selectPage(page);
+    } else {
+      const settings = <Settings
+        styles={this.props.styles}
+        baseUri={this.baseUri}
+        developer={this.developer}
+        onSave={() => {
+          this.updateSettings();
+          this.updateTheme(); 
+          this.initializeAPI();
+          this.initializeChat();
+          page = this.state.pages.find(p => p.label === 'Configuration');
+          this.removePage(page);
+        }}/>;
+      this.addPage('Configuration', <SettingsIcon/>, settings);
+    }
   }
   
   browseSenders = (selector) => {
@@ -290,7 +336,6 @@ class IDE extends Component {
   evaluateExpression = async (expression, sync, pin, context) => {
     try {
       const result = await this.api.evaluateExpression(expression, sync, pin, context);
-      console.log(result)
       if (sync) {return result}
       const object = await this.api.getObject(result.id);
       if (!pin && !sync) {await this.api.unpinObject(object.id)}
@@ -335,6 +380,7 @@ class IDE extends Component {
   }
 
   reportError = (text) => {
+    if (!text) {return}
     this.setState(
       {
         transcriptText: this.state.transcriptText + '\r' + text,
@@ -415,6 +461,7 @@ class IDE extends Component {
                 onTranscriptClicked={this.toggleShowTranscript}
                 onChangesClicked={this.browseLastChanges}
                 onPeersClicked={this.openChat}
+                onSettingsClicked={this.openSettings}
                 onClose={this.collapseSidebar}/>
               <main className={styles.content}>
                 <div className={styles.appBarSpacer} />
@@ -425,7 +472,7 @@ class IDE extends Component {
                           styles={styles}
                           selectedPage={this.state.selectedPage}
                           pages={this.state.pages}
-                          onSelect={this.pageSelected}
+                          onSelect={this.selectPage}
                           onClose={this.removePage}/>
                     </Grid>
                     <Grid item xs={1} md={1} lg={1}>

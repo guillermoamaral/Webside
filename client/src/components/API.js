@@ -12,11 +12,19 @@ class APIError extends Error {
 }
 
 class API {
-    constructor(uri, user, reportError, reportChange){
+    constructor(uri, author, reportError, reportChange){
         this.baseUri = uri;
         this.reportError = reportError.bind();
         this.reportChange = reportChange.bind();
-        this.author = user;
+        this.author = author;
+    }
+
+    baseUri(uri) {
+        this.baseUri = uri;
+    }
+
+    author(author) {
+        this.author = author;
     }
 
     handleError(message, error) {

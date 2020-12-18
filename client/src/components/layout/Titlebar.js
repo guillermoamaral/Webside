@@ -19,9 +19,9 @@ class Titlebar extends Component {
     const styles = this.props.styles;
     return (
       <AppBar
-            color="primary"
-            position="absolute"
-            className={clsx(styles.appBar, this.props.sidebarExpanded && styles.appBarShift)}>
+        color="primary"
+        position="absolute"
+        className={clsx(styles.appBar, this.props.sidebarExpanded && styles.appBarShift)}>
         <Toolbar className={styles.toolbar}> 
           <IconButton
             edge="start"
@@ -60,7 +60,9 @@ class Titlebar extends Component {
               inputProps={{'aria-label': 'search'}}/>
           </div>
           <Box flexGrow={1}/>
-          <Avatar alt={this.props.developer}/>
+          <IconButton color="primary" aria-label="upload picture" component="span" onClick={e => {alert('yes')}}>
+            <Avatar alt={this.props.developer}/>
+          </IconButton>
           <Box p={1}>
             <Typography
               variant="subtitle1"

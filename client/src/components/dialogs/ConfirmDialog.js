@@ -70,7 +70,7 @@ ConfirmDialog.propTypes = {
 
 ConfirmDialog.defaultProps = {
   open: false,
-  title: '',
+  title: 'Confirm',
   ok: {
     text: 'Yes',
     color: 'primary',

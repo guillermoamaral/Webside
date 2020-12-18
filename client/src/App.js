@@ -10,7 +10,7 @@ import styles from './styles';
 import { ThemeProvider } from '@material-ui/styles';
 import { DialogProvider } from './components/dialogs';
 import { CookiesProvider } from 'react-cookie';
-import Connect from './components/Connect';
+import Settings from './components/Settings';
 import IDE from './components/IDE';
 
 const theme = createMuiTheme({
@@ -36,7 +36,7 @@ const theme = createMuiTheme({
   },
 })
 
-class App extends Component {  
+class App extends Component {
   render() {
     return (
       <ThemeProvider theme={theme}>
@@ -46,7 +46,7 @@ class App extends Component {
             <div className={styles.root}>           
               <Router>
                   <Switch>
-                      <Route path="/" exact component={() => <Connect styles={this.props.classes}/>}/>
+                      <Route path="/" exact component={() => <Settings styles={this.props.classes} saveText='Connect'/>}/>
                       <Route path="/ide/" exact component={() => <IDE styles={this.props.classes}/>}/>
                     </Switch>
                 </Router>

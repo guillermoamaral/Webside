@@ -39,7 +39,6 @@ class Profiler extends Component {
             method = null 
         } else {
             const parts = signature.split(') ')[1].split('>>');
-            console.log(parts)
             try {
                 method = await this.context.api.getMethod(parts[0], parts[1]);
             }

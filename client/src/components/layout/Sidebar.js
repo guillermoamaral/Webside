@@ -28,44 +28,44 @@ class Sidebar extends Component {
                 open={this.props.expanded}>
                 <div className={styles.toolbarIcon}>
                     <IconButton onClick={this.props.onClose}>
-                        <ChevronLeftIcon />
+                        <ChevronLeftIcon/>
                     </IconButton>
                 </div>
-                <Divider />
+                <Divider/>
                 <List>
                     <ListItem button onClick={this.props.onTranscriptClicked}>
                         <ListItemIcon>
                             <Badge badgeContent={this.props.unreadErrorsCount} color="secondary">
-                                <TranscriptIcon />
+                                <TranscriptIcon/>
                             </Badge>
                         </ListItemIcon>
-                        <ListItemText primary="Transcript" />
+                        <ListItemText primary="Transcript"/>
                     </ListItem>
                     <ListItem button onClick={e => this.props.onChangesClicked()}>
                         <ListItemIcon>                                
                             <Badge badgeContent={this.props.changesCount} color="secondary">
-                                <ChangesBrowserIcon />
+                                <ChangesBrowserIcon/>
                             </Badge>
                         </ListItemIcon>
-                        <ListItemText primary="Changes" />
+                        <ListItemText primary="Changes"/>
                     </ListItem>                    
                     <ListItem button onClick={e => this.props.onPeersClicked()}>
                         <ListItemIcon>
-                            <PeopleIcon />
+                            <PeopleIcon/>
                         </ListItemIcon>
-                        <ListItemText primary="Peers" />
+                        <ListItemText primary="Peers"/>
                     </ListItem>
                     <ListItem button onClick={e => this.props.dialog.alert('Not implemented yet!')}>
                         <ListItemIcon>
-                            <GitHubIcon />
+                            <GitHubIcon/>
                         </ListItemIcon>
-                        <ListItemText primary="GitHub" />
+                        <ListItemText primary="GitHub"/>
                     </ListItem>
-                    <ListItem button onClick={e => this.props.dialog.alert('Not implemented yet!')}>
+                    <ListItem button onClick={e => this.props.onSettingsClicked()}>
                         <ListItemIcon>
-                            <SettingsIcon />
+                            <SettingsIcon/>
                       </ListItemIcon>
-                      <ListItemText primary="Settings" />
+                      <ListItemText primary="Settings"/>
                     </ListItem>
                 </List>
                 <Divider />

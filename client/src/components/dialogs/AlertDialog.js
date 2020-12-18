@@ -55,7 +55,7 @@ AlertDialog.propTypes = {
 
 AlertDialog.defaultProps = {
   open: false,
-  title: '',
+  title: 'Alert',
   ok: {
     text: 'OK',
     color: 'primary',

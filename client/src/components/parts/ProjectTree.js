@@ -9,9 +9,8 @@ class ProjectTree extends Component {
 
     createProject = async (parent) => {
         if (!parent) {return}
-        const name = await this.props.dialog.prompt({title: 'Create project'});
-        if (!name) {return}
         try {
+            const name = await this.props.dialog.prompt({title: 'Create project'});
             const project = await this.context.api.createProject(name, parent);
             const handler = this.props.onCreate; 
             if (handler) {handler(project)}

@@ -5,10 +5,10 @@ import {
     Grid
     } from "@material-ui/core";
 import { withCookies } from 'react-cookie';
-import { withRouter } from "react-router-dom";
 import axios from 'axios';
+import { withRouter } from "react-router-dom";
 
-class Connect extends Component {
+class Settings extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,7 +17,7 @@ class Connect extends Component {
         }
     }
 
-    connectClicked = async (event) => {
+    saveClicked = async (event) => {
         event.preventDefault();
         const {baseUri, developer} = this.state;
         if (baseUri && baseUri !== "" && developer && developer !== "") {
@@ -31,7 +31,14 @@ class Connect extends Component {
             cookies.set('dialect', dialect, { path: '/' });
             cookies.set('baseUri', baseUri, { path: '/' });
             cookies.set('developer', developer, { path: '/' });
-            this.props.history.push("/ide");
+            const handler = this.props.onSave;
+            if (handler) {
+                handler()
+            } else {
+                if (!this.props.location.pathname.includes('ide')) {
+                    this.props.history.push("/ide");
+                }
+            }
         } else {
             alert('You must complete the fields');
         }
@@ -53,7 +60,7 @@ class Connect extends Component {
                     <Grid item>
                         <Grid container direction="row" justify="center" spacing={1}>
                             <Grid item>
-                                <form onSubmit={this.connectClicked}>
+                                <form onSubmit={this.saveClicked}>
                                     <Grid container direction="column" spacing={1} alignItems="flex-end">
                                         <Grid item>
                                             <TextField
@@ -86,7 +93,7 @@ class Connect extends Component {
                                         </Grid>
                                         <Grid item>
                                             <Button variant="outlined" type="submit">
-                                                Connect
+                                                {this.props.saveText || 'Save'}
                                             </Button>
                                         </Grid>
                                     </Grid>
@@ -100,4 +107,4 @@ class Connect extends Component {
     }
 }
 
-export default withRouter(withCookies(Connect))
+export default withRouter(withCookies(Settings));
