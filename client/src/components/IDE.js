@@ -453,7 +453,8 @@ class IDE extends Component {
                 styles={styles}
                 sidebarExpanded={this.state.sidebarExpanded}
                 expandSidebar={this.expandSidebar}
-                searchOptions={this.state.classNames || []}/>
+                searchOptions={this.state.classNames || []}
+                onAvatarClicked={this.openSettings}/>
               <Sidebar
                 styles={styles}
                 expanded={this.state.sidebarExpanded}

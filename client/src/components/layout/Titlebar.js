@@ -30,7 +30,7 @@ class Titlebar extends Component {
             className={clsx(styles.menuButton, this.props.sidebarExpanded && styles.menuButtonHidden)}>
           <MenuIcon />
           </IconButton>
-          <Box p={2}>
+          <Box p={1}>
             <Link to={this.props.baseUri}>
               <img
                 src={this.props.dialect? require("../../resources/" + this.props.dialect + ".png") : null}
@@ -40,12 +40,21 @@ class Titlebar extends Component {
             </Link>
           </Box>
           <Typography
-            component="h1"
             variant="h6"
             color="inherit"
+            display="inline"
             noWrap>
-              {this.props.dialect + ' Web IDE (Powered by Webside)'}
+              {this.props.dialect + ' Web IDE '}
           </Typography>
+          <Box p={1}>
+            <Typography
+              variant="body2"
+              display="inline"
+              color="inherit"
+              noWrap>
+                (Powered by Webside)
+            </Typography>
+          </Box>
           <Box flexGrow={1}/>
           <div className={styles.globalSearch}>
             <div className={styles.globalSearchIcon}>
@@ -60,8 +69,11 @@ class Titlebar extends Component {
               inputProps={{'aria-label': 'search'}}/>
           </div>
           <Box flexGrow={1}/>
-          <IconButton color="primary" aria-label="upload picture" component="span" onClick={e => {alert('yes')}}>
-            <Avatar alt={this.props.developer}/>
+          <IconButton
+            color="primary"
+            component="span"
+            onClick={e => this.props.onAvatarClicked()}>
+              <Avatar alt={this.props.developer}/>
           </IconButton>
           <Box p={1}>
             <Typography
