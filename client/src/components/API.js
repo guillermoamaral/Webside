@@ -144,7 +144,7 @@ class API {
 
     async getMethodsAccessing(classname, variable, access) {
         try {
-            var url = this.baseUri + '/classes/' + classname + '/methods?' + access + 'Variable=' + variable;
+            var url = this.baseUri + '/classes/' + classname + '/methods?' + access + '=' + variable;
             const response = await axios.get(url);
             return response.data;
         }
@@ -178,7 +178,7 @@ class API {
 
     async getReferences(classname) {
         try {
-           const response = await axios.get(this.baseUri + '/methods?referencingClass=' + classname);
+           const response = await axios.get(this.baseUri + '/methods?referencing=' + classname);
            return response.data;
        }
        catch (error) {this.handleError('Cannot fetch references to ' + classname, error)}
