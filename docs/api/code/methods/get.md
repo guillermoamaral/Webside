@@ -11,11 +11,10 @@ Retrieve those methods satisfying the condition specified in the query (or all t
 | selector | string | to get implementors of such selector | 
 | sending | string | to get senders of such selector |
 | class | string | to get methods implemented by a given class |
-| referencingClass | string | to get those methods referencing a given class |
-| cagegory | string | to get methods under a given category |
-| referencingVariable | string | to get those methods referencing (using or assigning) a given variable |
-| usingVariable | string | to get those methods using a given variable |
-| assigningVariable | string | to get those methods assigning a given variable |
+| referencing | string | to get those methods referencing a given class or variable (either using or assigning it) |
+| category | string | to get methods under a given category |
+| using | string | to get those methods using a given variable |
+| assigning | string | to get those methods assigning a given variable |
 
 ## Success Responses
 
