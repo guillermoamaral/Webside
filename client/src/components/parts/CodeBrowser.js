@@ -186,6 +186,7 @@ class CodeBrowser extends Component {
                         styles={this.props.styles}
                         lineNumbers={true}
                         source={this.currentSource()}
+                        mode={(mode === 'comment') ? 'text' : 'smalltalk'}
                         lintAnnotations={this.currentLintAnnotations()}
                         selectedRanges={!this.props.selectedInterval? [] : [this.props.selectedInterval]}
                         showAccept

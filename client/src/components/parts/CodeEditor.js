@@ -244,6 +244,7 @@ class CodeEditor extends Component {
     }
   
     render() {
+        const mode = this.props.mode || "smalltalk";
         const showAccept = this.props.showAccept;
         const acceptIcon = this.props.acceptIcon?
             React.cloneElement(this.props.acceptIcon)
@@ -259,7 +260,7 @@ class CodeEditor extends Component {
                             options={{
                                 //viewportMargin: "Infinity",
                                 readOnly: evaluating || progress,
-                                mode: "smalltalk",
+                                mode: mode,
                                 theme: "material",
                                 lineSeparator: '\r',
                                 lineNumbers: this.props.lineNumbers,
