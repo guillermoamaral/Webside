@@ -242,6 +242,13 @@ class CodeEditor extends Component {
         marker.innerHTML = "●";
         return marker;
     }
+
+    renameTarget = () => {
+        const target = this.targetWord();
+        if (!target || target === "") {return}
+        const handler = this.props.onRename;
+        if (handler) {handler(target)}
+    }
   
     render() {
         const mode = this.props.mode || "smalltalk";
@@ -286,7 +293,8 @@ class CodeEditor extends Component {
                                     "Alt-M": this.browseImplementors,
                                     "Alt-R": this.browseReferences,
                                     "Ctrl-Q": this.markOcurrences,
-                                    "Alt-Z": this.toggleFullScreen}}}
+                                    "Alt-Z": this.toggleFullScreen,
+                                    "F2": this.renameTarget}}}
                             value={value}
                             editorDidMount={editor => {this.editorDidMount(editor)}}
                             onGutterClick={(editor, n) => {this.setBreakpoint(n)}}

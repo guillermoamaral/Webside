@@ -38,6 +38,19 @@ class CodeBrowser extends Component {
         catch (error) {this.context.reportError(error)}
     }
 
+    renameClass = async (target) => {
+        if (target !== this.props.class.name && target !== this.props.class.superclass) {
+            return}
+        try {
+            const newName = await this.props.dialog.prompt({title: 'Rename class', defaultValue: target, required: true});
+            await this.context.api.renameClass(target, newName);
+            this.props.class.name = newName;
+            const handler = this.props.onRenameClass;
+            if (handler) {handler(this.props.class)}
+        }
+        catch (error) {this.context.reportError(error)}
+    }
+
     commentClass = async (comment) => {
         if (!this.props.class) {return}
         try {
@@ -190,7 +203,8 @@ class CodeBrowser extends Component {
                         lintAnnotations={this.currentLintAnnotations()}
                         selectedRanges={!this.props.selectedInterval? [] : [this.props.selectedInterval]}
                         showAccept
-                        onAccept={this.acceptClicked}/>
+                        onAccept={this.acceptClicked}
+                        onRename={target => this.renameClass(target)}/>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     {timestamp? 'Modified on ' : ''}

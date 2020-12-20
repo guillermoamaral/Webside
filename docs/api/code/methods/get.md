@@ -8,8 +8,8 @@ Retrieve those methods satisfying the condition specified in the query (or all t
 **Query Options**
 | Option | Type | Description |
 | -- | -- | -- |
-| selector | string | to get implementors of such selector | 
-| sending | string | to get senders of such selector |
+| selector | string | to get implementors of a given selector | 
+| sending | string | to get senders of a given selector |
 | class | string | to get methods implemented by a given class |
 | referencing | string | to get those methods referencing a given class or variable (either using or assigning it) |
 | category | string | to get methods under a given category |
