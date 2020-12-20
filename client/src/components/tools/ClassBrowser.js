@@ -408,7 +408,6 @@ class ClassBrowser extends Component {
                                             <MenuItem value={"using"}>using</MenuItem>
                                             <MenuItem value={"assigning"}>assigning</MenuItem>
                                             <MenuItem value={"referencing"}>referencing</MenuItem>
-                                            <MenuItem value={"unusing"}>unusing</MenuItem>
                                     </Select>
                                 </Grid>
                                 <Grid item xs={3} md={3} lg={3}>

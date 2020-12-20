@@ -10,7 +10,7 @@ class ProjectTree extends Component {
     createProject = async (parent) => {
         if (!parent) {return}
         try {
-            const name = await this.props.dialog.prompt({title: 'Create project'});
+            const name = await this.props.dialog.prompt({title: 'Create project', required: true});
             const project = await this.context.api.createProject(name, parent);
             const handler = this.props.onCreate; 
             if (handler) {handler(project)}
@@ -35,7 +35,7 @@ class ProjectTree extends Component {
     renameProject = async (project) => {
         if (!project) {return}
         try {
-            const newName = await this.props.dialog.prompt({title: 'Rename project', defaultValue: project.name});
+            const newName = await this.props.dialog.prompt({title: 'Rename project', defaultValue: project.name, required: true});
             await this.context.api.renameProject(project.name, newName);
             project.name = newName;
             const handler = this.props.onRename; 

@@ -19,7 +19,7 @@ class MethodList extends Component {
     renameMethod = async (method) => {
         if (!method) {return}
         try{
-            const newSelector = await this.props.dialog.prompt({title: 'Rename selector', defaultValue: method.selector});
+            const newSelector = await this.props.dialog.prompt({title: 'Rename selector', defaultValue: method.selector, required: true});
             await this.context.api.renameSelector(method.class, method.selector, newSelector);
             method.selector = newSelector;
             const handler = this.props.onRename;

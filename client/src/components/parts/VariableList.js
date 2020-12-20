@@ -30,7 +30,7 @@ class VariableList extends Component {
 
     addVariable = async () => {
         try {
-            const name = await this.props.dialog.prompt('New variable');
+            const name = await this.props.dialog.prompt({title: 'New variable', required: true});
             await this.context.api.addInstanceVariable(this.props.class.name, name);
             const handler = this.props.onAdd;
             if (handler) {handler()}
@@ -41,7 +41,7 @@ class VariableList extends Component {
     renameVariable = async (variable) => {
         if (!variable) {return}
         try {
-            const newName = await this.props.dialog.prompt({title: 'Rename variable', defaultValue: variable.name});
+            const newName = await this.props.dialog.prompt({title: 'Rename variable', defaultValue: variable.name, required: true});
             await this.context.api.renameInstanceVariable(this.props.class.name, variable.name, newName);
             variable.name = newName;
             const handler = this.props.onRename;

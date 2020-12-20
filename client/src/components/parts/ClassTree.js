@@ -10,7 +10,7 @@ class ClassTree extends Component {
     newSubclass = async (superclass) => {
         if (!superclass) {return}
         try {
-            const name = await this.props.dialog.prompt({title: 'Create subclass'});
+            const name = await this.props.dialog.prompt({title: 'Create subclass', required: true});
             const definition = superclass.name + ' subclass: #' + name + 
                 ' instanceVariableNames: \'\' classVariableNames: \'\' poolDictionaries: \'\'';
             await this.context.api.defineClass(name, definition);
@@ -38,7 +38,7 @@ class ClassTree extends Component {
     renameClass = async (species) => {
         if (!species) {return}
         try {
-            const newName = await this.props.dialog.prompt({title: 'Rename class', defaultValue: species.name});
+            const newName = await this.props.dialog.prompt({title: 'Rename class', defaultValue: species.name, required: true});
             await this.context.api.renameClass(species.name, newName);
             species.name = newName;
             const handler = this.props.onRename; 
