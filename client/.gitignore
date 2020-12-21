@@ -5,13 +5,10 @@ node_modules/*
 
 node_modules/codemirror/*
 !node_modules/codemirror/theme
+!node_modules/codemirror/mode
 
 node_modules/codemirror/theme/*
 !node_modules/codemirror/theme/smalltalk.css
 
 node_modules/codemirror/mode/*
 !node_modules/codemirror/mode/smalltalk
-
-node_modules/codemirror/mode/smalltalk
-!node_modules/codemirror/mode/smalltalk/smalltalk.js
-
