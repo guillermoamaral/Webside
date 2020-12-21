@@ -67,7 +67,7 @@ class CodeBrowser extends Component {
         try {
             const category = this.props.method? this.props.method.category : null;
             const change = await this.context.api.compileMethod(this.props.class.name, category, source);
-            const method = await this.context.api.getMethod(this.props.class.name, change.selector)
+            const method = await this.context.api.getMethod(this.props.class.name, change.selector);
             const handler = this.props.onMethodCompiled;
             if (handler) {handler(method)}
         }
@@ -86,7 +86,8 @@ class CodeBrowser extends Component {
                 try {
                     let method;
                     for (const change of data.changes) {
-                        method = await this.context.api.postChange(change);
+                        const change = await this.context.api.postChange(change);
+                        method = await this.context.api.getMethod(this.props.class.name, change.selector);
                     }
                     const handler = this.props.onMethodCompiled;
                     if (handler) {handler(method)}
@@ -210,9 +211,10 @@ class CodeBrowser extends Component {
                     {timestamp? 'Modified on ' : ''}
                     {timestamp}
                     {author? ' by ' : ''} 
-                    <Link href="#" onClick={() => this.context.openChat(author)}>
-                        {author}
-                    </Link>
+                    {author &&
+                        <Link href="#" onClick={() => this.context.openChat(author)}>
+                            {author}
+                        </Link>}
                 </Grid>
             </Grid>
         )

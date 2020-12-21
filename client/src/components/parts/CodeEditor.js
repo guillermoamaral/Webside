@@ -6,6 +6,7 @@ import PopupMenu from '../controls/PopupMenu';
 import { IDEContext } from '../IDEContext';
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
+require('codemirror/theme/smalltalk.css');
 require('codemirror/mode/smalltalk/smalltalk.js');
 require('codemirror/addon/search/searchcursor.js');
 require('codemirror/addon/search/search.js');
