@@ -23,7 +23,12 @@ It is also possible get a tree-like structure as well as to limit the depth in t
 {
     "name": "string",
     "classes": "[string]",
-    "methods": [{"class": "string", "selector": "string"}]
+    "methods": [
+        {
+            "class": "string",
+            "selector": "string"
+        }
+    ]
 }
 ```
 
