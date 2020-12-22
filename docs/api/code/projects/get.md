@@ -22,7 +22,7 @@ It is also possible get a tree-like structure as well as to limit the depth in t
 ```json
 {
     "name": "string",
-    "classes": "[string]",
+    "classes": ["string"],
     "methods": [
         {
             "class": "string",
