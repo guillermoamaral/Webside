@@ -22,79 +22,151 @@ It is also possible get a tree-like structure as well as to limit the depth in t
 ```json
 {
     "name": "string",
-    "classNames": "[string]",
-    "methodSignatures": "[string]"
+    "classes": "[string]",
+    "methods": [{"class": "string", "selector": "string"}]
 }
 ```
 
-**Example:**: `Webside` projects `GET /projects?root=Webside`.
+**Example:**: `Method Wrappers` project `GET /projects/Method Wrappers`.
 ```json
-[
-    {
-        "name": "Webside Base",
-        "classNames": [
-            "WebsideWorkspace",
-            "WebsideCompilationError",
-            "WebsideEvaluation",
-            "WebsideObject",
-            "WebsideEvaluationError",
-            "WebsideCompilationErrorHandler",
-            "WebsideAPI",
-            "WebsideDebugger",
-            "WebsideAbstractObject"
-        ],
-        "methodSignatures": []
-    },
-    {
-        "name": "Webside Extensions",
-        "classNames": [],
-        "methodSignatures": [
-            "ExpressionEvaluation -> asWebsideJson",
-            "Species -> asWebsideJson",
-            "CategoryRename -> asWebsideJson",
-            "MethodChange -> asWebsideJson",
-            "BeeProject -> asWebsideJson",
-            "ChangeRecord class -> acceptsWebsideJson:",
-            "SelectorRename -> fromWebsideJson:",
-            "ClassCommentDefinition -> asWebsideJson",
-            "MethodChange -> fromWebsideJson:",
-            "TestResult -> asWebsideJsonSummary",
-            "VariableChange -> fromWebsideJson:",
-            "ChangeRecord class -> fromWebsideJson:",
-            "ClassVariableMoveDown -> asWebsideJson",
-            "ClassDefinition -> fromWebsideJson:",
-            "ClassChange -> asWebsideJson",
-            "InstanceVariableMoveDown -> fromWebsideJson:",
-            "InstanceVariableRename -> fromWebsideJson:",
-            "ClassRename -> asWebsideJson",
-            "ProfiledMethod -> asWebsideJson",
-            "Species -> localImplementorsOf:",
-            "InstanceVariableRename -> asWebsideJson",
-            "BeeModule -> asWebsideJson",
-            "ClassChange -> fromWebsideJson:",
-            "MethodDefinition -> fromWebsideJson:",
-            "ChangeRecord -> fromWebsideJson:",
-            "ClassVariableMoveDown -> fromWebsideJson:",
-            "MethodDefinition -> asWebsideJson",
-            "ClassRename -> fromWebsideJson:",
-            "ProcessFrameDecorator -> asWebsideJson",
-            "CompiledMethod -> asWebsideJson",
-            "ChangeRecord -> asWebsideJson",
-            "ExpressionEvaluation -> fromWebsideJson:",
-            "CategoryRename -> fromWebsideJson:",
-            "SelectorRename -> asWebsideJson",
-            "VariableChange -> asWebsideJson",
-            "ClassCommentDefinition -> fromWebsideJson:",
-            "InstanceVariableMoveDown -> asWebsideJson",
-            "CategoryChange -> asWebsideJson",
-            "TestCase -> asWebsideJson",
-            "ChangeRecord class -> classForWebsideJson:",
-            "TestResult -> asWebsideJson",
-            "CategoryChange -> fromWebsideJson:",
-            "TestSuiteRunner -> asWebsideJson",
-            "Object -> asWebsideJson",
-            "ClassDefinition -> asWebsideJson"
-        ]
-    }
-]
+{
+    "name": "Method Wrappers",
+    "classes": [
+        "FullMethodWrapper",
+        "MessageSpy",
+        "MessageHalt",
+        "MessageInterceptor",
+        "ExecutionStop",
+        "MethodWrapperTest",
+        "MethodWrapperTestResource",
+        "MessageDeflector",
+        "MethodWrapper"
+    ],
+    "methods": [
+        {
+            "class": "CompiledMethod",
+            "selector": "afterInvokingEvaluate:"
+        },
+        {
+            "class": "CompiledMethod",
+            "selector": "whenInvokingEvaluate:"
+        },
+        {
+            "class": "CompiledMethod",
+            "selector": "whenInvokedEvaluate:afterThat:"
+        },
+        {
+            "class": "Object",
+            "selector": "whenReceiving:evaluate:afterThat:"
+        },
+        {
+            "class": "Object",
+            "selector": "stopSpyingMessages"
+        },
+        {
+            "class": "BlockClosure",
+            "selector": "stopWhen:receives:"
+        },
+        {
+            "class": "CompiledMethod",
+            "selector": "uninstallWrapper"
+        },
+        {
+            "class": "Object",
+            "selector": "answerTo:with:"
+        },
+        {
+            "class": "Message",
+            "selector": "ignore"
+        },
+        {
+            "class": "Object",
+            "selector": "countMessagesWhile:"
+        },
+        {
+            "class": "Object",
+            "selector": "removeHaltOn:"
+        },
+        {
+            "class": "CompiledMethod",
+            "selector": "clear"
+        },
+        {
+            "class": "Object",
+            "selector": "spyMessagesUsing:"
+        },
+        {
+            "class": "CompiledMethod",
+            "selector": "wasCalled"
+        },
+        {
+            "class": "CompiledMethod",
+            "selector": "wrapper"
+        },
+        {
+            "class": "Message",
+            "selector": "answer:"
+        },
+        {
+            "class": "Object",
+            "selector": "aboutToSend:"
+        },
+        {
+            "class": "MessageSend",
+            "selector": "uninstallSpy"
+        },
+        {
+            "class": "Object",
+            "selector": "answerTo:evaluating:while:"
+        },
+        {
+            "class": "Object",
+            "selector": "aboutToSend:count:"
+        },
+        {
+            "class": "Object",
+            "selector": "afterReceiving:evaluate:"
+        },
+        {
+            "class": "Object",
+            "selector": "send:thru:"
+        },
+        {
+            "class": "Object",
+            "selector": "stopSpying:"
+        },
+        {
+            "class": "Object",
+            "selector": "answerTo:evaluating:"
+        },
+        {
+            "class": "Object",
+            "selector": "uninstallSpyOn:"
+        },
+        {
+            "class": "CompiledMethod",
+            "selector": "getWrapper"
+        },
+        {
+            "class": "Object",
+            "selector": "whenReceiving:evaluate:"
+        },
+        {
+            "class": "Closure",
+            "selector": "stopWhen:receives:"
+        },
+        {
+            "class": "Object",
+            "selector": "haltOn:"
+        },
+        {
+            "class": "Object",
+            "selector": "ignoreNext:"
+        },
+        {
+            "class": "Object",
+            "selector": "justSent:"
+        }
+    ]
+}
 ```

@@ -67,13 +67,13 @@ class API {
         catch (error) {this.handleError('Cannot fetch project names', error)}
     }
 
-    async getProjectClasses(name) {
+    async getProjectClasses(projectname) {
         try {
-            const response = await axios.get(this.baseUri + '/projects/' + name + '/classes?tree=true');     
+            const response = await axios.get(this.baseUri + '/projects/' + projectname + '/classes?tree=true');     
             return response.data;
 
          }
-        catch (error) {this.handleError('Cannot fetch classes from project ' + name, error)}
+        catch (error) {this.handleError('Cannot fetch classes from project ' + projectname, error)}
     }
 
     async getClassTree(root, depth) {

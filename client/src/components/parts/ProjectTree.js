@@ -64,7 +64,7 @@ class ProjectTree extends Component {
             <CustomTree
                 items={roots? roots : []}
                 itemLabel="name"
-                children={"projects"}
+                children={"children"}
                 onExpand={this.props.onExpand}
                 onSelect={this.props.onSelect}
                 selectedItem={this.props.selectedProject}
