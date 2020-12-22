@@ -32,146 +32,209 @@ It is also possible get a tree-like structure as well as to limit the depth in t
 }
 ```
 
-**Example:**: `Method Wrappers` project `GET /projects/Method Wrappers`.
+**Example:**: `Javascript` subprojects `GET /projects?root=Javascript`.
 ```json
-{
-    "name": "Method Wrappers",
-    "classes": [
-        "FullMethodWrapper",
-        "MessageSpy",
-        "MessageHalt",
-        "MessageInterceptor",
-        "ExecutionStop",
-        "MethodWrapperTest",
-        "MethodWrapperTestResource",
-        "MessageDeflector",
-        "MethodWrapper"
-    ],
-    "methods": [
-        {
-            "class": "CompiledMethod",
-            "selector": "afterInvokingEvaluate:"
-        },
-        {
-            "class": "CompiledMethod",
-            "selector": "whenInvokingEvaluate:"
-        },
-        {
-            "class": "CompiledMethod",
-            "selector": "whenInvokedEvaluate:afterThat:"
-        },
-        {
-            "class": "Object",
-            "selector": "whenReceiving:evaluate:afterThat:"
-        },
-        {
-            "class": "Object",
-            "selector": "stopSpyingMessages"
-        },
-        {
-            "class": "BlockClosure",
-            "selector": "stopWhen:receives:"
-        },
-        {
-            "class": "CompiledMethod",
-            "selector": "uninstallWrapper"
-        },
-        {
-            "class": "Object",
-            "selector": "answerTo:with:"
-        },
-        {
-            "class": "Message",
-            "selector": "ignore"
-        },
-        {
-            "class": "Object",
-            "selector": "countMessagesWhile:"
-        },
-        {
-            "class": "Object",
-            "selector": "removeHaltOn:"
-        },
-        {
-            "class": "CompiledMethod",
-            "selector": "clear"
-        },
-        {
-            "class": "Object",
-            "selector": "spyMessagesUsing:"
-        },
-        {
-            "class": "CompiledMethod",
-            "selector": "wasCalled"
-        },
-        {
-            "class": "CompiledMethod",
-            "selector": "wrapper"
-        },
-        {
-            "class": "Message",
-            "selector": "answer:"
-        },
-        {
-            "class": "Object",
-            "selector": "aboutToSend:"
-        },
-        {
-            "class": "MessageSend",
-            "selector": "uninstallSpy"
-        },
-        {
-            "class": "Object",
-            "selector": "answerTo:evaluating:while:"
-        },
-        {
-            "class": "Object",
-            "selector": "aboutToSend:count:"
-        },
-        {
-            "class": "Object",
-            "selector": "afterReceiving:evaluate:"
-        },
-        {
-            "class": "Object",
-            "selector": "send:thru:"
-        },
-        {
-            "class": "Object",
-            "selector": "stopSpying:"
-        },
-        {
-            "class": "Object",
-            "selector": "answerTo:evaluating:"
-        },
-        {
-            "class": "Object",
-            "selector": "uninstallSpyOn:"
-        },
-        {
-            "class": "CompiledMethod",
-            "selector": "getWrapper"
-        },
-        {
-            "class": "Object",
-            "selector": "whenReceiving:evaluate:"
-        },
-        {
-            "class": "Closure",
-            "selector": "stopWhen:receives:"
-        },
-        {
-            "class": "Object",
-            "selector": "haltOn:"
-        },
-        {
-            "class": "Object",
-            "selector": "ignoreNext:"
-        },
-        {
-            "class": "Object",
-            "selector": "justSent:"
-        }
-    ]
-}
+[
+    {
+        "name": "Javascript-Compilation-Tests",
+        "classes": [],
+        "methods": []
+    },
+    {
+        "name": "Javascript-Development",
+        "classes": [
+            "JSEPrintSourceVisitor",
+            "JSEColorPrinterVisitor"
+        ],
+        "methods": [
+            {
+                "class": "PPParser",
+                "selector": "jseWithLoggingTo:"
+            },
+            {
+                "class": "PPParser",
+                "selector": "jseParseAndCountProductions:"
+            }
+        ]
+    },
+    {
+        "name": "Javascript-Tests",
+        "classes": [
+            "JavascriptCompilingTest",
+            "JavascriptNumericConversionTest",
+            "BasicJavascriptParserTest",
+            "JavascriptParserTest",
+            "JavascriptFormattingTest",
+            "JavascriptSyntaxTest",
+            "JSETestParserResource",
+            "JSETestFactory",
+            "JavascriptNodeTest",
+            "JavascriptLexicalTest",
+            "JavascriptUnicodeTest"
+        ],
+        "methods": [
+            {
+                "class": "PPParser",
+                "selector": "jseIsLeftRecursiveProduction:"
+            },
+            {
+                "class": "PPSequenceParser",
+                "selector": "jseIsLeftRecursiveProduction:"
+            },
+            {
+                "class": "PPParser",
+                "selector": "jseIsLeftRecursiveProduction"
+            }
+        ]
+    },
+    {
+        "name": "Javascript-Parser",
+        "classes": [
+            "JSEAbstractParser",
+            "JSEStrictLexicalParser",
+            "JSELexicalParser",
+            "JSERegexToken",
+            "JSEParsedNodesFactory",
+            "JSEToken",
+            "JSENilFactory",
+            "JSELiteralSequenceChoiceParser",
+            "JSEUnicodeTables",
+            "JSELookaheadParser",
+            "JSECharactersParser",
+            "JSEParser",
+            "JSETokenParser",
+            "JSESyntacticParser",
+            "JSESyntaxTreeFactory",
+            "JSENumericStringParser"
+        ],
+        "methods": [
+            {
+                "class": "PPChoiceParser",
+                "selector": "jseIsLeftRecursiveProduction:"
+            },
+            {
+                "class": "SmalltalkSession class",
+                "selector": "javascriptParserJustBound"
+            },
+            {
+                "class": "PPParser",
+                "selector": "jseToken:"
+            },
+            {
+                "class": "PPParser",
+                "selector": "allParsersDo:visited:"
+            },
+            {
+                "class": "PPParser",
+                "selector": "listSeparatedBy:"
+            },
+            {
+                "class": "PPParser",
+                "selector": "butNot:"
+            },
+            {
+                "class": "String",
+                "selector": "jseTokenParser"
+            },
+            {
+                "class": "PPParser",
+                "selector": "jseToken:valueBlock:"
+            },
+            {
+                "class": "PPParser",
+                "selector": "allParsersDo:"
+            },
+            {
+                "class": "Character",
+                "selector": "jseTokenParser"
+            }
+        ]
+    },
+    {
+        "name": "Javascript-AST",
+        "classes": [
+            "JSEEnumeratingForNode",
+            "JSEForEnumerateVariableNode",
+            "JSEUnaryOperatorNode",
+            "JSEStringNode",
+            "JSEThisNode",
+            "JSEPostfixOperatorNode",
+            "JSELetDeclarationNode",
+            "JSEGetPropertyAssignmentNode",
+            "JSEDoWhileNode",
+            "JSEGroupedExpressionNode",
+            "JSEVariableStatementNode",
+            "JSEIdentifierNode",
+            "JSEBinaryOperatorNode",
+            "JSEPropertyFunctionAssignmentNode",
+            "JSEForEnumerateElementsNode",
+            "JSEPropertyNode",
+            "JSEExceptionHandlerNode",
+            "JSEPrimitiveLiteralNode",
+            "JSELetStatementNode",
+            "JSESwitchClause",
+            "JSETryNode",
+            "JSECatchNode",
+            "JSECallNode",
+            "JSEVariableDeclarationNode",
+            "JSEParseNode",
+            "JSEArrayNode",
+            "JSEConditionalIterationNode",
+            "JSELiteralNode",
+            "JSECommaSeparatedExpressionsNode",
+            "JSEThrowNode",
+            "JSENullNode",
+            "JSEMemberNode",
+            "JSEConstStatementNode",
+            "JSEProgramNode",
+            "JSEConditionalForNode",
+            "JSEConditionalNode",
+            "JSEIterationNode",
+            "JSEDebuggerNode",
+            "JSERegularExpressionNode",
+            "JSESyntaxTreeVisitor",
+            "JSEFunctionExpressionNode",
+            "JSEForEnumerateLetNode",
+            "JSESetPropertyAssignmentNode",
+            "JSESwitchNode",
+            "JSEContinueNode",
+            "JSEBlockNode",
+            "JSEBracketMemberNode",
+            "JSEForWithVariableListNode",
+            "JSEFinallyNode",
+            "JSEConditionalExpressionNode",
+            "JSEIfNode",
+            "JSEPropertyAssignmentNode",
+            "JSEBreakNode",
+            "JSEExpressionStatementNode",
+            "JSEEncodingVisitor",
+            "JSEBooleanNode",
+            "JSEObjectNode",
+            "JSEFunctionBodyNode",
+            "JSEMacroNode",
+            "JSEIdentifierNameNode",
+            "JSEWithNode",
+            "JSEFunctionCallNode",
+            "JSEDotMemberNode",
+            "JSEAssignmentNode",
+            "JSESourceElementListNode",
+            "JSEFunctionDeclarationNode",
+            "JSESwitchDefaultClause",
+            "JSEForWithInitializerNode",
+            "JSENewNode",
+            "JSEEmptyStatementNode",
+            "JSEForWithLetListNode",
+            "JSELabelledStatementNode",
+            "JSEReturnNode",
+            "JSEForIterationNode",
+            "JSEOperatorNode",
+            "JSEWhileNode",
+            "JSEFunctionNode",
+            "JSEControlStatementNode",
+            "JSENumericNode",
+            "JSESwitchClauseNode"
+        ],
+        "methods": []
+    }
+]
 ```

@@ -19,13 +19,14 @@ These are the endpoints used to retrieve system code: projects, classes and meth
 | GET | [/dialect](code/dialect/get.md) | - | - | - |
 | GET | [/methods](code/methods/get.md) | Retrieve methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided) | selector<br />sending<br />class<br />referencing<br />category<br />using<br />assigning | | - |
 | GET | [/classes](code/classes/get.md) | Retrieve all subclasses of a given root class (if no root is provided, the uppermost class in the system is used). It is also possible get a tree-like structure as well as to limit the depth in the classes hierarchy | root<br />names<br />tree<br />depth | - |
-| GET | [/classes/{name}](code/classes/name/get.md) | Retrieve the class with a given name | - | - |
+| GET | [/classes/{name}](code/classes/name/get.md) | Retrieve a given class | - | - |
 | GET | [/classes/{name}/variables](code/classes/name/variables/get.md) | Retrive instance and class variables of a given class | - | - |
 | GET | [/classes/{name}/instance-variables](code/classes/name/instance-variables/get.md) | Retrive instance variables of a given class | - | - |
 | GET | [/classes/{name}/class-variables](code/classes/name/class-variables/get.md) | Retrive class variables of a given class | - | - |
 | GET | [/classes/{name}/categories](code/classes/name/categories/get.md) | Retrive categories of a given class | - | - |
 | GET | [/classes/{name}/methods](code/classes/name/methods/get.md) | Retrive methods of a given class | - | - |
 | GET | [/projects](code/projects/get.md) | Retrive all projects of a given root project (if no root is provided, the uppermost project in the system is used). It is also possible get a tree-like structure as well as to limit the depth in the projects hierarchy | root<br />names<br />tree<br />depth | - |
+| GET | [/projects/{name}](code/projects/name/get.md) | Retrive a given project | - | - |
 
 
 ## [Changes](changes)
