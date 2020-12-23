@@ -86,8 +86,8 @@ class CodeBrowser extends Component {
                 try {
                     let method;
                     for (const change of data.changes) {
-                        const change = await this.context.api.postChange(change);
-                        method = await this.context.api.getMethod(this.props.class.name, change.selector);
+                        const applied = await this.context.api.postChange(change);
+                        method = await this.context.api.getMethod(this.props.class.name, applied.selector);
                     }
                     const handler = this.props.onMethodCompiled;
                     if (handler) {handler(method)}
