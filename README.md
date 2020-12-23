@@ -11,11 +11,12 @@
     <br />
     <a href="https://websideserver.azurewebsites.net">View Demo</a>
     ·
-    <a href="https://github.com/guillermoamaral/Webside">Report Bug</a>
+    <a href="https://github.com/guillermoamaral/Webside/issues/new?labels=Type%3A+Defect">Report defect</a>
     ·
-    <a href="https://github.com/guillermoamaral/Webside">Request Feature</a>
+    <a href="https://github.com/guillermoamaral/Webside/issues/new?labels=Type%3A+Feature">Request feature</a>
   </p>
 </p>
+
 
 ## Webside
 Webside is both the specification of an [API](docs/api) to interact with an Smalltalk system (back-end) and a web IDE (front-end) built on top of such API.
