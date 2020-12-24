@@ -28,28 +28,29 @@ class Inspector extends Component {
     updateSlots = async (object) => {
         if (!object) {return}
         if (object.slots) {return}
-        const slots = [];
-        try {
-            if (object.indexable) {
-                for(var i = 0; i < object.size; i++) {slots.push(i + 1)}
-            } else {
-                const dictionary = await this.context.evaluateExpression('self isKindOf: Dictionary', true, false, {object: this.props.id});
-                if (dictionary.printString === 'true_') {return this.updateDictionarySlots(object)}
+        const slots = [];     
+        if (object.indexable) {
+            for(var i = 0; i < object.size; i++) {slots.push(i + 1)}
+        } else {
+            try {
                 const vars = await this.context.api.getInstanceVariables(object.class);
                 vars.forEach(v => slots.push(v.name));
             }
-            object.slots = [];
-            if (slots.length === 0) {return}
-            slots.forEach(async s => {
-                const path = object.path + '/' + s;
+            catch (error) {this.context.reportError(error)}
+        }
+        object.slots = [];
+        if (slots.length === 0) {return}
+        slots.forEach(async s => {
+            const path = object.path + '/' + s;
+            try {
                 const slot = await this.context.api.getSlot(this.props.root.id, path);
                 slot.name = s.toString();
                 slot.path = path;
                 object.slots.push(slot);
                 this.setState({objectTree: this.state.objectTree});
-            })
-        }
-        catch (error) {this.context.reportError(error)}
+            }
+            catch (error) {this.context.reportError(error)}
+        })
     }
 
     updateDictionarySlots = async (object) => {
