@@ -110,7 +110,7 @@ The component implementing this tool is [Inspector](../client/src/components/too
 
 
 #### Debugger
-This is the basic stack debugger exposing the frame stack of the process being debugged (debuggee), and the list of reachable bindings, the code and the current statement of each frame, plus the corresponding actions buttons to hop (step into), skip (step over), restart, resume and terminate the debuggee. As any Smalltalk debugger it allows to compile a method frame, restarting the process from that point with the new method in place.
+This is the basic stack debugger exposing the frame stack of the process being debugged (debuggee), and the list of reachable bindings, the code and the current statement of each frame, plus the corresponding actions buttons to step into, step over, restart, resume and terminate the debuggee. As any Smalltalk debugger it allows to compile a method frame, restarting the process from that point with the new method in place.
 
 The component implementing this tool is [Debugger](../client/src/components/tools/Debugger.js) and it mainly relies on [Debugging](api/debuggers) endpoints to interact with a live debugger at server side. It also consumes [Code](api/code), [Evaluations](api/evaluations) and [Objects](api/objects) endpoints. 
 

@@ -26,8 +26,7 @@ class Inspector extends Component {
     }
 
     updateSlots = async (object) => {
-        if (!object) {return}
-        if (object.slots) {return}
+        if (!object || object.slots) {return}
         const slots = [];     
         if (object.indexable) {
             for(var i = 0; i < object.size; i++) {slots.push(i + 1)}
@@ -42,11 +41,11 @@ class Inspector extends Component {
         if (slots.length === 0) {return}
         slots.forEach(async s => {
             const path = object.path + '/' + s;
+            const slot = {name: s.toString(), path: path};
+            object.slots.push(slot);
             try {
-                const slot = await this.context.api.getSlot(this.props.root.id, path);
-                slot.name = s.toString();
-                slot.path = path;
-                object.slots.push(slot);
+                const retrieved = await this.context.api.getSlot(this.props.root.id, path);
+                Object.assign(slot, retrieved);
                 this.setState({objectTree: this.state.objectTree});
             }
             catch (error) {this.context.reportError(error)}

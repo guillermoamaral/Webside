@@ -234,20 +234,20 @@ class API {
        catch (error) {this.handleError('Cannot fetch bindings of frame ' + index + ' in debugger ' + id, error)}
     }
 
-    async hopDebugger(id, index) {
+    async stepIntoDebugger(id, index) {
         try {
-           const response = await axios.post(this.baseUri + '/debuggers/' + id + '/hop?frame=' + index);
+           const response = await axios.post(this.baseUri + '/debuggers/' + id + '/stepinto?frame=' + index);
            return response.data;
        }
-       catch (error) {this.handleError('Cannot hop on frame '+ index + ' of debugger ' + id, error)}
+       catch (error) {this.handleError('Cannot step into on frame '+ index + ' of debugger ' + id, error)}
     }
 
-    async skipDebugger(id, index) {
+    async stepOverDebugger(id, index) {
         try {
-           const response = await axios.post(this.baseUri + '/debuggers/' + id + '/skip?frame=' + index);
+           const response = await axios.post(this.baseUri + '/debuggers/' + id + '/stepover?frame=' + index);
            return response.data;
        }
-       catch (error) {this.handleError('Cannot skip on frame '+ index + ' of debugger ' + id, error)}
+       catch (error) {this.handleError('Cannot step over on frame '+ index + ' of debugger ' + id, error)}
     }
 
     async restartDebugger(id, index, update = false) {

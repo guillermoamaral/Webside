@@ -3,8 +3,8 @@ import { Grid, Paper, IconButton, Tooltip } from '@material-ui/core';
 import clsx from 'clsx';
 import { Icon } from "@iconify/react";
 import RestartIcon from '@iconify/icons-mdi/replay';
-import HopIcon from '@iconify/icons-mdi/debug-step-into';
-import SkipIcon from '@iconify/icons-mdi/debug-step-over';
+import StepIntoIcon from '@iconify/icons-mdi/debug-step-into';
+import StepOverIcon from '@iconify/icons-mdi/debug-step-over';
 import SuspendIcon from '@iconify/icons-mdi/pause';
 import ResumeIcon from '@iconify/icons-mdi/play';
 import TerminateIcon from '@iconify/icons-mdi/stop';
@@ -94,14 +94,14 @@ class NativeDebugger extends Component {
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
-                    <Tooltip title="Hop" placement="top">
-                        <IconButton color="inherit" onClick={this.hopClicked} size="medium">
-                            <Icon icon={HopIcon}/>
+                    <Tooltip title="Step into" placement="top">
+                        <IconButton color="inherit" onClick={this.stepIntoClicked} size="medium">
+                            <Icon icon={StepIntoIcon}/>
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Skip" placement="top">
-                        <IconButton color="inherit" onClick={this.skipClicked} size="medium">
-                            <Icon icon={SkipIcon}/>
+                    <Tooltip title="Step over" placement="top">
+                        <IconButton color="inherit" onClick={this.stepOverClicked} size="medium">
+                            <Icon icon={StepOverIcon}/>
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Restart" placement="top">
