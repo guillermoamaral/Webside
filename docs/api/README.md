@@ -5,6 +5,7 @@ It's worth mentioning that this API is not "pure" REST at the moment of writing 
 
 The implementation of API calls, including helper services, is centralized in a class called [API](client/src/components/API.js).
 
+
 # Sections
 These are the different sections of the API.
 
