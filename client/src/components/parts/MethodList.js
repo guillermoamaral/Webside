@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import CustomList from '../controls/CustomList';
-import { ArrowUpDownBold, ArrowUpBold, ArrowDownBold } from 'mdi-material-ui';
+import OverridenIcon from '@material-ui/icons/ArrowDropDown';
+import OverridingIcon from '@material-ui/icons/ArrowDropUp';
+import OverridingOverridenIcon from '../icons/OverridingOverridenIcon';
 import { IDEContext } from '../IDEContext';
 import { withDialog } from '../dialogs';
 
@@ -87,13 +89,13 @@ class MethodList extends Component {
         const methods = !this.props.methods? [] : this.props.methods;
         const icons = methods.map(m => {
             if (m.overriding && m.overriden) {
-                return <ArrowUpDownBold style={{fontSize: size}}/>
+                return <OverridingOverridenIcon style={{fontSize: size}}/>
             }
             if (m.overrriding) {
-                return <ArrowUpBold style={{fontSize: size}}/>
+                return <OverridingIcon style={{fontSize: size}}/>
             }
             if (m.overriden) {
-                return <ArrowDownBold style={{fontSize: size}}/>    
+                return <OverridenIcon style={{fontSize: size}}/>    
             }
             return null
         });
