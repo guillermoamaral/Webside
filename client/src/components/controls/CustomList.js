@@ -30,7 +30,7 @@ class CustomList extends Component {
           <ListItem
             disableGutters={divider}
             autoFocus={selected}
-            style={{paddingTop: 0, paddingBottom: 0}}
+            style={{paddingTop: 0, paddingBottom: 0, paddingLeft: 0, paddingRight: 0}}
             button
             divider={divider}
             key={"item" + index}
@@ -38,7 +38,11 @@ class CustomList extends Component {
             onClick={event => this.itemSelected(item)}
             //onKeyDown={this.keyPressed}
             onContextMenu={this.openMenu}>
-              {icon && <Box pr={1}>{icon}</Box>}
+              <Box pr={0} m={0}>
+                <ListItemIcon style={{minWidth: 0}}>
+                  {icon}
+                </ListItemIcon>
+              </Box>
               <ListItemText primary={<Box fontWeight={selected? "fontWeightMedium" : "fontWeightRegular"}>{label}</Box>}/>
           </ListItem>
         )
@@ -68,11 +72,7 @@ class CustomList extends Component {
   getItemIcon = (index) => {
     const icons = this.props.icons;
     if (icons && index < icons.length && icons[index]) {
-      return (
-        <ListItemIcon style={{minWidth: 0}}>
-          {icons[index]}
-        </ListItemIcon>
-      )
+      return icons[index]
     }
   }
 

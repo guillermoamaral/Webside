@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import CustomList from '../controls/CustomList';
-import OverridenIcon from '@material-ui/icons/ArrowDropDown';
-import OverridingIcon from '@material-ui/icons/ArrowDropUp';
-import OverridingOverridenIcon from '../icons/OverridingOverridenIcon';
+import OverridenIcon from '@material-ui/icons/ExpandLess';
+import OverridingIcon from '@material-ui/icons/ExpandMore';
+import OverridingOverridenIcon from '@material-ui/icons/UnfoldMore';
 import { IDEContext } from '../IDEContext';
 import { withDialog } from '../dialogs';
 
@@ -91,7 +91,7 @@ class MethodList extends Component {
             if (m.overriding && m.overriden) {
                 return <OverridingOverridenIcon style={{fontSize: size}}/>
             }
-            if (m.overrriding) {
+            if (m.overriding) {
                 return <OverridingIcon style={{fontSize: size}}/>
             }
             if (m.overriden) {
