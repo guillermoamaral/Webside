@@ -38,7 +38,7 @@ class CustomList extends Component {
             onClick={event => this.itemSelected(item)}
             //onKeyDown={this.keyPressed}
             onContextMenu={this.openMenu}>
-              <Box pr={0} m={0}>
+              <Box p={0} style={{minWidth: 10}}>
                 <ListItemIcon style={{minWidth: 0}}>
                   {icon}
                 </ListItemIcon>

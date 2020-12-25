@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import CustomList from '../controls/CustomList';
-import OverridenIcon from '@material-ui/icons/ExpandLess';
-import OverridingIcon from '@material-ui/icons/ExpandMore';
+import OverridenIcon from '@material-ui/icons/ExpandMore';
+import OverridingIcon from '@material-ui/icons/ExpandLess';
 import OverridingOverridenIcon from '@material-ui/icons/UnfoldMore';
 import { IDEContext } from '../IDEContext';
 import { withDialog } from '../dialogs';
@@ -89,13 +89,13 @@ class MethodList extends Component {
         const methods = !this.props.methods? [] : this.props.methods;
         const icons = methods.map(m => {
             if (m.overriding && m.overriden) {
-                return <OverridingOverridenIcon style={{fontSize: size}}/>
+                return <OverridingOverridenIcon color="primary" style={{fontSize: size}}/>
             }
             if (m.overriding) {
-                return <OverridingIcon style={{fontSize: size}}/>
+                return <OverridingIcon color="primary" style={{fontSize: size}}/>
             }
             if (m.overriden) {
-                return <OverridenIcon style={{fontSize: size}}/>    
+                return <OverridenIcon color="primary" style={{fontSize: size}}/>    
             }
             return null
         });

@@ -295,29 +295,39 @@ class IDE extends Component {
     }
   }
   
-  browseSenders = (selector) => {
-    this.api.getSenders(selector)
-      .then(methods => this.openMethodBrowser(methods, 'Senders of ' + selector)); 
+  browseSenders = async (selector) => {
+    try {
+      const senders = await this.api.getSenders(selector);
+      this.openMethodBrowser(senders, 'Senders of ' + selector);
+    } catch(error) {this.reportError(error)} 
   }
 
-  browseLocalSenders = (selector, classname) => {
-    this.api.getLocalSenders(selector, classname)
-      .then(methods => this.openMethodBrowser(methods, 'Local senders of ' + selector)); 
+  browseLocalSenders = async (selector, classname) => {
+    try {
+      const senders = await this.api.getLocalSenders(selector, classname);
+      this.openMethodBrowser(senders, 'Local senders of ' + selector);
+    } catch(error) {this.reportError(error)}
   }
 
-  browseImplementors = (selector) => {
-    this.api.getImplementors(selector)
-      .then(methods => this.openMethodBrowser(methods, 'Implementors of ' + selector)); 
+  browseImplementors = async (selector) => {
+    try {
+      const implementors = await this.api.getImplementors(selector);
+      this.openMethodBrowser(implementors, 'Implementors of ' + selector);
+    } catch(error) {this.reportError(error)}
   }
 
-  browseLocalImplementors = (selector, classname) => {
-    this.api.getLocalImplementors(selector, classname)
-      .then(methods => this.openMethodBrowser(methods, 'Local implementors of ' + selector)); 
+  browseLocalImplementors = async (selector, classname) => {
+    try {
+      const implementors = await this.api.getLocalImplementors(selector, classname);
+      this.openMethodBrowser(implementors, 'Local implementors of ' + selector);
+    } catch(error) {this.reportError(error)} 
   }
 
-  browseReferences = (classname) => {
-    this.api.getReferences(classname)
-      .then(methods => this.openMethodBrowser(methods, 'References to ' + classname)); 
+  browseReferences = async (classname) => {
+    try {
+      const references = await this.api.getReferences(classname);
+      this.openMethodBrowser(references, 'References to ' + classname);
+    } catch(error) {this.reportError(error)} 
   }
 
   browseLastChanges = async () => {
@@ -329,8 +339,10 @@ class IDE extends Component {
   }
 
   debugExpression = async (expression, context) => {
-    const id = await this.api.debugExpression(expression, context);
-    this.openDebugger(id, 'Debugging expression');
+    try {
+      const id = await this.api.debugExpression(expression, context);
+      this.openDebugger(id, 'Debugging expression');
+    } catch(error) {this.reportError(error)}
   }
 
   evaluateExpression = async (expression, sync, pin, context) => {
@@ -352,23 +364,31 @@ class IDE extends Component {
   }
 
   runTest = async (classname, selector) => {
-    const status = await this.api.runTest(classname, selector);
-    this.openTestRunner(status.id, 'Test ' + selector); 
+    try {
+      const status = await this.api.runTest(classname, selector);
+      this.openTestRunner(status.id, 'Test ' + selector);
+    } catch(error) {this.reportError(error)}
   }
 
   runTestClass = async (classname) => {
-    const status = await this.api.runTestClass(classname);
-    this.openTestRunner(status.id, 'Test ' + classname);
+    try {
+      const status = await this.api.runTestClass(classname);
+      this.openTestRunner(status.id, 'Test ' + classname);
+    } catch(error) {this.reportError(error)}
   }
 
   runTestProject = async (projectname) => {
-    const status = await this.api.runTestProject(projectname);
-    this.openTestRunner(status.id, 'Test ' + projectname);
+    try {
+      const status = await this.api.runTestProject(projectname);
+      this.openTestRunner(status.id, 'Test ' + projectname);
+    } catch(error) {this.reportError(error)}
   }
 
   profileExpression = async (expression, context) => {
-    const id = await this.api.profileExpression(expression, context);
-    this.openProfiler(id)
+    try {
+      const id = await this.api.profileExpression(expression, context);
+      this.openProfiler(id);
+    } catch(error) {this.reportError(error)}
   }
 
   expandSidebar = () => {
