@@ -35,13 +35,13 @@ class Debugger extends PureComponent {
             let selected = null;
             if (frames.length > 0) {
                 selected = frames[0];
-                await this.updateFrame(selected)
+                await this.updateFrame(selected);
             }
             this.setState({
                 frames: frames,
                 selectedFrame: selected,
                 selectedBinding: selected.bindings.find(b => b.name = 'self')
-            })
+            });
         }
         catch (error) {this.context.reportError(error)}
     }

@@ -203,8 +203,8 @@ class API {
     // Debugging...
     async createDebugger(id) {
         try {
-            const process = {process: id};
-            const response = await axios.post(this.baseUri + '/debuggers', process);
+            const evaluation = {evaluation: id};
+            const response = await axios.post(this.baseUri + '/debuggers', evaluation);
             return response.data;
        }
        catch (error) {this.handleError('Cannot create debugger on evaluation ' + id, error)}
@@ -236,7 +236,7 @@ class API {
 
     async stepIntoDebugger(id, index) {
         try {
-           const response = await axios.post(this.baseUri + '/debuggers/' + id + '/stepinto?frame=' + index);
+           const response = await axios.post(this.baseUri + '/debuggers/' + id + '/frames/' + index + '/stepinto');
            return response.data;
        }
        catch (error) {this.handleError('Cannot step into on frame '+ index + ' of debugger ' + id, error)}
@@ -244,7 +244,7 @@ class API {
 
     async stepOverDebugger(id, index) {
         try {
-           const response = await axios.post(this.baseUri + '/debuggers/' + id + '/stepover?frame=' + index);
+           const response = await axios.post(this.baseUri + '/debuggers/' + id + '/frames/' + index + '/stepover');
            return response.data;
        }
        catch (error) {this.handleError('Cannot step over on frame '+ index + ' of debugger ' + id, error)}
@@ -252,7 +252,7 @@ class API {
 
     async restartDebugger(id, index, update = false) {
         try {
-           const response = await axios.post(this.baseUri + '/debuggers/' + id + '/restart?frame=' + index + '&update=' + update);
+           const response = await axios.post(this.baseUri + '/debuggers/' + id + '/frames/' + index + '/restart?update=' + update);
            return response.data;
        }
        catch (error) {this.handleError('Cannot restart on frame '+ index + ' of debugger ' + id, error)}

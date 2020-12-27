@@ -81,12 +81,12 @@ In case of an evaluation error, be it as the response of a synchronic evaluation
 ```json
 {
 	"description": "string",
-	"process": "string",
+	"evaluation": "string",
 	"stack": "string"
 }
 ```
 Here, `description` is the error text describing what went wrong.  
-`process` is the ID of the process created for the evaluation and it serves as the parameter to create a debugger on that process.  
+`evaluation` is the ID of the evaluation created and it serves as the parameter to create a debugger on the evaluation process.  
 `stack` is a string contaning the stack trace (only frame headers or labels) as separated lines (this is meant to be used as a snapshot for the user before entering in an actual debugger).
 
 For example, the following error is returned after trying to evaluate `1 + `:
@@ -95,7 +95,7 @@ For example, the following error is returned after trying to evaluate `1 + `:
 500
 {
 	"description": "primary missing",
-	"process": "{1F60400E-40F3-4934-A8B6-555D048DC9FF}",
+	"evaluation": "{1F60400E-40F3-4934-A8B6-555D048DC9FF}",
 	"stack": "SmalltalkCompiler>>error:stretch:\rSmalltalkCompiler>>error: 'primary missing' at: 3 \rSmalltalkParser>>error: 'primary missing' at: 3 \rSmalltalkParser>>error: 'primary missing' \rSmalltalkParser>>binaryMessage:\rSmalltalkParser>>binarySequence:\rSmalltalkParser>>expression\rSmalltalkParser>>statement\rSmalltalkParser>>statements\rSmalltalkParser>>addStatementsTo:\rSmalltalkParser>>addBodyTo:\rSmalltalkParser>>headlessMethod\rSmalltalkCompiler>>parseExpression\r[] in SmalltalkCompiler>>compileExpression:\rObject(BlockClosure)>>setUnwind:\rBlockClosure>>ensure:\rProcess>>useExceptionHandler:while:\rBlockClosure>>on:do:\rCompiler>>protect:\rSmalltalkCompiler>>compileExpression: '1 +' \rCompiler>>evaluate: '1 +' for: nil \r[] in Compiler>>evaluate:for:ifFail:\rObject(BlockClosure)>>setUnwind:\rBlockClosure>>ensure:\rProcess>>useExceptionHandler:while:\rBlockClosure>>on:do:\rCompiler>>evaluate: '1 +' for: nil ifFail: nil \r[] in WebsideEvaluation>>evaluate\r[] in WebsideEvaluation>>evaluateBlock:\rMessageSend(Message)>>performOn:\rMessageSend>>perform\rMessageSend>>evaluate\rProcess>>privatePerform:\rProcess>>basicEvaluate:\rMessageSend>>newProcess\r"
 }
 ```
