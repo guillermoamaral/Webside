@@ -60,15 +60,12 @@ class IDE extends Component {
       transcriptOpen: false,
       unreadErrorsCount: 0,
       transcriptText: this.welcomeMessage(),
-      pages: [],
-      projectNames: [],
-      classNames: [],
+      pages: []
     }
   }
 
   componentDidMount() {
-    this.getNames();
-    //this.openNativeDebugger('{B3AE5087-3EBC-43E2-B4A5-95DD37D802FE}')
+    this.cacheNames();
   }
 
   updateSettings() {
@@ -140,23 +137,21 @@ class IDE extends Component {
     })
   }
 
-  getNames = async () => {
-    var projectNames, classNames;
+  cacheNames = async () => {
     try {
-      projectNames = await this.api.getProjectNames();
+      this.projectNames = await this.api.getProjectNames();
     }
     catch (error) {
-      projectNames = [];
+      this.projectNames = [];
       this.reportError(error)
     }
     try {
-      classNames = await this.api.getClassNames();
+      this.classNames = await this.api.getClassNames();
     }
     catch (error) {
-      classNames = [];
+      this.classNames = [];
       this.reportError(error)
     }
-    this.setState({projectNames: projectNames, classNames: classNames})
   }
 
   addPage(label, icon, component) {
@@ -173,7 +168,7 @@ class IDE extends Component {
     this.setState({selectedPage: page})
   }
 
-  removePage = async (page) => {
+  preRemovePage = async (page) => {
     try {
       if (page.component.type.name === 'Inspector') {
         await this.api.unpinObject(page.component.props.id)
@@ -188,11 +183,20 @@ class IDE extends Component {
         await this.api.deleteWorkspace(page.component.props.id)
       }
     } catch(error) {this.reportError(error)}
+  }  
+
+  removePage = async (page) => {
+    this.preRemovePage(page);
     const {pages, selectedPage} = this.state;
     let i = pages.indexOf(page);
     const j = pages.indexOf(selectedPage);
     const selected = (i <= j)? pages[Math.max(i - 1, 0)] : selectedPage;
     this.setState({pages: pages.filter(p => p !== page), selectedPage: selected})
+  }
+
+  removeAllPages = async () => {
+    await Promise.all(this.state.pages.map(async p => await this.preRemovePage(p)));
+    this.setState({pages: []});
   }
 
   openTranscript() {
@@ -284,12 +288,12 @@ class IDE extends Component {
         baseUri={this.baseUri}
         developer={this.developer}
         onSave={() => {
+          this.removeAllPages();
           this.updateSettings();
           this.updateTheme(); 
           this.initializeAPI();
           this.initializeChat();
-          page = this.state.pages.find(p => p.label === 'Configuration');
-          this.removePage(page);
+          this.cacheNames();
         }}/>;
       this.addPage('Configuration', <SettingsIcon/>, settings);
     }
@@ -441,8 +445,8 @@ class IDE extends Component {
     console.log('rendering IDE')
     const context = {
       api: this.api,
-      projectNames: this.state.projectNames,
-      classNames: this.state.classNames,
+      projectNames: this.projectNames,
+      classNames: this.classNames,
       openChat: this.openChat,
       browseProject: this.openSystemBrowser,
       browseClass: this.openClassBrowser,
@@ -473,7 +477,7 @@ class IDE extends Component {
                 styles={styles}
                 sidebarExpanded={this.state.sidebarExpanded}
                 expandSidebar={this.expandSidebar}
-                searchOptions={this.state.classNames || []}
+                searchOptions={this.classNames || []}
                 onAvatarClicked={this.openSettings}/>
               <Sidebar
                 styles={styles}

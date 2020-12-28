@@ -112,7 +112,7 @@ class CodeEditor extends Component {
             {label: 'Debug it (Ctrl+u)', action: this.debugExpression},
             {label: 'Profile it', action: this.profileExpression},
             null,
-            {label: 'Browse (Ctrl+n)', action: this.browseClass},
+            {label: 'Browse (Ctrl+b)', action: this.browseClass},
             {label: 'Senders (Alt+n)', action: this.browseSenders},
             {label: 'Implementors (Alt+m)', action: this.browseImplementors},
             {label: 'Class references (Alt+r)', action: this.browseReferences}
