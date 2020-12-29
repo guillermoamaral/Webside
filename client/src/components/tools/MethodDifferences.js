@@ -7,13 +7,6 @@ import CodeMerge from '../parts/CodeMerge';
 
 class MethodDifferences extends Component {
     static contextType = IDEContext;
-    constructor(props) {
-        super(props);
-        this.state = {
-            leftMethod: null,
-            rightMethod: null,
-        }
-    }
 
     render() {
         const styles = this.props.styles;
@@ -22,7 +15,9 @@ class MethodDifferences extends Component {
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
                     <CodeMerge
-                        styles={styles}/>
+                        styles={styles}
+                        leftCode={this.props.leftMethod.source}
+                        rightCode={this.props.rightMethod.source}/>
                 </Grid>
             </Grid>
         )

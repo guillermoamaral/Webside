@@ -67,9 +67,17 @@ class IDE extends Component {
 
   componentDidMount() {
     this.cacheNames();
-    this.openMethodDifferences(null, null, null)
+    this.testMethodDifferences();
   }
 
+  testMethodDifferences = async () => {
+    const m1 = await this.api.getMethod('SortedCollection', 'collect:');
+    const m2 = await this.api.getMethod('Collection', 'collect:');
+    console.log(m1)
+    console.log(m2)
+    this.openMethodDifferences(m1, m2, 'Testing method diff')
+  }
+ 
   updateSettings() {
     const cookies = this.props.cookies;
     this.dialect = cookies.get('dialect');
@@ -301,8 +309,8 @@ class IDE extends Component {
     }
   }
   
-  openMethodDifferences = (method1, method2, title = 'Differences') => {
-    const browser = <MethodDifferences styles={this.props.styles} method1={method1} method2={method2}/>;
+  openMethodDifferences = (leftMethod, rightMethod, title = 'Differences') => {
+    const browser = <MethodDifferences styles={this.props.styles} leftMethod={leftMethod} rightMethod={rightMethod}/>;
     this.addPage(title, <MethodBrowserIcon/>, browser);
   }
 
