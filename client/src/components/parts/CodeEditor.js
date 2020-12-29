@@ -4,6 +4,7 @@ import AcceptIcon from '@material-ui/icons/CheckCircle';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import PopupMenu from '../controls/PopupMenu';
 import { IDEContext } from '../IDEContext';
+require('diff-match-patch');
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
 require('codemirror/theme/smalltalk.css');
@@ -21,11 +22,18 @@ require('codemirror/addon/display/fullscreen.css');
 require('codemirror/addon/scroll/annotatescrollbar.js');
 require('codemirror/addon/lint/lint.js');
 require('codemirror/addon/lint/lint.css');
+require('codemirror/addon/merge/merge.js');
+require('codemirror/addon/merge/merge.css');
+require('codemirror/addon/fold/foldgutter.css');
+require('codemirror/addon/fold/foldcode');
+require('codemirror/addon/fold/brace-fold');
+require('codemirror/addon/fold/comment-fold');
 
 class CodeEditor extends Component {
     static contextType = IDEContext;
 
     constructor(props){
+        
         super(props);
         this.editor = null;
         this.state = {

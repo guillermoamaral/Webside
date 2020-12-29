@@ -44,7 +44,8 @@ import Profiler from './tools/Profiler';
 import NativeDebugger from './tools/NativeDebugger';
 import ChatClient from './ChatClient';
 import Chat from './tools/Chat';
-import Settings from './Settings'
+import MethodDifferences from './tools/MethodDifferences';
+import Settings from './Settings';
 
 class IDE extends Component {
   constructor(props){
@@ -66,6 +67,7 @@ class IDE extends Component {
 
   componentDidMount() {
     this.cacheNames();
+    this.openMethodDifferences(null, null, null)
   }
 
   updateSettings() {
@@ -299,6 +301,11 @@ class IDE extends Component {
     }
   }
   
+  openMethodDifferences = (method1, method2, title = 'Differences') => {
+    const browser = <MethodDifferences styles={this.props.styles} method1={method1} method2={method2}/>;
+    this.addPage(title, <MethodBrowserIcon/>, browser);
+  }
+
   browseSenders = async (selector) => {
     try {
       const senders = await this.api.getSenders(selector);

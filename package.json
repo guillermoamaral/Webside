@@ -12,6 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "@material-ui/core": "^3.0.3",
+    "diff-match-patch": "^1.0.5",
     "express": "^4.16.3",
     "nodemon": "^1.19.4",
     "socket.io": "^2.1.1"
