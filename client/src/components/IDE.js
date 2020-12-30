@@ -71,10 +71,8 @@ class IDE extends Component {
   }
 
   testMethodDifferences = async () => {
-    const m1 = await this.api.getMethod('SortedCollection', 'collect:');
-    const m2 = await this.api.getMethod('Collection', 'collect:');
-    console.log(m1)
-    console.log(m2)
+    const m1 = await this.api.getMethod('Float', 'asTrueFraction');
+    const m2 = await this.api.getMethod('Float', 'asTrueFraction');;
     this.openMethodDifferences(m1, m2, 'Testing method diff')
   }
  

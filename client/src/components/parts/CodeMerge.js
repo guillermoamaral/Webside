@@ -27,29 +27,32 @@ require('codemirror/addon/fold/comment-fold');
 class CodeMerge extends Component {
     componentDidMount() {
         var target = this.refs['react-diff-code-view'];
-        console.log(target)
-        target.innerHTML = "";
+        //target.innerHTML = "";
         CodeMirror.MergeView(target, Object.assign({}, {
-          readOnly: true,
+          //readOnly: true,
           lineNumbers: true,
-          theme: 'material',
+          theme: "material",
+          //lineSeparator: '\r',
           value: this.props.leftCode,
           orig: this.props.rightCode,
           mode: "smalltalk",
           highlightDifferences: "highlight",
           connect: null,
+          indentUnit: 10,
           revertButtons: false,
           styleActiveLine: true,
           lineWrap: true,
+          matchTags: {bothTags: true},
           smartIndent: true,
           matchBrackets: true,
-          foldGutter:true,
+          foldGutter: true,
+          lineWrapping: true,
           gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]}, this.props.options || {}));
     }
     
     render() {
         return (
-            <div ref="react-diff-code-view">
+            <div ref="react-diff-code-view" className={this.props.styles.codeMirror}>
                 
             </div>
         )

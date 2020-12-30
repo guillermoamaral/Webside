@@ -1,6 +1,26 @@
-.highlight {
-    color: orange;
-  }
+.highlight {color: orange}
 
 .cm-matchhighlight {background-color: lightblue}
+
 .CodeMirror-selection-highlight-scrollbar {background-color: darkblue}
+
+.CodeMirror-merge-r-chunk {
+  background: rgba(255, 142, 97, 0.2);
+  border: none;
+}
+
+.CodeMirror-merge-gap {
+  background: #303030;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.CodeMirror-merge-r-connect {
+  fill: rgba(255, 142, 97, 0.2);
+  stroke: none;
+}
+
+.CodeMirror-merge {
+  position: relative;
+  border: none;
+}
