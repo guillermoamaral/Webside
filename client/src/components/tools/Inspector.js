@@ -58,6 +58,12 @@ class Inspector extends Component {
         this.setState({objectTree: this.state.objectTree});
     }
 
+    selectSlot = (path) => {
+        let object = this.state.root;
+        path.forEach(name => object = object.slots.find(s => s.name === name));
+        this.setState({selectedObject: object});
+    }
+
     slotSelected = async (object) => {
         await this.updateObject(object);
         this.setState({selectedObject: object});
@@ -81,7 +87,7 @@ class Inspector extends Component {
                         {path.slice(0, path.length - 1).map((s, i) => {
                             const subpath = path.slice(0, i + 1);
                             return (
-                                <Link key={s} onClick={e => {console.log(subpath)}}>
+                                <Link key={s} onClick={e => {this.selectSlot(subpath)}}>
                                     {s}
                                 </Link>
                             )})
@@ -96,7 +102,7 @@ class Inspector extends Component {
                             itemLabel="name"
                             id={o => this.objectPath(o)}
                             children={"slots"}
-                            selectedItem={this.selectedObject}
+                            selectedItem={selectedObject}
                             onExpand={this.slotExpanded}
                             onSelect={this.slotSelected}/>
                     </Paper>
