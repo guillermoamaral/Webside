@@ -54,7 +54,7 @@ class CustomTree extends Component {
         if (typeof getter == "string")  {
             const id = item[getter];
             return id? id.toString() : ''}
-        return getter(item)
+        return getter(item);
     }
 
     getItemLabel = (item) => {

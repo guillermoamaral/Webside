@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Box, Grid, Paper } from '@material-ui/core';
+import { Grid, Paper, Breadcrumbs, Link, Typography} from '@material-ui/core';
 import clsx from 'clsx';
 import { IDEContext } from '../IDEContext';
 import CustomTree from '../controls/CustomTree';
@@ -12,7 +12,7 @@ class Inspector extends Component {
         const root = this.props.root;
         if (root) {
             root.name = 'self';
-            root.path = '';    
+            root.path = [];    
         }
         this.state = {
             root: root,
@@ -25,9 +25,15 @@ class Inspector extends Component {
         await this.updateSlots(this.state.root);
     }
 
+    objectPath(object) {
+        let path = '';
+        object.path.forEach(s => path = path + '/' + s);
+        return path;
+    }
+
     updateObject = async (object) => {
         try {
-            const retrieved = await this.context.api.getSlot(this.props.root.id, object.path);
+            const retrieved = await this.context.api.getSlot(this.props.root.id, this.objectPath(object));
             Object.assign(object, retrieved);
         }
         catch (error) {this.context.reportError(error)}
@@ -45,7 +51,7 @@ class Inspector extends Component {
             }
             catch (error) {this.context.reportError(error)}
         }
-        object.slots = names.map(name => {return {name: name, path: object.path + '/' + name}});
+        object.slots = names.map(name => {return {name: name, path: [...object.path, name]}});
         if (!object.indexable || object.size < 20) {
             await Promise.all(object.slots.map(async slot => await this.updateObject(slot)));
         }
@@ -67,14 +73,28 @@ class Inspector extends Component {
         const {objectTree, selectedObject} = this.state;
         const {styles, showWorkspace} = this.props;
         const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
+        const path = selectedObject.path;
         return (
             <Grid container spacing={1}>
+                <Grid item xs={12} md={12} lg={12}>
+                    <Breadcrumbs>
+                        {path.slice(0, path.length - 1).map((s, i) => {
+                            const subpath = path.slice(0, i + 1);
+                            return (
+                                <Link key={s} onClick={e => {console.log(subpath)}}>
+                                    {s}
+                                </Link>
+                            )})
+                        }
+                        <Typography>{(path[path.length - 1] || "") + " (" + selectedObject.class + ")"}</Typography>
+                    </Breadcrumbs>
+                </Grid>
                 <Grid item xs={12} md={6} lg={6}>
                     <Paper className={fixedHeightPaper} variant="outlined">
                         <CustomTree
                             items={objectTree}
                             itemLabel="name"
-                            id="path"
+                            id={o => this.objectPath(o)}
                             children={"slots"}
                             selectedItem={this.selectedObject}
                             onExpand={this.slotExpanded}
