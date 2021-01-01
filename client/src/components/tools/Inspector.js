@@ -87,12 +87,12 @@ class Inspector extends Component {
                         {path.slice(0, path.length - 1).map((s, i) => {
                             const subpath = path.slice(0, i + 1);
                             return (
-                                <Link key={s} onClick={e => {this.selectSlot(subpath)}}>
+                                <Link color="inherit" key={s} onClick={e => {this.selectSlot(subpath)}}>
                                     {s}
                                 </Link>
                             )})
                         }
-                        <Typography>{(path[path.length - 1] || "") + " (" + selectedObject.class + ")"}</Typography>
+                        <Typography color="primary">{(path[path.length - 1] || "self") + " (" + selectedObject.class + ")"}</Typography>
                     </Breadcrumbs>
                 </Grid>
                 <Grid item xs={12} md={6} lg={6}>
