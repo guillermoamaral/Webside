@@ -33,7 +33,6 @@ class CodeEditor extends Component {
     static contextType = IDEContext;
 
     constructor(props){
-        
         super(props);
         this.editor = null;
         this.state = {
@@ -50,8 +49,9 @@ class CodeEditor extends Component {
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.source !== state.source 
-            || (props.selectedRanges && props.selectedRanges !== state.selectedRanges)) {
+        if (/*!state.dirty &&*/ 
+            (props.source !== state.source 
+                || (props.selectedRanges && props.selectedRanges !== state.selectedRanges))) {
             return {
                 source: props.source,
                 selectedRanges: props.selectedRanges,
@@ -308,7 +308,7 @@ class CodeEditor extends Component {
                             editorDidMount={editor => {this.editorDidMount(editor)}}
                             onGutterClick={(editor, n) => {this.setBreakpoint(n)}}
                             onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
-                            onChange={(editor, data, value) => {this.valueChanged(value)}}
+                            onChange={(editor, data, value) => {/*this.valueChanged2(value)*/}}
                             onContextMenu={(editor, event) => {this.openMenu(event)}}/>
                             {(evaluating || progress) && <LinearProgress variant="indeterminate"/>}
                     </Paper>
