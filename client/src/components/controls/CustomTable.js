@@ -41,7 +41,7 @@ class CustomTable extends Component {
     
     render() {
         const columns = this.props.columns;
-        const rows = this.props.rows;
+        const rows = this.props.rows || [];
         return (
             //<Scrollable>
             <div>

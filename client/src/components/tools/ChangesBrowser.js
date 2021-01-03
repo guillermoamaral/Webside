@@ -59,12 +59,14 @@ class ChangesBrowser extends Component {
                     </Paper>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
-                    <CodeEditor
-                        context={{class: change? change.class : null}}
-                        styles={this.props.styles}
-                        lineNumbers
-                        source={change? change.sourceCode : ''}
-                        showAccept={false}/>
+                    <Paper variant="outlined">
+                        <CodeEditor
+                            context={{class: change? change.class : null}}
+                            styles={this.props.styles}
+                            lineNumbers
+                            source={change? change.sourceCode : ''}
+                            showAccept={false}/>
+                    </Paper>
                 </Grid> 
             </Grid>
         )

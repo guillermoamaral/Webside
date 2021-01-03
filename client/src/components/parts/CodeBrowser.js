@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Link } from '@material-ui/core';
+import { Grid, Paper, Link } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import { IDEContext } from '../IDEContext';
 import CodeEditor from './CodeEditor';
@@ -195,17 +195,19 @@ class CodeBrowser extends Component {
                     </ToggleButtonGroup>    
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
-                    <CodeEditor
-                        context={this.props.context}
-                        styles={this.props.styles}
-                        lineNumbers={true}
-                        source={this.currentSource()}
-                        mode={(mode === 'comment') ? 'text' : 'smalltalk'}
-                        lintAnnotations={this.currentLintAnnotations()}
-                        selectedRanges={!this.props.selectedInterval? [] : [this.props.selectedInterval]}
-                        showAccept
-                        onAccept={this.acceptClicked}
-                        onRename={target => this.renameClass(target)}/>
+                    <Paper variant="outlined">
+                        <CodeEditor
+                            context={this.props.context}
+                            styles={this.props.styles}
+                            lineNumbers={true}
+                            source={this.currentSource()}
+                            mode={(mode === 'comment') ? 'text' : 'smalltalk'}
+                            lintAnnotations={this.currentLintAnnotations()}
+                            selectedRanges={!this.props.selectedInterval? [] : [this.props.selectedInterval]}
+                            showAccept
+                            onAccept={this.acceptClicked}
+                            onRename={target => this.renameClass(target)}/>
+                    </Paper>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     {timestamp? 'Modified on ' : ''}

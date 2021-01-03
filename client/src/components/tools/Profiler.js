@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { IDEContext } from '../IDEContext';
-import { Grid, LinearProgress } from '@material-ui/core';
+import { Grid, Paper, LinearProgress } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import CodeEditor from '../parts/CodeEditor';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -115,11 +115,13 @@ class Profiler extends Component {
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     {!loading &&
-                        <CodeEditor
-                            styles={this.props.styles}
-                            lineNumbers={true}
-                            source={!selectedMethod? "" : selectedMethod.source}
-                            showAccept={false}/>}
+                        <Paper variant="outlined">
+                            <CodeEditor
+                                styles={this.props.styles}
+                                lineNumbers={true}
+                                source={!selectedMethod? "" : selectedMethod.source}
+                                showAccept={false}/>
+                        </Paper>}
                 </Grid>
             </Grid>
         )

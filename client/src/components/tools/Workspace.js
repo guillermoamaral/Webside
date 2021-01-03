@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {
     Grid,
+    Paper,
     Accordion,
     AccordionSummary,
-    AccordionDetails,
     Typography,
     IconButton,
     Box
@@ -21,7 +21,7 @@ class Workspace extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            expression: 'Dictionary new\r\tat: \'number\' put: 1;\r\tat: \'boolean\' put: false;\r\tat: \'date\' put: Date today;\r\tyourself.\r\r1 @ 2 extent: 10',
+            expression: '',
             opensInspector: true,
             inspectors: [],
             evaluating: false,
@@ -74,16 +74,18 @@ class Workspace extends Component {
             <Grid container spacing={1}>
                 <Grid item xs={12} md={8} lg={8}>
                     <Grid item xs={12} md={12} lg={12}>
-                        <CodeEditor
-                            context={{workspace: this.props.id}}
-                            styles={this.props.styles}
-                            lineNumbers={true}
-                            source={expression}
-                            showAccept={true}
-                            acceptIcon={<PlayIcon/>}
-                            onAccept={this.evaluateClicked}
-                            onChange={this.expressionChanged}
-                            evaluating={evaluating}/>
+                        <Paper variant="outlined">
+                            <CodeEditor
+                                context={{workspace: this.props.id}}
+                                styles={this.props.styles}
+                                lineNumbers={true}
+                                source={expression}
+                                showAccept={true}
+                                acceptIcon={<PlayIcon/>}
+                                onAccept={this.evaluateClicked}
+                                onChange={this.expressionChanged}
+                                evaluating={evaluating}/>
+                        </Paper>
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={4} lg={4}>

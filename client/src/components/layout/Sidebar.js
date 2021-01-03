@@ -16,6 +16,7 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 import SettingsIcon from '@material-ui/icons/Settings';
 import TranscriptIcon from '../icons/TranscriptIcon';
 import ChangesBrowserIcon from '../icons/ChangesBrowserIcon';
+import InspectorIcon from '../icons/InspectorIcon';
 import { withDialog } from '../dialogs';
 
 class Sidebar extends Component {
@@ -48,7 +49,13 @@ class Sidebar extends Component {
                             </Badge>
                         </ListItemIcon>
                         <ListItemText primary="Changes"/>
-                    </ListItem>                    
+                    </ListItem>
+                    <ListItem button onClick={e => this.props.onPinnedObjectsClicked()}>
+                        <ListItemIcon>                                
+                            <InspectorIcon/>
+                        </ListItemIcon>
+                        <ListItemText primary="Changes"/>
+                    </ListItem>              
                     <ListItem button onClick={e => this.props.onPeersClicked()}>
                         <ListItemIcon>
                             <PeopleIcon/>

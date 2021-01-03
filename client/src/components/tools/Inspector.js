@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Paper, Breadcrumbs, Link, Typography} from '@material-ui/core';
+import { Grid, Box, Paper, Breadcrumbs, Link, Typography} from '@material-ui/core';
 import clsx from 'clsx';
 import { IDEContext } from '../IDEContext';
 import CustomTree from '../controls/CustomTree';
@@ -9,20 +9,30 @@ class Inspector extends Component {
     static contextType = IDEContext;
     constructor(props) {
         super(props);
-        const root = this.props.root;
+        const root = props.root;
         if (root) {
             root.name = 'self';
-            root.path = [];    
+            root.path = [];
         }
         this.state = {
-            root: root,
             objectTree: !root? [] : [root],
             selectedObject: !root? null : root,
         }
     }
 
-    async componentDidMount() {
-        await this.updateSlots(this.state.root);
+    componentDidMount() {
+        this.updateSlots(this.props.root)
+    }
+
+    async componentDidUpdate(prevProps) {
+        const root = this.props.root;
+        if (root && (!prevProps.root || root.id !== prevProps.root.id)) {
+            root.name = 'self';
+            root.path = [];
+            await this.updateSlots(root);
+            console.log(root)
+            this.setState({objectTree: [root], selectedObject: root})
+        }
     }
 
     objectPath(object) {
@@ -59,7 +69,7 @@ class Inspector extends Component {
     }
 
     selectSlot = (path) => {
-        let object = this.state.root;
+        let object = this.props.root;
         path.forEach(name => object = object.slots.find(s => s.name === name));
         this.setState({selectedObject: object});
     }
@@ -79,10 +89,11 @@ class Inspector extends Component {
         const {objectTree, selectedObject} = this.state;
         const {styles, showWorkspace} = this.props;
         const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
-        const path = selectedObject.path;
+        const path = selectedObject? selectedObject.path : [];
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
+                    <Box ml={2} display="flex">
                     <Breadcrumbs>
                         {path.slice(0, path.length - 1).map((s, i) => {
                             const subpath = path.slice(0, i + 1);
@@ -92,8 +103,12 @@ class Inspector extends Component {
                                 </Link>
                             )})
                         }
-                        <Typography color="primary">{(path[path.length - 1] || "self") + " (" + selectedObject.class + ")"}</Typography>
+                        <Typography
+                            color="primary">{(path[path.length - 1] || "self") + 
+                                (selectedObject? " (" + selectedObject.class + ")" : "")}
+                        </Typography>
                     </Breadcrumbs>
+                    </Box>
                 </Grid>
                 <Grid item xs={12} md={6} lg={6}>
                     <Paper className={fixedHeightPaper} variant="outlined">
@@ -108,19 +123,23 @@ class Inspector extends Component {
                     </Paper>
                 </Grid>
                 <Grid item xs={12} md={6} lg={6}>
-                    <CodeEditor
-                        context={{object: this.props.id}}
-                        styles={styles}
-                        lineNumbers={false}
-                        source={!selectedObject? "" : selectedObject.printString}
-                        onChange={this.props.onChange}
-                        onAccept={this.props.onAccept}/>
+                    <Paper variant="outlined">
+                        <CodeEditor
+                            context={{object: this.props.id}}
+                            styles={styles}
+                            lineNumbers={false}
+                            source={!selectedObject? "" : selectedObject.printString}
+                            onChange={this.props.onChange}
+                            onAccept={this.props.onAccept}/>
+                    </Paper>
                 </Grid>
                 {showWorkspace && <Grid item xs={12} md={12} lg={12}>
-                     <CodeEditor
-                        context={{object: this.props.id}}
-                        styles={styles}
-                        lineNumbers={false}/>
+                    <Paper variant="outlined">
+                        <CodeEditor
+                            context={{object: this.props.id}}
+                            styles={styles}
+                            lineNumbers={false}/>
+                    </Paper>
                 </Grid>}
             </Grid>
         )

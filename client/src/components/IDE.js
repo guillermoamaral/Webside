@@ -46,6 +46,7 @@ import ChatClient from './ChatClient';
 import Chat from './tools/Chat';
 import MethodDifferences from './tools/MethodDifferences';
 import Settings from './Settings';
+import ObjectBrowser from './tools/ObjectBrowser';
 
 class IDE extends Component {
   constructor(props){
@@ -67,7 +68,7 @@ class IDE extends Component {
 
   componentDidMount() {
     this.cacheNames();
-    this.testMethodDifferences();
+    //this.testMethodDifferences();
   }
 
   testMethodDifferences = async () => {
@@ -212,10 +213,20 @@ class IDE extends Component {
     this.addPage('Transcript', <TranscriptIcon />, transcript);
   }
 
-  openInspectors() {
-    this.api.getObjects()
-      .then(objects => {objects.forEach(o => this.openInspector(o))})
-      .catch(error => {})
+  openInspectors = async () => {
+    try {
+      const objects = await this.api.getObjects();
+      objects.forEach(o => this.openInspector(o));
+    }
+    catch(error) {this.reportError(error)}
+  }
+
+  openPinnedObjects = async () => {
+    try {
+      const objects = await this.api.getObjects();
+      this.openObjectBrowser(objects, 'Pinned Objects');
+    }
+    catch(error) {this.reportError(error)}
   }
 
   openSystemBrowser = (projectname) => {
@@ -255,7 +266,12 @@ class IDE extends Component {
 
   openChangesBrowser = (changes, title = 'Changes') => {
     const browser = <ChangesBrowser styles={this.props.styles} changes={changes}/>;
-    this.addPage(title + ' (' + changes.length + ')', <ChangesBrowserIcon className={this.props.styles.changesBrowserIcon} />, browser);
+    this.addPage(title + ' (' + changes.length + ')', <ChangesBrowserIcon/>, browser);
+  }
+
+  openObjectBrowser = (objects, title = 'Objects') => {
+    const browser = <ObjectBrowser styles={this.props.styles} objects={objects}/>;
+    this.addPage(title + ' (' + objects.length + ')', <InspectorIcon/>, browser);
   }
 
   openTestRunner = (id, title = 'Test Runner') => {
@@ -498,6 +514,7 @@ class IDE extends Component {
                 unreadErrorsCount={this.state.unreadErrorsCount}
                 onTranscriptClicked={this.toggleShowTranscript}
                 onChangesClicked={this.browseLastChanges}
+                onPinnedObjectsClicked={this.openPinnedObjects}
                 onPeersClicked={this.openChat}
                 onSettingsClicked={this.openSettings}
                 onClose={this.collapseSidebar}/>

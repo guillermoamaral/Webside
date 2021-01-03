@@ -174,11 +174,13 @@ class Debugger extends PureComponent {
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={2} lg={2}>
-                            <CodeEditor
-                                styles={this.props.styles}
-                                lineNumbers={false}
-                                source={selectedBinding? selectedBinding.value : ''}
-                                onAccept={this.saveBinding}/>
+                            <Paper variant="outlined">
+                                <CodeEditor
+                                    styles={this.props.styles}
+                                    lineNumbers={false}
+                                    source={selectedBinding? selectedBinding.value : ''}
+                                    onAccept={this.saveBinding}/>
+                            </Paper>
                         </Grid>
                     </Grid>
                 </Grid>
