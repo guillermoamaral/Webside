@@ -195,17 +195,24 @@ class IDE extends Component {
   }  
 
   removePage = async (page) => {
-    this.preRemovePage(page);
+    await this.preRemovePage(page);
     const {pages, selectedPage} = this.state;
     let i = pages.indexOf(page);
-    const j = pages.indexOf(selectedPage);
-    const selected = (i <= j)? pages[Math.max(i - 1, 0)] : selectedPage;
+    const selected = pages.length === 1?
+      null :
+      (page !== selectedPage)?
+        selectedPage :
+        i > 0? pages[i - 1] : pages[i + 1];
     this.setState({pages: pages.filter(p => p !== page), selectedPage: selected})
   }
 
   removeAllPages = async () => {
     await Promise.all(this.state.pages.map(async p => await this.preRemovePage(p)));
     this.setState({pages: []});
+  }
+
+  pageLabeled(label) {
+    return this.state.pages.find(p => p.label === label);
   }
 
   openTranscript() {
@@ -222,11 +229,16 @@ class IDE extends Component {
   }
 
   openPinnedObjects = async () => {
-    try {
-      const objects = await this.api.getObjects();
-      this.openObjectBrowser(objects, 'Pinned Objects');
+    const page = this.state.pages.find(p => p.label.startsWith('Pinned Objects'));
+    if (page) {
+      this.selectPage(page);
+    } else {
+      try {
+        const objects = await this.api.getObjects();
+        this.openObjectBrowser(objects, 'Pinned Objects');
+      }
+      catch(error) {this.reportError(error)}
     }
-    catch(error) {this.reportError(error)}
   }
 
   openSystemBrowser = (projectname) => {
@@ -293,7 +305,7 @@ class IDE extends Component {
     if (contactname === this.developer) return;
     const contact = this.chatClient.contactNamed(contactname);
     if (contactname && !contact) return;
-    const page = this.state.pages.find(p => p.label === 'Chat');
+    const page = this.pageLabeled('Chat');
     if (page) {
       this.selectPage(page);
     } else {
@@ -303,7 +315,7 @@ class IDE extends Component {
   }
 
   openSettings = () => {
-    var page = this.state.pages.find(p => p.label === 'Configuration');
+    const page = this.pageLabeled('Configuration');
     if (page) {
       this.selectPage(page);
     } else {
@@ -540,13 +552,13 @@ class IDE extends Component {
                         keepMounted
                         open={this.state.addPageMenuOpen}
                         onClose={() => {this.setState({addPageMenuOpen: false})}}>
-                          <MenuItem onClick={this.addSystemBrowserClicked}>
+                          <MenuItem onClick={this.addWorkspaceClicked}>
                             <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
                               <Box pt={1} pr={1}>
-                                <SystemBrowserIcon/>
+                                <WorkspaceIcon/>
                               </Box>
                               <Box>
-                                System Browser
+                                Workspace
                               </Box>
                             </Box>
                           </MenuItem>
@@ -560,13 +572,13 @@ class IDE extends Component {
                               </Box>
                             </Box>
                           </MenuItem>
-                          <MenuItem onClick={this.addWorkspaceClicked}>
+                          <MenuItem onClick={this.addSystemBrowserClicked}>
                             <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center">
                               <Box pt={1} pr={1}>
-                                <WorkspaceIcon/>
+                                <SystemBrowserIcon/>
                               </Box>
                               <Box>
-                                Workspace
+                                System Browser
                               </Box>
                             </Box>
                           </MenuItem>

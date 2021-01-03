@@ -93,7 +93,7 @@ class Inspector extends Component {
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
-                    <Box ml={2} display="flex">
+                    <Box ml={2} display="flex" alignItems="center">
                     <Breadcrumbs>
                         {path.slice(0, path.length - 1).map((s, i) => {
                             const subpath = path.slice(0, i + 1);

@@ -31,15 +31,17 @@ class ObjectBrowser extends Component {
     }
     
     render() {
+        const selectedObject = this.state.selectedObject;
         const rows = this.props.objects;
         const columns = [
             {id: 'id', label: 'ID', align: 'left'},
             {id: 'printString', label: 'Print String', minWidth: 200, align: 'left'},
         ];
         const styles = this.props.styles;
+        const ow = selectedObject? 8 : 12;
         return (
             <Grid container spacing={1}>
-                <Grid item xs={8} md={8} lg={8}>
+                <Grid item xs={ow} md={ow} lg={ow}>
                     <Paper variant="outlined">      
                         <CustomTable
                             styles={styles}
@@ -49,14 +51,14 @@ class ObjectBrowser extends Component {
                             menuOptions={this.menuOptions()}/>
                     </Paper>
                 </Grid>
-                <Grid item xs={4} md={4} lg={4}>
+                {selectedObject && <Grid item xs={4} md={4} lg={4}>
                     <Paper variant="outlined">
                         <Inspector
                             styles={styles}
-                            root={this.state.selectedObject}
+                            root={selectedObject}
                             showWorkspace={false}/>
                         </Paper>
-                </Grid>
+                </Grid>}
             </Grid>
         )
     }
