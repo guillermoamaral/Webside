@@ -11,6 +11,7 @@ class ClassTree extends Component {
         if (!superclass) {return}
         try {
             const name = await this.props.dialog.prompt({title: 'Create subclass', required: true});
+            //This is not correct as the class might be indexed from its creation... 
             const definition = superclass.name + ' subclass: #' + name + 
                 ' instanceVariableNames: \'\' classVariableNames: \'\' poolDictionaries: \'\'';
             await this.context.api.defineClass(name, definition);

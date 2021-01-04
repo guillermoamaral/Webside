@@ -36,7 +36,7 @@ class FrameList extends Component {
 
     menuOptions() {
         return [
-            {label: 'Browse', action: this.browseClass},
+            {label: 'Browse class', action: this.browseClass},
             {label: 'Senders', action: this.browseSenders},
             {label: 'Local senders', action: this.browseSenders},
             {label: 'Implementors', action: this.browseImplementors},

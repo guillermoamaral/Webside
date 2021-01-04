@@ -73,7 +73,7 @@ class MethodList extends Component {
             {label: 'Rename', action: this.renameMethod},
             {label: 'Remove', action: this.removeMethod},
             null,
-            {label: 'Browse', action: this.browseClass},
+            {label: 'Browse class', action: this.browseClass},
             {label: 'Senders', action: this.browseSenders},
             {label: 'Local senders', action: this.browseLocalSenders},
             {label: 'Implementors', action: this.browseImplementors},

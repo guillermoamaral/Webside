@@ -1,8 +1,9 @@
 # Apply a change
 Apply a change to the system.
-This is one of the most important endpoints as it centralizes every change that the user ones to apply to the system.
+This is one of the most important endpoints as it centralizes every change the user can apply to the system.
+Important: the list of possible changes at the moment of writing this documentation is by no means a closed list and it can be extended to support more changes and refactorings.
 
-Pay special attention to the way compilation errors should be handled by the API so Webside can react properly.
+Special attention must be paid to the way the API should handle compilation errors so Webside can react properly.
 
 **URL**: `/changes`
 
