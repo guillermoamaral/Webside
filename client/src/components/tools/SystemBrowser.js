@@ -414,74 +414,69 @@ class SystemBrowser extends Component {
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
-                    <Grid container spacing={0}>
-                        <Grid item xs={11} md={11} lg={11}>
-                            <Grid container spacing={1}>
-                                <Grid item xs={3} md={3} lg={3}>
-                                    <SearchList
-                                        options={this.context.projectNames}
-                                        onChange={projectname => {this.changeRootProject(projectname)}}/>
-                                </Grid>
-                                <Grid item xs={3} md={3} lg={3}/>
-                                <Grid item xs={3} md={3} lg={3}>
-                                    <Box display="flex" justifyContent="center">
-                                        <RadioGroup
-                                            name="side"
-                                            value={selectedSide}
-                                            onChange={this.sideChanged}
-                                            defaultValue="instance"
-                                            row>
-                                            <FormControlLabel value="instance" control={<Radio size="small" color="primary"/>} label="Instance"/>
-                                            <FormControlLabel value="class" control={<Radio size="small" color="primary"/>} label="Class" />
-                                        </RadioGroup>
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={3} md={3} lg={3}/>
-                                <Grid item xs={12} md={3} lg={3}>
-                                    <Paper className={fixedHeightPaper} variant="outlined">
-                                        <ProjectTree
-                                            roots={root? this.cache[root]? [this.cache[root]] : [] : []}
-                                            selectedProject={selectedProject}
-                                            onSelect={this.projectSelected}/>
-                                    </Paper>
-                                </Grid>
-                                <Grid item xs={12} md={3} lg={3}>
-                                    <Paper className={fixedHeightPaper} variant="outlined">
-                                        <ClassTree
-                                            roots={selectedProject? selectedProject.classes : []}
-                                            selectedClass={selectedClass}
-                                            onExpand={this.classExpanded}
-                                            onSelect={this.classSelected}
-                                            onRemove={this.classRemoved}
-                                            onRename={this.classRenamed}
-                                            onCreate={this.classDefined}/>
-                                    </Paper>
-                                </Grid>
-                                <Grid item xs={12} md={3} lg={3}>
-                                    <Paper className={fixedHeightPaper} variant="outlined">
-                                        <CategoryList
-                                            class={selectedClass}
-                                            categories={this.currentCategories()}
-                                            selectedCategory={selectedCategory}
-                                            onAdd={this.categoryAdded}
-                                            onRename={this.categoryRenamed}
-                                            onSelect={this.categorySelected}
-                                            onRemove={this.categoryRemoved}/>
-                                    </Paper>
-                                </Grid>
-                                <Grid item xs={12} md={3} lg={3}>
-                                    <Paper className={fixedHeightPaper} variant="outlined">
-                                        <MethodList
-                                            methods={this.currentMethods()}
-                                            selectedMethod={selectedMethod}
-                                            onSelect={this.methodSelected}
-                                            onRename={this.methodRenamed}
-                                            onRemove={this.methodRemoved}/>
-                                    </Paper>
-                                </Grid>
-                            </Grid>
+                    <Grid container spacing={1}>
+                        <Grid item xs={3} md={3} lg={3}>
+                            <SearchList
+                                options={this.context.projectNames}
+                                onChange={projectname => {this.changeRootProject(projectname)}}/>
                         </Grid>
-                        <Grid item xs={1} md={1} lg={1}></Grid>
+                        <Grid item xs={3} md={3} lg={3}/>
+                        <Grid item xs={3} md={3} lg={3}>
+                            <Box display="flex" justifyContent="center">
+                                <RadioGroup
+                                    name="side"
+                                    value={selectedSide}
+                                    onChange={this.sideChanged}
+                                    defaultValue="instance"
+                                    row>
+                                    <FormControlLabel value="instance" control={<Radio size="small" color="primary"/>} label="Instance"/>
+                                    <FormControlLabel value="class" control={<Radio size="small" color="primary"/>} label="Class" />
+                                </RadioGroup>
+                            </Box>
+                        </Grid>
+                        <Grid item xs={3} md={3} lg={3}/>
+                        <Grid item xs={12} md={3} lg={3}>
+                            <Paper className={fixedHeightPaper} variant="outlined">
+                                <ProjectTree
+                                    roots={root? this.cache[root]? [this.cache[root]] : [] : []}
+                                    selectedProject={selectedProject}
+                                    onSelect={this.projectSelected}/>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} md={3} lg={3}>
+                            <Paper className={fixedHeightPaper} variant="outlined">
+                                <ClassTree
+                                    roots={selectedProject? selectedProject.classes : []}
+                                    selectedClass={selectedClass}
+                                    onExpand={this.classExpanded}
+                                    onSelect={this.classSelected}
+                                    onRemove={this.classRemoved}
+                                    onRename={this.classRenamed}
+                                    onCreate={this.classDefined}/>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} md={3} lg={3}>
+                            <Paper className={fixedHeightPaper} variant="outlined">
+                                <CategoryList
+                                    class={selectedClass}
+                                    categories={this.currentCategories()}
+                                    selectedCategory={selectedCategory}
+                                    onAdd={this.categoryAdded}
+                                    onRename={this.categoryRenamed}
+                                    onSelect={this.categorySelected}
+                                    onRemove={this.categoryRemoved}/>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12} md={3} lg={3}>
+                            <Paper className={fixedHeightPaper} variant="outlined">
+                                <MethodList
+                                    methods={this.currentMethods()}
+                                    selectedMethod={selectedMethod}
+                                    onSelect={this.methodSelected}
+                                    onRename={this.methodRenamed}
+                                    onRemove={this.methodRemoved}/>
+                            </Paper>
+                        </Grid>
                     </Grid>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
