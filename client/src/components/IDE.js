@@ -16,7 +16,7 @@ import AddIcon from '@material-ui/icons/AddCircle';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import API from './API';
 import { IDEContext } from './IDEContext';
-import { DialogProvider } from './dialogs';
+import { DialogProvider } from './dialogs/index';
 import TranscriptIcon from './icons/TranscriptIcon';
 import SystemBrowserIcon from './icons/SystemBrowserIcon';
 import ClassBrowserIcon from './icons/ClassBrowserIcon';

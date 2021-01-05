@@ -17,7 +17,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import TranscriptIcon from '../icons/TranscriptIcon';
 import ChangesBrowserIcon from '../icons/ChangesBrowserIcon';
 import InspectorIcon from '../icons/InspectorIcon';
-import { withDialog } from '../dialogs';
+import { withDialog } from '../dialogs/index';
 
 class Sidebar extends Component {
     render() {

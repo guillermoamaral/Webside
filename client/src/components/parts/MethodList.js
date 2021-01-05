@@ -4,7 +4,7 @@ import OverridenIcon from '@material-ui/icons/ExpandMore';
 import OverridingIcon from '@material-ui/icons/ExpandLess';
 import OverridingOverridenIcon from '@material-ui/icons/UnfoldMore';
 import { IDEContext } from '../IDEContext';
-import { withDialog } from '../dialogs';
+import { withDialog } from '../dialogs/index';
 
 class MethodList extends Component {
     static contextType = IDEContext;

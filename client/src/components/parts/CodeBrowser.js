@@ -3,7 +3,7 @@ import { Grid, Paper, Link } from '@material-ui/core';
 import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import { IDEContext } from '../IDEContext';
 import CodeEditor from './CodeEditor';
-import { withDialog } from '../dialogs';
+import { withDialog } from '../dialogs/index';
 
 class CodeBrowser extends Component {
     static contextType = IDEContext;

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Grid, Box, Paper, Breadcrumbs, Link, Typography} from '@material-ui/core';
 import clsx from 'clsx';
 import { IDEContext } from '../IDEContext';
-import CustomTree from '../controls/CustomTree';
+import ObjectTree from '../parts/ObjectTree';
 import CodeEditor from '../parts/CodeEditor';
 
 class Inspector extends Component {
@@ -30,7 +30,6 @@ class Inspector extends Component {
             root.name = 'self';
             root.path = [];
             await this.updateSlots(root);
-            console.log(root)
             this.setState({objectTree: [root], selectedObject: root})
         }
     }
@@ -112,12 +111,9 @@ class Inspector extends Component {
                 </Grid>
                 <Grid item xs={12} md={6} lg={6}>
                     <Paper className={fixedHeightPaper} variant="outlined">
-                        <CustomTree
-                            items={objectTree}
-                            itemLabel="name"
-                            id={o => this.objectPath(o)}
-                            children={"slots"}
-                            selectedItem={selectedObject}
+                        <ObjectTree
+                            roots={objectTree}
+                            selectedObject={selectedObject}
                             onExpand={this.slotExpanded}
                             onSelect={this.slotSelected}/>
                     </Paper>

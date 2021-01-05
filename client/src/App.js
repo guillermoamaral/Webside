@@ -8,7 +8,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { createMuiTheme, CssBaseline } from '@material-ui/core';
 import styles from './styles';
 import { ThemeProvider } from '@material-ui/styles';
-import { DialogProvider } from './components/dialogs';
+import { DialogProvider } from './components/dialogs/index';
 import { CookiesProvider } from 'react-cookie';
 import Settings from './components/Settings';
 import IDE from './components/IDE';

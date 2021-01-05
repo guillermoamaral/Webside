@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import CustomList from '../controls/CustomList';
 import { IDEContext } from '../IDEContext';
-import { withDialog } from '../dialogs';
+import { withDialog } from '../dialogs/index';
 
 class CategoryList extends Component {
     static contextType = IDEContext;

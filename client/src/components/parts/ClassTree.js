@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import CustomTree from '../controls/CustomTree';
 import { IDEContext } from '../IDEContext';
-import { withDialog } from '../dialogs';
+import { withDialog } from '../dialogs/index';
 import Scrollable from '../controls/Scrollable';
 
 class ClassTree extends Component {
