@@ -115,6 +115,10 @@ class IDE extends Component {
         mainPrimaryColor = blue[300];
         mainSecondaryColor = blue[800];
         break;
+      case "Dolphin":
+          mainPrimaryColor = '#1d7bb9';
+          mainSecondaryColor = blue[800];
+      break;
       default:
         mainPrimaryColor = "#00000";
         mainSecondaryColor = "#00000";
