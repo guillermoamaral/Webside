@@ -36,6 +36,7 @@ class CustomList extends Component {
             key={"item" + index}
             selected={selected}
             onClick={event => this.itemSelected(item)}
+            onDoubleClick={event => this.itemDoubleClicked(item)}
             //onKeyDown={this.keyPressed}
             onContextMenu={this.openMenu}>
               <Box p={0} style={{minWidth: 10}}>
@@ -48,6 +49,11 @@ class CustomList extends Component {
         )
       })
     )
+  }
+  
+  itemDoubleClicked = (item) => {
+    const handler = this.props.onDoubleClick;
+    if (handler) {handler(item)}
   }
 
   itemSelected = (item) => {

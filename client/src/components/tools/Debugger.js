@@ -55,6 +55,15 @@ class Debugger extends PureComponent {
         this.setState({selectedBinding: binding});
     }
 
+    bindingDoubleClicked = async (binding) => {
+        try {
+            const context = {debugger: this.props.id, frame: this.state.selectedFrame? this.state.selectedFrame.index : null};
+            const object = await this.context.evaluateExpression(binding.name, false, true, context);
+            this.context.inspectObject(object);          
+        }
+        catch (error) {this.context.reportError(error)}
+    }
+
     updateFrame = async (frame) => {
         try {
             if (!frame.method) {
@@ -170,7 +179,8 @@ class Debugger extends PureComponent {
                                     itemLabel="name"
                                     selectedItem ={selectedBinding}
                                     items={selectedFrame? selectedFrame.bindings : []}
-                                    onSelect={this.bindingSelected}/>
+                                    onSelect={this.bindingSelected}
+                                    onDoubleClick={this.bindingDoubleClicked}/>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={2} lg={2}>
