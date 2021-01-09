@@ -1,5 +1,5 @@
 # Retrieve an object
-Retrive a pinned object by ID.
+Retrive the pinned object with a given ID.
 
 **URL**: `/objects/{id}`
 
@@ -25,9 +25,9 @@ Retrive a pinned object by ID.
 ```json
 {
     "id": "{207CDBB1-6311-4503-A066-1A89B39A1465}",
-    "class": "WebsideObject",
+    "class": "Rectangle",
     "indexable": false,
     "size": 0,
-    "printString": "WebsideObject on 1 @ 2 rightBottom: 11 @ 12"
+    "printString": "1 @ 2 rightBottom: 11 @ 12"
 }
 ```

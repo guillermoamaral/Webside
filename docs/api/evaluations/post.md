@@ -1,5 +1,5 @@
 # Evaluate an expression
-This is endpoint is used to evaluate an expression, either synchronically or asynchronically.
+Evaluate an expression, either synchronously or asynchronously.
 
 Pay special attention to the way compilation errors should be handled by the API so Webside can react properly.
 
@@ -19,15 +19,15 @@ Pay special attention to the way compilation errors should be handled by the API
     "profile": "boolean"
 }
 ```
-Where `sync` indicates whether the call should be blocked until the evaluation finishes or will return the ID of the evaluation to follow its state.  
-The asynchronic evaluation allows Webside to have control over the evaluation, being able to offer the user the chance to cancel the evaluation or interrupt it and debug it (a feature that is not implemented at the moment of writing this documentation).  
-Once Webside has the evaluation ID it can use a synchronic call to [`/objects/{id}`](../objects/id/get.md) (with the ID of the evaluation) to avoid polling the state of the evaluation before getting the object.
+Where `sync` indicates whether the call should be blocked until the evaluation finishes or will return immediately, with the ID of the just created evaluation to follow its state.  
+The asynchronous evaluation allows Webside to have control over the evaluation, being able to offer the user the chance to cancel the evaluation or interrupt it and debug it (a feature that is not implemented at the moment of writing this documentation).  
+Once Webside has the evaluation ID, it can make a synchronous call to [`/objects/{id}`](../objects/id/get.md) (with the ID of the evaluation) to avoid polling the state of the evaluation before getting the object.
 
 `pin` makes the resulting object to be pinned (with the same ID of the evaluation that generated it) or be discarded. Of course, an asyncrhonic evaluation will keep (pin) the object once the evaluation finishes so the client is able to get it.
 
-`debug` inserts a breakpoint right before the expression and triggers a synchronic evaluation (as it has a breakpoint it should return immediately), returing the ID of a debugger created on the active evaluation (process).
+`debug` inserts a breakpoint right before the expression and triggers a synchronous evaluation (as it has a breakpoint it should return immediately), returing the ID of a debugger created on the active evaluation (process).
 
-`profile` creates a profiler and forces a synchronic profiling of the expression at hand and then returns the ID of the created profiler to fetch their results.
+`profile` creates a profiler and forces a synchronous profiling of the expression at hand and then returns the ID of the created profiler to fetch their results.
 
 `context` can be one of the following:
 
@@ -64,7 +64,7 @@ Here `debugger` is the ID of an existing debugger and `frame` is the index of th
 
 **Code** : `200 OK`
 
-**Content**: in case of an asynchronic evaluation the API should return:
+**Content**: in case of an asynchronous evaluation the API should return:
 ```json
 {
     "id": "string",
@@ -74,10 +74,10 @@ Here `debugger` is the ID of an existing debugger and `frame` is the index of th
 ```
 Where `state` is either `pending` or `finished`.
 
-In case of a synchronic evaluation the result is the same as the one of [`/objects/{id}`](../objects/id/get.md).
+In case of a synchronous evaluation the result is the same as the one of [`/objects/{id}`](../objects/id/get.md).
 
 ### Error Codes Details
-In case of an evaluation error, be it as the response of a synchronic evaluation or as the result of trying the get the resulting object after an asynchronic evaluation, the server should respond with code `500` and a payload with the following aspect:
+In case of an evaluation error, be it as the response of a synchronous evaluation or as the result of trying the get the resulting object after an asynchronous evaluation, the server should respond with code `500` and a payload with the following aspect:
 ```json
 {
 	"description": "string",
@@ -100,7 +100,7 @@ For example, the following error is returned after trying to evaluate `1 + `:
 }
 ```
 
-**Example:**: evaluate `3 + 4` synchronically, without pinning the resulting object, with no context:
+**Example:**: evaluate `3 + 4` synchronously, without pinning the resulting object, with no context:
 `POST /evaluations`
 ```json
 {

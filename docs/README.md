@@ -27,7 +27,7 @@ Webside is both the specification of an API to interact with an Smalltalk system
 
 The [API](api) can be divided into two conceptually different subsets of endpoints:
 * Static: used to browse and change code.
-* Dynamic: used to evaluate expressions, both synchronically and asynchronically, and retrieve the resulting objects, as well as to debug and profile such expressions.
+* Dynamic: used to evaluate expressions, both synchronously and asynchronously, and retrieve the resulting objects, as well as to debug and profile such expressions.
 
 ## A bit of history
 This project started as a personal training with the aim of learning React in particular, and improving my JavaScript skills in general.
