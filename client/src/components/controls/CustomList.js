@@ -137,7 +137,6 @@ class CustomList extends Component {
     return (
       <Scrollable>
           <List
-            onContextMenu={this.openMenu}
             onKeyDown={this.keyPressed}
             style={{paddingTop: 0, paddingBottom: 0}}>
                 {this.createItems()}
