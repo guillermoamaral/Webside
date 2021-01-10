@@ -18,7 +18,7 @@ class FrameList extends Component {
         if (frame) {this.context.browseSenders(frame.method.selector)}
     }
 
-    browseSenders = (frame) => {
+    browseLocalSenders = (frame) => {
         if (frame) {this.context.browseLocalSenders(frame.method.selector, frame.class.name)}
     }
 
@@ -38,7 +38,7 @@ class FrameList extends Component {
         return [
             {label: 'Browse class', action: this.browseClass},
             {label: 'Senders', action: this.browseSenders},
-            {label: 'Local senders', action: this.browseSenders},
+            {label: 'Local senders', action: this.browseLocalSenders},
             {label: 'Implementors', action: this.browseImplementors},
             {label: 'Local implementors', action: this.browseLocalImplementors},
             {label: 'Class references', action: this.browseReferences},
@@ -56,6 +56,6 @@ class FrameList extends Component {
             />
         )
     }
-};
+}
 
 export default FrameList;

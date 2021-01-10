@@ -57,7 +57,7 @@ class CodeEditor extends Component {
                 source: props.source,
                 selectedRanges: props.selectedRanges,
                 value: props.source,
-                ranges: props.selectedRanges,
+                ranges: props.selectedRanges || [],
                 evaluating: props.evaluating,
             }
         }
@@ -93,7 +93,10 @@ class CodeEditor extends Component {
     selectRanges(ranges){
         if (ranges.length > 0) {
             const selections = ranges.map(r => {
-                return {anchor: this.lineChAt(r.start - 1), head: this.lineChAt(r.end)}
+                return {
+                    anchor: this.lineChAt(r.start - 1),
+                    head: this.lineChAt(r.end)
+                }
             });
             this.editor.setSelections(selections)
         }
@@ -131,7 +134,7 @@ class CodeEditor extends Component {
     valueChanged = (value) => {
         const handler = this.props.onChange;
         if (handler) {handler(value)}
-        const ranges = value === this.state.value? this.state.ranges : null;
+        const ranges = value === this.state.value? this.state.ranges : [];
         this.setState({value: value, dirty: true, ranges: ranges})
     }
     
@@ -267,7 +270,7 @@ class CodeEditor extends Component {
             React.cloneElement(this.props.acceptIcon)
             : <AcceptIcon size="large" style={{fontSize: 30}}/>;
         const {value, ranges, evaluating, progress} = this.state;
-        if (ranges && ranges.length > 0) {this.selectRanges(ranges)}
+        if (ranges.length > 0) {this.selectRanges(ranges)}
         return (
             <Grid container spacing={1}>
                 <Grid item xs={11} md={showAccept? 11 : 12} lg={showAccept? 11 : 12}>
@@ -308,7 +311,7 @@ class CodeEditor extends Component {
                         editorDidMount={editor => {this.editorDidMount(editor)}}
                         onGutterClick={(editor, n) => {this.setBreakpoint(n)}}
                         onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
-                        onChange={(editor, data, value) => {/*this.valueChanged2(value)*/}}
+                        onChange={(editor, data, value) => {this.setState({ranges: this.state.ranges})}}
                         onContextMenu={(editor, event) => {this.openMenu(event)}}/>
                         {(evaluating || progress) && <LinearProgress variant="indeterminate"/>}
                 </Grid>
