@@ -477,7 +477,7 @@ class IDE extends Component {
   addClassBrowserClicked = () => {
     this.setState({addPageMenuOpen: false});
     this.openClassBrowser();
-    this.openCoderLikeBrowser();
+    //this.openCoderLikeBrowser();
   }
 
   addWorkspaceClicked = async () => {
