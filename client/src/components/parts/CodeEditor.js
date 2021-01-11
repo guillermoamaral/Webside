@@ -39,9 +39,9 @@ class CodeEditor extends Component {
         this.state = {
             source: props.source,
             selectedRanges: [],
+            selectRanges: true,
             dirty: false,
             value: props.source,
-            ranges: [],
             menuOpen: false,
             menuPosition: {x: null, y: null},
             evaluating: false,
@@ -56,8 +56,8 @@ class CodeEditor extends Component {
             return {
                 source: props.source,
                 selectedRanges: props.selectedRanges,
+                selectRanges: true,
                 value: props.source,
-                ranges: props.selectedRanges || [],
                 evaluating: props.evaluating,
             }
         }
@@ -146,8 +146,7 @@ class CodeEditor extends Component {
     valueChanged = (value) => {
         const handler = this.props.onChange;
         if (handler) {handler(value)}
-        const ranges = value === this.state.value? this.state.ranges : [];
-        this.setState({value: value, dirty: true, ranges: ranges})
+        this.setState({value: value, dirty: true, selectRanges: value === this.state.value})
     }
     
     acceptClicked = (event) => {
@@ -274,17 +273,24 @@ class CodeEditor extends Component {
         const handler = this.props.onRename;
         if (handler) {handler(target)}
     }
+
+    selectionChanged = () => {
+        this.setState({selectRanges: false});
+    }
   
     render() {
-        const {value, ranges, evaluating, progress} = this.state;
+        const {value, selectRanges, evaluating, progress} = this.state;
         const mode = this.props.mode || "smalltalk";
         const showAccept = this.props.showAccept;
         const acceptIcon = this.props.acceptIcon?
             React.cloneElement(this.props.acceptIcon)
             : <AcceptIcon size="large" style={{fontSize: 30}}/>;
-        if (ranges.length > 0) {this.selectRanges(ranges)};
-        const selectedWord = this.props.selectedWord;
-        if (this.editor && selectedWord) {this.selectWord(selectedWord)}
+        if (selectRanges) {
+            const selectedRanges = this.props.selectedRanges;
+            if (selectedRanges && selectedRanges.length > 0) {this.selectRanges(selectedRanges)};
+            const selectedWord = this.props.selectedWord;
+            if (this.editor && selectedWord) {this.selectWord(selectedWord)}
+        }
         return (
             <Grid container spacing={1}>
                 <Grid item xs={11} md={showAccept? 11 : 12} lg={showAccept? 11 : 12}>
@@ -325,8 +331,9 @@ class CodeEditor extends Component {
                         editorDidMount={editor => {this.editorDidMount(editor)}}
                         onGutterClick={(editor, n) => {this.setBreakpoint(n)}}
                         onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
-                        onChange={(editor, data, value) => {this.setState({ranges: this.state.ranges})}}
-                        onContextMenu={(editor, event) => {this.openMenu(event)}}/>
+                        onChange={(editor, data, value) => {this.setState({selectRanges: value === this.state.value})}}
+                        onContextMenu={(editor, event) => {this.openMenu(event)}}
+                        onSelection={(editor, event) => this.selectionChanged()}/>
                         {(evaluating || progress) && <LinearProgress variant="indeterminate"/>}
                 </Grid>
                 {showAccept &&
