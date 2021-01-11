@@ -47,6 +47,7 @@ import Chat from './tools/Chat';
 import MethodDifferences from './tools/MethodDifferences';
 import Settings from './Settings';
 import ObjectBrowser from './tools/ObjectBrowser';
+import CoderLikeBrowser from './tools/CoderLikeBrowser';
 
 class IDE extends Component {
   constructor(props){
@@ -255,8 +256,8 @@ class IDE extends Component {
     this.addPage(browser.props.root || 'Class Browser', <ClassBrowserIcon/>, browser);
   }
 
-  openMethodBrowser = (methods, title = 'Methods') => {
-    const browser = <MethodBrowser styles={this.props.styles} methods={methods}/>;
+  openMethodBrowser = (methods, title = 'Methods', selectedWord) => {
+    const browser = <MethodBrowser styles={this.props.styles} methods={methods} selectedWord={selectedWord}/>;
     this.addPage(title + ' (' + methods.length + ')', <MethodBrowserIcon/>, browser);
   }
 
@@ -344,17 +345,22 @@ class IDE extends Component {
     this.addPage(title, <MethodBrowserIcon/>, browser);
   }
 
+  openCoderLikeBrowser = (classname) => {
+    const browser = <CoderLikeBrowser styles={this.props.styles} root={classname}/>;
+    this.addPage(browser.props.root || 'Class Browser', <ClassBrowserIcon/>, browser);
+  }
+
   browseSenders = async (selector) => {
     try {
       const senders = await this.api.getSenders(selector);
-      this.openMethodBrowser(senders, 'Senders of ' + selector);
+      this.openMethodBrowser(senders, 'Senders of ' + selector, selector);
     } catch(error) {this.reportError(error)} 
   }
 
   browseLocalSenders = async (selector, classname) => {
     try {
       const senders = await this.api.getLocalSenders(selector, classname);
-      this.openMethodBrowser(senders, 'Local senders of ' + selector);
+      this.openMethodBrowser(senders, 'Local senders of ' + selector, selector);
     } catch(error) {this.reportError(error)}
   }
 
@@ -375,7 +381,7 @@ class IDE extends Component {
   browseReferences = async (classname) => {
     try {
       const references = await this.api.getReferences(classname);
-      this.openMethodBrowser(references, 'References to ' + classname);
+      this.openMethodBrowser(references, 'References to ' + classname, classname);
     } catch(error) {this.reportError(error)} 
   }
 
@@ -471,6 +477,7 @@ class IDE extends Component {
   addClassBrowserClicked = () => {
     this.setState({addPageMenuOpen: false});
     this.openClassBrowser();
+    this.openCoderLikeBrowser();
   }
 
   addWorkspaceClicked = async () => {

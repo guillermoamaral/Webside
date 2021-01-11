@@ -90,7 +90,19 @@ class CodeEditor extends Component {
         this.selectRanges([range]);
     }
 
-    selectRanges(ranges){
+    selectWord(word) {
+        let selections = [];
+        var cursor = this.editor.getSearchCursor(word);
+        while (cursor.findNext()) {
+            selections.push({
+                anchor: cursor.from(),
+                head: cursor.to()
+            })
+        }
+        this.editor.setSelections(selections);
+    }
+
+    selectRanges(ranges) {
         if (ranges.length > 0) {
             const selections = ranges.map(r => {
                 return {
@@ -98,7 +110,7 @@ class CodeEditor extends Component {
                     head: this.lineChAt(r.end)
                 }
             });
-            this.editor.setSelections(selections)
+            this.editor.setSelections(selections);
         }
     }
     
@@ -264,13 +276,15 @@ class CodeEditor extends Component {
     }
   
     render() {
+        const {value, ranges, evaluating, progress} = this.state;
         const mode = this.props.mode || "smalltalk";
         const showAccept = this.props.showAccept;
         const acceptIcon = this.props.acceptIcon?
             React.cloneElement(this.props.acceptIcon)
             : <AcceptIcon size="large" style={{fontSize: 30}}/>;
-        const {value, ranges, evaluating, progress} = this.state;
-        if (ranges.length > 0) {this.selectRanges(ranges)}
+        if (ranges.length > 0) {this.selectRanges(ranges)};
+        const selectedWord = this.props.selectedWord;
+        if (this.editor && selectedWord) {this.selectWord(selectedWord)}
         return (
             <Grid container spacing={1}>
                 <Grid item xs={11} md={showAccept? 11 : 12} lg={showAccept? 11 : 12}>
@@ -315,13 +329,14 @@ class CodeEditor extends Component {
                         onContextMenu={(editor, event) => {this.openMenu(event)}}/>
                         {(evaluating || progress) && <LinearProgress variant="indeterminate"/>}
                 </Grid>
-                {showAccept && (<Grid item xs={1} md={1} lg={1}>
-                    <Box display="flex" justifyContent="center"> 
-                        <IconButton color="inherit" onClick={this.acceptClicked}>
-                            {acceptIcon}
-                        </IconButton>
-                    </Box>
-                </Grid>)}
+                {showAccept &&
+                    (<Grid item xs={1} md={1} lg={1}>
+                        <Box display="flex" justifyContent="center"> 
+                            <IconButton color="inherit" onClick={this.acceptClicked}>
+                                {acceptIcon}
+                            </IconButton>
+                        </Box>
+                    </Grid>)}
                 <PopupMenu
                     options={this.menuOptions()}
                     open={this.state.menuOpen}

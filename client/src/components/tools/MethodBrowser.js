@@ -46,7 +46,7 @@ class MethodBrowser extends Component {
 
     render() {
         const {selectedMethod, selectedClass} = this.state;
-        const styles = this.props.styles;
+        const {selectedWord, styles} = this.props;
         const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
         return (
             <Grid container spacing={1}>
@@ -64,6 +64,7 @@ class MethodBrowser extends Component {
                         styles={styles}
                         class={selectedClass}
                         method={selectedMethod}
+                        selectedWord={selectedWord}
                         onMethodCompiled={this.methodCompiled}
                         onClassDefined={this.classDefined}
                         onClassCommented={this.classCommented}/>

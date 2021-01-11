@@ -175,6 +175,7 @@ class CodeBrowser extends Component {
         const mode = this.state.selectedMode;
         const author = this.currentAuthor();
         const timestamp = this.currentTimestamp();
+        const {selectedInterval, selectedWord} = this.props;
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
@@ -203,7 +204,8 @@ class CodeBrowser extends Component {
                             source={this.currentSource()}
                             mode={(mode === 'comment') ? 'text' : 'smalltalk'}
                             lintAnnotations={this.currentLintAnnotations()}
-                            selectedRanges={!this.props.selectedInterval? [] : [this.props.selectedInterval]}
+                            selectedRanges={!selectedInterval? [] : [selectedInterval]}
+                            selectedWord={selectedWord}
                             showAccept
                             onAccept={this.acceptClicked}
                             onRename={target => this.renameClass(target)}/>

@@ -93,8 +93,7 @@ class Workspace extends Component {
                         return (
                             <Accordion key={inspector.key} defaultExpanded>
                                 <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon/>}
-                                    id="panel1a-header">
+                                    expandIcon={<ExpandMoreIcon/>}>
                                         <Box display="flex" flexWrap="nowrap" alignItems="center" justifyContent="center"></Box>
                                             <Box>
                                                 <IconButton 
