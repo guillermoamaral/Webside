@@ -31,7 +31,7 @@ class ObjectTree extends Component {
             <CustomTree
                 items={roots? roots : []}
                 itemLabel="name"
-                id={o => this.objectPath(o)}
+                itemId={o => this.objectPath(o)}
                 children={"slots"}
                 onExpand={this.props.onExpand}
                 onSelect={this.props.onSelect}

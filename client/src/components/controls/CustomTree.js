@@ -49,7 +49,7 @@ class CustomTree extends Component {
     }
 
     getItemId = (item) => {
-        const getter = this.props.id;
+        const getter = this.props.itemId;
         if (!getter) {return this.getItemLabel(item)}    
         if (typeof getter == "string")  {
             const id = item[getter];

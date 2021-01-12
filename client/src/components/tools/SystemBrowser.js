@@ -126,9 +126,7 @@ class SystemBrowser extends Component {
         try {
             if (force || !species.definition) {
                 const definition = await this.context.api.getClass(species.name);
-                species.definition = definition.definition;
-                species.comment = definition.comment;
-                species.superclass = definition.superclass;
+                Object.assign(species, definition);
             }
             if (force || !species.subclasses) {
                 species.subclasses = await this.context.api.getSubclasses(species.name);
@@ -235,7 +233,7 @@ class SystemBrowser extends Component {
     projectSelected = async (project) => {
         const selections = this.currentSelections();
         selections.project = project;
-        await this.updateClasses(selections);
+        await this.updateClasses(selections, true);
         this.applySelections(selections);
     }
 

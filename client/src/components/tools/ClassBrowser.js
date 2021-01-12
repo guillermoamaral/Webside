@@ -116,9 +116,7 @@ class ClassBrowser extends Component {
         try {
             if (force || !species.definition) {
                 const definition = await this.context.api.getClass(species.name);
-                species.definition = definition.definition;
-                species.comment = definition.comment;
-                species.superclass = definition.superclass;
+                Object.assign(species, definition);
             }
             if (force || !species.subclasses) {
                 species.subclasses = await this.context.api.getSubclasses(species.name);

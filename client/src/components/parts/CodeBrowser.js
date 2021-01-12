@@ -109,8 +109,8 @@ class CodeBrowser extends Component {
     }
 
     currentSource = () => {
-        const method = this.props.method;
         const species = this.props.class;
+        const method = this.props.method;
         const mode = this.state.selectedMode;
         let source;
         switch (mode) {
@@ -137,9 +137,21 @@ class CodeBrowser extends Component {
     }
 
     currentTimestamp = () => {
-        if (this.state.selectedMode === 'source') {
-            const method = this.props.method;
-            return method? new Date(method.timestamp).toLocaleString() : '';
+        const method = this.props.method;
+        if (this.state.selectedMode === 'source' && method) {
+            return new Date(method.timestamp).toLocaleString();
+        }
+        return ''
+    }
+
+    currentProject = () => {
+        const species = this.props.class;
+        const method = this.props.method;
+        if (this.state.selectedMode === 'source' && method) {
+            return method.project;
+        }
+        if (species) {
+            return species.project;
         }
         return ''
     }
@@ -175,6 +187,7 @@ class CodeBrowser extends Component {
         const mode = this.state.selectedMode;
         const author = this.currentAuthor();
         const timestamp = this.currentTimestamp();
+        const project = this.currentProject();
         const {selectedInterval, selectedWord} = this.props;
         return (
             <Grid container spacing={1}>
@@ -218,6 +231,11 @@ class CodeBrowser extends Component {
                     {author &&
                         <Link href="#" onClick={() => this.context.openChat(author)}>
                             {author}
+                        </Link>}
+                    {timestamp || author? ' - ' : ''} 
+                    {project && 
+                        <Link href="#" onClick={() => this.context.browseProject(project)}>
+                            {project}
                         </Link>}
                 </Grid>
             </Grid>
