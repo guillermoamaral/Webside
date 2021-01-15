@@ -12,6 +12,7 @@ import CustomList from '../controls/CustomList';
 import FrameList from '../parts/FrameList';
 import CodeBrowser from '../parts/CodeBrowser';
 import CodeEditor from '../parts/CodeEditor';
+import Scrollable from '../controls/Scrollable';
 
 class Debugger extends PureComponent {
     static contextType = IDEContext;
@@ -187,12 +188,14 @@ class Debugger extends PureComponent {
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={2} lg={2}>
-                            <Paper variant="outlined">
+                            <Paper className={fixedHeightPaper} variant="outlined">
+                                <Scrollable>
                                 <CodeEditor
                                     styles={this.props.styles}
                                     lineNumbers={false}
                                     source={selectedBinding? selectedBinding.value : ''}
                                     onAccept={this.saveBinding}/>
+                                </Scrollable>
                             </Paper>
                         </Grid>
                     </Grid>

@@ -53,6 +53,7 @@ class CodeEditor extends Component {
         if (/*!state.dirty &&*/ 
             (props.source !== state.source 
                 || (props.selectedRanges && props.selectedRanges !== state.selectedRanges))) {
+                    console.log('props changed')
             return {
                 source: props.source,
                 selectedRanges: props.selectedRanges,
@@ -291,6 +292,7 @@ class CodeEditor extends Component {
             const selectedWord = this.props.selectedWord;
             if (this.editor && selectedWord) {this.selectWord(selectedWord)}
         }
+        console.log('rendering code editor')
         return (
             <Grid container spacing={1}>
                 <Grid item xs={11} md={showAccept? 11 : 12} lg={showAccept? 11 : 12}>
@@ -331,9 +333,10 @@ class CodeEditor extends Component {
                         editorDidMount={editor => {this.editorDidMount(editor)}}
                         onGutterClick={(editor, n) => {this.setBreakpoint(n)}}
                         onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
-                        onChange={(editor, data, value) => {this.setState({selectRanges: value === this.state.value})}}
+                        onChange={(editor, data, value) => {this.setState({selectRanges: value === this.props.source})}}
                         onContextMenu={(editor, event) => {this.openMenu(event)}}
-                        onSelection={(editor, event) => this.selectionChanged()}/>
+                        onSelection={(editor, event) => {this.setState({selectRanges: false})}}
+                        />
                         {(evaluating || progress) && <LinearProgress variant="indeterminate"/>}
                 </Grid>
                 {showAccept &&
