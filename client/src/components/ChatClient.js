@@ -8,6 +8,12 @@ class ChatClient {
         this.contacts = [];
         this.messages = {};
         this.all = {id: '.', username: '<all>'};
+        this.handlers = {
+            onLogged: [],
+            onContactsUpdated: [],
+            onMessageReceived: [],
+            onError: []
+        };
     }
 
     username() {
@@ -23,19 +29,19 @@ class ChatClient {
     }
 
     onLogged(handler) {
-        this.onLoggedHandler = handler.bind();
+        this.handlers.onLogged.push(handler.bind());
     }
 
     onContactsUpdated(handler) {
-        this.onContactsUpdatedHandler = handler.bind();
+        this.handlers.onContactsUpdated.push(handler.bind());
     }
 
     onMessageReceived(handler) {
-        this.onMessageReceivedHandler = handler.bind();
+        this.handlers.onMessageReceived.push(handler.bind());
     }
 
     onError(handler) {
-        this.onErrorHandler = handler.bind();
+        this.handlers.onError.push(handler.bind());
     }
 
     login(url, username) {
@@ -53,13 +59,13 @@ class ChatClient {
 
     userLogged(data) {
         this.me.id = data.id;
-        if (this.onLoggedHandler) {this.onLoggedHandler()};
+        this.handlers.onLogged.forEach(h => h());
     }
 
     updateContacts(users) {
         this.contacts = [this.all];
         users.filter(user => user.id !== this.me.id).forEach(user => this.contacts.push(user));
-        if (this.onContactsUpdatedHandler) {this.onContactsUpdatedHandler(this.contacts)};
+        this.handlers.onContactsUpdated.forEach(h => h(this.contacts));
     }
 
     receiveMessage(message) {
@@ -67,7 +73,7 @@ class ChatClient {
         if (!this.messages[id]) {this.messages[id]={unseen: 0, messages: []}}
         this.messages[id].unseen++;
         this.messages[id].messages.push(message);
-        if (this.onMessageReceivedHandler) {this.onMessageReceivedHandler(message)};
+        this.handlers.onMessageReceived.forEach(h => h(message));
     }
 
     sendMessage(message) {
@@ -99,6 +105,12 @@ class ChatClient {
         if (!contact) return [];
         const data = this.messages[contact.id]; 
         return data? data.unseen : 0;
+    }
+
+    unseenMessages() {
+        let unseen = 0;
+        Object.keys(this.messages).forEach(id => unseen += this.messages[id].unseen); 
+        return unseen;
     }
 
     markSeenMessagesFrom(contact) {

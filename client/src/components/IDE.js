@@ -62,6 +62,7 @@ class IDE extends Component {
       selectedPage: null,
       transcriptOpen: false,
       unreadErrorsCount: 0,
+      unreadMessages: 0,
       transcriptText: this.welcomeMessage(),
       pages: []
     }
@@ -102,6 +103,7 @@ class IDE extends Component {
   initializeChat(){
     this.chatClient = new ChatClient();
     this.chatClient.login(this.chatUrl, this.developer);
+    this.chatClient.onMessageReceived(m => this.setState({unreadMessages: this.chatClient.unseenMessages()}));
   }
 
   updateTheme() {
@@ -535,6 +537,7 @@ class IDE extends Component {
                 styles={styles}
                 expanded={this.state.sidebarExpanded}
                 unreadErrorsCount={this.state.unreadErrorsCount}
+                unreadMessages={this.state.unreadMessages}
                 onTranscriptClicked={this.toggleShowTranscript}
                 onChangesClicked={this.browseLastChanges}
                 onPinnedObjectsClicked={this.openPinnedObjects}

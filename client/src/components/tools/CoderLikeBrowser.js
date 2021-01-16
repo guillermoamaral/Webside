@@ -385,7 +385,6 @@ class CoderLikeBrowser extends Component {
     }
 
     showMethod = (method) => {
-        console.log(method)
         const visible = this.state.visibleMethods;
         visible[method.selector] = !(visible[method.selector] || false);
         this.setState({visibleMethods: visible});

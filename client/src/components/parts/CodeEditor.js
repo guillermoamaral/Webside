@@ -53,7 +53,6 @@ class CodeEditor extends Component {
         if (/*!state.dirty &&*/ 
             (props.source !== state.source 
                 || (props.selectedRanges && props.selectedRanges !== state.selectedRanges))) {
-                    console.log('props changed')
             return {
                 source: props.source,
                 selectedRanges: props.selectedRanges,
@@ -292,7 +291,6 @@ class CodeEditor extends Component {
             const selectedWord = this.props.selectedWord;
             if (this.editor && selectedWord) {this.selectWord(selectedWord)}
         }
-        console.log('rendering code editor')
         return (
             <Grid container spacing={1}>
                 <Grid item xs={11} md={showAccept? 11 : 12} lg={showAccept? 11 : 12}>

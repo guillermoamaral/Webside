@@ -11,7 +11,7 @@ class Inspector extends Component {
         super(props);
         const root = props.root;
         if (root) {
-            root.name = 'self';
+            root.slotname = 'self';
             root.path = [];
         }
         this.state = {
@@ -27,7 +27,7 @@ class Inspector extends Component {
     async componentDidUpdate(prevProps) {
         const root = this.props.root;
         if (root && (!prevProps.root || root.id !== prevProps.root.id)) {
-            root.name = 'self';
+            root.slotname = 'self';
             root.path = [];
             await this.updateSlots(root);
             this.setState({objectTree: [root], selectedObject: root})
@@ -60,7 +60,7 @@ class Inspector extends Component {
             }
             catch (error) {this.context.reportError(error)}
         }
-        object.slots = names.map(name => {return {name: name, path: [...object.path, name]}});
+        object.slots = names.map(name => {return {slotname: name, path: [...object.path, name]}});
         if (!object.indexable || object.size < 20) {
             await Promise.all(object.slots.map(async slot => await this.updateObject(slot)));
         }
@@ -69,7 +69,7 @@ class Inspector extends Component {
 
     selectSlot = (path) => {
         let object = this.props.root;
-        path.forEach(name => object = object.slots.find(s => s.name === name));
+        path.forEach(name => object = object.slots.find(s => s.slotname === name));
         this.setState({selectedObject: object});
     }
 

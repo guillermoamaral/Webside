@@ -58,7 +58,9 @@ class Sidebar extends Component {
                     </ListItem>              
                     <ListItem button onClick={e => this.props.onPeersClicked()}>
                         <ListItemIcon>
-                            <PeopleIcon/>
+                            <Badge badgeContent={this.props.unreadMessages} color="secondary">
+                                <PeopleIcon/>
+                            </Badge>
                         </ListItemIcon>
                         <ListItemText primary="Peers"/>
                     </ListItem>
