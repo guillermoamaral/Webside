@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { withCookies } from 'react-cookie';
+import { withRouter } from "react-router-dom";
 import { amber, blue } from '@material-ui/core/colors';
 import AddIcon from '@material-ui/icons/AddCircle';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
@@ -70,6 +71,8 @@ class IDE extends Component {
 
   componentDidMount() {
     this.cacheNames();
+    const classname = this.props.match.params.classname;
+    if (classname) {this.openClassBrowser(classname)}
     //this.testMethodDifferences();
   }
 
@@ -103,8 +106,12 @@ class IDE extends Component {
   initializeChat(){
     this.chatClient = new ChatClient();
     this.chatClient.login(this.chatUrl, this.developer);
-    this.chatClient.onEvent("onMessageReceived", m => this.setState({unreadMessages: this.chatClient.unseenMessages()}), this);
-    this.chatClient.onEvent("onMessagesSeen", c => this.setState({unreadMessages: this.chatClient.unseenMessages()}), this);
+    this.chatClient.onEvent("onMessageReceived", this.messagesChanged, this);
+    this.chatClient.onEvent("onMessagesSeen", this.messagesChanged, this);
+  }
+
+  messagesChanged = () => {
+    this.setState({unreadMessages: this.chatClient.unseenMessages()})
   }
 
   updateTheme() {
@@ -254,8 +261,8 @@ class IDE extends Component {
     this.addPage(browser.props.root || 'System Browser', <SystemBrowserIcon/>, browser);
   }
 
-  openClassBrowser = (classname) => {
-    const browser = <ClassBrowser styles={this.props.styles} root={classname}/>;
+  openClassBrowser = (classname, selector) => {
+    const browser = <ClassBrowser styles={this.props.styles} root={classname} selectedSelector={selector}/>;
     this.addPage(browser.props.root || 'Class Browser', <ClassBrowserIcon/>, browser);
   }
 
@@ -632,4 +639,4 @@ class IDE extends Component {
   }
 }
 
-export default withCookies(IDE);
+export default withRouter(withCookies(IDE));

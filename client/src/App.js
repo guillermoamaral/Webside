@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  } from "react-router-dom";
+  Route} from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 import { createMuiTheme, CssBaseline } from '@material-ui/core';
 import styles from './styles';
@@ -48,6 +47,7 @@ class App extends Component {
                   <Switch>
                       <Route path="/" exact component={() => <Settings styles={this.props.classes} saveText='Connect'/>}/>
                       <Route path="/ide/" exact component={() => <IDE styles={this.props.classes}/>}/>
+                      <Route path="/ide/classes/:classname" exact component={() => <IDE styles={this.props.classes}/>}/>
                     </Switch>
                 </Router>
               </div>
