@@ -12,6 +12,7 @@ class ChatClient {
             onLogged: [],
             onContactsUpdated: [],
             onMessageReceived: [],
+            onMessagesSeen: [],
             onError: []
         };
     }
@@ -28,20 +29,12 @@ class ChatClient {
         return this.contacts.find(c => c.id === id);
     }
 
-    onLogged(handler) {
-        this.handlers.onLogged.push(handler.bind());
+    onEvent(event, handler, owner) {
+        this.handlers[event].push([handler.bind(), owner]);
     }
 
-    onContactsUpdated(handler) {
-        this.handlers.onContactsUpdated.push(handler.bind());
-    }
-
-    onMessageReceived(handler) {
-        this.handlers.onMessageReceived.push(handler.bind());
-    }
-
-    onError(handler) {
-        this.handlers.onError.push(handler.bind());
+    removeHandlers(owner) {
+        Object.keys(this.handlers).forEach(event => this.handlers[event] = this.handlers[event].filter(h => h[1] !== owner));
     }
 
     login(url, username) {
@@ -59,13 +52,13 @@ class ChatClient {
 
     userLogged(data) {
         this.me.id = data.id;
-        this.handlers.onLogged.forEach(h => h());
+        this.handlers.onLogged.forEach(h => h[0]());
     }
 
     updateContacts(users) {
         this.contacts = [this.all];
         users.filter(user => user.id !== this.me.id).forEach(user => this.contacts.push(user));
-        this.handlers.onContactsUpdated.forEach(h => h(this.contacts));
+        this.handlers.onContactsUpdated.forEach(h => h[0](this.contacts));
     }
 
     receiveMessage(message) {
@@ -73,7 +66,7 @@ class ChatClient {
         if (!this.messages[id]) {this.messages[id]={unseen: 0, messages: []}}
         this.messages[id].unseen++;
         this.messages[id].messages.push(message);
-        this.handlers.onMessageReceived.forEach(h => h(message));
+        this.handlers.onMessageReceived.forEach(h => h[0](message));
     }
 
     sendMessage(message) {
@@ -117,6 +110,7 @@ class ChatClient {
         if (!contact) return [];
         const data = this.messages[contact.id]; 
         if (data) {data.unseen = 0};
+        this.handlers.onMessagesSeen.forEach(h => h[0](contact));
     }
 }
 

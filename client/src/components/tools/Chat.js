@@ -15,11 +15,21 @@ class Chat extends Component {
     }
 
     componentDidMount() {
-        this.client.onContactsUpdated(contacts => {
-            const selected = this.state.selectedContact? contacts.find(c => c.id === this.state.selectedContact.id) : null;
-            this.setState({selectedContact: selected});
-        });
-        this.client.onMessageReceived(message => this.setState(this.state));
+        this.client.onEvent("onContactsUpdated", this.contactsUpdated, this);
+        this.client.onEvent("onMessageReceived", this.messageReceived, this);
+    }
+
+    componentWillUnmount() {
+        this.client.removeHandlers(this);
+    }
+
+    contactsUpdated = (contacts) => {
+        const selected = this.state.selectedContact? contacts.find(c => c.id === this.state.selectedContact.id) : null;
+        this.setState({selectedContact: selected});
+    }
+
+    messageReceived = (message) => {
+        //this.setState(this.state)
     }
 
     sendMessage = () => {
@@ -28,6 +38,7 @@ class Chat extends Component {
     }
 
     contactSelected = (contact) => {
+        this.client.markSeenMessagesFrom(contact);
         this.setState({selectedContact: contact})
     }
 
@@ -41,7 +52,6 @@ class Chat extends Component {
     render() {
         const {selectedContact, text} = this.state;
         const messages = this.client.messagesFrom(selectedContact);
-        this.client.markSeenMessagesFrom(selectedContact);
         const styles = this.props.styles;
         const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
         return (

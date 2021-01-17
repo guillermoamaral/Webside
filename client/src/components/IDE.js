@@ -103,7 +103,8 @@ class IDE extends Component {
   initializeChat(){
     this.chatClient = new ChatClient();
     this.chatClient.login(this.chatUrl, this.developer);
-    this.chatClient.onMessageReceived(m => this.setState({unreadMessages: this.chatClient.unseenMessages()}));
+    this.chatClient.onEvent("onMessageReceived", m => this.setState({unreadMessages: this.chatClient.unseenMessages()}), this);
+    this.chatClient.onEvent("onMessagesSeen", c => this.setState({unreadMessages: this.chatClient.unseenMessages()}), this);
   }
 
   updateTheme() {
