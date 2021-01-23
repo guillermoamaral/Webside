@@ -27,6 +27,7 @@ The IDE is a fully operational IDE, offering traditional Smalltalk IDE tools suc
 
 ![Webside on Pharo](docs/images/WebsidePharo.png "Webside on Pharo")
 
+![Webside on Dolphin](docs/images/WebsideDolphin.png "Webside on Dolphin")
 
 Read more [here](docs).
 
