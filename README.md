@@ -71,13 +71,14 @@ There is an online version available [here](https://websideserver.azurewebsites.
 ## License
 Distributed under the MIT License. See `LICENSE` for more information.
 
+## Logo
+The logo is the result of a great job made by [AY! Design](https://aydesign.art/). 
+
 ## Contact
 
 Guille Amaral - guillermoamaral@gmail.com
 
 Project Link: [https://github.com/guillermoamaral/Webside](https://github.com/guillermoamaral/Webside)
-
-Logo by: [AY! Design](https://aydesign.art/)
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
