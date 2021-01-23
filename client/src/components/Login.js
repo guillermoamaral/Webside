@@ -8,7 +8,7 @@ import { withCookies } from 'react-cookie';
 import axios from 'axios';
 import { withRouter } from "react-router-dom";
 
-class Settings extends Component {
+class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,7 +17,7 @@ class Settings extends Component {
         }
     }
 
-    saveClicked = async (event) => {
+    connectClicked = async (event) => {
         event.preventDefault();
         const {baseUri, developer} = this.state;
         if (baseUri && baseUri !== "" && developer && developer !== "") {
@@ -60,7 +60,7 @@ class Settings extends Component {
                     <Grid item>
                         <Grid container direction="row" justify="center" spacing={1}>
                             <Grid item>
-                                <form onSubmit={this.saveClicked}>
+                                <form onSubmit={this.connectClicked}>
                                     <Grid container direction="column" spacing={1} alignItems="flex-end">
                                         <Grid item>
                                             <TextField
@@ -93,7 +93,7 @@ class Settings extends Component {
                                         </Grid>
                                         <Grid item>
                                             <Button variant="outlined" type="submit">
-                                                Save
+                                                Connect
                                             </Button>
                                         </Grid>
                                     </Grid>
@@ -107,4 +107,4 @@ class Settings extends Component {
     }
 }
 
-export default withRouter(withCookies(Settings));
+export default withRouter(withCookies(Login));
