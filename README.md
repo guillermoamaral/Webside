@@ -77,6 +77,8 @@ Guille Amaral - guillermoamaral@gmail.com
 
 Project Link: [https://github.com/guillermoamaral/Webside](https://github.com/guillermoamaral/Webside)
 
+Logo by: [AY! Design](https://aydesign.art/)
+
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
