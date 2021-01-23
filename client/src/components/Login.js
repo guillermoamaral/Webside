@@ -65,7 +65,7 @@ class Login extends Component {
                                         <Grid item>
                                             <TextField
                                                 id="baseUri"
-                                                label="Host Smalltalk (URL)"
+                                                label="Target Smalltalk URL"
                                                 type="url"
                                                 placeholder="URL"
                                                 margin="dense"
