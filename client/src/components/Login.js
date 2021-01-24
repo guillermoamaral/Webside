@@ -56,7 +56,14 @@ class Login extends Component {
         const {baseUri, developer} = this.state;
         return (
             <div className={this.props.styles.root}>
-                <Grid container direction="column" justify="center" spacing={1} style={{minHeight: '80vh'}}>
+                <Grid container direction="column" justify="center" alignItems="center" spacing={0} style={{minHeight: '80vh'}}>
+                    <Grid item>
+                        <img
+                            src={require("../resources/Logo.png")}
+                            width={200}
+                            height={130}
+                            />
+                    </Grid>
                     <Grid item>
                         <Grid container direction="row" justify="center" spacing={1}>
                             <Grid item>
