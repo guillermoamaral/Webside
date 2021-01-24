@@ -72,7 +72,7 @@ There is an online version available [here](https://websideserver.azurewebsites.
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Logo
-The logo is the result of a great job made by [AY! Design](https://aydesign.art/). 
+The logo is the result of a great job made by [ay! design](https://aydesign.art/). 
 
 ## Contact
 
