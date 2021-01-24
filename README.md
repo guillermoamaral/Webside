@@ -29,6 +29,10 @@ The IDE is a fully operational IDE, offering traditional Smalltalk IDE tools suc
 
 ![Webside on Dolphin](docs/images/WebsideDolphin.png "Webside on Dolphin")
 
+<video width="320" height="240" controls>
+  <source src="https://github.com/guillermoamaral/Webside/blob/master/docs/images/Webside.mp4" type="video/mp4">
+</video>
+
 Read more [here](docs).
 
 ## Getting Started
