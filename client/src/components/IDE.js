@@ -330,7 +330,7 @@ class IDE extends Component {
   }
 
   openSettings = () => {
-    const page = this.pageLabeled('Configuration');
+    const page = this.pageLabeled('Settings');
     if (page) {
       this.selectPage(page);
     } else {
@@ -346,7 +346,7 @@ class IDE extends Component {
           this.initializeChat();
           this.cacheNames();
         }}/>;
-      this.addPage('Configuration', <SettingsIcon/>, settings);
+      this.addPage('Settings', <SettingsIcon/>, settings);
     }
   }
   
