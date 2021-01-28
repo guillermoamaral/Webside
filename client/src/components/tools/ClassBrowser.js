@@ -100,7 +100,7 @@ class ClassBrowser extends Component {
             const accessors = species[variable.name][access];
             methods = methods.filter(m => accessors.some(n => n.selector === m.selector))
         }
-        if (methods.length === 0) {
+        if (methods && methods.length === 0) {
             methods.push({
                 class: species,
                 category: category,

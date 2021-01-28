@@ -138,7 +138,7 @@ class CodeBrowser extends Component {
 
     currentTimestamp = () => {
         const method = this.props.method;
-        if (this.state.selectedMode === 'source' && method) {
+        if (this.state.selectedMode === 'source' && method && method.timestamp && method.timestamp !== '') {
             return new Date(method.timestamp).toLocaleString();
         }
         return ''
