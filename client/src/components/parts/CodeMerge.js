@@ -27,7 +27,7 @@ require('codemirror/addon/fold/comment-fold');
 class CodeMerge extends Component {
     componentDidMount() {
         var target = this.refs['react-diff-code-view'];
-        //target.innerHTML = "";
+        target.innerHTML = "";
         CodeMirror.MergeView(target, Object.assign({}, {
           //readOnly: true,
           lineNumbers: true,

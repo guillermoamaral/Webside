@@ -73,13 +73,20 @@ class IDE extends Component {
     this.cacheNames();
     const classname = this.props.match.params.classname;
     if (classname) {this.openClassBrowser(classname)}
-    //this.testMethodDifferences();
   }
 
   testMethodDifferences = async () => {
-    const m1 = await this.api.getMethod('Float', 'asTrueFraction');
-    const m2 = await this.api.getMethod('Float', 'asTrueFraction');;
-    this.openMethodDifferences(m1, m2, 'Testing method diff')
+    const m1 = {
+      "class": "Number",
+      "selector": "roundTo:",
+      "source": "roundTo: quantum \r\t\"Answer the nearest number that is a multiple of quantum.\"\r\r\t^(self / quantum) rounded * quantum",
+    }
+    const m2 = {
+      "class": "Number",
+      "selector": "roundTo:",
+      "source": "roundTo: aNumber\r\t^self < 0\r\t\tifTrue: [self - (aNumber / 2) truncateTo: aNumber]\r\t\tifFalse: [self + (aNumber / 2) truncateTo: aNumber]",
+    }
+    this.openMethodDifferences(m1, m2, 'Method Diff')
   }
  
   updateSettings() {
