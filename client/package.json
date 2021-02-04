@@ -8,7 +8,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "autosuggest-highlight": "^3.1.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "chart.js": "^2.9.3",
     "codemirror": "^5.55.0",
     "material-ui-nested-menu-item": "^1.0.2",
