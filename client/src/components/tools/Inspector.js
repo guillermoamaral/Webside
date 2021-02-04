@@ -84,6 +84,10 @@ class Inspector extends Component {
         this.setState({objectTree: this.state.objectTree});
     }
 
+    browseClass = (classname) => {
+        this.context.browseClass(classname)
+    }
+
     render() {
         const {objectTree, selectedObject} = this.state;
         const {styles, showWorkspace} = this.props;
@@ -102,10 +106,14 @@ class Inspector extends Component {
                                 </Link>
                             )})
                         }
-                        <Typography
-                            color="primary">{(path[path.length - 1] || "self") + 
-                                (selectedObject? " (" + selectedObject.class + ")" : "")}
+                        <Typography color="primary">
+                            {(path[path.length - 1] || "self")}
                         </Typography>
+                        {selectedObject &&
+                            <Link color="inherit" onClick={e => {this.browseClass(selectedObject.class)}}>
+                                {selectedObject.class}
+                            </Link>
+                        }
                     </Breadcrumbs>
                     </Box>
                 </Grid>
