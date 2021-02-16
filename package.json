@@ -8,7 +8,7 @@
     "start": "nodemon index"
   },
   "keywords": [],
-  "author": "",
+  "author": "Guille Amaral",
   "license": "MIT",
   "dependencies": {
     "@material-ui/core": "^3.0.3",
