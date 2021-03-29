@@ -54,7 +54,7 @@ class SearchList2 extends React.Component {
     }
 
     inputChanged = (event, {newValue}) => {
-        const handler = this.props.onChange;
+        //const handler = this.props.onChange;
         this.setState({value: newValue});
     }
 

@@ -59,10 +59,10 @@ class Login extends Component {
                 <Grid container direction="column" justify="center" alignItems="center" spacing={0} style={{minHeight: '80vh'}}>
                     <Grid item>
                         <img
+                            alt="Webside"
                             src={require("../resources/Logo.png")}
                             width={200}
-                            height={130}
-                            />
+                            height={130}/>
                     </Grid>
                     <Grid item>
                         <Grid container direction="row" justify="center" spacing={1}>

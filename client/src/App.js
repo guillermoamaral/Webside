@@ -48,6 +48,7 @@ class App extends Component {
                       <Route path="/" exact component={() => <Login styles={this.props.classes}/>}/>
                       <Route path="/ide/" exact component={() => <IDE styles={this.props.classes}/>}/>
                       <Route path="/ide/classes/:classname" exact component={() => <IDE styles={this.props.classes}/>}/>
+                      <Route path="/ide/debuggers/:debuggerid" exact component={() => <IDE styles={this.props.classes}/>}/>
                     </Switch>
                 </Router>
               </div>

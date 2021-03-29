@@ -27,7 +27,9 @@ class Debugger extends PureComponent {
     }
 
     componentDidMount() {
-        this.updateFrames()
+        this.context.messageChannel.onEvent("onMessageReceived", message => {
+            if (message.type === 'debuggerEvent') {this.updateFrames()}});
+        this.updateFrames();
     }
 
     async updateFrames() {
@@ -84,6 +86,7 @@ class Debugger extends PureComponent {
     stepIntoClicked = async () => {
         try {
             await this.context.api.stepIntoDebugger(this.props.id, this.state.selectedFrame.index);
+            this.context.messageChannel.sendDebuggerEvent('stepInto', this.props.id);
             this.updateFrames();
         }
         catch (error) {this.context.reportError(error)}
@@ -92,6 +95,7 @@ class Debugger extends PureComponent {
     stepOverClicked = async () => {
         try {
             await this.context.api.stepOverDebugger(this.props.id, this.state.selectedFrame.index);
+            this.context.messageChannel.sendDebuggerEvent('stepOver', this.props.id);
             this.updateFrames();
         }
         catch (error) {this.context.reportError(error)}
@@ -100,6 +104,7 @@ class Debugger extends PureComponent {
     restartClicked = async () => {
         try {
             await this.context.api.restartDebugger(this.props.id, this.state.selectedFrame.index);
+            this.context.messageChannel.sendDebuggerEvent('restart', this.props.id);
             this.updateFrames();
         }
         catch (error) {this.context.reportError(error)}

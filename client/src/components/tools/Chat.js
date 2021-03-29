@@ -7,51 +7,51 @@ import SendIcon from '@material-ui/icons/Send';
 class Chat extends Component {
     constructor(props) {
         super(props);
-        this.client = this.props.client;
+        this.channel = this.props.channel;
         this.state = {
-            selectedContact: this.props.initialContact,
+            selectedPeer: this.props.initialPeer,
             text: '',
           }
     }
 
     componentDidMount() {
-        this.client.onEvent("onContactsUpdated", this.contactsUpdated, this);
-        this.client.onEvent("onMessageReceived", this.messageReceived, this);
+        this.channel.onEvent("onPeersUpdated", this.peersUpdated, this);
+        this.channel.onEvent("onMessageReceived", this.messageReceived, this);
     }
 
     componentWillUnmount() {
-        this.client.removeHandlers(this);
+        this.channel.removeHandlers(this);
     }
 
-    contactsUpdated = (contacts) => {
-        const selected = this.state.selectedContact? contacts.find(c => c.id === this.state.selectedContact.id) : null;
-        this.setState({selectedContact: selected});
+    peersUpdated = (peers) => {
+        const selected = this.state.selectedPeer? peers.find(c => c.id === this.state.selectedPeer.id) : null;
+        this.setState({selectedPeer: selected});
     }
 
     messageReceived = (message) => {
-        //this.setState(this.state)
+        this.setState(this.state)
     }
 
     sendMessage = () => {
-        this.client.sendText(this.state.text, this.state.selectedContact)
+        this.channel.sendText(this.state.text, this.state.selectedPeer);
         this.setState({text: ''});
     }
 
-    contactSelected = (contact) => {
-        this.client.markSeenMessagesFrom(contact);
-        this.setState({selectedContact: contact})
+    peerSelected = (peer) => {
+        this.channel.markSeenMessagesFrom(peer);
+        this.setState({selectedPeer: peer})
     }
 
-    contactLabel = (contact) => {
-        const unseen = this.client.unseenMessagesFrom(contact);
-        let label = contact.username; 
+    peerLabel = (peer) => {
+        const unseen = this.channel.unseenMessagesFrom(peer);
+        let label = peer.username; 
         if (unseen > 0) {label = label + " (" + unseen + ")"};
         return label;
     }
 
     render() {
-        const {selectedContact, text} = this.state;
-        const messages = this.client.messagesFrom(selectedContact);
+        const {selectedPeer: selectedPeer, text} = this.state;
+        const messages = this.channel.messagesFrom(selectedPeer);
         const styles = this.props.styles;
         const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
         return (
@@ -59,10 +59,10 @@ class Chat extends Component {
                 <Grid item xs={4} md={4} lg={4}>
                     <Paper className={fixedHeightPaper} variant="outlined">
                         <CustomList
-                            itemLabel={this.contactLabel}
-                            items={this.client.contacts}
-                            selectedItem={selectedContact}
-                            onSelect={this.contactSelected}/>
+                            itemLabel={this.peerLabel}
+                            items={this.channel.peers}
+                            selectedItem={selectedPeer}
+                            onSelect={this.peerSelected}/>
                     </Paper>                    
                 </Grid>
                 <Grid item xs={8} md={8} lg={8}>
@@ -76,6 +76,7 @@ class Chat extends Component {
                         </Grid>
                         <Grid item xs={11} md={11} lg={11}>
                             <TextField
+                                disabled={!selectedPeer}
                                 value={text}
                                 onChange={event => this.setState({text: event.target.value})}
                                 placeholder="Send a message ...."
@@ -88,7 +89,7 @@ class Chat extends Component {
                         </Grid>
                         <Grid item xs={1} md={1} lg={1}>
                         <Box display="flex" justifyContent="center"> 
-                            <IconButton onClick={this.sendMessage}>
+                            <IconButton onClick={this.sendMessage} disabled={!selectedPeer || text === ""}>
                                 <SendIcon size="small"/>
                             </IconButton>
                         </Box>

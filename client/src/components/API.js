@@ -37,7 +37,7 @@ class API {
         } else if (error.request) {
             reason = 'Could not send request due to ' + error.message;
         }
-        const exception = new APIError('\"' + message + '\"', request, status, reason, data);
+        const exception = new APIError('"' + message + '"', request, status, reason, data);
         throw exception;
     }
 

@@ -43,7 +43,7 @@ import Debugger from './tools/Debugger';
 import TestRunner from './tools/TestRunner';
 import Profiler from './tools/Profiler';
 import NativeDebugger from './tools/NativeDebugger';
-import ChatClient from './ChatClient';
+import MessageChannel from './MessageChannel';
 import Chat from './tools/Chat';
 import MethodDifferences from './tools/MethodDifferences';
 import Settings from './Settings';
@@ -56,7 +56,7 @@ class IDE extends Component {
     this.updateSettings();
     this.updateTheme(); 
     this.initializeAPI();
-    this.initializeChat();
+    this.initializeMessageChannel();
     this.state = {
       sidebarExpanded: false,
       addPageMenuOpen: false,
@@ -72,7 +72,9 @@ class IDE extends Component {
   componentDidMount() {
     this.cacheNames();
     const classname = this.props.match.params.classname;
-    if (classname) {this.openClassBrowser(classname)}
+    if (classname) {this.openClassBrowser(classname)};
+    const debuggerid = this.props.match.params.debuggerid;
+    if (debuggerid) {this.openDebugger(debuggerid)}
   }
 
   testMethodDifferences = async () => {
@@ -94,7 +96,7 @@ class IDE extends Component {
     this.dialect = cookies.get('dialect');
     this.baseUri = cookies.get('baseUri');
     this.developer = cookies.get('developer');
-    this.chatUrl = 'http://localhost:4200';
+    this.messageChannelUrl = 'http://localhost:4200';
   }
 
   welcomeMessage() {
@@ -110,15 +112,17 @@ class IDE extends Component {
     this.api = new API(this.baseUri, this.developer, this.reportError, this.reportChange);
   }
 
-  initializeChat(){
-    this.chatClient = new ChatClient();
-    this.chatClient.login(this.chatUrl, this.developer);
-    this.chatClient.onEvent("onMessageReceived", this.messagesChanged, this);
-    this.chatClient.onEvent("onMessagesSeen", this.messagesChanged, this);
+  initializeMessageChannel(){
+    this.messageChannel = new MessageChannel();
+    this.messageChannel.login(this.messageChannelUrl, this.developer);
+    this.messageChannel.onEvent("onMessageReceived", this.messageReceived, this);
+    this.messageChannel.onEvent("onMessagesSeen", this.messageReceived, this);
   }
 
-  messagesChanged = () => {
-    this.setState({unreadMessages: this.chatClient.unseenMessages()})
+  messageReceived = (message) => {
+    if (message.type === 'text') {
+      this.setState({unreadMessages: this.messageChannel.unseenMessages()})
+    }
   }
 
   updateTheme() {
@@ -327,15 +331,15 @@ class IDE extends Component {
     this.addPage(title, <DebuggerIcon/>, tool);
   }
 
-  openChat = (contactname) => {
-    if (contactname === this.developer) return;
-    const contact = this.chatClient.contactNamed(contactname);
-    if (contactname && !contact) return;
+  openChat = (peername) => {
+    if (peername === this.developer) return;
+    const peer = this.messageChannel.peerNamed(peername);
+    if (peername && !peer) return;
     const page = this.pageLabeled('Chat');
     if (page) {
       this.selectPage(page);
     } else {
-      const tool = <Chat styles={this.props.styles} client={this.chatClient} initialContact={contact}/>;
+      const tool = <Chat styles={this.props.styles} channel={this.messageChannel} initialPeer={peer}/>;
       this.addPage('Chat', <ChatIcon/>, tool);
     }
   }
@@ -354,7 +358,7 @@ class IDE extends Component {
           this.updateSettings();
           this.updateTheme(); 
           this.initializeAPI();
-          this.initializeChat();
+          this.initializeMessageChannel();
           this.cacheNames();
         }}/>;
       this.addPage('Settings', <SettingsIcon/>, settings);
@@ -518,6 +522,7 @@ class IDE extends Component {
     console.log('rendering IDE')
     const context = {
       api: this.api,
+      messageChannel: this.messageChannel,
       projectNames: this.projectNames,
       classNames: this.classNames,
       openChat: this.openChat,
