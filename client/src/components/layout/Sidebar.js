@@ -16,7 +16,7 @@ import GitHubIcon from '@material-ui/icons/GitHub';
 import SettingsIcon from '@material-ui/icons/Settings';
 import TranscriptIcon from '../icons/TranscriptIcon';
 import ChangesBrowserIcon from '../icons/ChangesBrowserIcon';
-import InspectorIcon from '../icons/InspectorIcon';
+import ResourcesIcon from '@material-ui/icons/Kitchen';
 import { withDialog } from '../dialogs/index';
 
 class Sidebar extends Component {
@@ -52,7 +52,7 @@ class Sidebar extends Component {
                     </ListItem>
                     <ListItem button onClick={e => this.props.onResourcesClicked()}>
                         <ListItemIcon>                                
-                            <InspectorIcon/>
+                            <ResourcesIcon/>
                         </ListItemIcon>
                         <ListItemText primary="Resources"/>
                     </ListItem>              
