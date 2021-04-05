@@ -50,11 +50,11 @@ class Sidebar extends Component {
                         </ListItemIcon>
                         <ListItemText primary="Changes"/>
                     </ListItem>
-                    <ListItem button onClick={e => this.props.onPinnedObjectsClicked()}>
+                    <ListItem button onClick={e => this.props.onResourcesClicked()}>
                         <ListItemIcon>                                
                             <InspectorIcon/>
                         </ListItemIcon>
-                        <ListItemText primary="Pinned Objects"/>
+                        <ListItemText primary="Resources"/>
                     </ListItem>              
                     <ListItem button onClick={e => this.props.onPeersClicked()}>
                         <ListItemIcon>

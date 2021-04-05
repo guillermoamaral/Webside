@@ -77,6 +77,7 @@ Endpoints to manage debuggers and interact with them.
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
+| GET | [/debuggers](debuggers/get.md) | Retrieve open debuggers | - | - |
 | POST | [/debuggers](debuggers/post.md) | Create a debugger upon an given process (evaluation) | - | ```json { "evaluation": "string" }``` |
 | GET | [/debuggers/{id}/frames](debuggers/id/frames/get.md) | Retrieve frames of the debugger with a given ID | - | - |
 | GET | [/debuggers/{id}/frames/{index}](debuggers/id/frames/index/get.md) | Retrieve the i-th frame withing the debugger with a given ID | - | - |

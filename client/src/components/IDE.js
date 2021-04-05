@@ -47,7 +47,7 @@ import MessageChannel from './MessageChannel';
 import Chat from './tools/Chat';
 import MethodDifferences from './tools/MethodDifferences';
 import Settings from './Settings';
-import ObjectBrowser from './tools/ObjectBrowser';
+import ResourceBrowser from './tools/ResourceBrowser';
 import CoderLikeBrowser from './tools/CoderLikeBrowser';
 
 class IDE extends Component {
@@ -258,16 +258,12 @@ class IDE extends Component {
     catch(error) {this.reportError(error)}
   }
 
-  openPinnedObjects = async () => {
-    const page = this.state.pages.find(p => p.label.startsWith('Pinned Objects'));
+  openResources = async () => {
+    const page = this.state.pages.find(p => p.label.startsWith('Resources'));
     if (page) {
       this.selectPage(page);
     } else {
-      try {
-        const objects = await this.api.getObjects();
-        this.openObjectBrowser(objects, 'Pinned Objects');
-      }
-      catch(error) {this.reportError(error)}
+      this.openResourceBrowser('Resources');
     }
   }
 
@@ -311,9 +307,9 @@ class IDE extends Component {
     this.addPage(title + ' (' + changes.length + ')', <ChangesBrowserIcon/>, browser);
   }
 
-  openObjectBrowser = (objects, title = 'Objects') => {
-    const browser = <ObjectBrowser styles={this.props.styles} objects={objects}/>;
-    this.addPage(title + ' (' + objects.length + ')', <InspectorIcon/>, browser);
+  openResourceBrowser = (title = 'Objects') => {
+    const browser = <ResourceBrowser styles={this.props.styles}/>;
+    this.addPage(title, <InspectorIcon/>, browser);
   }
 
   openTestRunner = (id, title = 'Test Runner') => {
@@ -564,7 +560,7 @@ class IDE extends Component {
                 unreadMessages={this.state.unreadMessages}
                 onTranscriptClicked={this.toggleShowTranscript}
                 onChangesClicked={this.browseLastChanges}
-                onPinnedObjectsClicked={this.openPinnedObjects}
+                onResourcesClicked={this.openResources}
                 onPeersClicked={this.openChat}
                 onSettingsClicked={this.openSettings}
                 onClose={this.collapseSidebar}/>

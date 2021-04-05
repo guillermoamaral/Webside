@@ -201,6 +201,14 @@ class API {
    }
 
     // Debugging...
+    async getDebuggers() {
+        try {
+            const response = await axios.get(this.baseUri + '/debuggers');
+            return response.data;
+       }
+       catch (error) {this.handleError('Cannot retrieve debuggers', error)}
+    }
+
     async createDebugger(id) {
         try {
             const evaluation = {evaluation: id};
@@ -283,12 +291,20 @@ class API {
     }
 
     // Workspaces...
+    async getWorkspaces() {
+        try {
+            const response = await axios.get(this.baseUri + '/workspaces');
+            return response.data;
+       }
+       catch (error) {this.handleError('Cannot retrieve workspaces', error)}
+    }
+
     async createWorkspace() {
         try {
             const response = await axios.post(this.baseUri + '/workspaces');
             return response.data;
        }
-       catch (error) {this.handleError('Cannot create workspace ', error)}
+       catch (error) {this.handleError('Cannot create workspace', error)}
     }    
 
     async deleteWorkspace(id) {
