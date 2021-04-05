@@ -46,9 +46,10 @@ class ResourceBrowser extends Component {
     unpinObject = async (object) => {
         try {
             await this.context.api.unpinObject(object.id);
+            this.setState({resources: this.state.resources.filter(r => r.id !== object.id)});
         }
         catch(error) {this.context.reportError(error)}
-    }
+    }   
 
     objectOptions() {
         return [
@@ -56,20 +57,45 @@ class ResourceBrowser extends Component {
         ]
     }
 
+    openWorkspace = () => {
+        if (this.state.selectedResource) {
+            this.context.openWorkspace(this.state.selectedResource.id);
+        }
+    }
+
+    workspaceOptions() {
+        return [
+            {label: 'Open', action: this.openWorkspace},
+        ]
+    }
+
+    openDebugger = () => {
+        if (this.state.selectedResource) {
+            this.context.openDebugger(this.state.selectedResource.id);
+        }
+    }
+
+    debuggerOptions() {
+        return [
+            {label: 'Open', action: this.openDebugger},
+        ]
+    }
+
     menuOptions() {
         var options;
         switch (this.state.selectedType) {
-            case 'object':
+            case 'Objects':
                 options = this.objectOptions();
                 break;
-            case 'debugger':
-                options = this.debuggerOptions();
-                break;
-            case 'workspace':
+            case 'Workspaces':
                 options = this.workspaceOptions();
+                break;
+            case 'Debuggers':
+                options = this.debuggerOptions();
                 break;
             default:
         }
+        return options;
     }
 
     resourceColumns() {

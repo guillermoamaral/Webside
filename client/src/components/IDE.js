@@ -73,8 +73,8 @@ class IDE extends Component {
     this.cacheNames();
     const classname = this.props.match.params.classname;
     if (classname) {this.openClassBrowser(classname)};
-    const debuggerid = this.props.match.params.debuggerid;
-    if (debuggerid) {this.openDebugger(debuggerid)}
+    const id = this.props.match.params.debuggerid;
+    if (id) {this.openDebugger(id)}
   }
 
   testMethodDifferences = async () => {
@@ -522,6 +522,8 @@ class IDE extends Component {
       projectNames: this.projectNames,
       classNames: this.classNames,
       openChat: this.openChat,
+      openWorkspace: this.openWorkspace,
+      openDebugger: this.openDebugger,
       browseProject: this.openSystemBrowser,
       browseClass: this.openClassBrowser,
       browseSenders: this.browseSenders,
