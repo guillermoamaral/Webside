@@ -98,17 +98,50 @@ class ResourceBrowser extends Component {
         return options;
     }
 
-    resourceColumns() {
+    objectColumns() {
         return [
             {id: 'id', label: 'ID', align: 'left'},
+            {id: 'class', label: 'Class', align: 'left', minWidth: 200},
             {id: 'printString', label: 'Print String', minWidth: 200, align: 'left'},
         ];
+    }
+
+    workspaceColumns() {
+        return [
+            {id: 'id', label: 'ID', align: 'left'},
+            {id: 'owner', label: 'Owner', align: 'center'},
+        ]
+    }
+
+    debuggerColumns() {
+        return [
+            {id: 'id', label: 'ID', align: 'left'},
+            {id: 'creator', label: 'Creator', align: 'center'},
+            {id: 'description', label: 'Description', align: 'left', minWidth: 200},
+        ]
+    }
+
+    resourceColumns(type) {
+        var columns;
+        switch (type) {
+            case 'Objects':
+                columns = this.objectColumns();
+                break;
+            case 'Workspaces':
+                columns = this.workspaceColumns();
+                break;
+            case 'Debuggers':
+                columns = this.debuggerColumns();
+                break;
+            default:
+        }
+        return columns;
     }
 
     render() {
         const {selectedType, resources, selectedResource} = this.state;
         const rows = resources;
-        const columns = this.resourceColumns();
+        const columns = this.resourceColumns(selectedType);
         const styles = this.props.styles;
         const ow = selectedResource && selectedType === 'object'? 6 : 10;
         return (
