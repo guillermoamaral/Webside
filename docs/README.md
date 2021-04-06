@@ -5,6 +5,15 @@
   * [A bit of history](#a-bit-of-history)
   * [Key aspects](#key-aspects)
   * [Building blocks](#building-blocks)
+* [API](api)
+  * [Code](api/code)
+  * [Changes](api/changes)
+  * [Evaluations](api/evaluations)
+  * [Objects](api/objects)
+  * [Workspaces](api/workspaces)
+  * [Debugging](api/debugging)
+  * [Testing](api/testing)
+  * [Profiling](api/profiling)
 * [IDE](#ide)
   * [Tools](#ide-tools)
     * [Class Browser](#class-browser)
@@ -71,7 +80,7 @@ In terms of internal design, every tool is implemented by a React component, wit
 
 As it is common to every Smalltalk IDE, every code space where the programmer can write expressions offers the options to evaluate (and/or showing/inspecting the resulting object), debug and profile expressions, plus a bunch of options to search classes and methods (senders, implementors, references, etc.) 
 
-Having these basic tools implemented, it is possible to try new presentation alternatives and designs, (there is work outhere on this regard, look for instance [Glamorous toolkit](https://gtoolkit.com/)).
+Having these basic tools implemented, it is possible to try new presentation alternatives and designs.
 
 Again, the key point here is to keep the required API as simple as possible to ease its porting to an specific Smalltalk system, and then innovate on the presentation layer a much as the imagination flies.
 
