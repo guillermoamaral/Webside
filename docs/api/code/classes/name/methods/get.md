@@ -10,7 +10,6 @@ Retrieve methods of a given class.
 | -- | -- | -- |
 | selector | string | to get implementors of a given selector | 
 | sending | string | to get senders of a given selector |
-| class | string | to get methods implemented by a given class |
 | referencing | string | to get those methods referencing a given class or variable (either using or assigning it) |
 | category | string | to get methods under a given category |
 | using | string | to get those methods using a given variable |
