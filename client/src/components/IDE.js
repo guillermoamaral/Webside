@@ -145,6 +145,10 @@ class IDE extends Component {
         mainPrimaryColor = '#9d2f69';
         mainSecondaryColor ='#3f010c';
         break;
+      case "Python":
+        mainPrimaryColor = '#2b5b84';
+        mainSecondaryColor = '#1e415e';
+        break;
       default:
         mainPrimaryColor = "#00000";
         mainSecondaryColor = "#00000";

@@ -95,7 +95,7 @@ class API {
 
     async getClass(classname) {
         try {
-            const response = await axios.get(this.baseUri + '/classes/' + classname);
+            const response = await axios.get(this.baseUri + '/classes/' + classname + '/');
             return response.data;
         }
         catch (error) {this.handleError('Cannot fetch class ' + classname, error)}
