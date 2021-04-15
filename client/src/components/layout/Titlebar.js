@@ -16,6 +16,13 @@ import SearchIcon from '@material-ui/icons/Search';
 
 class Titlebar extends Component {
   render() {
+    let logo;
+    if (this.props.dialect) {
+      try {
+        logo = require("../../resources/" + this.props.dialect + ".png")
+      }
+      catch (error) {}
+    }
     const styles = this.props.styles;
     return (
       <AppBar
@@ -33,7 +40,7 @@ class Titlebar extends Component {
           <Box p={1}>
             <Link to={this.props.baseUri}>
               <img
-                src={this.props.dialect? require("../../resources/" + this.props.dialect + ".png") : null}
+                src={logo}
                 width={28}
                 height={28}
                 alt={"Open"}/>

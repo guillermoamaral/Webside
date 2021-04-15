@@ -116,7 +116,7 @@ class API {
         }
         catch (error) {this.handleError('Cannot fecth instance variables of class ' + classname, error)}
     }
-    
+
     async getVariables(classname) {
         try {
             const response = await axios.get(this.baseUri + '/classes/' + classname + '/variables');
@@ -511,6 +511,14 @@ class API {
             return response.data
         }
         catch (error) {this.handleError('Cannot unpin object with id ' + id, error)}
+    }
+
+    async getObjectInstanceVariables(id, path) {
+        try {
+            const response = await axios.get(this.baseUri + '/objects/' + id + path + '/instance-variables');
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot fecth instance variables of object with id ' + id, error)}
     }
 
     async getSlot(id, path) {

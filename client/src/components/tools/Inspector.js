@@ -34,7 +34,7 @@ class Inspector extends Component {
         }
     }
 
-    objectPath(object) {
+    objectUrlPath(object) {
         let path = '';
         object.path.forEach(s => path = path + '/' + s);
         return path;
@@ -42,7 +42,7 @@ class Inspector extends Component {
 
     updateObject = async (object) => {
         try {
-            const retrieved = await this.context.api.getSlot(this.props.root.id, this.objectPath(object));
+            const retrieved = await this.context.api.getSlot(this.props.root.id, this.objectUrlPath(object));
             Object.assign(object, retrieved);
         }
         catch (error) {this.context.reportError(error)}
@@ -55,7 +55,7 @@ class Inspector extends Component {
             for(var i = 1; i <= object.size; i++) {names.push(i.toString())}
         } else {
             try {
-                const vars = await this.context.api.getInstanceVariables(object.class);
+                const vars = await this.context.api.getObjectInstanceVariables(this.props.root.id, this.objectUrlPath(object));
                 vars.forEach(v => names.push(v.name));
             }
             catch (error) {this.context.reportError(error)}
