@@ -75,6 +75,7 @@ class IDE extends Component {
     if (classname) {this.openClassBrowser(classname)};
     const id = this.props.match.params.debuggerid;
     if (id) {this.openDebugger(id)}
+    this.openNativeDebugger('{B3AE5087-3EBC-43E2-B4A5-95DD37D802FE}')
   }
 
   testMethodDifferences = async () => {
@@ -522,6 +523,7 @@ class IDE extends Component {
     console.log('rendering IDE')
     const context = {
       api: this.api,
+      dialect: this.dialect,
       messageChannel: this.messageChannel,
       projectNames: this.projectNames,
       classNames: this.classNames,

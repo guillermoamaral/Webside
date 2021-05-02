@@ -19,30 +19,33 @@ require('codemirror/addon/scroll/annotatescrollbar.js');
 require('codemirror/addon/lint/lint.js');
 require('codemirror/addon/lint/lint.css');
 
-class NativeCodeEditor extends Component {
+class NativeCodeEditor extends Component { 
     constructor(props){
         super(props);
         this.editor = null;
         this.state = {
             source: props.source,
             selectedRanges: [],
+            selectRanges: true,
             dirty: false,
             value: props.source,
-            ranges: [],
             menuOpen: false,
             menuPosition: {x: null, y: null},
             evaluating: false,
+            progress: false,
         }
     }
 
     static getDerivedStateFromProps(props, state) {
-        if (props.source !== state.source 
-            || (props.selectedRanges && props.selectedRanges !== state.selectedRanges)) {
+        if (
+            (props.source !== state.source 
+                || (props.selectedRanges && props.selectedRanges !== state.selectedRanges))) {
             return {
                 source: props.source,
                 selectedRanges: props.selectedRanges,
+                selectRanges: true,
                 value: props.source,
-                ranges: props.selectedRanges,
+                evaluating: props.evaluating,
             }
         }
         return null;
@@ -64,6 +67,18 @@ class NativeCodeEditor extends Component {
             });
             this.editor.setSelections(selections)
         }
+    }
+
+    selectWord(word) {
+        let selections = [];
+        var cursor = this.editor.getSearchCursor(word);
+        while (cursor.findNext()) {
+            selections.push({
+                anchor: cursor.from(),
+                head: cursor.to()
+            })
+        }
+        this.editor.setSelections(selections);
     }
     
     lineChAt(index) {
@@ -121,8 +136,13 @@ class NativeCodeEditor extends Component {
     }
   
     render() {
-        const {value, ranges, evaluating} = this.state;
-        if (ranges && ranges.length > 0) {this.selectRanges(ranges)}
+        const {value, selectRanges, evaluating, progress} = this.state;
+        if (selectRanges) {
+            const selectedRanges = this.props.selectedRanges;
+            if (selectedRanges && selectedRanges.length > 0) {this.selectRanges(selectedRanges)};
+            const selectedWord = this.props.selectedWord;
+            if (this.editor && selectedWord) {this.selectWord(selectedWord)}
+        }
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
@@ -149,9 +169,9 @@ class NativeCodeEditor extends Component {
                             editorDidMount={editor => {this.editorDidMount(editor)}}
                             onGutterClick={(editor, n) => {this.setBreakpoint(n)}}
                             onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
-                            onChange={(editor, data, value) => {this.valueChanged(value)}}
+                            onChange={(editor, data, value) => {this.setState({selectRanges: value === this.props.source})}}
                             onContextMenu={(editor, event) => {this.openMenu(event)}}/>
-                            {evaluating && <LinearProgress variant="indeterminate"/>}
+                            {(evaluating || progress) && <LinearProgress variant="indeterminate"/>}
                     </Paper>
                 </Grid>
                 <PopupMenu

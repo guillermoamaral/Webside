@@ -66,7 +66,7 @@ const styles = theme => ({
   },
   container: {
     paddingTop: theme.spacing(0),
-    paddingLeft: theme.spacing(0),
+    paddingLeft: theme.spacing(0)
   },
   paper: {
     padding: theme.spacing(1),
