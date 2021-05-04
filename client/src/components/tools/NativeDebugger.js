@@ -87,8 +87,9 @@ class NativeDebugger extends Component {
         const styles = this.props.styles; 
         const {running, frames, selectedFrame, registers} = this.state;
         const columns = [
-            {id: 'name', label: 'Register', minWidth: 100, align: 'left'},
-            {id: 'value', label: 'Value', minWidth: 100, align: 'right'},
+            {id: 'name', label: 'Register', align: 'left'},
+            {id: 'value', label: 'Value', align: 'right'},
+            {id: 'object', label: 'Object', align: 'left'},
         ];
         const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
         return (
@@ -125,7 +126,7 @@ class NativeDebugger extends Component {
                         styles={styles}
                         lineNumbers={true}
                         source={selectedFrame? selectedFrame.code : ""}
-                        selectedRanges={!this.props.selectedInterval? [] : [this.props.selectedInterval]}/>
+                        selectedRanges={selectedFrame && selectedFrame.interval? [selectedFrame.interval] : []}/>
                 </Grid>
                 <Grid item xs={5} md={5} lg={5}>
                     <Grid container spacing={1}>
