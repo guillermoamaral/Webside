@@ -72,7 +72,7 @@ Endpoints to manage workspaces.
 | DELETE | [/workspaces/{id}](workspaces/id/delete.md) | Delete the workspece with a given ID | - | - |
 
 
-## [Debugging](debuggers)
+## [Debuggers](debuggers)
 Endpoints to manage debuggers and interact with them.
 
 | Method | Path | Description | Parameters | Payload |
