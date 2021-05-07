@@ -22,7 +22,7 @@ Retrieve frames of the debugger with a given ID.
 ]
 ```
 
-Where [`class`](../../../code/classes/name/get.md) the class of the receiver, [`method`](../../../objects/id/get.md) is the method associated to the frame,  and `interval` contains the starting and ending positions of the current AST node within the source code. 
+Where `class` is the class of the receiver as defined [here](../../../code/classes/name/get.md), `method` is the method associated to the frame as defined [here](../../../objects/id/get.md), and `interval` contains the starting and ending positions of the current AST node within the source code. 
 
 ```json
 {
