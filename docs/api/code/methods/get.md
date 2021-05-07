@@ -29,7 +29,9 @@ Retrieve those methods satisfying the condition specified in the query (or all t
     "source": "string",
     "author": "string",
     "timestamp": "string",
-    "project": "string"
+    "project": "string",
+    "overriding": "boolean",
+	"overriden": "boolean"
 }
 ```
 

@@ -28,7 +28,9 @@ Retrieve methods of a given class.
     "source": "string",
     "author": "string",
     "timestamp": "string",
-    "project": "string"
+    "project": "string",
+    "overriding": "boolean",
+	"overriden": "boolean"
 }
 ```
 

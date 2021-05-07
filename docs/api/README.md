@@ -80,8 +80,8 @@ Endpoints to manage debuggers and interact with them.
 | GET | [/debuggers](debuggers/get.md) | Retrieve open debuggers | - | - |
 | POST | [/debuggers](debuggers/post.md) | Create a debugger upon an given process (evaluation) | - | ```json { "evaluation": "string" }``` |
 | GET | [/debuggers/{id}/frames](debuggers/id/frames/get.md) | Retrieve frames of the debugger with a given ID | - | - |
-| GET | [/debuggers/{id}/frames/{index}](debuggers/id/frames/index/get.md) | Retrieve the i-th frame withing the debugger with a given ID | - | - |
-| GET | [/debuggers/{id}/frames/{index}/bindings](debuggers/id/frames/index/bindings/get.md) | Retrieve the bindings of the i-th frame withing the debugger with a given ID | - | - |
+| GET | [/debuggers/{id}/frames/{index}](debuggers/id/frames/index/get.md) | Retrieve the _i_-th frame withing the debugger with a given ID | - | - |
+| GET | [/debuggers/{id}/frames/{index}/bindings](debuggers/id/frames/index/bindings/get.md) | Retrieve the bindings of the _i_-th frame withing the debugger with a given ID | - | - |
 | POST | [/debuggers/{id}/stepover](debuggers/id/stepover/post.md) | Step over the current sentence in the debugger with a given ID | - | - |
 | POST | [/debuggers/{id}/stepinto](debuggers/id/stepinto/post.md) | Step into the current sentence in the debugger with a given ID | - | - |
 | POST | [/debuggers/{id}/restart](debuggers/id/restart/post.md) | Restart the debugger with a given ID | - | - |

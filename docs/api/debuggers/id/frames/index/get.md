@@ -22,7 +22,7 @@ Retrieve the _i_-th frame withing the debugger with a given ID
 ]
 ```
 
-Where `class` is the class of the receiver as defined [here](../../../code/classes/name/get.md), `method` is the method associated to the frame as defined [here](../../../objects/id/get.md), and `interval` contains the starting and ending positions of the current AST node within the source code. 
+Where `class` is the class of the receiver as defined [here](../../../../code/classes/name/get.md), `method` is the method associated to the frame as defined [here](../../../../code/methods/get.md), and `interval` contains the starting and ending positions of the current AST node within the source code. 
 
 ```json
 {
@@ -31,10 +31,33 @@ Where `class` is the class of the receiver as defined [here](../../../code/class
 }
 ```
 
-
-**Example:**: frames of debugger with ID `{207CDBB1-6311-4503-A066-1A89B39A1465}`, `GET /debugger/{207CDBB1-6311-4503-A066-1A89B39A1465}/frames`
+**Example:**: 2nd frame of debugger with ID `{7B9C472C-376F-493A-9B88-5CCBA70A4309}`, `GET /debugger/{7B9C472C-376F-493A-9B88-5CCBA70A4309}/frames/2`
 ```json
-[
-    
-]
+{
+	"label": "SmallInteger(Integer)>>factorial",
+    "index": 2,
+	"class": {
+		"name": "SmallInteger",
+		"definition": "Integer\r\tsubclass: #SmallInteger\r\tinstanceVariableNames: ''\r\tclassVariableNames: 'Maximum Minimum'\r\tpoolDictionaries: ''",
+		"superclass": "Integer",
+		"comment": "",
+		"variable": false,
+		"project": "Kernel"
+	},
+	"method": {
+		"selector": "factorial",
+		"class": "Integer",
+		"category": "arithmetic",
+		"source": "factorial\r\tself > 1 ifTrue: [^(self - 1) factorial * self].\r\tself < 0 ifTrue: [^self error: 'not valid for negative numbers'].\r\t^1",
+		"author": "Jon Doe",
+		"timestamp": "2018-10-26T12:37:22.459-03:00",
+		"project": "Kernel",
+		"overriding": false,
+		"overriden": false
+	},
+	"interval": {
+		"start": 31,
+		"end": 50
+	}
+}
 ```

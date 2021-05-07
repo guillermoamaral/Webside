@@ -15,26 +15,26 @@ Retrieve frames of the debugger with a given ID.
     {
         "index": "number",
         "label": "string",
-        "class": "class",
-        "method": "method",
-        "interval": "interval"
     }
 ]
 ```
-
-Where `class` is the class of the receiver as defined [here](../../../code/classes/name/get.md), `method` is the method associated to the frame as defined [here](../../../objects/id/get.md), and `interval` contains the starting and ending positions of the current AST node within the source code. 
-
-```json
-{
-    "start": "number",
-    "end": "number"
-}
-```
+_Note: though frame representation includes more properties (see [/debuggers/{id}/frames/{index}](id/frames/index/get.md)), this endpoint is required to provide just `index` and `label`_ 
 
 
-**Example:**: frames of debugger with ID `{207CDBB1-6311-4503-A066-1A89B39A1465}`, `GET /debugger/{207CDBB1-6311-4503-A066-1A89B39A1465}/frames`
+**Example:**: frames of debugger with ID `{7B9C472C-376F-493A-9B88-5CCBA70A4309}`, `GET /debugger/{7B9C472C-376F-493A-9B88-5CCBA70A4309}/frames`
 ```json
 [
-    
+	{
+		"index": 1,
+		"label": "SmallInteger(Integer)>>factorial"
+	},
+	{
+		"index": 2,
+		"label": "SmallInteger(Integer)>>factorial"
+	},
+	{
+		"index": 3,
+		"label": "UndefinedObject>>doit"
+	}
 ]
 ```
