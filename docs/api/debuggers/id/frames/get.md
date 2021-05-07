@@ -1,4 +1,4 @@
-# Retrieve object slots
+# Retrieve debugger frames
 Retrieve frames of the debugger with a given ID.
 
 **URL**: `/debuggers/{id}/frames`
@@ -12,17 +12,17 @@ Retrieve frames of the debugger with a given ID.
 **Content**: `[frame]` where `frame` is defined as:
 ```json
 [
-{
-    "index": "number",
-    "label": "string",
-    "class": "class",
-    "method": "method",
-    "interval": "interval"
-}
+    {
+        "index": "number",
+        "label": "string",
+        "class": "class",
+        "method": "method",
+        "interval": "interval"
+    }
 ]
 ```
 
-Where [`class`](../../../../../code/classes/name/get.md) the class of the receiver, [`method`](../../../../../objects/id/get.md) is the method associated to the frame,  and `interval` contains the starting and ending positions of the current AST node within the source code. 
+Where [`class`](../../../code/classes/name/get.md) the class of the receiver, [`method`](../../../objects/id/get.md) is the method associated to the frame,  and `interval` contains the starting and ending positions of the current AST node within the source code. 
 
 ```json
 {
