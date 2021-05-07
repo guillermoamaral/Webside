@@ -18,7 +18,7 @@ Retrieve frames of the debugger with a given ID.
     }
 ]
 ```
-_Note: though frame representation includes more properties (see [/debuggers/{id}/frames/{index}](id/frames/index/get.md)), this endpoint is required to provide just `index` and `label`_ 
+_Note: though frame representation includes more properties (see [/debuggers/{id}/frames/{index}](index/get.md)), this endpoint is required to provide just `index` and `label`_ 
 
 
 **Example:**: frames of debugger with ID `{7B9C472C-376F-493A-9B88-5CCBA70A4309}`, `GET /debugger/{7B9C472C-376F-493A-9B88-5CCBA70A4309}/frames`
