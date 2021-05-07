@@ -1,0 +1,40 @@
+# Retrieve debugger frame
+Retrieve the _i_-th frame withing the debugger with a given ID
+
+**URL**: `/debuggers/{id}/frames`
+
+**Method**: `GET`
+
+## Success Responses
+
+**Code** : `200 OK`
+
+**Content**: `[frame]` where `frame` is defined as:
+```json
+[
+    {
+        "index": "number",
+        "label": "string",
+        "class": "class",
+        "method": "method",
+        "interval": "interval"
+    }
+]
+```
+
+Where `class` is the class of the receiver as defined [here](../../../code/classes/name/get.md), `method` is the method associated to the frame as defined [here](../../../objects/id/get.md), and `interval` contains the starting and ending positions of the current AST node within the source code. 
+
+```json
+{
+    "start": "number",
+    "end": "number"
+}
+```
+
+
+**Example:**: frames of debugger with ID `{207CDBB1-6311-4503-A066-1A89B39A1465}`, `GET /debugger/{207CDBB1-6311-4503-A066-1A89B39A1465}/frames`
+```json
+[
+    
+]
+```
