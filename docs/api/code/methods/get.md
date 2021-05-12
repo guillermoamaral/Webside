@@ -38,7 +38,7 @@ Retrieve those methods satisfying the condition specified in the query (or all t
 }
 ```
 
-_Note: optional properties such as `overriding`, `overriden`, `bytecodes` or `disassembly` won't be included if they are not requested in the query._ 
+_Note: optional properties such as `bytecodes` or `disassembly` won't be included if they are not requested in the query._ 
 
 **Example:**: `Fraction` methods under `arithmetic` category and sending `reciprocal` `GET /classes/Fraction/methods?category=arithmetic&sending=reciprocal`.
 ```json
