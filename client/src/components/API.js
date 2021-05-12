@@ -154,7 +154,7 @@ class API {
     async getMethod(classname, selector) {
         try {
             const encoded = encodeURIComponent(selector);
-            const response = await axios.get(this.baseUri + '/classes/' + classname + '/methods?selector=' + encoded);
+            const response = await axios.get(this.baseUri + '/classes/' + classname + '/methods?selector=' + encoded + '&bytecodes=true&disassembly=true');
             return response.data.length === 0 ? null : response.data[0];
         }
         catch (error) {this.handleError('Cannot fetch method ' + classname + '>>#' + selector, error)}

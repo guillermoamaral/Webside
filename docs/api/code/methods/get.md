@@ -10,11 +10,12 @@ Retrieve those methods satisfying the condition specified in the query (or all t
 | -- | -- | -- |
 | selector | string | to get implementors of a given selector | 
 | sending | string | to get senders of a given selector |
-| class | string | to get methods implemented by a given class |
 | referencing | string | to get those methods referencing a given class or variable (either using or assigning it) |
 | category | string | to get methods under a given category |
 | using | string | to get those methods using a given variable |
 | assigning | string | to get those methods assigning a given variable |
+| bytecodes | boolean | to get methods' bytecodes |
+| disassembly | boolean | to get methods' disassembly |
 
 ## Success Responses
 
@@ -31,11 +32,15 @@ Retrieve those methods satisfying the condition specified in the query (or all t
     "timestamp": "string",
     "project": "string",
     "overriding": "boolean",
-	"overriden": "boolean"
+	"overriden": "boolean",
+    "bytecodes": "string",
+	"disassembly": "string"
 }
 ```
 
-**Example:**: `Fraction` methods under `arithmetic` category and sending `reciprocal` `GET /methods?class=Fraction&category=arithmetic&sending=reciprocal`.
+_Note: optional properties such as `overriding`, `overriden`, `bytecodes` or `disassembly` won't be included if they are not requested in the query._ 
+
+**Example:**: `Fraction` methods under `arithmetic` category and sending `reciprocal` `GET /classes/Fraction/methods?category=arithmetic&sending=reciprocal`.
 ```json
 [
     {

@@ -108,6 +108,24 @@ class CodeBrowser extends Component {
         }
     }
 
+    availableModes = () => {
+        const modes = [
+            {mode: 'definition', label: 'Class definition'},
+            {mode: 'comment', label: 'Class comment'}
+        ];
+        const method = this.props.method;
+        if (method) {
+            modes.push({mode: 'source', label: 'Method definition'});
+            if (method.bytecodes) {
+                modes.push({mode: 'bytecodes', label: 'Bytecodes'});
+            }
+            if (method.disassembly) {
+                modes.push({mode: 'disassembly', label: 'Disassembly'});
+            }
+        }
+        return modes;
+    }
+
     currentSource = () => {
         const species = this.props.class;
         const method = this.props.method;
@@ -115,17 +133,27 @@ class CodeBrowser extends Component {
         let source;
         switch (mode) {
             case 'comment':
-                source = !species? '' : species.comment;
+                source = species? species.comment : '';
                 break;
             case 'definition':
-                source = !species? '' : species.definition;
+                source = species? species.definition : '';
                 break;
             case 'source':
-                source = !method? '' : method.source;
+                source = method? method.source : '';
+                break;
+            case 'bytecodes':
+                source = method? method.bytecodes || '' : '';
+                break;
+            case 'disassembly':
+                source = method? method.disassembly || '' : '';
                 break;
             default:
         }
         return source;
+    }
+
+    currentCodeMode = () => {
+        return (this.state.mode === 'comment') ? 'text' : 'smalltalk';
     }
 
     currentAuthor = () => {
@@ -197,15 +225,10 @@ class CodeBrowser extends Component {
                         value={mode}
                         exclusive
                         onChange={this.modeChanged}>
-                        <ToggleButton value='source' variant='outlined' size='small'>
-                            Method defintion
-                        </ToggleButton>
-                        <ToggleButton value='definition' variant='outlined' size='small'>
-                            Class definition
-                        </ToggleButton>
-                        <ToggleButton value='comment' variant='outlined' size='small'>
-                            Class comment
-                        </ToggleButton>
+                            {this.availableModes().map(m => 
+                                <ToggleButton value={m.mode} variant='outlined' size='small' key={m.mode}>
+                                    {m.label}
+                                </ToggleButton>)}
                     </ToggleButtonGroup>    
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
@@ -215,7 +238,7 @@ class CodeBrowser extends Component {
                             styles={this.props.styles}
                             lineNumbers={true}
                             source={this.currentSource()}
-                            mode={(mode === 'comment') ? 'text' : 'smalltalk'}
+                            mode={this.currentCodeMode()}
                             lintAnnotations={this.currentLintAnnotations()}
                             selectedRanges={!selectedInterval? [] : [selectedInterval]}
                             selectedWord={selectedWord}
