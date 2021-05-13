@@ -10,6 +10,8 @@ require('diff-match-patch');
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
 require('codemirror/mode/smalltalk/smalltalk.js');
+require('codemirror/mode/gas/gas.js');
+require('codemirror/mode/python/python.js');
 require('codemirror/addon/search/searchcursor.js');
 require('codemirror/addon/search/search.js');
 require('codemirror/addon/search/jump-to-line.js');

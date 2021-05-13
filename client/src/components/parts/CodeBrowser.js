@@ -129,9 +129,8 @@ class CodeBrowser extends Component {
     currentSource = () => {
         const species = this.props.class;
         const method = this.props.method;
-        const mode = this.state.selectedMode;
         let source;
-        switch (mode) {
+        switch (this.state.selectedMode) {
             case 'comment':
                 source = species? species.comment : '';
                 break;
@@ -153,7 +152,18 @@ class CodeBrowser extends Component {
     }
 
     currentCodeMode = () => {
-        return (this.state.mode === 'comment') ? 'text' : 'smalltalk';
+        let mode;
+        switch (this.state.selectedMode) {
+            case 'comment':
+                mode = 'text';
+                break;
+            case 'disassembly':
+                mode = 'gas';
+                break;
+            default:
+                mode = this.context.dialect == 'Python'? 'Python' : 'smalltalk';
+        }
+        return mode;
     }
 
     currentAuthor = () => {
