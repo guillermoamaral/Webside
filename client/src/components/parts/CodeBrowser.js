@@ -4,6 +4,7 @@ import { ToggleButton , ToggleButtonGroup } from '@material-ui/lab';
 import { IDEContext } from '../IDEContext';
 import CodeEditor from './CodeEditor';
 import { withDialog } from '../dialogs/index';
+import clsx from 'clsx';
 
 class CodeBrowser extends Component {
     static contextType = IDEContext;
@@ -18,7 +19,8 @@ class CodeBrowser extends Component {
 
     static getDerivedStateFromProps(props, state) {
         const mode = !props.method && state.selectedMode === 'source'? 
-            'definition' : props.method !== state.method? 'source' : state.selectedMode;
+            'definition' : (state.selectedMode === 'definition' || state.selectedMode === 'comment') && (props.method !== state.method)?
+                'source' : state.selectedMode;
         if (props.method === state.method && mode === state.selectedMode) {return null}
         return {
             selectedMode: mode,
@@ -227,6 +229,8 @@ class CodeBrowser extends Component {
         const timestamp = this.currentTimestamp();
         const project = this.currentProject();
         const {selectedInterval, selectedWord} = this.props;
+        const styles = this.props.styles;
+        const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
@@ -242,7 +246,7 @@ class CodeBrowser extends Component {
                     </ToggleButtonGroup>    
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
-                    <Paper variant="outlined">
+                    <Paper variant="outlined" style={{height: 400}}>
                         <CodeEditor
                             context={this.props.context}
                             styles={this.props.styles}

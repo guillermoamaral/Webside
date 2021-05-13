@@ -259,7 +259,7 @@ class TestRunner extends Component {
                                     </AccordionSummary>
                                     <Grid container>
                                         <Grid item xs={1} md={1} lg={1}/>
-                                        <Grid item xs={11} md={11} lg={11}>
+                                        <Grid item xs={11} md={11} lg={11} style={{minHeight: 300}}>
                                             <CustomTable
                                                 styles={styles}
                                                 columns={testColumns}

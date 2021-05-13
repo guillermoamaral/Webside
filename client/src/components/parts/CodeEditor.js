@@ -4,7 +4,9 @@ import AcceptIcon from '@material-ui/icons/CheckCircle';
 import { Controlled as CodeMirror } from 'react-codemirror2';
 import PopupMenu from '../controls/PopupMenu';
 import { IDEContext } from '../IDEContext';
+import Scrollable from '../controls/Scrollable';
 import '../../smalltalk.css';
+import CustomList from '../controls/CustomList'
 
 require('diff-match-patch');
 require('codemirror/lib/codemirror.css');
@@ -294,50 +296,51 @@ class CodeEditor extends Component {
             if (this.editor && selectedWord) {this.selectWord(selectedWord)}
         }
         return (
-            <Grid container spacing={1}>
+            <Grid container spacing={1} style={{height: "100%"}}>
                 <Grid item xs={11} md={showAccept? 11 : 12} lg={showAccept? 11 : 12}>
-                    <CodeMirror
-                        className={this.props.styles.codeMirror}
-                        options={{
-                            //viewportMargin: "Infinity",
-                            readOnly: evaluating || progress,
-                            mode: mode,
-                            theme: "material",
-                            lineSeparator: '\r',
-                            lineNumbers: this.props.lineNumbers,
-                            matchBrackets: true,
-                            autoCloseBrackets: true,
-                            //highlightSelectionMatches: true,
-                            highlightSelectionMatches: {annotateScrollbar: true},
-                            indentUnit: 10, 
-                            styleActiveLine: true, 
-                            matchTags: {bothTags: true}, 
-                            lineWrapping: true,
-                            gutters: ['CodeMirror-lint-markers', 'breakpoints'],
-                            lint: {'getAnnotations': this.lintAnnotations},
-                            extraKeys: {
-                                "Ctrl-D": this.evaluateExpression,
-                                "Ctrl-I": this.inspectEvaluation,
-                                "Ctrl-S": this.showEvaluation,
-                                "Ctrl-P": this.showEvaluation,
-                                "Ctrl-U": this.debugExpression,
-                                "Alt-S": this.acceptClicked,
-                                "Ctrl-B": this.browseClass,
-                                "Alt-N": this.browseSenders,
-                                "Alt-M": this.browseImplementors,
-                                "Alt-R": this.browseReferences,
-                                "Ctrl-Q": this.markOcurrences,
-                                "Alt-Z": this.toggleFullScreen,
-                                "F2": this.renameTarget}}}
-                        value={value}
-                        editorDidMount={editor => {this.editorDidMount(editor)}}
-                        onGutterClick={(editor, n) => {this.setBreakpoint(n)}}
-                        onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
-                        onChange={(editor, data, value) => {this.setState({selectRanges: value === this.props.source})}}
-                        onContextMenu={(editor, event) => {this.openMenu(event)}}
-                        onSelection={(editor, event) => {this.setState({selectRanges: false})}}
-                        />
-                        {(evaluating || progress) && <LinearProgress variant="indeterminate"/>}
+                    <Scrollable>
+                        <CodeMirror
+                            className={this.props.styles.codeMirror}
+                            options={{
+                                readOnly: evaluating || progress,
+                                mode: mode,
+                                theme: "material",
+                                lineSeparator: '\r',
+                                lineNumbers: this.props.lineNumbers,
+                                matchBrackets: true,
+                                autoCloseBrackets: true,
+                                //highlightSelectionMatches: true,
+                                highlightSelectionMatches: {annotateScrollbar: true},
+                                indentUnit: 10, 
+                                styleActiveLine: true, 
+                                matchTags: {bothTags: true}, 
+                                lineWrapping: true,
+                                gutters: ['CodeMirror-lint-markers', 'breakpoints'],
+                                lint: {'getAnnotations': this.lintAnnotations},
+                                extraKeys: {
+                                    "Ctrl-D": this.evaluateExpression,
+                                    "Ctrl-I": this.inspectEvaluation,
+                                    "Ctrl-S": this.showEvaluation,
+                                    "Ctrl-P": this.showEvaluation,
+                                    "Ctrl-U": this.debugExpression,
+                                    "Alt-S": this.acceptClicked,
+                                    "Ctrl-B": this.browseClass,
+                                    "Alt-N": this.browseSenders,
+                                    "Alt-M": this.browseImplementors,
+                                    "Alt-R": this.browseReferences,
+                                    "Ctrl-Q": this.markOcurrences,
+                                    "Alt-Z": this.toggleFullScreen,
+                                    "F2": this.renameTarget}}}
+                            value={value}
+                            editorDidMount={editor => {this.editorDidMount(editor)}}
+                            onGutterClick={(editor, n) => {this.setBreakpoint(n)}}
+                            onBeforeChange={(editor, data, value) => {this.valueChanged(value)}}
+                            onChange={(editor, data, value) => {this.setState({selectRanges: value === this.props.source})}}
+                            onContextMenu={(editor, event) => {this.openMenu(event)}}
+                            onSelection={(editor, event) => {this.setState({selectRanges: false})}}
+                            />
+                    </Scrollable>
+                    {(evaluating || progress) && <LinearProgress variant="indeterminate"/>}
                 </Grid>
                 {showAccept &&
                     (<Grid item xs={1} md={1} lg={1}>

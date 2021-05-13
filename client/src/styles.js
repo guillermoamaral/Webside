@@ -84,13 +84,15 @@ const styles = theme => ({
   codeMirror: {
     fontFamily: theme.typography.fontFamily,
     fontSize: theme.typography.fontSize + 2,
-    minHeight: 200,
     //position: "inherit",
     top: 0,
     bottom: 0,
     left: 0,
     right: 0,
-    height: "auto",
+    //height: "auto",
+    //viewportMargin: "Infinity",
+    //cmWrap: {height: "100%"},
+    //cmScroller: {overflow: "auto"}
   },
   globalSearch: {
     position: 'relative',

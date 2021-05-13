@@ -24,3 +24,8 @@
   position: relative;
   border: none;
 }
+
+.CodeMirror-scroll {
+  height: auto!important;
+  overflow: visible;
+}

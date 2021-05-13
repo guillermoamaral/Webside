@@ -49,7 +49,7 @@ class ChangesBrowser extends Component {
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
-                    <Paper variant="outlined">      
+                    <Paper className={fixedHeightPaper} variant="outlined">      
                         <CustomTable
                             styles={styles}
                             columns={columns}

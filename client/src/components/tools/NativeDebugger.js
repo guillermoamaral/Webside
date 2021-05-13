@@ -10,7 +10,7 @@ import ResumeIcon from '@iconify/icons-mdi/play';
 import TerminateIcon from '@iconify/icons-mdi/stop';
 import { IDEContext } from '../IDEContext';
 import FrameList from '../parts/FrameList';
-import CustomTable from '../controls/CustomTable';
+import RegisterTable from '../parts/RegisterTable';
 import CodeBrowser from '../parts/CodeBrowser';
 
 class NativeDebugger extends Component {
@@ -85,13 +85,8 @@ class NativeDebugger extends Component {
     }
 
     render() {
-        const styles = this.props.styles; 
+        const styles = this.props.styles;
         const {running, frames, selectedFrame, registers} = this.state;
-        const columns = [
-            {id: 'name', label: 'Register', align: 'left'},
-            {id: 'value', label: 'Value', align: 'right'},
-            {id: 'object', label: 'Object', align: 'left'},
-        ];
         const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
         return (
             <Grid container spacing={1}>
@@ -134,10 +129,9 @@ class NativeDebugger extends Component {
                     <Grid container spacing={1}>
                         <Grid item xs={12} md={12} lg={12}>
                             <Paper className={fixedHeightPaper} variant="outlined">
-                                <CustomTable
+                                <RegisterTable
                                     styles={styles}
-                                    columns={columns}
-                                    rows={registers}/>
+                                    registers={registers}/>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={12} lg={12}>

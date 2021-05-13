@@ -22,7 +22,7 @@ class Scrollable extends React.PureComponent {
     //     renderTrackVertical: this.trackV,
     //     autoHide: false}
     //return <Scrollbar {...sProps}>{this.props.children}</Scrollbar>;
-    return <Scrollbar style={{width: "100%", height: "100%"}}>{this.props.children}</Scrollbar>;
+    return <Scrollbar style={{width: "100%", height: "100%", minHeight: 100}}>{this.props.children}</Scrollbar>;
   }
 }
 

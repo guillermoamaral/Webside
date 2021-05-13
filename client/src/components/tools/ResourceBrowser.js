@@ -7,6 +7,7 @@ import { IDEContext } from '../IDEContext';
 import InspectorIcon from '../icons/InspectorIcon';
 import WorkspaceIcon from '../icons/WorkspaceIcon';
 import DebuggerIcon from '../icons/DebuggerIcon';
+import clsx from 'clsx';
 
 class ResourceBrowser extends Component {
     static contextType = IDEContext;
@@ -144,6 +145,7 @@ class ResourceBrowser extends Component {
         const columns = this.resourceColumns(selectedType);
         const styles = this.props.styles;
         const ow = selectedResource && selectedType === 'object'? 6 : 10;
+        const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
         return (
             <Grid container spacing={1}>
                 <Grid item xs={2} md={2} lg={2}>
@@ -163,7 +165,7 @@ class ResourceBrowser extends Component {
                     </List>
                 </Grid>
                 <Grid item xs={ow} md={ow} lg={ow}>
-                    {selectedType && <Paper variant="outlined">      
+                    {selectedType && <Paper className={fixedHeightPaper} variant="outlined">      
                         <CustomTable
                             styles={styles}
                             columns={columns}

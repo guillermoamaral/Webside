@@ -43,52 +43,52 @@ class CustomTable extends Component {
         const columns = this.props.columns;
         const rows = this.props.rows || [];
         return (
-            //<Scrollable>
-            <div>
-                <TableContainer className={this.props.styles.container}>
-                    <Table stickyHeader size="small">
-                        {!this.props.noHeaders && <TableHead>
-                            <TableRow>
-                                {columns.map((column) => (
-                                    <TableCell
-                                        key={column.id}
-                                        align={column.align}
-                                        style={{minWidth: column.minWith}}>
-                                            {column.label}
-                                    </TableCell>
-                                ))}
-                            </TableRow> 
-                        </TableHead>}
-                        <TableBody>
-                            {rows.map((row, index) => {
-                                return (
-                                    <TableRow
-                                        hover
-                                        tabIndex={-1}
-                                        key={index}
-                                        selected={row === this.state.selectedRow}
-                                        onClick={event => this.rowSelected(event, row)}
-                                        onContextMenu={this.openMenu}>
-                                            {columns.map((column) => {
-                                                const value = row[column.id];
-                                                return (
-                                                    <TableCell key={column.id} align={column.align} style={{color: row.color || "default"}}>
-                                                        {column.format ? column.format(value) : value}
-                                                    </TableCell>)
-                                                })}
-                                    </TableRow>)
-                                })}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <PopupMenu
-                    options={this.props.menuOptions}
-                    open={this.state.menuOpen}
-                    position={this.state.menuPosition}
-                    onOptionClick={this.menuOptionClicked}
-                    onClose={this.closeMenu}/>
-            </div>
-            //</Scrollable>
+            <Scrollable>
+                <div>
+                    <TableContainer className={this.props.styles.container}>
+                        <Table stickyHeader size="small">
+                            {!this.props.noHeaders && <TableHead>
+                                <TableRow>
+                                    {columns.map((column) => (
+                                        <TableCell
+                                            key={column.id}
+                                            align={column.align}
+                                            style={{minWidth: column.minWith}}>
+                                                {column.label}
+                                        </TableCell>
+                                    ))}
+                                </TableRow> 
+                            </TableHead>}
+                            <TableBody>
+                                {rows.map((row, index) => {
+                                    return (
+                                        <TableRow
+                                            hover
+                                            tabIndex={-1}
+                                            key={index}
+                                            selected={row === this.state.selectedRow}
+                                            onClick={event => this.rowSelected(event, row)}
+                                            onContextMenu={this.openMenu}>
+                                                {columns.map((column) => {
+                                                    const value = row[column.id];
+                                                    return (
+                                                        <TableCell key={column.id} align={column.align} style={{color: row.color || "default"}}>
+                                                            {column.format ? column.format(value) : value}
+                                                        </TableCell>)
+                                                    })}
+                                        </TableRow>)
+                                    })}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <PopupMenu
+                        options={this.props.menuOptions}
+                        open={this.state.menuOpen}
+                        position={this.state.menuPosition}
+                        onOptionClick={this.menuOptionClicked}
+                        onClose={this.closeMenu}/>
+                </div>
+            </Scrollable>
         )
     }
 }
