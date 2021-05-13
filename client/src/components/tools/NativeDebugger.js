@@ -9,9 +9,9 @@ import SuspendIcon from '@iconify/icons-mdi/pause';
 import ResumeIcon from '@iconify/icons-mdi/play';
 import TerminateIcon from '@iconify/icons-mdi/stop';
 import { IDEContext } from '../IDEContext';
-import CustomList from '../controls/CustomList';
+import FrameList from '../parts/FrameList';
 import CustomTable from '../controls/CustomTable';
-import NativeCodeEditor from '../parts/NativeCodeEditor';
+import CodeBrowser from '../parts/CodeBrowser';
 
 class NativeDebugger extends Component {
     static contextType = IDEContext;
@@ -76,7 +76,8 @@ class NativeDebugger extends Component {
         if (!frame.method) {
             try {
                 const info = await this.context.api.getNativeDebuggerFrame(this.props.id, frame.index);
-                frame.code = info.code;
+                frame.method = info.method;
+                frame.class = info.class;
                 frame.interval = info.interval;
             }
             catch (error) {this.context.reportError(error)}
@@ -122,11 +123,12 @@ class NativeDebugger extends Component {
                     </Tooltip>
                 </Grid>
                 <Grid item xs={7} md={7} lg={7}>
-                    <NativeCodeEditor
+                    <CodeBrowser
+                        context={{debugger: this.props.id, frame: selectedFrame? selectedFrame.index : null}}
                         styles={styles}
-                        lineNumbers={true}
-                        source={selectedFrame? selectedFrame.code : ""}
-                        selectedRanges={selectedFrame && selectedFrame.interval? [selectedFrame.interval] : []}/>
+                        class={selectedFrame? selectedFrame.class : null}
+                        method={selectedFrame? selectedFrame.method : null}
+                        selectedInterval={selectedFrame? selectedFrame.interval : null}/>
                 </Grid>
                 <Grid item xs={5} md={5} lg={5}>
                     <Grid container spacing={1}>
@@ -140,10 +142,9 @@ class NativeDebugger extends Component {
                         </Grid>
                         <Grid item xs={12} md={12} lg={12}>
                             <Paper className={fixedHeightPaper} variant="outlined">
-                                <CustomList
-                                    itemLabel="label"
-                                    items={frames}
-                                    selectedItem={selectedFrame}
+                                <FrameList
+                                    frames={frames}
+                                    selectedFrame ={selectedFrame}
                                     onSelect={this.frameSelected}/>
                             </Paper>
                         </Grid>
