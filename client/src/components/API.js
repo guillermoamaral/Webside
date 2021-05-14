@@ -657,6 +657,14 @@ class API {
         catch (error) {this.handleError('Cannot fetch registers of native debugger ' + id, error)}
     }
 
+    async getNativeDebuggerSpaces(id) {
+        try {
+            const response = await axios.get(this.baseUri + '/native-debuggers/' + id + '/spaces');
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot fetch spaces of native debugger ' + id, error)}
+    }
+
     async getNativeDebuggerFrame(id, index) {
         try {
            const response = await axios.get(this.baseUri + '/native-debuggers/' + id + '/frames/' + index);

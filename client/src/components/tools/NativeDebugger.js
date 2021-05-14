@@ -23,14 +23,15 @@ class NativeDebugger extends Component {
             frames: [],
             selectedFrame: null,
             registers: [],
+            spaces: [],
         }
     }
 
     componentDidMount() {
-        this.updateStateFramesAndRegisters();
+        this.updateInfo();
     }
 
-    async updateStateFramesAndRegisters() {
+    async updateInfo() {
         try {
             const native = await this.context.api.getNativeDebugger(this.props.id);
             const running = native.state === 'running';
@@ -41,11 +42,14 @@ class NativeDebugger extends Component {
                 await this.updateFrame(selected)
             }
             const registers = await this.context.api.getNativeDebuggerRegisters(this.props.id);
+            const spaces = await this.context.api.getNativeDebuggerSpaces(this.props.id);
+            spaces.forEach(s => s.color = this.randomColor());
             this.setState({
                 running: running,
                 frames: frames,
                 selectedFrame: selected,
                 registers: registers,
+                spaces: spaces,
             })    
         }
         catch (error) {this.context.reportError(error)}
@@ -55,7 +59,7 @@ class NativeDebugger extends Component {
         try {
             await this.context.api.resumeNativeDebugger(this.props.id);
             this.setState({running: true});
-            this.updateStateFramesAndRegisters();
+            this.updateInfo();
         }
         catch(error) {this.context.reportError(error)}
     }
@@ -85,54 +89,51 @@ class NativeDebugger extends Component {
         }
     }
 
+    randomColor() {
+        var letters = '0123456789ABCDEF'.split('');
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.round(Math.random() * 15)];
+        }
+        return color;
+    }
+
     render() {
         const styles = this.props.styles;
-        const {running, frames, selectedFrame, registers} = this.state;
+        const {running, frames, selectedFrame, registers, spaces} = this.state;
         registers.forEach(r => r.color = '#28a745')
         const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
-        var spacesData = {
-            labels: ['1'],
-            datasets: [
-              {
-                label: '# of Red Votes',
-                data: [12],
-                backgroundColor: 'rgb(255, 99, 132)',
-              },
-              {
-                label: '# of Blue Votes',
-                data: [2],
-                backgroundColor: 'rgb(54, 162, 235)',
-              },
-              {
-                label: '# of Green Votes',
-                data: [3],
-                backgroundColor: 'rgb(75, 192, 192)',
-              },
-            ],
-        };
+        var spacesData = {labels: ['address'], datasets: []};
+        var offset;
+        spaces.forEach(s => {
+            if (offset && s.base > offset) {
+                spacesData.datasets.push({
+                    label: 'empty space from ' + offset + ' to ' + s.base,
+                    data: [s.base - offset],
+                    backgroundColor: 'rgba(255, 255, 255, 0)',
+                })
+            }
+            spacesData.datasets.push({
+                label: 'space from ' + s.base + ' to ' + s.commitedLimit,
+                data: [s.commitedLimit - s.base],
+                backgroundColor: s.color,    
+            })
+            offset = s.commitedLimit;
+        })
+        const min = spaces.length > 0? spaces[0].base : 0;
+        const max = spaces.length > 0? spaces[spaces.length - 1].commitedLimit : 1;
         const spacesOptions = {
             legend: {display: false},
             scales: {
-              yAxes: [
-                {
-                  stacked: true,
-                  ticks: {
-                    beginAtZero: true,
-                  },
-                },
-              ],
-              xAxes: [
-                {
-                  stacked: true,
-                },
-              ],
-            },
+              yAxes: [{stacked: true, display: false}],
+              xAxes: [{stacked: true, display: true, suggestedMin: min, suggestedMax: max}],
+            }
         };
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
                     <HorizontalBar
-                        height={20}
+                        height={16}
                         data={spacesData}
                         options={spacesOptions}/>
                 </Grid>
