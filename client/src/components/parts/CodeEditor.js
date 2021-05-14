@@ -6,7 +6,6 @@ import PopupMenu from '../controls/PopupMenu';
 import { IDEContext } from '../IDEContext';
 import Scrollable from '../controls/Scrollable';
 import '../../smalltalk.css';
-import CustomList from '../controls/CustomList'
 
 require('diff-match-patch');
 require('codemirror/lib/codemirror.css');

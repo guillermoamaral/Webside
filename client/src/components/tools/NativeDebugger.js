@@ -12,6 +12,7 @@ import { IDEContext } from '../IDEContext';
 import FrameList from '../parts/FrameList';
 import RegisterTable from '../parts/RegisterTable';
 import CodeBrowser from '../parts/CodeBrowser';
+import { HorizontalBar } from 'react-chartjs-2';
 
 class NativeDebugger extends Component {
     static contextType = IDEContext;
@@ -87,9 +88,54 @@ class NativeDebugger extends Component {
     render() {
         const styles = this.props.styles;
         const {running, frames, selectedFrame, registers} = this.state;
+        registers.forEach(r => r.color = '#28a745')
         const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
+        var spacesData = {
+            labels: ['1'],
+            datasets: [
+              {
+                label: '# of Red Votes',
+                data: [12],
+                backgroundColor: 'rgb(255, 99, 132)',
+              },
+              {
+                label: '# of Blue Votes',
+                data: [2],
+                backgroundColor: 'rgb(54, 162, 235)',
+              },
+              {
+                label: '# of Green Votes',
+                data: [3],
+                backgroundColor: 'rgb(75, 192, 192)',
+              },
+            ],
+        };
+        const spacesOptions = {
+            legend: {display: false},
+            scales: {
+              yAxes: [
+                {
+                  stacked: true,
+                  ticks: {
+                    beginAtZero: true,
+                  },
+                },
+              ],
+              xAxes: [
+                {
+                  stacked: true,
+                },
+              ],
+            },
+        };
         return (
             <Grid container spacing={1}>
+                <Grid item xs={12} md={12} lg={12}>
+                    <HorizontalBar
+                        height={20}
+                        data={spacesData}
+                        options={spacesOptions}/>
+                </Grid>
                 <Grid item xs={12} md={12} lg={12}>
                     <Tooltip title="Step into" placement="top">
                         <IconButton color="inherit" onClick={this.stepIntoClicked} size="medium">
