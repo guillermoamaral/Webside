@@ -89,6 +89,10 @@ class NativeDebugger extends Component {
         }
     }
 
+    spaceConaining(address){
+        return this.state.spaces.find(s => s.base <= address && address <= s.commitedLimit);
+    }
+
     randomColor() {
         var letters = '0123456789ABCDEF'.split('');
         var color = '#';
@@ -101,7 +105,10 @@ class NativeDebugger extends Component {
     render() {
         const styles = this.props.styles;
         const {running, frames, selectedFrame, registers, spaces} = this.state;
-        registers.forEach(r => r.color = '#28a745')
+        registers.forEach(r => {
+            const s = this.spaceConaining(r.value);
+            r.color = s? s.color : null
+        })
         const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
         var spacesData = {labels: ['address'], datasets: []};
         var offset;

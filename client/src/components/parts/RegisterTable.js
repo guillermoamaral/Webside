@@ -24,7 +24,7 @@ class RegisterTable extends Component {
         const styles = this.props.styles;
         const columns = [
             {id: 'name', label: 'Register', align: 'left'},
-            {id: 'value', label: 'Value', align: 'right'},
+            {id: 'value', label: 'Native', align: 'right'},
             {id: 'object', label: 'Object', align: 'left'},
         ];
         return (

@@ -438,8 +438,8 @@ class IDE extends Component {
       if (error.data && error.data.evaluation) {
         // const debug = await this.confirm(error.description, 'Stack tracke:\r' + error.stack + '\r\rDo you want to debug it?');
         // (debug)? this.openDebugger(error.debugger) : this.reportError(error.description);
-        const id = await this.api.createDebugger(error.data.evaluation);
-        this.openDebugger(id);
+        const d = await this.api.createDebugger(error.data.evaluation);
+        this.openDebugger(d.id);
       }
     }
   }
