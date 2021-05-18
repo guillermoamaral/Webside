@@ -60,14 +60,14 @@ class CustomTree extends Component {
     getItemLabel = (item) => {
         const getter = this.props.itemLabel;
         if (!getter) {return item}    
-        if (typeof getter == "string")  {return item[getter]}
+        if (typeof getter == "string") {return item[getter]}
         return getter(item)
     }
 
     getItemChildren = (item) => {
         const getter = this.props.children;
         if (!getter) {return null}    
-        if (typeof getter == "string")  {return item[getter]}
+        if (typeof getter == "string") {return item[getter]}
         return getter(item)
     }
 

@@ -43,7 +43,7 @@ class NativeDebugger extends Component {
             }
             const registers = await this.context.api.getNativeDebuggerRegisters(this.props.id);
             const spaces = await this.context.api.getNativeDebuggerSpaces(this.props.id);
-            spaces.forEach(s => s.color = this.randomColor());
+            spaces.forEach(s => s.color = this.colorForSpace(s));
             this.setState({
                 running: running,
                 frames: frames,
@@ -93,6 +93,31 @@ class NativeDebugger extends Component {
         return this.state.spaces.find(s => s.base <= address && address <= s.commitedLimit);
     }
 
+    colorForSpace(space) {
+        var color;
+        switch (space.name) {
+            case "Kernel":
+                color = 'rgb(171, 233, 103)';
+                break;
+            case "Eden":
+                color = 'rgb(60, 232, 240)';
+                break;
+            case "From":
+                color = 'rgb(67, 204, 233)';
+                break;
+            case "To":
+                color = 'rgb(49, 150, 251)';
+                break;
+            case "Pinned Object":
+                color = 'rgb(224, 63, 237)';
+                break;
+            default:
+                color = 'rgb(242, 205, 57)';
+        }
+        return color;
+    }
+
+
     randomColor() {
         var letters = '0123456789ABCDEF'.split('');
         var color = '#';
@@ -121,7 +146,7 @@ class NativeDebugger extends Component {
                 })
             }
             spacesData.datasets.push({
-                label: 'space from ' + s.base + ' to ' + s.commitedLimit,
+                label: s.name,
                 data: [s.commitedLimit - s.base],
                 backgroundColor: s.color,    
             })

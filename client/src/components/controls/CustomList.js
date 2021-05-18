@@ -64,14 +64,14 @@ class CustomList extends Component {
   getItemDivider = (item) => {
     const getter = this.props.itemDivider;
     if (!getter) {return false}    
-    if (typeof getter == "string")  {return item[getter]}
+    if (typeof getter == "string") {return item[getter]}
     return getter(item)
   }
 
   getItemLabel = (item) => {
     const getter = this.props.itemLabel;
     if (!getter) {return item}    
-    if (typeof getter == "string")  {return item[getter]}
+    if (typeof getter == "string") {return item[getter]}
     return getter(item)
   }
 

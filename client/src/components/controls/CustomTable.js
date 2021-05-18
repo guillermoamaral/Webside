@@ -39,6 +39,12 @@ class CustomTable extends Component {
         if (option.action) {option.action(selected)}
     }
     
+    getCellValue = (row, column) => {
+        const getter = column.id;  
+        const value = typeof getter == "string"? row[getter] : getter(row);
+        return column.format? column.format(value) : value;
+    }
+
     render() {
         const columns = this.props.columns;
         const rows = this.props.rows || [];
@@ -70,10 +76,12 @@ class CustomTable extends Component {
                                             onClick={event => this.rowSelected(event, row)}
                                             onContextMenu={this.openMenu}>
                                                 {columns.map((column) => {
-                                                    const value = row[column.id];
                                                     return (
-                                                        <TableCell key={column.id} align={column.align} style={{color: row.color || "default"}}>
-                                                            {column.format ? column.format(value) : value}
+                                                        <TableCell
+                                                            key={column.id}
+                                                            align={column.align}
+                                                            style={{color: row.color || "default"}}>
+                                                                {this.getCellValue(row, column)}
                                                         </TableCell>)
                                                     })}
                                         </TableRow>)
