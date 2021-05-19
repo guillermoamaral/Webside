@@ -689,6 +689,13 @@ class API {
        catch (error) {this.handleError('Cannot suspend native debugger ' + id, error)}
     }
 
+    async pinNativeDebuggerRegister(id, register) {
+        try {
+            const response = await axios.post(this.baseUri + '/native-debuggers/' + id + '/registers/' + register + '/pin');
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot pin object pointed by register ' + register + ' of native debugger ' + id, error)}
+    }
 }
 
 export default API;

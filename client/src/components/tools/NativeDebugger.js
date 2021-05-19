@@ -209,6 +209,7 @@ class NativeDebugger extends Component {
                         <Grid item xs={12} md={12} lg={12}>
                             <Paper className={fixedHeightPaper} variant="outlined">
                                 <RegisterTable
+                                    debugger={this.props.id}
                                     styles={styles}
                                     registers={registers}/>
                             </Paper>

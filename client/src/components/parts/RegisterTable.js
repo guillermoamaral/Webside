@@ -16,8 +16,13 @@ class RegisterTable extends Component {
         ]
     }
 
-    inspect = (register) => {
-
+    inspect = async (register) => {
+        try {
+            await this.context.api.pinNativeDebuggerRegister(this.props.debugger, register.name);
+            const object = await this.context.api.getObject(register.name);
+            this.context.inspectObject(object)
+        }
+        catch (error) {this.context.reportError(error)}
     } 
 
     render() {
