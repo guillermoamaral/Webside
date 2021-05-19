@@ -170,7 +170,7 @@ class NativeDebugger extends Component {
                         options={spacesOptions}/>
                 </Grid>
                 <Grid item xs={12} md={12} lg={12}>
-                    <Tooltip title="Step into" placement="top">
+                    {/* <Tooltip title="Step into" placement="top">
                         <IconButton color="inherit" onClick={this.stepIntoClicked} size="medium">
                             <Icon icon={StepIntoIcon}/>
                         </IconButton>
@@ -184,7 +184,7 @@ class NativeDebugger extends Component {
                         <IconButton color="inherit" onClick={this.restartClicked} size="medium">
                             <Icon icon={RestartIcon}/>
                         </IconButton>
-                    </Tooltip>
+                    </Tooltip> */}
                     <Tooltip title={running? "Suspend": "Resume"} placement="top">
                         <IconButton color="inherit" onClick={running? this.suspendClicked : this.resumeClicked} size="medium">
                             <Icon icon={running? SuspendIcon: ResumeIcon}/>

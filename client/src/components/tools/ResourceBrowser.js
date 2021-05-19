@@ -44,6 +44,10 @@ class ResourceBrowser extends Component {
         this.setState({selectedResource: resource});
     }
 
+    inspectObject = (object) => {
+        if (object) {this.context.inspectObject(object)}
+    }  
+
     unpinObject = async (object) => {
         try {
             await this.context.api.unpinObject(object.id);
@@ -54,14 +58,13 @@ class ResourceBrowser extends Component {
 
     objectOptions() {
         return [
+            {label: 'Inspect', action: this.inspectObject},
             {label: 'Unpin', action: this.unpinObject},
         ]
     }
 
-    openWorkspace = () => {
-        if (this.state.selectedResource) {
-            this.context.openWorkspace(this.state.selectedResource.id);
-        }
+    openWorkspace = (workspace) => {
+        if (workspace) {this.context.openWorkspace(workspace.id)}
     }
 
     workspaceOptions() {
@@ -70,10 +73,8 @@ class ResourceBrowser extends Component {
         ]
     }
 
-    openDebugger = () => {
-        if (this.state.selectedResource) {
-            this.context.openDebugger(this.state.selectedResource.id);
-        }
+    openDebugger = (d) => {
+        if (d) {this.context.openDebugger(d.id)}
     }
 
     debuggerOptions() {
