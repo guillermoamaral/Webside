@@ -37,12 +37,12 @@ Read more [here](docs).
 
 ### Prerequisites
 
-* npm
+- [ ]  npm
 ```sh
 npm install npm@latest -g
 ```
 
-* Your Smalltalk image implementing the [API](docs/api)
+- [ ]  Your Smalltalk image implementing the [API](docs/api)
 
 ### Installation
 
@@ -81,6 +81,44 @@ The logo is the result of a great job made by [ay! design](https://aydesign.art/
 Guille Amaral - guillermoamaral@gmail.com
 
 Project Link: [https://github.com/guillermoamaral/Webside](https://github.com/guillermoamaral/Webside)
+
+## To Do
+- [ ] Avoid changing the root class when switching from class to instance side and viceversa; try by setting a flag and updating variables, categories and methods
+- [ ] Limit tools/functionalities at api level by responding with a particular error code and handling/informing user at front-end level
+- [ ] Set a default button in dialogs
+- [ ] Update ClassBrowser cache when renaming a class as well as the global names cache
+- [ ] Fetch all slots of an object (for non-indexed objects) at once (instead of fetching each slot at time); for indexed objects a pagination approach would probably do (to avoid the payload of very long collections); this would affect both the communication layer (less requests) and the presentation layer (a proper inspector for collections should be implemented)
+- [ ] Implement HistoryBrowser
+- [ ] Add find string option
+- [ ] Save slots in inspector
+- [ ] Save slots in debugger
+- [ ] Open Last changes just once
+- [ ] Highlight categories when a method is selected
+- [ ] Try Monaco Editor!
+- [ ] Add shortcuts labels in menues
+- [ ] Implement ctrl+break: retrive the process id (making evaluations asynchronic) and use it to interrupt the process
+- [ ] Add a list of active processes with facilities to pause/terminate them
+- [ ] Add close and pin buttons to inspectors
+- [ ] Implementors search: though the word under cursor is used when nothing is selected, it is not enough as it is necessary to parse a wider range around the cursor;
+(a special API service for that might do)
+- [ ] See optimization strategies (react-window for instance, disabling transitinos/effects)
+- [ ] Study deployment process
+- [ ] Try new views, classes at the left
+- [ ] Add projects support (browser, options, etc.)
+- [ ] Avoid loosing edition! Alert when leaving code editor
+- [ ] Add refresh button everywhere is needed (class browser, method browser... perhaps on a particular list rather than the whole browser)
+- [ ] Pin/unpin inspectors
+- [ ] Enable search field in class browser for classes and selectors, and in method browser form methods
+- [ ] Enable a global search field
+- [ ] Add icons to classes, variables, categories, selectors
+- [ ] Show complilation errors as flying windows
+- [ ] Augment code printing with:
+	-hints: unsent messages, unused vars, not-implemented messages, etc.
+	-highlights: message sent in senders, class in class references, etc.
+- [ ] Critics?
+- [ ] Enable launching images, provide a ui for that
+- [ ] Use pagination in MethodBrowser
+- [ ] Check where to place outlined paper: in CodeEditor or in its containers?
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
