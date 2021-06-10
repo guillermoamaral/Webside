@@ -37,12 +37,12 @@ Read more [here](docs).
 
 ### Prerequisites
 
-- [ ]  npm
+*  npm
 ```sh
 npm install npm@latest -g
 ```
 
-- [ ]  Your Smalltalk image implementing the [API](docs/api)
+*  Your Smalltalk image implementing the [API](docs/api)
 
 ### Installation
 

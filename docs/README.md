@@ -119,12 +119,20 @@ The component implementing this tool is [Inspector](../client/src/components/too
 
 
 #### Debugger
-This is the basic stack debugger exposing the frame stack of the process being debugged (debuggee), and the list of reachable bindings, the code and the current statement of each frame, plus the corresponding actions buttons to step into, step over, restart, resume and terminate the debuggee. As any Smalltalk debugger it allows to compile a method frame, restarting the process from that point with the new method in place.
+This is the basic stack debugger exposing the frame stack of the process being debugged (debuggee), the list of reachable bindings, the code and the current statement of each frame, plus the corresponding actions buttons to step into, step over, restart, resume and terminate the debuggee. As any Smalltalk debugger it allows to recompile the method of a given frame, restarting the process from that point with the new method in place.
 
-The component implementing this tool is [Debugger](../client/src/components/tools/Debugger.js) and it mainly relies on [Debugging](api/debuggers) endpoints to interact with a live debugger at server side. It also consumes [Code](api/code), [Evaluations](api/evaluations) and [Objects](api/objects) endpoints. 
+The component implementing this tool is [Debugger](../client/src/components/tools/Debugger.js) and it mainly relies on [Debugging](api/debuggers) endpoints to interact with a living debugger at server side. It also consumes [Code](api/code), [Evaluations](api/evaluations) and [Objects](api/objects) endpoints to manage code changes and enable evaluations in the context of the debugger. 
 
 ![Debugger](../docs/images/Debugger.png)
 
+A natural and expected functionality of web IDE is the chance to concurrently access and control to the very same pieces of information, being the debugger one of the most desired ones. 
+As this tool relies on a living debugger, it is straigthforward to show the debugger state in more than one web browser, being all capable of interating with the very same debugger (i.e., different users might access and control the same debugger in the server). 
+Of course, actions in one browser should be reflected in the rest. Several approaches can be used for this purpose. In this case, as there is already available a socket to deliver messages between sessions*, I opted to use that channel with a special type of message intended to update the debuggers view in front of changes made in other sessions. 
+In the image below two browsers act over the same browser.
+
+![Debugger](../docs/images/ConcurrentDebugging.png)
+
+_(*)At the moment of writing this documentation, there is no user sessions kept, neither at Node server nor at the Smalltalk backend server. However, the Node server keeps track of users, by name, to provide a communication channel between users_
 
 #### Test runner
 This tool resembles some existing test runners and is launched when a test suite is run (either by running a single test, a test class or a bunch of test classes). It essentially show the progress of tests execution and summarizes the results grouping them by class, and filtering them by their type (failure, error, etc.).  
