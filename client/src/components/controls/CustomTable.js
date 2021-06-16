@@ -40,9 +40,9 @@ class CustomTable extends Component {
     }
     
     getCellValue = (row, column) => {
-        const getter = column.id;  
+        const getter = column.field;  
         const value = typeof getter == "string"? row[getter] : getter(row);
-        return column.format? column.format(value) : value;
+        return column.valueFormatter? column.valueFormatter(value) : value;
     }
 
     render() {
@@ -57,10 +57,10 @@ class CustomTable extends Component {
                                 <TableRow>
                                     {columns.map((column) => (
                                         <TableCell
-                                            key={column.id}
+                                            key={column.field}
                                             align={column.align}
                                             style={{minWidth: column.minWith}}>
-                                                {column.label}
+                                                {column.headerName}
                                         </TableCell>
                                     ))}
                                 </TableRow> 
@@ -78,7 +78,7 @@ class CustomTable extends Component {
                                                 {columns.map((column) => {
                                                     return (
                                                         <TableCell
-                                                            key={column.id}
+                                                            key={column.field}
                                                             align={column.align}
                                                             style={{color: row.color || "default"}}>
                                                                 {this.getCellValue(row, column)}

@@ -17,39 +17,6 @@ class CustomList extends Component {
       filterText: '',
     }
   }
-
-  createItems = () => {
-    if (!this.props.items) {return []};
-    return (
-      this.props.items.map((item, index) => {
-        const label = this.getItemLabel(item);
-        const icon = this.getItemIcon(index);
-        const divider = this.getItemDivider(item);
-        const selected = this.props.selectedItem === item;
-        return (
-          <ListItem
-            disableGutters={divider}
-            autoFocus={selected}
-            style={{paddingTop: 0, paddingBottom: 0, paddingLeft: 0, paddingRight: 0}}
-            button
-            divider={divider}
-            key={"item" + index}
-            selected={selected}
-            onClick={event => this.itemSelected(item)}
-            onDoubleClick={event => this.itemDoubleClicked(item)}
-            //onKeyDown={this.keyPressed}
-            onContextMenu={this.openMenu}>
-              <Box p={0} style={{minWidth: 10}}>
-                <ListItemIcon style={{minWidth: 0}}>
-                  {icon}
-                </ListItemIcon>
-              </Box>
-              <ListItemText primary={<Box fontWeight={selected? "fontWeightMedium" : "fontWeightRegular"}>{label}</Box>}/>
-          </ListItem>
-        )
-      })
-    )
-  }
   
   itemDoubleClicked = (item) => {
     const handler = this.props.onDoubleClick;
@@ -134,12 +101,39 @@ class CustomList extends Component {
   }
 
   render () {
+    const items = this.props.items || [];
     return (
       <Scrollable>
           <List
             onKeyDown={this.keyPressed}
             style={{paddingTop: 0, paddingBottom: 0}}>
-                {this.createItems()}
+                {items.map((item, index) => {
+                  const label = this.getItemLabel(item);
+                  const icon = this.getItemIcon(index);
+                  const divider = this.getItemDivider(item);
+                  const selected = this.props.selectedItem === item;
+                  return (
+                    <ListItem
+                      disableGutters={divider}
+                      autoFocus={selected}
+                      style={{paddingTop: 0, paddingBottom: 0, paddingLeft: 0, paddingRight: 0}}
+                      button
+                      divider={divider}
+                      key={"item" + index}
+                      selected={selected}
+                      onClick={event => this.itemSelected(item)}
+                      onDoubleClick={event => this.itemDoubleClicked(item)}
+                      //onKeyDown={this.keyPressed}
+                      onContextMenu={this.openMenu}>
+                        <Box p={0} style={{minWidth: 10}}>
+                          <ListItemIcon style={{minWidth: 0}}>
+                            {icon}
+                          </ListItemIcon>
+                        </Box>
+                        <ListItemText primary={<Box fontWeight={selected? "fontWeightMedium" : "fontWeightRegular"}>{label}</Box>}/>
+                    </ListItem>
+                  )
+                })}
           </List>
           <PopupMenu
             options={this.props.menuOptions}

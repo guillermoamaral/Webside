@@ -74,6 +74,13 @@ class Titlebar extends Component {
                 input: styles.globalSearchInputInput,
               }}
               inputProps={{'aria-label': 'search'}}/>
+            {/* <SearchList
+              classes={{
+                root: styles.globalSearchInputRoot,
+                input: styles.globalSearchInputInput,
+              }}
+              options={['a', 'ab', 'b', 'c']}
+              onChange={s => {console.log(s)}}/> */}
           </div>
           <Box flexGrow={1}/>
           <IconButton

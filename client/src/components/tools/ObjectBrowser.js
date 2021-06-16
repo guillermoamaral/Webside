@@ -35,8 +35,8 @@ class ObjectBrowser extends Component {
         const selectedObject = this.state.selectedObject;
         const rows = this.props.objects;
         const columns = [
-            {id: 'id', label: 'ID', align: 'left'},
-            {id: 'printString', label: 'Print String', minWidth: 200, align: 'left'},
+            {field: 'id', headerName: 'ID', align: 'left'},
+            {field: 'printString', headerName: 'Print String', minWidth: 200, align: 'left'},
         ];
         const styles = this.props.styles;
         const ow = selectedObject? 8 : 12;

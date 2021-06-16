@@ -102,24 +102,24 @@ class ResourceBrowser extends Component {
 
     objectColumns() {
         return [
-            {id: 'id', label: 'ID', align: 'left'},
-            {id: 'class', label: 'Class', align: 'left', minWidth: 200},
-            {id: 'printString', label: 'Print String', minWidth: 200, align: 'left'},
+            {field: 'id', headerName: 'ID', align: 'left'},
+            {field: 'class', headerName: 'Class', align: 'left', minWidth: 200},
+            {field: 'printString', headerName: 'Print String', minWidth: 200, align: 'left'},
         ];
     }
 
     workspaceColumns() {
         return [
-            {id: 'id', label: 'ID', align: 'left'},
-            {id: 'owner', label: 'Owner', align: 'center'},
+            {field: 'id', headerName: 'ID', align: 'left'},
+            {field: 'owner', headerName: 'Owner', align: 'center'},
         ]
     }
 
     debuggerColumns() {
         return [
-            {id: 'id', label: 'ID', align: 'left'},
-            {id: 'creator', label: 'Creator', align: 'center'},
-            {id: 'description', label: 'Description', align: 'left', minWidth: 200},
+            {field: 'id', headerName: 'ID', align: 'left'},
+            {field: 'creator', headerName: 'Creator', align: 'center'},
+            {field: 'description', headerName: 'Description', align: 'left', minWidth: 200},
         ]
     }
 

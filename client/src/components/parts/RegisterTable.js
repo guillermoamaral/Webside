@@ -28,9 +28,9 @@ class RegisterTable extends Component {
     render() {
         const styles = this.props.styles;
         const columns = [
-            {id: 'name', label: 'Register', align: 'left'},
-            {id: r => {return r.value.toString(16).toUpperCase()}, label: 'Native', align: 'right'},
-            {id: 'object', label: 'Object', align: 'left'},
+            {field: 'name', headerName: 'Register', align: 'left'},
+            {field: r => {return r.value.toString(16).toUpperCase()}, headerName: 'Native', align: 'right'},
+            {field: 'object', headerName: 'Object', align: 'left'},
         ];
         return (
             <CustomTable

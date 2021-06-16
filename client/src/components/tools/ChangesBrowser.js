@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Grid, Paper } from '@material-ui/core';
 import CustomTable from '../controls/CustomTable';
+import CustomGrid from '../controls/CustomGrid';
 import CodeEditor from '../parts/CodeEditor';
 import clsx from 'clsx';
 import { IDEContext } from '../IDEContext';
@@ -32,16 +33,16 @@ class ChangesBrowser extends Component {
         const change = this.state.selectedChange;
         const rows = this.props.changes;
         const columns = [
-            {id: 'type', label: 'Type', minWidth: 170, align: 'left'},
-            {id: 'label', label: 'Target', minWidth: 100, align: 'left'},
-            {id: 'project', label: 'Project', minWidth: 170, align: 'left'},
-            {id: 'author', label: 'Author', minWidth: 100, align: 'center'},
+            {field: 'type', headerName: 'Type', minWidth: 150, align: 'left'},
+            {field: 'label', headerName: 'Target', minWidth: 250, align: 'left'},
+            {field: 'project', headerName: 'Project', minWidth: 150, align: 'left'},
+            {field: 'author', headerName: 'Author', minWidth: 150, align: 'center'},
             {
-              id: 'timestamp',
-              label: 'Timestamp',
-              minWidth: 170,
+              field: 'timestamp',
+              headerName: 'Timestamp',
+              minWidth: 200,
               align: 'left',
-              format: (value) => value.toLocaleString('en-US'),
+              valueFormatter: (params) => {return params.value.toLocaleString('en-US')},
             },
         ];
         const styles = this.props.styles;

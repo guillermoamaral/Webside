@@ -174,8 +174,8 @@ class TestRunner extends Component {
             return 0;
         });
         const testColumns = [
-            {id: 'selector', label: 'Selector', minWidth: 100, align: 'left'},
-            {id: 'time', label: 'Time (ms)', minWidth: 100, align: 'right'}            
+            {field: 'selector', headerName: 'Selector', minWidth: 100, align: 'left'},
+            {field: 'time', headerName: 'Time (ms)', minWidth: 100, align: 'right'}            
         ];
         return (
             <div>
