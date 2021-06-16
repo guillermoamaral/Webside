@@ -33,16 +33,16 @@ class ChangesBrowser extends Component {
         const change = this.state.selectedChange;
         const rows = this.props.changes;
         const columns = [
-            {field: 'type', headerName: 'Type', minWidth: 150, align: 'left'},
-            {field: 'label', headerName: 'Target', minWidth: 250, align: 'left'},
-            {field: 'project', headerName: 'Project', minWidth: 150, align: 'left'},
-            {field: 'author', headerName: 'Author', minWidth: 150, align: 'center'},
+            {field: 'type', label: 'Type', minWidth: 150, align: 'left'},
+            {field: 'label', label: 'Target', minWidth: 250, align: 'left'},
+            {field: 'project', label: 'Project', minWidth: 150, align: 'left'},
+            {field: 'author', label: 'Author', minWidth: 150, align: 'center'},
             {
               field: 'timestamp',
-              headerName: 'Timestamp',
+              label: 'Timestamp',
               minWidth: 200,
               align: 'left',
-              valueFormatter: (params) => {return params.value.toLocaleString('en-US')},
+              formatter: (ts) => {return ts.toLocaleString('en-US')},
             },
         ];
         const styles = this.props.styles;

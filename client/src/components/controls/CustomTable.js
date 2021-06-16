@@ -42,7 +42,7 @@ class CustomTable extends Component {
     getCellValue = (row, column) => {
         const getter = column.field;  
         const value = typeof getter == "string"? row[getter] : getter(row);
-        return column.valueFormatter? column.valueFormatter(value) : value;
+        return column.formatter? column.formatter(value) : value;
     }
 
     render() {
@@ -60,7 +60,7 @@ class CustomTable extends Component {
                                             key={column.field}
                                             align={column.align}
                                             style={{minWidth: column.minWith}}>
-                                                {column.headerName}
+                                                {column.label}
                                         </TableCell>
                                     ))}
                                 </TableRow> 

@@ -32,16 +32,14 @@ class CustomGrid extends Component {
         const selected = this.state.selectedRow;
         if (option.action) {option.action(selected)}
     }
-    
-    getCellValue = (row, column) => {
-        const getter = column.field;  
-        const value = typeof getter == "string"? row[getter] : getter(row);
-        return column.format? column.format(value) : value;
-    }
 
     render() {
         const columns = this.props.columns;
-        columns.forEach(c => c.width = c.width || c.minWidth);
+        columns.forEach(c => {
+            c.headerName = c.headerName || c.label || '';
+            c.width = c.width || c.minWidth;
+            c.valueFormatter = c.formatter? (params) => {return c.formatter(params.value)} : null;
+        });
         const rows = this.props.rows || [];
         rows.forEach((r, i) => {r.id = r.id || i});
         const pageSize = this.props.pageSize || 5;
