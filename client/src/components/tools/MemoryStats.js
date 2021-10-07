@@ -36,7 +36,11 @@ class MemoryStats extends Component {
 
     render() {
         const {stats} = this.state;
-        const options = {
+        const sizesObptions = {
+            title: {
+                display: true,
+                text: 'Space Size'
+            },
             legend: {
                 position: 'bottom',
             },
@@ -47,19 +51,9 @@ class MemoryStats extends Component {
                         display: true,
                         position: 'left',
                         id: 'size',
-                        title: {
-                            text: 'KB',
+                        scaleLabel: {
                             display: true,
-                        }
-                    },
-                    {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        id: 'number',
-                        title: {
-                            text: '#',
-                            display: true,
+                            labelString: 'kb'
                         }
                     },
                     {
@@ -67,39 +61,20 @@ class MemoryStats extends Component {
                         display: true,
                         position: 'right',
                         id: 'percent',
-                        title: {
-                            text: '%',
+                        scaleLabel: {
                             display: true,
+                            labelString: '%'
                         }
-                    },
-                    {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        id: 'time',
-                        title: {
-                            text: 'ms',
-                            display: true,
-                        }
-                    },
+                    }
                 ],
             },
         };
-        const data = {
+        const sizes = {
             labels: stats.map((s, i) => i.toString()),
             datasets: [
                 {
-                    label: 'Time',
-                    data: stats.map(s => s.time),
-                    fill: false,
-                    borderColor: 'rgb(136, 247, 226)',
-                    yAxisID: 'time',
-                    borderWidth: 1,
-                    pointRadius: 0,
-                },
-                {
-                    label: 'Old Space Size',
-                    data: stats.map(s => s.oldSize),
+                    label: 'Old Space Size (kb)',
+                    data: stats.map(s => s.oldSize / 1024),
                     fill: false,
                     borderColor: 'rgb(68, 212, 146)',
                     yAxisID: 'size',
@@ -107,8 +82,8 @@ class MemoryStats extends Component {
                     pointRadius: 0,
                 },
                 {
-                    label: 'Young Space Size',
-                    data: stats.map(s => s.youngSize),
+                    label: 'Young Space Size (kb)',
+                    data: stats.map(s => s.youngSize / 1024),
                     fill: false,
                     borderColor: 'rgb(245, 235, 103)',
                     yAxisID: 'size',
@@ -116,8 +91,8 @@ class MemoryStats extends Component {
                     pointRadius: 0,
                 },
                 {
-                    label: 'Cradled Size',
-                    data: stats.map(s => s.cradled),
+                    label: 'Cradled Size (kb)',
+                    data: stats.map(s => s.cradled / 1024),
                     fill: false,
                     borderColor: 'rgb(255, 161, 92)',
                     yAxisID: 'size',
@@ -125,8 +100,8 @@ class MemoryStats extends Component {
                     pointRadius: 0,
                 },
                 {
-                    label: 'Tenured Size',
-                    data: stats.map(s => s.tenured),
+                    label: 'Tenured Size (kb)',
+                    data: stats.map(s => s.tenured / 1024),
                     fill: false,
                     borderColor: 'rgb(250, 35, 62)',
                     yAxisID: 'size',
@@ -134,14 +109,42 @@ class MemoryStats extends Component {
                     pointRadius: 0,
                 },
                 {
-                    label: 'Survival Rate',
+                    label: 'Survival Rate (%)',
                     data: stats.map(s => s.survivalRate),
                     fill: false,
                     borderColor: 'rgb(191, 38, 105)',
                     yAxisID: 'percent',
                     borderWidth: 1,
                     pointRadius: 0,
-                },
+                }
+            ]
+        };
+        const numbersOptions = {
+            title: {
+                display: true,
+                text: 'Objects'
+            },
+            legend: {
+                position: 'bottom',
+            },
+            scales: {
+                yAxes: [
+                    {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        id: 'number',
+                        scaleLabel: {
+                            display: true,
+                            labelString: '# of objects'
+                        }
+                    }
+                ],
+            },
+        };
+        const numbers = {
+            labels: stats.map((s, i) => i.toString()),
+            datasets: [
                 {
                     label: 'Remembered Before GC',
                     data: stats.map(s => s.rememberedBefore),
@@ -171,13 +174,62 @@ class MemoryStats extends Component {
                 },
             ]
         };
+        const timesOptions = {
+            title: {
+                display: true,
+                text: 'Time'
+            },
+            legend: {
+                position: 'bottom',
+            },
+            scales: {
+                yAxes: [
+                    {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        id: 'time',
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'ms'
+                        }
+                    }
+                ],
+            },
+        };
+        const times = {
+            labels: stats.map((s, i) => i.toString()),
+            datasets: [
+                {
+                    label: 'Time (ms)',
+                    data: stats.map(s => s.time),
+                    fill: false,
+                    borderColor: 'rgb(112, 42, 140)',
+                    yAxisID: 'time',
+                    borderWidth: 1,
+                    pointRadius: 0,
+                }
+            ]
+        };
         return (
             <Grid container spacing={1}>
                 <Grid item xs={12} md={12} lg={12}>
                     <Line
                         height={80}
-                        data={data}
-                        options={options}/>
+                        data={sizes}
+                        options={sizesObptions}/>
+                </Grid>
+                <Grid item xs={12} md={12} lg={12}>
+                    <Line
+                        height={80}
+                        data={numbers}
+                        options={numbersOptions}/>
+                </Grid>
+                <Grid item xs={12} md={12} lg={12}>
+                    <Line
+                        height={80}
+                        data={times}
+                        options={timesOptions}/>
                 </Grid>
             </Grid>
         )
