@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { Grid, Paper, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import CustomTable from '../controls/CustomTable';
 import Inspector from './Inspector';
 import { IDEContext } from '../IDEContext';
 import InspectorIcon from '../icons/InspectorIcon';
 import WorkspaceIcon from '../icons/WorkspaceIcon';
 import DebuggerIcon from '../icons/DebuggerIcon';
+import MemoryIcon from '../icons/MemoryIcon';
 import clsx from 'clsx';
+import MemoryStats from './MemoryStats';
 
 class ResourceBrowser extends Component {
     static contextType = IDEContext;
@@ -38,6 +39,27 @@ class ResourceBrowser extends Component {
         }
         catch (error) {this.context.reportError(error)}
         this.setState({selectedType: type, resources: resources});
+    }
+
+    resourceIcon(type){
+        var icon;
+        switch (type) {
+            case 'Objects':
+                icon = <InspectorIcon/>;
+                break;
+            case 'Workspaces':
+                icon = <WorkspaceIcon/>;
+                break;
+            case 'Debuggers':
+                icon = <DebuggerIcon/>;
+                break;
+            case 'Memory':
+                icon = <MemoryIcon/>;
+                break;
+            default:
+                icon = <InspectorIcon/>;
+        }
+        return icon;
     }
 
     resourceSelected = (resource) => {
@@ -151,29 +173,29 @@ class ResourceBrowser extends Component {
             <Grid container spacing={1}>
                 <Grid item xs={2} md={2} lg={2}>
                     <List>
-                        {['Objects', 'Workspaces', 'Debuggers'].map(type =>
+                        {['Objects', 'Workspaces', 'Debuggers', 'Memory'].map(type =>
                             <ListItem
                                 button
                                 key={type}
                                 selected={type===selectedType}
                                 onClick={event => this.typeSelected(type)}>
-                                <ListItemIcon>
-                                    {type === 'Objects'? <InspectorIcon/> : type === 'Workspaces'? <WorkspaceIcon/> : <DebuggerIcon/>}
-                                </ListItemIcon>
+                                {this.resourceIcon(type)}
                                 <ListItemText primary={type}/>
                             </ListItem>    
                         )}
                     </List>
                 </Grid>
                 <Grid item xs={ow} md={ow} lg={ow}>
-                    {selectedType && <Paper className={fixedHeightPaper} variant="outlined">      
-                        <CustomTable
-                            styles={styles}
-                            columns={columns}
-                            rows={rows}
-                            onSelect={this.resourceSelected}
-                            menuOptions={this.menuOptions()}/>
-                    </Paper>}
+                    {selectedType && selectedType !== 'Memory' &&
+                        <Paper className={fixedHeightPaper} variant="outlined">      
+                            <CustomTable
+                                styles={styles}
+                                columns={columns}
+                                rows={rows}
+                                onSelect={this.resourceSelected}
+                                menuOptions={this.menuOptions()}/>
+                        </Paper>}
+                    {selectedType === 'Memory' && <MemoryStats/>}
                 </Grid>
                 {selectedResource && selectedType === 'object' && <Grid item xs={4} md={4} lg={4}>
                     <Paper variant="outlined">

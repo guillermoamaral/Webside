@@ -696,6 +696,16 @@ class API {
         }
         catch (error) {this.handleError('Cannot pin object pointed by register ' + register + ' of native debugger ' + id, error)}
     }
+
+    //Memory stats...
+    async getMemoryStats(last) {
+        const query = last? '?last=' + last : '';
+        try {
+            const response = await axios.get(this.baseUri + '/memory-stats' + query);
+            return response.data;
+        }
+        catch (error) {this.handleError('Cannot fetch memory stats', error)}
+    }
 }
 
 export default API;
