@@ -118,7 +118,7 @@ class MemoryStats extends Component {
                 },
                 {
                     label: 'Survival Rate (%)',
-                    data: stats.map(s => s.survivalRate),
+                    data: stats.map(s => s.survivalRate * 100),
                     fill: false,
                     borderColor: 'rgb(191, 38, 105)',
                     yAxisID: 'percent',
