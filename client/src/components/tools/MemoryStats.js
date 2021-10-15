@@ -68,6 +68,14 @@ class MemoryStats extends Component {
                     }
                 ],
             },
+            elements: {
+                line: {
+                    tension: 0.1
+                }
+            },
+            animation: {
+                duration: 0
+            },
         };
         const sizes = {
             labels: stats.map((s, i) => i.toString()),
@@ -141,6 +149,10 @@ class MemoryStats extends Component {
                     }
                 ],
             },
+            animation: {
+                duration: 0
+            },
+
         };
         const numbers = {
             labels: stats.map((s, i) => i.toString()),
@@ -196,6 +208,10 @@ class MemoryStats extends Component {
                     }
                 ],
             },
+            animation: {
+                duration: 0
+            },
+
         };
         const times = {
             labels: stats.map((s, i) => i.toString()),
