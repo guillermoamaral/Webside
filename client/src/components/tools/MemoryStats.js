@@ -68,6 +68,14 @@ class MemoryStats extends Component {
                     }
                 ],
             },
+            elements: {
+                line: {
+                    tension: 0.1
+                }
+            },
+            animation: {
+                duration: 0
+            },
         };
         const sizes = {
             labels: stats.map((s, i) => i.toString()),
@@ -110,7 +118,7 @@ class MemoryStats extends Component {
                 },
                 {
                     label: 'Survival Rate (%)',
-                    data: stats.map(s => s.survivalRate),
+                    data: stats.map(s => s.survivalRate * 100),
                     fill: false,
                     borderColor: 'rgb(191, 38, 105)',
                     yAxisID: 'percent',
@@ -141,6 +149,10 @@ class MemoryStats extends Component {
                     }
                 ],
             },
+            animation: {
+                duration: 0
+            },
+
         };
         const numbers = {
             labels: stats.map((s, i) => i.toString()),
@@ -196,6 +208,10 @@ class MemoryStats extends Component {
                     }
                 ],
             },
+            animation: {
+                duration: 0
+            },
+
         };
         const times = {
             labels: stats.map((s, i) => i.toString()),
