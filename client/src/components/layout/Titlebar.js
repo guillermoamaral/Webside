@@ -39,11 +39,11 @@ class Titlebar extends Component {
           </IconButton>
           <Box p={1}>
             <Link to={this.props.baseUri}>
-              <img
+              {logo && <img
                 src={logo}
                 width={28}
                 height={28}
-                alt={"Open"}/>
+                alt={"Open"}/>}
             </Link>
           </Box>
           <Typography

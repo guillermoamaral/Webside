@@ -10,7 +10,6 @@ import {
     AccordionSummary,
     Typography
 } from '@material-ui/core';
-import clsx from 'clsx';
 import { IDEContext } from '../IDEContext';
 import SearchList2 from '../controls/SearchList2';
 import ClassTree from '../parts/ClassTree';
