@@ -1,7 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const DialogContext = React.createContext({
-  dialog: {}
-})
+	dialog: {},
+});
 
 export default DialogContext;

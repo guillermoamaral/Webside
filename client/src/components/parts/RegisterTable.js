@@ -1,46 +1,57 @@
-import React, { Component } from 'react';
-import CustomTable from '../controls/CustomTable';
-import { IDEContext } from '../IDEContext';
+import React, { Component } from "react";
+import CustomTable from "../controls/CustomTable";
+import { IDEContext } from "../IDEContext";
 
 class RegisterTable extends Component {
-    static contextType = IDEContext;
+	static contextType = IDEContext;
 
-    registerSelected = (frame) => {
-        const handler = this.props.onSelect;
-        if (handler) {handler(frame)}
-    }
+	registerSelected = (frame) => {
+		const handler = this.props.onSelect;
+		if (handler) {
+			handler(frame);
+		}
+	};
 
-    menuOptions() {
-        return [
-            {label: 'Inspect', action: this.inspect},
-        ]
-    }
+	menuOptions() {
+		return [{ label: "Inspect", action: this.inspect }];
+	}
 
-    inspect = async (register) => {
-        try {
-            await this.context.api.pinNativeDebuggerRegister(this.props.debugger, register.name);
-            const object = await this.context.api.getObject(register.name);
-            this.context.inspectObject(object)
-        }
-        catch (error) {this.context.reportError(error)}
-    } 
+	inspect = async (register) => {
+		try {
+			await this.context.api.pinNativeDebuggerRegister(
+				this.props.debugger,
+				register.name
+			);
+			const object = await this.context.api.getObject(register.name);
+			this.context.inspectObject(object);
+		} catch (error) {
+			this.context.reportError(error);
+		}
+	};
 
-    render() {
-        const styles = this.props.styles;
-        const columns = [
-            {field: 'name', label: 'Register', align: 'left'},
-            {field: r => {return r.value.toString(16).toUpperCase()}, label: 'Native', align: 'right'},
-            {field: 'object', label: 'Object', align: 'left'},
-        ];
-        return (
-            <CustomTable
-                styles={styles}
-                columns={columns}
-                rows={this.props.registers}
-                onSelect={this.registerSelected}
-                menuOptions={this.menuOptions()}/>
-        )
-    }
+	render() {
+		const styles = this.props.styles;
+		const columns = [
+			{ field: "name", label: "Register", align: "left" },
+			{
+				field: (r) => {
+					return r.value.toString(16).toUpperCase();
+				},
+				label: "Native",
+				align: "right",
+			},
+			{ field: "object", label: "Object", align: "left" },
+		];
+		return (
+			<CustomTable
+				styles={styles}
+				columns={columns}
+				rows={this.props.registers}
+				onSelect={this.registerSelected}
+				menuOptions={this.menuOptions()}
+			/>
+		);
+	}
 }
 
 export default RegisterTable;

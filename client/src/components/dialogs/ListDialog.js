@@ -1,24 +1,40 @@
 import React from "react";
 import PropTypes from "prop-types";
+import withStateHandlers from "recompose/withStateHandlers";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
+import { List, ListItem, ListItemText } from "@material-ui/core";
 
-function ConfirmDialog(props, context) {
-	const { open, onClose, onExited, title, message, ok, cancel } = props;
+function ListDialog(props, context) {
+	const {
+		open,
+		onClose,
+		onExited,
+		title,
+		message,
+		items,
+		placeholder,
+		ok,
+		cancel,
+		required,
+		defaultValue,
+		value,
+		handleChange,
+	} = props;
 	return (
 		<Dialog
 			fullWidth
 			open={open}
-			onClose={() => onClose(false)}
+			onClose={() => onClose(null)}
 			onExited={onExited}
-			aria-labelledby="confirm-dialog-title"
-			aria-describedby="confirm-dialog-message"
+			aria-labelledby="prompt-dialog-title"
+			aria-describedby="prompt-dialog-message"
 		>
-			<DialogTitle id="confirm-dialog-title">{title}</DialogTitle>
+			<DialogTitle id="prompt-dialog-title">{title}</DialogTitle>
 			<DialogContent>
 				{typeof message === `string` ? (
 					<DialogContentText id="confirm-dialog-message">
@@ -27,20 +43,43 @@ function ConfirmDialog(props, context) {
 				) : (
 					message
 				)}
+				<List
+					//onKeyDown={this.keyPressed}
+					style={{ paddingTop: 0, paddingBottom: 0 }}
+				>
+					{items.map((item, index) => {
+						return (
+							<ListItem
+								style={{
+									paddingTop: 0,
+									paddingBottom: 0,
+									paddingLeft: 0,
+									paddingRight: 0,
+								}}
+								button
+								key={"item" + index}
+								//selected={selected}
+								//onClick={event => this.itemSelected(item)}
+							>
+								<ListItemText primary={item} />
+							</ListItem>
+						);
+					})}
+				</List>
 			</DialogContent>
 			<DialogActions>
 				<Button
-					onClick={() => onClose(true)}
+					onClick={() => onClose(value)}
 					color={ok.color}
 					variant={ok.variant}
+					disabled={required && !value}
 					startIcon={ok.startIcon}
 					endIcon={ok.endIcon}
-					autoFocus
 				>
 					{ok.text}
 				</Button>
 				<Button
-					onClick={() => onClose(false)}
+					onClick={() => onClose(null)}
 					color={cancel.color}
 					variant={cancel.variant}
 					startIcon={cancel.startIcon}
@@ -53,12 +92,14 @@ function ConfirmDialog(props, context) {
 	);
 }
 
-ConfirmDialog.propTypes = {
+ListDialog.propTypes = {
 	open: PropTypes.bool.isRequired,
 	onClose: PropTypes.func.isRequired,
 	onExited: PropTypes.func.isRequired,
 	title: PropTypes.string,
 	message: PropTypes.node,
+	items: PropTypes.array.isRequired,
+	placeholder: PropTypes.string,
 	ok: PropTypes.shape({
 		text: PropTypes.string,
 		color: PropTypes.string,
@@ -73,21 +114,30 @@ ConfirmDialog.propTypes = {
 		startIcon: PropTypes.element,
 		endIcon: PropTypes.element,
 	}),
+	required: PropTypes.bool,
+	defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+	value: PropTypes.string,
+	handleChange: PropTypes.func.isRequired,
 };
 
-ConfirmDialog.defaultProps = {
+ListDialog.defaultProps = {
 	open: false,
-	title: "Confirm",
+	title: "Enter",
+	placeholder: "",
 	ok: {
-		text: "Yes",
+		text: "OK",
 		color: "primary",
 		variant: "outlined",
 	},
 	cancel: {
-		text: "No",
+		text: "Cancel",
 		color: "default",
 		variant: "outlined",
 	},
+	required: false,
 };
 
-export default ConfirmDialog;
+export default withStateHandlers(
+	({ defaultValue }) => ({ value: defaultValue }),
+	{ handleChange: (state) => (event) => ({ value: event.target.value }) }
+)(ListDialog);

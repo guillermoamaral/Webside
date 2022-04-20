@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
-  Route} from "react-router-dom";
+  Route } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 import { createMuiTheme, CssBaseline } from '@material-ui/core';
 import styles from './styles';
