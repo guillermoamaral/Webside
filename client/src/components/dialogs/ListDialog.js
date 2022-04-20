@@ -58,8 +58,8 @@ function ListDialog(props, context) {
 								}}
 								button
 								key={"item" + index}
-								//selected={selected}
-								//onClick={event => this.itemSelected(item)}
+								selected={value}
+								onClick={handleChange}
 							>
 								<ListItemText primary={item} />
 							</ListItem>

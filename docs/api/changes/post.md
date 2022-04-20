@@ -195,9 +195,9 @@ The error returned should look like:
 }
 ```
 
-Note that `changes` (another `MethodDefinition` with a modified source in this case) correspond to take the suggestion.
+Note that `changes` contains a list with another `MethodDefinition` with a modified source, which corresponds to accept the suggestion.
 
-Note also that in case the original source had more than one compilation error with potential suggestions, they are handled one by one, asking the user to accept each suggestion at a time (i.c. Webside sends the first attempt and after receving an error with a suggestion, it asks the user; should the user accept the suggestion, Webside retries with the suggested changes and if the server finds a new error, the process repeats).
+Note also that in the case that the original source had more than one compilation error with potential suggestions, they are handled one by one, asking the user to accept each suggestion at a time (i.c. Webside sends the first attempt and after receiving an error with a suggestion, it asks the user; should the user accept the suggestion, Webside retries with the suggested changes and if the server finds a new error, the process repeats).
 
 **Example:**: compile method `phi` in `Float`
 `POST /changes`
