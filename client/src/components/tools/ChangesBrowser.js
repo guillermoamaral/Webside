@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Grid, Paper } from "@material-ui/core";
 import CustomTable from "../controls/CustomTable";
-import CustomGrid from "../controls/CustomGrid";
 import CodeEditor from "../parts/CodeEditor";
 import clsx from "clsx";
 import { IDEContext } from "../IDEContext";

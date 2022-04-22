@@ -12,7 +12,6 @@ import { IDEContext } from "../IDEContext";
 import SearchList from "../controls/SearchList";
 import ProjectTree from "../parts/ProjectTree";
 import ClassTree from "../parts/ClassTree";
-import VariableList from "../parts/VariableList";
 import CategoryList from "../parts/CategoryList";
 import MethodList from "../parts/MethodList";
 import CodeBrowser from "../parts/CodeBrowser";

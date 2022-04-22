@@ -54,7 +54,7 @@ class Chat extends Component {
 	};
 
 	render() {
-		const { selectedPeer: selectedPeer, text } = this.state;
+		const { selectedPeer, text } = this.state;
 		const messages = this.channel.messagesFrom(selectedPeer);
 		const styles = this.props.styles;
 		const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);

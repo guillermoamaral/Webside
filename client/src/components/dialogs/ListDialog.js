@@ -17,11 +17,9 @@ function ListDialog(props, context) {
 		title,
 		message,
 		items,
-		placeholder,
 		ok,
 		cancel,
 		required,
-		defaultValue,
 		value,
 		handleChange,
 	} = props;
@@ -58,7 +56,7 @@ function ListDialog(props, context) {
 								}}
 								button
 								key={"item" + index}
-								selected={value == item}
+								selected={value === item}
 								onClick={(e) => handleChange(item)}
 							>
 								<ListItemText primary={item} />

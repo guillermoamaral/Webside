@@ -2,10 +2,8 @@ import React, { Component } from "react";
 import {
 	Grid,
 	Paper,
-	Drawer,
 	List,
 	ListItem,
-	ListItemIcon,
 	ListItemText,
 } from "@material-ui/core";
 import CustomTable from "../controls/CustomTable";

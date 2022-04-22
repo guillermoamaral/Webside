@@ -679,7 +679,6 @@ class IDE extends Component {
 			classNames: this.classNames,
 			openChat: this.openChat,
 			openWorkspace: this.openWorkspace,
-			openDebugger: this.openDebugger,
 			browseProject: this.openSystemBrowser,
 			browseClass: this.openClassBrowser,
 			browseSenders: this.browseSenders,
