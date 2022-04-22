@@ -13,7 +13,7 @@ class ClassTree extends Component {
 		}
 		try {
 			const name = await this.props.dialog.prompt({
-				title: "Create subclass",
+				title: "New subclass",
 				required: true,
 			});
 			//This is not correct as the class might be indexed from its creation...

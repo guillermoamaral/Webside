@@ -75,7 +75,7 @@ class Sidebar extends Component {
 					</ListItem>
 					<ListItem
 						button
-						onClick={(e) => this.props.dialog.list(["Not implemented yet!"])}
+						onClick={(e) => this.props.dialog.alert("Not implemented yet!")}
 					>
 						<ListItemIcon>
 							<GitHubIcon />

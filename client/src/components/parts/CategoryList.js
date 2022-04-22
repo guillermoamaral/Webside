@@ -21,7 +21,9 @@ class CategoryList extends Component {
 
 	addCategory = async () => {
 		try {
-			const category = await this.props.dialog.prompt("New category");
+			const category = await this.props.dialog.prompt({
+				title: "New category",
+			});
 			if (category && this.props.onAdd) {
 				this.props.onAdd(category);
 			}

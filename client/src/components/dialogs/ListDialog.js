@@ -58,8 +58,8 @@ function ListDialog(props, context) {
 								}}
 								button
 								key={"item" + index}
-								selected={value}
-								onClick={handleChange}
+								selected={value == item}
+								onClick={(e) => handleChange(item)}
 							>
 								<ListItemText primary={item} />
 							</ListItem>
@@ -122,7 +122,7 @@ ListDialog.propTypes = {
 
 ListDialog.defaultProps = {
 	open: false,
-	title: "Enter",
+	title: "Select an item",
 	placeholder: "",
 	ok: {
 		text: "OK",
@@ -139,5 +139,5 @@ ListDialog.defaultProps = {
 
 export default withStateHandlers(
 	({ defaultValue }) => ({ value: defaultValue }),
-	{ handleChange: (state) => (event) => ({ value: event.target.value }) }
+	{ handleChange: (state) => (value) => ({ value: value }) }
 )(ListDialog);
