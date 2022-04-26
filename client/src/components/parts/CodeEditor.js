@@ -61,6 +61,7 @@ class CodeEditor extends Component {
 			return {
 				source: props.source,
 				selectedRanges: props.selectedRanges,
+				selectedWord: props.selectedWord,
 				selectRanges: true,
 				value: props.source,
 				evaluating: props.evaluating,
