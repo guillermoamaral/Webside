@@ -24,7 +24,7 @@ class CoderLikeBrowser extends Component {
 		this.state = {
 			root: this.props.root,
 			selectedClass: null,
-			selectedVariableAccess: "referencing",
+			selectedAccess: "referencing",
 			selectedVariable: null,
 			selectedCategory: null,
 			selectedMethod: null,
@@ -59,7 +59,7 @@ class CoderLikeBrowser extends Component {
 	currentSelections() {
 		return {
 			class: this.state.selectedClass,
-			variableAccess: this.state.selectedVariableAccess,
+			access: this.state.selectedAccess,
 			variable: this.state.selectedVariable,
 			category: this.state.selectedCategory,
 			method: this.state.selectedMethod,
@@ -74,7 +74,7 @@ class CoderLikeBrowser extends Component {
 			}
 			return {
 				selectedClass: selections.class,
-				selectedVariableAccess: selections.variableAccess,
+				selectedAccess: selections.access,
 				selectedVariable: selections.variable,
 				selectedCategory: selections.category,
 				selectedMethod: selections.method,
@@ -97,7 +97,7 @@ class CoderLikeBrowser extends Component {
 		const species = this.state.selectedClass;
 		const category = this.state.selectedCategory;
 		const variable = this.state.selectedVariable;
-		const access = this.state.selectedVariableAccess;
+		const access = this.state.selectedAccess;
 		if (!species) {
 			return [];
 		}
@@ -200,20 +200,18 @@ class CoderLikeBrowser extends Component {
 				);
 			}
 			const variable = selections.variable;
-			const variableAccess = selections.variableAccess;
+			const access = selections.access;
 			if (
 				variable &&
-				(force ||
-					!species[variable.name] ||
-					!species[variable.name][variableAccess])
+				(force || !species[variable.name] || !species[variable.name][access])
 			) {
 				const accessors = await this.context.api.getMethodsAccessing(
 					species.name,
 					variable.name,
-					variableAccess
+					access
 				);
 				species[variable.name] = {};
-				species[variable.name][variableAccess] = accessors.sort((a, b) =>
+				species[variable.name][access] = accessors.sort((a, b) =>
 					a.selector <= b.selector ? -1 : 1
 				);
 			}
@@ -316,10 +314,10 @@ class CoderLikeBrowser extends Component {
 		this.classSelected(species);
 	};
 
-	variableAccessSelected = async (event) => {
+	accessSelected = async (event) => {
 		const access = event.target.value;
 		const selections = this.currentSelections();
-		selections.variableAccess = access;
+		selections.access = access;
 		await this.updateMethods(selections);
 		this.applySelections(selections);
 	};

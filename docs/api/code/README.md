@@ -20,6 +20,7 @@ These are the common properties at the moment:
 | GET | [/methods](methods/get.md) | Retrieve methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided) | selector<br />sending<br />class<br />referencing<br />category<br />using<br />assigning | | - |
 | GET | [/classes](classes/get.md) | Retrieve all subclasses of a given root class (if no root is provided, the uppermost class in the system is used). It is also possible get a tree-like structure as well as to limit the depth in the classes hierarchy | root<br />names<br />tree<br />depth | - |
 | GET | [/classes/{name}](classes/name/get.md) | Retrieve a given class | - | - |
+| GET | [/classes/{name}/subclasses](classes/name/subclasses/get.md) | Retrive subclasses a given class | - | - |
 | GET | [/classes/{name}/variables](classes/name/variables/get.md) | Retrive instance and class variables of a given class | - | - |
 | GET | [/classes/{name}/instance-variables](classes/name/instance-variables/get.md) | Retrive instance variables of a given class | - | - |
 | GET | [/classes/{name}/class-variables](classes/name/class-variables/get.md) | Retrive class variables of a given class | - | - |

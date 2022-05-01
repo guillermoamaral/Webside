@@ -27,7 +27,7 @@ class ClassBrowser extends Component {
 		this.state = {
 			root: this.props.root,
 			selectedClass: null,
-			selectedVariableAccess: "referencing",
+			selectedAccess: "referencing",
 			selectedVariable: null,
 			selectedCategory: null,
 			selectedMethod: null,
@@ -36,10 +36,7 @@ class ClassBrowser extends Component {
 	}
 
 	componentDidMount() {
-		const root = this.state.root;
-		if (root) {
-			this.changeRootClass(root);
-		}
+		this.changeRootClass(this.state.root);
 	}
 
 	changeRootClass = async (name) => {
@@ -61,7 +58,7 @@ class ClassBrowser extends Component {
 	currentSelections() {
 		return {
 			class: this.state.selectedClass,
-			variableAccess: this.state.selectedVariableAccess,
+			access: this.state.selectedAccess,
 			variable: this.state.selectedVariable,
 			category: this.state.selectedCategory,
 			method: this.state.selectedMethod,
@@ -76,7 +73,7 @@ class ClassBrowser extends Component {
 			}
 			return {
 				selectedClass: selections.class,
-				selectedVariableAccess: selections.variableAccess,
+				selectedAccess: selections.access,
 				selectedVariable: selections.variable,
 				selectedCategory: selections.category,
 				selectedMethod: selections.method,
@@ -99,7 +96,7 @@ class ClassBrowser extends Component {
 		const species = this.state.selectedClass;
 		const category = this.state.selectedCategory;
 		const variable = this.state.selectedVariable;
-		const access = this.state.selectedVariableAccess;
+		const access = this.state.selectedAccess;
 		if (!species) {
 			return [];
 		}
@@ -200,20 +197,18 @@ class ClassBrowser extends Component {
 				);
 			}
 			const variable = selections.variable;
-			const variableAccess = selections.variableAccess;
+			const access = selections.access;
 			if (
 				variable &&
-				(force ||
-					!species[variable.name] ||
-					!species[variable.name][variableAccess])
+				(force || !species[variable.name] || !species[variable.name][access])
 			) {
 				const accessors = await this.context.api.getMethodsAccessing(
 					species.name,
 					variable.name,
-					variableAccess
+					access
 				);
 				species[variable.name] = {};
-				species[variable.name][variableAccess] = accessors.sort((a, b) =>
+				species[variable.name][access] = accessors.sort((a, b) =>
 					a.selector <= b.selector ? -1 : 1
 				);
 			}
@@ -253,12 +248,10 @@ class ClassBrowser extends Component {
 		if (!this.state.root) {
 			return;
 		}
-		if (side === "instance") {
-			const name = this.state.root;
-			this.changeRootClass(name.slice(0, name.length - 6));
-		} else {
-			this.changeRootClass(this.state.root + " class");
-		}
+		let root = this.state.root;
+		root =
+			side === "instance" ? root.slice(0, root.length - 6) : root + " class";
+		this.changeRootClass(root);
 	};
 
 	classSelected = async (species) => {
@@ -316,10 +309,10 @@ class ClassBrowser extends Component {
 		this.classSelected(species);
 	};
 
-	variableAccessSelected = async (event) => {
+	accessSelected = async (event) => {
 		const access = event.target.value;
 		const selections = this.currentSelections();
-		selections.variableAccess = access;
+		selections.access = access;
 		await this.updateMethods(selections);
 		this.applySelections(selections);
 	};
@@ -410,7 +403,9 @@ class ClassBrowser extends Component {
 		this.cache[method.class].methods = this.cache[method.class].methods.filter(
 			(m) => m.selector !== method.selector
 		);
-		this.setState({ selectedMethod: null });
+		const selections = this.currentSelections();
+		selections.method = null;
+		this.applySelections(selections);
 	};
 
 	methodCompiled = async (method) => {
@@ -445,7 +440,7 @@ class ClassBrowser extends Component {
 			root,
 			selectedSide,
 			selectedClass,
-			selectedVariableAccess,
+			selectedAccess,
 			selectedVariable,
 			selectedCategory,
 			selectedMethod,
@@ -466,9 +461,9 @@ class ClassBrowser extends Component {
 						</Grid>
 						<Grid item xs={3} md={3} lg={3}>
 							<Select
-								value={selectedVariableAccess}
+								value={selectedAccess}
 								input={<OutlinedInput margin="dense" fullWidth />}
-								onChange={this.variableAccessSelected}
+								onChange={this.accessSelected}
 							>
 								<MenuItem value={"using"}>using</MenuItem>
 								<MenuItem value={"assigning"}>assigning</MenuItem>

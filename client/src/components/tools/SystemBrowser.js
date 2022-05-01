@@ -25,8 +25,6 @@ class SystemBrowser extends Component {
 			root: this.props.root,
 			selectedProject: null,
 			selectedClass: null,
-			selectedVariableAccess: "referencing",
-			selectedVariable: null,
 			selectedCategory: null,
 			selectedMethod: null,
 			selectedSide: "instance",
@@ -60,8 +58,6 @@ class SystemBrowser extends Component {
 		return {
 			project: this.state.selectedProject,
 			class: this.state.selectedClass,
-			variableAccess: this.state.selectedVariableAccess,
-			variable: this.state.selectedVariable,
 			category: this.state.selectedCategory,
 			method: this.state.selectedMethod,
 		};
@@ -76,8 +72,6 @@ class SystemBrowser extends Component {
 			return {
 				selectedProject: selections.project,
 				selectedClass: selections.class,
-				selectedVariableAccess: selections.variableAccess,
-				selectedVariable: selections.variable,
 				selectedCategory: selections.category,
 				selectedMethod: selections.method,
 			};
@@ -104,20 +98,12 @@ class SystemBrowser extends Component {
 		const project = this.state.selectedProject;
 		const species = this.state.selectedClass;
 		const category = this.state.selectedCategory;
-		const variable = this.state.selectedVariable;
-		const access = this.state.selectedVariableAccess;
 		if (!project || !species) {
 			return [];
 		}
 		var methods = species.methods.filter((m) => (m.project = project.name));
 		if (category) {
 			methods = methods.filter((m) => m.category === category);
-		}
-		if (variable) {
-			const accessors = species[variable.name][access];
-			methods = methods.filter((m) =>
-				accessors.some((n) => n.selector === m.selector)
-			);
 		}
 		return methods;
 	};
@@ -212,20 +198,18 @@ class SystemBrowser extends Component {
 				);
 			}
 			const variable = selections.variable;
-			const variableAccess = selections.variableAccess;
+			const access = selections.access;
 			if (
 				variable &&
-				(force ||
-					!species[variable.name] ||
-					!species[variable.name][variableAccess])
+				(force || !species[variable.name] || !species[variable.name][access])
 			) {
 				const accessors = await this.context.api.getMethodsAccessing(
 					species.name,
 					variable.name,
-					variableAccess
+					access
 				);
 				species[variable.name] = {};
-				species[variable.name][variableAccess] = accessors.sort((a, b) =>
+				species[variable.name][access] = accessors.sort((a, b) =>
 					a.selector <= b.selector ? -1 : 1
 				);
 			}
@@ -334,10 +318,10 @@ class SystemBrowser extends Component {
 		this.classSelected(species);
 	};
 
-	variableAccessSelected = async (event) => {
+	accessSelected = async (event) => {
 		const access = event.target.value;
 		const selections = this.currentSelections();
-		selections.variableAccess = access;
+		selections.access = access;
 		await this.updateMethods(selections);
 		this.applySelections(selections);
 	};
@@ -459,8 +443,6 @@ class SystemBrowser extends Component {
 			selectedSide,
 			selectedProject,
 			selectedClass,
-			selectedVariableAccess,
-			selectedVariable,
 			selectedCategory,
 			selectedMethod,
 		} = this.state;
