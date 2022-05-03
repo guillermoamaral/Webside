@@ -173,17 +173,21 @@ class API {
 		}
 	}
 
-	async getMethods(classname) {
+	async getMethods(classname, sorted = false) {
 		try {
 			var url = this.baseUri + "/classes/" + classname + "/methods?marks=true";
 			const response = await axios.get(url);
-			return response.data;
+			const methods = response.data;
+			if (sorted) {
+				methods.sort((a, b) => (a.selector <= b.selector ? -1 : 1));
+			}
+			return methods;
 		} catch (error) {
 			this.handleError("Cannot fecth methods of class " + classname, error);
 		}
 	}
 
-	async getMethodsAccessing(classname, variable, access) {
+	async getMethodsAccessing(classname, variable, access, sorted = false) {
 		try {
 			var url =
 				this.baseUri +
@@ -194,7 +198,11 @@ class API {
 				"=" +
 				variable;
 			const response = await axios.get(url);
-			return response.data;
+			const methods = response.data;
+			if (sorted) {
+				methods.sort((a, b) => (a.selector <= b.selector ? -1 : 1));
+			}
+			return methods;
 		} catch (error) {
 			this.handleError(
 				"Cannot fecth methods of class " + classname + " using " + variable,

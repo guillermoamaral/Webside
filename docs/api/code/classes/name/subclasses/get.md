@@ -11,7 +11,7 @@ Retrieve subclasses of a given class.
 
 **Content**: `[string]`
 
-**Example:**: `Fraction` categories `GET /classes/Integer/subclasses`.
+**Example:**: `Integer` subclasses `GET /classes/Integer/subclasses`.
 ```json
 [
     {

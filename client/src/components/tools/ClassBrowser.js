@@ -47,7 +47,8 @@ class ClassBrowser extends Component {
 			const tree = await this.context.api.getClassTree(name, 3);
 			const species = tree[0];
 			this.cache[name] = species;
-			this.setState({ root: name }, () => {
+			const side = name.endsWith(" class") ? "class" : "instance";
+			this.setState({ root: name, selectedSide: side }, () => {
 				this.classSelected(species);
 			});
 		} catch (error) {
@@ -79,6 +80,23 @@ class ClassBrowser extends Component {
 				selectedMethod: selections.method,
 			};
 		});
+	}
+
+	reviseSelections(selections) {
+		const species = selections.class;
+		var variable = selections.variable;
+		var method = selections.method;
+		if (variable) {
+			variable = species.variables.find((v) => v.name === variable.name);
+			selections.variable = !variable ? null : variable;
+		}
+		if (!species.categories.includes(selections.category)) {
+			selections.category = null;
+		}
+		if (method) {
+			method = species.methods.find((m) => m.selector === method.selector);
+			selections.method = !method ? null : method;
+		}
 	}
 
 	// Contents..
@@ -186,18 +204,17 @@ class ClassBrowser extends Component {
 
 	async updateMethods(selections, force = false) {
 		const species = selections.class;
+		const variable = selections.variable;
+		const access = selections.access;
+		var method = selections.method;
 		if (!species) {
 			return;
 		}
 		try {
 			if (force || !species.methods) {
-				const methods = await this.context.api.getMethods(species.name);
-				species.methods = methods.sort((a, b) =>
-					a.selector <= b.selector ? -1 : 1
-				);
+				const methods = await this.context.api.getMethods(species.name, true);
+				species.methods = methods;
 			}
-			const variable = selections.variable;
-			const access = selections.access;
 			if (
 				variable &&
 				(force || !species[variable.name] || !species[variable.name][access])
@@ -205,14 +222,12 @@ class ClassBrowser extends Component {
 				const accessors = await this.context.api.getMethodsAccessing(
 					species.name,
 					variable.name,
-					access
+					access,
+					true
 				);
 				species[variable.name] = {};
-				species[variable.name][access] = accessors.sort((a, b) =>
-					a.selector <= b.selector ? -1 : 1
-				);
+				species[variable.name][access] = accessors;
 			}
-			var method = selections.method;
 			if (method) {
 				method = species.methods.find((m) => m.selector === method.selector);
 				selections.method = !method ? null : method;
@@ -243,12 +258,10 @@ class ClassBrowser extends Component {
 
 	// Events...
 	sideChanged = (event, side) => {
-		if (!side) return;
-		this.setState({ selectedSide: side });
-		if (!this.state.root) {
+		if (!side || !this.state.root) {
 			return;
 		}
-		let root = this.state.root;
+		var root = this.state.root;
 		root =
 			side === "instance" ? root.slice(0, root.length - 6) : root + " class";
 		this.changeRootClass(root);
@@ -436,6 +449,7 @@ class ClassBrowser extends Component {
 	};
 
 	render() {
+		console.log("rendering browser");
 		const {
 			root,
 			selectedSide,
