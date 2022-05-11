@@ -45,17 +45,24 @@ class Titlebar extends Component {
 						<MenuIcon />
 					</IconButton>
 					<Box p={1}>
-						<Link to={this.props.baseUri}>
-							<img src={logo} width={28} height={28} alt={"Open"} />
-						</Link>
+						{logo &&
+						(
+							<Link to={this.props.baseUri}>
+								<img src={logo} width={28} height={28} />
+							</Link>
+						)}
 					</Box>
 					<Typography variant="h6" color="inherit" display="inline" noWrap>
 						{this.props.dialect + " Web IDE "}
 					</Typography>
 					<Box p={1}>
-						<Typography variant="body2" display="inline" color="inherit" noWrap>
-							(Powered by Webside)
-						</Typography>
+						<Link
+							href="https://github.com/guillermoamaral/Webside"
+							variant="body2"
+							color="inherit"
+						>
+							{"(Powered by Webside)"}
+						</Link>
 					</Box>
 					<Box flexGrow={1} />
 					<div className={styles.globalSearch}>
