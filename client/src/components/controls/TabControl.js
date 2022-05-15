@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Tabs, Tab, IconButton, Box } from '@material-ui/core';
+import { Tabs, Tab, Box } from '@material-ui/core';
 import TabPanel from './TabPanel';
 import TabLabel from './TabLabel';
-import CloseIcon from '@material-ui/icons/Close';
 
 class TabControl extends PureComponent {
   tabChanged = (event, index) => {

@@ -324,6 +324,8 @@ class CodeEditor extends Component {
 	};
 
 	render() {
+		console.log("rendering CodeEditor");
+		console.log(this.props.onChange);
 		const { value, selectRanges, evaluating, progress } = this.state;
 		const mode = this.props.mode || "smalltalk";
 		const showAccept = this.props.showAccept;
@@ -390,14 +392,16 @@ class CodeEditor extends Component {
 							onBeforeChange={(editor, data, value) => {
 								this.valueChanged(value);
 							}}
-							onChange={(editor, data, value) => {
-								this.setState({ selectRanges: value === this.props.source });
-							}}
+							// onChange={(editor, data, value) => {
+							// 	this.setState({ selectRanges: value === this.props.source });
+							// }}
 							onContextMenu={(editor, event) => {
 								this.openMenu(event);
 							}}
 							onSelection={(editor, event) => {
-								this.setState({ selectRanges: false });
+								if (this.state.selectRanges) {
+									this.setState({ selectRanges: false });
+								}
 							}}
 						/>
 					</Scrollable>

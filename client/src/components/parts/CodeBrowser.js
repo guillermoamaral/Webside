@@ -4,7 +4,7 @@ import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import { IDEContext } from "../IDEContext";
 import CodeEditor from "./CodeEditor";
 import { withDialog } from "../dialogs/index";
-import clsx from "clsx";
+//import clsx from "clsx";
 
 class CodeBrowser extends Component {
 	static contextType = IDEContext;
@@ -282,8 +282,8 @@ class CodeBrowser extends Component {
 		const timestamp = this.currentTimestamp();
 		const project = this.currentProject();
 		const { selectedInterval, selectedWord } = this.props;
-		const styles = this.props.styles;
-		const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
+		//const styles = this.props.styles;
+		//const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>

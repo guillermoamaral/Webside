@@ -71,6 +71,7 @@ class IDE extends Component {
 
 	componentDidMount() {
 		this.cacheNames();
+		this.openTranscript();
 		const classname = this.props.match.params.classname;
 		if (classname) {
 			this.openClassBrowser(classname);
@@ -283,12 +284,28 @@ class IDE extends Component {
 		return this.state.pages.find((p) => p.label === label);
 	}
 
-	openTranscript() {
-		const transcript = (
-			<Transcript styles={this.props.styles} text={this.state.transcriptText} />
-		);
-		this.addPage("Transcript", <TranscriptIcon />, transcript);
-	}
+	openTranscript = () => {
+		const page = this.state.pages.find((p) => p.label === "Transcript");
+		if (page) {
+			page.text = this.state.transcriptText;
+			this.selectPage(page);
+		} else {
+			const transcript = (
+				<Transcript
+					styles={this.props.styles}
+					text={this.state.transcriptText}
+				/>
+			);
+			this.addPage("Transcript", <TranscriptIcon />, transcript);
+		}
+	};
+
+	toggleShowTranscript = () => {
+		this.setState({
+			transcriptOpen: !this.state.transcriptOpen,
+			unreadErrorsCount: 0,
+		});
+	};
 
 	openInspectors = async () => {
 		try {
@@ -635,6 +652,10 @@ class IDE extends Component {
 		});
 	};
 
+	transcriptChanged = (text) => {
+		this.setState({ transcriptText: text });
+	};
+
 	reportChange = async (change) => {
 		//this triggers unnecessary renders!!!
 		// const changes = await this.api.getChanges();
@@ -660,13 +681,6 @@ class IDE extends Component {
 		} catch (error) {
 			this.reportError(error);
 		}
-	};
-
-	toggleShowTranscript = () => {
-		this.setState({
-			transcriptOpen: !this.state.transcriptOpen,
-			unreadErrorsCount: 0,
-		});
 	};
 
 	render() {
@@ -717,7 +731,7 @@ class IDE extends Component {
 								expanded={this.state.sidebarExpanded}
 								unreadErrorsCount={this.state.unreadErrorsCount}
 								unreadMessages={this.state.unreadMessages}
-								onTranscriptClicked={this.toggleShowTranscript}
+								onTranscriptClicked={this.openTranscript}
 								onChangesClicked={this.browseLastChanges}
 								onResourcesClicked={this.openResources}
 								onPeersClicked={this.openChat}
@@ -808,9 +822,7 @@ class IDE extends Component {
 														<Transcript
 															styles={styles}
 															text={this.state.transcriptText}
-															onChange={(text) =>
-																this.setState({ transcriptText: text })
-															}
+															onChange={this.transcriptChanged}
 														/>
 													</Grid>
 													<Grid item xs={1} md={1} lg={1}>

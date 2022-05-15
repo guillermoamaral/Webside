@@ -7,7 +7,7 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import { useTheme } from '@material-ui/core/styles';
 import { VariableSizeList } from 'react-window';
 import { Typography } from '@material-ui/core';
-import Scrollbar from "react-scrollbars-custom";
+//import Scrollbar from "react-scrollbars-custom";
 
 const LISTBOX_PADDING = 0; // px
 

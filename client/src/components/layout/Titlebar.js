@@ -11,15 +11,16 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import MenuIcon from "@material-ui/icons/Menu";
-import SearchList from "../controls/SearchList";
+//import SearchList from "../controls/SearchList";
 import SearchIcon from "@material-ui/icons/Search";
 
 class Titlebar extends Component {
 	render() {
+		const { dialect, baseUri, developer } = this.props;
 		let logo;
-		if (this.props.dialect) {
+		if (dialect) {
 			try {
-				logo = require("../../resources/" + this.props.dialect + ".png");
+				logo = require("../../resources/" + dialect + ".png");
 			} catch (error) {}
 		}
 		const styles = this.props.styles;
@@ -45,15 +46,14 @@ class Titlebar extends Component {
 						<MenuIcon />
 					</IconButton>
 					<Box p={1}>
-						{logo &&
-						(
-							<Link to={this.props.baseUri}>
-								<img src={logo} width={28} height={28} />
+						{logo && (
+							<Link to={baseUri}>
+								<img src={logo} width={28} height={28} alt={dialect} />
 							</Link>
 						)}
 					</Box>
 					<Typography variant="h6" color="inherit" display="inline" noWrap>
-						{this.props.dialect + " Web IDE "}
+						{dialect + " Web IDE "}
 					</Typography>
 					<Box p={1}>
 						<Link
@@ -91,11 +91,11 @@ class Titlebar extends Component {
 						component="span"
 						onClick={(e) => this.props.onAvatarClicked()}
 					>
-						<Avatar alt={this.props.developer} />
+						<Avatar alt={developer} />
 					</IconButton>
 					<Box p={1}>
 						<Typography variant="subtitle1" gutterBottom color="inherit" noWrap>
-							{this.props.developer}
+							{developer}
 						</Typography>
 					</Box>
 				</Toolbar>
