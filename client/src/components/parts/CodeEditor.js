@@ -371,7 +371,6 @@ class CodeEditor extends Component {
 					r.head.ch)
 		);
 		console.log("selectionChanged", m);
-		console.log(selection);
 		if (selection.origin) {
 			this.setState({ selectRanges: false });
 		}
