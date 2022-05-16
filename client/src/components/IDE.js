@@ -64,7 +64,8 @@ class IDE extends Component {
 			transcriptOpen: false,
 			unreadErrorsCount: 0,
 			unreadMessages: 0,
-			transcriptText: this.welcomeMessage(),
+			//transcriptText: this.welcomeMessage(),
+			transcriptText: "abc",
 			pages: [],
 		};
 	}
@@ -113,7 +114,7 @@ class IDE extends Component {
 				? this.dialect
 				: "It looks like the Smalltalk system could not be determined";
 		return (
-			"'Welcome to Webside " +
+			"\"Welcome to Webside " +
 			this.developer +
 			"!'\r'A Smalltalk IDE for the web.'\r\r" +
 			"'Backend: " +
@@ -121,7 +122,7 @@ class IDE extends Component {
 			"'\r" +
 			"'@" +
 			this.baseUri +
-			"'"
+			"\""
 		);
 	}
 

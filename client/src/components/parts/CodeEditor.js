@@ -40,11 +40,11 @@ class CodeEditor extends Component {
 		super(props);
 		this.editor = null;
 		this.state = {
-			source: props.source,
-			selectedRanges: [],
+			originalSource: props.source,
+			selectedInterval: null,
 			selectRanges: true,
 			dirty: false,
-			value: props.source,
+			source: props.source,
 			menuOpen: false,
 			menuPosition: { x: null, y: null },
 			evaluating: false,
@@ -55,15 +55,17 @@ class CodeEditor extends Component {
 	static getDerivedStateFromProps(props, state) {
 		if (
 			/*!state.dirty &&*/
-			props.source !== state.source ||
-			(props.selectedRanges && props.selectedRanges !== state.selectedRanges)
+			props.source !== state.originalSource ||
+			props.selectedInterval !== state.selectedInterval ||
+			props.selectedWord !== state.selectedWord
 		) {
+			console.log("derived state");
 			return {
-				source: props.source,
-				selectedRanges: props.selectedRanges,
+				originalSource: props.source,
+				selectedInterval: props.selectedInterval,
 				selectedWord: props.selectedWord,
 				selectRanges: true,
-				value: props.source,
+				source: props.source,
 				evaluating: props.evaluating,
 			};
 		}
@@ -72,10 +74,12 @@ class CodeEditor extends Component {
 				evaluating: props.evaluating,
 			};
 		}
+		console.log("no derived state");
 		return null;
 	}
 
 	editorDidMount(editor) {
+		console.log("editorDidMount", this.editor, this.editor === editor);
 		this.editor = editor;
 		this.editor.setSize("100%", "100%");
 	}
@@ -90,36 +94,62 @@ class CodeEditor extends Component {
 		}
 	};
 
-	selectRange(range) {
+	selectInterval(interval) {
+		console.log("selectIterval", interval);
+		const range = this.rangeFromInterval(interval);
+		console.log("selecteRange", range.anchor, range.head);
 		this.selectRanges([range]);
 	}
 
 	selectWord(word) {
-		let selections = [];
+		console.log("selectWord", word);
+		const ranges = this.rangesContainingWord(word);
+		this.selectRanges(ranges);
+	}
+
+	selectRanges(ranges) {
+		if (this.editor) {
+			console.log("settingSelections to editor");
+			this.editor.setSelections(ranges);
+		}
+	}
+
+	selectDefaultRanges() {
+		const { selectRanges, selectedInterval, selectedWord } = this.state;
+		if (selectRanges) {
+			if (selectedInterval) {
+				this.selectInterval(selectedInterval);
+			}
+			if (selectedWord) {
+				this.selectWord(selectedWord);
+			}
+		}
+	}
+
+	rangeFromInterval(interval) {
+		return {
+			anchor: this.linePositionAtOffset(interval.start - 1),
+			head: this.linePositionAtOffset(interval.end),
+		};
+	}
+
+	rangesContainingWord(word) {
+		const ranges = [];
+		if (!this.editor) {
+			return;
+		}
 		var cursor = this.editor.getSearchCursor(word);
 		while (cursor.findNext()) {
-			selections.push({
+			ranges.push({
 				anchor: cursor.from(),
 				head: cursor.to(),
 			});
 		}
-		this.editor.setSelections(selections);
+		return ranges;
 	}
 
-	selectRanges(ranges) {
-		if (ranges.length > 0) {
-			const selections = ranges.map((r) => {
-				return {
-					anchor: this.lineChAt(r.start - 1),
-					head: this.lineChAt(r.end),
-				};
-			});
-			this.editor.setSelections(selections);
-		}
-	}
-
-	lineChAt(index) {
-		var lines = this.state.value.slice(0, index).split("\r");
+	linePositionAtOffset(offset) {
+		var lines = this.state.source.slice(0, offset).split("\r");
 		return { line: lines.length - 1, ch: lines[lines.length - 1].length };
 	}
 
@@ -150,22 +180,28 @@ class CodeEditor extends Component {
 		];
 	}
 
-	valueChanged = (value) => {
+	sourceChanged = (source) => {
+		console.log("sourceChanged", source);
 		const handler = this.props.onChange;
 		if (handler) {
-			handler(value);
+			handler(source);
+		} else {
+			console.log("setting state after sourceChanged");
+			this.setState(
+				{
+					source: source,
+					dirty: true,
+					selectRanges: false,
+				},
+				() => console.log(this.state)
+			);
 		}
-		this.setState({
-			value: value,
-			dirty: true,
-			selectRanges: value === this.state.value,
-		});
 	};
 
 	acceptClicked = (event) => {
 		const handler = this.props.onAccept;
 		if (handler) {
-			handler(this.state.value);
+			handler(this.state.source);
 		}
 	};
 
@@ -284,8 +320,8 @@ class CodeEditor extends Component {
 		}
 		return this.props.lintAnnotations.map((a) => {
 			return {
-				from: this.lineChAt(a.from - 1),
-				to: this.lineChAt(a.to - 1),
+				from: this.linePositionAtOffset(a.from - 1),
+				to: this.linePositionAtOffset(a.to - 1),
 				severity: a.severity,
 				message: a.description,
 			};
@@ -319,31 +355,56 @@ class CodeEditor extends Component {
 		}
 	};
 
-	selectionChanged = () => {
-		this.setState({ selectRanges: false });
+	selectionChanged = (selection) => {
+		var m = "";
+		selection.ranges.forEach(
+			(r) =>
+				(m =
+					m +
+					" from line " +
+					r.anchor.line +
+					" ch " +
+					r.anchor.ch +
+					" to line " +
+					r.head.line +
+					" ch " +
+					r.head.ch)
+		);
+		console.log("selectionChanged", m);
+		console.log(selection);
+		if (selection.origin) {
+			this.setState({ selectRanges: false });
+		}
+		// const { selectedInterval, selectedWord } = this.state;
+		// const additional = [];
+		// if (selectedInterval) {
+		// 	additional.push(this.rangeFromInterval(selectedInterval));
+		// }
+		// if (selectedWord) {
+		// 	this.rangesContainingWord(selectedWord).forEach((r) =>
+		// 		additional.push(r)
+		// 	);
+		// }
+		// if (additional.length > 0) {
+		// 	console.log(additional);
+		// 	selection.update(selection.ranges.concat(additional));
+		// }
+		// if (this.state.selectRanges) {
+		// 	this.setState({ selectRanges: false });
+		// }
 	};
 
 	render() {
 		console.log("rendering CodeEditor");
-		console.log(this.props.onChange);
-		const { value, selectRanges, evaluating, progress } = this.state;
+		this.selectDefaultRanges();
+		const { source, evaluating, progress } = this.state;
 		const mode = this.props.mode || "smalltalk";
-		const showAccept = this.props.showAccept;
+		const showAccept = this.props;
 		const acceptIcon = this.props.acceptIcon ? (
 			React.cloneElement(this.props.acceptIcon)
 		) : (
 			<AcceptIcon size="large" style={{ fontSize: 30 }} />
 		);
-		if (selectRanges) {
-			const selectedRanges = this.props.selectedRanges;
-			if (selectedRanges && selectedRanges.length > 0) {
-				this.selectRanges(selectedRanges);
-			}
-			const selectedWord = this.props.selectedWord;
-			if (this.editor && selectedWord) {
-				this.selectWord(selectedWord);
-			}
-		}
 		return (
 			<Grid container spacing={1} style={{ height: "100%" }}>
 				<Grid item xs={11} md={showAccept ? 11 : 12} lg={showAccept ? 11 : 12}>
@@ -382,7 +443,7 @@ class CodeEditor extends Component {
 									F2: this.renameTarget,
 								},
 							}}
-							value={value}
+							value={source}
 							editorDidMount={(editor) => {
 								this.editorDidMount(editor);
 							}}
@@ -390,18 +451,16 @@ class CodeEditor extends Component {
 								this.setBreakpoint(n);
 							}}
 							onBeforeChange={(editor, data, value) => {
-								this.valueChanged(value);
+								this.sourceChanged(value);
 							}}
-							// onChange={(editor, data, value) => {
-							// 	this.setState({ selectRanges: value === this.props.source });
-							// }}
+							onChange={(editor, data, value) => {
+								this.setState({ selectRanges: value === this.props.source });
+							}}
 							onContextMenu={(editor, event) => {
 								this.openMenu(event);
 							}}
-							onSelection={(editor, event) => {
-								if (this.state.selectRanges) {
-									this.setState({ selectRanges: false });
-								}
+							onSelection={(editor, selection) => {
+								this.selectionChanged(selection);
 							}}
 						/>
 					</Scrollable>

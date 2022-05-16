@@ -314,7 +314,7 @@ class CodeBrowser extends Component {
 							source={this.currentSource()}
 							mode={this.currentCodeMode()}
 							lintAnnotations={this.currentLintAnnotations()}
-							selectedRanges={!selectedInterval ? [] : [selectedInterval]}
+							selectedInterval={selectedInterval}
 							selectedWord={selectedWord}
 							showAccept
 							onAccept={this.acceptClicked}
