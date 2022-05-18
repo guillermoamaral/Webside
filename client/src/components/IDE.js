@@ -12,6 +12,7 @@ import {
 import { ThemeProvider } from "@material-ui/styles";
 import { withCookies } from "react-cookie";
 import { withRouter } from "react-router-dom";
+import { withDialog } from "./dialogs/index";
 import { amber, blue } from "@material-ui/core/colors";
 import AddIcon from "@material-ui/icons/AddCircle";
 import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
@@ -233,11 +234,19 @@ class IDE extends Component {
 		};
 		const pages = this.state.pages;
 		pages.push(page);
-		this.setState({ pages: pages, selectedPage: page });
+		const state = { pages: pages, selectedPage: page };
+		if (page.label === "Transcript") {
+			state.unreadErrorsCount = 0;
+		}
+		this.setState(state);
 	}
 
 	selectPage = (page) => {
-		this.setState({ selectedPage: page });
+		const state = { selectedPage: page };
+		if (page.label === "Transcript") {
+			state.unreadErrorsCount = 0;
+		}
+		this.setState(state);
 	};
 
 	preRemovePage = async (page) => {
@@ -338,10 +347,19 @@ class IDE extends Component {
 			<SystemBrowser styles={this.props.styles} root={projectname} />
 		);
 		this.addPage(
-			browser.props.root || "System Browser",
+			projectname || "System Browser",
 			<SystemBrowserIcon />,
 			browser
 		);
+	};
+
+	browseClass = async (classname) => {
+		try {
+			await this.api.getClass(classname);
+			this.openClassBrowser(classname);
+		} catch (error) {
+			this.props.dialog.alert("There is no class named " + classname);
+		}
 	};
 
 	openClassBrowser = (classname, selector) => {
@@ -352,11 +370,7 @@ class IDE extends Component {
 				selectedSelector={selector}
 			/>
 		);
-		this.addPage(
-			browser.props.root || "Class Browser",
-			<ClassBrowserIcon />,
-			browser
-		);
+		this.addPage(classname || "Class Browser", <ClassBrowserIcon />, browser);
 	};
 
 	openMethodBrowser = (methods, title = "Methods", selectedWord) => {
@@ -702,7 +716,7 @@ class IDE extends Component {
 			openChat: this.openChat,
 			openWorkspace: this.openWorkspace,
 			browseProject: this.openSystemBrowser,
-			browseClass: this.openClassBrowser,
+			browseClass: this.browseClass,
 			browseSenders: this.browseSenders,
 			browseLocalSenders: this.browseLocalSenders,
 			browseImplementors: this.browseImplementors,
@@ -861,4 +875,4 @@ class IDE extends Component {
 	}
 }
 
-export default withRouter(withCookies(IDE));
+export default withDialog()(withRouter(withCookies(IDE)));
