@@ -9,7 +9,7 @@ import "../../smalltalk.css";
 
 require("diff-match-patch");
 require("codemirror/lib/codemirror.css");
-require("codemirror/theme/material.css");
+//require("codemirror/theme/material.css");
 require("codemirror/mode/smalltalk/smalltalk.js");
 require("codemirror/mode/gas/gas.js");
 require("codemirror/mode/python/python.js");
@@ -32,6 +32,7 @@ require("codemirror/addon/fold/foldgutter.css");
 require("codemirror/addon/fold/foldcode");
 require("codemirror/addon/fold/brace-fold");
 require("codemirror/addon/fold/comment-fold");
+
 
 class CodeEditor extends Component {
 	static contextType = IDEContext;
@@ -59,7 +60,6 @@ class CodeEditor extends Component {
 			props.selectedInterval !== state.selectedInterval ||
 			props.selectedWord !== state.selectedWord
 		) {
-			console.log("derived state");
 			return {
 				originalSource: props.source,
 				selectedInterval: props.selectedInterval,
@@ -74,8 +74,12 @@ class CodeEditor extends Component {
 				evaluating: props.evaluating,
 			};
 		}
-		console.log("no derived state");
 		return null;
+	}
+
+	componentDidMount() {
+		console.log("CodeEditor componentDidMount");
+		// 	this.setState({ selectRanges: false });
 	}
 
 	editorDidMount(editor) {
@@ -114,8 +118,9 @@ class CodeEditor extends Component {
 		}
 	}
 
-	selectDefaultRanges() {
+	selectInitialRanges() {
 		const { selectRanges, selectedInterval, selectedWord } = this.state;
+		console.log("selecting initial ranges", selectRanges);
 		if (selectRanges) {
 			if (selectedInterval) {
 				this.selectInterval(selectedInterval);
@@ -371,9 +376,9 @@ class CodeEditor extends Component {
 					r.head.ch)
 		);
 		console.log("selectionChanged", m);
-		if (selection.origin) {
-			this.setState({ selectRanges: false });
-		}
+		// if (selection.origin) {
+		// 	this.setState({ selectRanges: false });
+		// }
 		// const { selectedInterval, selectedWord } = this.state;
 		// const additional = [];
 		// if (selectedInterval) {
@@ -395,7 +400,7 @@ class CodeEditor extends Component {
 
 	render() {
 		console.log("rendering CodeEditor");
-		this.selectDefaultRanges();
+		this.selectInitialRanges();
 		const { source, evaluating, progress } = this.state;
 		const mode = this.props.mode || "smalltalk";
 		const showAccept = this.props;
@@ -453,7 +458,8 @@ class CodeEditor extends Component {
 								this.sourceChanged(value);
 							}}
 							onChange={(editor, data, value) => {
-								this.setState({ selectRanges: value === this.props.source });
+								console.log("onChange fired");
+								//this.setState({ selectRanges: value === this.props.source });
 							}}
 							onContextMenu={(editor, event) => {
 								this.openMenu(event);

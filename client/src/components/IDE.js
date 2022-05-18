@@ -64,8 +64,7 @@ class IDE extends Component {
 			transcriptOpen: false,
 			unreadErrorsCount: 0,
 			unreadMessages: 0,
-			//transcriptText: this.welcomeMessage(),
-			transcriptText: "abc",
+			transcriptText: this.welcomeMessage(),
 			pages: [],
 		};
 	}
@@ -82,6 +81,10 @@ class IDE extends Component {
 			this.openDebugger(id);
 		}
 		//this.openNativeDebugger('{B3AE5087-3EBC-43E2-B4A5-95DD37D802FE}')
+	}
+
+	usesEmergentTranscript() {
+		return false;
 	}
 
 	testMethodDifferences = async () => {
@@ -114,15 +117,15 @@ class IDE extends Component {
 				? this.dialect
 				: "It looks like the Smalltalk system could not be determined";
 		return (
-			"\"Welcome to Webside " +
+			'"Welcome to Webside ' +
 			this.developer +
-			"!'\r'A Smalltalk IDE for the web.'\r\r" +
-			"'Backend: " +
+			"!\rA Smalltalk IDE for the web.\r\r" +
+			"Backend: " +
 			backend +
-			"'\r" +
-			"'@" +
+			"\r" +
+			"URL: " +
 			this.baseUri +
-			"\""
+			'"'
 		);
 	}
 
@@ -286,18 +289,22 @@ class IDE extends Component {
 	}
 
 	openTranscript = () => {
-		const page = this.state.pages.find((p) => p.label === "Transcript");
-		if (page) {
-			page.text = this.state.transcriptText;
-			this.selectPage(page);
+		if (this.usesEmergentTranscript()) {
+			this.toggleShowTranscript();
 		} else {
-			const transcript = (
-				<Transcript
-					styles={this.props.styles}
-					text={this.state.transcriptText}
-				/>
-			);
-			this.addPage("Transcript", <TranscriptIcon />, transcript);
+			const page = this.state.pages.find((p) => p.label === "Transcript");
+			if (page) {
+				page.text = this.state.transcriptText;
+				this.selectPage(page);
+			} else {
+				const transcript = (
+					<Transcript
+						styles={this.props.styles}
+						text={this.state.transcriptText}
+					/>
+				);
+				this.addPage("Transcript", <TranscriptIcon />, transcript);
+			}
 		}
 	};
 
@@ -742,9 +749,10 @@ class IDE extends Component {
 							<main className={styles.content}>
 								<div className={styles.appBarSpacer} />
 								<Container className={styles.container}>
-									<Grid container spacing={1}>
+									<Grid container spacing={1} style={{ height: "100%" }}>
 										<Grid item xs={11} md={11} lg={11}>
 											<TabControl
+												style={{ height: "100%" }}
 												styles={styles}
 												selectedPage={this.state.selectedPage}
 												pages={this.state.pages}
@@ -820,11 +828,13 @@ class IDE extends Component {
 											>
 												<Grid container spacing={0}>
 													<Grid item xs={11} md={11} lg={11}>
-														<Transcript
-															styles={styles}
-															text={this.state.transcriptText}
-															onChange={this.transcriptChanged}
-														/>
+														{this.state.transcriptOpen && (
+															<Transcript
+																styles={styles}
+																text={this.state.transcriptText}
+																onChange={this.transcriptChanged}
+															/>
+														)}
 													</Grid>
 													<Grid item xs={1} md={1} lg={1}>
 														<Box display="flex" justifyContent="center">

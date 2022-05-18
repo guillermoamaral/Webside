@@ -33,6 +33,7 @@
   "devDependencies": {
     "@iconify/icons-mdi": "^1.0.120",
     "@iconify/react": "^1.1.3",
+    "@types/codemirror": "^5.60.5",
     "react-scripts": "^3.4.4"
   },
   "scripts": {

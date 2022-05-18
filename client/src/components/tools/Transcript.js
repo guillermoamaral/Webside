@@ -9,7 +9,7 @@ class Transcript extends Component {
 				source={this.props.text}
 				onChange={this.props.onChange}
 				onAccept={this.props.onAccept}
-				selectedWord={"c"}
+				selectedWord={"Welcome"}
 			/>
 		);
 	}
