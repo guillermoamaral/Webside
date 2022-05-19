@@ -439,7 +439,7 @@ class CodeEditor extends Component {
 		this.selectInitialRanges();
 		const { source, evaluating, progress } = this.state;
 		const mode = this.props.mode || "smalltalk";
-		const showAccept = this.props;
+		const showAccept = this.props.showAccept;
 		const acceptIcon = this.props.acceptIcon ? (
 			React.cloneElement(this.props.acceptIcon)
 		) : (
@@ -503,6 +503,7 @@ class CodeEditor extends Component {
 							onSelection={(editor, selection) => {
 								this.selectionChanged(selection);
 							}}
+							onCursorActivity={(editor, event) => {console.log(editor, event)}}
 						/>
 					</Scrollable>
 					{(evaluating || progress) && (

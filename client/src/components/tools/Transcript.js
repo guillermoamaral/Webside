@@ -8,8 +8,8 @@ class Transcript extends Component {
 				styles={this.props.styles}
 				source={this.props.text}
 				onChange={this.props.onChange}
-				onAccept={this.props.onAccept}
 				selectedWord={"Welcome"}
+				showAccept={false}
 			/>
 		);
 	}
