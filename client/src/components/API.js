@@ -220,7 +220,7 @@ class API {
 					classname +
 					"/methods?selector=" +
 					encoded +
-					"&bytecodes=true&disassembly=true"
+					"&bytecodes=true&disassembly=true&ast=true"
 			);
 			return response.data.length === 0 ? null : response.data[0];
 		} catch (error) {

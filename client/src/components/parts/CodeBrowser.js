@@ -201,6 +201,14 @@ class CodeBrowser extends Component {
 		return source;
 	};
 
+	currentAst = () => {
+		return this.state.selectedMode === "source"
+			? this.props.method
+				? this.props.method.ast
+				: null
+			: null;
+	};
+
 	currentCodeMode = () => {
 		let mode;
 		switch (this.state.selectedMode) {
@@ -312,6 +320,7 @@ class CodeBrowser extends Component {
 							styles={this.props.styles}
 							lineNumbers={true}
 							source={this.currentSource()}
+							ast={this.currentAst()}
 							mode={this.currentCodeMode()}
 							lintAnnotations={this.currentLintAnnotations()}
 							selectedInterval={selectedInterval}

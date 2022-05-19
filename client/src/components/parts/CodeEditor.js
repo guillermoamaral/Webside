@@ -33,7 +33,6 @@ require("codemirror/addon/fold/foldcode");
 require("codemirror/addon/fold/brace-fold");
 require("codemirror/addon/fold/comment-fold");
 
-
 class CodeEditor extends Component {
 	static contextType = IDEContext;
 
@@ -133,8 +132,8 @@ class CodeEditor extends Component {
 
 	rangeFromInterval(interval) {
 		return {
-			anchor: this.linePositionAtOffset(interval.start - 1),
-			head: this.linePositionAtOffset(interval.end),
+			anchor: this.positionFromOffset(interval.start - 1),
+			head: this.positionFromOffset(interval.end),
 		};
 	}
 
@@ -153,9 +152,44 @@ class CodeEditor extends Component {
 		return ranges;
 	}
 
-	linePositionAtOffset(offset) {
-		var lines = this.state.source.slice(0, offset).split("\r");
+	positionFromOffset(offset) {
+		const lines = this.state.source.slice(0, offset).split("\r");
 		return { line: lines.length - 1, ch: lines[lines.length - 1].length };
+	}
+
+	offsetFromPosition(position) {
+		const lines = this.state.source.split("\r");
+		var before = 0;
+		for (var i = 0; i < position.line; i++) {
+			before += lines[i].length + 1;
+		}
+		return before + position.ch;
+	}
+
+	traverseAst(node, block) {
+		block(node);
+		if (node.children) {
+			node.children.forEach((n) => {
+				this.traverseAst(n, block);
+			});
+		}
+	}
+
+	astNodeAtOffset(offset) {
+		const ast = this.props.ast;
+		var node;
+		if (ast) {
+			this.traverseAst(ast, (n) => {
+				if (
+					n.start <= offset &&
+					offset <= n.end &&
+					(!node || (node.start <= n.start && n.end <= node.end))
+				) {
+					node = n;
+				}
+			});
+		}
+		return node;
 	}
 
 	openMenu = (event) => {
@@ -219,6 +253,8 @@ class CodeEditor extends Component {
 		if (word.length > 0) {
 			return word;
 		}
+		const position = this.editor.getCursor();
+		const offset = this.offsetFromPosition(position);
 		const stretch = this.editor.findWordAt(this.editor.getCursor());
 		return this.editor.getRange(stretch.anchor, stretch.head);
 	}
@@ -325,8 +361,8 @@ class CodeEditor extends Component {
 		}
 		return this.props.lintAnnotations.map((a) => {
 			return {
-				from: this.linePositionAtOffset(a.from - 1),
-				to: this.linePositionAtOffset(a.to - 1),
+				from: this.positionFromOffset(a.from - 1),
+				to: this.positionFromOffset(a.to - 1),
 				severity: a.severity,
 				message: a.description,
 			};
@@ -362,20 +398,20 @@ class CodeEditor extends Component {
 
 	selectionChanged = (selection) => {
 		var m = "";
-		selection.ranges.forEach(
-			(r) =>
-				(m =
-					m +
-					" from line " +
-					r.anchor.line +
-					" ch " +
-					r.anchor.ch +
-					" to line " +
-					r.head.line +
-					" ch " +
-					r.head.ch)
-		);
-		console.log("selectionChanged", m);
+		selection.ranges.forEach((r) => {
+			m =
+				m +
+				" from line " +
+				r.anchor.line +
+				" ch " +
+				r.anchor.ch +
+				" to line " +
+				r.head.line +
+				" ch " +
+				r.head.ch;
+			console.log("selectionChanged", m);
+			console.log(this.astNodeAtOffset(this.offsetFromPosition(r.anchor)));
+		});
 		// if (selection.origin) {
 		// 	this.setState({ selectRanges: false });
 		// }
