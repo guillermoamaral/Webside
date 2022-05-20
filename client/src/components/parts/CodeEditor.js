@@ -249,9 +249,9 @@ class CodeEditor extends Component {
 	};
 
 	targetWord() {
-		const word = this.editor.getSelection();
-		if (word.length > 0) {
-			return word;
+		const selected = this.editor.getSelection();
+		if (selected.length > 0) {
+			return selected;
 		}
 		const position = this.editor.getCursor();
 		const offset = this.offsetFromPosition(position);
@@ -259,12 +259,27 @@ class CodeEditor extends Component {
 		return this.editor.getRange(stretch.anchor, stretch.head);
 	}
 
+	targetSelector() {
+		const selected = this.editor.getSelection();
+		if (selected.length > 0) {
+			return selected;
+		}
+		const position = this.editor.getCursor();
+		const offset = this.offsetFromPosition(position);
+		const node = this.astNodeAtOffset(offset);
+		if (node && node.type === "Selector") {
+			console.log(node);
+			return node.symbol;
+		}
+		return this.targetWord();
+	}
+
 	browseSenders = () => {
-		this.context.browseSenders(this.targetWord());
+		this.context.browseSenders(this.targetSelector());
 	};
 
 	browseImplementors = () => {
-		this.context.browseImplementors(this.targetWord());
+		this.context.browseImplementors(this.targetSelector());
 	};
 
 	browseClass = () => {
@@ -410,7 +425,6 @@ class CodeEditor extends Component {
 				" ch " +
 				r.head.ch;
 			console.log("selectionChanged", m);
-			console.log(this.astNodeAtOffset(this.offsetFromPosition(r.anchor)));
 		});
 		// if (selection.origin) {
 		// 	this.setState({ selectRanges: false });
@@ -503,7 +517,9 @@ class CodeEditor extends Component {
 							onSelection={(editor, selection) => {
 								this.selectionChanged(selection);
 							}}
-							onCursorActivity={(editor, event) => {console.log(editor, event)}}
+							onCursorActivity={(editor, event) => {
+								
+							}}
 						/>
 					</Scrollable>
 					{(evaluating || progress) && (
