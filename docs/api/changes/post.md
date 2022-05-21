@@ -9,120 +9,25 @@ Special attention must be paid to the way the API should handle compilation erro
 
 **Method**: `POST`
 
-**Body**: The body will contain the change to be applied in JSON format. The table below lists all supported changes at this moment.
+**Body**: The body will contain the change to be applied in JSON format. The table below lists all supported changes at this moment. Though types are self-descripted, a short description of what they do is included.
 
 | Type | Description | Payload |
 | :--: | -- | -- |
-| MethodDefinition | Defines a method in the specified class | <pre>{<br>    "type": "MethodDefinition", <br>    "class": "string", <br>    "category": "string", <br>    "sourceCode": "string", <br>    "author": "string"<br>} </pre> |
-
-
-```json
-{
-    "type": "MethodRemove",
-    "class": "string",
-    "selector": "string"
-}
-```
-
-```json
-{
-    "type": "SelectorRename",
-    "class": "string",
-    "selector": "string",
-    "newSelector": "string"
-}
-```
-
-```json
-{
-    "type": "ClassDefinition",
-    "class": "string",
-    "definition": "string"
-}
-```
-
-```json
-{
-    "type": "ClassCommentDefinition",
-    "class": "string",
-    "comment": "string"
-}
-```
-
-```json
-{
-    "type": "ClassRemove",
-    "class": "string"
-}
-```
-
-```json
-{
-    "type": "ClassRename",
-    "class": "string",
-    "newName": "string",
-    "renameReferences": "boolean"
-}
-```
-
-```json
-{
-    "type": "InstanceVariableAddition",
-    "class": "string",
-    "variable": "string"
-}
-```
-
-```json
-{
-    "type": "InstanceVariableRename",
-    "class": "string",
-    "variable": "string",
-    "newName": "string"
-}
-```
-
-```json
-{
-    "type": "InstanceVariableRemove",
-    "class": "string",
-    "variable": "string"
-}
-```
-
-```json
-{
-    "type": "InstanceVariableMoveUp",
-    "class": "string",
-    "variable": "string"
-}
-```
-
-```json
-{
-    "type": "InstanceVariableMoveDown",
-    "class": "string",
-    "variable": "string",
-    "target": "string",
-}
-```
-
-```json
-{
-    "type": "CategoryRename",
-    "class": "string",
-    "category": "string",
-    "newName": "string",
-}
-```
-
-```json
-{
-    "type": "CategoryRemove",
-    "class": "string",
-    "category": "string"
-}
-```
+| MethodDefinition | Defines a method in the specified class | <pre>{<br>    "type": "MethodDefinition",<br>    "class": "string",<br>    "category": "string",<br>    "sourceCode": "string",<br>    "author": "string"<br>} </pre> |
+| MethodRemove | Removes a given method | <pre>{<br>    "type": "MethodRemove",<br>    "class": "string",<br>    "selector": "string"<br>} </pre> |
+| SelectorRename | Renames a given selector. The scope is the whole system | <pre>{<br>    "type": "SelectorRename",<br>    "class": "string",<br>    "selector": "string"<br>,<br>    "newSelector": "string"<br>} </pre> |
+| ClassDefinition | Defines a new class or changes the definition of an existing one. | <pre>{<br>    "type": "ClassDefinition",<br>    "class": "string",<br>    "definition": "string"<br>} </pre> |
+| ClassCommentDefinition | Changes the comment of a given class. | <pre>{<br>    "type": "ClassCommentDefinition",<br>    "class": "string",<br>    "comment": "string"<br>} </pre> |
+| ClassRemove | Removes a given class from the system. | <pre>{<br>    "type": "ClassRemove",<br>    "class": "string"<br>} </pre> |
+| ClassRename | Renames a given class. | <pre>{<br>    "type": "ClassRename",<br>    "class": "string",<br>    "newName": "string",<br>    "renameDiferences": "boolean"<br>} </pre> |
+| InstanceVariableAddition | Adds a new instance variable to a given class. | <pre>{<br>    "type": "InstanceVariableAddition",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
+| InstanceVariableRename | Renames an instance variable of a given class. | <pre>{<br>    "type": "InstanceVariableRename",<br>    "class": "string",<br>    "variable": "string",<br>    "newName": "string"<br>} </pre> |
+| InstanceVariableRemove | Removes an instance variable from a given class. | <pre>{<br>    "type": "InstanceVariableRemove",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
+| InstanceVariableRemove | Removes an instance variable from a given class. | <pre>{<br>    "type": "InstanceVariableRemove",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
+| InstanceVariableMoveUp | Moves an instance variable from a given class to its superclass. | <pre>{<br>    "type": "InstanceVariableMoveUp",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
+| InstanceVariableMoveDown | Moves an instance variable from a given class to one of its subclasses. | <pre>{<br>    "type": "InstanceVariableMoveDown",<br>    "class": "string",<br>    "variable": "string",<br>    "target": "string"<br>} </pre> |
+| CategoryRename | Rename a category within a class. | <pre>{<br>    "type": "CategoryRename",<br>    "class": "string",<br>    "category": "string",<br>    "newName": "string"<br>} </pre> |
+| CategoryRemove | Removes a category from a class. | <pre>{<br>    "type": "CategoryRemove",<br>    "class": "string",<br>    "category": "string"} </pre> |
 
 ## Success Responses
 
