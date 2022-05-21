@@ -13,17 +13,8 @@ Special attention must be paid to the way the API should handle compilation erro
 
 | Type | Description | Payload |
 | :--: | -- | -- |
-| GET | Retrieve changes made to the system | <pre>{<br>    "a": 1, <br>    "b": 2<br>} </pre> |
+| MethodDefinition | Defines a method in the specified class | <pre>{<br>    "type": "MethodDefinition", <br>    "class": "string", <br>    "category": "string", <br>    "sourceCode": "string", <br>    "author": "string"<br>} </pre> |
 
-```json
-{
-    "type": "MethodDefinition",
-    "class": "string",
-    "category": "string",
-    "sourceCode": "string",
-    "author": "string"
-}
-```
 
 ```json
 {
