@@ -10,10 +10,11 @@ Special attention must be paid to the way the API should handle compilation erro
 **Method**: `POST`
 
 **Body**: The body will contain the change to be applied in JSON format. The table below lists all supported changes at this moment. Though types are self-descripted, a short description of what they do is included.
+Also, all changes will include a property `author` containing the name of the Webside logged developer.
 
 | Type | Description | Payload |
 | :--: | -- | -- |
-| MethodDefinition | Defines a method within a given class and category. | <pre>{<br>    "type": "MethodDefinition",<br>    "class": "string",<br>    "category": "string",<br>    "sourceCode": "string",<br>    "author": "string"<br>} </pre> |
+| MethodDefinition | Defines a method within a given class and category. | <pre>{<br>    "type": "MethodDefinition",<br>    "class": "string",<br>    "category": "string",<br>    "sourceCode": "string"<br>} </pre> |
 | MethodRemove | Removes a given method | <pre>{<br>    "type": "MethodRemove",<br>    "class": "string",<br>    "selector": "string"<br>} </pre> |
 | SelectorRename | Renames a given selector. The scope is the whole system. | <pre>{<br>    "type": "SelectorRename",<br>    "class": "string",<br>    "selector": "string",<br>    "newSelector": "string"<br>} </pre> |
 | ClassDefinition | Defines a new class or changes the definition of an existing one. | <pre>{<br>    "type": "ClassDefinition",<br>    "class": "string",<br>    "definition": "string"<br>} </pre> |
