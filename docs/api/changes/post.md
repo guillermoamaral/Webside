@@ -13,7 +13,7 @@ Special attention must be paid to the way the API should handle compilation erro
 
 | Type | Description | Payload |
 | :--: | -- | -- |
-| GET | Retrieve changes made to the system | <pre>{"a": 1, "b": 2} </pre> |
+| GET | Retrieve changes made to the system | <pre>{<br>"a": 1, <br>"b": 2<br>} </pre> |
 
 ```json
 {
