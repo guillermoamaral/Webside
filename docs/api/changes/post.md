@@ -9,7 +9,11 @@ Special attention must be paid to the way the API should handle compilation erro
 
 **Method**: `POST`
 
-**Body**: one of the following:
+**Body**: The body will contain the change to be applied in JSON format. The table below lists all supported changes at this moment.
+
+| Type | Description | Payload |
+| :--: | -- | -- |
+| GET | Retrieve changes made to the system | <code>{"a": 1, "b": 2}</code> |
 
 ```json
 {
