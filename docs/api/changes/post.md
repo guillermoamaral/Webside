@@ -13,7 +13,7 @@ Special attention must be paid to the way the API should handle compilation erro
 
 | Type | Description | Payload |
 | :--: | -- | -- |
-| MethodDefinition | Defines a method within a given class. | <pre>{<br>    "type": "MethodDefinition",<br>    "class": "string",<br>    "category": "string",<br>    "sourceCode": "string",<br>    "author": "string"<br>} </pre> |
+| MethodDefinition | Defines a method within a given class and category. | <pre>{<br>    "type": "MethodDefinition",<br>    "class": "string",<br>    "category": "string",<br>    "sourceCode": "string",<br>    "author": "string"<br>} </pre> |
 | MethodRemove | Removes a given method | <pre>{<br>    "type": "MethodRemove",<br>    "class": "string",<br>    "selector": "string"<br>} </pre> |
 | SelectorRename | Renames a given selector. The scope is the whole system. | <pre>{<br>    "type": "SelectorRename",<br>    "class": "string",<br>    "selector": "string",<br>    "newSelector": "string"<br>} </pre> |
 | ClassDefinition | Defines a new class or changes the definition of an existing one. | <pre>{<br>    "type": "ClassDefinition",<br>    "class": "string",<br>    "definition": "string"<br>} </pre> |
@@ -27,7 +27,7 @@ Special attention must be paid to the way the API should handle compilation erro
 | InstanceVariableMoveUp | Moves an instance variable from a given class to its superclass. | <pre>{<br>    "type": "InstanceVariableMoveUp",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
 | InstanceVariableMoveDown | Moves an instance variable from a given class to one of its subclasses. | <pre>{<br>    "type": "InstanceVariableMoveDown",<br>    "class": "string",<br>    "variable": "string",<br>    "target": "string"<br>} </pre> |
 | CategoryRename | Rename a category within a class. | <pre>{<br>    "type": "CategoryRename",<br>    "class": "string",<br>    "category": "string",<br>    "newName": "string"<br>} </pre> |
-| CategoryRemove | Removes a category from a class. | <pre>{<br>    "type": "CategoryRemove",<br>    "class": "string",<br>    "category": "string"} </pre> |
+| CategoryRemove | Removes a category from a class. | <pre>{<br>    "type": "CategoryRemove",<br>    "class": "string",<br>    "category": "string"<br>} </pre> |
 
 ## Success Responses
 
