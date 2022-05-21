@@ -15,7 +15,7 @@ Special attention must be paid to the way the API should handle compilation erro
 | :--: | -- | -- |
 | MethodDefinition | Defines a method within a given class. | <pre>{<br>    "type": "MethodDefinition",<br>    "class": "string",<br>    "category": "string",<br>    "sourceCode": "string",<br>    "author": "string"<br>} </pre> |
 | MethodRemove | Removes a given method | <pre>{<br>    "type": "MethodRemove",<br>    "class": "string",<br>    "selector": "string"<br>} </pre> |
-| SelectorRename | Renames a given selector. The scope is the whole system. | <pre>{<br>    "type": "SelectorRename",<br>    "class": "string",<br>    "selector": "string"<br>,<br>    "newSelector": "string"<br>} </pre> |
+| SelectorRename | Renames a given selector. The scope is the whole system. | <pre>{<br>    "type": "SelectorRename",<br>    "class": "string",<br>    "selector": "string",<br>    "newSelector": "string"<br>} </pre> |
 | ClassDefinition | Defines a new class or changes the definition of an existing one. | <pre>{<br>    "type": "ClassDefinition",<br>    "class": "string",<br>    "definition": "string"<br>} </pre> |
 | ClassCommentDefinition | Changes the comment of a given class. | <pre>{<br>    "type": "ClassCommentDefinition",<br>    "class": "string",<br>    "comment": "string"<br>} </pre> |
 | ClassRemove | Removes a given class from the system. | <pre>{<br>    "type": "ClassRemove",<br>    "class": "string"<br>} </pre> |
