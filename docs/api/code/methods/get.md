@@ -54,8 +54,8 @@ _Note: optional properties such as `bytecodes` or `disassembly` won't be include
 ```
 
 ## Method AST
-As metioned above, the AST of methods could be obtained by specifying the option `ast=true`. Though this option is not mandatory, Webside will take advantage of it when available.
-In case it is provided, the expected structure of the `ast` property should have following `node` basic structure:
+As metioned above, the AST of a method could be obtained by specifying the option `ast=true`. Though it is not mandatory that the API implements this option, Webside will take advantage if it is available. For instance, to detect the selector under the cursor, if any, and provide better senders/implementors facilities (think of a keyword selector).
+In case the option is provided by the backend Smalltalk, the expected structure of the `ast` should have the following `node` basic structure:
 
 ```json
 {
@@ -66,14 +66,17 @@ In case it is provided, the expected structure of the `ast` property should have
 }
 ```
 Where `start` and `end` represent the span of the node over the source code.
-Of course each particular type of node will contain specific properties. The following table lists possible types together with their additional properties whenever it applies.
+Also, some leaf nodes should contain a `value` property with their corresponding value.
+The following table lists possible types properties whenever it applies.
 
 **AST node types and properties**
-| Type | Properties |
+| Type | Additional properties |
 | -- | -- |
 | Method | - |
-| Comment | value = string |
+| Comment | value (string) |
 | Message | - |
-| Selector | symbol = string |
-| Identifier | name = string |
-| Literal | value = string |
+| Selector | value (string) |
+| Identifier | value (string) |
+| Literal | value (string) |
+
+Note that this structure corresponds to a rather simplified AST, which might be richer in some implementations. This is due to the _unification_ spirit of Webside, conceived to support different Smmaltalk dialects.
