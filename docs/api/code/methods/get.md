@@ -14,6 +14,7 @@ Retrieve those methods satisfying the condition specified in the query (or all t
 | category | string | to get methods under a given category |
 | using | string | to get those methods using a given variable |
 | assigning | string | to get those methods assigning a given variable |
+| ast | boolean | to get methods' AST (see below) |
 | bytecodes | boolean | to get methods' bytecodes |
 | disassembly | boolean | to get methods' disassembly |
 
@@ -50,4 +51,15 @@ _Note: optional properties such as `bytecodes` or `disassembly` won't be include
         "category": "arithmetic"
     }
 ]
+```
+
+## Method AST
+As metioned above, the AST of methods retrieved by this request can be obtained by specifying the option `ast=true`. Though this option is not mandatory, Webside will take advantage of it whenever it is provided.
+In case it is implemented, the `ast` property withing a `method` should have following `node` structure:
+
+```json
+{
+    "type": "string",
+    "children": ["node"]
+}
 ```
