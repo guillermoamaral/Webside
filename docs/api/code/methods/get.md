@@ -55,11 +55,20 @@ _Note: optional properties such as `bytecodes` or `disassembly` won't be include
 
 ## Method AST
 As metioned above, the AST of methods could be obtained by specifying the option `ast=true`. Though this option is not mandatory, Webside will take advantage of it when available.
-In case it is provided, the expected structure of the `ast` property should have following `node` structure:
+In case it is provided, the expected structure of the `ast` property should have following `node` basic structure:
 
 ```json
 {
     "type": "string",
+    "start": "number",
+    "end": "number",
     "children": ["node"]
 }
 ```
+Where `start` and `end` represent the span of the node over the source code.
+Of course each particular type of node will contain specific properties. The following table lists possible types together with their additional properties.
+
+**AST node types and properties**
+| Type | Properties |
+| -- | -- |
+| "Assigment" | string | 
