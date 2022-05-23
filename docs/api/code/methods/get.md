@@ -54,7 +54,7 @@ _Note: optional properties such as `bytecodes` or `disassembly` won't be include
 ```
 
 ## Method AST
-As metioned above, the AST of a method could be obtained by specifying the option `ast=true`. Though it is not mandatory that the API implements this option, Webside will take advantage if it is available. For instance, to detect the selector under the cursor, if any, and provide better senders/implementors facilities (think of a keyword selector).
+As metioned above, the AST of a method could be obtained by specifying the option `ast=true`. Though it is not mandatory that the API implements this option, Webside will take advantage of it when it is available. For instance, to detect the selector under the cursor, if any, and provide better senders/implementors facilities (think of a keyword selector).
 In case the option is provided by the backend Smalltalk, the expected structure of the `ast` should have the following `node` basic structure:
 
 ```json
