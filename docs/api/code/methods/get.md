@@ -66,9 +66,14 @@ In case it is provided, the expected structure of the `ast` property should have
 }
 ```
 Where `start` and `end` represent the span of the node over the source code.
-Of course each particular type of node will contain specific properties. The following table lists possible types together with their additional properties.
+Of course each particular type of node will contain specific properties. The following table lists possible types together with their additional properties whenever it applies.
 
 **AST node types and properties**
 | Type | Properties |
 | -- | -- |
-| "Assigment" | string | 
+| Method | - |
+| Comment | value = string |
+| Message | - |
+| Selector | symbol = string |
+| Identifier | name = string |
+| Literal | value = string |
