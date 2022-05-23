@@ -54,8 +54,8 @@ _Note: optional properties such as `bytecodes` or `disassembly` won't be include
 ```
 
 ## Method AST
-As metioned above, the AST of methods retrieved by this request can be obtained by specifying the option `ast=true`. Though this option is not mandatory, Webside will take advantage of it whenever it is provided.
-In case it is implemented, the `ast` property withing a `method` should have following `node` structure:
+As metioned above, the AST of methods could be obtained by specifying the option `ast=true`. Though this option is not mandatory, Webside will take advantage of it when available.
+In case it is provided, the expected structure of the `ast` property should have following `node` structure:
 
 ```json
 {
