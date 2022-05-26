@@ -26,7 +26,7 @@ CodeMirror.defineMode("smalltalk-method", function (config) {
 			return this.expected.includes(type);
 		};
 		this.expect = (types) => {
-			this.expected = typeof types === "array" ? types : [types];
+			this.expected = typeof types === "string" ? [types] : types;
 		};
 		this.arguments = [];
 		this.temporaries = [];
@@ -117,6 +117,17 @@ CodeMirror.defineMode("smalltalk-method", function (config) {
 				token.type = "reserved";
 				state.expect("selector");
 				state.beginning = false;
+			} else if (state.expects("variable") && state.arguments.includes(word)) {
+				token.type = "argument";
+				state.expect("selector");
+				state.beginning = false;
+			} else if (
+				state.expects("variable") &&
+				state.temporaries.includes(word)
+			) {
+				token.type = "temporary";
+				state.expect("selector");
+				state.beginning = false;
 			} else if (state.expects("argument")) {
 				state.arguments.push(word);
 				token.type = "argument";
@@ -132,15 +143,9 @@ CodeMirror.defineMode("smalltalk-method", function (config) {
 					state.beginning = false;
 				}
 			} else {
-				token.type = state.arguments.includes(word)
-					? "argument"
-					: state.temporaries.includes(word)
-					? "temporary"
-					: word[0] === word[0].toUpperCase()
-					? "global"
-					: "var";
-				state.beginning = false;
+				token.type = word[0] === word[0].toUpperCase() ? "global" : "var";
 				state.expect("selector");
+				state.beginning = false;
 			}
 		} else {
 			console.log("weird");
