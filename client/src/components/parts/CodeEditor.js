@@ -5,12 +5,11 @@ import { Controlled as CodeMirror } from "react-codemirror2";
 import PopupMenu from "../controls/PopupMenu";
 import { IDEContext } from "../IDEContext";
 import Scrollable from "../controls/Scrollable";
-import "../../smalltalk.css";
+import "../../SmalltalkMode.css";
+import "../../SmalltalkMode.js";
 
 require("diff-match-patch");
 require("codemirror/lib/codemirror.css");
-//require("codemirror/theme/material.css");
-require("codemirror/mode/smalltalk/smalltalk.js");
 require("codemirror/mode/gas/gas.js");
 require("codemirror/mode/python/python.js");
 require("codemirror/addon/search/searchcursor.js");
@@ -253,8 +252,6 @@ class CodeEditor extends Component {
 		if (selected.length > 0) {
 			return selected;
 		}
-		const position = this.editor.getCursor();
-		const offset = this.offsetFromPosition(position);
 		const stretch = this.editor.findWordAt(this.editor.getCursor());
 		return this.editor.getRange(stretch.anchor, stretch.head);
 	}
@@ -269,7 +266,7 @@ class CodeEditor extends Component {
 		const node = this.astNodeAtOffset(offset);
 		if (node && node.type === "Selector") {
 			console.log(node);
-			return node.symbol;
+			return node.value;
 		}
 		return this.targetWord();
 	}
@@ -425,6 +422,7 @@ class CodeEditor extends Component {
 				" ch " +
 				r.head.ch;
 			console.log("selectionChanged", m);
+			console.log(this.astNodeAtOffset(this.offsetFromPosition(r.anchor)));
 		});
 		// if (selection.origin) {
 		// 	this.setState({ selectRanges: false });
@@ -452,7 +450,7 @@ class CodeEditor extends Component {
 		console.log("rendering CodeEditor");
 		this.selectInitialRanges();
 		const { source, evaluating, progress } = this.state;
-		const mode = this.props.mode || "smalltalk";
+		const mode = this.props.mode || "smalltalk-method";
 		const showAccept = this.props.showAccept;
 		const acceptIcon = this.props.acceptIcon ? (
 			React.cloneElement(this.props.acceptIcon)
@@ -467,7 +465,7 @@ class CodeEditor extends Component {
 							className={this.props.styles.codeMirror}
 							options={{
 								readOnly: evaluating || progress,
-								mode: mode,
+								mode: "smalltalk-method",
 								theme: "material",
 								lineSeparator: "\r",
 								lineNumbers: this.props.lineNumbers,
@@ -517,9 +515,7 @@ class CodeEditor extends Component {
 							onSelection={(editor, selection) => {
 								this.selectionChanged(selection);
 							}}
-							onCursorActivity={(editor, event) => {
-								
-							}}
+							onCursorActivity={(editor, event) => {}}
 						/>
 					</Scrollable>
 					{(evaluating || progress) && (

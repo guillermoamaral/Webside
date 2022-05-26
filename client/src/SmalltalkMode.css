@@ -46,57 +46,52 @@ Guille Amaral
     background: rgba(32, 32, 32, 0.5);
   }
   
-  .cm-s-material .cm-reserved {
-    color: #C792EA;
+  .cm-s-material .cm-bracket {
+    color: #9b9b9b;
   }
   
-  .cm-s-material .cm-operator {
-    color: #a7d3b8;
+  .cm-s-material .cm-separator {
+    color: #b3bab6;
+  }
+
+  .cm-s-material .cm-return {
+    color: #72bb19;
+  }
+
+  .cm-s-material .cm-selector {
+    color: #d3dddd;
+  }
+
+  .cm-s-material .cm-argument {
+    color: #f06520;
   }
   
-  .cm-s-material .cm-variable-2 {
-    color: #EEFFFF;
-  }
-  
-  .cm-s-material .cm-variable-3,
-  .cm-s-material .cm-type {
-    color: #f07178;
-  }
-  
-  .cm-s-material .cm-builtin {
-    color: #FFCB6B;
-  }
-  
-  .cm-s-material .cm-atom {
-    color: #F78C6C;
-  }
-  
-  .cm-s-material .cm-number {
+  .cm-s-material .cm-numeric {
     color: #65a14e;
-  }
-  
-  .cm-s-material .cm-def {
-    color: #82AAFF;
   }
   
   .cm-s-material .cm-string {
     color: #C3E88D;
+  }
+
+  .cm-s-material .cm-pragma {
+    color: #f8e35e;
   }
   
   .cm-s-material .cm-symbol {
     color: #3cd2dd;
   }
   
-  .cm-s-material .cm-string-2 {
-    color: #f07178;
+  .cm-s-material .cm-reserved {
+    color: #C792EA;
   }
   
   .cm-s-material .cm-comment {
-    color: #546E7A;
+    color: #586e75;
   }
 
-  .cm-s-material .cm-variable {
-    color: #f07178;
+  .cm-s-material .cm-var {
+    color: #268bd2;
   }
   
   .cm-s-material .cm-global {
@@ -113,18 +108,6 @@ Guille Amaral
   
   .cm-s-material .cm-meta {
     color: #FFCB6B;
-  }
-  
-  .cm-s-material .cm-attribute {
-    color: #C792EA;
-  }
-  
-  .cm-s-material .cm-property {
-    color: #C792EA;
-  }
-  
-  .cm-s-material .cm-qualifier {
-    color: #DECB6B;
   }
   
   .cm-s-material .cm-error {
