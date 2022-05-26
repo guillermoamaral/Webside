@@ -12,15 +12,22 @@ CodeMirror.defineMode("smalltalk-method", function (config) {
 		this.parent = parent;
 	};
 
-	var Token = function (name, context) {
-		this.name = name;
+	var Token = function (type, context) {
+		this.type = type;
 		this.context = context;
 	};
 
 	var State = function () {
 		this.context = new Context(next, null);
+		this.first = true;
 		this.beginning = true;
 		this.expected = ["selector"];
+		this.expects = (type) => {
+			return this.expected.includes(type);
+		};
+		this.expect = (types) => {
+			this.expected = typeof types === "array" ? types : [types];
+		};
 		this.arguments = [];
 		this.temporaries = [];
 		this.indentation = 0;
@@ -37,11 +44,11 @@ CodeMirror.defineMode("smalltalk-method", function (config) {
 		var char = stream.next();
 		if (char === '"') {
 			token = nextComment(stream, new Context(nextComment, context));
-			state.expected = ["variable"];
+			state.expect("variable");
 			state.beginning = false;
 		} else if (char === "'") {
 			token = nextString(stream, new Context(nextString, context));
-			state.expected = ["selector"];
+			state.expect("selector");
 			state.beginning = false;
 		} else if (char === "#") {
 			if (stream.peek() === "'") {
@@ -49,82 +56,83 @@ CodeMirror.defineMode("smalltalk-method", function (config) {
 				token = nextSymbol(stream, new Context(nextSymbol, context));
 			} else {
 				if (stream.eatWhile(/[^\s.{}[\]()]/)) {
-					token.name = "symbol";
+					token.type = "symbol";
 				} else {
-					token.name = "meta";
+					token.type = "meta";
 				}
-				state.expected = ["selector"];
+				state.expect("selector");
 				state.beginning = false;
 			}
 		} else if (char === "<" && !state.beginning && false) {
 			stream.eatWhile(/[^\s>]/);
 			stream.next();
-			token.name = "pragma";
-			state.expected = ["variable"];
+			token.type = "pragma";
+			state.expect("variable");
 			state.beginning = false;
 		} else if (char === "$") {
 			stream.eatWhile(/[^\s>]/);
 			stream.next();
-			token.name = "string";
-			state.expected = ["selector"];
+			token.type = "string";
+			state.expect("selector");
 			state.beginning = false;
-		} else if (char === "|" && state.expected.includes("variable")) {
+		} else if (char === "|" && state.expects("variable")) {
 			token.context = new Context(nextTemporaries, context, state);
-			state.expected = ["variable"];
+			state.expect("variable");
 			state.beginning = false;
 		} else if (/[[\]{}()]/.test(char)) {
-			token.name = "bracket";
+			token.type = "bracket";
 			state.beginning = false;
-			state.expected = /[[{(]/.test(char) ? ["variable"] : ["selector"];
+			/[[{(]/.test(char) ? state.expect("variable") : state.expect("selector");
 			if (char === "[") {
 				state.indentation++;
 			} else if (char === "]") {
 				state.indentation = Math.max(0, state.indentation - 1);
 			}
 		} else if (char === "." || char === ";") {
-			token.name = "separator";
-			state.expected = char === "." ? ["variable"] : ["selector"];
+			token.type = "separator";
+			char === "." ? state.expect("variable") : state.expect("selector");
 		} else if (char === "^") {
-			token.name = "return";
-			state.expected = ["variable"];
+			token.type = "return";
+			state.expect("variable");
 			state.beginning = false;
 		} else if (char === ":") {
 			if (stream.peek() === "=") {
 				stream.next();
-				token.name = "assignment";
-				state.expected = ["variable"];
+				token.type = "assignment";
+				state.expect("variable");
 			}
 		} else if (/\d/.test(char)) {
 			stream.eatWhile(/[\w\d]/);
-			token.name = "numeric";
-			state.expected = ["selector"];
+			token.type = "numeric";
+			state.expect("selector");
 		} else if (binary.test(char)) {
 			stream.eatWhile(binary);
-			token.name = "selector";
-			state.expected = state.beginning ? ["argument"] : ["variable"];
+			token.type = "selector";
+			state.beginning ? state.expect("argument") : state.expect("variable");
 		} else if (/[\w_]/.test(char)) {
 			stream.eatWhile(/[\w\d_]/);
 			const word = stream.current();
+			token.value = word;
 			if (reserved.test(word)) {
-				token.name = "reserved";
-				state.expected = ["selector"];
+				token.type = "reserved";
+				state.expect("selector");
 				state.beginning = false;
-			} else if (state.expected.includes("argument")) {
+			} else if (state.expects("argument")) {
 				state.arguments.push(word);
-				token.name = "argument";
-				state.expected = ["selector", "variable"];
-			} else if (state.expected.includes("selector")) {
+				token.type = "argument";
+				state.expect(["selector", "variable"]);
+			} else if (state.expects("selector")) {
 				if (stream.peek() === ":") {
 					stream.next();
-					token.name = "selector";
-					state.expected = state.beginning ? ["argument"] : ["variable"];
+					token.type = "selector";
+					state.beginning ? state.expect("argument") : state.expect("variable");
 				} else {
-					token.name = "selector";
-					state.expected = ["selector"];
+					token.type = state.first || !state.beginning ? "selector" : "var";
+					state.expect("selector");
 					state.beginning = false;
 				}
 			} else {
-				token.name = state.arguments.includes(word)
+				token.type = state.arguments.includes(word)
 					? "argument"
 					: state.temporaries.includes(word)
 					? "temporary"
@@ -132,7 +140,7 @@ CodeMirror.defineMode("smalltalk-method", function (config) {
 					? "global"
 					: "var";
 				state.beginning = false;
-				state.expected = ["selector"];
+				state.expect("selector");
 			}
 		} else {
 			console.log("weird");
@@ -168,7 +176,7 @@ CodeMirror.defineMode("smalltalk-method", function (config) {
 					.split(" ")
 					.filter((t) => t.length > 0)
 			);
-			token.name = "temporary";
+			token.type = "temporary";
 		}
 		return token;
 	};
@@ -184,7 +192,9 @@ CodeMirror.defineMode("smalltalk-method", function (config) {
 			}
 			var token = state.context.next(stream, state.context, state);
 			state.context = token.context;
-			return token.name;
+			state.first = false;
+			//console.log(token.value, token.type);
+			return token.type;
 		},
 		blankLine: function (state) {
 			state.userIndent(0);
