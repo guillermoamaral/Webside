@@ -22,11 +22,23 @@ CodeMirror.defineMode("smalltalk-method", function (config) {
 		this.first = true;
 		this.beginning = true;
 		this.expected = ["selector"];
-		this.expects = (type) => {
-			return this.expected.includes(type);
+		this.expects = (t) => {
+			return this.expected.includes(t);
 		};
-		this.expect = (types) => {
-			this.expected = typeof types === "string" ? [types] : types;
+		this.expect = (t) => {
+			this.expected = typeof t === "string" ? [t] : t;
+		};
+		this.isArgument = (v) => {
+			return this.arguments.includes(v);
+		};
+		this.isTemporary = (v) => {
+			return this.temporaries.includes(v);
+		};
+		this.addArgument = (v) => {
+			this.arguments.push(v);
+		};
+		this.addTemporary = (v) => {
+			this.temporaries.push(v);
 		};
 		this.arguments = [];
 		this.temporaries = [];
@@ -111,25 +123,22 @@ CodeMirror.defineMode("smalltalk-method", function (config) {
 			state.beginning ? state.expect("argument") : state.expect("variable");
 		} else if (/[\w_]/.test(char)) {
 			stream.eatWhile(/[\w\d_]/);
-			const word = stream.current();
-			token.value = word;
-			if (reserved.test(word)) {
+			const identifier = stream.current();
+			token.value = identifier;
+			if (reserved.test(identifier)) {
 				token.type = "reserved";
 				state.expect("selector");
 				state.beginning = false;
-			} else if (state.expects("variable") && state.arguments.includes(word)) {
+			} else if (state.expects("variable") && state.isArgument(identifier)) {
 				token.type = "argument";
 				state.expect("selector");
 				state.beginning = false;
-			} else if (
-				state.expects("variable") &&
-				state.temporaries.includes(word)
-			) {
+			} else if (state.expects("variable") && state.isTemporary(identifier)) {
 				token.type = "temporary";
 				state.expect("selector");
 				state.beginning = false;
 			} else if (state.expects("argument")) {
-				state.arguments.push(word);
+				state.addArgument(identifier);
 				token.type = "argument";
 				state.expect(["selector", "variable"]);
 			} else if (state.expects("selector")) {
@@ -143,7 +152,8 @@ CodeMirror.defineMode("smalltalk-method", function (config) {
 					state.beginning = false;
 				}
 			} else {
-				token.type = word[0] === word[0].toUpperCase() ? "global" : "var";
+				token.type =
+					identifier[0] === identifier[0].toUpperCase() ? "global" : "var";
 				state.expect("selector");
 				state.beginning = false;
 			}
@@ -175,12 +185,11 @@ CodeMirror.defineMode("smalltalk-method", function (config) {
 			token.context = context.parent;
 		} else {
 			stream.eatWhile(/[^|]/);
-			state.temporaries.push(
-				...stream
-					.current()
-					.split(" ")
-					.filter((t) => t.length > 0)
-			);
+			stream
+				.current()
+				.split(" ")
+				.filter((t) => t.length > 0)
+				.forEach((t) => state.addTemporary(t));
 			token.type = "temporary";
 		}
 		return token;

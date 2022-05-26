@@ -210,6 +210,7 @@ class CodeEditor extends Component {
 			{ label: "Inspect it (Ctrl+i)", action: this.inspectEvaluation },
 			{ label: "Debug it (Ctrl+u)", action: this.debugExpression },
 			{ label: "Profile it", action: this.profileExpression },
+			{ label: "Google it", action: this.searchInGoogle },
 			null,
 			{ label: "Browse class (Ctrl+b)", action: this.browseClass },
 			{ label: "Senders (Alt+n)", action: this.browseSenders },
@@ -270,6 +271,11 @@ class CodeEditor extends Component {
 		}
 		return this.targetWord();
 	}
+
+	searchInGoogle = () => {
+		const url = "https://www.google.com/search?q=" + this.targetWord();
+		window.open(url, "_blank").focus();
+	};
 
 	browseSenders = () => {
 		this.context.browseSenders(this.targetSelector());
