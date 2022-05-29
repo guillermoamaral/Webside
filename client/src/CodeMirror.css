@@ -3,6 +3,10 @@ Overriden styles CodeMirror.css
 Guille Amaral
 */
 
+.cm-s-material.CodeMirror {
+  background-color: #303030;
+}
+
 .highlight {color: orange}
 
 .cm-matchhighlight {background-color: lightblue}
