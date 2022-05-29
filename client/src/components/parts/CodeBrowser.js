@@ -314,7 +314,7 @@ class CodeBrowser extends Component {
 					</ToggleButtonGroup>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
-					<Paper variant="outlined" style={{ height: 400 }}>
+					<Paper variant="outlined" style={{ height: "100%", minHeight: 300 }}>
 						<CodeEditor
 							context={this.props.context}
 							styles={this.props.styles}

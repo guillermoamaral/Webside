@@ -466,7 +466,6 @@ class CodeEditor extends Component {
 		return (
 			<Grid container spacing={1} style={{ height: "100%" }}>
 				<Grid item xs={11} md={showAccept ? 11 : 12} lg={showAccept ? 11 : 12}>
-					<Scrollable>
 						<CodeMirror
 							className={this.props.styles.codeMirror}
 							options={{
@@ -523,7 +522,6 @@ class CodeEditor extends Component {
 							}}
 							onCursorActivity={(editor, event) => {}}
 						/>
-					</Scrollable>
 					{(evaluating || progress) && (
 						<LinearProgress variant="indeterminate" />
 					)}
