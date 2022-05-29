@@ -14,23 +14,23 @@ Also, all changes will include a property `author` containing the name of the We
 
 | Type | Description | Payload |
 | :--: | -- | -- |
-| MethodDefinition | Defines a method within a given class and category. | <pre>{<br>    "type": "MethodDefinition",<br>    "class": "string",<br>    "category": "string",<br>    "sourceCode": "string"<br>} </pre> |
-| MethodRemove | Removes a given method | <pre>{<br>    "type": "MethodRemove",<br>    "class": "string",<br>    "selector": "string"<br>} </pre> |
-| SelectorRename | Renames a given selector. The scope is the whole system. | <pre>{<br>    "type": "SelectorRename",<br>    "class": "string",<br>    "selector": "string",<br>    "newSelector": "string"<br>} </pre> |
-| ClassDefinition | Defines a new class or changes the definition of an existing one. | <pre>{<br>    "type": "ClassDefinition",<br>    "class": "string",<br>    "definition": "string"<br>} </pre> |
-| ClassCommentDefinition | Changes the comment of a given class. | <pre>{<br>    "type": "ClassCommentDefinition",<br>    "class": "string",<br>    "comment": "string"<br>} </pre> |
-| ClassRemove | Removes a given class from the system. | <pre>{<br>    "type": "ClassRemove",<br>    "class": "string"<br>} </pre> |
-| ClassRename | Renames a given class. | <pre>{<br>    "type": "ClassRename",<br>    "class": "string",<br>    "newName": "string",<br>    "renameDiferences": "boolean"<br>} </pre> |
-| InstanceVariableAddition | Adds a new instance variable to a given class. | <pre>{<br>    "type": "InstanceVariableAddition",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
-| InstanceVariableRename | Renames an instance variable of a given class. | <pre>{<br>    "type": "InstanceVariableRename",<br>    "class": "string",<br>    "variable": "string",<br>    "newName": "string"<br>} </pre> |
-| InstanceVariableRemove | Removes an instance variable from a given class. | <pre>{<br>    "type": "InstanceVariableRemove",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
-| InstanceVariableMoveUp | Moves an instance variable from a given class to its superclass. | <pre>{<br>    "type": "InstanceVariableMoveUp",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
-| InstanceVariableMoveDown | Moves an instance variable from a given class to one of its subclasses. | <pre>{<br>    "type": "InstanceVariableMoveDown",<br>    "class": "string",<br>    "variable": "string",<br>    "target": "string"<br>} </pre> |
-| ClassVariableAddition | Adds a new class variable to a given class. | <pre>{<br>    "type": "ClassVariableAddition",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
-| ClassVariableRename | Renames a class variable of a given class. | <pre>{<br>    "type": "ClassVariableRename",<br>    "class": "string",<br>    "variable": "string",<br>    "newName": "string"<br>} </pre> |
-| ClassVariableRemove | Removes a class variable from a given class. | <pre>{<br>    "type": "ClassVariableRemove",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
+| MethodDefinition | Define a method within a given class and category. | <pre>{<br>    "type": "MethodDefinition",<br>    "class": "string",<br>    "category": "string",<br>    "sourceCode": "string"<br>} </pre> |
+| MethodRemove | Remove a given method | <pre>{<br>    "type": "MethodRemove",<br>    "class": "string",<br>    "selector": "string"<br>} </pre> |
+| SelectorRename | Rename a given selector. The scope is the whole system. | <pre>{<br>    "type": "SelectorRename",<br>    "class": "string",<br>    "selector": "string",<br>    "newSelector": "string"<br>} </pre> |
+| ClassDefinition | Define a new class or changes the definition of an existing one. | <pre>{<br>    "type": "ClassDefinition",<br>    "class": "string",<br>    "definition": "string"<br>} </pre> |
+| ClassCommentDefinition | Change the comment of a given class. | <pre>{<br>    "type": "ClassCommentDefinition",<br>    "class": "string",<br>    "comment": "string"<br>} </pre> |
+| ClassRemove | Remove a given class from the system. | <pre>{<br>    "type": "ClassRemove",<br>    "class": "string"<br>} </pre> |
+| ClassRename | Rename a given class. | <pre>{<br>    "type": "ClassRename",<br>    "class": "string",<br>    "newName": "string",<br>    "renameDiferences": "boolean"<br>} </pre> |
+| InstanceVariableAddition | Add a new instance variable to a given class. | <pre>{<br>    "type": "InstanceVariableAddition",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
+| InstanceVariableRename | Rename an instance variable of a given class. | <pre>{<br>    "type": "InstanceVariableRename",<br>    "class": "string",<br>    "variable": "string",<br>    "newName": "string"<br>} </pre> |
+| InstanceVariableRemove | Remove an instance variable from a given class. | <pre>{<br>    "type": "InstanceVariableRemove",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
+| InstanceVariableMoveUp | Move an instance variable from a given class to its superclass. | <pre>{<br>    "type": "InstanceVariableMoveUp",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
+| InstanceVariableMoveDown | Move an instance variable from a given class to one of its subclasses. | <pre>{<br>    "type": "InstanceVariableMoveDown",<br>    "class": "string",<br>    "variable": "string",<br>    "target": "string"<br>} </pre> |
+| ClassVariableAddition | Add a new class variable to a given class. | <pre>{<br>    "type": "ClassVariableAddition",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
+| ClassVariableRename | Rename a class variable of a given class. | <pre>{<br>    "type": "ClassVariableRename",<br>    "class": "string",<br>    "variable": "string",<br>    "newName": "string"<br>} </pre> |
+| ClassVariableRemove | Remove a class variable from a given class. | <pre>{<br>    "type": "ClassVariableRemove",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
 | CategoryRename | Rename a category within a class. | <pre>{<br>    "type": "CategoryRename",<br>    "class": "string",<br>    "category": "string",<br>    "newName": "string"<br>} </pre> |
-| CategoryRemove | Removes a category from a class. | <pre>{<br>    "type": "CategoryRemove",<br>    "class": "string",<br>    "category": "string"<br>} </pre> |
+| CategoryRemove | Remove a category from a class. | <pre>{<br>    "type": "CategoryRemove",<br>    "class": "string",<br>    "category": "string"<br>} </pre> |
 
 ## Success Responses
 
