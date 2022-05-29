@@ -466,62 +466,64 @@ class CodeEditor extends Component {
 		return (
 			<Grid container spacing={1} style={{ height: "100%" }}>
 				<Grid item xs={11} md={showAccept ? 11 : 12} lg={showAccept ? 11 : 12}>
-						<CodeMirror
-							className={this.props.styles.codeMirror}
-							options={{
-								readOnly: evaluating || progress,
-								mode: "smalltalk-method",
-								theme: "material",
-								lineSeparator: "\r",
-								lineNumbers: this.props.lineNumbers,
-								matchBrackets: true,
-								autoCloseBrackets: true,
-								//highlightSelectionMatches: true,
-								highlightSelectionMatches: { annotateScrollbar: true },
-								indentUnit: 10,
-								styleActiveLine: true,
-								matchTags: { bothTags: true },
-								lineWrapping: true,
-								gutters: ["CodeMirror-lint-markers", "breakpoints"],
-								lint: { getAnnotations: this.lintAnnotations },
-								extraKeys: {
-									"Ctrl-D": this.evaluateExpression,
-									"Ctrl-I": this.inspectEvaluation,
-									"Ctrl-S": this.showEvaluation,
-									"Ctrl-P": this.showEvaluation,
-									"Ctrl-U": this.debugExpression,
-									"Alt-S": this.acceptClicked,
-									"Ctrl-B": this.browseClass,
-									"Alt-N": this.browseSenders,
-									"Alt-M": this.browseImplementors,
-									"Alt-R": this.browseReferences,
-									"Ctrl-Q": this.markOcurrences,
-									"Alt-Z": this.toggleFullScreen,
-									F2: this.renameTarget,
-								},
-							}}
-							value={source}
-							editorDidMount={(editor) => {
-								this.editorDidMount(editor);
-							}}
-							onGutterClick={(editor, n) => {
-								this.setBreakpoint(n);
-							}}
-							onBeforeChange={(editor, data, value) => {
-								this.sourceChanged(value);
-							}}
-							onChange={(editor, data, value) => {
-								console.log("onChange fired");
-								//this.setState({ selectRanges: value === this.props.source });
-							}}
-							onContextMenu={(editor, event) => {
-								this.openMenu(event);
-							}}
-							onSelection={(editor, selection) => {
-								this.selectionChanged(selection);
-							}}
-							onCursorActivity={(editor, event) => {}}
-						/>
+					{/* <Scrollable> */}
+					<CodeMirror
+						className={this.props.styles.codeMirror}
+						options={{
+							readOnly: evaluating || progress,
+							mode: "smalltalk-method",
+							theme: "material",
+							lineSeparator: "\r",
+							lineNumbers: this.props.lineNumbers,
+							matchBrackets: true,
+							autoCloseBrackets: true,
+							//highlightSelectionMatches: true,
+							highlightSelectionMatches: { annotateScrollbar: true },
+							indentUnit: 10,
+							styleActiveLine: true,
+							matchTags: { bothTags: true },
+							lineWrapping: true,
+							gutters: ["CodeMirror-lint-markers", "breakpoints"],
+							lint: { getAnnotations: this.lintAnnotations },
+							extraKeys: {
+								"Ctrl-D": this.evaluateExpression,
+								"Ctrl-I": this.inspectEvaluation,
+								"Ctrl-S": this.showEvaluation,
+								"Ctrl-P": this.showEvaluation,
+								"Ctrl-U": this.debugExpression,
+								"Alt-S": this.acceptClicked,
+								"Ctrl-B": this.browseClass,
+								"Alt-N": this.browseSenders,
+								"Alt-M": this.browseImplementors,
+								"Alt-R": this.browseReferences,
+								"Ctrl-Q": this.markOcurrences,
+								"Alt-Z": this.toggleFullScreen,
+								F2: this.renameTarget,
+							},
+						}}
+						value={source}
+						editorDidMount={(editor) => {
+							this.editorDidMount(editor);
+						}}
+						onGutterClick={(editor, n) => {
+							this.setBreakpoint(n);
+						}}
+						onBeforeChange={(editor, data, value) => {
+							this.sourceChanged(value);
+						}}
+						onChange={(editor, data, value) => {
+							console.log("onChange fired");
+							//this.setState({ selectRanges: value === this.props.source });
+						}}
+						onContextMenu={(editor, event) => {
+							this.openMenu(event);
+						}}
+						onSelection={(editor, selection) => {
+							this.selectionChanged(selection);
+						}}
+						onCursorActivity={(editor, event) => {}}
+					/>
+					{/* </Scrollable> */}
 					{(evaluating || progress) && (
 						<LinearProgress variant="indeterminate" />
 					)}

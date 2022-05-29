@@ -22,15 +22,18 @@ Retrieve both instance and class variables of a given class. This endpoint is th
 [
     {
         "name": "numerator",
-        "class": "Fraction"
+        "class": "Fraction",
+        "type": "instance"
     },
     {
         "name": "denominator",
-        "class": "Fraction"
+        "class": "Fraction",
+        "type": "instance"
     },
     {
         "name": "DependentsFields",
-        "class": "Object class"
+        "class": "Object class",
+        "type": "class"
     }
 ]
 ```

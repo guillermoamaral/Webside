@@ -526,7 +526,17 @@ class API {
 		change.variable = variable;
 		return await this.postChange(
 			change,
-			"add variable " + variable + " to " + classname
+			"add instance variable " + variable + " to " + classname
+		);
+	}
+
+	async addClassVariable(classname, variable) {
+		const change = this.newChange("ClassVariableAddition");
+		change.class = classname;
+		change.variable = variable;
+		return await this.postChange(
+			change,
+			"add class variable " + variable + " to " + classname
 		);
 	}
 
@@ -537,7 +547,23 @@ class API {
 		change.newName = newName;
 		return await this.postChange(
 			change,
-			"rename variable " +
+			"rename instance variable " +
+				variable +
+				" to " +
+				newName +
+				" of class " +
+				classname
+		);
+	}
+
+	async renameClassVariable(classname, variable, newName) {
+		const change = this.newChange("ClassVariableRename");
+		change.class = classname;
+		change.variable = variable;
+		change.newName = newName;
+		return await this.postChange(
+			change,
+			"rename class variable " +
 				variable +
 				" to " +
 				newName +
@@ -552,7 +578,17 @@ class API {
 		change.variable = variable;
 		return await this.postChange(
 			change,
-			"remove variable " + variable + " from class " + classname
+			"remove instance variable " + variable + " from class " + classname
+		);
+	}
+
+	async deleteClassVariable(classname, variable) {
+		const change = this.newChange("ClassVariableRemove");
+		change.class = classname;
+		change.variable = variable;
+		return await this.postChange(
+			change,
+			"remove class variable " + variable + " from class " + classname
 		);
 	}
 

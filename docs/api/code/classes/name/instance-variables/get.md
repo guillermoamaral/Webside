@@ -22,11 +22,13 @@ Retrieve instance variables of a given class.
 [
     {
         "name": "numerator",
-        "class": "Fraction"
+        "class": "Fraction",
+        "type": "instance"
     },
     {
         "name": "denominator",
-        "class": "Fraction"
+        "class": "Fraction",
+        "type": "instance"
     }
 ]
 ```

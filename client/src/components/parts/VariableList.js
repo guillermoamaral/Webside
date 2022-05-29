@@ -151,6 +151,7 @@ class VariableList extends Component {
 
 	render() {
 		const variables = this.extendedVariables(this.props.variables);
+		console.log(variables)
 		return (
 			<CustomList
 				itemLabel="name"

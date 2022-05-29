@@ -22,7 +22,8 @@ Retrieve class variables of a given class.
 [
     {
         "name": "DependentsFields",
-        "class": "Object class"
+        "class": "Object class",
+        "type": "class"
     }
 ]
 ```
