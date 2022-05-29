@@ -58,11 +58,19 @@ class VariableList extends Component {
 				defaultValue: variable.name,
 				required: true,
 			});
-			await this.context.api.renameInstanceVariable(
-				this.props.class.name,
-				variable.name,
-				newName
-			);
+			if (variable.type === "instance") {
+				await this.context.api.renameInstanceVariable(
+					this.props.class.name,
+					variable.name,
+					newName
+				);
+			} else {
+				await this.context.api.renameClassVariable(
+					this.props.class.name,
+					variable.name,
+					newName
+				);
+			}
 			variable.name = newName;
 			const handler = this.props.onRename;
 			if (handler) {
@@ -78,10 +86,17 @@ class VariableList extends Component {
 			return;
 		}
 		try {
-			await this.context.api.deleteInstanceVariable(
-				this.props.class.name,
-				variable.name
-			);
+			if (variable.type === "instance") {
+				await this.context.api.deleteInstanceVariable(
+					this.props.class.name,
+					variable.name
+				);
+			} else {
+				await this.context.api.deleteClassVariable(
+					this.props.class.name,
+					variable.name
+				);
+			}
 			const handler = this.props.onRemove;
 			if (handler) {
 				handler();
@@ -151,7 +166,7 @@ class VariableList extends Component {
 
 	render() {
 		const variables = this.extendedVariables(this.props.variables);
-		console.log(variables)
+		console.log(variables);
 		return (
 			<CustomList
 				itemLabel="name"

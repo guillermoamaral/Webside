@@ -24,9 +24,11 @@ Also, all changes will include a property `author` containing the name of the We
 | InstanceVariableAddition | Adds a new instance variable to a given class. | <pre>{<br>    "type": "InstanceVariableAddition",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
 | InstanceVariableRename | Renames an instance variable of a given class. | <pre>{<br>    "type": "InstanceVariableRename",<br>    "class": "string",<br>    "variable": "string",<br>    "newName": "string"<br>} </pre> |
 | InstanceVariableRemove | Removes an instance variable from a given class. | <pre>{<br>    "type": "InstanceVariableRemove",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
-| InstanceVariableRemove | Removes an instance variable from a given class. | <pre>{<br>    "type": "InstanceVariableRemove",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
 | InstanceVariableMoveUp | Moves an instance variable from a given class to its superclass. | <pre>{<br>    "type": "InstanceVariableMoveUp",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
 | InstanceVariableMoveDown | Moves an instance variable from a given class to one of its subclasses. | <pre>{<br>    "type": "InstanceVariableMoveDown",<br>    "class": "string",<br>    "variable": "string",<br>    "target": "string"<br>} </pre> |
+| ClassVariableAddition | Adds a new class variable to a given class. | <pre>{<br>    "type": "ClassVariableAddition",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
+| ClassVariableRename | Renames a class variable of a given class. | <pre>{<br>    "type": "ClassVariableRename",<br>    "class": "string",<br>    "variable": "string",<br>    "newName": "string"<br>} </pre> |
+| ClassVariableRemove | Removes a class variable from a given class. | <pre>{<br>    "type": "ClassVariableRemove",<br>    "class": "string",<br>    "variable": "string"<br>} </pre> |
 | CategoryRename | Rename a category within a class. | <pre>{<br>    "type": "CategoryRename",<br>    "class": "string",<br>    "category": "string",<br>    "newName": "string"<br>} </pre> |
 | CategoryRemove | Removes a category from a class. | <pre>{<br>    "type": "CategoryRemove",<br>    "class": "string",<br>    "category": "string"<br>} </pre> |
 

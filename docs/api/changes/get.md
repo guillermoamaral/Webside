@@ -39,6 +39,9 @@ And `type` can be one of the following:
 * `"InstanceVariableRemove"`
 * `"InstanceVariableMoveUp"`
 * `"InstanceVariableMoveDown"`
+* `"ClassVariableAddition"`
+* `"ClassVariableRename"`
+* `"ClassVariableRemove"`
 * `"CategoryRename"`
 * `"CategoryRemove"`
 
