@@ -1,7 +1,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <img src="https://github.com/guillermoamaral/Webside/blob/master/docs/images/Logo.svg" width="200" height="100">
+  <!-- <img src="https://github.com/guillermoamaral/Webside/blob/master/docs/images/Logo.svg" width="200" height="100"> -->
 
   <p align="center">
     Smalltalk IDE for the web
@@ -28,8 +28,6 @@ The IDE is a fully operational IDE, offering traditional Smalltalk IDE tools suc
 ![Webside on Pharo](docs/images/WebsidePharo.png "Webside on Pharo")
 
 ![Webside on Dolphin](docs/images/WebsideDolphin.png "Webside on Dolphin")
-
-![Webside in action](docs/images/Webside.gif "Webside in action")
 
 Read more [here](docs).
 
@@ -74,9 +72,6 @@ Also, there is a talk I gave for FAST available [here](https://www.youtube.com/w
 
 ## License
 Distributed under the MIT License. See `LICENSE` for more information.
-
-## Logo
-The logo is the result of a great job made by [ay! design](https://aydesign.art/). 
 
 ## Contact
 
