@@ -123,15 +123,14 @@ This is the basic stack debugger exposing the frame stack of the process being d
 
 The component implementing this tool is [Debugger](../client/src/components/tools/Debugger.js) and it mainly relies on [Debugging](api/debuggers) endpoints to interact with a living debugger at server side. It also consumes [Code](api/code), [Evaluations](api/evaluations) and [Objects](api/objects) endpoints to manage code changes and enable evaluations in the context of the debugger. 
 
-![Debugger](../docs/images/Debugger.png
-)
+![Debugger](../docs/images/Debugger.png)
 
 A natural and expected functionality of web IDE is the chance to concurrently access and control to the very same pieces of information, being the debugger one of the most desired ones. 
 As this tool relies on a living debugger, it is straigthforward to show the debugger state in more than one web browser, being all capable of interating with the very same debugger (i.e., different users might access and control the same debugger in the server). 
 Of course, actions in one browser should be reflected in the rest. Several approaches can be used for this purpose. In this case, as there is already available a socket to deliver messages between sessions*, I opted to use that channel with a special type of message intended to update the debuggers view in front of changes made in other sessions. 
 In the image below two browsers act over the same browser.
 
-https://github.com/guillermoamaral/Webside/blob/master/docs/images/ConcurrentDebugging.mp4
+![Concurrent Debuggers](../docs/images/ConcurrentDebugging.mp4)
 
 _(*)At the moment of writing this documentation, there is no user sessions kept, neither at Node server nor at the Smalltalk backend server. However, the Node server keeps track of users, by name, to provide a communication channel between users_
 
