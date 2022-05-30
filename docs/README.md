@@ -131,7 +131,7 @@ As this tool relies on a living debugger, it is straigthforward to show the debu
 Of course, actions in one browser should be reflected in the rest. Several approaches can be used for this purpose. In this case, as there is already available a socket to deliver messages between sessions*, I opted to use that channel with a special type of message intended to update the debuggers view in front of changes made in other sessions. 
 In the image below two browsers act over the same browser.
 
-![Debugger](../docs/images/ConcurrentDebugging.mp4)
+<video src='../docs/images/ConcurrentDebugging.mp4' width=180/>
 
 _(*)At the moment of writing this documentation, there is no user sessions kept, neither at Node server nor at the Smalltalk backend server. However, the Node server keeps track of users, by name, to provide a communication channel between users_
 
