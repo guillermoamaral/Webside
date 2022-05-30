@@ -3,6 +3,8 @@
 <p align="center">
   <!-- <img src="https://github.com/guillermoamaral/Webside/blob/master/docs/images/Logo.svg" width="200" height="100"> -->
 
+  <h1>Webside</h1>
+
   <p align="center">
     Smalltalk IDE for the web
     <br />
@@ -17,8 +19,6 @@
   </p>
 </p>
 
-
-## Webside
 Webside is both the specification of an [API](docs/api) to interact with an Smalltalk system (back-end) and a web IDE (front-end) built on top of such API.
 
 The IDE is a fully operational IDE, offering traditional Smalltalk IDE tools such as code browsers, workspaces, inspectors, debugger and more.
