@@ -3,7 +3,7 @@
 <p align="center">
   <!-- <img src="https://github.com/guillermoamaral/Webside/blob/master/docs/images/Logo.svg" width="200" height="100"> -->
 
-  <h1>Webside</h1>
+  <h4 align="center">Webside</h4>
 
   <p align="center">
     Smalltalk IDE for the web
