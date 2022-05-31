@@ -17,12 +17,13 @@ class ClassTree extends Component {
 				required: true,
 			});
 			//This is not correct as the class might be indexed from its creation...
+			const project = superclass.project;
 			const definition =
 				superclass.name +
 				" subclass: #" +
 				name +
 				" instanceVariableNames: '' classVariableNames: '' poolDictionaries: ''";
-			await this.context.api.defineClass(name, definition);
+			await this.context.api.defineClass(name, project, definition);
 			const species = await this.context.api.getClass(name);
 			const handler = this.props.onCreate;
 			if (handler) {

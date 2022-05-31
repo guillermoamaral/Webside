@@ -492,9 +492,10 @@ class API {
 	}
 
 	// Change helpers...
-	async defineClass(classname, definition) {
+	async defineClass(classname, project, definition) {
 		const change = this.newChange("ClassDefinition");
 		change.class = classname;
+		change.project = project;
 		change.definition = definition;
 		return await this.postChange(change, "define class " + classname);
 	}
@@ -639,11 +640,14 @@ class API {
 		);
 	}
 
-	async compileMethod(classname, category, source) {
+	async compileMethod(classname, project, category, source) {
 		const change = this.newChange("MethodDefinition");
 		change.class = classname;
+		change.project = project;
 		change.category = category;
 		change.sourceCode = source;
+		console.log(change)
+
 		return await this.postChange(
 			change,
 			"compile " + source + " in " + classname

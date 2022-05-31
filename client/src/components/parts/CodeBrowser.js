@@ -40,8 +40,9 @@ class CodeBrowser extends Component {
 			return;
 		}
 		const classname = this.props.class ? this.props.class.name : null;
+		const project = this.props.class ? this.props.class.project : null;
 		try {
-			await this.context.api.defineClass(classname, definition);
+			await this.context.api.defineClass(classname, project, definition);
 			const species = await this.context.api.getClass(classname);
 			const handler = this.props.onClassDefined;
 			if (handler) {
@@ -97,9 +98,11 @@ class CodeBrowser extends Component {
 			return;
 		}
 		try {
+			const project = this.props.method ? this.props.method.project : null;
 			const category = this.props.method ? this.props.method.category : null;
 			const change = await this.context.api.compileMethod(
 				this.props.class.name,
+				project,
 				category,
 				source
 			);

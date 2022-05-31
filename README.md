@@ -2,9 +2,7 @@
 <br />
 <p align="center">
   <!-- <img src="https://github.com/guillermoamaral/Webside/blob/master/docs/images/Logo.svg" width="200" height="100"> -->
-
   <h1 align="center">webside</h1>
-
   <p align="center">
     Smalltalk IDE for the web
     <br />

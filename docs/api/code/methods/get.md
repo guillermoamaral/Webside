@@ -35,11 +35,12 @@ Retrieve those methods satisfying the condition specified in the query (or all t
     "overriding": "boolean",
 	"overriden": "boolean",
     "bytecodes": "string",
-	"disassembly": "string"
+	"disassembly": "string",
+    "ast": "node"
 }
 ```
 
-_Note: optional properties such as `bytecodes` or `disassembly` won't be included if they are not requested in the query._ 
+_Note: optional properties such as `bytecodes` or `disassembly` should not be included if they are not requested in the query._
 
 **Example:**: `Fraction` methods under `arithmetic` category and sending `reciprocal` `GET /classes/Fraction/methods?category=arithmetic&sending=reciprocal`.
 ```json
@@ -54,7 +55,7 @@ _Note: optional properties such as `bytecodes` or `disassembly` won't be include
 ```
 
 ## Method AST
-As metioned above, the AST of a method could be obtained by specifying the option `ast=true`. Though it is not mandatory that the API implements this option, Webside will take advantage of it when it is available. For instance, to detect the selector under the cursor, if any, and provide better senders/implementors facilities (think of a keyword selector).
+The AST of a method could be obtained by specifying the option `ast=true`. Though this option is not mandatory, Webside will take advantage of it when it is available to, for instance, detect the selector under the cursor (if any), and provide better senders/implementors facilities (think of a keyword selector).
 In case the option is provided by the backend Smalltalk, the expected structure of the `ast` should have the following `node` basic structure:
 
 ```json

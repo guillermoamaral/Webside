@@ -70,7 +70,7 @@ class Login extends Component {
 							width={200}
 							height={130}
 						/> */}
-						<Typography variant="h3">webside</Typography>
+						<Typography variant="h4">webside</Typography>
 					</Grid>
 					<Grid item>
 						<Grid container direction="row" justify="center" spacing={1}>
