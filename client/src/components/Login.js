@@ -3,6 +3,7 @@ import { Button, TextField, Grid } from "@material-ui/core";
 import { withCookies } from "react-cookie";
 import axios from "axios";
 import { withRouter } from "react-router-dom";
+import { Typography } from "@material-ui/core";
 
 class Login extends Component {
 	constructor(props) {
@@ -63,12 +64,13 @@ class Login extends Component {
 					style={{ minHeight: "80vh" }}
 				>
 					<Grid item>
-						<img
+						{/* <img
 							alt="Webside"
 							src={require("../resources/Logo.png")}
 							width={200}
 							height={130}
-						/>
+						/> */}
+						<Typography variant="h3">webside</Typography>
 					</Grid>
 					<Grid item>
 						<Grid container direction="row" justify="center" spacing={1}>
