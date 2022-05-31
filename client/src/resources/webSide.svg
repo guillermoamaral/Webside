@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="6.4in" height="3.6in" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+  <defs>
+    <linearGradient gradientUnits="userSpaceOnUse" x1="961.29" y1="304.5" x2="961.29" y2="774.37" id="gradient-0" gradientTransform="matrix(0.921711, -0.387878, 0.286396, 0.680559, -80.095719, 533.104469)">
+      <stop offset="0" style="stop-color: rgb(255, 255, 255);"/>
+      <stop offset="1" style="stop-color: rgb(39, 176, 197);"/>
+    </linearGradient>
+    <style bx:fonts="Roboto Mono">@import url(https://fonts.googleapis.com/css2?family=Roboto+Mono%3Aital%2Cwght%400%2C100%3B0%2C200%3B0%2C300%3B0%2C400%3B0%2C500%3B0%2C600%3B0%2C700%3B1%2C100%3B1%2C200%3B1%2C300%3B1%2C400%3B1%2C500%3B1%2C600%3B1%2C700&amp;display=swap);</style>
+  </defs>
+  <path id="Smalltalk S-Globe" stroke="black" d="M 976.50,304.50 C 827.50,351.50 730.50,561.00 1036.50,699.50 1062.50,713.88 1053.12,743.12 1037.50,766.00 1063.75,796.50 1119.62,736.50 1061.50,700.50 993.50,671.50 749.00,487.50 976.50,304.50 Z" style="fill: url(#gradient-0); fill-rule: nonzero; paint-order: fill; stroke-width: 0px;"/>
+  <text style="fill: rgb(46, 46, 46); font-family: &quot;Roboto Mono&quot;; font-size: 300px; font-weight: 700; white-space: pre;" x="1008.59" y="658.178">IDE</text>
+  <text style="fill: rgb(46, 46, 46); font-family: &quot;Roboto Mono&quot;; font-size: 300px; font-weight: 700; text-transform: lowercase; white-space: pre;" x="308.617" y="658.179">web</text>
+  <text style="white-space: pre; fill: rgb(51, 51, 51); font-family: Arial, sans-serif; font-size: 24.2px;" x="1431.086" y="298.466">Enter your text here.</text>
+</svg>
