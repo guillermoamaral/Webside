@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<svg width="6.4in" height="3.6in" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:bx="https://boxy-svg.com">
+<svg width="6.4in" height="3.6in" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
   <defs>
-    <linearGradient gradientUnits="userSpaceOnUse" x1="963.339" y1="337.104" x2="963.339" y2="752.682" id="gradient-0" gradientTransform="matrix(2.202894, -0.634007, 0.452178, 1.57112, -1530.987793, 159.158402)">
+    <linearGradient gradientUnits="userSpaceOnUse" x1="963.339" y1="337.104" x2="963.339" y2="752.682" id="gradient-0" gradientTransform="matrix(2.202894, -0.634007, 0.452178, 1.57112, -1482.987793, 164.158401)">
       <stop offset="0" style="stop-color: rgb(202, 231, 249);"/>
       <stop offset="1" style="stop-color: rgb(21, 111, 167);"/>
     </linearGradient>
-    <path id="text-path-0" d="M 1008.59 658.036 C 1218.041 658.036 1274.679 658.036 1458.665 658.036"/>
-    <path id="text-path-1" d="M 308.617 657.881 C 550.019 657.881 607.015 657.881 848.694 657.881"/>
     <style bx:fonts="Ubuntu Condensed">@import url(https://fonts.googleapis.com/css2?family=Ubuntu+Condensed%3Aital%2Cwght%400%2C400&amp;display=swap);</style>
-    <linearGradient gradientUnits="userSpaceOnUse" x1="963.339" y1="337.104" x2="963.339" y2="752.682" id="gradient-1" gradientTransform="matrix(2.202894, -0.634007, 0.452178, 1.57112, -1337.713135, 143.061631)">
+    <linearGradient gradientUnits="userSpaceOnUse" x1="963.339" y1="337.104" x2="963.339" y2="752.682" id="gradient-1" gradientTransform="matrix(2.202894, -0.634007, 0.452178, 1.57112, -1289.713135, 148.06163)">
       <stop offset="0" style="stop-color: rgb(202, 231, 249);"/>
       <stop offset="1" style="stop-color: rgb(21, 111, 167);"/>
     </linearGradient>
   </defs>
-  <path id="Smalltalk S-Globe" stroke="black" d="M 1110.462 56.619 C 768.906 164.358 519.067 567.478 1220.516 884.964 C 1280.116 917.928 1251.373 959.366 1225.49 985.097 C 1271.756 1045.445 1411.053 969.78 1277.824 887.256 C 1127.968 803.468 579.38 485.718 1110.462 56.619 Z" style="fill-rule: nonzero; paint-order: fill; stroke-width: 0px; fill: url(#gradient-0);"/>
-  <text style="fill: rgb(80, 79, 79); font-family: &quot;Ubuntu Condensed&quot;; font-size: 200px; font-weight: 700; text-transform: uppercase; white-space: pre;" transform="matrix(2.292318, 0, 0, 2.292318, -1065.83606, -740.916138)"><textPath xlink:href="#text-path-0">IDE</textPath></text>
-  <text style="fill: rgb(112, 112, 112); font-family: &quot;Ubuntu Condensed&quot;; font-size: 200px; font-weight: 700; text-transform: lowercase; white-space: pre;" transform="matrix(2.292318, 0, 0, 2.292318, -664.854492, -735.259033)"><textPath xlink:href="#text-path-1">web</textPath></text>
-  <path id="path-1" stroke="black" d="M 1110.462 56.619 C 938.026 217.311 817.419 575.631 1277.989 887.683 C 1087.589 742.399 887.337 420.473 1110.462 56.619 Z" style="fill-rule: nonzero; paint-order: fill; stroke-width: 0px; fill: url(#gradient-1);"/>
+  <path id="Smalltalk S-Globe" stroke="black" d="M 1158.462 61.619 C 816.906 169.358 567.067 572.478 1268.516 889.964 C 1328.116 922.928 1299.373 964.366 1273.49 990.097 C 1319.756 1050.445 1459.053 974.78 1325.824 892.256 C 1175.968 808.468 627.38 490.718 1158.462 61.619 Z" style="fill-rule: nonzero; paint-order: fill; stroke-width: 0px; fill: url(#gradient-0);"/>
+  <text style="fill: rgb(80, 79, 79); font-family: &quot;Ubuntu Condensed&quot;; font-size: 458.5px; font-weight: 700; text-transform: lowercase; white-space: pre;" y="751.449" x="1294.36">IDE</text>
+  <text style="fill: rgb(112, 112, 112); font-family: &quot;Ubuntu Condensed&quot;; font-size: 458.5px; font-weight: 700; text-transform: lowercase; white-space: pre;" x="90.812" y="756.751">web</text>
+  <path id="path-1" stroke="black" d="M 1158.462 61.619 C 986.026 222.311 865.419 580.631 1325.989 892.683 C 1135.589 747.399 935.337 425.473 1158.462 61.619 Z" style="fill-rule: nonzero; paint-order: fill; stroke-width: 0px; fill: url(#gradient-1);"/>
 </svg>

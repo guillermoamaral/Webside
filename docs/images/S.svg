@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<svg width="6.4in" height="3.6in" viewBox="0 0 370.108 486.089" xmlns="http://www.w3.org/2000/svg">
+<svg width="6.4in" height="3.6in" viewBox="0 0 719.806 1066.811" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient gradientUnits="userSpaceOnUse" x1="961.29" y1="304.5" x2="961.29" y2="774.37" id="gradient-0" gradientTransform="matrix(0.921711, -0.387878, 0.286396, 0.680559, -900.121548, 212.535914)">
-      <stop offset="0" style="stop-color: rgb(235, 235, 235);"/>
-      <stop offset="1" style="stop-color: rgb(105, 104, 104);"/>
+    <linearGradient gradientUnits="userSpaceOnUse" x1="963.339" y1="337.104" x2="963.339" y2="752.682" id="gradient-0" gradientTransform="matrix(2.202894, -0.634007, 0.452178, 1.57112, -2237.395214, 161.520654)">
+      <stop offset="0" style="stop-color: rgb(202, 231, 249);"/>
+      <stop offset="1" style="stop-color: rgb(21, 111, 167);"/>
+    </linearGradient>
+    <linearGradient gradientUnits="userSpaceOnUse" x1="963.339" y1="337.104" x2="963.339" y2="752.682" id="gradient-1" gradientTransform="matrix(2.202894, -0.634007, 0.452178, 1.57112, -2044.120556, 145.423883)">
+      <stop offset="0" style="stop-color: rgb(202, 231, 249);"/>
+      <stop offset="1" style="stop-color: rgb(21, 111, 167);"/>
     </linearGradient>
   </defs>
-  <path id="Smalltalk S-Globe" stroke="black" d="M 209.425 44.038 C 60.425 91.038 -89.526 240.431 216.474 378.931 C 242.474 393.311 233.094 422.551 217.474 445.431 C 270.915 464.482 299.594 415.931 241.474 379.931 C 173.474 350.931 -18.075 227.038 209.425 44.038 Z" style="fill: url(#gradient-0); fill-rule: nonzero; paint-order: fill; stroke-width: 0px;"/>
+  <path id="Smalltalk S-Globe" stroke="black" d="M 404.055 58.981 C 62.499 166.72 -187.34 569.84 514.109 887.326 C 573.709 920.29 544.966 961.728 519.083 987.459 C 565.349 1047.807 704.646 972.142 571.417 889.618 C 421.561 805.83 -127.027 488.08 404.055 58.981 Z" style="fill-rule: nonzero; paint-order: fill; stroke-width: 0px; fill: url(#gradient-0);"/>
+  <path id="path-1" stroke="black" d="M 404.055 58.981 C 231.619 219.673 111.012 577.993 571.582 890.045 C 381.182 744.761 180.93 422.835 404.055 58.981 Z" style="fill-rule: nonzero; paint-order: fill; stroke-width: 0px; fill: url(#gradient-1);"/>
 </svg>
