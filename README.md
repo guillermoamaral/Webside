@@ -1,7 +1,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <img src="https://github.com/guillermoamaral/Webside/blob/master/docs/images/webSide.svg" width="400" height="200">
+  <img src="https://github.com/guillermoamaral/Webside/blob/master/docs/images/test.svg" width="400" height="200">
   <!-- <h1 align="center">webside</h1> -->
   <p align="center">
     Smalltalk IDE for the web
