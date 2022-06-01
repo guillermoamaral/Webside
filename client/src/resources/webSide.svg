@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<svg width="6.4in" height="3.6in" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com">
+<svg width="6.4in" height="3.6in" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:bx="https://boxy-svg.com">
   <defs>
-    <linearGradient gradientUnits="userSpaceOnUse" x1="961.29" y1="304.5" x2="961.29" y2="774.37" id="gradient-0" gradientTransform="matrix(0.921711, -0.387878, 0.286396, 0.680559, -80.095719, 533.104469)">
-      <stop offset="0" style="stop-color: rgb(255, 255, 255);"/>
-      <stop offset="1" style="stop-color: rgb(39, 176, 197);"/>
-    </linearGradient>
     <style bx:fonts="Roboto Mono">@import url(https://fonts.googleapis.com/css2?family=Roboto+Mono%3Aital%2Cwght%400%2C100%3B0%2C200%3B0%2C300%3B0%2C400%3B0%2C500%3B0%2C600%3B0%2C700%3B1%2C100%3B1%2C200%3B1%2C300%3B1%2C400%3B1%2C500%3B1%2C600%3B1%2C700&amp;display=swap);</style>
+    <linearGradient gradientUnits="userSpaceOnUse" x1="963.339" y1="337.104" x2="963.339" y2="752.682" id="gradient-0" gradientTransform="matrix(0.96099, -0.276579, 0.197258, 0.685385, -163.815286, 382.874416)">
+      <stop offset="0" style="stop-color: rgb(202, 231, 249);"/>
+      <stop offset="1" style="stop-color: rgb(21, 111, 167);"/>
+    </linearGradient>
+    <path id="text-path-0" d="M 1008.59 658.036 C 1218.041 658.036 1274.679 658.036 1458.665 658.036"/>
+    <path id="text-path-1" d="M 308.617 657.881 C 550.019 657.881 607.015 657.881 848.694 657.881"/>
   </defs>
-  <path id="Smalltalk S-Globe" stroke="black" d="M 976.50,304.50 C 827.50,351.50 730.50,561.00 1036.50,699.50 1062.50,713.88 1053.12,743.12 1037.50,766.00 1063.75,796.50 1119.62,736.50 1061.50,700.50 993.50,671.50 749.00,487.50 976.50,304.50 Z" style="fill: url(#gradient-0); fill-rule: nonzero; paint-order: fill; stroke-width: 0px;"/>
-  <text style="fill: rgb(59, 59, 59); font-family: &quot;Roboto Mono&quot;; font-size: 300px; font-weight: 700; white-space: pre;" x="1008.59" y="658.178">IDE</text>
-  <text style="fill: rgb(112, 112, 112); font-family: &quot;Roboto Mono&quot;; font-size: 300px; font-weight: 700; text-transform: lowercase; white-space: pre;" x="308.617" y="658.179">web</text>
+  <path id="Smalltalk S-Globe" stroke="black" d="M 988.492 338.142 C 839.492 385.142 730.5 561 1036.5 699.5 C 1062.5 713.88 1049.961 731.957 1038.67 743.182 C 1058.853 769.508 1119.62 736.5 1061.5 700.5 C 993.5 671.5 783.685 515.985 988.492 338.142 Z" style="fill-rule: nonzero; paint-order: fill; stroke-width: 0px; fill: url(#gradient-0);"/>
+  <text style="fill: rgb(59, 59, 59); font-family: &quot;Roboto Mono&quot;; font-size: 250px; font-weight: 700; white-space: pre;"><textPath xlink:href="#text-path-0">IDE</textPath></text>
+  <text style="fill: rgb(112, 112, 112); font-family: &quot;Roboto Mono&quot;; font-size: 300px; font-weight: 700; text-transform: lowercase; white-space: pre;"><textPath xlink:href="#text-path-1">web</textPath></text>
 </svg>
