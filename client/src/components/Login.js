@@ -66,9 +66,9 @@ class Login extends Component {
 					<Grid item>
 						<img
 							alt="Webside"
-							src={require("../resources/webSide.svg")}
-							width={300}
-							height={200}
+							src={require("../resources/webSide.png")}
+							width={200}
+							height={100}
 						/>
 						{/* <Typography variant="h4">webside</Typography> */}
 					</Grid>
