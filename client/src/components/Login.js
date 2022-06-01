@@ -71,8 +71,8 @@ class Login extends Component {
 							<Grid item>
 								<img
 									alt="Webside"
-									src={require("../resources/webSside.svg")}
-									width={50}
+									src={require("../resources/webSide.svg")}
+									width={200}
 									height={100}
 								/>
 							</Grid>
