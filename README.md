@@ -59,7 +59,7 @@ npm start
 ```
 
 ## Usage
-The last step will open a web browser on a page like the one shown below, asking for the `URL` of the target Smalltalk system and the `username` to be used inside your Webside session (this is used to sign code modifications and to be identified by peers in the same session) 
+The last step will open a web browser on a page like the one shown below, asking for the `URL` of the target Smalltalk system and the `username` to be used inside your Webside session (this is used as the `author` of modifications, and to be identified by peers in the same session) 
 
 ![Connection](docs/images/Connection.png "Webside connection page")
 
