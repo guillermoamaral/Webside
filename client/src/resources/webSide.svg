@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <svg width="6.4in" height="3.6in" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:bx="https://boxy-svg.com">
   <defs>
-    <style bx:fonts="Roboto Mono">@import url(https://fonts.googleapis.com/css2?family=Roboto+Mono%3Aital%2Cwght%400%2C100%3B0%2C200%3B0%2C300%3B0%2C400%3B0%2C500%3B0%2C600%3B0%2C700%3B1%2C100%3B1%2C200%3B1%2C300%3B1%2C400%3B1%2C500%3B1%2C600%3B1%2C700&amp;display=swap);</style>
     <linearGradient gradientUnits="userSpaceOnUse" x1="963.339" y1="337.104" x2="963.339" y2="752.682" id="gradient-0" gradientTransform="matrix(0.96099, -0.276579, 0.197258, 0.685385, -163.815286, 382.874416)">
       <stop offset="0" style="stop-color: rgb(202, 231, 249);"/>
       <stop offset="1" style="stop-color: rgb(21, 111, 167);"/>
     </linearGradient>
     <path id="text-path-0" d="M 1008.59 658.036 C 1218.041 658.036 1274.679 658.036 1458.665 658.036"/>
     <path id="text-path-1" d="M 308.617 657.881 C 550.019 657.881 607.015 657.881 848.694 657.881"/>
+    <style bx:fonts="Ubuntu Condensed">@import url(https://fonts.googleapis.com/css2?family=Ubuntu+Condensed%3Aital%2Cwght%400%2C400&amp;display=swap);</style>
+    <style bx:fonts="Ubuntu">@import url(https://fonts.googleapis.com/css2?family=Ubuntu%3Aital%2Cwght%400%2C300%3B0%2C400%3B0%2C500%3B0%2C700%3B1%2C300%3B1%2C400%3B1%2C500%3B1%2C700&amp;display=swap);</style>
   </defs>
   <path id="Smalltalk S-Globe" stroke="black" d="M 988.492 338.142 C 839.492 385.142 730.5 561 1036.5 699.5 C 1062.5 713.88 1049.961 731.957 1038.67 743.182 C 1058.853 769.508 1119.62 736.5 1061.5 700.5 C 993.5 671.5 783.685 515.985 988.492 338.142 Z" style="fill-rule: nonzero; paint-order: fill; stroke-width: 0px; fill: url(#gradient-0);"/>
-  <text style="fill: rgb(59, 59, 59); font-family: &quot;Roboto Mono&quot;; font-size: 250px; font-weight: 700; white-space: pre;"><textPath xlink:href="#text-path-0">IDE</textPath></text>
-  <text style="fill: rgb(112, 112, 112); font-family: &quot;Roboto Mono&quot;; font-size: 300px; font-weight: 700; text-transform: lowercase; white-space: pre;"><textPath xlink:href="#text-path-1">web</textPath></text>
+  <text style="fill: rgb(59, 59, 59); font-family: Ubuntu; font-size: 250px; font-weight: 700; text-transform: lowercase; white-space: pre;" transform="matrix(1, 0, 0, 1, -3, 0)"><textPath xlink:href="#text-path-0">IDE</textPath></text>
+  <text style="fill: rgb(112, 112, 112); font-family: &quot;Ubuntu Condensed&quot;; font-size: 300px; font-weight: 700; text-transform: lowercase; white-space: pre;" transform="matrix(1, 0, 0, 1, 59, 0)"><textPath xlink:href="#text-path-1">web</textPath></text>
 </svg>
