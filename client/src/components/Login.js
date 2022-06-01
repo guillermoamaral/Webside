@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, TextField, Grid } from "@material-ui/core";
+import { Button, TextField, Grid, Box } from "@material-ui/core";
 import { withCookies } from "react-cookie";
 import axios from "axios";
 import { withRouter } from "react-router-dom";
@@ -64,13 +64,22 @@ class Login extends Component {
 					style={{ minHeight: "80vh" }}
 				>
 					<Grid item>
-						<img
-							alt="Webside"
-							src={require("../resources/webSide.png")}
-							width={150}
-							height={80}
-						/>
-						{/* <Typography variant="h4">webside</Typography> */}
+						<Grid container direction="row" alignItems="center">
+							{/* <Grid item>
+								<Typography variant="h6">web</Typography>
+							</Grid> */}
+							<Grid item>
+								<img
+									alt="Webside"
+									src={require("../resources/S.svg")}
+									width={50}
+									height={100}
+								/>
+							</Grid>
+							<Grid item>
+								<Typography variant="h4">webside</Typography>
+							</Grid>
+						</Grid>
 					</Grid>
 					<Grid item>
 						<Grid container direction="row" justify="center" spacing={1}>
