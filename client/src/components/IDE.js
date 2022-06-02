@@ -566,6 +566,7 @@ class IDE extends Component {
 	browseImplementors = async (selector) => {
 		try {
 			const implementors = await this.api.getImplementors(selector);
+			implementors.sort((a, b) => (a.class <= b.class ? -1 : 1));
 			this.openMethodBrowser(implementors, "Implementors of " + selector);
 		} catch (error) {
 			this.reportError(error);
