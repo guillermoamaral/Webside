@@ -57,7 +57,7 @@ class TabControl extends PureComponent {
 					return (
 						<TabPanel
 							id={`tabpanel-${index}`}
-              style={{ height: "100%" }}
+							style={{ height: "100%" }}
 							key={index.toString()}
 							index={index}
 							styles={styles}

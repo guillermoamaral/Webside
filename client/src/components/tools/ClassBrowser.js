@@ -467,6 +467,7 @@ class ClassBrowser extends Component {
 					<Grid container spacing={1}>
 						<Grid item xs={3} md={3} lg={3}>
 							<SearchList2
+								value={selectedClass ? selectedClass.name : null}
 								options={this.context.classNames}
 								onChange={(classname) => {
 									this.changeRootClass(classname);
