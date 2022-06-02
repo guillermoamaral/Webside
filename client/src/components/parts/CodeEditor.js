@@ -76,12 +76,12 @@ class CodeEditor extends Component {
 	}
 
 	componentDidMount() {
-		console.log("CodeEditor componentDidMount");
-		// 	this.setState({ selectRanges: false });
+		// console.log("CodeEditor componentDidMount");
+		// this.setState({ selectRanges: false });
 	}
 
 	editorDidMount(editor) {
-		console.log("editorDidMount", this.editor, this.editor === editor);
+		// console.log("editorDidMount", this.editor, this.editor === editor);
 		this.editor = editor;
 		this.editor.setSize("100%", "100%");
 	}
@@ -97,28 +97,28 @@ class CodeEditor extends Component {
 	};
 
 	selectInterval(interval) {
-		console.log("selectIterval", interval);
+		// console.log("selectIterval", interval);
 		const range = this.rangeFromInterval(interval);
-		console.log("selecteRange", range.anchor, range.head);
+		// console.log("selecteRange", range.anchor, range.head);
 		this.selectRanges([range]);
 	}
 
 	selectWord(word) {
-		console.log("selectWord", word);
+		// console.log("selectWord", word);
 		const ranges = this.rangesContainingWord(word);
 		this.selectRanges(ranges);
 	}
 
 	selectRanges(ranges) {
 		if (this.editor) {
-			console.log("settingSelections to editor");
+			// console.log("settingSelections to editor");
 			this.editor.setSelections(ranges);
 		}
 	}
 
 	selectInitialRanges() {
 		const { selectRanges, selectedInterval, selectedWord } = this.state;
-		console.log("selecting initial ranges", selectRanges);
+		// console.log("selecting initial ranges", selectRanges);
 		if (selectRanges) {
 			if (selectedInterval) {
 				this.selectInterval(selectedInterval);
@@ -220,19 +220,19 @@ class CodeEditor extends Component {
 	}
 
 	sourceChanged = (source) => {
-		console.log("sourceChanged", source);
+		// console.log("sourceChanged", source);
 		const handler = this.props.onChange;
 		if (handler) {
 			handler(source);
 		} else {
-			console.log("setting state after sourceChanged");
+			// console.log("setting state after sourceChanged");
 			this.setState(
 				{
 					source: source,
 					dirty: true,
 					selectRanges: false,
 				},
-				() => console.log(this.state)
+				// () => {console.log(this.state)}
 			);
 		}
 	};
@@ -266,7 +266,7 @@ class CodeEditor extends Component {
 		const offset = this.offsetFromPosition(position);
 		const node = this.astNodeAtOffset(offset);
 		if (node && node.type === "Selector") {
-			console.log(node);
+			// console.log(node);
 			return node.value;
 		}
 		return this.targetWord();
@@ -427,8 +427,8 @@ class CodeEditor extends Component {
 				r.head.line +
 				" ch " +
 				r.head.ch;
-			console.log("selectionChanged", m);
-			console.log(this.astNodeAtOffset(this.offsetFromPosition(r.anchor)));
+			// console.log("selectionChanged", m);
+			// console.log(this.astNodeAtOffset(this.offsetFromPosition(r.anchor)));
 		});
 		// if (selection.origin) {
 		// 	this.setState({ selectRanges: false });
@@ -453,7 +453,7 @@ class CodeEditor extends Component {
 	};
 
 	render() {
-		console.log("rendering CodeEditor");
+		// console.log("rendering CodeEditor");
 		this.selectInitialRanges();
 		const { source, evaluating, progress } = this.state;
 		const mode = this.props.mode || "smalltalk-method";
@@ -512,8 +512,8 @@ class CodeEditor extends Component {
 							this.sourceChanged(value);
 						}}
 						onChange={(editor, data, value) => {
-							console.log("onChange fired");
-							//this.setState({ selectRanges: value === this.props.source });
+							// console.log("onChange fired");
+							// this.setState({ selectRanges: value === this.props.source });
 						}}
 						onContextMenu={(editor, event) => {
 							this.openMenu(event);

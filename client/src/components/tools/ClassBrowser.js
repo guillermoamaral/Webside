@@ -268,6 +268,7 @@ class ClassBrowser extends Component {
 	};
 
 	classSelected = async (species) => {
+		// this.context.updatePageLabel(this.props.id, species.name);
 		const selections = this.currentSelections();
 		selections.class = species;
 		await this.updateClass(selections);

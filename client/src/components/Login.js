@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import { Button, TextField, Grid, Box } from "@material-ui/core";
+import { Button, TextField, Grid } from "@material-ui/core";
 import { withCookies } from "react-cookie";
 import axios from "axios";
 import { withRouter } from "react-router-dom";
-import { Typography } from "@material-ui/core";
 
 class Login extends Component {
 	constructor(props) {
@@ -64,22 +63,12 @@ class Login extends Component {
 					style={{ minHeight: "80vh" }}
 				>
 					<Grid item>
-						<Grid container direction="row" alignItems="center">
-							{/* <Grid item>
-								<Typography variant="h6">web</Typography>
-							</Grid> */}
-							<Grid item>
-								<img
-									alt="Webside"
-									src={require("../resources/webSide.png")}
-									width={200}
-									height={100}
-								/>
-							</Grid>
-							{/* <Grid item>
-								<Typography variant="h4">webside</Typography>
-							</Grid> */}
-						</Grid>
+						<img
+							alt="Webside"
+							src={require("../resources/webSide.png")}
+							width={200}
+							height={100}
+						/>
 					</Grid>
 					<Grid item>
 						<Grid container direction="row" justify="center" spacing={1}>

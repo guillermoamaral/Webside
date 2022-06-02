@@ -226,13 +226,20 @@ class IDE extends Component {
 		}
 	};
 
-	addPage(label, icon, component) {
+	newPageId() {
+		const pages = this.state.pages;
+		return pages.length > 0 ? pages.sort((a, b) => a.id > b.id)[0].id + 1 : 1;
+	}
+
+	addPage(label, icon, component, id) {
+		const pages = this.state.pages;
 		const page = {
+			id: id || this.newPageId(),
 			label: label,
 			icon: icon,
 			component: component,
 		};
-		const pages = this.state.pages;
+		console.log(page);
 		pages.push(page);
 		const state = { pages: pages, selectedPage: page };
 		if (page.label === "Transcript") {
@@ -247,6 +254,13 @@ class IDE extends Component {
 			state.unreadErrorsCount = 0;
 		}
 		this.setState(state);
+	};
+
+	updatePageLabel = (id, label) => {
+		const page = this.state.pages.find((p) => p.id === id);
+		if (page) {
+			page.label = label;
+		}
 	};
 
 	preRemovePage = async (page) => {
@@ -301,7 +315,7 @@ class IDE extends Component {
 		if (this.usesEmergentTranscript()) {
 			this.toggleShowTranscript();
 		} else {
-			const page = this.state.pages.find((p) => p.label === "Transcript");
+			const page = this.pageLabeled("Transcript");
 			if (page) {
 				page.text = this.state.transcriptText;
 				this.selectPage(page);
@@ -363,14 +377,21 @@ class IDE extends Component {
 	};
 
 	openClassBrowser = (classname, selector) => {
+		const id = this.newPageId();
 		const browser = (
 			<ClassBrowser
 				styles={this.props.styles}
 				root={classname}
 				selectedSelector={selector}
+				id={id}
 			/>
 		);
-		this.addPage(classname || "Class Browser", <ClassBrowserIcon />, browser);
+		this.addPage(
+			classname || "Class Browser",
+			<ClassBrowserIcon />,
+			browser,
+			id
+		);
 	};
 
 	openMethodBrowser = (methods, title = "Methods", selectedWord) => {
@@ -732,6 +753,7 @@ class IDE extends Component {
 			closeDebugger: this.closeDebugger,
 			inspectObject: this.openInspector,
 			reportError: this.reportError,
+			updatePageLabel: this.updatePageLabel,
 		};
 		const styles = this.props.styles;
 		return (
