@@ -690,6 +690,7 @@ class IDE extends Component {
 		if (!text) {
 			return;
 		}
+		const transcript = this.pageLabeled("Transcript");
 		this.setState({
 			transcriptText: this.state.transcriptText + "\r" + text,
 			unreadErrorsCount: this.state.unreadErrorsCount + 1,

@@ -8,6 +8,7 @@ import {
 	Divider,
 	IconButton,
 	Badge,
+	Tooltip,
 } from "@material-ui/core";
 import clsx from "clsx";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
@@ -42,34 +43,45 @@ class Sidebar extends Component {
 				<List>
 					<ListItem button onClick={this.props.onTranscriptClicked}>
 						<ListItemIcon>
-							<Badge
-								badgeContent={this.props.unreadErrorsCount}
-								color="secondary"
-							>
-								<TranscriptIcon />
-							</Badge>
+							<Tooltip title="Transcript" placement="top">
+								<Badge
+									badgeContent={this.props.unreadErrorsCount}
+									color="secondary"
+								>
+									<TranscriptIcon />
+								</Badge>
+							</Tooltip>
 						</ListItemIcon>
 						<ListItemText primary="Transcript" />
 					</ListItem>
 					<ListItem button onClick={(e) => this.props.onChangesClicked()}>
 						<ListItemIcon>
-							<Badge badgeContent={this.props.changesCount} color="secondary">
-								<ChangesBrowserIcon />
-							</Badge>
+							<Tooltip title="Last Changes" placement="top">
+								<Badge badgeContent={this.props.changesCount} color="secondary">
+									<ChangesBrowserIcon />
+								</Badge>
+							</Tooltip>
 						</ListItemIcon>
 						<ListItemText primary="Changes" />
 					</ListItem>
 					<ListItem button onClick={(e) => this.props.onResourcesClicked()}>
-						<ListItemIcon>
-							<ResourcesIcon />
-						</ListItemIcon>
+						<Tooltip title="Resources" placement="top">
+							<ListItemIcon>
+								<ResourcesIcon />
+							</ListItemIcon>
+						</Tooltip>
 						<ListItemText primary="Resources" />
 					</ListItem>
 					<ListItem button onClick={(e) => this.props.onPeersClicked()}>
 						<ListItemIcon>
-							<Badge badgeContent={this.props.unreadMessages} color="secondary">
-								<PeopleIcon />
-							</Badge>
+							<Tooltip title="Chat" placement="top">
+								<Badge
+									badgeContent={this.props.unreadMessages}
+									color="secondary"
+								>
+									<PeopleIcon />
+								</Badge>
+							</Tooltip>
 						</ListItemIcon>
 						<ListItemText primary="Peers" />
 					</ListItem>
@@ -77,15 +89,19 @@ class Sidebar extends Component {
 						button
 						onClick={(e) => this.props.dialog.alert("Not implemented yet!")}
 					>
-						<ListItemIcon>
-							<GitHubIcon />
-						</ListItemIcon>
+						<Tooltip title="GitHub" placement="top">
+							<ListItemIcon>
+								<GitHubIcon />
+							</ListItemIcon>
+						</Tooltip>
 						<ListItemText primary="GitHub" />
 					</ListItem>
 					<ListItem button onClick={(e) => this.props.onSettingsClicked()}>
-						<ListItemIcon>
-							<SettingsIcon />
-						</ListItemIcon>
+						<Tooltip title="Settings" placement="top">
+							<ListItemIcon>
+								<SettingsIcon />
+							</ListItemIcon>
+						</Tooltip>
 						<ListItemText primary="Settings" />
 					</ListItem>
 				</List>
