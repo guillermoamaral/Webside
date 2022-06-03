@@ -9,6 +9,7 @@ import {
 	Select,
 	MenuItem,
 	OutlinedInput,
+	IconButton,
 } from "@material-ui/core";
 import clsx from "clsx";
 import { IDEContext } from "../IDEContext";
@@ -18,6 +19,7 @@ import VariableList from "../parts/VariableList";
 import CategoryList from "../parts/CategoryList";
 import MethodList from "../parts/MethodList";
 import CodeBrowser from "../parts/CodeBrowser";
+import UpIcon from "@material-ui/icons/ArrowDropUp";
 
 class ClassBrowser extends Component {
 	static contextType = IDEContext;
@@ -257,6 +259,13 @@ class ClassBrowser extends Component {
 	}
 
 	// Events...
+	goToSuperclassClicked = () => {
+		const current = this.cache[this.state.root];
+		if (current && current.superclass) {
+			this.changeRootClass(current.superclass);
+		}
+	};
+
 	sideChanged = (event, side) => {
 		if (!side || !this.state.root) {
 			return;
@@ -467,13 +476,31 @@ class ClassBrowser extends Component {
 				<Grid item xs={12} md={12} lg={12}>
 					<Grid container spacing={1}>
 						<Grid item xs={3} md={3} lg={3}>
-							<SearchList2
-								value={selectedClass ? selectedClass.name : null}
-								options={this.context.classNames}
-								onChange={(classname) => {
-									this.changeRootClass(classname);
-								}}
-							/>
+							<Grid
+								container
+								direction="row"
+								justifyContent="center"
+								alignItems="center"
+							>
+								<Grid item xs={11} md={11} lg={11}>
+									<SearchList2
+										value={selectedClass ? selectedClass.name : null}
+										options={this.context.classNames}
+										onChange={(classname) => {
+											this.changeRootClass(classname);
+										}}
+									/>
+								</Grid>
+								<Grid item xs={1} md={1} lg={1}>
+									<IconButton
+										color="inherit"
+										size="small"
+										onClick={this.goToSuperclassClicked}
+									>
+										<UpIcon />
+									</IconButton>
+								</Grid>
+							</Grid>
 						</Grid>
 						<Grid item xs={3} md={3} lg={3}>
 							<Select
