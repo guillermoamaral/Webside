@@ -11,7 +11,7 @@
   * [Evaluations](api/evaluations)
   * [Objects](api/objects)
   * [Workspaces](api/workspaces)
-  * [Debugging](api/debugging)
+  * [Debugging](api/debuggers)
   * [Testing](api/testing)
   * [Profiling](api/profiling)
 * [IDE](#ide)

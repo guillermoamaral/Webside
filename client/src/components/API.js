@@ -646,8 +646,6 @@ class API {
 		change.project = project;
 		change.category = category;
 		change.sourceCode = source;
-		console.log(change)
-
 		return await this.postChange(
 			change,
 			"compile " + source + " in " + classname
