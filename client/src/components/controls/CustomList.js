@@ -123,30 +123,6 @@ class CustomList extends Component {
 		if (key === "Escape") {
 			this.clearFilter();
 		}
-		// const modifiers = [
-		// 	"Backspace",
-		// 	"Tab",
-		// 	"Enter",
-		// 	"Shift",
-		// 	"Control",
-		// 	"Alt",
-		// 	"Escape",
-		// 	"ArrowLeft",
-		// 	"ArrowRight",
-		// 	"Home",
-		// 	"End",
-		// 	"PrintScreen",
-		// 	"Inser",
-		// 	"Delete",
-		// ];
-		// console.log(key, /[a-zA-Z0-9-_ ]/.test(key));
-		// if (!modifiers.includes(key)) {
-		// 	this.setState({ filterText: key });
-		// } else {
-		// 	console.log("returning true");
-		// 	return true;
-		// }
-		console.log(key);
 		if (key.length === 1 && /[a-zA-Z0-9-_ ]/.test(key)) {
 			this.setState({ filterEnabled: true, filterText: key });
 		} else {
@@ -176,6 +152,11 @@ class CustomList extends Component {
 						autoFocus
 						name="filter"
 						value={this.state.filterText}
+						onKeyDown={(event) => {
+							if (event.key === "Escape") {
+								this.clearFilter();
+							}
+						}}
 						onChange={(event) =>
 							this.setState({
 								filterEnabled: event.target.value !== "",

@@ -54,7 +54,7 @@ class Sidebar extends Component {
 						</ListItemIcon>
 						<ListItemText primary="Transcript" />
 					</ListItem>
-					<ListItem button onClick={(e) => this.props.onChangesClicked()}>
+					<ListItem button onClick={(event) => this.props.onChangesClicked()}>
 						<ListItemIcon>
 							<Tooltip title="Last Changes" placement="top">
 								<Badge badgeContent={this.props.changesCount} color="secondary">
@@ -64,7 +64,7 @@ class Sidebar extends Component {
 						</ListItemIcon>
 						<ListItemText primary="Changes" />
 					</ListItem>
-					<ListItem button onClick={(e) => this.props.onResourcesClicked()}>
+					<ListItem button onClick={(event) => this.props.onResourcesClicked()}>
 						<Tooltip title="Resources" placement="top">
 							<ListItemIcon>
 								<ResourcesIcon />
@@ -72,7 +72,7 @@ class Sidebar extends Component {
 						</Tooltip>
 						<ListItemText primary="Resources" />
 					</ListItem>
-					<ListItem button onClick={(e) => this.props.onPeersClicked()}>
+					<ListItem button onClick={(event) => this.props.onPeersClicked()}>
 						<ListItemIcon>
 							<Tooltip title="Chat" placement="top">
 								<Badge
@@ -87,7 +87,7 @@ class Sidebar extends Component {
 					</ListItem>
 					<ListItem
 						button
-						onClick={(e) => this.props.dialog.alert("Not implemented yet!")}
+						onClick={(event) => this.props.dialog.alert("Not implemented yet!")}
 					>
 						<Tooltip title="GitHub" placement="top">
 							<ListItemIcon>
@@ -96,7 +96,7 @@ class Sidebar extends Component {
 						</Tooltip>
 						<ListItemText primary="GitHub" />
 					</ListItem>
-					<ListItem button onClick={(e) => this.props.onSettingsClicked()}>
+					<ListItem button onClick={(event) => this.props.onSettingsClicked()}>
 						<Tooltip title="Settings" placement="top">
 							<ListItemIcon>
 								<SettingsIcon />

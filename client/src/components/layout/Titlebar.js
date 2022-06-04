@@ -81,7 +81,7 @@ class Titlebar extends Component {
 					<IconButton
 						color="primary"
 						component="span"
-						onClick={(e) => this.props.onAvatarClicked()}
+						onClick={(event) => this.props.onAvatarClicked()}
 					>
 						<Avatar alt={developer} />
 					</IconButton>

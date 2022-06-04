@@ -129,7 +129,7 @@ class Inspector extends Component {
 									<Link
 										color="inherit"
 										key={s}
-										onClick={(e) => {
+										onClick={(event) => {
 											this.selectSlot(subpath);
 										}}
 									>
@@ -143,7 +143,7 @@ class Inspector extends Component {
 							{selectedObject && (
 								<Link
 									color="inherit"
-									onClick={(e) => {
+									onClick={(event) => {
 										this.browseClass(selectedObject.class);
 									}}
 								>

@@ -22,13 +22,13 @@ class PaginatedList extends Component {
 		const pages = Math.ceil(this.props.items.length / itemsPerPage);
 		return (
 			<Box p="5">
-				<CustomList {...other} items={this.currentItems()}/>
+				<CustomList {...other} items={this.currentItems()} />
 				<Pagination
 					count={pages}
 					size="medium"
 					page={this.state.currentPage}
 					variant="text"
-					onChange={(e, page) => this.setState({ currentPage: page })}
+					onChange={(event, page) => this.setState({ currentPage: page })}
 				/>
 			</Box>
 		);
