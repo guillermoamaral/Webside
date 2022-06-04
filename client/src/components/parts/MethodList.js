@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import CustomList from "../controls/CustomList";
+import PaginatedList from "../controls/PaginatedList";
 import OverridenIcon from "@material-ui/icons/ExpandMore";
 import OverridingIcon from "@material-ui/icons/ExpandLess";
 import OverridingOverridenIcon from "@material-ui/icons/UnfoldMore";
@@ -116,32 +117,35 @@ class MethodList extends Component {
 		];
 	}
 
-	render() {
+	methodLabel = (method) => {
+		return this.props.showClass === true
+			? method.class + ">>#" + method.selector
+			: method.selector;
+	};
+
+	methodIcon = (method) => {
 		const size = 12;
+		if (method.overriding && method.overriden) {
+			return (
+				<OverridingOverridenIcon color="primary" style={{ fontSize: size }} />
+			);
+		}
+		if (method.overriding) {
+			return <OverridingIcon color="primary" style={{ fontSize: size }} />;
+		}
+		if (method.overriden) {
+			return <OverridenIcon color="primary" style={{ fontSize: size }} />;
+		}
+		return null;
+	};
+
+	render() {
 		const methods = !this.props.methods ? [] : this.props.methods;
-		const icons = methods.map((m) => {
-			if (m.overriding && m.overriden) {
-				return (
-					<OverridingOverridenIcon color="primary" style={{ fontSize: size }} />
-				);
-			}
-			if (m.overriding) {
-				return <OverridingIcon color="primary" style={{ fontSize: size }} />;
-			}
-			if (m.overriden) {
-				return <OverridenIcon color="primary" style={{ fontSize: size }} />;
-			}
-			return null;
-		});
 		return (
 			<CustomList
-				itemLabel={
-					this.props.showClass === true
-						? (m) => m.class + ">>#" + m.selector
-						: "selector"
-				}
 				items={methods}
-				icons={icons}
+				itemLabel={this.methodLabel}
+				itemIcon={this.methodIcon}
 				selectedItem={this.props.selectedMethod}
 				onSelect={this.props.onSelect}
 				menuOptions={this.menuOptions()}

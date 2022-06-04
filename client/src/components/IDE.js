@@ -239,7 +239,6 @@ class IDE extends Component {
 			icon: icon,
 			component: component,
 		};
-		console.log(page);
 		pages.push(page);
 		const state = { pages: pages, selectedPage: page };
 		if (page.label === "Transcript") {

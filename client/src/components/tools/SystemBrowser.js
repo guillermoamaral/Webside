@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import { IDEContext } from "../IDEContext";
-import SearchList from "../controls/SearchList";
+import SearchList2 from "../controls/SearchList";
 import ProjectTree from "../parts/ProjectTree";
 import ClassTree from "../parts/ClassTree";
 import CategoryList from "../parts/CategoryList";
@@ -449,7 +449,7 @@ class SystemBrowser extends Component {
 				<Grid item xs={12} md={12} lg={12}>
 					<Grid container spacing={1}>
 						<Grid item xs={3} md={3} lg={3}>
-							<SearchList
+							<SearchList2
 								options={this.context.projectNames}
 								onChange={(projectname) => {
 									this.changeRootProject(projectname);

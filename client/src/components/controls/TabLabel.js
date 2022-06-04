@@ -5,7 +5,6 @@ import CloseIcon from "@material-ui/icons/Close";
 class TabLabel extends Component {
 	render() {
 		const { index, icon, label, onClose } = this.props;
-		console.log("rendering tab label");
 		return (
 			<Box
 				display="flex"

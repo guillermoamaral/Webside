@@ -11,7 +11,6 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import MenuIcon from "@material-ui/icons/Menu";
-//import SearchList from "../controls/SearchList";
 import SearchIcon from "@material-ui/icons/Search";
 
 class Titlebar extends Component {
@@ -77,13 +76,6 @@ class Titlebar extends Component {
 							}}
 							inputProps={{ "aria-label": "search" }}
 						/>
-						{/* <SearchList
-              classes={{
-                root: styles.globalSearchInputRoot,
-                input: styles.globalSearchInputInput,
-              }}
-              options={['a', 'ab', 'b', 'c']}
-              onChange={s => {console.log(s)}}/> */}
 					</div>
 					<Box flexGrow={1} />
 					<IconButton
