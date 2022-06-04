@@ -222,7 +222,8 @@ class CodeBrowser extends Component {
 				mode = "gas";
 				break;
 			default:
-				mode = this.context.dialect === "Python" ? "python" : "smalltalk";
+				mode =
+					this.context.dialect === "Python" ? "python" : "smalltalk-method";
 		}
 		return mode;
 	};

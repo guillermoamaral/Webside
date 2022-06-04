@@ -512,7 +512,7 @@ class CoderLikeBrowser extends Component {
 											styles={this.props.styles}
 											lineNumbers={true}
 											source={m.source}
-											mode="smalltalk"
+											mode="smalltalk-method"
 											showAccept
 											onAccept={this.acceptClicked}
 											onRename={(target) => this.renameClass(target)}

@@ -471,7 +471,7 @@ class CodeEditor extends Component {
 						className={this.props.styles.codeMirror}
 						options={{
 							readOnly: evaluating || progress,
-							mode: "smalltalk-method",
+							mode: mode,
 							theme: "material",
 							lineSeparator: "\r",
 							lineNumbers: this.props.lineNumbers,
