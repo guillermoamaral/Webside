@@ -476,12 +476,7 @@ class ClassBrowser extends Component {
 				<Grid item xs={12} md={12} lg={12}>
 					<Grid container spacing={1}>
 						<Grid item xs={3} md={3} lg={3}>
-							<Grid
-								container
-								direction="row"
-								justifyContent="center"
-								alignItems="center"
-							>
+							<Grid container direction="row" alignItems="center">
 								<Grid item xs={11} md={11} lg={11}>
 									<SearchList2
 										value={selectedClass ? selectedClass.name : null}
