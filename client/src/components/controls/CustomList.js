@@ -31,9 +31,7 @@ class CustomList extends Component {
 	itemSelected = (item) => {
 		const handler = this.props.onSelect;
 		if (handler) {
-			console.log("about to fire handler");
 			handler(item);
-			console.log("handler fired");
 		}
 	};
 
@@ -143,8 +141,8 @@ class CustomList extends Component {
 				{this.state.filterEnabled && (
 					<TextField
 						id="filter"
-						label="Filter"
 						variant="standard"
+						size="small"
 						type="text"
 						placeholder="Enter text to filter items"
 						margin="dense"

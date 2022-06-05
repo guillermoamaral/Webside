@@ -393,11 +393,14 @@ class IDE extends Component {
 		);
 	};
 
-	openMethodBrowser = (methods, title = "Methods", selectedWord) => {
+	openMethodBrowser = (methods, title = "Methods", selectedWord, sortedBy) => {
+		const sorted = sortedBy
+			? methods.sort((a, b) => (a[sortedBy] <= b[sortedBy] ? -1 : 1))
+			: methods;
 		const browser = (
 			<MethodBrowser
 				styles={this.props.styles}
-				methods={methods}
+				methods={sorted}
 				selectedWord={selectedWord}
 			/>
 		);
@@ -547,7 +550,12 @@ class IDE extends Component {
 	browseSenders = async (selector) => {
 		try {
 			const senders = await this.api.getSenders(selector);
-			this.openMethodBrowser(senders, "Senders of " + selector, selector);
+			this.openMethodBrowser(
+				senders,
+				"Senders of " + selector,
+				selector,
+				"class"
+			);
 		} catch (error) {
 			this.reportError(error);
 		}
@@ -556,7 +564,12 @@ class IDE extends Component {
 	browseLocalSenders = async (selector, classname) => {
 		try {
 			const senders = await this.api.getLocalSenders(selector, classname);
-			this.openMethodBrowser(senders, "Local senders of " + selector, selector);
+			this.openMethodBrowser(
+				senders,
+				"Local senders of " + selector,
+				selector,
+				"selector"
+			);
 		} catch (error) {
 			this.reportError(error);
 		}
@@ -565,8 +578,11 @@ class IDE extends Component {
 	browseImplementors = async (selector) => {
 		try {
 			const implementors = await this.api.getImplementors(selector);
-			implementors.sort((a, b) => (a.class <= b.class ? -1 : 1));
-			this.openMethodBrowser(implementors, "Implementors of " + selector);
+			this.openMethodBrowser(
+				implementors,
+				"Implementors of " + selector,
+				"class"
+			);
 		} catch (error) {
 			this.reportError(error);
 		}
@@ -590,7 +606,8 @@ class IDE extends Component {
 			this.openMethodBrowser(
 				references,
 				"References to " + classname,
-				classname
+				classname,
+				"class"
 			);
 		} catch (error) {
 			this.reportError(error);
