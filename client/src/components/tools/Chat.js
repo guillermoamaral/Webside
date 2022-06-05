@@ -93,7 +93,7 @@ class Chat extends Component {
 								onChange={(event) =>
 									this.setState({ text: event.target.value })
 								}
-								placeholder="Send a message ...."
+								placeholder="Send a message ..."
 								name="text"
 								variant="outlined"
 								fullWidth

@@ -20,6 +20,7 @@ import API from "./API";
 import { IDEContext } from "./IDEContext";
 import { DialogProvider } from "./dialogs/index";
 import TranscriptIcon from "./icons/TranscriptIcon";
+import SearchIcon from "@material-ui/icons/Search";
 import SystemBrowserIcon from "./icons/SystemBrowserIcon";
 import ClassBrowserIcon from "./icons/ClassBrowserIcon";
 import MethodBrowserIcon from "./icons/MethodBrowserIcon";
@@ -34,6 +35,7 @@ import Titlebar from "./layout/Titlebar";
 import Sidebar from "./layout/Sidebar";
 import TabControl from "./controls/TabControl";
 import Transcript from "./tools/Transcript";
+import Search from "./tools/Search";
 import SystemBrowser from "./tools/SystemBrowser";
 import ClassBrowser from "./tools/ClassBrowser";
 import MethodBrowser from "./tools/MethodBrowser";
@@ -328,6 +330,11 @@ class IDE extends Component {
 				this.addPage("Transcript", <TranscriptIcon />, transcript);
 			}
 		}
+	};
+
+	openSearch = () => {
+		const search = <Search styles={this.props.styles} />;
+		this.addPage("Search", <SearchIcon />, search);
 	};
 
 	toggleShowTranscript = () => {
@@ -794,6 +801,7 @@ class IDE extends Component {
 								unreadErrorsCount={this.state.unreadErrorsCount}
 								unreadMessages={this.state.unreadMessages}
 								onTranscriptClicked={this.openTranscript}
+								onSearchClicked={this.openSearch}
 								onChangesClicked={this.browseLastChanges}
 								onResourcesClicked={this.openResources}
 								onPeersClicked={this.openChat}

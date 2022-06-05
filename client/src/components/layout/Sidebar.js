@@ -12,12 +12,13 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import TranscriptIcon from "../icons/TranscriptIcon";
+import SearchIcon from "@material-ui/icons/Search";
+import ResourcesIcon from "@material-ui/icons/Kitchen";
+import ChangesBrowserIcon from "../icons/ChangesBrowserIcon";
 import PeopleIcon from "@material-ui/icons/People";
 import GitHubIcon from "@material-ui/icons/GitHub";
 import SettingsIcon from "@material-ui/icons/Settings";
-import TranscriptIcon from "../icons/TranscriptIcon";
-import ChangesBrowserIcon from "../icons/ChangesBrowserIcon";
-import ResourcesIcon from "@material-ui/icons/Kitchen";
 import { withDialog } from "../dialogs/index";
 
 class Sidebar extends Component {
@@ -53,6 +54,14 @@ class Sidebar extends Component {
 							</Tooltip>
 						</ListItemIcon>
 						<ListItemText primary="Transcript" />
+					</ListItem>
+					<ListItem button onClick={this.props.onSearchClicked}>
+						<ListItemIcon>
+							<Tooltip title="Search" placement="top">
+								<SearchIcon />
+							</Tooltip>
+						</ListItemIcon>
+						<ListItemText primary="Search" />
 					</ListItem>
 					<ListItem button onClick={(event) => this.props.onChangesClicked()}>
 						<ListItemIcon>
