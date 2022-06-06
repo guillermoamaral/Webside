@@ -1,17 +1,12 @@
 import React, { Component } from "react";
-import {
-	Grid,
-	Paper,
-	List,
-	ListItem,
-	ListItemText,
-} from "@material-ui/core";
+import { Grid, Paper, List, ListItem, ListItemText } from "@material-ui/core";
 import CustomTable from "../controls/CustomTable";
 import Inspector from "./Inspector";
 import { IDEContext } from "../IDEContext";
 import InspectorIcon from "../icons/InspectorIcon";
 import WorkspaceIcon from "../icons/WorkspaceIcon";
 import DebuggerIcon from "../icons/DebuggerIcon";
+import TestRunnerIcon from "../icons/TestRunnerIcon";
 import MemoryIcon from "../icons/MemoryIcon";
 import clsx from "clsx";
 import MemoryStats from "./MemoryStats";
@@ -40,6 +35,9 @@ class ResourceBrowser extends Component {
 				case "Debuggers":
 					resources = await this.context.api.getDebuggers();
 					break;
+				case "Test Runs":
+					resources = await this.context.api.getTestRuns();
+					break;
 				default:
 			}
 		} catch (error) {
@@ -59,6 +57,9 @@ class ResourceBrowser extends Component {
 				break;
 			case "Debuggers":
 				icon = <DebuggerIcon />;
+				break;
+			case "TestRuns":
+				icon = <TestRunnerIcon />;
 				break;
 			case "Memory":
 				icon = <MemoryIcon />;
@@ -113,8 +114,18 @@ class ResourceBrowser extends Component {
 		}
 	};
 
+	openTestRun = (t) => {
+		if (t) {
+			this.context.openTestRunner(t.id, t.name);
+		}
+	};
+
 	debuggerOptions() {
 		return [{ label: "Open", action: this.openDebugger }];
+	}
+
+	testRunOptions() {
+		return [{ label: "Open", action: this.openTestRun }];
 	}
 
 	menuOptions() {
@@ -128,6 +139,9 @@ class ResourceBrowser extends Component {
 				break;
 			case "Debuggers":
 				options = this.debuggerOptions();
+				break;
+			case "Test Runs":
+				options = this.testRunOptions();
 				break;
 			default:
 		}
@@ -167,6 +181,15 @@ class ResourceBrowser extends Component {
 		];
 	}
 
+	testRunColumns() {
+		return [
+			{ field: "id", label: "ID", align: "left" },
+			{ field: "name", label: "Name", align: "left" },
+			{ field: "total", label: "Tests", align: "right" },
+			{ field: "running", label: "Running", align: "center" },
+		];
+	}
+
 	resourceColumns(type) {
 		var columns;
 		switch (type) {
@@ -178,6 +201,9 @@ class ResourceBrowser extends Component {
 				break;
 			case "Debuggers":
 				columns = this.debuggerColumns();
+				break;
+			case "Test Runs":
+				columns = this.testRunColumns();
 				break;
 			default:
 		}
@@ -195,17 +221,19 @@ class ResourceBrowser extends Component {
 			<Grid container spacing={1}>
 				<Grid item xs={2} md={2} lg={2}>
 					<List>
-						{["Objects", "Workspaces", "Debuggers", "Memory"].map((type) => (
-							<ListItem
-								button
-								key={type}
-								selected={type === selectedType}
-								onClick={(event) => this.typeSelected(type)}
-							>
-								{this.resourceIcon(type)}
-								<ListItemText primary={type} />
-							</ListItem>
-						))}
+						{["Objects", "Workspaces", "Debuggers", "Test Runs", "Memory"].map(
+							(type) => (
+								<ListItem
+									button
+									key={type}
+									selected={type === selectedType}
+									onClick={(event) => this.typeSelected(type)}
+								>
+									{this.resourceIcon(type)}
+									<ListItemText primary={type} />
+								</ListItem>
+							)
+						)}
 					</List>
 				</Grid>
 				<Grid item xs={ow} md={ow} lg={ow}>

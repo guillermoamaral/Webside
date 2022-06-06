@@ -231,7 +231,9 @@ class TestRunner extends Component {
 					justify="center"
 				>
 					<Grid item xs={12} md={12} lg={12}>
-						<Typography variant="h6">Suite: {status.name}</Typography>
+						<Typography variant="h6" color="primary">
+							Suite: {status.name}
+						</Typography>
 					</Grid>
 					<Grid item xs={10} md={10} lg={10}>
 						{running && (
@@ -272,19 +274,23 @@ class TestRunner extends Component {
 							{this.summaryLabels().map((l) => {
 								return (
 									<Grid item xs={2} md={2} lg={2} key={"grid-" + l.type}>
-										<Card id={"card-" + l.type}>
+										<Card
+											id={"card-" + l.type}
+											style={{ backgroundColor: this.typeColor(l.type) }}
+										>
 											<CardContent key={"card-content-" + l.type}>
 												<Typography
 													variant={l.type === "run" ? "h2" : "h3"}
-													style={{ color: this.typeColor(l.type) }}
+													style={{ color: "inherit" }}
 												>
 													{summary[l.type] || 0}
 												</Typography>
 											</CardContent>
 											<CardActions>
 												<Button
+													variant="outlined"
 													key={"filter-button-" + l.type}
-													style={{ color: this.typeColor(l.type) }}
+													style={{ color: "" }}
 													onClick={(event) => this.filterTests(l.type)}
 												>
 													{l.label}

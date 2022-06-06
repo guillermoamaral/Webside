@@ -794,6 +794,15 @@ class API {
 	}
 
 	// Tests...
+	async getTestRuns() {
+		try {
+			const response = await axios.get(this.baseUri + "/test-runs");
+			return response.data;
+		} catch (error) {
+			this.handleError("Cannot retrieve test runs", error);
+		}
+	}
+
 	async runTest(classname, selector) {
 		try {
 			const run = {

@@ -626,7 +626,7 @@ class IDE extends Component {
 			const references = await this.api.getStringReferences(string);
 			this.openMethodBrowser(
 				references,
-				"References to '" + string +"'",
+				"References to '" + string + "'",
 				string,
 				"class"
 			);
@@ -785,12 +785,13 @@ class IDE extends Component {
 			browseStringReferences: this.browseStringReferences,
 			evaluateExpression: this.evaluateExpression,
 			debugExpression: this.debugExpression,
+			openDebugger: this.openDebugger,
+			closeDebugger: this.closeDebugger,
 			profileExpression: this.profileExpression,
 			runTest: this.runTest,
 			runTestClass: this.runTestClass,
 			runTestProject: this.runTestProject,
-			openDebugger: this.openDebugger,
-			closeDebugger: this.closeDebugger,
+			openTestRunner: this.openTestRunner,
 			inspectObject: this.openInspector,
 			reportError: this.reportError,
 			updatePageLabel: this.updatePageLabel,
