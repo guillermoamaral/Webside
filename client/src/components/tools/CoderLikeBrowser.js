@@ -24,7 +24,7 @@ class CoderLikeBrowser extends Component {
 		this.state = {
 			root: this.props.root,
 			selectedClass: null,
-			selectedAccess: "referencing",
+			selectedAccess: "accessing",
 			selectedVariable: null,
 			selectedCategory: null,
 			selectedMethod: null,

@@ -37,7 +37,7 @@ class Search extends Component {
 			.map((n) => {
 				return { title: n, type: "class", text: n };
 			});
-		this.setState({ text: "", results: results });
+		this.setState({ text: "", results: results, currentPage: 1 });
 	};
 
 	goToResult = (r) => {

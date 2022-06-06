@@ -29,7 +29,7 @@ class ClassBrowser extends Component {
 		this.state = {
 			root: this.props.root,
 			selectedClass: null,
-			selectedAccess: "referencing",
+			selectedAccess: "accessing",
 			selectedVariable: null,
 			selectedCategory: null,
 			selectedMethod: null,
@@ -505,7 +505,7 @@ class ClassBrowser extends Component {
 							>
 								<MenuItem value={"using"}>using</MenuItem>
 								<MenuItem value={"assigning"}>assigning</MenuItem>
-								<MenuItem value={"referencing"}>referencing</MenuItem>
+								<MenuItem value={"accessing"}>referencing</MenuItem>
 							</Select>
 						</Grid>
 						<Grid item xs={3} md={3} lg={3}>

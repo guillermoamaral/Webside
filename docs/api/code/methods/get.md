@@ -10,7 +10,8 @@ Retrieve those methods satisfying the condition specified in the query (or all t
 | -- | -- | -- |
 | selector | string | to get implementors of a given selector | 
 | sending | string | to get senders of a given selector |
-| referencing | string | to get those methods referencing a given class or variable (either using or assigning it) |
+| accessing | string | to get those methods accessing a given variable (either using or assigning it) |
+| referencingClass | string | to get those methods referencing a given class |
 | category | string | to get methods under a given category |
 | using | string | to get those methods using a given variable |
 | assigning | string | to get those methods assigning a given variable |

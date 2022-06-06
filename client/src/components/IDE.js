@@ -609,7 +609,7 @@ class IDE extends Component {
 
 	browseReferences = async (classname) => {
 		try {
-			const references = await this.api.getReferences(classname);
+			const references = await this.api.getClassReferences(classname);
 			this.openMethodBrowser(
 				references,
 				"References to " + classname,

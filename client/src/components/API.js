@@ -187,14 +187,14 @@ class API {
 		}
 	}
 
-	async getMethodsAccessing(classname, variable, access, sorted = false) {
+	async getMethodsAccessing(classname, variable, type, sorted = false) {
 		try {
 			var url =
 				this.baseUri +
 				"/classes/" +
 				classname +
 				"/methods?" +
-				access +
+				type +
 				"=" +
 				variable;
 			const response = await axios.get(url);
@@ -256,14 +256,14 @@ class API {
 		}
 	}
 
-	async getReferences(classname) {
+	async getClassReferences(classname) {
 		try {
 			const response = await axios.get(
-				this.baseUri + "/methods?referencing=" + classname
+				this.baseUri + "/methods?referencingClass=" + classname
 			);
 			return response.data;
 		} catch (error) {
-			this.handleError("Cannot fetch references to " + classname, error);
+			this.handleError("Cannot fetch references to class " + classname, error);
 		}
 	}
 
