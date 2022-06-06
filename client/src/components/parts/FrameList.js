@@ -45,9 +45,9 @@ class FrameList extends Component {
 		}
 	};
 
-	browseReferences = (frame) => {
+	browseClassReferences = (frame) => {
 		if (frame) {
-			this.context.browseReferences(frame.class.name);
+			this.context.browseClassReferences(frame.class.name);
 		}
 	};
 
@@ -58,7 +58,7 @@ class FrameList extends Component {
 			{ label: "Local senders", action: this.browseLocalSenders },
 			{ label: "Implementors", action: this.browseImplementors },
 			{ label: "Local implementors", action: this.browseLocalImplementors },
-			{ label: "Class references", action: this.browseReferences },
+			{ label: "Class references", action: this.browseClassReferences },
 		];
 	}
 

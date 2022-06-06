@@ -215,7 +215,8 @@ class CodeEditor extends Component {
 			{ label: "Browse class (Ctrl+b)", action: this.browseClass },
 			{ label: "Senders (Alt+n)", action: this.browseSenders },
 			{ label: "Implementors (Alt+m)", action: this.browseImplementors },
-			{ label: "Class references (Alt+r)", action: this.browseReferences },
+			{ label: "Class references (Alt+r)", action: this.browseClassReferences },
+			{ label: "String references", action: this.browseStringReferences },
 		];
 	}
 
@@ -289,8 +290,12 @@ class CodeEditor extends Component {
 		this.context.browseClass(this.targetWord());
 	};
 
-	browseReferences = () => {
-		this.context.browseReferences(this.targetWord());
+	browseClassReferences = () => {
+		this.context.browseClassReferences(this.targetWord());
+	};
+
+	browseStringReferences = () => {
+		this.context.browseStringReferences(this.targetWord());
 	};
 
 	selectedExpression() {
@@ -495,7 +500,7 @@ class CodeEditor extends Component {
 								"Ctrl-B": this.browseClass,
 								"Alt-N": this.browseSenders,
 								"Alt-M": this.browseImplementors,
-								"Alt-R": this.browseReferences,
+								"Alt-R": this.browseClassReferences,
 								"Ctrl-Q": this.markOcurrences,
 								"Alt-Z": this.toggleFullScreen,
 								F2: this.renameTarget,

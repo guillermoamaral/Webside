@@ -88,9 +88,9 @@ class MethodList extends Component {
 		}
 	};
 
-	browseReferences = (method) => {
+	browseClassReferences = (method) => {
 		if (method) {
-			this.context.browseReferences(method.class);
+			this.context.browseClassReferences(method.class);
 		}
 	};
 
@@ -111,7 +111,7 @@ class MethodList extends Component {
 			{ label: "Local senders", action: this.browseLocalSenders },
 			{ label: "Implementors", action: this.browseImplementors },
 			{ label: "Local implementors", action: this.browseLocalImplementors },
-			{ label: "Class references", action: this.browseReferences },
+			{ label: "Class references", action: this.browseClassReferences },
 			null,
 			{ label: "Test", action: this.runTest },
 		];

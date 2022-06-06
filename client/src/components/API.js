@@ -267,6 +267,17 @@ class API {
 		}
 	}
 
+	async getStringReferences(string) {
+		try {
+			const response = await axios.get(
+				this.baseUri + "/methods?referencingString=" + string
+			);
+			return response.data;
+		} catch (error) {
+			this.handleError("Cannot fetch references to string " + string, error);
+		}
+	}
+
 	async getImplementors(selector) {
 		try {
 			const response = await axios.get(

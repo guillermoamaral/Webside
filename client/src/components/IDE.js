@@ -607,13 +607,27 @@ class IDE extends Component {
 		}
 	};
 
-	browseReferences = async (classname) => {
+	browseClassReferences = async (classname) => {
 		try {
 			const references = await this.api.getClassReferences(classname);
 			this.openMethodBrowser(
 				references,
 				"References to " + classname,
 				classname,
+				"class"
+			);
+		} catch (error) {
+			this.reportError(error);
+		}
+	};
+
+	browseStringReferences = async (string) => {
+		try {
+			const references = await this.api.getStringReferences(string);
+			this.openMethodBrowser(
+				references,
+				"References to '" + string +"'",
+				string,
 				"class"
 			);
 		} catch (error) {
@@ -767,7 +781,8 @@ class IDE extends Component {
 			browseLocalSenders: this.browseLocalSenders,
 			browseImplementors: this.browseImplementors,
 			browseLocalImplementors: this.browseLocalImplementors,
-			browseReferences: this.browseReferences,
+			browseClassReferences: this.browseClassReferences,
+			browseStringReferences: this.browseStringReferences,
 			evaluateExpression: this.evaluateExpression,
 			debugExpression: this.debugExpression,
 			profileExpression: this.profileExpression,

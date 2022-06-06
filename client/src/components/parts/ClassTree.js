@@ -89,9 +89,9 @@ class ClassTree extends Component {
 		}
 	};
 
-	browseReferences = (species) => {
+	browseClassReferences = (species) => {
 		if (species) {
-			this.context.browseReferences(species.name);
+			this.context.browseClassReferences(species.name);
 		}
 	};
 
@@ -109,7 +109,7 @@ class ClassTree extends Component {
 			null,
 			{ label: "Browse", action: this.browseClass },
 			{ label: "Browse project", action: this.browseProject },
-			{ label: "References", action: this.browseReferences },
+			{ label: "References", action: this.browseClassReferences },
 			null,
 			{ label: "Test", action: this.runTests },
 		];
