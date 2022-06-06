@@ -58,7 +58,7 @@ class ResourceBrowser extends Component {
 			case "Debuggers":
 				icon = <DebuggerIcon />;
 				break;
-			case "TestRuns":
+			case "Test Runs":
 				icon = <TestRunnerIcon />;
 				break;
 			case "Memory":

@@ -10,7 +10,7 @@ import {
 	Button,
 	Card,
 	CardContent,
-	CardActions,
+	CardActionArea,
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CustomTable from "../controls/CustomTable";
@@ -72,12 +72,12 @@ class TestRunner extends Component {
 
 	summaryLabels() {
 		return [
-			{ type: "passed", label: "Passed" },
-			{ type: "failed", label: "Failed" },
-			{ type: "error", label: "Errors" },
-			{ type: "skipped", label: "Skipped" },
-			{ type: "knownIssue", label: "Known Issues" },
-			{ type: "run", label: "Run" },
+			{ type: "passed", text: "Passed" },
+			{ type: "failed", text: "Failed" },
+			{ type: "error", text: "Errors" },
+			{ type: "skipped", text: "Skipped" },
+			{ type: "knownIssue", text: "Known Issues" },
+			{ type: "run", text: "Run" },
 		];
 	}
 
@@ -271,31 +271,32 @@ class TestRunner extends Component {
 							justify="space-around"
 							alignItems="flex-end"
 						>
-							{this.summaryLabels().map((l) => {
+							{this.summaryLabels().map((label) => {
 								return (
-									<Grid item xs={2} md={2} lg={2} key={"grid-" + l.type}>
+									<Grid item xs={2} md={2} lg={2} key={"grid-" + label.type}>
 										<Card
-											id={"card-" + l.type}
-											style={{ backgroundColor: this.typeColor(l.type) }}
+											id={"card-" + label.type}
+											style={{ backgroundColor: this.typeColor(label.type) }}
 										>
-											<CardContent key={"card-content-" + l.type}>
-												<Typography
-													variant={l.type === "run" ? "h2" : "h3"}
-													style={{ color: "inherit" }}
-												>
-													{summary[l.type] || 0}
-												</Typography>
-											</CardContent>
-											<CardActions>
-												<Button
-													variant="outlined"
-													key={"filter-button-" + l.type}
-													style={{ color: "" }}
-													onClick={(event) => this.filterTests(l.type)}
-												>
-													{l.label}
-												</Button>
-											</CardActions>
+											<CardActionArea
+												onClick={(event) => this.filterTests(label.type)}
+											>
+												<CardContent key={"card-content-" + label.type}>
+													<Typography
+														variant={label.type === "run" ? "h2" : "h3"}
+														style={{ color: "white" }}
+													>
+														{summary[label.type] || 0}
+													</Typography>
+													<Typography
+														variant={"button"}
+														style={{ color: "white" }}
+														align="right"
+													>
+														{label.text}
+													</Typography>
+												</CardContent>
+											</CardActionArea>
 										</Card>
 									</Grid>
 								);
@@ -319,13 +320,15 @@ class TestRunner extends Component {
 											<Box p={1} width="100%">
 												<Typography>{c}</Typography>
 											</Box>
-											{this.summaryLabels().map((l) => {
+											{this.summaryLabels().map((label) => {
 												return (
-													<Box p={1} flexShrink={0} key={"box-" + l.type}>
+													<Box p={1} flexShrink={0} key={"box-" + label.type}>
 														<Typography
-															style={{ color: this.typeColor(l.type) }}
+															style={{ color: this.typeColor(label.type) }}
 														>
-															{(classSummary[l.type] || 0) + " " + l.label}
+															{(classSummary[label.type] || 0) +
+																" " +
+																label.text}
 														</Typography>
 													</Box>
 												);

@@ -6,7 +6,7 @@
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/data-grid": "^4.0.0-alpha.31",
-    "@material-ui/icons": "^4.9.1",
+    "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "autosuggest-highlight": "^3.1.1",
     "axios": "^0.19.2",

@@ -207,6 +207,7 @@ class IDE extends Component {
 					secondary: "#00000",
 				},
 				background: {
+					main: "#303030",
 					paper: "#303030",
 				},
 			},
