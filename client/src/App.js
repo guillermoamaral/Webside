@@ -53,6 +53,11 @@ class App extends Component {
 										component={() => <IDE styles={this.props.classes} />}
 									/>
 									<Route
+										path="/ide?baseUri=:baseUri"
+										exact
+										component={() => <IDE styles={this.props.classes} />}
+									/>
+									<Route
 										path="/ide/classes/:classname"
 										exact
 										component={() => <IDE styles={this.props.classes} />}

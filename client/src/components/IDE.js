@@ -107,7 +107,17 @@ class IDE extends Component {
 	};
 
 	updateSettings() {
+		const query = new URLSearchParams(this.props.location.search);
+		const options = {};
+		for (let option of query.entries()) {
+			options[option[0]] = option[1];
+		}
 		const cookies = this.props.cookies;
+		["dialect", "baseUri", "developer"].forEach((setting) => {
+			if (options[setting]) {
+				cookies.set(setting, options[setting], { path: "/" });
+			}
+		});
 		this.dialect = cookies.get("dialect");
 		this.baseUri = cookies.get("baseUri");
 		this.developer = cookies.get("developer");
