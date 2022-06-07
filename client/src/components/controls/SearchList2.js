@@ -77,6 +77,12 @@ class SearchList2 extends React.Component {
 				size="small"
 				variant="outlined"
 				InputProps={{ inputRef: ref, ...other }}
+				onKeyPress={(event) => {
+					if (event.key === "Enter" && this.state.suggestions.length > 0) {
+						event.preventDefault();
+						this.valueChanged(this.state.suggestions[0]);
+					}
+				}}
 			/>
 		);
 	};
@@ -97,8 +103,8 @@ class SearchList2 extends React.Component {
 			<MenuItem
 				selected={isHighlighted}
 				component="div"
-				onClick={(event) => this.valueChanged(suggestion)}
 				style={{ listStyleType: "none" }}
+				//onClick={(event) => this.valueChanged(suggestion)}
 			>
 				<div>
 					{parts.map((part, index) => {
@@ -133,6 +139,9 @@ class SearchList2 extends React.Component {
 				renderSuggestionsContainer={this.renderSuggestionsContainer}
 				getSuggestionValue={(s) => s}
 				renderSuggestion={this.renderSuggestion}
+				onSuggestionSelected={(event, suggestion) =>
+					this.valueChanged(suggestion.suggestion)
+				}
 				inputProps={{
 					placeholder: "Search...",
 					value: this.state.value,
