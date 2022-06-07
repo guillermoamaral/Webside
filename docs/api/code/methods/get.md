@@ -19,6 +19,8 @@ Of course, the combination of filtering options should be interpreted as the int
 | referencingClass | string | to get those methods referencing a given class |
 
 **Decoration Query Options**
+| Option | Type | Description |
+| -- | -- | -- |
 | ast | boolean | to get methods' AST (see below) |
 | bytecodes | boolean | to get methods' bytecodes |
 | disassembly | boolean | to get methods' disassembly |
