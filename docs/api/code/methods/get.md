@@ -2,8 +2,9 @@
 
 Retrieve those methods satisfying the condition specified in the filtering query options. In case no condition is specified, all the methods in the system should be retrieved.\
 Of course, the combination of filtering options should be interpreted as the intersection of methods honoring each option. For instance, if the query is `class=Rectangle&category=testing&accessing=origin&sending=<` then every method of `Rectangle`, in category `testing`, accessing the instance variable `origing`, and sending `<` should be retrieved (`Rectangle >> #intersects:` honors such condition in Bee, Pharo, Squeak and Dolphin at the moment of writing this documentation).\
+
 The `scope` option should be used in conjunction with other options to restrict the scope of a given search. For instance, `selector=<&scope=Magnitude` should retrieve implementors of `<` in `Magnitude` hierarchy (including superclasses).\
-A
+Note that this could be other than a class (a package for instance). It will depend on the implementation of the API.
 
 **URL**: `/methods`
 
