@@ -1,20 +1,24 @@
 # Retrieve methods
-Retrieve those methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided).    
+Retrieve those methods satisfying the condition specified in the filtering query options. In case no condition is specified, all the methods in the system should be retrieved.
+Of course, the combination of filtering options should be interpreted as the intersection of methods honoring each option. For instance, if the query is `class=Rectangle&category=testing&accessing=origin&sending=<` then every method of `Rectangle`, in category `testing`, accessing the instance variable `origing`, and sending `<` should be retrieved (`Rectangle >> #intersects:` honors such condition in Bee, Pharo, Squeak and Dolphin at the moment of writing this documentation)  
 
 **URL**: `/methods`
 
 **Method**: `GET`
 
-**Query Options**
+**Filtering Query Options**
 | Option | Type | Description |
 | -- | -- | -- |
+| class | string | to get methods of a given class | 
 | selector | string | to get implementors of a given selector | 
-| sending | string | to get senders of a given selector |
-| accessing | string | to get those methods accessing a given variable (either using or assigning it) |
-| referencingClass | string | to get those methods referencing a given class |
 | category | string | to get methods under a given category |
+| accessing | string | to get those methods accessing a given variable (either using or assigning it) |
 | using | string | to get those methods using a given variable |
 | assigning | string | to get those methods assigning a given variable |
+| sending | string | to get senders of a given selector |
+| referencingClass | string | to get those methods referencing a given class |
+
+**Decoration Query Options**
 | ast | boolean | to get methods' AST (see below) |
 | bytecodes | boolean | to get methods' bytecodes |
 | disassembly | boolean | to get methods' disassembly |

@@ -17,7 +17,7 @@ These are the common properties at the moment:
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
 | GET | [/dialect](dialect/get.md) | - | - | - |
-| GET | [/methods](methods/get.md) | Retrieve methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided) | selector<br />sending<br />class<br />accessing<br />category<br />using<br />assigning | | - |
+| GET | [/methods](methods/get.md) | Retrieve methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided) | class<br />selector<br />category<br />accessing<br />using<br />assigning<br />sending<br />referencingClass<br />ast<br />bytecodes<br />dissasembly | | - |
 | GET | [/classes](classes/get.md) | Retrieve all subclasses of a given root class (if no root is provided, the uppermost class in the system is used). It is also possible get a tree-like structure as well as to limit the depth in the classes hierarchy | root<br />names<br />tree<br />depth | - |
 | GET | [/classes/{name}](classes/name/get.md) | Retrieve a given class | - | - |
 | GET | [/classes/{name}/subclasses](classes/name/subclasses/get.md) | Retrive subclasses a given class | - | - |
