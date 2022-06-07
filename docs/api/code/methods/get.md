@@ -1,10 +1,9 @@
 # Retrieve methods
-Retrieve those methods satisfying the condition specified in the filtering query options. In case no condition is specified, all the methods in the system should be retrieved. 
-Of course, the combination of filtering options should be interpreted as the intersection of methods honoring each option. For instance, if the query is `class=Rectangle&category=testing&accessing=origin&sending=<` then every method of `Rectangle`, in category `testing`, accessing the instance variable `origing`, and sending `<` should be retrieved (`Rectangle >> #intersects:` honors such condition in Bee, Pharo, Squeak and Dolphin at the moment of writing this documentation)..
-The `scope` option should be used in conjunction with other options to restrict the scope of a given search. For instance, `selector=<&scope=Magnitude` should retrieve implementors of `<` in `Magnitude` hierarchy (including superclasses).
 
+Retrieve those methods satisfying the condition specified in the filtering query options. In case no condition is specified, all the methods in the system should be retrieved.\
+Of course, the combination of filtering options should be interpreted as the intersection of methods honoring each option. For instance, if the query is `class=Rectangle&category=testing&accessing=origin&sending=<` then every method of `Rectangle`, in category `testing`, accessing the instance variable `origing`, and sending `<` should be retrieved (`Rectangle >> #intersects:` honors such condition in Bee, Pharo, Squeak and Dolphin at the moment of writing this documentation).\
+The `scope` option should be used in conjunction with other options to restrict the scope of a given search. For instance, `selector=<&scope=Magnitude` should retrieve implementors of `<` in `Magnitude` hierarchy (including superclasses).\
 A
-
 
 **URL**: `/methods`
 
@@ -35,49 +34,53 @@ A
 **Code** : `200 OK`
 
 **Content**: `[method]` where `method` is defined as:
+
 ```json
 {
-    "selector": "string",
-    "class": "string",
-    "category": "string",
-    "source": "string",
-    "author": "string",
-    "timestamp": "string",
-    "project": "string",
-    "overriding": "boolean",
+	"selector": "string",
+	"class": "string",
+	"category": "string",
+	"source": "string",
+	"author": "string",
+	"timestamp": "string",
+	"project": "string",
+	"overriding": "boolean",
 	"overriden": "boolean",
-    "bytecodes": "string",
+	"bytecodes": "string",
 	"disassembly": "string",
-    "ast": "node"
+	"ast": "node"
 }
 ```
 
 _Note: optional properties such as `bytecodes` or `disassembly` should not be included if they are not requested in the query._
 
 **Example:**: `Fraction` methods under `arithmetic` category and sending `reciprocal` `GET /classes/Fraction/methods?category=arithmetic&sending=reciprocal`.
+
 ```json
 [
-    {
-        "selector": "/",
-        "source": "/ aNumber\r\t\"Answer the result of dividing the receiver by aNumber.\"\r\taNumber isFraction\r\t\tifTrue: [^self * aNumber reciprocal].\r\t^ aNumber adaptToFraction: self andSend: #/",
-        "class": "Fraction",
-        "category": "arithmetic"
-    }
+	{
+		"selector": "/",
+		"source": "/ aNumber\r\t\"Answer the result of dividing the receiver by aNumber.\"\r\taNumber isFraction\r\t\tifTrue: [^self * aNumber reciprocal].\r\t^ aNumber adaptToFraction: self andSend: #/",
+		"class": "Fraction",
+		"category": "arithmetic"
+	}
 ]
 ```
 
 ## Method AST
+
 The AST of a method could be obtained by specifying the option `ast=true`. Though this option is not mandatory, Webside will take advantage of it when it is available to, for instance, detect the selector under the cursor (if any), and provide better senders/implementors facilities (think of a keyword selector).
 In case the option is provided by the backend Smalltalk, the expected structure of the `ast` should have the following `node` basic structure:
 
 ```json
 {
-    "type": "string",
-    "start": "number",
-    "end": "number",
-    "children": ["node"]
+	"type": "string",
+	"start": "number",
+	"end": "number",
+	"children": ["node"]
 }
 ```
+
 Where `start` and `end` represent the span of the node over the source code.
 Also, some leaf nodes should contain a `value` property with their corresponding value.
 The following table lists possible types properties whenever it applies.
