@@ -25,14 +25,7 @@ class TestRunner extends Component {
 				total: 0,
 				running: false,
 				current: null,
-				summary: {
-					run: 0,
-					passed: 0,
-					failed: 0,
-					errors: 0,
-					skipped: 0,
-					knownIssues: 0,
-				},
+				summary: this.newSummary(),
 			},
 			results: {
 				updated: false,
@@ -44,6 +37,17 @@ class TestRunner extends Component {
 
 	componentDidMount() {
 		this.updateStatus();
+	}
+
+	newSummary() {
+		return {
+			run: 0,
+			passed: 0,
+			failed: 0,
+			errors: 0,
+			skipped: 0,
+			knownIssues: 0,
+		};
 	}
 
 	typeColor(type) {
@@ -87,14 +91,7 @@ class TestRunner extends Component {
 				total: 0,
 				running: true,
 				current: null,
-				summary: {
-					run: 0,
-					passed: 0,
-					failed: 0,
-					errors: 0,
-					skipped: 0,
-					knownIssues: 0,
-				},
+				summary: this.newSummary(),
 			},
 			results: { updated: false, groups: {} },
 		});
@@ -203,8 +200,9 @@ class TestRunner extends Component {
 	render() {
 		const styles = this.props.styles;
 		const { status, results } = this.state;
-		const { total, running, current, summary } = status;
-		const percent = total > 0 && summary ? (summary.run / total) * 100 : 0;
+		const { total, running, current } = status;
+		const summary = status.summary || this.newSummary();
+		const percent = total > 0 ? (summary.run / total) * 100 : 0;
 		const groups = results.groups;
 		const ranking = Object.keys(groups).sort((c1, c2) => {
 			const n1 = groups[c1].summary.failed || 0 + groups[c1].summary.error || 0;
