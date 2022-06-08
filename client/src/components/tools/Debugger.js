@@ -191,7 +191,7 @@ class Debugger extends PureComponent {
 				<Grid item xs={12} md={12} lg={12}>
 					<Tooltip title="Step into" placement="top">
 						<IconButton
-							color="inherit"
+							style={{ color: "#2ba5de" }}
 							onClick={this.stepIntoClicked}
 							size="medium"
 						>
@@ -200,7 +200,7 @@ class Debugger extends PureComponent {
 					</Tooltip>
 					<Tooltip title="Step over" placement="top">
 						<IconButton
-							color="inherit"
+							style={{ color: "#2ba5de" }}
 							onClick={this.stepOverClicked}
 							size="medium"
 						>
@@ -209,7 +209,7 @@ class Debugger extends PureComponent {
 					</Tooltip>
 					<Tooltip title="Restart" placement="top">
 						<IconButton
-							color="inherit"
+							style={{ color: "#2ba5de" }}
 							onClick={this.restartClicked}
 							size="medium"
 						>
@@ -218,7 +218,7 @@ class Debugger extends PureComponent {
 					</Tooltip>
 					<Tooltip title="Resume" placement="top">
 						<IconButton
-							color="inherit"
+							style={{ color: "#3bba5d" }}
 							onClick={this.resumeClicked}
 							size="medium"
 						>
@@ -227,7 +227,7 @@ class Debugger extends PureComponent {
 					</Tooltip>
 					<Tooltip title="Terminate" placement="top">
 						<IconButton
-							color="inherit"
+							style={{ color: "#ba4343" }}
 							onClick={this.terminateClicked}
 							size="medium"
 						>

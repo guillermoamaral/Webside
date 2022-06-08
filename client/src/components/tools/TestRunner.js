@@ -107,7 +107,6 @@ class TestRunner extends Component {
 		try {
 			await this.context.api.stopTestRun(this.props.id);
 			this.updateStatus();
-			this.updateResults();
 		} catch (error) {
 			this.context.reportError(error);
 		}
@@ -126,7 +125,7 @@ class TestRunner extends Component {
 				}, 1000);
 			}
 			this.setState({ status: status, updating: false });
-			if (status.total === status.summary.run + status.summary.skipped) {
+			if (!status.running) {
 				this.updateResults();
 			}
 		} catch (error) {
