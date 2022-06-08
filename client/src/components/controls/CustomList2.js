@@ -10,8 +10,50 @@ import {
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import PopupMenu from "./PopupMenu";
-import Scrollable from "./Scrollable";
-import Scrollbar from "react-scrollbars-custom";
+import RSC from "react-scrollbars-custom";
+
+const CustomScrollbars = ({
+	children,
+	forwardedRef,
+	onScroll,
+	style,
+	className,
+}) => {
+	return (
+		<RSC
+			className={className}
+			style={style}
+			scrollerProps={{
+				renderer: (props) => {
+					const { elementRef, onScroll: rscOnScroll, ...restProps } = props;
+
+					return (
+						<span
+							{...restProps}
+							onScroll={(e) => {
+								onScroll(e);
+								rscOnScroll(e);
+							}}
+							ref={(ref) => {
+								forwardedRef(ref);
+								elementRef(ref);
+							}}
+						/>
+					);
+				},
+			}}
+		>
+			{children}
+		</RSC>
+	);
+};
+
+const CustomScrollbarsVirtualList = React.forwardRef((props, ref) => (
+	<CustomScrollbars {...props} forwardedRef={ref} />
+));
+
+const listRef = React.createRef();
+const outerRef = React.createRef();
 
 class CustomList2 extends Component {
 	constructor(props) {
@@ -154,6 +196,7 @@ class CustomList2 extends Component {
 					onClick={(event) => this.itemSelected(item)}
 					onDoubleClick={(event) => this.itemDoubleClicked(item)}
 					onContextMenu={this.openMenu}
+					onKeyDown={this.keyDown}
 				>
 					<Box p={0} style={{ minWidth: 10 }}>
 						<ListItemIcon style={{ minWidth: 0 }}>{icon}</ListItemIcon>
@@ -174,22 +217,67 @@ class CustomList2 extends Component {
 
 	render() {
 		return (
-			<AutoSizer>
-				{({ height, width }) => (
-					<List
-						height={height}
-						width={width}
-						itemSize={30}
-						itemCount={this.props.items.length}
-						overscanCount={5}
-						onKeyDown={this.keyDown}
-						style={{ paddingTop: 0, paddingBottom: 0 }}
-						outerElementType={Scrollbar}
-					>
-						{this.renderRow}
-					</List>
+			<Box style={{ display: "flex", flexGrow: 1, height: "100%" }}>
+				{this.state.filterEnabled && (
+					<TextField
+						id="filter"
+						variant="standard"
+						size="small"
+						type="text"
+						placeholder="Enter text to filter items"
+						margin="dense"
+						fullWidth
+						autoFocus
+						name="filter"
+						value={this.state.filterText}
+						onKeyDown={(event) => {
+							if (event.key === "Escape") {
+								this.clearFilter();
+							}
+						}}
+						onChange={(event) =>
+							this.setState({
+								filterEnabled: event.target.value !== "",
+								filterText: event.target.value,
+							})
+						}
+					/>
 				)}
-			</AutoSizer>
+				<AutoSizer>
+					{({ height, width }) => (
+						<List
+							ref={listRef}
+							height={height}
+							width={width}
+							itemSize={30}
+							itemCount={this.props.items.length}
+							overscanCount={5}
+							onKeyDown={this.keyDown}
+							style={{ paddingTop: 0, paddingBottom: 0 }}
+							outerElementType={CustomScrollbarsVirtualList}
+							outerRef={outerRef}
+							onScroll={({ scrollOffset, scrollUpdateWasRequested }) => {
+								if (scrollUpdateWasRequested) {
+									console.log(
+										"TODO: check scroll position",
+										scrollOffset,
+										outerRef.current.scrollHeight
+									);
+								}
+							}}
+						>
+							{this.renderRow}
+						</List>
+					)}
+				</AutoSizer>
+				<PopupMenu
+					options={this.props.menuOptions}
+					open={this.state.menuOpen}
+					position={this.state.menuPosition}
+					onOptionClick={this.menuOptionClicked}
+					onClose={this.closeMenu}
+				/>
+			</Box>
 		);
 	}
 }
