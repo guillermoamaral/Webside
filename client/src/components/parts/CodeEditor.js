@@ -206,7 +206,7 @@ class CodeEditor extends Component {
 	menuOptions() {
 		return [
 			{ label: "Do it (Ctrl+d)", action: this.evaluateExpression },
-			{ label: "Show it (Ctrl+s)", action: this.showEvaluation },
+			{ label: "Print it (Ctrl+p)", action: this.showEvaluation },
 			{ label: "Inspect it (Ctrl+i)", action: this.inspectEvaluation },
 			{ label: "Debug it (Ctrl+u)", action: this.debugExpression },
 			{ label: "Profile it", action: this.profileExpression },
@@ -232,20 +232,20 @@ class CodeEditor extends Component {
 					source: source,
 					dirty: true,
 					selectRanges: false,
-				},
+				}
 				// () => {console.log(this.state)}
 			);
 		}
 	};
 
-	acceptClicked = (event) => {
+	acceptClicked = () => {
 		const handler = this.props.onAccept;
 		if (handler) {
 			handler(this.state.source);
 		}
 	};
 
-	toggleFullScreen = (event) => {
+	toggleFullScreen = () => {
 		this.editor.setOption("fullScreen", !this.editor.getOption("fullScreen"));
 	};
 
@@ -280,6 +280,7 @@ class CodeEditor extends Component {
 
 	browseSenders = () => {
 		this.context.browseSenders(this.targetSelector());
+		return false;
 	};
 
 	browseImplementors = () => {
@@ -493,10 +494,9 @@ class CodeEditor extends Component {
 							extraKeys: {
 								"Ctrl-D": this.evaluateExpression,
 								"Ctrl-I": this.inspectEvaluation,
-								"Ctrl-S": this.showEvaluation,
 								"Ctrl-P": this.showEvaluation,
 								"Ctrl-U": this.debugExpression,
-								"Alt-S": this.acceptClicked,
+								"Ctrl-S": this.acceptClicked,
 								"Ctrl-B": this.browseClass,
 								"Alt-N": this.browseSenders,
 								"Alt-M": this.browseImplementors,
