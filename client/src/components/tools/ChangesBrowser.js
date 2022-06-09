@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Grid, Paper } from "@material-ui/core";
 import CustomTable from "../controls/CustomTable";
+//import CodeMerge from "../parts/CodeMerge";
 import CodeEditor from "../parts/CodeEditor";
-import clsx from "clsx";
 import { IDEContext } from "../IDEContext";
 
 class ChangesBrowser extends Component {
@@ -47,12 +47,12 @@ class ChangesBrowser extends Component {
 			},
 		];
 		const styles = this.props.styles;
-		const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
-					<Paper variant="outlined">
+					<Paper variant="outlined" style={{ height: 500 }}>
 						<CustomTable
+							style={{ height: "100%" }}
 							styles={styles}
 							columns={columns}
 							rows={rows}
@@ -63,6 +63,12 @@ class ChangesBrowser extends Component {
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<Paper variant="outlined">
+						{/* <CodeMerge
+							context={{ class: change ? change.class : null }}
+							styles={this.props.styles}
+							leftCode={change ? change.sourceCode : ""}
+							rightCode={change ? change.sourceCode : ""}
+						/> */}
 						<CodeEditor
 							context={{ class: change ? change.class : null }}
 							styles={this.props.styles}

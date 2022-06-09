@@ -221,20 +221,15 @@ class CodeEditor extends Component {
 	}
 
 	sourceChanged = (source) => {
-		// console.log("sourceChanged", source);
 		const handler = this.props.onChange;
 		if (handler) {
 			handler(source);
 		} else {
-			// console.log("setting state after sourceChanged");
-			this.setState(
-				{
-					source: source,
-					dirty: true,
-					selectRanges: false,
-				}
-				// () => {console.log(this.state)}
-			);
+			this.setState({
+				source: source,
+				dirty: true,
+				selectRanges: false,
+			});
 		}
 	};
 

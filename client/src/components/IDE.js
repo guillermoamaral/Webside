@@ -48,7 +48,7 @@ import Profiler from "./tools/Profiler";
 import NativeDebugger from "./tools/NativeDebugger";
 import MessageChannel from "./MessageChannel";
 import Chat from "./tools/Chat";
-import MethodDifferences from "./tools/MethodDifferences";
+import CodeDifferences from "./tools/CodeDifferences";
 import Settings from "./Settings";
 import ResourceBrowser from "./tools/ResourceBrowser";
 import CoderLikeBrowser from "./tools/CoderLikeBrowser";
@@ -89,22 +89,6 @@ class IDE extends Component {
 	usesEmergentTranscript() {
 		return false;
 	}
-
-	testMethodDifferences = async () => {
-		const m1 = {
-			class: "Number",
-			selector: "roundTo:",
-			source:
-				'roundTo: quantum \r\t"Answer the nearest number that is a multiple of quantum."\r\r\t^(self / quantum) rounded * quantum',
-		};
-		const m2 = {
-			class: "Number",
-			selector: "roundTo:",
-			source:
-				"roundTo: aNumber\r\t^self < 0\r\t\tifTrue: [self - (aNumber / 2) truncateTo: aNumber]\r\t\tifFalse: [self + (aNumber / 2) truncateTo: aNumber]",
-		};
-		this.openMethodDifferences(m1, m2, "Method Diff");
-	};
 
 	updateSettings() {
 		const query = new URLSearchParams(this.props.location.search);
@@ -545,10 +529,10 @@ class IDE extends Component {
 
 	openMethodDifferences = (leftMethod, rightMethod, title = "Differences") => {
 		const browser = (
-			<MethodDifferences
+			<CodeDifferences
 				styles={this.props.styles}
-				leftMethod={leftMethod}
-				rightMethod={rightMethod}
+				leftMethod={leftMethod.source}
+				rightMethod={rightMethod.source}
 			/>
 		);
 		this.addPage(title, <MethodBrowserIcon />, browser);
