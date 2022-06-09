@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import CustomList2 from "../controls/CustomList2";
+import FastCustomList from "../controls/FastCustomList";
 import OverridenIcon from "@material-ui/icons/ExpandMore";
 import OverridingIcon from "@material-ui/icons/ExpandLess";
 import OverridingOverridenIcon from "@material-ui/icons/UnfoldMore";
@@ -141,7 +141,7 @@ class MethodList extends Component {
 	render() {
 		const methods = !this.props.methods ? [] : this.props.methods;
 		return (
-			<CustomList2
+			<FastCustomList
 				items={methods}
 				itemLabel={this.methodLabel}
 				itemIcon={this.methodIcon}

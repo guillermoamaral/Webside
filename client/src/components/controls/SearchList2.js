@@ -2,7 +2,7 @@ import React from "react";
 import Autosuggest from "react-autosuggest";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import { TextField, MenuItem, Box } from "@material-ui/core";
+import { TextField, MenuItem, Box, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 
 const styles = (theme) => ({
@@ -104,21 +104,20 @@ class SearchList2 extends React.Component {
 				selected={isHighlighted}
 				component="div"
 				style={{ listStyleType: "none" }}
-				//onClick={(event) => this.valueChanged(suggestion)}
 			>
-				<div>
+				<Typography component="div">
 					{parts.map((part, index) => {
 						return part.highlight ? (
-							<span key={String(index)} style={{ fontWeight: 300 }}>
+							<Box component="strong" key={index}>
 								{part.text}
-							</span>
+							</Box>
 						) : (
-							<strong key={String(index)} style={{ fontWeight: 500 }}>
+							<Box component="span" key={index}>
 								{part.text}
-							</strong>
+							</Box>
 						);
 					})}
-				</div>
+				</Typography>
 			</MenuItem>
 		);
 	};

@@ -6,6 +6,7 @@ import {
 	ListItemButton,
 	Box,
 	TextField,
+	Typography,
 } from "@material-ui/core";
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -55,7 +56,7 @@ const CustomScrollbarsVirtualList = React.forwardRef((props, ref) => (
 const listRef = React.createRef();
 const outerRef = React.createRef();
 
-class CustomList2 extends Component {
+class FastCustomList extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -63,7 +64,17 @@ class CustomList2 extends Component {
 			menuPosition: { x: null, y: null },
 			filterEnabled: false,
 			filterText: "",
+			items: this.props.items,
 		};
+	}
+
+	static getDerivedStateFromProps(props, state) {
+		if (!state.filterEnabled) {
+			return {
+				items: props.items,
+			};
+		}
+		return null;
 	}
 
 	itemDoubleClicked = (item) => {
@@ -133,7 +144,7 @@ class CustomList2 extends Component {
 	};
 
 	moveUp = () => {
-		const items = this.props.items;
+		const items = this.state.items;
 		const index = items.indexOf(this.props.selectedItem);
 		if (index > 0) {
 			this.itemSelected(items[index - 1]);
@@ -141,7 +152,7 @@ class CustomList2 extends Component {
 	};
 
 	moveDown = () => {
-		const items = this.props.items;
+		const items = this.state.items;
 		const index = items.indexOf(this.props.selectedItem);
 		if (index < items.length - 1) {
 			this.itemSelected(items[index + 1]);
@@ -149,7 +160,11 @@ class CustomList2 extends Component {
 	};
 
 	clearFilter() {
-		this.setState({ filterEnabled: false, filterText: "" });
+		this.setState({
+			filterEnabled: false,
+			filterText: "",
+			items: this.props.items,
+		});
 	}
 
 	keyDown = (event) => {
@@ -167,18 +182,36 @@ class CustomList2 extends Component {
 			this.clearFilter();
 		}
 		if (key.length === 1 && /[a-zA-Z0-9-_ ]/.test(key)) {
-			this.setState({ filterEnabled: true, filterText: key });
+			this.filterItems(key);
 		} else {
 			return true;
 		}
 	};
 
-	renderRow = ({ index, style }) => {
-		const item = this.props.items[index];
+	filterItems(text) {
+		console.log(text);
+		const enabled = text !== "";
+		const all = this.props.items;
+		const target = text.toLowerCase();
+		const filtered = enabled
+			? all.filter((i) => {
+					return this.getItemLabel(i).toLowerCase().includes(target);
+			  })
+			: all;
+		this.setState({
+			filterEnabled: enabled,
+			filterText: text,
+			items: filtered,
+		});
+	}
+
+	renderItem = ({ index, style }) => {
+		const item = this.state.items[index];
 		const label = this.getItemLabel(item);
 		const icon = this.getItemIcon(item);
 		const divider = this.getItemDivider(item);
 		const selected = this.props.selectedItem === item;
+		const weight = selected ? "fontWeightBold" : "fontWeightRegular";
 		return (
 			<div style={style}>
 				<ListItem
@@ -203,11 +236,9 @@ class CustomList2 extends Component {
 					</Box>
 					<ListItemText
 						primary={
-							<Box
-								fontWeight={selected ? "fontWeightMedium" : "fontWeightRegular"}
-							>
-								{label}
-							</Box>
+							<Typography component="div">
+								<Box fontWeight={weight}>{label}</Box>
+							</Typography>
 						}
 					/>
 				</ListItem>
@@ -217,7 +248,7 @@ class CustomList2 extends Component {
 
 	render() {
 		return (
-			<Box style={{ display: "flex", flexGrow: 1, height: "100%" }}>
+			<Box style={{ height: "100%" }}>
 				{this.state.filterEnabled && (
 					<TextField
 						id="filter"
@@ -235,12 +266,7 @@ class CustomList2 extends Component {
 								this.clearFilter();
 							}
 						}}
-						onChange={(event) =>
-							this.setState({
-								filterEnabled: event.target.value !== "",
-								filterText: event.target.value,
-							})
-						}
+						onChange={(event) => this.filterItems(event.target.value)}
 					/>
 				)}
 				<AutoSizer>
@@ -250,7 +276,7 @@ class CustomList2 extends Component {
 							height={height}
 							width={width}
 							itemSize={30}
-							itemCount={this.props.items.length}
+							itemCount={this.state.items.length}
 							overscanCount={5}
 							onKeyDown={this.keyDown}
 							style={{ paddingTop: 0, paddingBottom: 0 }}
@@ -266,7 +292,7 @@ class CustomList2 extends Component {
 								}
 							}}
 						>
-							{this.renderRow}
+							{this.renderItem}
 						</List>
 					)}
 				</AutoSizer>
@@ -282,4 +308,4 @@ class CustomList2 extends Component {
 	}
 }
 
-export default CustomList2;
+export default FastCustomList;
