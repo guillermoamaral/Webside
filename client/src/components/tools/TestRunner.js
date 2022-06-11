@@ -31,7 +31,7 @@ class TestRunner extends Component {
 				updated: false,
 				groups: {},
 			},
-			filter: null,
+			filterType: null,
 		};
 	}
 
@@ -160,7 +160,7 @@ class TestRunner extends Component {
 
 	filterTests(type) {
 		const filter = type === "run" ? null : type;
-		this.setState({ filter: filter });
+		this.setState({ filterType: filter });
 	}
 
 	browseImplementors = (test) => {
@@ -198,7 +198,7 @@ class TestRunner extends Component {
 
 	render() {
 		const styles = this.props.styles;
-		const { status, results } = this.state;
+		const { status, results, filterType } = this.state;
 		const { total, running, current } = status;
 		const summary = status.summary || this.newSummary();
 		const percent = total > 0 ? (summary.run / total) * 100 : 0;
@@ -206,13 +206,7 @@ class TestRunner extends Component {
 		const ranking = Object.keys(groups).sort((c1, c2) => {
 			const n1 = groups[c1].summary.failed || 0 + groups[c1].summary.error || 0;
 			const n2 = groups[c2].summary.failed || 0 + groups[c2].summary.error || 0;
-			if (n1 > n2) {
-				return 1;
-			}
-			if (n1 < n2) {
-				return -1;
-			}
-			return 0;
+			return n1 > n2 ? -1 : n1 < n2 ? 1 : 0;
 		});
 		const testColumns = [
 			{ field: "selector", label: "Selector", minWidth: 100, align: "left" },
@@ -301,57 +295,58 @@ class TestRunner extends Component {
 						</Grid>
 					</Grid>
 					<Grid item xs={12} md={12} lg={12}>
-						{ranking.map((c) => {
-							const classSummary = groups[c].summary;
-							const filter = this.state.filter;
-							const rows = groups[c].tests.filter(
-								(t) => !filter || t.type === filter
-							);
-							rows.forEach((r) => {
-								r.color = this.typeColor(r.type);
-							});
-							return (
-								<Accordion key={c}>
-									<AccordionSummary expandIcon={<ExpandMoreIcon />} id={c}>
-										<Box display="flex" p={1}>
-											<Box p={1} width="100%">
-												<Typography>{c}</Typography>
+						{ranking
+							.filter((c) => !filterType || groups[c].summary[filterType] > 0)
+							.map((c) => {
+								const classSummary = groups[c].summary;
+								const classTests = groups[c].tests.filter(
+									(t) => !filterType || t.type === filterType
+								);
+								classTests.forEach((r) => {
+									r.color = this.typeColor(r.type);
+								});
+								return (
+									<Accordion key={c}>
+										<AccordionSummary expandIcon={<ExpandMoreIcon />} id={c}>
+											<Box display="flex" p={1}>
+												<Box p={1} width="100%">
+													<Typography>{c}</Typography>
+												</Box>
+												{this.summaryLabels().map((label) => {
+													return (
+														<Box p={1} flexShrink={0} key={"box-" + label.type}>
+															<Typography
+																style={{ color: this.typeColor(label.type) }}
+															>
+																{(classSummary[label.type] || 0) +
+																	" " +
+																	label.text}
+															</Typography>
+														</Box>
+													);
+												})}
 											</Box>
-											{this.summaryLabels().map((label) => {
-												return (
-													<Box p={1} flexShrink={0} key={"box-" + label.type}>
-														<Typography
-															style={{ color: this.typeColor(label.type) }}
-														>
-															{(classSummary[label.type] || 0) +
-																" " +
-																label.text}
-														</Typography>
-													</Box>
-												);
-											})}
-										</Box>
-									</AccordionSummary>
-									<Grid container>
-										<Grid item xs={1} md={1} lg={1} />
-										<Grid
-											item
-											xs={11}
-											md={11}
-											lg={11}
-											style={{ minHeight: 300 }}
-										>
-											<CustomTable
-												styles={styles}
-												columns={testColumns}
-												rows={rows}
-												menuOptions={this.menuOptions()}
-											></CustomTable>
+										</AccordionSummary>
+										<Grid container>
+											<Grid item xs={1} md={1} lg={1} />
+											<Grid
+												item
+												xs={11}
+												md={11}
+												lg={11}
+												style={{ minHeight: 300 }}
+											>
+												<CustomTable
+													styles={styles}
+													columns={testColumns}
+													rows={classTests}
+													menuOptions={this.menuOptions()}
+												></CustomTable>
+											</Grid>
 										</Grid>
-									</Grid>
-								</Accordion>
-							);
-						})}
+									</Accordion>
+								);
+							})}
 					</Grid>
 				</Grid>
 			</div>
