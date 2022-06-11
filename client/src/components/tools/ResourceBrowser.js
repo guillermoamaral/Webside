@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { Grid, Paper, List, ListItem, ListItemText } from "@material-ui/core";
+import {
+	Grid,
+	Paper,
+	List,
+	ListItem,
+	ListItemText,
+	Box,
+} from "@material-ui/core";
 import CustomTable from "../controls/CustomTable";
 import Inspector from "./Inspector";
 import { IDEContext } from "../IDEContext";
@@ -216,7 +223,6 @@ class ResourceBrowser extends Component {
 		const columns = this.resourceColumns(selectedType);
 		const styles = this.props.styles;
 		const ow = selectedResource && selectedType === "object" ? 6 : 10;
-		const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={2} md={2} lg={2}>
@@ -230,7 +236,7 @@ class ResourceBrowser extends Component {
 									onClick={(event) => this.typeSelected(type)}
 								>
 									{this.resourceIcon(type)}
-									<ListItemText primary={type} />
+									<ListItemText primary={<Box pl={1}>{type}</Box>} />
 								</ListItem>
 							)
 						)}
@@ -238,7 +244,7 @@ class ResourceBrowser extends Component {
 				</Grid>
 				<Grid item xs={ow} md={ow} lg={ow}>
 					{selectedType && selectedType !== "Memory" && (
-						<Paper className={fixedHeightPaper} variant="outlined">
+						<Paper variant="outlined" style={{ height: "100%" }}>
 							<CustomTable
 								styles={styles}
 								columns={columns}

@@ -107,7 +107,6 @@ class CustomTable extends Component {
 							{rows.map((row, index) => {
 								return (
 									<TableRow
-										button
 										hover
 										tabIndex={-1}
 										key={index}

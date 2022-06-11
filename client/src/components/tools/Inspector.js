@@ -140,6 +140,8 @@ class Inspector extends Component {
 							<Typography color="primary">
 								{path[path.length - 1] || "self"}
 							</Typography>
+						</Breadcrumbs>
+						<Box pl={1}>
 							{selectedObject && (
 								<Link
 									color="inherit"
@@ -147,10 +149,10 @@ class Inspector extends Component {
 										this.browseClass(selectedObject.class);
 									}}
 								>
-									{selectedObject.class}
+									{"(" + selectedObject.class + ")"}
 								</Link>
 							)}
-						</Breadcrumbs>
+						</Box>
 					</Box>
 				</Grid>
 				<Grid item xs={12} md={6} lg={6}>
