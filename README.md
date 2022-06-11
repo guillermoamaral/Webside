@@ -20,7 +20,7 @@
 Webside is both the specification of an [API](docs/api) to interact with an Smalltalk system (back-end), and a web [IDE](/docs) (front-end) built on top of such API.
 
 The API definition follows this principle: _assume as less as possible from the underlying Smalltalk system_. This leads to keep a healthy distance from the particularities of a given dialect and its tooling, in favor of enabling the implementation of a common, yet useful set of tools (IDE) for every Smalltalk implementation.\
-Of course, some assumptions are made and these impose some degree of _adaptation_ taking place at the implementation of the API in a particular Smallalk.  
+Of course, some assumptions are made and these impose some degree of _adaptation_ in the implementation of the API for a particular Smallalk.  
 
 Provided the API is implemented according to the specification, the IDE is fully operational on the Smalltalk at hand, offering traditional Smalltalk IDE tools such as code browsers, workspaces, inspectors, debugger and more.
 
