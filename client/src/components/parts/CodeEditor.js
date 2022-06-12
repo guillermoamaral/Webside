@@ -442,9 +442,9 @@ class CodeEditor extends Component {
 		// 	console.log(additional);
 		// 	selection.update(selection.ranges.concat(additional));
 		// }
-		// if (this.state.selectRanges) {
-		// 	this.setState({ selectRanges: false });
-		// }
+		if (this.state.selectRanges) {
+			this.setState({ selectRanges: false });
+		}
 	};
 
 	render() {
