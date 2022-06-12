@@ -65,6 +65,7 @@ class CodeEditor extends Component {
 				selectRanges: true,
 				source: props.source,
 				evaluating: props.evaluating,
+				dirty: false,
 			};
 		}
 		if (state.evaluating !== props.evaluating) {
@@ -81,7 +82,6 @@ class CodeEditor extends Component {
 	}
 
 	editorDidMount(editor) {
-		// console.log("editorDidMount", this.editor, this.editor === editor);
 		this.editor = editor;
 		this.editor.setSize("100%", "100%");
 	}
@@ -97,28 +97,23 @@ class CodeEditor extends Component {
 	};
 
 	selectInterval(interval) {
-		// console.log("selectIterval", interval);
 		const range = this.rangeFromInterval(interval);
-		// console.log("selecteRange", range.anchor, range.head);
 		this.selectRanges([range]);
 	}
 
 	selectWord(word) {
-		// console.log("selectWord", word);
 		const ranges = this.rangesContainingWord(word);
 		this.selectRanges(ranges);
 	}
 
 	selectRanges(ranges) {
 		if (this.editor) {
-			// console.log("settingSelections to editor");
 			this.editor.setSelections(ranges);
 		}
 	}
 
 	selectInitialRanges() {
 		const { selectRanges, selectedInterval, selectedWord } = this.state;
-		// console.log("selecting initial ranges", selectRanges);
 		if (selectRanges) {
 			if (selectedInterval) {
 				this.selectInterval(selectedInterval);
@@ -262,7 +257,6 @@ class CodeEditor extends Component {
 		const offset = this.offsetFromPosition(position);
 		const node = this.astNodeAtOffset(offset);
 		if (node && node.type === "Selector") {
-			// console.log(node);
 			return node.value;
 		}
 		return this.targetWord();
@@ -454,15 +448,18 @@ class CodeEditor extends Component {
 	};
 
 	render() {
-		// console.log("rendering CodeEditor");
 		this.selectInitialRanges();
-		const { source, evaluating, progress } = this.state;
+		const { source, evaluating, progress, dirty } = this.state;
 		const mode = this.props.mode || "smalltalk-method";
 		const showAccept = this.props.showAccept;
 		const acceptIcon = this.props.acceptIcon ? (
 			React.cloneElement(this.props.acceptIcon)
 		) : (
-			<AcceptIcon size="large" style={{ fontSize: 30 }} />
+			<AcceptIcon
+				size="large"
+				color={dirty ? "primary" : "default"}
+				style={{ fontSize: 30 }}
+			/>
 		);
 		return (
 			<Grid container spacing={1} style={{ height: "100%" }}>
