@@ -219,7 +219,6 @@ class ResourceBrowser extends Component {
 
 	render() {
 		const { selectedType, resources, selectedResource } = this.state;
-		const rows = resources;
 		const columns = this.resourceColumns(selectedType);
 		const styles = this.props.styles;
 		const ow = selectedResource && selectedType === "object" ? 6 : 10;
@@ -248,7 +247,7 @@ class ResourceBrowser extends Component {
 							<CustomTable
 								styles={styles}
 								columns={columns}
-								rows={rows}
+								rows={resources}
 								onSelect={this.resourceSelected}
 								menuOptions={this.menuOptions()}
 							/>

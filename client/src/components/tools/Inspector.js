@@ -10,6 +10,7 @@ import {
 import clsx from "clsx";
 import { IDEContext } from "../IDEContext";
 import ObjectTree from "../parts/ObjectTree";
+import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";
 
 class Inspector extends Component {
@@ -166,16 +167,28 @@ class Inspector extends Component {
 					</Paper>
 				</Grid>
 				<Grid item xs={12} md={6} lg={6}>
-					<Paper variant="outlined">
-						<CodeEditor
-							context={{ object: this.props.id }}
-							styles={styles}
-							lineNumbers={false}
-							source={!selectedObject ? "" : selectedObject.printString}
-							onChange={this.props.onChange}
-							onAccept={this.props.onAccept}
-						/>
-					</Paper>
+					{selectedObject.presentation &&
+						selectedObject.presentation.type === "table" && (
+							<Paper variant="outlined" style={{ height: "100%" }}>
+								<CustomTable
+									styles={styles}
+									columns={selectedObject.presentation.columns}
+									rows={selectedObject.presentation.rows}
+								/>
+							</Paper>
+						)}
+					{!selectedObject.presentation && (
+						<Paper variant="outlined">
+							<CodeEditor
+								context={{ object: this.props.id }}
+								styles={styles}
+								lineNumbers={false}
+								source={!selectedObject ? "" : selectedObject.printString}
+								onChange={this.props.onChange}
+								onAccept={this.props.onAccept}
+							/>
+						</Paper>
+					)}
 				</Grid>
 				{showWorkspace && (
 					<Grid item xs={12} md={12} lg={12}>
