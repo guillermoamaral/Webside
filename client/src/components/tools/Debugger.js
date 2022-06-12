@@ -37,6 +37,7 @@ class Debugger extends PureComponent {
 
 	async updateFrames() {
 		try {
+			console.log("about to get frames for ", this.props.id)
 			const frames = await this.context.api.getDebuggerFrames(this.props.id);
 			let selected = null;
 			if (frames.length > 0) {

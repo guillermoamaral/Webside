@@ -36,6 +36,9 @@ class ResourceBrowser extends Component {
 				case "Objects":
 					resources = await this.context.api.getObjects();
 					break;
+				case "Evaluations":
+					resources = await this.context.api.getEvaluations();
+					break;
 				case "Workspaces":
 					resources = await this.context.api.getWorkspaces();
 					break;
@@ -57,6 +60,9 @@ class ResourceBrowser extends Component {
 		var icon;
 		switch (type) {
 			case "Objects":
+				icon = <InspectorIcon />;
+				break;
+			case "Evaluations":
 				icon = <InspectorIcon />;
 				break;
 			case "Workspaces":
@@ -105,6 +111,21 @@ class ResourceBrowser extends Component {
 		];
 	}
 
+	cancelEvaluation = async (evaluation) => {
+		try {
+			await this.context.api.cancelEvaluation(evaluation.id);
+			this.setState({
+				resources: this.state.resources.filter((r) => r.id !== evaluation.id),
+			});
+		} catch (error) {
+			this.context.reportError(error);
+		}
+	};
+
+	evaluationOptions() {
+		return [{ label: "Stop", action: this.cancelEvaluation }];
+	}
+
 	openWorkspace = (workspace) => {
 		if (workspace) {
 			this.context.openWorkspace(workspace.id);
@@ -141,6 +162,9 @@ class ResourceBrowser extends Component {
 			case "Objects":
 				options = this.objectOptions();
 				break;
+			case "Evaluations":
+				options = this.evaluationOptions();
+				break;
 			case "Workspaces":
 				options = this.workspaceOptions();
 				break;
@@ -162,6 +186,24 @@ class ResourceBrowser extends Component {
 			{
 				field: "printString",
 				label: "Print String",
+				minWidth: 200,
+				align: "left",
+			},
+		];
+	}
+
+	evaluationColumns() {
+		return [
+			{ field: "id", label: "ID", align: "left" },
+			{
+				field: "expression",
+				label: "Expression",
+				align: "left",
+				minWidth: 200,
+			},
+			{
+				field: "state",
+				label: "State",
 				minWidth: 200,
 				align: "left",
 			},
@@ -203,6 +245,9 @@ class ResourceBrowser extends Component {
 			case "Objects":
 				columns = this.objectColumns();
 				break;
+			case "Evaluations":
+				columns = this.evaluationColumns();
+				break;
 			case "Workspaces":
 				columns = this.workspaceColumns();
 				break;
@@ -226,19 +271,24 @@ class ResourceBrowser extends Component {
 			<Grid container spacing={1}>
 				<Grid item xs={2} md={2} lg={2}>
 					<List>
-						{["Objects", "Workspaces", "Debuggers", "Test Runs", "Memory"].map(
-							(type) => (
-								<ListItem
-									button
-									key={type}
-									selected={type === selectedType}
-									onClick={(event) => this.typeSelected(type)}
-								>
-									{this.resourceIcon(type)}
-									<ListItemText primary={<Box pl={1}>{type}</Box>} />
-								</ListItem>
-							)
-						)}
+						{[
+							"Objects",
+							"Evaluations",
+							"Workspaces",
+							"Debuggers",
+							"Test Runs",
+							"Memory",
+						].map((type) => (
+							<ListItem
+								button
+								key={type}
+								selected={type === selectedType}
+								onClick={(event) => this.typeSelected(type)}
+							>
+								{this.resourceIcon(type)}
+								<ListItemText primary={<Box pl={1}>{type}</Box>} />
+							</ListItem>
+						))}
 					</List>
 				</Grid>
 				<Grid item xs={ow} md={ow} lg={ow}>

@@ -425,7 +425,7 @@ class CodeEditor extends Component {
 		) : (
 			<AcceptIcon
 				size="large"
-				color={dirty ? "primary" : "default"}
+				color={dirty ? "primary" : "inherit"}
 				style={{ fontSize: 30 }}
 			/>
 		);

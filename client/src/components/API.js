@@ -703,6 +703,24 @@ class API {
 		}
 	}
 
+	async cancelEvaluation(id) {
+		try {
+			const response = await axios.delete(this.baseUri + "/evaluations/" + id);
+			return response.data;
+		} catch (error) {
+			this.handleError("Cannot cancel evaluation with id " + id, error);
+		}
+	}
+
+	async getEvaluations() {
+		try {
+			const response = await axios.get(this.baseUri + "/evaluations");
+			return response.data;
+		} catch (error) {
+			this.handleError("Cannot retrieve evaluations", error);
+		}
+	}
+
 	async debugExpression(expression, context) {
 		try {
 			const evaluation = {
