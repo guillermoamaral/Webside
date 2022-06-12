@@ -167,18 +167,25 @@ class Inspector extends Component {
 					</Paper>
 				</Grid>
 				<Grid item xs={12} md={6} lg={6}>
-					{selectedObject.presentation &&
-						selectedObject.presentation.type === "table" && (
-							<Paper variant="outlined" style={{ height: "100%" }}>
+					<Paper variant="outlined" style={{ height: "100%" }}>
+						{selectedObject.presentation &&
+							selectedObject.presentation.type === "table" && (
 								<CustomTable
 									styles={styles}
 									columns={selectedObject.presentation.columns}
 									rows={selectedObject.presentation.rows}
 								/>
-							</Paper>
-						)}
-					{!selectedObject.presentation && (
-						<Paper variant="outlined">
+							)}
+						{selectedObject.presentation &&
+							selectedObject.presentation.type === "html" && (
+								<div
+									styles={styles}
+									dangerouslySetInnerHTML={{
+										__html: selectedObject.presentation.code,
+									}}
+								/>
+							)}
+						{!selectedObject.presentation && (
 							<CodeEditor
 								context={{ object: this.props.id }}
 								styles={styles}
@@ -187,12 +194,12 @@ class Inspector extends Component {
 								onChange={this.props.onChange}
 								onAccept={this.props.onAccept}
 							/>
-						</Paper>
-					)}
+						)}
+					</Paper>
 				</Grid>
 				{showWorkspace && (
 					<Grid item xs={12} md={12} lg={12}>
-						<Paper variant="outlined">
+						<Paper variant="outlined" style={{ height: "100%" }}>
 							<CodeEditor
 								context={{ object: this.props.id }}
 								styles={styles}
