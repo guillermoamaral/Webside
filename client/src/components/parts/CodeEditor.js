@@ -410,38 +410,6 @@ class CodeEditor extends Component {
 	};
 
 	selectionChanged = (selection) => {
-		var m = "";
-		selection.ranges.forEach((r) => {
-			m =
-				m +
-				" from line " +
-				r.anchor.line +
-				" ch " +
-				r.anchor.ch +
-				" to line " +
-				r.head.line +
-				" ch " +
-				r.head.ch;
-			// console.log("selectionChanged", m);
-			// console.log(this.astNodeAtOffset(this.offsetFromPosition(r.anchor)));
-		});
-		// if (selection.origin) {
-		// 	this.setState({ selectRanges: false });
-		// }
-		// const { selectedInterval, selectedWord } = this.state;
-		// const additional = [];
-		// if (selectedInterval) {
-		// 	additional.push(this.rangeFromInterval(selectedInterval));
-		// }
-		// if (selectedWord) {
-		// 	this.rangesContainingWord(selectedWord).forEach((r) =>
-		// 		additional.push(r)
-		// 	);
-		// }
-		// if (additional.length > 0) {
-		// 	console.log(additional);
-		// 	selection.update(selection.ranges.concat(additional));
-		// }
 		if (this.state.selectRanges) {
 			this.setState({ selectRanges: false });
 		}
