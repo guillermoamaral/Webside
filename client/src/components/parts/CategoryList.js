@@ -57,7 +57,7 @@ class CategoryList extends Component {
 			return;
 		}
 		try {
-			await this.context.api.deleteCategory(this.props.class.name, category);
+			await this.context.api.removeCategory(this.props.class.name, category);
 			if (this.props.onRemove) {
 				this.props.onRemove(category);
 			}

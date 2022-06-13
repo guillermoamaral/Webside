@@ -29,7 +29,8 @@ And `type` can be one of the following:
 
 * `"MethodDefinition"`
 * `"MethodRemove"`
-* `"SelectorRename"` 
+* `"MethodClassification"`
+* `"SelectorRename"`
 * `"ClassDefinition"`
 * `"ClassCommentDefinition"`
 * `"ClassRemove"`

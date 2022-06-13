@@ -5,6 +5,7 @@ import OverridingIcon from "@material-ui/icons/ExpandLess";
 import OverridingOverridenIcon from "@material-ui/icons/UnfoldMore";
 import { IDEContext } from "../IDEContext";
 import { withDialog } from "../dialogs/index";
+import { optionHandlers } from "codemirror";
 
 class MethodList extends Component {
 	static contextType = IDEContext;
@@ -47,8 +48,25 @@ class MethodList extends Component {
 
 	removeMethod = async (method) => {
 		try {
-			await this.context.api.deleteMethod(method.class, method.selector);
+			await this.context.api.removeMethod(method.class, method.selector);
 			const handler = this.props.onRemove;
+			if (handler) {
+				handler(method);
+			}
+		} catch (error) {
+			this.context.reportError(error);
+		}
+	};
+
+	classifyMethod = async (method, category) => {
+		try {
+			await this.context.api.classifyMethod(
+				method.class,
+				method.selector,
+				category
+			);
+			method.category = category;
+			const handler = this.props.onClassify;
 			if (handler) {
 				handler(method);
 			}
@@ -99,22 +117,39 @@ class MethodList extends Component {
 		}
 	};
 
-	menuOptions() {
-		return [
+	menuOptions = () => {
+		const options = [
 			{ label: "New", action: this.newMethod },
 			{ label: "Rename", action: this.renameMethod },
 			{ label: "Remove", action: this.removeMethod },
-			null,
-			{ label: "Browse class", action: this.browseClass },
-			{ label: "Senders", action: this.browseSenders },
-			{ label: "Local senders", action: this.browseLocalSenders },
-			{ label: "Implementors", action: this.browseImplementors },
-			{ label: "Local implementors", action: this.browseLocalImplementors },
-			{ label: "Class references", action: this.browseClassReferences },
-			null,
-			{ label: "Test", action: this.runTest },
 		];
-	}
+		const categories = this.props.categories || [];
+		if (categories.length > 0) {
+			options.push({
+				label: "Classify under...",
+				suboptions: categories.map((c) => {
+					return {
+						label: c,
+						action: (m) => this.classifyMethod(m, c),
+					};
+				}),
+			});
+		}
+		options.push(
+			...[
+				null,
+				{ label: "Browse class", action: this.browseClass },
+				{ label: "Senders", action: this.browseSenders },
+				{ label: "Local senders", action: this.browseLocalSenders },
+				{ label: "Implementors", action: this.browseImplementors },
+				{ label: "Local implementors", action: this.browseLocalImplementors },
+				{ label: "Class references", action: this.browseClassReferences },
+				null,
+				{ label: "Test", action: this.runTest },
+			]
+		);
+		return options;
+	};
 
 	methodLabel = (method) => {
 		return this.props.showClass === true

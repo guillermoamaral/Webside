@@ -16,6 +16,7 @@ All changes should include `author` proprerty and might specify a `project` prop
 | :--: | -- | -- |
 | MethodDefinition | Define a method within a given class and category. | <pre>{<br>    "type": "MethodDefinition",<br>    "class": "string",<br>    "category": "string",<br>    "sourceCode": "string"<br>} </pre> |
 | MethodRemove | Remove a given method | <pre>{<br>    "type": "MethodRemove",<br>    "class": "string",<br>    "selector": "string"<br>} </pre> |
+| MethodClassification | Classifies a given method under a given category | <pre>{<br>    "type": "MethodClassification",<br>    "class": "string",<br>    "selector": "string",<br>    "category": "string"<br>} </pre> |
 | SelectorRename | Rename a given selector. The scope is the whole system. | <pre>{<br>    "type": "SelectorRename",<br>    "class": "string",<br>    "selector": "string",<br>    "newSelector": "string"<br>} </pre> |
 | ClassDefinition | Define a new class or changes the definition of an existing one. | <pre>{<br>    "type": "ClassDefinition",<br>    "class": "string",<br>    "definition": "string"<br>} </pre> |
 | ClassCommentDefinition | Change the comment of a given class. | <pre>{<br>    "type": "ClassCommentDefinition",<br>    "class": "string",<br>    "comment": "string"<br>} </pre> |

@@ -518,7 +518,7 @@ class API {
 		return await this.postChange(change, "comment class " + classname);
 	}
 
-	async deleteClass(classname) {
+	async removeClass(classname) {
 		const change = this.newChange("ClassRemove");
 		change.class = classname;
 		return await this.postChange(change, "remove class " + classname);
@@ -584,7 +584,7 @@ class API {
 		);
 	}
 
-	async deleteInstanceVariable(classname, variable) {
+	async removeInstanceVariable(classname, variable) {
 		const change = this.newChange("InstanceVariableRemove");
 		change.class = classname;
 		change.variable = variable;
@@ -594,7 +594,7 @@ class API {
 		);
 	}
 
-	async deleteClassVariable(classname, variable) {
+	async removeClassVariable(classname, variable) {
 		const change = this.newChange("ClassVariableRemove");
 		change.class = classname;
 		change.variable = variable;
@@ -641,7 +641,7 @@ class API {
 		);
 	}
 
-	async deleteCategory(classname, category) {
+	async removeCategory(classname, category) {
 		const change = this.newChange("CategoryRemove");
 		change.class = classname;
 		change.category = category;
@@ -663,13 +663,24 @@ class API {
 		);
 	}
 
-	async deleteMethod(classname, selector) {
+	async removeMethod(classname, selector) {
 		const change = this.newChange("MethodRemove");
 		change.class = classname;
 		change.selector = selector;
 		return await this.postChange(
 			change,
 			"remove methodd " + classname + ">>#" + selector
+		);
+	}
+
+	async classifyMethod(classname, selector, category) {
+		const change = this.newChange("MethodClassification");
+		change.class = classname;
+		change.selector = selector;
+		change.category = category;
+		return await this.postChange(
+			change,
+			"classify methodd " + classname + ">>#" + selector + " under " + category
 		);
 	}
 

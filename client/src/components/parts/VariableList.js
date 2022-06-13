@@ -87,12 +87,12 @@ class VariableList extends Component {
 		}
 		try {
 			if (variable.type === "instance") {
-				await this.context.api.deleteInstanceVariable(
+				await this.context.api.removeInstanceVariable(
 					this.props.class.name,
 					variable.name
 				);
 			} else {
-				await this.context.api.deleteClassVariable(
+				await this.context.api.removeClassVariable(
 					this.props.class.name,
 					variable.name
 				);

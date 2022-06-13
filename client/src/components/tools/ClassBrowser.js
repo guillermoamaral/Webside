@@ -576,6 +576,7 @@ class ClassBrowser extends Component {
 							<Paper className={fixedHeightPaper} variant="outlined">
 								<MethodList
 									methods={this.currentMethods()}
+									categories={this.currentCategories()}
 									selectedMethod={selectedMethod}
 									onSelect={this.methodSelected}
 									onRename={this.methodRenamed}
