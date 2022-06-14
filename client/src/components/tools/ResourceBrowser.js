@@ -15,7 +15,6 @@ import WorkspaceIcon from "../icons/WorkspaceIcon";
 import DebuggerIcon from "../icons/DebuggerIcon";
 import TestRunnerIcon from "../icons/TestRunnerIcon";
 import MemoryIcon from "../icons/MemoryIcon";
-import clsx from "clsx";
 import MemoryStats from "./MemoryStats";
 
 class ResourceBrowser extends Component {

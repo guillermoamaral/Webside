@@ -1,13 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
 import withStateHandlers from "recompose/withStateHandlers";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Button from "@material-ui/core/Button";
-import { List, ListItem, ListItemText } from "@material-ui/core";
+import {
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
+	Button,
+} from "@material-ui/core";
+import CustomList from "../controls/CustomList";
 
 function ListDialog(props, context) {
 	const {
@@ -41,29 +43,12 @@ function ListDialog(props, context) {
 				) : (
 					message
 				)}
-				<List
-					//onKeyDown={this.keyPressed}
-					style={{ paddingTop: 0, paddingBottom: 0 }}
-				>
-					{items.map((item, index) => {
-						return (
-							<ListItem
-								style={{
-									paddingTop: 0,
-									paddingBottom: 0,
-									paddingLeft: 0,
-									paddingRight: 0,
-								}}
-								button
-								key={"item" + index}
-								selected={value === item}
-								onClick={(event) => handleChange(item)}
-							>
-								<ListItemText primary={item} />
-							</ListItem>
-						);
-					})}
-				</List>
+				<CustomList
+					autoFocus
+					items={items}
+					selectedItem={value}
+					onSelect={handleChange}
+				/>
 			</DialogContent>
 			<DialogActions>
 				<Button

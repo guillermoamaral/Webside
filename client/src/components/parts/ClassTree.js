@@ -40,7 +40,7 @@ class ClassTree extends Component {
 		}
 		try {
 			const confirm = await this.props.dialog.confirm({
-				title: "Delete " + species.name + "?",
+				title: "Delete " + species.name + " class?",
 				ok: { text: "Delete", color: "secondary", variant: "outlined" },
 			});
 			if (!confirm) {

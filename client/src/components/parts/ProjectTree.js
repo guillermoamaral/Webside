@@ -31,7 +31,7 @@ class ProjectTree extends Component {
 			return;
 		}
 		const confirm = await this.props.dialog.confirm({
-			title: "Delete " + project.name + "?",
+			title: "Delete " + project.name + " project?",
 			ok: { text: "Delete", color: "secondary", variant: "outlined" },
 		});
 		if (!confirm) {

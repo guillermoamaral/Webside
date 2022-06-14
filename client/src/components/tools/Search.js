@@ -62,8 +62,8 @@ class Search extends Component {
 						margin="dense"
 						autoFocus
 						type="text"
-						onKeyPress={(e) => {
-							if (e.key === "Enter") {
+						onKeyPress={(event) => {
+							if (event.key === "Enter") {
 								this.search();
 							}
 						}}

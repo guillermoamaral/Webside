@@ -5,7 +5,6 @@ import OverridingIcon from "@material-ui/icons/ExpandLess";
 import OverridingOverridenIcon from "@material-ui/icons/UnfoldMore";
 import { IDEContext } from "../IDEContext";
 import { withDialog } from "../dialogs/index";
-import { optionHandlers } from "codemirror";
 
 class MethodList extends Component {
 	static contextType = IDEContext;
