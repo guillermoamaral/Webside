@@ -6,6 +6,7 @@ import {
 	ListItemIcon,
 	Box,
 	TextField,
+	Typography,
 } from "@material-ui/core";
 import PopupMenu from "./PopupMenu";
 import Scrollable from "./Scrollable";
@@ -195,13 +196,15 @@ class CustomList extends Component {
 								</Box>
 								<ListItemText
 									primary={
-										<Box
-											fontWeight={
-												selected ? "fontWeightMedium" : "fontWeightRegular"
-											}
-										>
-											{label}
-										</Box>
+										<Typography component="div">
+											<Box
+												fontWeight={
+													selected ? "fontWeightBold" : "fontWeightRegular"
+												}
+											>
+												{label}
+											</Box>
+										</Typography>
 									}
 								/>
 							</ListItem>
