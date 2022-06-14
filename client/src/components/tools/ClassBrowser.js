@@ -431,6 +431,14 @@ class ClassBrowser extends Component {
 		this.applySelections(selections);
 	};
 
+	methodClassified = (method) => {
+		const selections = this.currentSelections();
+		if (selections.category) {
+			selections.category = method.category;
+		}
+		this.applySelections(selections);
+	};
+
 	methodCompiled = async (method) => {
 		if (!method) {
 			return;
@@ -581,6 +589,7 @@ class ClassBrowser extends Component {
 									onSelect={this.methodSelected}
 									onRename={this.methodRenamed}
 									onRemove={this.methodRemoved}
+									onClassify={this.methodClassified}
 								/>
 							</Paper>
 						</Grid>
