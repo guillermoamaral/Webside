@@ -1,28 +1,16 @@
 import React, { Component } from "react";
 import CodeEditor from "../parts/CodeEditor";
+import { IDEContext } from "../IDEContext";
 
 class Transcript extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			text: props.text,
-		};
-	}
-
-	textChanged = (text) => {
-		const handler = this.props.onChange;
-		if (handler) {
-			handler(text);
-		}
-		this.setState({ text: text });
-	};
-
+	static contextType = IDEContext;
+	
 	render() {
 		return (
 			<CodeEditor
 				styles={this.props.styles}
-				source={this.state.text}
-				onChange={this.textChanged}
+				source={this.context.transcriptText}
+				onChange={this.props.onChange}
 				showAccept={false}
 			/>
 		);
