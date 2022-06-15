@@ -248,6 +248,9 @@ class IDE extends Component {
 		const state = { selectedPage: page };
 		if (page.label === "Transcript") {
 			state.unreadErrorsCount = 0;
+			if (page.component && page.component.ref && page.component.current) {
+				page.component.current.forceUpdate();
+			}
 		}
 		this.setState(state);
 	};
@@ -314,9 +317,8 @@ class IDE extends Component {
 			const page = this.pageLabeled("Transcript");
 			if (page) {
 				this.selectPage(page);
-				page.component.ref.current.forceUpdate();
 			} else {
-				const ref = React.createRef()
+				const ref = React.createRef();
 				const transcript = (
 					<Transcript
 						ref={ref}
@@ -325,7 +327,7 @@ class IDE extends Component {
 						onChange={this.transcriptChanged}
 					/>
 				);
-				this.addPage("Transcript", <TranscriptIcon />, transcript);
+				this.addPage("Transcript", <TranscriptIcon />, transcript, true);
 			}
 		}
 	};
@@ -448,7 +450,7 @@ class IDE extends Component {
 		this.addPage("Inspecting: " + object.class, <InspectorIcon />, inspector);
 	};
 
-	openChangesBrowser = (changes, title = "Changes") => {
+	browseChanges = (changes, title = "Changes") => {
 		const browser = (
 			<ChangesBrowser styles={this.props.styles} changes={changes} />
 		);
@@ -636,7 +638,7 @@ class IDE extends Component {
 	browseLastChanges = async () => {
 		try {
 			const changes = await this.api.getChanges();
-			this.openChangesBrowser(changes, "Last changes");
+			this.browseChanges(changes, "Last changes");
 		} catch (error) {
 			this.reportError(error);
 		}
@@ -725,11 +727,11 @@ class IDE extends Component {
 		if (!text) {
 			return;
 		}
-		const transcript = this.pageLabeled("Transcript");
 		this.setState({
 			transcriptText: this.state.transcriptText + "\r" + text,
 			unreadErrorsCount: this.state.unreadErrorsCount + 1,
 		});
+		const transcript = this.pageLabeled("Transcript");
 	};
 
 	transcriptChanged = (text) => {

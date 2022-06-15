@@ -188,7 +188,6 @@ class FastCustomList extends Component {
 	};
 
 	filterItems(text) {
-		console.log(text);
 		const enabled = text !== "";
 		const all = this.props.items;
 		const target = text.toLowerCase();
