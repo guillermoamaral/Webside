@@ -9,6 +9,7 @@ import { HorizontalBar } from "react-chartjs-2";
 
 class Profiler extends Component {
 	static contextType = IDEContext;
+	
 	constructor(props) {
 		super(props);
 		this.state = {

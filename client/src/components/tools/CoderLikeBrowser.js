@@ -18,6 +18,7 @@ import CodeEditor from "../parts/CodeEditor";
 
 class CoderLikeBrowser extends Component {
 	static contextType = IDEContext;
+	
 	constructor(props) {
 		super(props);
 		this.cache = {};

@@ -17,6 +17,7 @@ import CustomTable from "../controls/CustomTable";
 
 class TestRunner extends Component {
 	static contextType = IDEContext;
+	
 	constructor(props) {
 		super(props);
 		this.state = {

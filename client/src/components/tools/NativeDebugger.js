@@ -13,6 +13,7 @@ import { HorizontalBar } from "react-chartjs-2";
 
 class NativeDebugger extends Component {
 	static contextType = IDEContext;
+	
 	constructor(props) {
 		super(props);
 		this.state = {

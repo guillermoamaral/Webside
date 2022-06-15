@@ -19,6 +19,7 @@ import MemoryStats from "./MemoryStats";
 
 class ResourceBrowser extends Component {
 	static contextType = IDEContext;
+	
 	constructor(props) {
 		super(props);
 		this.state = {

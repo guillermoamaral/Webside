@@ -130,7 +130,6 @@ class CustomList extends Component {
 	};
 
 	render() {
-		console.log("rendering list");
 		const filterText = this.state.filterText;
 		const prefix = filterText.toLowerCase();
 		const items = (this.props.items || []).filter((i) => {

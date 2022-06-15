@@ -313,13 +313,16 @@ class IDE extends Component {
 		} else {
 			const page = this.pageLabeled("Transcript");
 			if (page) {
-				page.text = this.state.transcriptText;
 				this.selectPage(page);
+				page.component.ref.current.props.text = "()";
 			} else {
+				const ref = React.createRef();
 				const transcript = (
 					<Transcript
+						ref={ref}
 						styles={this.props.styles}
-						text={this.state.transcriptText}
+						contents={{ text: this.state.transcriptText }}
+						onChange={this.transcriptChanged}
 					/>
 				);
 				this.addPage("Transcript", <TranscriptIcon />, transcript);
@@ -349,7 +352,7 @@ class IDE extends Component {
 	};
 
 	openResources = async () => {
-		const page = this.state.pages.find((p) => p.label.startsWith("Resources"));
+		const page = this.pageLabeled("Resources");
 		if (page) {
 			this.selectPage(page);
 		} else {
@@ -761,7 +764,6 @@ class IDE extends Component {
 	};
 
 	render() {
-		console.log("rendering IDE");
 		const context = {
 			api: this.api,
 			dialect: this.dialect,

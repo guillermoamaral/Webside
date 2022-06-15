@@ -23,6 +23,7 @@ import UpIcon from "@material-ui/icons/ArrowDropUp";
 
 class ClassBrowser extends Component {
 	static contextType = IDEContext;
+	
 	constructor(props) {
 		super(props);
 		this.cache = {};

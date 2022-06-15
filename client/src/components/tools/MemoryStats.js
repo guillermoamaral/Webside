@@ -5,6 +5,7 @@ import { Line } from "react-chartjs-2";
 
 class MemoryStats extends Component {
 	static contextType = IDEContext;
+	
 	constructor(props) {
 		super(props);
 		this.state = {
