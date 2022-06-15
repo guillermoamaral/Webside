@@ -314,14 +314,11 @@ class IDE extends Component {
 			const page = this.pageLabeled("Transcript");
 			if (page) {
 				this.selectPage(page);
-				page.component.ref.current.props.text = "()";
 			} else {
-				const ref = React.createRef();
 				const transcript = (
 					<Transcript
-						ref={ref}
 						styles={this.props.styles}
-						contents={{ text: this.state.transcriptText }}
+						text={this.state.transcriptText}
 						onChange={this.transcriptChanged}
 					/>
 				);
