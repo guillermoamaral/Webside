@@ -314,9 +314,12 @@ class IDE extends Component {
 			const page = this.pageLabeled("Transcript");
 			if (page) {
 				this.selectPage(page);
+				page.component.ref.current.forceUpdate();
 			} else {
+				const ref = React.createRef()
 				const transcript = (
 					<Transcript
+						ref={ref}
 						styles={this.props.styles}
 						text={this.state.transcriptText}
 						onChange={this.transcriptChanged}
@@ -789,6 +792,7 @@ class IDE extends Component {
 			inspectObject: this.openInspector,
 			reportError: this.reportError,
 			updatePageLabel: this.updatePageLabel,
+			transcriptText: this.state.transcriptText,
 		};
 		const styles = this.props.styles;
 		return (
