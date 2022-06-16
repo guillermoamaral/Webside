@@ -28,209 +28,179 @@ Retrieve all packages in the system.
 }
 ```
 
-**Example:**: `GET /packages`.
+**Example:**: The following is the partial result of `GET /packages` on Pharo.
 ```json
 [
     {
-        "name": "Javascript-Compilation-Tests",
-        "classes": [],
-        "methods": []
-    },
-    {
-        "name": "Javascript-Development",
+        "name": "Webside",
         "classes": [
-            "JSEPrintSourceVisitor",
-            "JSEColorPrinterVisitor"
+            "WebsideAPI",
+            "WebsideServer",
+            "ManifestWebside"
         ],
-        "methods": [
-            {
-                "class": "PPParser",
-                "selector": "jseWithLoggingTo:"
-            },
-            {
-                "class": "PPParser",
-                "selector": "jseParseAndCountProductions:"
-            }
-        ]
-    },
+        "methods": {
+            "RBVariableNode": [
+                "websideType"
+            ],
+            "RPackageTag": [
+                "asWebsideJson"
+            ],
+            "Dictionary": [
+                "asWebsideJson"
+            ],
+            "RBRefactoring": [
+                "fromWebsideJson:",
+                "websideType",
+                "acceptsWebsideJson:",
+                "classForWebsideJson:"
+            ],
+            "RBLiteralValueNode": [
+                "asWebsideJson"
+            ],
+            "RBCascadeNode": [
+                "asWebsideJson"
+            ],
+            "RBVariableRefactoring": [
+                "fromWebsideJson:",
+                "asWebsideJson"
+            ],
+            "RBPullUpInstanceVariableRefactoring": [
+                "websideType"
+            ],
+            "Object": [
+                "asWebsideJson"
+            ],
+            "RBMethodNode": [
+                "asWebsideJson"
+            ],
+            "RBAddMethodChange": [
+                "websideType"
+            ],
+            "RBReturnNode": [
+                "asWebsideJson"
+            ],
+            "RBRemoveMethodChange": [
+                "websideType"
+            ],
+            "RBAddClassChange": [
+                "websideType"
+            ],
+            "RBRenameMethodRefactoring": [
+                "websideType"
+            ],
+            "RBRefactoryProtocolChange": [
+                "fromWebsideJson:",
+                "asWebsideJson"
+            ],
+            "String": [
+                "asWebsideJson"
+            ],
+            "RPackage": [
+                "asWebsideJson"
+            ],
+            "RBMethodProtocolChange": [
+                "websideType"
+            ],
+            "Context": [
+                "asWebsideJson"
+            ],
+            "SyntaxErrorNotification": [
+                "asWebsideJson"
+            ],
+            "RBAssignmentNode": [
+                "asWebsideJson"
+            ],
+            "ClassDescription": [
+                "asWebsideJson"
+            ],
+            "RBCommentChange": [
+                "websideType"
+            ],
+            "RBRefactoryChange": [
+                "fromWebsideJson:",
+                "websideType",
+                "acceptsWebsideJson:",
+                "classForWebsideJson:"
+            ],
+            "RBRefactoryClassChange": [
+                "fromWebsideJson:",
+                "asWebsideJson"
+            ],
+            "CompiledMethod": [
+                "asWebsideJson"
+            ],
+            "RBRenameVariableChange": [
+                "fromWebsideJson:",
+                "asWebsideJson"
+            ],
+            "RBMessageNode": [
+                "asWebsideJson"
+            ],
+            "RBSequenceNode": [
+                "asWebsideJson"
+            ],
+            "RBRefactoryDefinitionChange": [
+                "asWebsideJson"
+            ],
+            "RBMethodRefactoring": [
+                "fromWebsideJson:",
+                "asWebsideJson"
+            ],
+            "RBLiteralArrayNode": [
+                "asWebsideJson"
+            ],
+            "RGMethodDefinition": [
+                "asWebsideJson"
+            ],
+            "RBRefactoryVariableChange": [
+                "fromWebsideJson:",
+                "asWebsideJson"
+            ],
+            "RBRenameClassChange": [
+                "websideType"
+            ],
+            "RBNode": [
+                "websideType"
+            ],
+            "Collection": [
+                "asWebsideJson"
+            ],
+            "RBRemoveProtocolChange": [
+                "websideType"
+            ],
+            "RBAddClassVariableChange": [
+                "websideType"
+            ],
+            "RBRemoveClassChange": [
+                "websideType"
+            ],
+            "RBRemoveInstanceVariableChange": [
+                "websideType"
+            ],
+            "RBReplaceMethodRefactoring": [
+                "acceptsWebsideJson:"
+            ],
+            "RBAddMethodRefactoring": [
+                "websideType",
+                "acceptsWebsideJson:"
+            ],
+            "RBPushDownInstanceVariableRefactoring": [
+                "websideType"
+            ],
+            "RBAddInstanceVariableChange": [
+                "websideType"
+            ],
+            "RBRenameInstanceVariableChange": [
+                "websideType"
+            ]
+        },
+    }
     {
-        "name": "Javascript-Tests",
+        "name": "Webside-Tests",
         "classes": [
-            "JavascriptCompilingTest",
-            "JavascriptNumericConversionTest",
-            "BasicJavascriptParserTest",
-            "JavascriptParserTest",
-            "JavascriptFormattingTest",
-            "JavascriptSyntaxTest",
-            "JSETestParserResource",
-            "JSETestFactory",
-            "JavascriptNodeTest",
-            "JavascriptLexicalTest",
-            "JavascriptUnicodeTest"
+            "WebsideAPITest"
         ],
-        "methods": [
-            {
-                "class": "PPParser",
-                "selector": "jseIsLeftRecursiveProduction:"
-            },
-            {
-                "class": "PPSequenceParser",
-                "selector": "jseIsLeftRecursiveProduction:"
-            },
-            {
-                "class": "PPParser",
-                "selector": "jseIsLeftRecursiveProduction"
-            }
-        ]
-    },
-    {
-        "name": "Javascript-Parser",
-        "classes": [
-            "JSEAbstractParser",
-            "JSEStrictLexicalParser",
-            "JSELexicalParser",
-            "JSERegexToken",
-            "JSEParsedNodesFactory",
-            "JSEToken",
-            "JSENilFactory",
-            "JSELiteralSequenceChoiceParser",
-            "JSEUnicodeTables",
-            "JSELookaheadParser",
-            "JSECharactersParser",
-            "JSEParser",
-            "JSETokenParser",
-            "JSESyntacticParser",
-            "JSESyntaxTreeFactory",
-            "JSENumericStringParser"
-        ],
-        "methods": [
-            {
-                "class": "PPChoiceParser",
-                "selector": "jseIsLeftRecursiveProduction:"
-            },
-            {
-                "class": "SmalltalkSession class",
-                "selector": "javascriptParserJustBound"
-            },
-            {
-                "class": "PPParser",
-                "selector": "jseToken:"
-            },
-            {
-                "class": "PPParser",
-                "selector": "allParsersDo:visited:"
-            },
-            {
-                "class": "PPParser",
-                "selector": "listSeparatedBy:"
-            },
-            {
-                "class": "PPParser",
-                "selector": "butNot:"
-            },
-            {
-                "class": "String",
-                "selector": "jseTokenParser"
-            },
-            {
-                "class": "PPParser",
-                "selector": "jseToken:valueBlock:"
-            },
-            {
-                "class": "PPParser",
-                "selector": "allParsersDo:"
-            },
-            {
-                "class": "Character",
-                "selector": "jseTokenParser"
-            }
-        ]
-    },
-    {
-        "name": "Javascript-AST",
-        "classes": [
-            "JSEEnumeratingForNode",
-            "JSEForEnumerateVariableNode",
-            "JSEUnaryOperatorNode",
-            "JSEStringNode",
-            "JSEThisNode",
-            "JSEPostfixOperatorNode",
-            "JSELetDeclarationNode",
-            "JSEGetPropertyAssignmentNode",
-            "JSEDoWhileNode",
-            "JSEGroupedExpressionNode",
-            "JSEVariableStatementNode",
-            "JSEIdentifierNode",
-            "JSEBinaryOperatorNode",
-            "JSEPropertyFunctionAssignmentNode",
-            "JSEForEnumerateElementsNode",
-            "JSEPropertyNode",
-            "JSEExceptionHandlerNode",
-            "JSEPrimitiveLiteralNode",
-            "JSELetStatementNode",
-            "JSESwitchClause",
-            "JSETryNode",
-            "JSECatchNode",
-            "JSECallNode",
-            "JSEVariableDeclarationNode",
-            "JSEParseNode",
-            "JSEArrayNode",
-            "JSEConditionalIterationNode",
-            "JSELiteralNode",
-            "JSECommaSeparatedExpressionsNode",
-            "JSEThrowNode",
-            "JSENullNode",
-            "JSEMemberNode",
-            "JSEConstStatementNode",
-            "JSEProgramNode",
-            "JSEConditionalForNode",
-            "JSEConditionalNode",
-            "JSEIterationNode",
-            "JSEDebuggerNode",
-            "JSERegularExpressionNode",
-            "JSESyntaxTreeVisitor",
-            "JSEFunctionExpressionNode",
-            "JSEForEnumerateLetNode",
-            "JSESetPropertyAssignmentNode",
-            "JSESwitchNode",
-            "JSEContinueNode",
-            "JSEBlockNode",
-            "JSEBracketMemberNode",
-            "JSEForWithVariableListNode",
-            "JSEFinallyNode",
-            "JSEConditionalExpressionNode",
-            "JSEIfNode",
-            "JSEPropertyAssignmentNode",
-            "JSEBreakNode",
-            "JSEExpressionStatementNode",
-            "JSEEncodingVisitor",
-            "JSEBooleanNode",
-            "JSEObjectNode",
-            "JSEFunctionBodyNode",
-            "JSEMacroNode",
-            "JSEIdentifierNameNode",
-            "JSEWithNode",
-            "JSEFunctionCallNode",
-            "JSEDotMemberNode",
-            "JSEAssignmentNode",
-            "JSESourceElementListNode",
-            "JSEFunctionDeclarationNode",
-            "JSESwitchDefaultClause",
-            "JSEForWithInitializerNode",
-            "JSENewNode",
-            "JSEEmptyStatementNode",
-            "JSEForWithLetListNode",
-            "JSELabelledStatementNode",
-            "JSEReturnNode",
-            "JSEForIterationNode",
-            "JSEOperatorNode",
-            "JSEWhileNode",
-            "JSEFunctionNode",
-            "JSEControlStatementNode",
-            "JSENumericNode",
-            "JSESwitchClauseNode"
-        ],
-        "methods": []
+        "methods": {}
     }
 ]
 ```
