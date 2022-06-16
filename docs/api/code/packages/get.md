@@ -9,8 +9,6 @@ Retrieve all packages in the system.
 | Option | Type | Description |
 | ------------- | ------------- | ------------- |
 | names | boolean | true to get only package names |
-| tree | boolean | true to get a tree-like structure |
-| depth | number | to limit the hierarchy depth (only when tree=true) |
 
 ## Success Responses
 
