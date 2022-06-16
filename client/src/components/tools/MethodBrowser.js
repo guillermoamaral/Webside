@@ -7,11 +7,12 @@ import CodeBrowser from "../parts/CodeBrowser";
 
 class MethodBrowser extends Component {
 	static contextType = IDEContext;
-	
+
 	constructor(props) {
 		super(props);
 		this.state = {
-			selectedMethod: null,
+			selectedMethod:
+				this.props.methods.length > 0 ? this.props.methods[0] : null,
 			selectedClass: null,
 		};
 	}
