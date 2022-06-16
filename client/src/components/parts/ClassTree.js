@@ -17,13 +17,13 @@ class ClassTree extends Component {
 				required: true,
 			});
 			//This is not correct as the class might be indexed from its creation...
-			const project = superclass.project;
+			const packagename = superclass.package;
 			const definition =
 				superclass.name +
 				" subclass: #" +
 				name +
 				" instanceVariableNames: '' classVariableNames: '' poolDictionaries: ''";
-			await this.context.api.defineClass(name, project, definition);
+			await this.context.api.defineClass(name, packagename, definition);
 			const species = await this.context.api.getClass(name);
 			const handler = this.props.onCreate;
 			if (handler) {
@@ -83,9 +83,9 @@ class ClassTree extends Component {
 		}
 	};
 
-	browseProject = (species) => {
+	browsePackage = (species) => {
 		if (species) {
-			this.context.browseProject(species.project);
+			this.context.browsePackage(species.package);
 		}
 	};
 
@@ -108,7 +108,7 @@ class ClassTree extends Component {
 			{ label: "Remove", action: this.removeClass },
 			null,
 			{ label: "Browse", action: this.browseClass },
-			{ label: "Browse project", action: this.browseProject },
+			{ label: "Browse package", action: this.browsePackage },
 			{ label: "References", action: this.browseClassReferences },
 			null,
 			{ label: "Test", action: this.runTests },

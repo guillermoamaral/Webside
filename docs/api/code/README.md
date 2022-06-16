@@ -1,5 +1,5 @@
 # Code
-These are the endpoints used to retrieve system code: projects, classes and methods.
+These are the endpoints used to retrieve system code: packages, classes and methods.
 
 It is important to mention that the JSON objects returned by these endpoints should include common properties of every `object`. This is used by Webside IDE to provide inspection services over objects of the meta-model (classes, methods, etc.).
 These are the common properties at the moment:
@@ -26,5 +26,5 @@ These are the common properties at the moment:
 | GET | [/classes/{name}/class-variables](classes/name/class-variables/get.md) | Retrive class variables of a given class | - | - |
 | GET | [/classes/{name}/categories](classes/name/categories/get.md) | Retrive categories of a given class | - | - |
 | GET | [/classes/{name}/methods](classes/name/methods/get.md) | Retrive methods of a given class | - | - |
-| GET | [/projects](projects/get.md) | Retrive all projects of a given root project (if no root is provided, the uppermost project in the system is used). It is also possible get a tree-like structure as well as to limit the depth in the projects hierarchy | root<br />names<br />tree<br />depth | - |
-| GET | [/projects/{name}](projects/name/get.md) | Retrive a given project | - | - |
+| GET | [/packages](packages/get.md) | Retrive all packages | root<br />names<br />tree<br />depth | - |
+| GET | [/packages/{name}](packages/name/get.md) | Retrive a given package | - | - |

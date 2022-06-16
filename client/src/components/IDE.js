@@ -21,7 +21,7 @@ import { IDEContext } from "./IDEContext";
 import { DialogProvider } from "./dialogs/index";
 import TranscriptIcon from "./icons/TranscriptIcon";
 import SearchIcon from "@material-ui/icons/Search";
-import SystemBrowserIcon from "./icons/SystemBrowserIcon";
+import PackageBrowserIcon from "./icons/PackageBrowserIcon";
 import ClassBrowserIcon from "./icons/ClassBrowserIcon";
 import MethodBrowserIcon from "./icons/MethodBrowserIcon";
 import WorkspaceIcon from "./icons/WorkspaceIcon";
@@ -36,7 +36,7 @@ import Sidebar from "./layout/Sidebar";
 import TabControl from "./controls/TabControl";
 import Transcript from "./tools/Transcript";
 import Search from "./tools/Search";
-import SystemBrowser from "./tools/SystemBrowser";
+import PackageBrowser from "./tools/PackageBrowser";
 import ClassBrowser from "./tools/ClassBrowser";
 import MethodBrowser from "./tools/MethodBrowser";
 import Inspector from "./tools/Inspector";
@@ -210,9 +210,9 @@ class IDE extends Component {
 
 	cacheNames = async () => {
 		try {
-			this.projectNames = await this.api.getProjectNames();
+			this.packageNames = await this.api.getPackageNames();
 		} catch (error) {
-			this.projectNames = [];
+			this.packageNames = [];
 			this.reportError(error);
 		}
 		try {
@@ -362,15 +362,9 @@ class IDE extends Component {
 		}
 	};
 
-	openSystemBrowser = (projectname) => {
-		const browser = (
-			<SystemBrowser styles={this.props.styles} root={projectname} />
-		);
-		this.addPage(
-			projectname || "System Browser",
-			<SystemBrowserIcon />,
-			browser
-		);
+	openPackageBrowser = () => {
+		const browser = <PackageBrowser styles={this.props.styles} />;
+		this.addPage("Package Browser", <PackageBrowserIcon />, browser);
 	};
 
 	browseClass = async (classname) => {
@@ -697,10 +691,10 @@ class IDE extends Component {
 		}
 	};
 
-	runTestProject = async (projectname) => {
+	runTestPackage = async (packagename) => {
 		try {
-			const status = await this.api.runTestProject(projectname);
-			this.openTestRunner(status.id, "Test " + projectname);
+			const status = await this.api.runTestPackage(packagename);
+			this.openTestRunner(status.id, "Test " + packagename);
 		} catch (error) {
 			this.reportError(error);
 		}
@@ -744,9 +738,9 @@ class IDE extends Component {
 		// this.setState({changesCount: changes.length})
 	};
 
-	addSystemBrowserClicked = () => {
+	addPackageBrowserClicked = () => {
 		this.setState({ addPageMenuOpen: false });
-		this.openSystemBrowser();
+		this.openPackageBrowser();
 	};
 
 	addClassBrowserClicked = () => {
@@ -769,12 +763,13 @@ class IDE extends Component {
 		const context = {
 			api: this.api,
 			dialect: this.dialect,
+			transcriptText: this.state.transcriptText,
 			messageChannel: this.messageChannel,
-			projectNames: this.projectNames,
+			packageNames: this.packageNames,
 			classNames: this.classNames,
 			openChat: this.openChat,
 			openWorkspace: this.openWorkspace,
-			browseProject: this.openSystemBrowser,
+			browsePackage: this.openPackageBrowser,
 			browseClass: this.browseClass,
 			browseSenders: this.browseSenders,
 			browseLocalSenders: this.browseLocalSenders,
@@ -789,12 +784,11 @@ class IDE extends Component {
 			profileExpression: this.profileExpression,
 			runTest: this.runTest,
 			runTestClass: this.runTestClass,
-			runTestProject: this.runTestProject,
+			runTestPackage: this.runTestPackage,
 			openTestRunner: this.openTestRunner,
 			inspectObject: this.openInspector,
 			reportError: this.reportError,
 			updatePageLabel: this.updatePageLabel,
-			transcriptText: this.state.transcriptText,
 		};
 		const styles = this.props.styles;
 		return (
@@ -883,7 +877,7 @@ class IDE extends Component {
 														<Box>Class Browser</Box>
 													</Box>
 												</MenuItem>
-												<MenuItem onClick={this.addSystemBrowserClicked}>
+												<MenuItem onClick={this.addPackageBrowserClicked}>
 													<Box
 														display="flex"
 														flexWrap="nowrap"
@@ -891,9 +885,9 @@ class IDE extends Component {
 														justifyContent="center"
 													>
 														<Box pt={1} pr={1}>
-															<SystemBrowserIcon />
+															<PackageBrowserIcon />
 														</Box>
-														<Box>System Browser</Box>
+														<Box>Package Browser</Box>
 													</Box>
 												</MenuItem>
 											</Menu>

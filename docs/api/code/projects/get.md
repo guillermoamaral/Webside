@@ -1,16 +1,14 @@
-# Retrieve projects
-Retrieve all subprojects of a given root project (if no root is provided, the uppermost project in the system is used).
-It is also possible get a tree-like structure as well as to limit the depth in the projects hierarchy.    
+# Retrieve packages
+Retrieve all packages in the system.
 
-**URL**: `/projects`
+**URL**: `/packages`
 
 **Method**: `GET`
 
 **Query Options**
 | Option | Type | Description |
 | ------------- | ------------- | ------------- |
-| root | string | the name of the root project |
-| names | boolean | true to get only project names |
+| names | boolean | true to get only package names |
 | tree | boolean | true to get a tree-like structure |
 | depth | number | to limit the hierarchy depth (only when tree=true) |
 
@@ -18,7 +16,7 @@ It is also possible get a tree-like structure as well as to limit the depth in t
 
 **Code** : `200 OK`
 
-**Content**: `[project]` where `project` is defined as:
+**Content**: `[package]` where `package` is defined as:
 ```json
 {
     "name": "string",
@@ -32,7 +30,7 @@ It is also possible get a tree-like structure as well as to limit the depth in t
 }
 ```
 
-**Example:**: `Javascript` subprojects `GET /projects?root=Javascript`.
+**Example:**: `GET /packages`.
 ```json
 [
     {

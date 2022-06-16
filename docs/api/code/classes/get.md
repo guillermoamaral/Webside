@@ -10,7 +10,7 @@ It is also possible get a tree-like structure as well as to limit the depth in t
 | Option | Type | Description |
 | ------------- | ------------- | ------------- |
 | root | string | the name of the root class |
-| names | boolean | true to get only project names |
+| names | boolean | true to get only class names |
 | tree | boolean | true to get a tree-like structure |
 | depth | number | to limit the hierarchy depth (only when tree=true) |
 
@@ -26,7 +26,7 @@ It is also possible get a tree-like structure as well as to limit the depth in t
     "superclass": "string",
     "comment": "string",
     "variable": "boolean",
-    "project": "string"
+    "package": "string"
 }
 ```
 

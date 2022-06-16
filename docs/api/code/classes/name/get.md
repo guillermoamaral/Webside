@@ -17,7 +17,7 @@ Retrieve the class with a given name.
     "superclass": "string",
     "comment": "string",
     "variable": "boolean",
-    "project": "string"
+    "package": "string"
 }
 ```
 

@@ -10,7 +10,7 @@ Special attention must be paid to the way the API should handle compilation erro
 **Method**: `POST`
 
 **Body**: The body will contain the change to be applied in JSON format. The table below lists all supported changes at this moment. Though types are self-descripted, a short description of what they do is included.
-All changes should include `author` proprerty and might specify a `project` property indicating the project in which the change should be applied (for example, the project that will contain a new class).
+All changes should include `author` proprerty and might specify a `package` property indicating the package in which the change should be applied (for example, the package that will contain a new class).
 
 | Type | Description | Payload |
 | :--: | -- | -- |

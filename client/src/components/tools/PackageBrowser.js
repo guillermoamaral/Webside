@@ -10,21 +10,20 @@ import {
 import clsx from "clsx";
 import { IDEContext } from "../IDEContext";
 import SearchList2 from "../controls/SearchList2";
-import ProjectTree from "../parts/ProjectTree";
+import PackageList from "../parts/PackageList";
 import ClassTree from "../parts/ClassTree";
 import CategoryList from "../parts/CategoryList";
 import MethodList from "../parts/MethodList";
 import CodeBrowser from "../parts/CodeBrowser";
 
-class SystemBrowser extends Component {
+class PackageBrowser extends Component {
 	static contextType = IDEContext;
-	
+
 	constructor(props) {
 		super(props);
-		this.cache = {};
+		this.cache = { packages: {}, classes: {} };
 		this.state = {
-			root: this.props.root,
-			selectedProject: null,
+			selectedPackage: null,
 			selectedClass: null,
 			selectedCategory: null,
 			selectedMethod: null,
@@ -33,31 +32,25 @@ class SystemBrowser extends Component {
 	}
 
 	componentDidMount() {
-		const root = this.state.root;
-		if (root) {
-			this.changeRootProject(root);
-		}
+		this.initializePackages();
 	}
 
-	changeRootProject = async (name) => {
-		if (!name) {
-			return;
-		}
+	initializePackages = async () => {
+		let names;
 		try {
-			const tree = await this.context.api.getProjectTree(name);
-			const project = tree[0];
-			this.cache[name] = project;
-			this.setState({ root: name }, () => {
-				this.projectSelected(project);
-			});
+			names = await this.context.api.getPackageNames();
 		} catch (error) {
+			names = [];
 			this.context.reportError(error);
 		}
+		names.forEach((n) => {
+			this.cache.packages[n] = { name: n };
+		});
 	};
 
 	currentSelections() {
 		return {
-			project: this.state.selectedProject,
+			package: this.state.selectedPackage,
 			class: this.state.selectedClass,
 			category: this.state.selectedCategory,
 			method: this.state.selectedMethod,
@@ -66,12 +59,12 @@ class SystemBrowser extends Component {
 
 	applySelections(selections) {
 		this.setState((prevState, props) => {
-			const project = selections.project;
-			if (project && !this.cache[project.name]) {
-				this.cache[project.name] = project;
+			const pack = selections.package;
+			if (pack && !this.cache.packages[pack.name]) {
+				this.cache.packages[pack.name] = pack;
 			}
 			return {
-				selectedProject: selections.project,
+				selectedPackage: selections.package,
 				selectedClass: selections.class,
 				selectedCategory: selections.category,
 				selectedMethod: selections.method,
@@ -81,8 +74,8 @@ class SystemBrowser extends Component {
 
 	// Contents...
 	currentClasses() {
-		const project = this.state.selectedProject;
-		return !project ? [] : project.classes;
+		const pack = this.state.selectedPackage;
+		return !pack ? [] : pack.classes;
 	}
 
 	currentVariables() {
@@ -96,13 +89,13 @@ class SystemBrowser extends Component {
 	};
 
 	currentMethods = () => {
-		const project = this.state.selectedProject;
+		const pack = this.state.selectedPackage;
 		const species = this.state.selectedClass;
 		const category = this.state.selectedCategory;
-		if (!project || !species) {
+		if (!pack || !species) {
 			return [];
 		}
-		var methods = species.methods.filter((m) => (m.project = project.name));
+		var methods = species.methods.filter((m) => (m.package = pack.name));
 		if (category) {
 			methods = methods.filter((m) => m.category === category);
 		}
@@ -111,12 +104,10 @@ class SystemBrowser extends Component {
 
 	// Updating...
 	async updateClasses(selections, force = false) {
-		const project = selections.project;
-		if (force || !project.classes) {
+		const pack = selections.package;
+		if (force || !pack.classes) {
 			try {
-				project.classes = await this.context.api.getProjectClasses(
-					project.name
-				);
+				pack.classes = await this.context.api.getPackageClasses(pack.name);
 			} catch (error) {
 				this.context.reportError(error);
 			}
@@ -186,12 +177,12 @@ class SystemBrowser extends Component {
 	}
 
 	async updateMethods(selections, force = false) {
-		const project = selections.project;
+		const pack = selections.package;
 		const species = selections.class;
 		const variable = selections.variable;
 		const access = selections.access;
 		var method = selections.method;
-		if (!project || !species) {
+		if (!pack || !species) {
 			return;
 		}
 		try {
@@ -242,20 +233,12 @@ class SystemBrowser extends Component {
 	sideChanged = (event, side) => {
 		if (!side) return;
 		this.setState({ selectedSide: side });
-		if (!this.state.root) {
-			return;
-		}
-		if (side === "instance") {
-			const name = this.state.root;
-			this.changeRootProject(name.slice(0, name.length - 6));
-		} else {
-			this.changeRootProject(this.state.root + " class");
-		}
+		console.log("to do");
 	};
 
-	projectSelected = async (project) => {
+	packageSelected = async (pack) => {
 		const selections = this.currentSelections();
-		selections.project = project;
+		selections.package = pack;
 		await this.updateClasses(selections, true);
 		this.applySelections(selections);
 	};
@@ -276,13 +259,13 @@ class SystemBrowser extends Component {
 	};
 
 	classDefined = async (species) => {
-		var cached = this.cache[species.name];
+		var cached = this.cache.classes[species.name];
 		if (cached) {
 			cached.definition = species.definition;
 		} else {
-			this.cache[species.name] = species;
+			this.cache.classes[species.name] = species;
 			cached = species;
-			const superclass = this.cache[species.superclass];
+			const superclass = this.cache.classes[species.superclass];
 			if (superclass) {
 				superclass.subclasses.push(species);
 				superclass.subclasses.sort((a, b) => (a.name <= b.name ? -1 : 1));
@@ -295,12 +278,12 @@ class SystemBrowser extends Component {
 	};
 
 	classCommented = async (species) => {
-		this.cache[species.name].comment = species.comment;
+		this.cache.classes[species.name].comment = species.comment;
 	};
 
 	classRemoved = (species) => {
-		delete this.cache[species.name];
-		const superclass = this.cache[species.superclass];
+		delete this.cache.classes[species.name];
+		const superclass = this.cache.classes[species.superclass];
 		if (superclass) {
 			superclass.subclasses = superclass.subclasses.filter(
 				(c) => c !== species
@@ -404,15 +387,23 @@ class SystemBrowser extends Component {
 	};
 
 	methodRemoved = (method) => {
-		this.cache[method.class].methods = this.cache[method.class].methods.filter(
-			(m) => m.selector !== method.selector
-		);
+		this.cache.classes[method.class].methods = this.cache.classes[
+			method.class
+		].methods.filter((m) => m.selector !== method.selector);
 		this.setState({ selectedMethod: null });
+	};
+
+	methodClassified = (method) => {
+		const selections = this.currentSelections();
+		if (selections.category) {
+			selections.category = method.category;
+		}
+		this.applySelections(selections);
 	};
 
 	methodCompiled = async (method) => {
 		const selections = this.currentSelections();
-		const species = this.cache[method.class];
+		const species = this.cache.classes[method.class];
 		selections.class = species;
 		if (!species.categories.includes(method.category)) {
 			await this.updateCategories(selections, true);
@@ -435,10 +426,13 @@ class SystemBrowser extends Component {
 	};
 
 	render() {
+		console.log(this.context);
+		const packages = this.context.packageNames.map((n) => {
+			return { name: n };
+		});
 		const {
-			root,
 			selectedSide,
-			selectedProject,
+			selectedPackage,
 			selectedClass,
 			selectedCategory,
 			selectedMethod,
@@ -451,9 +445,10 @@ class SystemBrowser extends Component {
 					<Grid container spacing={1}>
 						<Grid item xs={3} md={3} lg={3}>
 							<SearchList2
-								options={this.context.projectNames}
-								onChange={(projectname) => {
-									this.changeRootProject(projectname);
+								options={this.context.packageNames}
+								onChange={(packagename) => {
+									const pack = this.cache.packages[packagename]; // Search package
+									this.packageSelected(pack);
 								}}
 							/>
 						</Grid>
@@ -483,19 +478,17 @@ class SystemBrowser extends Component {
 						<Grid item xs={3} md={3} lg={3} />
 						<Grid item xs={12} md={3} lg={3}>
 							<Paper className={fixedHeightPaper} variant="outlined">
-								<ProjectTree
-									roots={
-										root ? (this.cache[root] ? [this.cache[root]] : []) : []
-									}
-									selectedProject={selectedProject}
-									onSelect={this.projectSelected}
+								<PackageList
+									packages={packages}
+									selectedPackage={selectedPackage}
+									onSelect={this.packageSelected}
 								/>
 							</Paper>
 						</Grid>
 						<Grid item xs={12} md={3} lg={3}>
 							<Paper className={fixedHeightPaper} variant="outlined">
 								<ClassTree
-									roots={selectedProject ? selectedProject.classes : []}
+									roots={selectedPackage ? selectedPackage.classes : []}
 									selectedClass={selectedClass}
 									onExpand={this.classExpanded}
 									onSelect={this.classSelected}
@@ -526,6 +519,7 @@ class SystemBrowser extends Component {
 									onSelect={this.methodSelected}
 									onRename={this.methodRenamed}
 									onRemove={this.methodRemoved}
+									onClassify={this.methodClassified}
 								/>
 							</Paper>
 						</Grid>
@@ -547,4 +541,4 @@ class SystemBrowser extends Component {
 	}
 }
 
-export default SystemBrowser;
+export default PackageBrowser;

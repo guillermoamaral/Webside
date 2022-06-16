@@ -44,7 +44,7 @@ Note that this could be other than a class (a package for instance). It will dep
 	"source": "string",
 	"author": "string",
 	"timestamp": "string",
-	"project": "string",
+	"package": "string",
 	"overriding": "boolean",
 	"overriden": "boolean",
 	"bytecodes": "string",

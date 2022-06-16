@@ -1,7 +1,7 @@
-# Retrieve a project
-Retrieve a given project.    
+# Retrieve a package
+Retrieve a given package.    
 
-**URL**: `/projects/{name}`
+**URL**: `/packages/{name}`
 
 **Method**: `GET`
 
@@ -9,7 +9,7 @@ Retrieve a given project.
 
 **Code** : `200 OK`
 
-**Content**: `project` defined as:
+**Content**: `package` defined as:
 ```json
 {
     "name": "string",
@@ -23,7 +23,7 @@ Retrieve a given project.
 }
 ```
 
-**Example:**: `Method Wrappers` project `GET /projects/Method Wrappers`.
+**Example:**: `Method Wrappers` package `GET /packages/Method Wrappers`.
 ```json
 {
     "name": "Method Wrappers",

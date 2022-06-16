@@ -40,9 +40,9 @@ class CodeBrowser extends Component {
 			return;
 		}
 		const classname = this.props.class ? this.props.class.name : null;
-		const project = this.props.class ? this.props.class.project : null;
+		const packagename = this.props.class ? this.props.class.package : null;
 		try {
-			await this.context.api.defineClass(classname, project, definition);
+			await this.context.api.defineClass(classname, packagename, definition);
 			const species = await this.context.api.getClass(classname);
 			const handler = this.props.onClassDefined;
 			if (handler) {
@@ -98,11 +98,11 @@ class CodeBrowser extends Component {
 			return;
 		}
 		try {
-			const project = this.props.method ? this.props.method.project : null;
+			const packagename = this.props.method ? this.props.method.package : null;
 			const category = this.props.method ? this.props.method.category : null;
 			const change = await this.context.api.compileMethod(
 				this.props.class.name,
-				project,
+				packagename,
 				category,
 				source
 			);
@@ -249,14 +249,14 @@ class CodeBrowser extends Component {
 		return "";
 	};
 
-	currentProject = () => {
+	currentPackage = () => {
 		const species = this.props.class;
 		const method = this.props.method;
 		if (this.state.selectedMode === "source" && method) {
-			return method.project;
+			return method.package;
 		}
 		if (species) {
-			return species.project;
+			return species.package;
 		}
 		return "";
 	};
@@ -292,7 +292,7 @@ class CodeBrowser extends Component {
 		const mode = this.state.selectedMode;
 		const author = this.currentAuthor();
 		const timestamp = this.currentTimestamp();
-		const project = this.currentProject();
+		const packagename = this.currentPackage();
 		const { selectedInterval, selectedWord } = this.props;
 		//const styles = this.props.styles;
 		//const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
@@ -345,9 +345,12 @@ class CodeBrowser extends Component {
 						</Link>
 					)}
 					{timestamp || author ? " - " : ""}
-					{project && (
-						<Link href="#" onClick={() => this.context.browseProject(project)}>
-							{project}
+					{packagename && (
+						<Link
+							href="#"
+							onClick={() => this.context.browsePackage(packagename)}
+						>
+							{packagename}
 						</Link>
 					)}
 				</Grid>

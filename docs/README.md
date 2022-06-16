@@ -74,7 +74,7 @@ The global layout of Webside is the following:
 ### IDE tools
 As a starting point I decided to recreate traditional Smalltalk IDE tools. That is, a class (refactoring) browser, a method browser to browse senders/implementors/references, a workspace to evaluate expressions and the corresponding counterpart, an inspector to dig into the resulting objects, and finally a debugger.
 
-Additionally, I included a transcript where the user can be notified*, a system browser to manage some sort of projects, current changes browser, a simple chat, a test runner and a profiler.
+Additionally, I included a transcript where the user can be notified*, a package browser to manage some sort of packages, current changes browser, a simple chat, a test runner and a profiler.
 
 In terms of internal design, every tool is implemented by a React component, with common parts such as the code editor or the method list shared by them.
 

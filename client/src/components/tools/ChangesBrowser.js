@@ -35,7 +35,7 @@ class ChangesBrowser extends Component {
 		const columns = [
 			{ field: "type", label: "Type", minWidth: 150, align: "left" },
 			{ field: "label", label: "Target", minWidth: 250, align: "left" },
-			{ field: "project", label: "Project", minWidth: 150, align: "left" },
+			{ field: "package", label: "Package", minWidth: 150, align: "left" },
 			{ field: "author", label: "Author", minWidth: 150, align: "center" },
 			{
 				field: "timestamp",

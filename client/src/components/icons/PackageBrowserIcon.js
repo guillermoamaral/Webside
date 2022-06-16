@@ -1,7 +1,7 @@
 import React from "react";
 import { SvgIcon } from "@material-ui/core";
 
-export default function SystemBrowserIcon() {
+export default function PackageBrowserIcon() {
 	return (
 		<SvgIcon fontSize="small">
 			<path

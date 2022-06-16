@@ -19,7 +19,7 @@ Retrieve all changes made to the system in the current session.
 {
     "type": "string",
     "label": "string",
-    "project": "string",
+    "package": "string",
     "timestamp": "string",
     "author": "string",
     "sourceCode": "string"
@@ -52,7 +52,7 @@ And `type` can be one of the following:
     {
         "type": "MethodDefinition",
         "label": "Float class ≫ phi",
-        "project": "Default",
+        "package": "Default",
         "timestamp": "2020-12-05T19:13:44.166-03:00",
         "author": "guille",
         "sourceCode": "phi\r\t^1.0 + 5.0 sqrt / 2.0",

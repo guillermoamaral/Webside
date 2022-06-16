@@ -13,7 +13,7 @@ _Note: URL path does not include the base URI. The base URI targeting a particul
 
 
 ## [Code](code)
-These are the endpoints used to retrieve system code: projects, classes and methods.
+These are the endpoints used to retrieve system code: packages, classes and methods.
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
@@ -26,8 +26,8 @@ These are the endpoints used to retrieve system code: projects, classes and meth
 | GET | [/classes/{name}/class-variables](code/classes/name/class-variables/get.md) | Retrive class variables of a given class | - | - |
 | GET | [/classes/{name}/categories](code/classes/name/categories/get.md) | Retrive categories of a given class | - | - |
 | GET | [/classes/{name}/methods](code/classes/name/methods/get.md) | Retrive methods of a given class | - | - |
-| GET | [/projects](code/projects/get.md) | Retrive all projects of a given root project (if no root is provided, the uppermost project in the system is used). It is also possible get a tree-like structure as well as to limit the depth in the projects hierarchy | root<br />names<br />tree<br />depth | - |
-| GET | [/projects/{name}](code/projects/name/get.md) | Retrive a given project | - | - |
+| GET | [/packages](code/packages/get.md) | Retrive all packages | root<br />names<br />tree<br />depth | - |
+| GET | [/packages/{name}](code/packages/name/get.md) | Retrive a given package | - | - |
 
 
 ## [Changes](changes)
@@ -95,7 +95,7 @@ Endpoints to run tests and retrieve their results.
 
 | Method | Path | Description | Parameters | Payload |
 | :--: | -- | -- | :--: | -- |
-| POST | [/test-runs](test-runs/post.md) | Create and run of a test suite | - | ```json { "methods": ["string"], "classes": ["string"], "project": "string" }``` |
+| POST | [/test-runs](test-runs/post.md) | Create and run of a test suite | - | ```json { "methods": ["string"], "classes": ["string"], "package": "string" }``` |
 | GET | [/test-runs/{id}](test-runs/id/get.md) | Retrieve the status of a given test suite run | - | - |
 | GET | [/test-runs/{id}/results](test-runs/id/resutls/get.md) | Retrieve the restuls of a given test suite run | - | - |
 | POST | [/test-runs/{id}/run](test-runs/id/run/post.md) | Re-run a given test suite | - | - |

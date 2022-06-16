@@ -40,7 +40,7 @@ Where `class` is the class of the receiver as defined [here](../../../../code/cl
 		"superclass": "Integer",
 		"comment": "",
 		"variable": false,
-		"project": "Kernel"
+		"package": "Kernel"
 	},
 	"method": {
 		"selector": "factorial",
@@ -49,7 +49,7 @@ Where `class` is the class of the receiver as defined [here](../../../../code/cl
 		"source": "factorial\r\tself > 1 ifTrue: [^(self - 1) factorial * self].\r\tself < 0 ifTrue: [^self error: 'not valid for negative numbers'].\r\t^1",
 		"author": "Jon Doe",
 		"timestamp": "2018-10-26T12:37:22.459-03:00",
-		"project": "Kernel",
+		"package": "Kernel",
 		"overriding": false,
 		"overriden": false
 	},

@@ -57,35 +57,24 @@ class API {
 	}
 
 	// Code...
-	async getProjectTree(root) {
+	async getPackageNames() {
 		try {
-			const response = await axios.get(
-				this.baseUri + "/projects?root=" + root + "&tree=true"
-			);
+			const response = await axios.get(this.baseUri + "/packages?names=true");
 			return response.data;
 		} catch (error) {
-			this.handleError("Cannot fetch project tree from " + root, error);
+			this.handleError("Cannot fetch package names", error);
 		}
 	}
 
-	async getProjectNames() {
-		try {
-			const response = await axios.get(this.baseUri + "/projects?names=true");
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch project names", error);
-		}
-	}
-
-	async getProjectClasses(projectname) {
+	async getPackageClasses(packagename) {
 		try {
 			const response = await axios.get(
-				this.baseUri + "/projects/" + projectname + "/classes?tree=true"
+				this.baseUri + "/packages/" + packagename + "/classes?tree=true"
 			);
 			return response.data;
 		} catch (error) {
 			this.handleError(
-				"Cannot fetch classes from project " + projectname,
+				"Cannot fetch classes from package " + packagename,
 				error
 			);
 		}
@@ -503,10 +492,10 @@ class API {
 	}
 
 	// Change helpers...
-	async defineClass(classname, project, definition) {
+	async defineClass(classname, packagename, definition) {
 		const change = this.newChange("ClassDefinition");
 		change.class = classname;
-		change.project = project;
+		change.package = packagename;
 		change.definition = definition;
 		return await this.postChange(change, "define class " + classname);
 	}
@@ -651,10 +640,10 @@ class API {
 		);
 	}
 
-	async compileMethod(classname, project, category, source) {
+	async compileMethod(classname, packagename, category, source) {
 		const change = this.newChange("MethodDefinition");
 		change.class = classname;
-		change.project = project;
+		change.package = packagename;
 		change.category = category;
 		change.sourceCode = source;
 		return await this.postChange(
@@ -859,15 +848,15 @@ class API {
 		}
 	}
 
-	async runTestProject(projectname) {
+	async runTestPackage(packagename) {
 		try {
 			const run = {
-				project: projectname,
+				package: packagename,
 			};
 			const response = await axios.post(this.baseUri + "/test-runs", run);
 			return response.data;
 		} catch (error) {
-			this.handleError("Cannot run test project " + projectname, error);
+			this.handleError("Cannot run test package " + packagename, error);
 		}
 	}
 
