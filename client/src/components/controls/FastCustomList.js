@@ -61,16 +61,21 @@ class FastCustomList extends Component {
 		this.state = {
 			menuOpen: false,
 			menuPosition: { x: null, y: null },
+			items: this.props.items,
 			filterEnabled: false,
 			filterText: "",
-			items: this.props.items,
+			filteredItems: this.props.items,
 		};
 	}
 
 	static getDerivedStateFromProps(props, state) {
-		if (!state.filterEnabled) {
+		if (state.items != props.items) {
 			return {
+				menuOpen: false,
 				items: props.items,
+				filterEnabled: false,
+				filterText: "",
+				filteredItems: props.items,
 			};
 		}
 		return null;
@@ -143,7 +148,7 @@ class FastCustomList extends Component {
 	};
 
 	moveUp = () => {
-		const items = this.state.items;
+		const items = this.state.filteredItems;
 		const index = items.indexOf(this.props.selectedItem);
 		if (index > 0) {
 			this.itemSelected(items[index - 1]);
@@ -151,7 +156,7 @@ class FastCustomList extends Component {
 	};
 
 	moveDown = () => {
-		const items = this.state.items;
+		const items = this.state.filteredItems;
 		const index = items.indexOf(this.props.selectedItem);
 		if (index < items.length - 1) {
 			this.itemSelected(items[index + 1]);
@@ -162,7 +167,7 @@ class FastCustomList extends Component {
 		this.setState({
 			filterEnabled: false,
 			filterText: "",
-			items: this.props.items,
+			filteredItems: this.state.items,
 		});
 	}
 
@@ -199,12 +204,12 @@ class FastCustomList extends Component {
 		this.setState({
 			filterEnabled: enabled,
 			filterText: text,
-			items: filtered,
+			filteredItems: filtered,
 		});
 	}
 
 	renderItem = ({ index, style }) => {
-		const item = this.state.items[index];
+		const item = this.state.filteredItems[index];
 		const label = this.getItemLabel(item);
 		const icon = this.getItemIcon(item);
 		const divider = this.getItemDivider(item);
@@ -274,7 +279,7 @@ class FastCustomList extends Component {
 							height={height}
 							width={width}
 							itemSize={30}
-							itemCount={this.state.items.length}
+							itemCount={this.state.filteredItems.length}
 							overscanCount={5}
 							onKeyDown={this.keyDown}
 							style={{ paddingTop: 0, paddingBottom: 0 }}

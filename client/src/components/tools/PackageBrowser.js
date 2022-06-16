@@ -9,7 +9,6 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import { IDEContext } from "../IDEContext";
-import SearchList2 from "../controls/SearchList2";
 import PackageList from "../parts/PackageList";
 import ClassTree from "../parts/ClassTree";
 import CategoryList from "../parts/CategoryList";
@@ -23,6 +22,7 @@ class PackageBrowser extends Component {
 		super(props);
 		this.cache = { packages: {}, classes: {} };
 		this.state = {
+			packages: [],
 			selectedPackage: null,
 			selectedClass: null,
 			selectedCategory: null,
@@ -43,9 +43,10 @@ class PackageBrowser extends Component {
 			names = [];
 			this.context.reportError(error);
 		}
-		names.forEach((n) => {
-			this.cache.packages[n] = { name: n };
+		const packages = names.map((n) => {
+			return { name: n };
 		});
+		this.setState({ packages: packages });
 	};
 
 	currentSelections() {
@@ -426,11 +427,8 @@ class PackageBrowser extends Component {
 	};
 
 	render() {
-		console.log(this.context);
-		const packages = this.context.packageNames.map((n) => {
-			return { name: n };
-		});
 		const {
+			packages,
 			selectedSide,
 			selectedPackage,
 			selectedClass,
@@ -443,15 +441,7 @@ class PackageBrowser extends Component {
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
 					<Grid container spacing={1}>
-						<Grid item xs={3} md={3} lg={3}>
-							<SearchList2
-								options={this.context.packageNames}
-								onChange={(packagename) => {
-									const pack = this.cache.packages[packagename]; // Search package
-									this.packageSelected(pack);
-								}}
-							/>
-						</Grid>
+						<Grid item xs={3} md={3} lg={3} />
 						<Grid item xs={3} md={3} lg={3} />
 						<Grid item xs={3} md={3} lg={3}>
 							<Box display="flex" justifyContent="center">
