@@ -100,7 +100,7 @@ class FastCustomList extends Component {
 		if (!getter) {
 			return false;
 		}
-		if (typeof getter == "string") {
+		if (typeof getter === "string") {
 			return item[getter];
 		}
 		return getter(item);
@@ -111,7 +111,7 @@ class FastCustomList extends Component {
 		if (!getter) {
 			return item;
 		}
-		if (typeof getter == "string") {
+		if (typeof getter === "string") {
 			return item[getter];
 		}
 		return getter(item);
@@ -122,10 +122,21 @@ class FastCustomList extends Component {
 		if (!getter) {
 			return null;
 		}
-		if (typeof getter == "function") {
+		if (typeof getter === "function") {
 			return getter(item);
 		}
 		return null;
+	};
+
+	getItemStyle = (item) => {
+		const style = this.props.itemStyle;
+		if (!style) {
+			return "normal";
+		}
+		if (typeof style === "string") {
+			return style;
+		}
+		return style(item);
 	};
 
 	openMenu = (event) => {
@@ -215,6 +226,7 @@ class FastCustomList extends Component {
 		const divider = this.getItemDivider(item);
 		const selected = this.props.selectedItem === item;
 		const weight = selected ? "fontWeightBold" : "fontWeightRegular";
+		const fontStyle = this.getItemStyle(item);
 		return (
 			<div style={style}>
 				<ListItem
@@ -240,7 +252,9 @@ class FastCustomList extends Component {
 					<ListItemText
 						primary={
 							<Typography component="div">
-								<Box fontWeight={weight}>{label}</Box>
+								<Box fontWeight={weight} fontStyle={fontStyle}>
+									{label}
+								</Box>
 							</Typography>
 						}
 					/>
