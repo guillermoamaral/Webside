@@ -10,11 +10,10 @@ class MethodList extends Component {
 	static contextType = IDEContext;
 
 	newMethod = () => {
+		const selected = this.props.selected;
 		const method = {
-			class: this.props.selectedMethod ? this.props.selectedMethod.class : null,
-			category: this.props.selectedMethod
-				? this.props.selectedMethod.category
-				: null,
+			class: selected ? selected.class : null,
+			category: selected ? selected.category : null,
 			source: 'messagePattern\r\t"comment"\r\t| temporaries |\r\tstatements',
 		};
 		this.props.onSelect(method);
@@ -178,8 +177,9 @@ class MethodList extends Component {
 			<FastCustomList
 				items={methods}
 				itemLabel={this.methodLabel}
+				itemStyle={this.props.labelStyle}
 				itemIcon={this.methodIcon}
-				selectedItem={this.props.selectedMethod}
+				selectedItem={this.props.selected}
 				onSelect={this.props.onSelect}
 				menuOptions={this.menuOptions()}
 			/>

@@ -104,11 +104,26 @@ class PackageBrowser extends Component {
 	};
 
 	// Updating...
+	async updatePackage(selections, force = false) {
+		const pack = selections.package;
+		try {
+			if (force || !pack.classes || !pack.methods) {
+				const retrieved = await this.context.api.getPackage(pack.name);
+				Object.assign(pack, retrieved);
+			}
+		} catch (error) {
+			this.context.reportError(error);
+		}
+	}
+
 	async updateClasses(selections, force = false) {
 		const pack = selections.package;
 		if (force || !pack.classes) {
 			try {
-				pack.classes = await this.context.api.getPackageClasses(pack.name);
+				pack.classes = await this.context.api.getPackageClasses(
+					pack.name,
+					true
+				);
 			} catch (error) {
 				this.context.reportError(error);
 			}
@@ -240,6 +255,7 @@ class PackageBrowser extends Component {
 	packageSelected = async (pack) => {
 		const selections = this.currentSelections();
 		selections.package = pack;
+		await this.updatePackage(selections, true);
 		await this.updateClasses(selections, true);
 		this.applySelections(selections);
 	};
@@ -257,6 +273,23 @@ class PackageBrowser extends Component {
 
 	classExpanded = async (species) => {
 		await this.updateSubclasses(species);
+	};
+
+	classLabelStyle = (species) => {
+		const pack = this.state.selectedPackage;
+		return pack && pack.methods && pack.methods[species.name]
+			? "italic"
+			: "normal";
+	};
+
+	methodLabelStyle = (method) => {
+		const pack = this.state.selectedPackage;
+		return pack &&
+			pack.methods &&
+			pack.methods[method.class] &&
+			pack.methods[method.class].includes(method.selector)
+			? "italic"
+			: "normal";
 	};
 
 	classDefined = async (species) => {
@@ -470,7 +503,7 @@ class PackageBrowser extends Component {
 							<Paper className={fixedHeightPaper} variant="outlined">
 								<PackageList
 									packages={packages}
-									selectedPackage={selectedPackage}
+									selected={selectedPackage}
 									onSelect={this.packageSelected}
 								/>
 							</Paper>
@@ -479,7 +512,8 @@ class PackageBrowser extends Component {
 							<Paper className={fixedHeightPaper} variant="outlined">
 								<ClassTree
 									roots={selectedPackage ? selectedPackage.classes : []}
-									selectedClass={selectedClass}
+									selected={selectedClass}
+									labelStyle={this.classLabelStyle}
 									onExpand={this.classExpanded}
 									onSelect={this.classSelected}
 									onRemove={this.classRemoved}
@@ -493,7 +527,7 @@ class PackageBrowser extends Component {
 								<CategoryList
 									class={selectedClass}
 									categories={this.currentCategories()}
-									selectedCategory={selectedCategory}
+									selected={selectedCategory}
 									onAdd={this.categoryAdded}
 									onRename={this.categoryRenamed}
 									onSelect={this.categorySelected}
@@ -505,7 +539,8 @@ class PackageBrowser extends Component {
 							<Paper className={fixedHeightPaper} variant="outlined">
 								<MethodList
 									methods={this.currentMethods()}
-									selectedMethod={selectedMethod}
+									selected={selectedMethod}
+									labelStyle={this.methodLabelStyle}
 									onSelect={this.methodSelected}
 									onRename={this.methodRenamed}
 									onRemove={this.methodRemoved}

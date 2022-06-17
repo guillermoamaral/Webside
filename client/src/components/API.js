@@ -66,10 +66,25 @@ class API {
 		}
 	}
 
-	async getPackageClasses(packagename) {
+	async getPackage(packagename) {
 		try {
 			const response = await axios.get(
-				this.baseUri + "/packages/" + packagename + "/classes?tree=true"
+				this.baseUri + "/packages/" + packagename
+			);
+			return response.data;
+		} catch (error) {
+			this.handleError("Cannot fetch package " + packagename, error);
+		}
+	}
+
+	async getPackageClasses(packagename, extended = false) {
+		try {
+			const response = await axios.get(
+				this.baseUri +
+					"/packages/" +
+					packagename +
+					"/classes?tree=true&extended=" +
+					extended
 			);
 			return response.data;
 		} catch (error) {

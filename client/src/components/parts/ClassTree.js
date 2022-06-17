@@ -121,10 +121,11 @@ class ClassTree extends Component {
 			<CustomTree
 				items={roots ? roots : []}
 				itemLabel="name"
+				itemStyle={this.props.labelStyle}
 				children={"subclasses"}
 				onExpand={this.props.onExpand}
 				onSelect={this.props.onSelect}
-				selectedItem={this.props.selectedClass}
+				selectedItem={this.props.selected}
 				menuOptions={this.menuOptions()}
 			/>
 		);

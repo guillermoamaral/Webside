@@ -15,7 +15,7 @@ import CodeEditor from "../parts/CodeEditor";
 
 class Inspector extends Component {
 	static contextType = IDEContext;
-	
+
 	constructor(props) {
 		super(props);
 		const root = props.root;
@@ -161,7 +161,7 @@ class Inspector extends Component {
 					<Paper className={fixedHeightPaper} variant="outlined">
 						<ObjectTree
 							roots={objectTree}
-							selectedObject={selectedObject}
+							selected={selectedObject}
 							onExpand={this.slotExpanded}
 							onSelect={this.slotSelected}
 						/>

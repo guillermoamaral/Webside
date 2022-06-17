@@ -86,7 +86,7 @@ class PackageList extends Component {
 			<FastCustomList
 				items={this.props.packages}
 				itemLabel="name"
-				selectedItem={this.props.selectedPackage}
+				selectedItem={this.props.selected}
 				onSelect={this.props.onSelect}
 				menuOptions={this.menuOptions()}
 			/>

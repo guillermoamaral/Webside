@@ -241,7 +241,7 @@ class Debugger extends PureComponent {
 							<Paper className={fixedHeightPaper} variant="outlined">
 								<FrameList
 									frames={frames}
-									selectedFrame={selectedFrame}
+									selected={selectedFrame}
 									onSelect={this.frameSelected}
 								/>
 							</Paper>

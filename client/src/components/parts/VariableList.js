@@ -171,7 +171,7 @@ class VariableList extends Component {
 				itemLabel="name"
 				itemDivider={(item) => item.type === "separator"}
 				items={variables}
-				selectedItem={this.props.selectedVariable}
+				selectedItem={this.props.selected}
 				onSelect={this.variableSelected}
 				menuOptions={this.menuOptions()}
 			/>

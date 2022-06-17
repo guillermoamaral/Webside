@@ -67,7 +67,7 @@ class FrameList extends Component {
 			<CustomList
 				itemLabel="label"
 				items={this.props.frames}
-				selectedItem={this.props.selectedFrame}
+				selectedItem={this.props.selected}
 				onSelect={this.frameSelected}
 				menuOptions={this.menuOptions()}
 			/>

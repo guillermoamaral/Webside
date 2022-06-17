@@ -545,7 +545,7 @@ class ClassBrowser extends Component {
 									roots={
 										root ? (this.cache[root] ? [this.cache[root]] : []) : []
 									}
-									selectedClass={selectedClass}
+									selected={selectedClass}
 									onExpand={this.classExpanded}
 									onSelect={this.classSelected}
 									onRemove={this.classRemoved}
@@ -559,7 +559,7 @@ class ClassBrowser extends Component {
 								<VariableList
 									class={selectedClass}
 									variables={this.currentVariables()}
-									selectedVariable={selectedVariable}
+									selected={selectedVariable}
 									onAdd={this.variableAdded}
 									onRename={this.variableRenamed}
 									onSelect={this.variableSelected}
@@ -572,7 +572,7 @@ class ClassBrowser extends Component {
 								<CategoryList
 									class={selectedClass}
 									categories={this.currentCategories()}
-									selectedCategory={selectedCategory}
+									selected={selectedCategory}
 									onAdd={this.categoryAdded}
 									onRename={this.categoryRenamed}
 									onSelect={this.categorySelected}
@@ -585,7 +585,7 @@ class ClassBrowser extends Component {
 								<MethodList
 									methods={this.currentMethods()}
 									categories={this.currentCategories()}
-									selectedMethod={selectedMethod}
+									selected={selectedMethod}
 									onSelect={this.methodSelected}
 									onRename={this.methodRenamed}
 									onRemove={this.methodRemoved}

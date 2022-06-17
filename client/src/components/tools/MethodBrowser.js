@@ -62,7 +62,7 @@ class MethodBrowser extends Component {
 					<Paper className={fixedHeightPaper} variant="outlined">
 						<MethodList
 							showClass={true}
-							selectedMethod={selectedMethod}
+							selected={selectedMethod}
 							methods={this.props.methods}
 							onSelect={this.methodSelected}
 						/>

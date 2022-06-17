@@ -478,7 +478,7 @@ class CoderLikeBrowser extends Component {
 					<Paper style={{ height: "100%" }} variant="outlined">
 						<ClassTree
 							roots={root ? (this.cache[root] ? [this.cache[root]] : []) : []}
-							selectedClass={selectedClass}
+							selected={selectedClass}
 							onExpand={this.classExpanded}
 							onSelect={this.classSelected}
 							onRemove={this.classRemoved}

@@ -13,7 +13,7 @@ import { HorizontalBar } from "react-chartjs-2";
 
 class NativeDebugger extends Component {
 	static contextType = IDEContext;
-	
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -251,7 +251,7 @@ class NativeDebugger extends Component {
 							<Paper className={fixedHeightPaper} variant="outlined">
 								<FrameList
 									frames={frames}
-									selectedFrame={selectedFrame}
+									selected={selectedFrame}
 									onSelect={this.frameSelected}
 								/>
 							</Paper>
