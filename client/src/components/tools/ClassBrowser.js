@@ -23,7 +23,7 @@ import UpIcon from "@material-ui/icons/ArrowDropUp";
 
 class ClassBrowser extends Component {
 	static contextType = IDEContext;
-	
+
 	constructor(props) {
 		super(props);
 		this.cache = {};
@@ -47,8 +47,7 @@ class ClassBrowser extends Component {
 			return;
 		}
 		try {
-			const tree = await this.context.api.getClassTree(name, 3);
-			const species = tree[0];
+			const species = await this.context.api.getClassTree(name, 3);
 			this.cache[name] = species;
 			const side = name.endsWith(" class") ? "class" : "instance";
 			this.setState({ root: name, selectedSide: side }, () => {

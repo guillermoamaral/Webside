@@ -18,7 +18,7 @@ import CodeEditor from "../parts/CodeEditor";
 
 class CoderLikeBrowser extends Component {
 	static contextType = IDEContext;
-	
+
 	constructor(props) {
 		super(props);
 		this.cache = {};
@@ -46,8 +46,7 @@ class CoderLikeBrowser extends Component {
 			return;
 		}
 		try {
-			const tree = await this.context.api.getClassTree(name, 3);
-			const species = tree[0];
+			const species = await this.context.api.getClassTree(name, 3);
 			this.cache[name] = species;
 			this.setState({ root: name }, () => {
 				this.classSelected(species);

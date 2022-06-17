@@ -89,10 +89,24 @@ class API {
 					"&tree=true&depth=" +
 					depth
 			);
-			return response.data;
+			return response.data[0];
 		} catch (error) {
 			this.handleError("Cannot fetch class tree from " + root, error);
 		}
+	}
+
+	async getClassTree2(root, depth) {
+		const species = typeof root === "string" ? await this.getClass(root) : root;
+		if (depth === 0) {
+			return species;
+		}
+		species.subclasses = await this.getSubclasses(species.name);
+		await Promise.all(
+			species.subclasses.map(async (c) => {
+				await this.getClassTree2(c, depth - 1);
+			})
+		);
+		return species;
 	}
 
 	async getClassNames() {
