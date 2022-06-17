@@ -28,3 +28,5 @@ These are the common properties at the moment:
 | GET | [/classes/{name}/methods](classes/name/methods/get.md) | Retrive methods of a given class | - | - |
 | GET | [/packages](packages/get.md) | Retrive all packages | root<br />names<br />tree<br />depth | - |
 | GET | [/packages/{name}](packages/name/get.md) | Retrive a given package | - | - |
+| GET | [/packages/{name}/classes](packages/name/classes/get.md) | Retrive actual classes of a given package | - | - |
+| GET | [/packages/{name}/methods](packages/name/methods/get.md) | Retrive actual methods of a given package | - | - |

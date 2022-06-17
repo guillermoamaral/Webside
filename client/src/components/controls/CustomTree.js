@@ -13,15 +13,20 @@ class CustomTree extends Component {
 		this.state = {
 			items: props.items,
 			selectedItem: !props.selectedItem ? null : props.selectedItem,
+			expandedItems: [...props.items],
 			menuOpen: false,
 			menuPosition: { x: null, y: null },
 		};
 	}
 
 	static getDerivedStateFromProps(props, state) {
-		if (props.selecteItem !== state.selectedItem) {
+		if (
+			props.items !== state.items &&
+			props.selecteItem !== state.selectedItem
+		) {
 			return {
 				items: props.items,
+				expandedItems: [...props.items],
 				selectedItem: !props.selectedItem ? null : props.selectedItem,
 			};
 		}
@@ -114,6 +119,15 @@ class CustomTree extends Component {
 	};
 
 	itemToggled = (event, item) => {
+		var expanded = this.state.expandedItems;
+		if (expanded.includes(item)) {
+			expanded = expanded.filter((i) => {
+				return i !== item;
+			});
+		} else {
+			expanded.push(item);
+		}
+		this.setState({ expandedItems: expanded });
 		const handler = this.props.onExpand;
 		if (handler) {
 			handler(item);
@@ -140,23 +154,32 @@ class CustomTree extends Component {
 	};
 
 	render() {
-		const selected = !this.state.selectedItem
-			? null
-			: this.getItemId(this.state.selectedItem);
+		const {
+			items,
+			selectedItem,
+			expandedItems,
+			menuOptions,
+			menuOpen,
+			menuPosition,
+		} = this.state;
+		const selected = !selectedItem ? null : this.getItemId(selectedItem);
+		const expanded = expandedItems.map((i) => {
+			return this.getItemId(i);
+		});
 		return (
 			<Scrollable>
 				<TreeView
 					defaultCollapseIcon={<ArrowDropDownIcon />}
-					defaultExpanded={["root"]}
 					defaultExpandIcon={<ArrowRightIcon />}
 					selected={selected}
+					expanded={expanded}
 				>
-					{this.createItems(this.props.items)}
+					{this.createItems(items)}
 				</TreeView>
 				<PopupMenu
-					options={this.props.menuOptions}
-					open={this.state.menuOpen}
-					position={this.state.menuPosition}
+					options={menuOptions}
+					open={menuOpen}
+					position={menuPosition}
 					onOptionClick={this.menuOptionClicked}
 					onClose={this.closeMenu}
 				/>
