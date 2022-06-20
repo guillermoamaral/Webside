@@ -51,7 +51,7 @@ class Inspector extends Component {
 
 	updateObject = async (object) => {
 		try {
-			const retrieved = await this.context.api.getSlot(
+			const retrieved = await this.context.api.getObjectSlot(
 				this.props.root.id,
 				this.objectUrlPath(object)
 			);

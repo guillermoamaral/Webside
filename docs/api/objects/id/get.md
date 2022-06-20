@@ -18,7 +18,6 @@ Retrive the pinned object with a given ID.
     "size": "number",
     "printString": "string"
 }
-]
 ```
 
 **Example:**: `GET /objects/{207CDBB1-6311-4503-A066-1A89B39A1465}`

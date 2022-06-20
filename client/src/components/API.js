@@ -828,7 +828,7 @@ class API {
 		}
 	}
 
-	async getSlot(id, path) {
+	async getObjectSlot(id, path) {
 		try {
 			const response = await axios.get(this.baseUri + "/objects/" + id + path);
 			return response.data;
