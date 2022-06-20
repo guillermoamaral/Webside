@@ -814,18 +814,19 @@ class API {
 		}
 	}
 
+	async getObjectNamedSlots(id, path) {
+		const response = await this.getObjectSlot(id, path + "/named-slots");
+		return response;
+	}
+
+	async getObjectIndexedSlots(id, path) {
+		const response = await this.getObjectSlot(id, path + "/indexed-slots");
+		return response;
+	}
+
 	async getObjectInstanceVariables(id, path) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/objects/" + id + path + "/instance-variables"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError(
-				"Cannot fecth instance variables of object with id " + id,
-				error
-			);
-		}
+		const response = await this.getObjectSlot(id, path + "/instance-variables");
+		return response;
 	}
 
 	async getObjectSlot(id, path) {
@@ -834,7 +835,7 @@ class API {
 			return response.data;
 		} catch (error) {
 			this.handleError(
-				"Cannot fecth slot " + path + " of object with id " + id,
+				"Cannot fecth " + path + " of object with id " + id,
 				error
 			);
 		}

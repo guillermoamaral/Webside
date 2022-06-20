@@ -11,10 +11,19 @@ class ObjectTree extends Component {
 		}
 	};
 
+	inspect = (object) => {
+		if (object) {
+			this.context.inspectObject(object);
+		}
+	};
+
 	browseReferences = (object) => {};
 
 	menuOptions() {
-		return [{ label: "Browse class", action: this.browseClass }];
+		return [
+			{ label: "Browse class", action: this.browseClass },
+			// { label: "Inspect", action: this.inspect },
+		];
 	}
 
 	objectPath(object) {
@@ -28,7 +37,7 @@ class ObjectTree extends Component {
 		return (
 			<CustomTree
 				items={roots ? roots : []}
-				itemLabel="slotname"
+				itemLabel="slot"
 				itemId={(o) => this.objectPath(o)}
 				children={"slots"}
 				onExpand={this.props.onExpand}

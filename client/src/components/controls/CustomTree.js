@@ -154,14 +154,8 @@ class CustomTree extends Component {
 	};
 
 	render() {
-		const {
-			items,
-			selectedItem,
-			expandedItems,
-			menuOptions,
-			menuOpen,
-			menuPosition,
-		} = this.state;
+		const { items, selectedItem, expandedItems, menuOpen, menuPosition } =
+			this.state;
 		const selected = !selectedItem ? null : this.getItemId(selectedItem);
 		const expanded = expandedItems.map((i) => {
 			return this.getItemId(i);
@@ -177,7 +171,7 @@ class CustomTree extends Component {
 					{this.createItems(items)}
 				</TreeView>
 				<PopupMenu
-					options={menuOptions}
+					options={this.props.menuOptions}
 					open={menuOpen}
 					position={menuPosition}
 					onOptionClick={this.menuOptionClicked}

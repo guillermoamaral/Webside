@@ -20,7 +20,7 @@ class Inspector extends Component {
 		super(props);
 		const root = props.root;
 		if (root) {
-			root.slotname = "self";
+			root.slot = "self";
 			root.path = [];
 		}
 		this.state = {
@@ -36,7 +36,7 @@ class Inspector extends Component {
 	async componentDidUpdate(prevProps) {
 		const root = this.props.root;
 		if (root && (!prevProps.root || root.id !== prevProps.root.id)) {
-			root.slotname = "self";
+			root.slot = "self";
 			root.path = [];
 			await this.updateSlots(root);
 			this.setState({ objectTree: [root], selectedObject: root });
@@ -50,44 +50,47 @@ class Inspector extends Component {
 	}
 
 	updateObject = async (object) => {
+		if (object && object.dummy) {
+			return;
+		}
 		try {
-			const retrieved = await this.context.api.getObjectSlot(
-				this.props.root.id,
-				this.objectUrlPath(object)
-			);
+			const id = this.props.root.id;
+			const path = this.objectUrlPath(object);
+			const retrieved = await this.context.api.getObjectSlot(id, path);
 			Object.assign(object, retrieved);
+			await this.updateSlots(object);
 		} catch (error) {
 			this.context.reportError(error);
 		}
 	};
 
 	updateSlots = async (object) => {
-		if (!object || object.slots || (!object.indexable && !object.class)) {
+		if (!object || object.dummy) {
 			return;
 		}
-		const names = [];
-		if (object.indexable) {
-			for (var i = 1; i <= object.size; i++) {
-				names.push(i.toString());
-			}
-		} else {
-			try {
-				const vars = await this.context.api.getObjectInstanceVariables(
-					this.props.root.id,
-					this.objectUrlPath(object)
-				);
-				vars.forEach((v) => names.push(v.name));
-			} catch (error) {
-				this.context.reportError(error);
-			}
+		const id = this.props.root.id;
+		const path = this.objectUrlPath(object);
+		var slots;
+		try {
+			slots = object.indexable
+				? await this.context.api.getObjectIndexedSlots(id, path)
+				: await this.context.api.getObjectNamedSlots(id, path);
+		} catch (error) {
+			slots = [];
+			this.context.reportError(error);
 		}
-		object.slots = names.map((name) => {
-			return { slotname: name, path: [...object.path, name] };
+		slots.forEach((slot) => {
+			slot.path = [...object.path, slot.slot];
+			// const dummy = {
+			// 	...slot,
+			// 	dummy: true,
+			// 	slot: "self",
+			// 	path: [],
+			// };
+			// slot.slots = [dummy];
 		});
-		if (!object.indexable || object.size < 20) {
-			await Promise.all(
-				object.slots.map(async (slot) => await this.updateObject(slot))
-			);
+		if (slots.length > 0) {
+			object.slots = slots;
 		}
 		this.setState({ objectTree: this.state.objectTree });
 	};
@@ -95,7 +98,7 @@ class Inspector extends Component {
 	selectSlot = (path) => {
 		let object = this.props.root;
 		path.forEach(
-			(name) => (object = object.slots.find((s) => s.slotname === name))
+			(name) => (object = object.slots.find((s) => s.slot === name))
 		);
 		this.setState({ selectedObject: object });
 	};
@@ -107,7 +110,7 @@ class Inspector extends Component {
 
 	slotExpanded = async (object) => {
 		if (!object) return;
-		await Promise.all(object.slots.map((slot) => this.updateSlots(slot)));
+		await this.updateObject(object);
 		this.setState({ objectTree: this.state.objectTree });
 	};
 
@@ -120,6 +123,7 @@ class Inspector extends Component {
 		const { styles, showWorkspace } = this.props;
 		const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
 		const path = selectedObject ? selectedObject.path : [];
+		const presentation = selectedObject ? selectedObject.presentation : null;
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
@@ -169,24 +173,22 @@ class Inspector extends Component {
 				</Grid>
 				<Grid item xs={12} md={6} lg={6}>
 					<Paper variant="outlined" style={{ height: "100%" }}>
-						{selectedObject.presentation &&
-							selectedObject.presentation.type === "table" && (
-								<CustomTable
-									styles={styles}
-									columns={selectedObject.presentation.columns}
-									rows={selectedObject.presentation.rows}
-								/>
-							)}
-						{selectedObject.presentation &&
-							selectedObject.presentation.type === "html" && (
-								<div
-									styles={styles}
-									dangerouslySetInnerHTML={{
-										__html: selectedObject.presentation.code,
-									}}
-								/>
-							)}
-						{!selectedObject.presentation && (
+						{presentation && presentation.type === "table" && (
+							<CustomTable
+								styles={styles}
+								columns={presentation.columns}
+								rows={presentation.rows}
+							/>
+						)}
+						{presentation && presentation.type === "html" && (
+							<div
+								styles={styles}
+								dangerouslySetInnerHTML={{
+									__html: presentation.code,
+								}}
+							/>
+						)}
+						{!presentation && (
 							<CodeEditor
 								context={{ object: this.props.id }}
 								styles={styles}
