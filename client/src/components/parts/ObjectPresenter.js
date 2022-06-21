@@ -29,7 +29,6 @@ class ObjectPresenter extends Component {
 	}
 
 	render() {
-		console.log(this.props.object);
 		const custom = this.state.custom;
 		const { object, styles } = this.props;
 		const presentation = object ? object.presentation : null;
