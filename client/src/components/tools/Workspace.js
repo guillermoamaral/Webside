@@ -18,7 +18,7 @@ import { IDEContext } from "../IDEContext";
 
 class Workspace extends Component {
 	static contextType = IDEContext;
-	
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -92,7 +92,7 @@ class Workspace extends Component {
 							<CodeEditor
 								context={{ workspace: this.props.id }}
 								styles={this.props.styles}
-								lineNumbers={true}
+								lineNumbers={false}
 								source={expression}
 								showAccept={true}
 								acceptIcon={<PlayIcon />}
@@ -107,7 +107,10 @@ class Workspace extends Component {
 					{inspectors.map((inspector, index) => {
 						return (
 							<Accordion key={inspector.key} defaultExpanded>
-								<AccordionSummary expandIcon={<ExpandMoreIcon />}>
+								<AccordionSummary
+									expandIcon={<ExpandMoreIcon />}
+									style={{ maxHeight: 15 }}
+								>
 									<Box
 										display="flex"
 										flexWrap="nowrap"

@@ -161,7 +161,7 @@ class Inspector extends Component {
 						</Box>
 					</Box>
 				</Grid>
-				<Grid item xs={12} md={6} lg={6}>
+				<Grid item xs={12} md={4} lg={4}>
 					<Paper className={fixedHeightPaper} variant="outlined">
 						<ObjectTree
 							roots={objectTree}
@@ -171,7 +171,7 @@ class Inspector extends Component {
 						/>
 					</Paper>
 				</Grid>
-				<Grid item xs={12} md={6} lg={6}>
+				<Grid item xs={12} md={8} lg={8}>
 					<Paper variant="outlined" style={{ height: "100%" }}>
 						{presentation && presentation.type === "table" && (
 							<CustomTable
