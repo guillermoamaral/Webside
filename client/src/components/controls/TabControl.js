@@ -4,6 +4,7 @@ import TabPanel from "./TabPanel";
 import TabLabel from "./TabLabel";
 
 class TabControl extends PureComponent {
+	
 	tabChanged = (event, index) => {
 		event.preventDefault();
 		const handler = this.props.onSelect;

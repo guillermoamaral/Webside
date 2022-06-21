@@ -5,12 +5,11 @@ import {
 	Paper,
 	Breadcrumbs,
 	Link,
-	Typography,
 } from "@material-ui/core";
 import clsx from "clsx";
 import { IDEContext } from "../IDEContext";
 import ObjectTree from "../parts/ObjectTree";
-import CustomTable from "../controls/CustomTable";
+import ObjectPresenter from "../parts/ObjectPresenter";
 import CodeEditor from "../parts/CodeEditor";
 
 class Inspector extends Component {
@@ -118,34 +117,46 @@ class Inspector extends Component {
 		this.context.browseClass(classname);
 	};
 
+	subpaths(path) {
+		const subpaths = [[]];
+		for (let l = 1; l <= path.length; l++) {
+			subpaths.push(path.slice(0, l));
+		}
+		return subpaths;
+	}
+
 	render() {
 		const { objectTree, selectedObject } = this.state;
 		const { styles, showWorkspace } = this.props;
 		const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
 		const path = selectedObject ? selectedObject.path : [];
-		const presentation = selectedObject ? selectedObject.presentation : null;
+		const subpaths = this.subpaths(path);
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
 					<Box ml={2} display="flex" alignItems="center">
 						<Breadcrumbs>
-							{path.slice(0, path.length - 1).map((s, i) => {
-								const subpath = path.slice(0, i + 1);
+							{subpaths.map((subpath) => {
+								const label =
+									subpath.length === 0 ? "self" : subpath[subpath.length - 1];
+								const color =
+									label === path[path.length - 1] ? "primary" : "inherit";
 								return (
 									<Link
-										color="inherit"
-										key={s}
+										style={{
+											cursor: "pointer",
+										}}
+										color={color}
+										key={label}
 										onClick={(event) => {
 											this.selectSlot(subpath);
 										}}
 									>
-										{s}
+										{label}
 									</Link>
 								);
 							})}
-							<Typography color="primary">
-								{path[path.length - 1] || "self"}
-							</Typography>
+							
 						</Breadcrumbs>
 						<Box pl={1}>
 							{selectedObject && (
@@ -172,33 +183,7 @@ class Inspector extends Component {
 					</Paper>
 				</Grid>
 				<Grid item xs={12} md={8} lg={8}>
-					<Paper variant="outlined" style={{ height: "100%" }}>
-						{presentation && presentation.type === "table" && (
-							<CustomTable
-								styles={styles}
-								columns={presentation.columns}
-								rows={presentation.rows}
-							/>
-						)}
-						{presentation && presentation.type === "html" && (
-							<div
-								styles={styles}
-								dangerouslySetInnerHTML={{
-									__html: presentation.code,
-								}}
-							/>
-						)}
-						{!presentation && (
-							<CodeEditor
-								context={{ object: this.props.id }}
-								styles={styles}
-								lineNumbers={false}
-								source={!selectedObject ? "" : selectedObject.printString}
-								onChange={this.props.onChange}
-								onAccept={this.props.onAccept}
-							/>
-						)}
-					</Paper>
+					<ObjectPresenter styles={styles} object={selectedObject} />
 				</Grid>
 				{showWorkspace && (
 					<Grid item xs={12} md={12} lg={12}>

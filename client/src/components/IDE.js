@@ -438,7 +438,7 @@ class IDE extends Component {
 				key={object.id}
 				root={object}
 				id={object.id}
-				showWorkspace
+				showWorkspace={true}
 			/>
 		);
 		this.addPage("Inspecting: " + object.class, <InspectorIcon />, inspector);
@@ -725,7 +725,6 @@ class IDE extends Component {
 			transcriptText: this.state.transcriptText + "\r" + text,
 			unreadErrorsCount: this.state.unreadErrorsCount + 1,
 		});
-		const transcript = this.pageLabeled("Transcript");
 	};
 
 	transcriptChanged = (text) => {

@@ -69,7 +69,7 @@ class FastCustomList extends Component {
 	}
 
 	static getDerivedStateFromProps(props, state) {
-		if (state.items != props.items) {
+		if (state.items !== props.items) {
 			return {
 				menuOpen: false,
 				items: props.items,
