@@ -20,7 +20,11 @@ class CustomTree extends Component {
 	}
 
 	static getDerivedStateFromProps(props, state) {
-		if (props.items !== state.items) {
+		if (
+			props.items !== state.items &&
+			(props.items.lenght > 1 || props.items[0] !== state.items[0])
+		) {
+			console.log("items changed");
 			return {
 				items: props.items,
 				expandedItems: [...props.items],
@@ -28,6 +32,7 @@ class CustomTree extends Component {
 			};
 		}
 		if (props.selectedItem !== state.selectedItem) {
+			console.log("selected item changed");
 			return {
 				selectedItem: !props.selectedItem ? null : props.selectedItem,
 			};

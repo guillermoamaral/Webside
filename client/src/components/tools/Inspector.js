@@ -1,11 +1,5 @@
 import React, { Component } from "react";
-import {
-	Grid,
-	Box,
-	Paper,
-	Breadcrumbs,
-	Link,
-} from "@material-ui/core";
+import { Grid, Box, Paper, Breadcrumbs, Link } from "@material-ui/core";
 import clsx from "clsx";
 import { IDEContext } from "../IDEContext";
 import ObjectTree from "../parts/ObjectTree";
@@ -156,11 +150,13 @@ class Inspector extends Component {
 									</Link>
 								);
 							})}
-							
 						</Breadcrumbs>
 						<Box pl={1}>
 							{selectedObject && (
 								<Link
+									style={{
+										cursor: "pointer",
+									}}
 									color="inherit"
 									onClick={(event) => {
 										this.browseClass(selectedObject.class);

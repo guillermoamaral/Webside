@@ -116,10 +116,9 @@ class ClassTree extends Component {
 	}
 
 	render() {
-		const roots = this.props.roots;
 		return (
 			<CustomTree
-				items={roots ? roots : []}
+				items={this.props.roots || []}
 				itemLabel="name"
 				itemStyle={this.props.labelStyle}
 				children={"subclasses"}

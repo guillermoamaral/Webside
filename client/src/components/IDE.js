@@ -8,6 +8,8 @@ import {
 	MenuItem,
 	Drawer,
 	Box,
+	Snackbar,
+	Typography,
 } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
 import { withCookies } from "react-cookie";
@@ -21,6 +23,7 @@ import { IDEContext } from "./IDEContext";
 import { DialogProvider } from "./dialogs/index";
 import TranscriptIcon from "./icons/TranscriptIcon";
 import SearchIcon from "@material-ui/icons/Search";
+import CloseIcon from "@material-ui/icons/Close";
 import PackageBrowserIcon from "./icons/PackageBrowserIcon";
 import ClassBrowserIcon from "./icons/ClassBrowserIcon";
 import MethodBrowserIcon from "./icons/MethodBrowserIcon";
@@ -65,6 +68,7 @@ class IDE extends Component {
 			addPageMenuOpen: false,
 			selectedPage: null,
 			transcriptOpen: false,
+			lastError: null,
 			unreadErrorsCount: 0,
 			unreadMessages: 0,
 			transcriptText: this.welcomeMessage(),
@@ -724,6 +728,7 @@ class IDE extends Component {
 			return;
 		}
 		this.setState({
+			lastError: text.toString(),
 			transcriptText: this.state.transcriptText + "\r" + text,
 			unreadErrorsCount: this.state.unreadErrorsCount + 1,
 		});
@@ -761,6 +766,7 @@ class IDE extends Component {
 	};
 
 	render() {
+		console.log("rendering IDE");
 		const context = {
 			api: this.api,
 			dialect: this.dialect,
@@ -927,6 +933,35 @@ class IDE extends Component {
 								</Container>
 							</main>
 						</div>
+						<Snackbar
+							ContentProps={{
+								style: {
+									backgroundColor: "red",
+								},
+							}}
+							open={this.state.lastError !== null}
+							autoHideDuration={3000}
+							onClose={(event) => this.setState({ lastError: null })}
+							message={
+								<Typography component="div" style={{ color: "white" }}>
+									<Box fontWeight={"fontWeightBold"}>
+										{this.state.lastError}
+									</Box>
+								</Typography>
+							}
+							action={
+								<React.Fragment>
+									<IconButton
+										size="small"
+										aria-label="close"
+										color="inherit"
+										onClick={(event) => this.setState({ lastError: null })}
+									>
+										<CloseIcon fontSize="small" />
+									</IconButton>
+								</React.Fragment>
+							}
+						/>
 					</DialogProvider>
 				</ThemeProvider>
 			</IDEContext.Provider>
