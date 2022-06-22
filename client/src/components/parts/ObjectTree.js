@@ -11,9 +11,14 @@ class ObjectTree extends Component {
 		}
 	};
 
-	inspect = (object) => {
-		if (object) {
-			this.context.inspectObject(object);
+	inspect = async (object) => {
+		try {
+			const id = this.props.roots[0].id;
+			const path = this.objectURIPath(object);
+			const pinned = await this.context.api.pinObjectSlot(id, path);
+			this.context.inspectObject(pinned);
+		} catch (error) {
+			this.context.reportError(error);
 		}
 	};
 
@@ -22,11 +27,11 @@ class ObjectTree extends Component {
 	menuOptions() {
 		return [
 			{ label: "Browse class", action: this.browseClass },
-			// { label: "Inspect", action: this.inspect },
+			{ label: "Inspect", action: this.inspect },
 		];
 	}
 
-	objectPath(object) {
+	objectURIPath(object) {
 		let path = "";
 		object.path.forEach((s) => (path = path + "/" + s));
 		return path;
@@ -38,7 +43,7 @@ class ObjectTree extends Component {
 			<CustomTree
 				items={roots ? roots : []}
 				itemLabel="slot"
-				itemId={(o) => this.objectPath(o)}
+				itemId={(object) => this.objectURIPath(object)}
 				children={"slots"}
 				onExpand={this.props.onExpand}
 				onSelect={this.props.onSelect}

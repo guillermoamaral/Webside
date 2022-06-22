@@ -19,7 +19,7 @@ import MemoryStats from "./MemoryStats";
 
 class ResourceBrowser extends Component {
 	static contextType = IDEContext;
-	
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -138,7 +138,7 @@ class ResourceBrowser extends Component {
 
 	openDebugger = (d) => {
 		if (d) {
-			this.context.openDebugger(d.id);
+			this.context.openDebugger(d.id, d.description);
 		}
 	};
 

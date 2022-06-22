@@ -1,5 +1,11 @@
 import React, { PureComponent } from "react";
-import { Grid, Paper, IconButton, Tooltip } from "@material-ui/core";
+import {
+	Grid,
+	Paper,
+	IconButton,
+	Tooltip,
+	Typography,
+} from "@material-ui/core";
 import clsx from "clsx";
 import { Icon } from "@iconify/react";
 import RestartIcon from "@iconify/icons-mdi/replay";
@@ -191,51 +197,66 @@ class Debugger extends PureComponent {
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
-					<Tooltip title="Step into" placement="top">
-						<IconButton
-							style={{ color: "#2ba5de" }}
-							onClick={this.stepIntoClicked}
-							size="medium"
-						>
-							<Icon icon={StepIntoIcon} />
-						</IconButton>
-					</Tooltip>
-					<Tooltip title="Step over" placement="top">
-						<IconButton
-							style={{ color: "#2ba5de" }}
-							onClick={this.stepOverClicked}
-							size="medium"
-						>
-							<Icon icon={StepOverIcon} />
-						</IconButton>
-					</Tooltip>
-					<Tooltip title="Restart" placement="top">
-						<IconButton
-							style={{ color: "#2ba5de" }}
-							onClick={this.restartClicked}
-							size="medium"
-						>
-							<Icon icon={RestartIcon} />
-						</IconButton>
-					</Tooltip>
-					<Tooltip title="Resume" placement="top">
-						<IconButton
-							style={{ color: "#3bba5d" }}
-							onClick={this.resumeClicked}
-							size="medium"
-						>
-							<Icon icon={ResumeIcon} />
-						</IconButton>
-					</Tooltip>
-					<Tooltip title="Terminate" placement="top">
-						<IconButton
-							style={{ color: "#ba4343" }}
-							onClick={this.terminateClicked}
-							size="medium"
-						>
-							<Icon icon={TerminateIcon} />
-						</IconButton>
-					</Tooltip>
+					<Grid
+						container
+						spacing={1}
+						direction="row"
+						alignItems="center"
+						justify="center"
+					>
+						<Grid item xs={4} md={4} lg={4}>
+							<Tooltip title="Step into" placement="top">
+								<IconButton
+									style={{ color: "#2ba5de" }}
+									onClick={this.stepIntoClicked}
+									size="medium"
+								>
+									<Icon icon={StepIntoIcon} />
+								</IconButton>
+							</Tooltip>
+							<Tooltip title="Step over" placement="top">
+								<IconButton
+									style={{ color: "#2ba5de" }}
+									onClick={this.stepOverClicked}
+									size="medium"
+								>
+									<Icon icon={StepOverIcon} />
+								</IconButton>
+							</Tooltip>
+							<Tooltip title="Restart" placement="top">
+								<IconButton
+									style={{ color: "#2ba5de" }}
+									onClick={this.restartClicked}
+									size="medium"
+								>
+									<Icon icon={RestartIcon} />
+								</IconButton>
+							</Tooltip>
+							<Tooltip title="Resume" placement="top">
+								<IconButton
+									style={{ color: "#3bba5d" }}
+									onClick={this.resumeClicked}
+									size="medium"
+								>
+									<Icon icon={ResumeIcon} />
+								</IconButton>
+							</Tooltip>
+							<Tooltip title="Terminate" placement="top">
+								<IconButton
+									style={{ color: "#ba4343" }}
+									onClick={this.terminateClicked}
+									size="medium"
+								>
+									<Icon icon={TerminateIcon} />
+								</IconButton>
+							</Tooltip>
+						</Grid>
+						<Grid item xs={8} md={8} lg={8}>
+							<Typography variant="subtitle1">
+								{this.props.title || ""}
+							</Typography>
+						</Grid>
+					</Grid>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<Grid container spacing={1}>

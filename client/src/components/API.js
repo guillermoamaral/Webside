@@ -841,6 +841,17 @@ class API {
 		}
 	}
 
+	async pinObjectSlot(id, path) {
+		const uri = "/objects/" + id + path;
+		try {
+			const body = { uri: uri };
+			const response = await axios.post(this.baseUri + "/objects", body);
+			return response.data;
+		} catch (error) {
+			this.handleError("Cannot pin slot at URI /objects" + uri, error);
+		}
+	}
+
 	// Tests...
 	async getTestRuns() {
 		try {

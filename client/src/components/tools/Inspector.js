@@ -42,7 +42,7 @@ class Inspector extends Component {
 		}
 	}
 
-	objectUrlPath(object) {
+	objectURIPath(object) {
 		let path = "";
 		object.path.forEach((s) => (path = path + "/" + s));
 		return path;
@@ -54,7 +54,7 @@ class Inspector extends Component {
 		}
 		try {
 			const id = this.props.root.id;
-			const path = this.objectUrlPath(object);
+			const path = this.objectURIPath(object);
 			const retrieved = await this.context.api.getObjectSlot(id, path);
 			Object.assign(object, retrieved);
 			await this.updateSlots(object);
@@ -68,7 +68,7 @@ class Inspector extends Component {
 			return;
 		}
 		const id = this.props.root.id;
-		const path = this.objectUrlPath(object);
+		const path = this.objectURIPath(object);
 		var slots;
 		try {
 			slots = object.indexable

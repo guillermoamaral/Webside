@@ -418,7 +418,9 @@ class IDE extends Component {
 	};
 
 	openDebugger = (id, title = "Debugger") => {
-		const tool = <Debugger styles={this.props.styles} key={id} id={id} />;
+		const tool = (
+			<Debugger styles={this.props.styles} key={id} id={id} title={title} />
+		);
 		this.addPage(title, <DebuggerIcon />, tool);
 	};
 
@@ -668,7 +670,7 @@ class IDE extends Component {
 				// const debug = await this.confirm(error.description, 'Stack tracke:\r' + error.stack + '\r\rDo you want to debug it?');
 				// (debug)? this.openDebugger(error.debugger) : this.reportError(error.description);
 				const d = await this.api.createDebugger(error.data.evaluation);
-				this.openDebugger(d.id);
+				this.openDebugger(d.id, d.description);
 			}
 		}
 	};
