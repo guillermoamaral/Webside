@@ -139,6 +139,28 @@ class FastCustomList extends Component {
 		return style(item);
 	};
 
+	getItemAlignment = (item) => {
+		const alignment = this.props.labelAlignment;
+		if (!alignment) {
+			return "left";
+		}
+		if (typeof alignment === "string") {
+			return alignment;
+		}
+		return alignment(item);
+	};
+
+	getItemSize = (item) => {
+		const size = this.props.labelSize;
+		if (!size) {
+			return "normal";
+		}
+		if (typeof size === "string") {
+			return size;
+		}
+		return size(item);
+	};
+
 	openMenu = (event) => {
 		event.preventDefault();
 		this.setState({
@@ -224,9 +246,11 @@ class FastCustomList extends Component {
 		const label = this.getItemLabel(item);
 		const icon = this.getItemIcon(item);
 		const divider = this.getItemDivider(item);
+		const fontStyle = this.getItemStyle(item);
+		const alignment = this.getItemAlignment(item);
+		const size = this.getItemSize(item);
 		const selected = this.props.selectedItem === item;
 		const weight = selected ? "fontWeightBold" : "fontWeightRegular";
-		const fontStyle = this.getItemStyle(item);
 		return (
 			<div style={style}>
 				<ListItem
@@ -252,7 +276,12 @@ class FastCustomList extends Component {
 					<ListItemText
 						primary={
 							<Typography component="div">
-								<Box fontWeight={weight} fontStyle={fontStyle}>
+								<Box
+									fontWeight={weight}
+									fontStyle={fontStyle}
+									fontSize={size}
+									align={alignment}
+								>
 									{label}
 								</Box>
 							</Typography>

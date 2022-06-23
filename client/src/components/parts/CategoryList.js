@@ -84,6 +84,8 @@ class CategoryList extends Component {
 			<CustomList
 				items={categories}
 				itemDivider={(item) => item === this.all}
+				labelStyle={(item) => (item === this.all ? "italic" : "normal")}
+				labelSize={(item) => (item === this.all ? "small" : "normal")}
 				selectedItem={this.props.selected}
 				onSelect={this.categorySelected}
 				menuOptions={this.menuOptions()}

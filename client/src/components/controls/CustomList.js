@@ -70,7 +70,7 @@ class CustomList extends Component {
 	};
 
 	getItemStyle = (item) => {
-		const style = this.props.itemStyle;
+		const style = this.props.labelStyle;
 		if (!style) {
 			return "normal";
 		}
@@ -78,6 +78,28 @@ class CustomList extends Component {
 			return style;
 		}
 		return style(item);
+	};
+
+	getItemAlignment = (item) => {
+		const alignment = this.props.labelAlignment;
+		if (!alignment) {
+			return "left";
+		}
+		if (typeof alignment === "string") {
+			return alignment;
+		}
+		return alignment(item);
+	};
+
+	getItemSize = (item) => {
+		const size = this.props.labelSize;
+		if (!size) {
+			return "normal";
+		}
+		if (typeof size === "string") {
+			return size;
+		}
+		return size(item);
 	};
 
 	openMenu = (event) => {
@@ -182,9 +204,11 @@ class CustomList extends Component {
 						const label = this.getItemLabel(item);
 						const icon = this.getItemIcon(item);
 						const divider = this.getItemDivider(item);
+						const style = this.getItemStyle(item);
+						const alignment = this.getItemAlignment(item);
+						const size = this.getItemSize(item);
 						const selected = this.props.selectedItem === item;
 						const weight = selected ? "fontWeightBold" : "fontWeightRegular";
-						const style = this.getItemStyle(item);
 						return (
 							<ListItem
 								disableGutters={divider}
@@ -209,7 +233,12 @@ class CustomList extends Component {
 								<ListItemText
 									primary={
 										<Typography component="div">
-											<Box fontWeight={weight} fontStyle={style}>
+											<Box
+												fontWeight={weight}
+												fontStyle={style}
+												fontSize={size}
+												align={alignment}
+											>
 												{label}
 											</Box>
 										</Typography>
