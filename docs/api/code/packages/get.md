@@ -1,4 +1,5 @@
 # Retrieve packages
+
 Retrieve all packages in the system.
 
 **URL**: `/packages`
@@ -7,7 +8,7 @@ Retrieve all packages in the system.
 
 **Query Options**
 | Option | Type | Description |
-| ------------- | ------------- | ------------- |
+| :----: | :-----: | --------- |
 | names | boolean | true to get only package names |
 
 ## Success Responses
@@ -15,20 +16,22 @@ Retrieve all packages in the system.
 **Code** : `200 OK`
 
 **Content**: `[package]` where `package` is defined as:
+
 ```json
 {
-    "name": "string",
-    "classes": ["string"],
-    "methods": [
-        {
-            "class": "string",
-            "selector": "string"
-        }
-    ]
+	"name": "string",
+	"classes": ["string"],
+	"methods": [
+		{
+			"class": "string",
+			"selector": "string"
+		}
+	]
 }
 ```
 
 **Example:**: The following is the partial result of `GET /packages` on Pharo.
+
 ```json
 [
     {
