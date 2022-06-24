@@ -68,7 +68,7 @@ class ChangesBrowser extends Component {
 							context={{ class: change ? change.class : null }}
 							styles={this.props.styles}
 							leftCode={change ? change.sourceCode : ""}
-							rightCode={change ? change.sourceCode : ""}
+							rightCode={change ? change.currentSourceCode : ""}
 						/> */}
 						<CodeEditor
 							context={{ class: change ? change.class : null }}

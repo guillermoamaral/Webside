@@ -27,20 +27,23 @@ require("codemirror/addon/fold/brace-fold");
 require("codemirror/addon/fold/comment-fold");
 
 class CodeMerge extends Component {
+	constructor(props) {
+		super(props);
+		this.ref = React.createRef();
+	}
+
 	componentDidMount() {
-		var target = this.refs["react-diff-code-view"];
-		target.innerHTML = "";
-		CodeMirror.MergeView(
-			target,
+		this.ref.current.innerHTML = "";
+		this.editor = CodeMirror.MergeView(
+			this.ref.current,
 			Object.assign(
 				{},
 				{
-					//readOnly: true,
 					lineNumbers: true,
 					theme: "material",
-					//lineSeparator: '\r',
-					value: this.props.leftCode || "no source",
-					orig: this.props.rightCode || "no source",
+					lineSeparator: "\r",
+					value: this.props.leftCode || "no left source",
+					orig: this.props.rightCode || "no right source",
 					mode: "smalltalk-method",
 					highlightDifferences: "highlight",
 					connect: null,
@@ -61,12 +64,11 @@ class CodeMerge extends Component {
 	}
 
 	render() {
-		return (
-			<div
-				ref="react-diff-code-view"
-				className={this.props.styles.codeMirror}
-			></div>
-		);
+		if (this.editor) {
+			this.editor.editor().setValue(this.props.leftCode);
+			this.editor.rightOriginal().setValue(this.props.rightCode);
+		}
+		return <div ref={this.ref} className={this.props.styles.codeMirror}></div>;
 	}
 }
 

@@ -124,10 +124,10 @@ class ClassBrowser extends Component {
 		if (category) {
 			methods = methods.filter((m) => m.category === category);
 		}
-		if (variable && species[variable.name]) {
-			const accessors = species[variable.name][access];
+		if (variable && species.accessors && species.accessors[variable.name]) {
+			const accessing = species.accessors[variable.name][access];
 			methods = methods.filter((m) =>
-				accessors.some((n) => n.selector === m.selector)
+				accessing.some((n) => n.selector === m.selector)
 			);
 		}
 		if (methods && methods.length === 0) {
@@ -219,16 +219,20 @@ class ClassBrowser extends Component {
 			}
 			if (
 				variable &&
-				(force || !species[variable.name] || !species[variable.name][access])
+				(force ||
+					!species.accessors ||
+					!species.accessors[variable.name] ||
+					!species.accessors[variable.name][access])
 			) {
-				const accessors = await this.context.api.getMethodsAccessing(
+				const accessing = await this.context.api.getMethodsAccessing(
 					species.name,
 					variable.name,
 					access,
 					true
 				);
-				species[variable.name] = {};
-				species[variable.name][access] = accessors;
+				species.accessors = {};
+				species.accessors[variable.name] = {};
+				species.accessors[variable.name][access] = accessing;
 			}
 			if (method) {
 				method = species.methods.find((m) => m.selector === method.selector);

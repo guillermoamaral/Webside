@@ -40,7 +40,7 @@ class CustomTree extends Component {
 
 	createItems = (items) => {
 		return items.map((item, index) => {
-			const label = this.getItemLabel(item);
+			const label = this.getItemLabel(item) || "";
 			const weight =
 				this.props.selectedItem === item
 					? "fontWeightBold"
