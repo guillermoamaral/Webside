@@ -2,7 +2,7 @@
 
 Endpoints to evaluate expressions and manage active evaluations.
 
-| Method | Path                            | Description                             | Parameters | Payload |
+| Method | Path                            | Description                             | Parameters | Payload |              |
 | :----: | ------------------------------- | --------------------------------------- | :--------: | ------- | ------------ |
 |  POST  | [/evaluations](post.md)         | Evaluate an expression                  |     -      | -       | `evaluation` |
 |  GET   | [/evaluations](get.md)          | Retrieve active evaluations             |     -      | -       | -            |
