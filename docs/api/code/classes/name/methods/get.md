@@ -1,4 +1,5 @@
 # Retrieve methods
+
 Retrieve methods of a given class.
 
 **URL**: `/class/{name}/methods`

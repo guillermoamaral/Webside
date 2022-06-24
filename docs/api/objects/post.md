@@ -1,4 +1,4 @@
-# Retrieve object slots
+# Pin objects
 
 Pin the object reached thru the given URI.
 

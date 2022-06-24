@@ -1,4 +1,5 @@
 # Dialect
+
 This a simple endpoint to retrieve the Smalltalk dialect behind the scenes (Pharo, Bee, etc.).
 
 **URL**: `/dialect`
@@ -12,6 +13,7 @@ This a simple endpoint to retrieve the Smalltalk dialect behind the scenes (Phar
 **Content**: `string`
 
 **Example:**: Pharo dialect `GET /dialect`.
+
 ```
 "Pharo"
 ```

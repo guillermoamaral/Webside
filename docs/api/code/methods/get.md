@@ -87,13 +87,14 @@ Also, some leaf nodes should contain a `value` property with their corresponding
 The following table lists possible types properties whenever it applies.
 
 **AST node types and properties**
-| Type | Additional properties |
-| -- | -- |
-| Method | - |
-| Comment | value (string) |
-| Message | - |
-| Selector | value (string) |
-| Identifier | value (string) |
-| Literal | value (string) |
+
+|    Type    | Additional properties |
+| :--------: | --------------------- |
+|   Method   | -                     |
+|  Comment   | value (string)        |
+|  Message   | -                     |
+|  Selector  | value (string)        |
+| Identifier | value (string)        |
+|  Literal   | value (string)        |
 
 Note that this structure corresponds to a rather simplified AST, which might be richer in some implementations. This is due to the _unification_ spirit of Webside, conceived to support different Smmaltalk dialects.

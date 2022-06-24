@@ -1,4 +1,5 @@
 # Evaluate an expression
+
 Evaluate an expression, either synchronously or asynchronously.
 
 Pay special attention to the way compilation errors should be handled by the API so Webside can react properly.
@@ -11,14 +12,15 @@ Pay special attention to the way compilation errors should be handled by the API
 
 ```json
 {
-    "expression": "string",
-    "context": "context",
-    "sync": "boolean",
-    "pin": "boolean",
-    "debug": "boolean",
-    "profile": "boolean"
+	"expression": "string",
+	"context": "context",
+	"sync": "boolean",
+	"pin": "boolean",
+	"debug": "boolean",
+	"profile": "boolean"
 }
 ```
+
 Where `sync` indicates whether the call should be blocked until the evaluation finishes or will return immediately, with the ID of the just created evaluation to follow its state.  
 The asynchronous evaluation allows Webside to have control over the evaluation, being able to offer the user the chance to cancel the evaluation or interrupt it and debug it (a feature that is not implemented at the moment of writing this documentation).  
 Once Webside has the evaluation ID, it can make a synchronous call to [`/objects/{id}`](../objects/id/get.md) (with the ID of the evaluation) to avoid polling the state of the evaluation before getting the object.
@@ -33,51 +35,59 @@ Once Webside has the evaluation ID, it can make a synchronous call to [`/objects
 
 ```json
 {
-    "class": "string"
+	"class": "string"
 }
 ```
+
 Where `class` is the name of a class.
 
 ```json
 {
-    "object": "string"
+	"object": "string"
 }
 ```
+
 Where `object` is the ID of a pinned object.
 
 ```json
 {
-    "workspace": "string"
+	"workspace": "string"
 }
 ```
+
 Here `workspace` is the ID of an existing workspace.
 
 ```json
 {
-    "debugger": "string",
-    "frame": "number"
+	"debugger": "string",
+	"frame": "number"
 }
 ```
-Here `debugger` is the ID of an existing debugger and `frame` is the index of the frame within debugger current frames. 
+
+Here `debugger` is the ID of an existing debugger and `frame` is the index of the frame within debugger current frames.
 
 ## Success Responses
 
 **Code** : `200 OK`
 
 **Content**: in case of an asynchronous evaluation the API should return:
+
 ```json
 {
-    "id": "string",
-    "expression": "string",
-    "state": "string"
+	"id": "string",
+	"expression": "string",
+	"state": "string"
 }
 ```
+
 Where `state` is either `pending` or `finished`.
 
 In case of a synchronous evaluation the result is the same as the one of [`/objects/{id}`](../objects/id/get.md).
 
 ### Error Codes Details
+
 In case of an evaluation error, be it as the response of a synchronous evaluation or as the result of trying the get the resulting object after an asynchronous evaluation, the server should respond with code `500` and a payload with the following aspect:
+
 ```json
 {
 	"description": "string",
@@ -85,6 +95,7 @@ In case of an evaluation error, be it as the response of a synchronous evaluatio
 	"stack": "string"
 }
 ```
+
 Here, `description` is the error text describing what went wrong.  
 `evaluation` is the ID of the evaluation created and it serves as the parameter to create a debugger on the evaluation process.  
 `stack` is a string contaning the stack trace (only frame headers or labels) as separated lines (this is meant to be used as a snapshot for the user before entering in an actual debugger).
@@ -102,20 +113,22 @@ For example, the following error is returned after trying to evaluate `1 + `:
 
 **Example:**: evaluate `3 + 4` synchronously, without pinning the resulting object, with no context:
 `POST /evaluations`
+
 ```json
 {
-    "expression": "2 + 4",
-    "sync": true,
-    "pin":false
+	"expression": "2 + 4",
+	"sync": true,
+	"pin": false
 }
 ```
 
 And this is the result:
+
 ```json
 {
-    "class": "SmallInteger",
-    "indexable": false,
-    "size": 0,
-    "printString": "6"
+	"class": "SmallInteger",
+	"indexable": false,
+	"size": 0,
+	"printString": "6"
 }
 ```

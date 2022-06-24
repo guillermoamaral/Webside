@@ -1,4 +1,5 @@
 # Retrieve debugger frame
+
 Retrieve the _i_-th frame withing the debugger with a given ID.
 
 **URL**: `/debuggers/{id}/frames/{index}`
@@ -10,30 +11,32 @@ Retrieve the _i_-th frame withing the debugger with a given ID.
 **Code** : `200 OK`
 
 **Content**: `frame` where `frame` is defined as:
+
 ```json
 {
-    "index": "number",
-    "label": "string",
-    "class": "class",
-    "method": "method",
-    "interval": "interval"
+	"index": "number",
+	"label": "string",
+	"class": "class",
+	"method": "method",
+	"interval": "interval"
 }
 ```
 
-Where `class` is the class of the receiver as defined [here](../../../../code/classes/name/get.md), `method` is the method associated to the frame as defined [here](../../../../code/methods/get.md), and `interval` contains the starting and ending positions of the current AST node within the source code. 
+Where `class` is the class of the receiver as defined [here](../../../../code/classes/name/get.md), `method` is the method associated to the frame as defined [here](../../../../code/methods/get.md), and `interval` contains the starting and ending positions of the current AST node within the source code.
 
 ```json
 {
-    "start": "number",
-    "end": "number"
+	"start": "number",
+	"end": "number"
 }
 ```
 
 **Example:**: 2nd frame of debugger with ID `{7B9C472C-376F-493A-9B88-5CCBA70A4309}`, `GET /debugger/{7B9C472C-376F-493A-9B88-5CCBA70A4309}/frames/2`
+
 ```json
 {
 	"label": "SmallInteger(Integer)>>factorial",
-    "index": 2,
+	"index": 2,
 	"class": {
 		"name": "SmallInteger",
 		"definition": "Integer\r\tsubclass: #SmallInteger\r\tinstanceVariableNames: ''\r\tclassVariableNames: 'Maximum Minimum'\r\tpoolDictionaries: ''",

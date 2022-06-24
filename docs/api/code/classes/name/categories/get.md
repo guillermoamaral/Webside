@@ -1,4 +1,5 @@
 # Retrieve categories
+
 Retrieve categories of a given class.
 
 **URL**: `/class/{name}/categories`
@@ -12,17 +13,18 @@ Retrieve categories of a given class.
 **Content**: `[string]`
 
 **Example:**: `Fraction` categories `GET /classes/Fraction/categories`.
+
 ```json
 [
-    "truncation and round off",
-    "comparing",
-    "*Math-Operations-Extensions",
-    "private",
-    "self evaluating",
-    "printing",
-    "arithmetic",
-    "*ston-core",
-    "testing",
-    "converting"
+	"truncation and round off",
+	"comparing",
+	"*Math-Operations-Extensions",
+	"private",
+	"self evaluating",
+	"printing",
+	"arithmetic",
+	"*ston-core",
+	"testing",
+	"converting"
 ]
 ```

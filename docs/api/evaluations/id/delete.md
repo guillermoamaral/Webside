@@ -1,4 +1,5 @@
 # Cancel evaluation
+
 Cancel the evaluation with a given ID.
 
 **URL**: `/evaluations/{id}`

@@ -1,4 +1,5 @@
 # Code
+
 These are the endpoints used to retrieve system code: packages, classes and methods.
 
 It is important to mention that the JSON objects returned by these endpoints should include common properties of every `object`. This is used by Webside IDE to provide inspection services over objects of the meta-model (classes, methods, etc.).
@@ -6,27 +7,28 @@ These are the common properties at the moment:
 
 ```json
 {
-    "class": "string",
-    "indexable": "boolean",
-    "size": "number",
-    "printString": "string"
+	"class": "string",
+	"indexable": "boolean",
+	"size": "number",
+	"printString": "string"
 }
 ```
+
 ## Endpoints
 
-| Method | Path | Description | Parameters | Payload |
-| :--: | -- | -- | :--: | -- |
-| GET | [/dialect](dialect/get.md) | - | - | - |
-| GET | [/methods](methods/get.md) | Retrieve methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided) | class<br />selector<br />category<br />accessing<br />using<br />assigning<br />sending<br />referencingClass<br />ast<br />bytecodes<br />dissasembly | | - |
-| GET | [/classes](classes/get.md) | Retrieve all subclasses of a given root class (if no root is provided, the uppermost class in the system is used). It is also possible get a tree-like structure as well as to limit the depth in the classes hierarchy | root<br />names<br />tree<br />depth | - |
-| GET | [/classes/{name}](classes/name/get.md) | Retrieve a given class | - | - |
-| GET | [/classes/{name}/subclasses](classes/name/subclasses/get.md) | Retrive subclasses a given class | - | - |
-| GET | [/classes/{name}/variables](classes/name/variables/get.md) | Retrive instance and class variables of a given class | - | - |
-| GET | [/classes/{name}/instance-variables](classes/name/instance-variables/get.md) | Retrive instance variables of a given class | - | - |
-| GET | [/classes/{name}/class-variables](classes/name/class-variables/get.md) | Retrive class variables of a given class | - | - |
-| GET | [/classes/{name}/categories](classes/name/categories/get.md) | Retrive categories of a given class | - | - |
-| GET | [/classes/{name}/methods](classes/name/methods/get.md) | Retrive methods of a given class | - | - |
-| GET | [/packages](packages/get.md) | Retrive all packages | root<br />names<br />tree<br />depth | - |
-| GET | [/packages/{name}](packages/name/get.md) | Retrive a given package | - | - |
-| GET | [/packages/{name}/classes](packages/name/classes/get.md) | Retrive actual classes of a given package | - | - |
-| GET | [/packages/{name}/methods](packages/name/methods/get.md) | Retrive actual methods of a given package | - | - |
+| Method | Path                                                                         | Description                                                                                                                                                                                                             |                                                                       Parameters                                                                       | Payload |
+| :----: | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------: | ------- |
+|  GET   | [/dialect](dialect/get.md)                                                   | -                                                                                                                                                                                                                       |                                                                           -                                                                            | -       |
+|  GET   | [/methods](methods/get.md)                                                   | Retrieve methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided)                                                                                         | class<br />selector<br />category<br />accessing<br />using<br />assigning<br />sending<br />referencingClass<br />ast<br />bytecodes<br />dissasembly | -       |
+|  GET   | [/classes](classes/get.md)                                                   | Retrieve all subclasses of a given root class (if no root is provided, the uppermost class in the system is used). It is also possible get a tree-like structure as well as to limit the depth in the classes hierarchy |                                                          root<br />names<br />tree<br />depth                                                          | -       |
+|  GET   | [/classes/{name}](classes/name/get.md)                                       | Retrieve a given class                                                                                                                                                                                                  |                                                                           -                                                                            | -       |
+|  GET   | [/classes/{name}/subclasses](classes/name/subclasses/get.md)                 | Retrive subclasses a given class                                                                                                                                                                                        |                                                                           -                                                                            | -       |
+|  GET   | [/classes/{name}/variables](classes/name/variables/get.md)                   | Retrive instance and class variables of a given class                                                                                                                                                                   |                                                                           -                                                                            | -       |
+|  GET   | [/classes/{name}/instance-variables](classes/name/instance-variables/get.md) | Retrive instance variables of a given class                                                                                                                                                                             |                                                                           -                                                                            | -       |
+|  GET   | [/classes/{name}/class-variables](classes/name/class-variables/get.md)       | Retrive class variables of a given class                                                                                                                                                                                |                                                                           -                                                                            | -       |
+|  GET   | [/classes/{name}/categories](classes/name/categories/get.md)                 | Retrive categories of a given class                                                                                                                                                                                     |                                                                           -                                                                            | -       |
+|  GET   | [/classes/{name}/methods](classes/name/methods/get.md)                       | Retrive methods of a given class                                                                                                                                                                                        |                                                                           -                                                                            | -       |
+|  GET   | [/packages](packages/get.md)                                                 | Retrive all packages                                                                                                                                                                                                    |                                                          root<br />names<br />tree<br />depth                                                          | -       |
+|  GET   | [/packages/{name}](packages/name/get.md)                                     | Retrive a given package                                                                                                                                                                                                 |                                                                           -                                                                            | -       |
+|  GET   | [/packages/{name}/classes](packages/name/classes/get.md)                     | Retrive actual classes of a given package                                                                                                                                                                               |                                                                           -                                                                            | -       |
+|  GET   | [/packages/{name}/methods](packages/name/methods/get.md)                     | Retrive actual methods of a given package                                                                                                                                                                               |                                                                           -                                                                            | -       |

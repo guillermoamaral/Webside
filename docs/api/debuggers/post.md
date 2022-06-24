@@ -1,5 +1,6 @@
 # Create a debugger
-Create a debugger on a given process. The process is identified thru the evaluation (ID) that created it. 
+
+Create a debugger on a given process. The process is identified thru the evaluation (ID) that created it.
 
 **URL**: `/debuggers`
 
@@ -9,17 +10,19 @@ Create a debugger on a given process. The process is identified thru the evaluat
 
 ```json
 {
-    "evaluation": "string",
+	"evaluation": "string"
 }
 ```
+
 ## Success Responses
 
 **Code** : `200 OK`
 
 **Content**:
+
 ```json
 {
-    "id": "string",
-    "description": "string",
+	"id": "string",
+	"description": "string"
 }
 ```
