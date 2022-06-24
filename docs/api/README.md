@@ -35,8 +35,8 @@ These are the endpoints used to retrieve system code: packages, classes and meth
 Endpoints to apply changes and retrieve changes made to the system.
 
 | Method | Path                        | Description                         | Parameters | Payload |
-| :----: | --------------------------- | ----------------------------------- | :--------: | ------- | --- |
-|  GET   | [/changes](changes/get.md)  | Retrieve changes made to the system |   author   |         | -   |
+| :----: | --------------------------- | ----------------------------------- | :--------: | ------- |
+|  GET   | [/changes](changes/get.md)  | Retrieve changes made to the system |   author   | -       |
 |  POST  | [/changes](changes/post.md) | Apply a change to the system        |     -      | -       |
 
 ## [Evaluations](evaluations)
