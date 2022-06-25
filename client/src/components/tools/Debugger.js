@@ -44,15 +44,16 @@ class Debugger extends PureComponent {
 	async updateFrames() {
 		try {
 			const frames = await this.context.api.getDebuggerFrames(this.props.id);
-			let selected = null;
+			var selected;
 			if (frames.length > 0) {
 				selected = frames[0];
 				await this.updateFrame(selected);
 			}
+			const bindings = selected ? selected.bindings || [] : [];
 			this.setState({
 				frames: frames,
 				selectedFrame: selected,
-				selectedBinding: selected.bindings.find((b) => (b.name = "self")),
+				selectedBinding: bindings.find((b) => (b.name = "self")),
 			});
 		} catch (error) {
 			this.context.reportError(error);
@@ -61,10 +62,8 @@ class Debugger extends PureComponent {
 
 	frameSelected = async (frame) => {
 		await this.updateFrame(frame);
-		const binding =
-			frame && frame.bindings
-				? frame.bindings.find((b) => (b.name = "self"))
-				: null;
+		const bindings = frame ? frame.bindings || [] : [];
+		const binding = bindings.find((b) => (b.name = "self"));
 		this.setState({
 			selectedFrame: frame,
 			selectedBinding: binding,
@@ -122,7 +121,7 @@ class Debugger extends PureComponent {
 				this.props.id,
 				this.state.selectedFrame.index
 			);
-			this.context.messageChannel.sendDebuggerEvent("stepInto", this.props.id);
+			this.notifyEvent("stepInto");
 			this.updateFrames();
 		} catch (error) {
 			this.context.reportError(error);
@@ -135,7 +134,7 @@ class Debugger extends PureComponent {
 				this.props.id,
 				this.state.selectedFrame.index
 			);
-			this.context.messageChannel.sendDebuggerEvent("stepOver", this.props.id);
+			this.notifyEvent("stepOver");
 			this.updateFrames();
 		} catch (error) {
 			this.context.reportError(error);
@@ -148,7 +147,7 @@ class Debugger extends PureComponent {
 				this.props.id,
 				this.state.selectedFrame.index
 			);
-			this.context.messageChannel.sendDebuggerEvent("restart", this.props.id);
+			this.notifyEvent("restart");
 			this.updateFrames();
 		} catch (error) {
 			this.context.reportError(error);
@@ -189,6 +188,10 @@ class Debugger extends PureComponent {
 			this.context.reportError(error);
 		}
 	};
+
+	notifyEvent(event) {
+		this.context.messageChannel.sendDebuggerEvent(event, this.props.id);
+	}
 
 	render() {
 		const { frames, selectedFrame, selectedBinding } = this.state;

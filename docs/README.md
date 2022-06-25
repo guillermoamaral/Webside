@@ -13,7 +13,7 @@
   - [Objects](api/objects)
   - [Workspaces](api/workspaces)
   - [Debugging](api/debuggers)
-  - [Testing](api/testing)
+  - [Testing](api/test-runs)
   - [Profiling](api/profiling)
 - [IDE](#ide)
   - [Tools](#ide-tools)

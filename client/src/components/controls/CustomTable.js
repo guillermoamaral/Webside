@@ -48,7 +48,7 @@ class CustomTable extends Component {
 	};
 
 	getMenuOptionEnabled = (option) => {
-		const selected = this.props.selectedRow;
+		const selected = this.state.selectedRow;
 		if (option.enabled) {
 			return option.enabled(selected);
 		}

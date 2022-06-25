@@ -10,6 +10,7 @@ import {
 	MenuItem,
 	OutlinedInput,
 	IconButton,
+	Tooltip,
 } from "@material-ui/core";
 import clsx from "clsx";
 import { IDEContext } from "../IDEContext";
@@ -483,6 +484,7 @@ class ClassBrowser extends Component {
 		} = this.state;
 		const styles = this.props.styles;
 		const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
+		const rootclass = this.cache[root];
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
@@ -499,13 +501,18 @@ class ClassBrowser extends Component {
 									/>
 								</Grid>
 								<Grid item xs={1} md={1} lg={1}>
-									<IconButton
-										color="inherit"
-										size="small"
-										onClick={this.goToSuperclassClicked}
+									<Tooltip
+										title={rootclass ? rootclass.superclass : ""}
+										placement="top"
 									>
-										<UpIcon />
-									</IconButton>
+										<IconButton
+											color="inherit"
+											size="small"
+											onClick={this.goToSuperclassClicked}
+										>
+											<UpIcon />
+										</IconButton>
+									</Tooltip>
 								</Grid>
 							</Grid>
 						</Grid>

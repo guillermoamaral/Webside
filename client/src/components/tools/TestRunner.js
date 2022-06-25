@@ -198,8 +198,7 @@ class TestRunner extends Component {
 	};
 
 	canDebugTest = (test) => {
-		console.log(test);
-		return false;
+		return test && (test.type === "failed" || test.type === "error");
 	};
 
 	render() {
