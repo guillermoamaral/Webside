@@ -158,6 +158,14 @@ class CustomTree extends Component {
 		}
 	};
 
+	getMenuOptionEnabled = (option) => {
+		const selected = this.props.selectedItem;
+		if (option.enabled) {
+			return option.enabled(selected);
+		}
+		return true;
+	};
+
 	render() {
 		const { items, selectedItem, expandedItems, menuOpen, menuPosition } =
 			this.state;
@@ -180,6 +188,7 @@ class CustomTree extends Component {
 					open={menuOpen}
 					position={menuPosition}
 					onOptionClick={this.menuOptionClicked}
+					onOptionEnable={this.getMenuOptionEnabled}
 					onClose={this.closeMenu}
 				/>
 			</Scrollable>

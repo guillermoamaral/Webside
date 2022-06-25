@@ -17,7 +17,7 @@ import CustomTable from "../controls/CustomTable";
 
 class TestRunner extends Component {
 	static contextType = IDEContext;
-	
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -178,7 +178,7 @@ class TestRunner extends Component {
 
 	menuOptions() {
 		return [
-			{ label: "Debug", action: this.debugTest },
+			{ label: "Debug", action: this.debugTest, enabled: this.canDebugTest },
 			{ label: "Implementors", action: this.browseImplementors },
 			{ label: "Browse class", action: this.browseClass },
 		];
@@ -195,6 +195,11 @@ class TestRunner extends Component {
 		} catch (error) {
 			this.context.reportError(error);
 		}
+	};
+
+	canDebugTest = (test) => {
+		console.log(test);
+		return false;
 	};
 
 	render() {

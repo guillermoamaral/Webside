@@ -23,12 +23,14 @@ class PopupMenu extends Component {
 						</NestedMenuItem>
 					);
 				} else {
+					const enabled = this.getItemEnabled(option);
 					return (
 						<MenuItem
 							key={option.label}
 							id={option.id}
 							onClick={(event) => this.itemClicked(event, option)}
 							style={{ paddingTop: 0, paddingBottom: 0 }}
+							disabled={!enabled}
 						>
 							{option.label}
 						</MenuItem>
@@ -54,6 +56,17 @@ class PopupMenu extends Component {
 			option.action();
 		}
 	};
+
+	getItemEnabled(option) {
+		const enabled = this.props.onOptionEnable;
+		if (typeof enabled === "boolean") {
+			return enabled;
+		}
+		if (enabled) {
+			return enabled(option);
+		}
+		return true;
+	}
 
 	close = () => {
 		const handler = this.props.onClose;

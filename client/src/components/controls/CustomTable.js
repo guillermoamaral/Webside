@@ -47,6 +47,14 @@ class CustomTable extends Component {
 		}
 	};
 
+	getMenuOptionEnabled = (option) => {
+		const selected = this.props.selectedRow;
+		if (option.enabled) {
+			return option.enabled(selected);
+		}
+		return true;
+	};
+
 	getCellValue = (row, column) => {
 		const getter = column.field;
 		const value = typeof getter == "string" ? row[getter] : getter(row);
@@ -136,6 +144,7 @@ class CustomTable extends Component {
 					open={this.state.menuOpen}
 					position={this.state.menuPosition}
 					onOptionClick={this.menuOptionClicked}
+					onOptionEnable={this.getMenuOptionEnabled}
 					onClose={this.closeMenu}
 				/>
 			</Scrollable>

@@ -121,6 +121,14 @@ class CustomList extends Component {
 		}
 	};
 
+	getMenuOptionEnabled = (option) => {
+		const selected = this.props.selectedItem;
+		if (option.enabled) {
+			return option.enabled(selected);
+		}
+		return true;
+	};
+
 	moveUp = () => {
 		const items = this.props.items;
 		const index = items.indexOf(this.props.selectedItem);
@@ -253,6 +261,7 @@ class CustomList extends Component {
 					open={this.state.menuOpen}
 					position={this.state.menuPosition}
 					onOptionClick={this.menuOptionClicked}
+					onOptionEnable={this.getMenuOptionEnabled}
 					onClose={this.closeMenu}
 				/>
 			</Scrollable>

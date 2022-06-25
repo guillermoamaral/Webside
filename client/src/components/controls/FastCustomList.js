@@ -180,6 +180,14 @@ class FastCustomList extends Component {
 		}
 	};
 
+	getMenuOptionEnabled = (option) => {
+		const selected = this.props.selectedItem;
+		if (option.enabled) {
+			return option.enabled(selected);
+		}
+		return true;
+	};
+
 	moveUp = () => {
 		const items = this.state.filteredItems;
 		const index = items.indexOf(this.props.selectedItem);
@@ -347,6 +355,7 @@ class FastCustomList extends Component {
 					open={this.state.menuOpen}
 					position={this.state.menuPosition}
 					onOptionClick={this.menuOptionClicked}
+					onOptionEnable={this.getMenuOptionEnabled}
 					onClose={this.closeMenu}
 				/>
 			</Box>
