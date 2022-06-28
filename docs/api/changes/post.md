@@ -38,7 +38,7 @@ All changes should include `author` proprerty and might specify a `package` prop
 
 **Code** : `200 OK`
 
-**Content**: the `change` applied.
+**Content**: the `change` applied (see [get](get.md) to see the structure of a change).
 The change is validated before being applied and updated with some information afterwards, thus, the change returned contains more information. For instance, one of the common properties added to the change is `timestamp`, corresponding to the moment at which the change is applied.
 There are some special cases like the `selector` property in a `MethodDefinition`. This property is not required as it is determined by the `sourceCode` property. However, this property is filled by the server and returned to the client.
 
