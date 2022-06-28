@@ -1,9 +1,12 @@
 import axios from "axios";
 
 class APIError extends Error {
-	constructor(message, request, status, reason, data) {
+	constructor(description, url, request, status, reason, data) {
+		const explanation = reason && reason.lenght > 0 ? " due to " + reason : "";
+		const message = '"' + description + " from " + url + explanation + '"';
 		super(message);
 		this.name = "APIError";
+		this.url = url;
 		this.request = request;
 		this.status = status;
 		this.reason = reason;
@@ -27,19 +30,46 @@ class API {
 		this.author = author;
 	}
 
-	handleError(message, error) {
-		var request, status, reason, data;
-		request = error.request;
+	async get(uri, description) {
+		try {
+			const response = await axios.get(this.baseUri + uri);
+			return response.data;
+		} catch (error) {
+			this.handleError("Cannot get " + (description || uri), uri, error);
+		}
+	}
+
+	async post(uri, payload, description) {
+		try {
+			const response = await axios.post(this.baseUri + uri, payload);
+			return response.data;
+		} catch (error) {
+			this.handleError("Cannot " + (description || " post " + uri), uri, error);
+		}
+	}
+
+	async delete(uri, description) {
+		try {
+			const response = await axios.delete(this.baseUri + uri);
+			return response.data;
+		} catch (error) {
+			this.handleError("Cannot delete " + (description || uri), uri, error);
+		}
+	}
+
+	handleError(description, uri, error) {
+		var status, reason, data;
 		if (error.response) {
 			status = error.response.status;
 			reason = error.response.statusText;
 			data = error.response.data;
 		} else if (error.request) {
-			reason = "Could not send request due to " + error.message;
+			reason = error.message;
 		}
 		const exception = new APIError(
-			'"' + message + '"',
-			request,
+			description,
+			this.baseUri + uri,
+			error.request,
 			status,
 			reason,
 			data
@@ -48,66 +78,30 @@ class API {
 	}
 
 	async getDialect() {
-		try {
-			const response = await axios.get(this.baseUri + "/dialect");
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot get dialect ", error);
-		}
+		return await this.get("/dialect", "dialect");
 	}
 
 	// Code...
 	async getPackageNames() {
-		try {
-			const response = await axios.get(this.baseUri + "/packages?names=true");
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch package names", error);
-		}
+		return await this.get("/packages?names=true", "package names");
 	}
 
 	async getPackage(packagename) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/packages/" + packagename
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch package " + packagename, error);
-		}
+		return await this.get("/packages/" + packagename, "package " + packagename);
 	}
 
 	async getPackageClasses(packagename, extended = false) {
-		try {
-			const response = await axios.get(
-				this.baseUri +
-					"/packages/" +
-					packagename +
-					"/classes?tree=true&extended=" +
-					extended
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError(
-				"Cannot fetch classes from package " + packagename,
-				error
-			);
-		}
+		return await this.get(
+			"/packages/" + packagename + "/classes?tree=true&extended=" + extended,
+			"classes from package " + packagename
+		);
 	}
 
 	async getClassTree(root, depth) {
-		try {
-			const response = await axios.get(
-				this.baseUri +
-					"/classes?names=true&root=" +
-					root +
-					"&tree=true&depth=" +
-					depth
-			);
-			return response.data[0];
-		} catch (error) {
-			this.handleError("Cannot fetch class tree from " + root, error);
-		}
+		return await this.get(
+			"/classes?names=true&root=" + root + "&tree=true&depth=" + depth,
+			"class tree from " + root
+		);
 	}
 
 	async getClassTree2(root, depth) {
@@ -125,382 +119,208 @@ class API {
 	}
 
 	async getClassNames() {
-		try {
-			const response = await axios.get(this.baseUri + "/classes?names=true");
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch class names", error);
-		}
+		return await this.get("/classes?names=true", "class names");
 	}
 
 	async getClass(classname) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/classes/" + classname + "/"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch class " + classname, error);
-		}
+		return await this.get("/classes/" + classname, "class " + classname);
 	}
 
 	async getSubclasses(classname) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/classes/" + classname + "/subclasses"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fecth subclasses of class " + classname, error);
-		}
+		return await this.get(
+			"/classes/" + classname + "/subclasses",
+			"subclasses of class " + classname
+		);
 	}
 
 	async getInstanceVariables(classname) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/classes/" + classname + "/instance-variables"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError(
-				"Cannot fecth instance variables of class " + classname,
-				error
-			);
-		}
+		return await this.get(
+			"/classes/" + classname + "/instance-variables",
+			"instance variables of class " + classname
+		);
 	}
 
 	async getVariables(classname) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/classes/" + classname + "/variables"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fecth variables of class " + classname, error);
-		}
+		return await this.get(
+			"/classes/" + classname + "/variables",
+			"variables of class " + classname
+		);
 	}
 
 	async getCategories(classname) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/classes/" + classname + "/categories"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fecth categories of class " + classname, error);
-		}
+		return await this.get(
+			"/classes/" + classname + "/categories",
+			"categories of class " + classname
+		);
 	}
 
 	async getMethods(classname, sorted = false) {
-		try {
-			var url = this.baseUri + "/classes/" + classname + "/methods?marks=true";
-			const response = await axios.get(url);
-			const methods = response.data;
-			if (sorted) {
-				methods.sort((a, b) => (a.selector <= b.selector ? -1 : 1));
-			}
-			return methods;
-		} catch (error) {
-			this.handleError("Cannot fecth methods of class " + classname, error);
+		const methods = this.get(
+			"/classes/" + classname + "/methods?marks=true",
+			"methods of class " + classname
+		);
+		if (sorted) {
+			methods.sort((a, b) => (a.selector <= b.selector ? -1 : 1));
 		}
+		return methods;
 	}
 
 	async getMethodsAccessing(classname, variable, type, sorted = false) {
-		try {
-			var url =
-				this.baseUri +
-				"/classes/" +
-				classname +
-				"/methods?" +
-				type +
-				"=" +
-				variable;
-			const response = await axios.get(url);
-			const methods = response.data;
-			if (sorted) {
-				methods.sort((a, b) => (a.selector <= b.selector ? -1 : 1));
-			}
-			return methods;
-		} catch (error) {
-			this.handleError(
-				"Cannot fecth methods of class " + classname + " using " + variable,
-				error
-			);
+		const methods = this.get(
+			"/classes/" + classname + "/methods?" + type + "=" + variable,
+			"methods of class " + classname + " using " + variable
+		);
+		if (sorted) {
+			methods.sort((a, b) => (a.selector <= b.selector ? -1 : 1));
 		}
+		return methods;
 	}
 
 	async getMethod(classname, selector) {
-		try {
-			const encoded = encodeURIComponent(selector);
-			const response = await axios.get(
-				this.baseUri +
-					"/classes/" +
-					classname +
-					"/methods?selector=" +
-					encoded +
-					"&bytecodes=true&disassembly=true&ast=true"
-			);
-			return response.data.length === 0 ? null : response.data[0];
-		} catch (error) {
-			this.handleError(
-				"Cannot fetch method " + classname + ">>#" + selector,
-				error
-			);
-		}
+		const encoded = encodeURIComponent(selector);
+		const methods = await this.get(
+			"/classes/" +
+				classname +
+				"/methods?selector=" +
+				encoded +
+				"&bytecodes=true&disassembly=true&ast=true",
+			"method " + classname + ">>#" + selector
+		);
+		return methods.length === 0 ? null : methods[0];
 	}
 
 	async getSenders(selector) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/methods?sending=" + selector
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch senders of " + selector, error);
-		}
+		return await this.get(
+			"/methods?sending=" + selector,
+			"senders of " + selector
+		);
 	}
 
 	async getLocalSenders(selector, classname) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/methods?sending=" + selector + "&scope=" + classname
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError(
-				"Cannot fetch senders of " + selector + " in class " + classname,
-				error
-			);
-		}
+		return await this.get(
+			"/methods?sending=" + selector + "&scope=" + classname,
+			"senders of " + selector + " in class " + classname
+		);
 	}
 
 	async getClassReferences(classname) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/methods?referencingClass=" + classname
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch references to class " + classname, error);
-		}
+		return await this.get(
+			"/methods?referencingClass=" + classname,
+			"references to class " + classname
+		);
 	}
 
 	async getStringReferences(string) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/methods?referencingString=" + string
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch references to string " + string, error);
-		}
+		return await this.get(
+			"/methods?referencingString=" + string,
+			"references to string " + string
+		);
 	}
 
 	async getImplementors(selector) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/methods?selector=" + selector
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch implementors of " + selector, error);
-		}
+		return await this.get(
+			"/methods?selector=" + selector,
+			"implementors of " + selector
+		);
 	}
 
 	async getLocalImplementors(selector, classname) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/methods?selector=" + selector + "&scope=" + classname
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError(
-				"Cannot fetch local implementors of " +
-					selector +
-					" in class " +
-					classname,
-				error
-			);
-		}
+		return await this.get(
+			"/methods?selector=" + selector + "&scope=" + classname,
+			"local implementors of " + selector + " in class " + classname
+		);
 	}
 
 	// Debugging...
 	async getDebuggers() {
-		try {
-			const response = await axios.get(this.baseUri + "/debuggers");
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot retrieve debuggers", error);
-		}
+		return await this.get("/debuggers", "debuggers");
 	}
 
 	async createDebugger(id) {
-		try {
-			const evaluation = { evaluation: id };
-			const response = await axios.post(
-				this.baseUri + "/debuggers",
-				evaluation
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot create debugger on evaluation " + id, error);
-		}
+		const evaluation = { evaluation: id };
+		return await this.post(
+			"/debuggers",
+			evaluation,
+			"create debugger on evaluation " + id
+		);
 	}
 
 	async getDebuggerFrames(id) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/debuggers/" + id + "/frames"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch frames of debugger " + id, error);
-		}
+		return await this.get(
+			"/debuggers/" + id + "/frames",
+			"frames of debugger " + id
+		);
 	}
 
 	async getDebuggerFrame(id, index) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/debuggers/" + id + "/frames/" + index
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError(
-				"Cannot fetch frame " + index + " in debugger " + id,
-				error
-			);
-		}
+		return await this.get(
+			"/debuggers/" + id + "/frames/" + index,
+			"frame " + index + " in debugger " + id
+		);
 	}
 
 	async getFrameBindings(id, index) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/debuggers/" + id + "/frames/" + index + "/bindings"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError(
-				"Cannot fetch bindings of frame " + index + " in debugger " + id,
-				error
-			);
-		}
+		return await this.get(
+			"/debuggers/" + id + "/frames/" + index + "/bindings",
+			"bindings of frame " + index + " in debugger " + id
+		);
 	}
 
 	async stepIntoDebugger(id, index) {
-		try {
-			const response = await axios.post(
-				this.baseUri + "/debuggers/" + id + "/frames/" + index + "/stepinto"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError(
-				"Cannot step into on frame " + index + " of debugger " + id,
-				error
-			);
-		}
+		return await this.post(
+			"/debuggers/" + id + "/frames/" + index + "/stepinto",
+			"step into on frame " + index + " of debugger " + id
+		);
 	}
 
 	async stepOverDebugger(id, index) {
-		try {
-			const response = await axios.post(
-				this.baseUri + "/debuggers/" + id + "/frames/" + index + "/stepover"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError(
-				"Cannot step over on frame " + index + " of debugger " + id,
-				error
-			);
-		}
+		return await this.post(
+			"/debuggers/" + id + "/frames/" + index + "/stepover",
+			"step over on frame " + index + " of debugger " + id
+		);
 	}
 
 	async restartDebugger(id, index, update = false) {
-		try {
-			const response = await axios.post(
-				this.baseUri +
-					"/debuggers/" +
-					id +
-					"/frames/" +
-					index +
-					"/restart?update=" +
-					update
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError(
-				"Cannot restart on frame " + index + " of debugger " + id,
-				error
-			);
-		}
+		return await this.post(
+			"/debuggers/" + id + "/frames/" + index + "/restart?update=" + update,
+			"restart on frame " + index + " of debugger " + id
+		);
 	}
 
 	async resumeDebugger(id) {
-		try {
-			const response = await axios.post(
-				this.baseUri + "/debuggers/" + id + "/resume"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot resume debugger " + id, error);
-		}
+		return await this.post(
+			"/debuggers/" + id + "/resume",
+			"resume debugger " + id
+		);
 	}
 
 	async terminateDebugger(id) {
-		try {
-			const response = await axios.post(
-				this.baseUri + "/debuggers/" + id + "/terminate"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot terminate debugger " + id, error);
-		}
+		return await this.post(
+			"/debuggers/" + id + "/terminate",
+			"terminate debugger " + id
+		);
 	}
 
 	async deleteDebugger(id) {
-		try {
-			const response = await axios.delete(this.baseUri + "/debuggers/" + id);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot delete debugger " + id, error);
-		}
+		return await this.delete("/debuggers/" + id, "debugger " + id);
 	}
 
 	// Workspaces...
 	async getWorkspaces() {
-		try {
-			const response = await axios.get(this.baseUri + "/workspaces");
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot retrieve workspaces", error);
-		}
+		return await this.get("/workspaces", "workspaces");
 	}
 
 	async createWorkspace() {
-		try {
-			const response = await axios.post(this.baseUri + "/workspaces");
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot create workspace", error);
-		}
+		return await this.post("/workspaces", "create workspace");
 	}
 
 	async deleteWorkspace(id) {
-		try {
-			const response = await axios.delete(this.baseUri + "/workspaces/" + id);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot delete workspace ", error);
-		}
+		return await this.delete("/workspaces/" + id, "workspace " + id);
 	}
 
 	// Changes...
 	async getChanges() {
-		try {
-			const response = await axios.get(this.baseUri + "/changes");
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch changes ", error);
-		}
+		return await this.get("/changes", "changes");
 	}
 
 	newChange(type) {
@@ -511,13 +331,9 @@ class API {
 	}
 
 	async postChange(change, description) {
-		try {
-			const response = await axios.post(this.baseUri + "/changes", change);
-			this.reportChange(change);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot " + description, error);
-		}
+		const applied = await this.post("/changes", change, description);
+		this.reportChange(applied);
+		return applied;
 	}
 
 	// Change helpers...
@@ -715,103 +531,61 @@ class API {
 
 	// Evaluations...
 	async evaluateExpression(expression, sync = false, pin = false, context) {
-		try {
-			const evaluation = {
-				expression: expression,
-				context: context,
-				sync: sync,
-				pin: pin,
-			};
-			const response = await axios.post(
-				this.baseUri + "/evaluations",
-				evaluation
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot evaluate " + expression, error);
-		}
+		const evaluation = {
+			expression: expression,
+			context: context,
+			sync: sync,
+			pin: pin,
+		};
+		return await this.post(
+			"/evaluations",
+			evaluation,
+			"evaluate " + expression
+		);
 	}
 
 	async cancelEvaluation(id) {
-		try {
-			const response = await axios.delete(this.baseUri + "/evaluations/" + id);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot cancel evaluation with id " + id, error);
-		}
+		return await this.delete(
+			"/evaluations/" + id,
+			"cancel evaluation with id " + id
+		);
 	}
 
 	async getEvaluations() {
-		try {
-			const response = await axios.get(this.baseUri + "/evaluations");
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot retrieve evaluations", error);
-		}
+		return await this.get("/evaluations", "retrieve evaluations");
 	}
 
 	async debugExpression(expression, context) {
-		try {
-			const evaluation = {
-				expression: expression,
-				context: context,
-				debug: true,
-				pin: false,
-			};
-			const response = await axios.post(
-				this.baseUri + "/evaluations",
-				evaluation
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot debug " + expression, error);
-		}
+		const evaluation = {
+			expression: expression,
+			context: context,
+			debug: true,
+			pin: false,
+		};
+		return await this.post("/evaluations", evaluation, "debug " + expression);
 	}
 
 	async profileExpression(expression, context) {
-		try {
-			const evaluation = {
-				expression: expression,
-				context: context,
-				profile: true,
-				pin: false,
-			};
-			const response = await axios.post(
-				this.baseUri + "/evaluations",
-				evaluation
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot profile " + expression, error);
-		}
+		const evaluation = {
+			expression: expression,
+			context: context,
+			profile: true,
+			pin: false,
+		};
+		return await this.post("/evaluations", evaluation, "profile " + expression);
 	}
 
 	// Objects...
 	async getObjects() {
-		try {
-			const response = await axios.get(this.baseUri + "/objects");
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch objects", error);
-		}
+		return await this.get("/objects", "objects");
 	}
 
 	async getObject(id) {
-		try {
-			const response = await axios.get(this.baseUri + "/objects/" + id);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch object with id " + id, error);
-		}
+		return await this.get("/objects/" + id, "object with id " + id);
 	}
 
 	async unpinObject(id) {
-		try {
-			const response = await axios.delete(this.baseUri + "/objects/" + id);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot unpin object with id " + id, error);
-		}
+		return await this.delete("/objects/" + id, "unpin object with id " + id);
 	}
 
 	async getObjectNamedSlots(id, path) {
@@ -830,287 +604,159 @@ class API {
 	}
 
 	async getObjectSlot(id, path) {
-		try {
-			const response = await axios.get(this.baseUri + "/objects/" + id + path);
-			return response.data;
-		} catch (error) {
-			this.handleError(
-				"Cannot fecth " + path + " of object with id " + id,
-				error
-			);
-		}
+		return await this.get(
+			"/objects/" + id + path,
+			path + " of object with id " + id
+		);
 	}
 
 	async pinObjectSlot(id, path) {
 		const uri = "/objects/" + id + path;
-		try {
-			const body = { uri: uri };
-			const response = await axios.post(this.baseUri + "/objects", body);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot pin slot at URI /objects" + uri, error);
-		}
+		const body = { uri: uri };
+		return await this.post("/objects", body, "pin slot at URI /objects" + uri);
 	}
 
 	// Tests...
 	async getTestRuns() {
-		try {
-			const response = await axios.get(this.baseUri + "/test-runs");
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot retrieve test runs", error);
-		}
+		return await this.get("/test-runs", "test runs");
+	}
+
+	async runTestSuite(suite) {
+		return await this.post("/test-runs", suite, "run test suite " + suite);
 	}
 
 	async runTest(classname, selector) {
-		try {
-			const run = {
-				methods: [{ class: classname, selector: selector }],
-			};
-			const response = await axios.post(this.baseUri + "/test-runs", run);
-			return response.data;
-		} catch (error) {
-			this.handleError(
-				"Cannot run test " + selector + " in " + classname,
-				error
-			);
-		}
+		const suite = {
+			methods: [{ class: classname, selector: selector }],
+		};
+		return await this.runTestSuite(suite);
 	}
 
 	async runTestClass(classname) {
-		try {
-			const run = {
-				classes: [classname],
-			};
-			const response = await axios.post(this.baseUri + "/test-runs", run);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot run test class " + classname, error);
-		}
+		const suite = {
+			classes: [classname],
+		};
+		return await this.runTestSuite(suite);
 	}
 
 	async runTestPackage(packagename) {
-		try {
-			const run = {
-				package: packagename,
-			};
-			const response = await axios.post(this.baseUri + "/test-runs", run);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot run test package " + packagename, error);
-		}
+		const suite = {
+			package: packagename,
+		};
+		return await this.runTestSuite(suite);
 	}
 
 	async getTestRunStatus(id) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/test-runs/" + id + "/status"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot get the status of test run " + id, error);
-		}
+		return await this.get(
+			"/test-runs/" + id + "/status",
+			"status of test run " + id
+		);
 	}
 
 	async getTestRunResults(id) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/test-runs/" + id + "/results"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot get the results of test run " + id, error);
-		}
+		return await this.get(
+			"/test-runs/" + id + "/results",
+			"results of test run " + id
+		);
 	}
 
 	async runTestRun(id) {
-		try {
-			const response = await axios.post(
-				this.baseUri + "/test-runs/" + id + "/run"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot run test run " + id, error);
-		}
+		return await this.post("/test-runs/" + id + "/run", "run test run " + id);
 	}
 
 	async stopTestRun(id) {
-		try {
-			const response = await axios.post(
-				this.baseUri + "/test-runs/" + id + "/stop"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot stop test run " + id, error);
-		}
+		return await this.post("/test-runs/" + id + "/stop", "stop test run " + id);
 	}
 
 	async deleteTestRun(id) {
-		try {
-			const response = await axios.delete(this.baseUri + "/test-runs/" + id);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot delete test run " + id, error);
-		}
+		return await this.delete("/test-runs/" + id, "test run " + id);
 	}
 
 	async debugTest(id, classname, selector) {
-		try {
-			const test = {
-				class: classname,
-				selector: selector,
-			};
-			const response = await axios.post(
-				this.baseUri + "/test-runs/" + id + "/debug",
-				test
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError(
-				"Cannot debug test " + selector + " in " + classname,
-				error
-			);
-		}
+		const test = {
+			class: classname,
+			selector: selector,
+		};
+		return await this.post(
+			"/test-runs/" + id + "/debug",
+			test,
+			"debug test " + selector + " in " + classname
+		);
 	}
 
 	// Profiling...
 	async getProfilerTreeResults(id) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/profilers/" + id + "/tree"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch tree results of profiler " + id, error);
-		}
+		return await this.get(
+			"/profilers/" + id + "/tree",
+			"tree results of profiler " + id
+		);
 	}
 
 	async getProfilerRankingResults(id) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/profilers/" + id + "/ranking"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch ranking results of profiler " + id, error);
-		}
+		return await this.get(
+			"/profilers/" + id + "/ranking",
+			"ranking results of profiler " + id
+		);
 	}
 
 	//Native debugging...
 	async getNativeDebugger(id) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/native-debuggers/" + id
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch native debugger " + id, error);
-		}
+		return await this.get("/native-debuggers/" + id, "native debugger " + id);
 	}
 
 	async getNativeDebuggerFrames(id) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/native-debuggers/" + id + "/frames"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch frames of native debugger " + id, error);
-		}
+		return await this.get(
+			"/native-debuggers/" + id + "/frames",
+			"frames of native debugger " + id
+		);
 	}
 
 	async getNativeDebuggerRegisters(id) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/native-debuggers/" + id + "/registers"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError(
-				"Cannot fetch registers of native debugger " + id,
-				error
-			);
-		}
+		return await this.get(
+			"/native-debuggers/" + id + "/registers",
+			"registers of native debugger " + id
+		);
 	}
 
 	async getNativeDebuggerSpaces(id) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/native-debuggers/" + id + "/spaces"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch spaces of native debugger " + id, error);
-		}
+		return await this.get(
+			"/native-debuggers/" + id + "/spaces",
+			"spaces of native debugger " + id
+		);
 	}
 
 	async getNativeDebuggerFrame(id, index) {
-		try {
-			const response = await axios.get(
-				this.baseUri + "/native-debuggers/" + id + "/frames/" + index
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError(
-				"Cannot fetch frame " + index + " in native debugger " + id,
-				error
-			);
-		}
+		return await this.get(
+			"/native-debuggers/" + id + "/frames/" + index,
+			"frame " + index + " in native debugger " + id
+		);
 	}
 
 	async resumeNativeDebugger(id) {
-		try {
-			const response = await axios.post(
-				this.baseUri + "/native-debuggers/" + id + "/resume"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot resume native debugger " + id, error);
-		}
+		return await this.post(
+			"/native-debuggers/" + id + "/resume",
+			"resume native debugger " + id
+		);
 	}
 
 	async suspendNativeDebugger(id) {
-		try {
-			const response = await axios.post(
-				this.baseUri + "/native-debuggers/" + id + "/suspend"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot suspend native debugger " + id, error);
-		}
+		return await this.post(
+			"/native-debuggers/" + id + "/suspend",
+			"suspend native debugger " + id
+		);
 	}
 
 	async pinNativeDebuggerRegister(id, register) {
-		try {
-			const response = await axios.post(
-				this.baseUri +
-					"/native-debuggers/" +
-					id +
-					"/registers/" +
-					register +
-					"/pin"
-			);
-			return response.data;
-		} catch (error) {
-			this.handleError(
-				"Cannot pin object pointed by register " +
-					register +
-					" of native debugger " +
-					id,
-				error
-			);
-		}
+		return await this.post(
+			"/native-debuggers/" + id + "/registers/" + register + "/pin",
+			"pin object pointed by register " + register + " of native debugger " + id
+		);
 	}
 
 	//Memory stats...
 	async getMemoryStats(last) {
 		const query = last ? "?last=" + last : "";
-		try {
-			const response = await axios.get(this.baseUri + "/memory-stats" + query);
-			return response.data;
-		} catch (error) {
-			this.handleError("Cannot fetch memory stats", error);
-		}
+		return await this.get("/memory-stats" + query, "memory stats");
 	}
 }
 
