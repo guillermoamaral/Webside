@@ -98,10 +98,11 @@ class API {
 	}
 
 	async getClassTree(root, depth) {
-		return await this.get(
+		const tree = await this.get(
 			"/classes?names=true&root=" + root + "&tree=true&depth=" + depth,
 			"class tree from " + root
 		);
+		return tree[0];
 	}
 
 	async getClassTree2(root, depth) {
@@ -155,7 +156,7 @@ class API {
 	}
 
 	async getMethods(classname, sorted = false) {
-		const methods = this.get(
+		const methods = await this.get(
 			"/classes/" + classname + "/methods?marks=true",
 			"methods of class " + classname
 		);
@@ -166,7 +167,7 @@ class API {
 	}
 
 	async getMethodsAccessing(classname, variable, type, sorted = false) {
-		const methods = this.get(
+		const methods = await this.get(
 			"/classes/" + classname + "/methods?" + type + "=" + variable,
 			"methods of class " + classname + " using " + variable
 		);
@@ -641,7 +642,7 @@ class API {
 
 	async runTestPackage(packagename) {
 		const suite = {
-			package: packagename,
+			packages: [packagename],
 		};
 		return await this.runTestSuite(suite);
 	}

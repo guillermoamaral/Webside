@@ -8,7 +8,6 @@ import {
 	MenuItem,
 	Drawer,
 	Box,
-	Snackbar,
 	Typography,
 } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
@@ -55,6 +54,7 @@ import CodeDifferences from "./tools/CodeDifferences";
 import Settings from "./Settings";
 import ResourceBrowser from "./tools/ResourceBrowser";
 import CoderLikeBrowser from "./tools/CoderLikeBrowser";
+import CustomSnacks from "./controls/CustomSnacks";
 
 class IDE extends Component {
 	constructor(props) {
@@ -933,34 +933,11 @@ class IDE extends Component {
 								</Container>
 							</main>
 						</div>
-						<Snackbar
-							ContentProps={{
-								style: {
-									backgroundColor: "red",
-								},
-							}}
+						<CustomSnacks
 							open={this.state.lastError !== null}
-							autoHideDuration={3000}
-							onClose={(event) => this.setState({ lastError: null })}
-							message={
-								<Typography component="div" style={{ color: "white" }}>
-									<Box fontWeight={"fontWeightBold"}>
-										{this.state.lastError}
-									</Box>
-								</Typography>
-							}
-							action={
-								<React.Fragment>
-									<IconButton
-										size="small"
-										aria-label="close"
-										color="inherit"
-										onClick={(event) => this.setState({ lastError: null })}
-									>
-										<CloseIcon fontSize="small" />
-									</IconButton>
-								</React.Fragment>
-							}
+							onClose={() => this.setState({ lastError: null })}
+							text={this.state.lastError}
+							severity="error"
 						/>
 					</DialogProvider>
 				</ThemeProvider>
