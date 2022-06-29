@@ -77,33 +77,33 @@ Endpoints to manage workspaces.
 
 Endpoints to manage debuggers and interact with them.
 
-| Method | Path                                                                                 | Description                                                                    | Parameters | Payload                           |
-| :----: | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | :--------: | --------------------------------- |
-|  GET   | [/debuggers](debuggers/get.md)                                                       | Retrieve open debuggers                                                        |     -      | -                                 |
-|  POST  | [/debuggers](debuggers/post.md)                                                      | Create a debugger upon an given process (evaluation)                           |     -      | `json { "evaluation": "string" }` |
-|  GET   | [/debuggers/{id}/frames](debuggers/id/frames/get.md)                                 | Retrieve frames of the debugger with a given ID                                |     -      | -                                 |
-|  GET   | [/debuggers/{id}/frames/{index}](debuggers/id/frames/index/get.md)                   | Retrieve the _i_-th frame withing the debugger with a given ID                 |     -      | -                                 |
-|  GET   | [/debuggers/{id}/frames/{index}/bindings](debuggers/id/frames/index/bindings/get.md) | Retrieve the bindings of the _i_-th frame withing the debugger with a given ID |     -      | -                                 |
-|  POST  | [/debuggers/{id}/stepover](debuggers/id/stepover/post.md)                            | Step over the current sentence in the debugger with a given ID                 |     -      | -                                 |
-|  POST  | [/debuggers/{id}/stepinto](debuggers/id/stepinto/post.md)                            | Step into the current sentence in the debugger with a given ID                 |     -      | -                                 |
-|  POST  | [/debuggers/{id}/restart](debuggers/id/restart/post.md)                              | Restart the debugger with a given ID                                           |     -      | -                                 |
-|  POST  | [/debuggers/{id}/resume](debuggers/id/resume/post.md)                                | Resume the process of the debugger with a given ID                             |     -      | -                                 |
-|  POST  | [/debuggers/{id}/terminate](debuggers/id/terminate/post.md)                          | Terminate process being debugged and closesthe debugger with a given ID        |     -      | -                                 |
-| DELETE | [/debuggers/{id}](debuggers/id/delete.md)                                            | Closes the debugger with a given ID (terminating the process being debugged)   |     -      | -                                 |
+| Method | Path                                                                                 | Description                                                                    | Parameters | Payload                      |
+| :----: | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | :--------: | ---------------------------- |
+|  GET   | [/debuggers](debuggers/get.md)                                                       | Retrieve open debuggers                                                        |     -      | -                            |
+|  POST  | [/debuggers](debuggers/post.md)                                                      | Create a debugger upon an given process (evaluation)                           |     -      | `{ "evaluation": "string" }` |
+|  GET   | [/debuggers/{id}/frames](debuggers/id/frames/get.md)                                 | Retrieve frames of the debugger with a given ID                                |     -      | -                            |
+|  GET   | [/debuggers/{id}/frames/{index}](debuggers/id/frames/index/get.md)                   | Retrieve the _i_-th frame withing the debugger with a given ID                 |     -      | -                            |
+|  GET   | [/debuggers/{id}/frames/{index}/bindings](debuggers/id/frames/index/bindings/get.md) | Retrieve the bindings of the _i_-th frame withing the debugger with a given ID |     -      | -                            |
+|  POST  | [/debuggers/{id}/stepover](debuggers/id/stepover/post.md)                            | Step over the current sentence in the debugger with a given ID                 |     -      | -                            |
+|  POST  | [/debuggers/{id}/stepinto](debuggers/id/stepinto/post.md)                            | Step into the current sentence in the debugger with a given ID                 |     -      | -                            |
+|  POST  | [/debuggers/{id}/restart](debuggers/id/restart/post.md)                              | Restart the debugger with a given ID                                           |     -      | -                            |
+|  POST  | [/debuggers/{id}/resume](debuggers/id/resume/post.md)                                | Resume the process of the debugger with a given ID                             |     -      | -                            |
+|  POST  | [/debuggers/{id}/terminate](debuggers/id/terminate/post.md)                          | Terminate process being debugged and closesthe debugger with a given ID        |     -      | -                            |
+| DELETE | [/debuggers/{id}](debuggers/id/delete.md)                                            | Closes the debugger with a given ID (terminating the process being debugged)   |     -      | -                            |
 
 ## [Testing](test-runs)
 
 Endpoints to run tests and retrieve their results.
 
-| Method | Path                                                   | Description                                    | Parameters | Payload                                                                      |
-| :----: | ------------------------------------------------------ | ---------------------------------------------- | :--------: | ---------------------------------------------------------------------------- |
-|  POST  | [/test-runs](test-runs/post.md)                        | Create and run of a test suite                 |     -      | `json { "methods": ["string"], "classes": ["string"], "package": "string" }` |
-|  GET   | [/test-runs/{id}](test-runs/id/get.md)                 | Retrieve the status of a given test suite run  |     -      | -                                                                            |
-|  GET   | [/test-runs/{id}/results](test-runs/id/resutls/get.md) | Retrieve the restuls of a given test suite run |     -      | -                                                                            |
-|  POST  | [/test-runs/{id}/run](test-runs/id/run/post.md)        | Re-run a given test suite                      |     -      | -                                                                            |
-|  POST  | [/test-runs/{id}/debug](test-runs/id/debug/post.md)    | Debug a test withing a test suite run          |     -      | -                                                                            |
-|  POST  | [/test-runs/{id}/stop](test-runs/id/stop/post.md)      | Stop an active test suite run                  |     -      | -                                                                            |
-| DELETE | [/test-runs/{id}](test-runs/id/delete.md)              | Delete a test suite run                        |     -      | -                                                                            |
+| Method | Path                                                   | Description                                    | Parameters | Payload                                                                 |
+| :----: | ------------------------------------------------------ | ---------------------------------------------- | :--------: | ----------------------------------------------------------------------- |
+|  POST  | [/test-runs](test-runs/post.md)                        | Create and run of a test suite                 |     -      | `{ "methods": ["string"], "classes": ["string"], "package": "string" }` |
+|  GET   | [/test-runs/{id}](test-runs/id/get.md)                 | Retrieve the status of a given test suite run  |     -      | -                                                                       |
+|  GET   | [/test-runs/{id}/results](test-runs/id/resutls/get.md) | Retrieve the restuls of a given test suite run |     -      | -                                                                       |
+|  POST  | [/test-runs/{id}/run](test-runs/id/run/post.md)        | Re-run a given test suite                      |     -      | -                                                                       |
+|  POST  | [/test-runs/{id}/debug](test-runs/id/debug/post.md)    | Debug a test withing a test suite run          |     -      | -                                                                       |
+|  POST  | [/test-runs/{id}/stop](test-runs/id/stop/post.md)      | Stop an active test suite run                  |     -      | -                                                                       |
+| DELETE | [/test-runs/{id}](test-runs/id/delete.md)              | Delete a test suite run                        |     -      | -                                                                       |
 
 ## [Profiling](profilers)
 
