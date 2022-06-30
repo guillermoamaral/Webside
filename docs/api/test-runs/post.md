@@ -6,7 +6,7 @@ Create and run a test suite.
 
 **Method**: `POST`
 
-**Body**: test suite given by:
+**Body**: a `suite` given by:
 
 ```json
 {
@@ -57,8 +57,7 @@ Response:
 
 ```json
 {
-	"class": "TestRunner",
-	"name": "DateTest >> #testAddDays",
-	"id": "0a582b87-ea9e-0d00-9d9f-7faf0f32810b"
+	"id": "0a582b87-ea9e-0d00-9d9f-7faf0f32810b",
+	"name": "DateTest >> #testAddDays"
 }
 ```
