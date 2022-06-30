@@ -30,7 +30,7 @@ class ObjectPresenter extends Component {
 
 	render() {
 		const custom = this.state.custom;
-		const { object, styles } = this.props;
+		const { root, object, styles } = this.props;
 		const presentation = object ? object.presentation : null;
 		return (
 			<Paper variant="outlined" style={{ height: "100%" }}>
@@ -51,7 +51,7 @@ class ObjectPresenter extends Component {
 				)}
 				{!custom && (
 					<CodeEditor
-						context={{ object: this.props.id }}
+						context={{ object: root.id }}
 						styles={styles}
 						lineNumbers={false}
 						source={!object ? "" : object.printString}

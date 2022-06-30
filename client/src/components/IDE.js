@@ -366,8 +366,13 @@ class IDE extends Component {
 		}
 	};
 
-	openPackageBrowser = () => {
-		const browser = <PackageBrowser styles={this.props.styles} />;
+	openPackageBrowser = (packagename) => {
+		const browser = (
+			<PackageBrowser
+				styles={this.props.styles}
+				selectedPackage={packagename}
+			/>
+		);
 		this.addPage("Package Browser", <PackageBrowserIcon />, browser);
 	};
 
@@ -443,7 +448,6 @@ class IDE extends Component {
 				styles={this.props.styles}
 				key={object.id}
 				root={object}
-				id={object.id}
 				showWorkspace={true}
 			/>
 		);

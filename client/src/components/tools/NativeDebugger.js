@@ -9,7 +9,7 @@ import { IDEContext } from "../IDEContext";
 import FrameList from "../parts/FrameList";
 import RegisterTable from "../parts/RegisterTable";
 import CodeBrowser from "../parts/CodeBrowser";
-import { HorizontalBar } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 
 class NativeDebugger extends Component {
 	static contextType = IDEContext;
@@ -167,6 +167,7 @@ class NativeDebugger extends Component {
 		const min = spaces.length > 0 ? spaces[0].base : 0;
 		const max = spaces.length > 0 ? spaces[spaces.length - 1].commitedLimit : 1;
 		const spacesOptions = {
+			indexAxis: "y",
 			legend: { display: false },
 			scales: {
 				yAxes: [{ stacked: true, display: false }],
@@ -183,11 +184,7 @@ class NativeDebugger extends Component {
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
-					<HorizontalBar
-						height={16}
-						data={spacesData}
-						options={spacesOptions}
-					/>
+					<Bar height={16} data={spacesData} options={spacesOptions} />
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					{/* <Tooltip title="Step into" placement="top">

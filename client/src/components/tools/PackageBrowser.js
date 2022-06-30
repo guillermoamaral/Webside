@@ -31,8 +31,8 @@ class PackageBrowser extends Component {
 		};
 	}
 
-	componentDidMount() {
-		this.initializePackages();
+	async componentDidMount() {
+		await this.initializePackages();
 	}
 
 	initializePackages = async () => {
@@ -43,10 +43,19 @@ class PackageBrowser extends Component {
 			names = [];
 			this.context.reportError(error);
 		}
-		const packages = names.map((n) => {
-			return { name: n };
+		var selected;
+		const packages = names.map((name) => {
+			const pack = { name: name };
+			if (this.props.selectedPackage === name) {
+				selected = pack;
+			}
+			return pack;
 		});
-		this.setState({ packages: packages });
+		this.setState({ packages: packages }, () => {
+			if (selected) {
+				this.packageSelected(selected);
+			}
+		});
 	};
 
 	currentSelections() {

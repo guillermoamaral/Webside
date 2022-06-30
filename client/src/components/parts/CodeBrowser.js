@@ -98,6 +98,7 @@ class CodeBrowser extends Component {
 			return;
 		}
 		try {
+			
 			const packagename = this.props.method ? this.props.method.package : null;
 			const category = this.props.method ? this.props.method.category : null;
 			const change = await this.context.api.compileMethod(

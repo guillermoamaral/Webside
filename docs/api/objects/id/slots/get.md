@@ -16,7 +16,7 @@ It should be also possible to get the list of both named or indexed slots by mea
 
 **Code** : `200 OK`
 
-**Content**: `[object]` where `object` is defined as:
+**Content**: `object` defined as:
 
 ```json
 {

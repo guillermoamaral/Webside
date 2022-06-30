@@ -263,6 +263,7 @@ class FastCustomList extends Component {
 			<div style={style}>
 				<ListItem
 					disableGutters={divider}
+					autoFocus={selected}
 					style={{
 						paddingTop: 0,
 						paddingBottom: 0,

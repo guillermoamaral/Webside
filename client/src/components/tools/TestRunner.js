@@ -6,7 +6,6 @@ import {
 	AccordionSummary,
 	Typography,
 	Grid,
-	Box,
 	Button,
 	Card,
 	CardContent,
@@ -14,6 +13,23 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CustomTable from "../controls/CustomTable";
+import {
+	Chart as ChartJS,
+	CategoryScale,
+	LinearScale,
+	BarElement,
+	Tooltip,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
+import ChartDataLabels from "chartjs-plugin-datalabels";
+
+ChartJS.register(
+	CategoryScale,
+	LinearScale,
+	BarElement,
+	Tooltip,
+	ChartDataLabels
+);
 
 class TestRunner extends Component {
 	static contextType = IDEContext;
@@ -301,7 +317,9 @@ class TestRunner extends Component {
 					</Grid>
 					<Grid item xs={12} md={12} lg={12}>
 						{ranking
-							.filter((c) => !filterType || groups[c].summary[filterType] > 0)
+							.filter((c) => {
+								return !filterType || groups[c].summary[filterType] > 0;
+							})
 							.map((c) => {
 								const classSummary = groups[c].summary;
 								const classTests = groups[c].tests.filter(
@@ -310,27 +328,58 @@ class TestRunner extends Component {
 								classTests.forEach((r) => {
 									r.color = this.typeColor(r.type);
 								});
+								const data = {
+									labels: [c],
+									datasets: this.summaryLabels()
+										.filter((l) => {
+											return (
+												l.text !== "Run" &&
+												classSummary[l.type] &&
+												classSummary[l.type] > 0
+											);
+										})
+										.map((l) => {
+											return {
+												label: l.text,
+												backgroundColor: this.typeColor(l.type),
+												borderWidth: 0,
+												data: [classSummary[l.type] || 0],
+											};
+										}),
+								};
+								const options = {
+									indexAxis: "y",
+									scales: {
+										x: {
+											stacked: true,
+											display: false,
+										},
+										y: {
+											stacked: true,
+											display: true,
+										},
+									},
+									plugins: {
+										legend: {
+											display: false,
+										},
+										title: {
+											display: false,
+										},
+										datalabels: {
+											display: true,
+											color: "white",
+										},
+									},
+								};
 								return (
 									<Accordion key={c}>
-										<AccordionSummary expandIcon={<ExpandMoreIcon />} id={c}>
-											<Box display="flex" p={1}>
-												<Box p={1} width="100%">
-													<Typography>{c}</Typography>
-												</Box>
-												{this.summaryLabels().map((label) => {
-													return (
-														<Box p={1} flexShrink={0} key={"box-" + label.type}>
-															<Typography
-																style={{ color: this.typeColor(label.type) }}
-															>
-																{(classSummary[label.type] || 0) +
-																	" " +
-																	label.text}
-															</Typography>
-														</Box>
-													);
-												})}
-											</Box>
+										<AccordionSummary
+											style={{ maxHeight: 15 }}
+											expandIcon={<ExpandMoreIcon />}
+											id={c}
+										>
+											<Bar height={15} data={data} options={options} />
 										</AccordionSummary>
 										<Grid container>
 											<Grid item xs={1} md={1} lg={1} />

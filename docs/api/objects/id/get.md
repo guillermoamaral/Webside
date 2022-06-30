@@ -10,7 +10,7 @@ Retrive the pinned object with a given ID.
 
 **Code** : `200 OK`
 
-**Content**: `[object]` where `object` is defined as:
+**Content**: `object` defined as:
 
 ```json
 {

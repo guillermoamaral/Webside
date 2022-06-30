@@ -5,11 +5,11 @@ import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import CodeEditor from "../parts/CodeEditor";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FlameGraph } from "react-flame-graph";
-import { HorizontalBar } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 
 class Profiler extends Component {
 	static contextType = IDEContext;
-	
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -119,13 +119,13 @@ class Profiler extends Component {
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					{!loading && selectedMode === "ranking" && (
-						<HorizontalBar
+						<Bar
 							height={80}
-							onElementsClick={(elems) => {
+							onClick={(elems) => {
 								this.rankingClicked(elems[0]);
 							}}
 							data={rankingData}
-							options={{ legend: { display: false } }}
+							options={{ indexAxis: "y", legend: { display: false } }}
 						/>
 					)}
 				</Grid>

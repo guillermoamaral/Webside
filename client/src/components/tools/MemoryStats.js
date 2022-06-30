@@ -1,11 +1,31 @@
 import React, { Component } from "react";
 import { IDEContext } from "../IDEContext";
 import { Grid } from "@material-ui/core";
+import {
+	Chart as ChartJS,
+	CategoryScale,
+	LinearScale,
+	PointElement,
+	LineElement,
+	Title,
+	Tooltip,
+	Legend,
+} from "chart.js";
 import { Line } from "react-chartjs-2";
+
+ChartJS.register(
+	CategoryScale,
+	LinearScale,
+	PointElement,
+	LineElement,
+	Title,
+	Tooltip,
+	Legend
+);
 
 class MemoryStats extends Component {
 	static contextType = IDEContext;
-	
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -49,28 +69,24 @@ class MemoryStats extends Component {
 				position: "bottom",
 			},
 			scales: {
-				yAxes: [
-					{
-						type: "linear",
+				size: {
+					type: "linear",
+					display: true,
+					position: "left",
+					scaleLabel: {
 						display: true,
-						position: "left",
-						id: "size",
-						scaleLabel: {
-							display: true,
-							labelString: "kb",
-						},
+						labelString: "kb",
 					},
-					{
-						type: "linear",
+				},
+				percent: {
+					type: "linear",
+					display: true,
+					position: "right",
+					scaleLabel: {
 						display: true,
-						position: "right",
-						id: "percent",
-						scaleLabel: {
-							display: true,
-							labelString: "%",
-						},
+						labelString: "%",
 					},
-				],
+				},
 			},
 			elements: {
 				line: {
@@ -140,18 +156,15 @@ class MemoryStats extends Component {
 				position: "bottom",
 			},
 			scales: {
-				yAxes: [
-					{
-						type: "linear",
+				number: {
+					type: "linear",
+					display: true,
+					position: "left",
+					scaleLabel: {
 						display: true,
-						position: "left",
-						id: "number",
-						scaleLabel: {
-							display: true,
-							labelString: "# of objects",
-						},
+						labelString: "# of objects",
 					},
-				],
+				},
 			},
 			animation: {
 				duration: 0,
@@ -198,18 +211,16 @@ class MemoryStats extends Component {
 				position: "bottom",
 			},
 			scales: {
-				yAxes: [
-					{
-						type: "linear",
+				time: {
+					type: "linear",
+					display: true,
+					position: "left",
+					id: "time",
+					scaleLabel: {
 						display: true,
-						position: "left",
-						id: "time",
-						scaleLabel: {
-							display: true,
-							labelString: "ms",
-						},
+						labelString: "ms",
 					},
-				],
+				},
 			},
 			animation: {
 				duration: 0,

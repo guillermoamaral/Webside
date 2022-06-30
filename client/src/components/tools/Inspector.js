@@ -121,7 +121,7 @@ class Inspector extends Component {
 
 	render() {
 		const { objectTree, selectedObject } = this.state;
-		const { styles, showWorkspace } = this.props;
+		const { root, styles, showWorkspace } = this.props;
 		const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
 		const path = selectedObject ? selectedObject.path : [];
 		const subpaths = this.subpaths(path);
@@ -179,13 +179,17 @@ class Inspector extends Component {
 					</Paper>
 				</Grid>
 				<Grid item xs={12} md={8} lg={8}>
-					<ObjectPresenter styles={styles} object={selectedObject} />
+					<ObjectPresenter
+						styles={styles}
+						root={root}
+						object={selectedObject}
+					/>
 				</Grid>
 				{showWorkspace && (
 					<Grid item xs={12} md={12} lg={12}>
 						<Paper variant="outlined" style={{ height: "100%" }}>
 							<CodeEditor
-								context={{ object: this.props.id }}
+								context={{ object: root.id }}
 								styles={styles}
 								lineNumbers={false}
 							/>
