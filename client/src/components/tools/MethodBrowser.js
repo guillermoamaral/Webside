@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { Grid, Paper } from "@material-ui/core";
+import {
+	Grid,
+	Box,
+	Paper,
+	FormGroup,
+	FormControlLabel,
+	Checkbox,
+} from "@material-ui/core";
 import clsx from "clsx";
 import { IDEContext } from "../IDEContext";
 import MethodList from "../parts/MethodList";
@@ -14,6 +21,7 @@ class MethodBrowser extends Component {
 			selectedMethod:
 				this.props.methods.length > 0 ? this.props.methods[0] : null,
 			selectedClass: null,
+			showTests: true,
 		};
 	}
 
@@ -52,18 +60,57 @@ class MethodBrowser extends Component {
 		}
 	};
 
+	currentMethods() {
+		if (this.state.showTests) {
+			return this.props.methods;
+		}
+		return this.props.methods.filter((m) => {
+			return !this.isTest(m);
+		});
+	}
+
+	isTest(method) {
+		return method && method.selector.startsWith("test");
+	}
+
+	showTests(show) {
+		var selected = this.state.selectedMethod;
+		if (!show && this.isTest(selected)) {
+			selected = null;
+		}
+		this.setState({ showTests: show, selectedMethod: selected });
+	}
+
 	render() {
-		const { selectedMethod, selectedClass } = this.state;
+		const { selectedMethod, selectedClass, showTests } = this.state;
 		const { selectedWord, styles } = this.props;
+		const methods = this.currentMethods();
 		const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
 		return (
 			<Grid container spacing={1}>
+				<Grid item xs={12} md={12} lg={12}>
+					<Box display="flex" justifyContent="flex-end">
+						<FormGroup>
+							<FormControlLabel
+								control={
+									<Checkbox
+										size="small"
+										checked={showTests}
+										color="primary"
+										onChange={(event) => this.showTests(event.target.checked)}
+									/>
+								}
+								label="Show tests"
+							/>
+						</FormGroup>
+					</Box>
+				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<Paper className={fixedHeightPaper} variant="outlined">
 						<MethodList
 							showClass={true}
 							selected={selectedMethod}
-							methods={this.props.methods}
+							methods={methods}
 							onSelect={this.methodSelected}
 						/>
 					</Paper>
