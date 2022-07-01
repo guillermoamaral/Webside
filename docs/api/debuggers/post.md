@@ -6,7 +6,7 @@ Create a debugger on a given process. The process is identified thru the evaluat
 
 **Method**: `POST`
 
-**Body**: an `expression` ID:
+**Body**: an `evaluation` (the ID obtained when creating the evaluation):
 
 ```json
 {

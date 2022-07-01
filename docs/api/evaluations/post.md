@@ -2,13 +2,13 @@
 
 Evaluate an expression, either synchronously or asynchronously.
 
-Pay special attention to the way compilation errors should be handled by the API so Webside can react properly.
+Pay special attention to the way compilation errors should be handled by the API so the front-end can react properly.
 
 **URL**: `/evaluations`
 
 **Method**: `POST`
 
-**Body**: an `expression`:
+**Body**: an `expression` plus the following properties:
 
 ```json
 {

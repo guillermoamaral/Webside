@@ -2,7 +2,7 @@
 
 Retrive the status of the test run with a given ID.
 
-This object allows to provide feedback to the user on how an active test run is progressing. It indicates not only the test being executed at a given time, but the current summary of `passed`, `failed`, `error`, `sikkped`, and `knownIssues` tests.
+This object allows to provide feedback to the user on how an active test run is progressing. It indicates not only the test being executed at a given time, but the current summary of `"passed"`, `"failed"`, `"error"`, `"sikkped"`, and `"knownIssues"` tests.
 
 **URL**: `/test-runs/{id}/status`
 
@@ -39,7 +39,6 @@ Where `type` can be `passed`, `failed`, `skipped`, `error` or `knownIssue`, and 
 ```json
 {
 	"id": "{6AC24F85-594A-4C46-A6CF-410404998AB4}",
-	"class": "TestRunner",
 	"name": "DateTest >> #testAdd",
 	"total": 1,
 	"running": false,
