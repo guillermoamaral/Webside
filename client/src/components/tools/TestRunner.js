@@ -37,23 +37,37 @@ class TestRunner extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			status: {
-				name: "",
-				total: 0,
-				running: false,
-				current: null,
-				summary: this.newSummary(),
-			},
-			results: {
-				updated: false,
-				groups: {},
-			},
+			status: this.newStatus(),
+			results: this.newResults(),
+			updating: false,
 			filterType: null,
 		};
 	}
 
 	componentDidMount() {
 		this.updateStatus();
+	}
+
+	newResults() {
+		return {
+			updated: false,
+			passed: [],
+			failed: [],
+			errors: [],
+			skipped: [],
+			knownIssues: [],
+			grouped: {},
+		};
+	}
+
+	newStatus() {
+		return {
+			name: "",
+			total: 0,
+			running: false,
+			current: null,
+			summary: this.newSummary(),
+		};
 	}
 
 	newSummary() {
@@ -76,13 +90,13 @@ class TestRunner extends Component {
 			case "failed":
 				color = "#ffc107";
 				break;
-			case "error":
+			case "errors":
 				color = "#dc3545";
 				break;
 			case "skipped":
 				color = "#6c757d";
 				break;
-			case "knownIssue":
+			case "knownIssues":
 				color = "#007bff";
 				break;
 			default:
@@ -91,27 +105,11 @@ class TestRunner extends Component {
 		return color;
 	}
 
-	summaryLabels() {
-		return [
-			{ type: "passed", text: "Passed" },
-			{ type: "failed", text: "Failed" },
-			{ type: "error", text: "Errors" },
-			{ type: "skipped", text: "Skipped" },
-			{ type: "knownIssue", text: "Known Issues" },
-			{ type: "run", text: "Run" },
-		];
-	}
-
 	async runClicked() {
-		this.setState({
-			status: {
-				total: 0,
-				running: true,
-				current: null,
-				summary: this.newSummary(),
-			},
-			results: { updated: false, groups: {} },
-		});
+		const status = this.newStatus();
+		status.running = true;
+		const results = this.newResults();
+		this.setState({ status: status, results: results });
 		try {
 			await this.context.api.runTestRun(this.props.id);
 			this.updateStatus();
@@ -155,24 +153,35 @@ class TestRunner extends Component {
 			return;
 		}
 		try {
-			const tests = await this.context.api.getTestRunResults(this.props.id);
-			const groups = {};
-			tests.forEach((t) => {
-				if (!groups[t.class]) {
-					groups[t.class] = { summary: {}, tests: [] };
-				}
-				groups[t.class].tests.push(t);
-			});
-			Object.keys(groups).forEach((c) => {
-				groups[c].tests.forEach((t) => {
-					groups[c].summary[t.type] = groups[c].summary[t.type] + 1 || 1;
-					groups[c].summary.run = groups[c].summary.run + 1 || 1;
-				});
-			});
-			this.setState({ results: { updated: true, groups: groups } });
+			const results = await this.context.api.getTestRunResults(this.props.id);
+			results.grouped = this.groupByClass(results);
+			results.updated = true;
+			this.setState({ results: results });
 		} catch (error) {
 			this.context.reportError(error);
 		}
+	}
+
+	groupByClass(results) {
+		const grouped = {};
+		["passed", "failed", "errors", "skipped", "knownIssues"].forEach((k) => {
+			const tests = results[k] || [];
+			tests.forEach((t) => {
+				const c = t.class;
+				t.type = k;
+				if (!grouped[c]) {
+					grouped[c] = { summary: this.newSummary(), all: [] };
+				}
+				if (!grouped[c][k]) {
+					grouped[c][k] = [];
+				}
+				grouped[c][k].push(t);
+				grouped[c].all.push(t);
+				grouped[c].summary[k] += 1;
+				grouped[c].summary.run += 1;
+			});
+		});
+		return grouped;
 	}
 
 	filterTests(type) {
@@ -214,7 +223,7 @@ class TestRunner extends Component {
 	};
 
 	canDebugTest = (test) => {
-		return test && (test.type === "failed" || test.type === "error");
+		return test && (test.type === "failed" || test.type === "errors");
 	};
 
 	render() {
@@ -223,10 +232,12 @@ class TestRunner extends Component {
 		const { total, running, current } = status;
 		const summary = status.summary || this.newSummary();
 		const percent = total > 0 ? (summary.run / total) * 100 : 0;
-		const groups = results.groups;
-		const ranking = Object.keys(groups).sort((c1, c2) => {
-			const n1 = groups[c1].summary.failed || 0 + groups[c1].summary.error || 0;
-			const n2 = groups[c2].summary.failed || 0 + groups[c2].summary.error || 0;
+		const grouped = results.grouped;
+		const ranking = Object.keys(grouped).sort((c1, c2) => {
+			const n1 =
+				grouped[c1].summary.failed || 0 + grouped[c1].summary.error || 0;
+			const n2 =
+				grouped[c2].summary.failed || 0 + grouped[c2].summary.error || 0;
 			return n1 > n2 ? -1 : n1 < n2 ? 1 : 0;
 		});
 		const testColumns = [
@@ -283,29 +294,29 @@ class TestRunner extends Component {
 							justify="space-around"
 							alignItems="flex-end"
 						>
-							{this.summaryLabels().map((label) => {
+							{Object.keys(summary).map((type) => {
 								return (
-									<Grid item xs={2} md={2} lg={2} key={"grid-" + label.type}>
+									<Grid item xs={2} md={2} lg={2} key={"grid-" + type}>
 										<Card
-											id={"card-" + label.type}
-											style={{ backgroundColor: this.typeColor(label.type) }}
+											id={"card-" + type}
+											style={{ backgroundColor: this.typeColor(type) }}
 										>
 											<CardActionArea
-												onClick={(event) => this.filterTests(label.type)}
+												onClick={(event) => this.filterTests(type)}
 											>
-												<CardContent key={"card-content-" + label.type}>
+												<CardContent key={"card-content-" + type}>
 													<Typography
-														variant={label.type === "run" ? "h2" : "h3"}
+														variant={type === "run" ? "h2" : "h3"}
 														style={{ color: "white" }}
 													>
-														{summary[label.type] || 0}
+														{summary[type] || 0}
 													</Typography>
 													<Typography
 														variant={"button"}
 														style={{ color: "white" }}
 														align="right"
 													>
-														{label.text}
+														{type}
 													</Typography>
 												</CardContent>
 											</CardActionArea>
@@ -318,32 +329,28 @@ class TestRunner extends Component {
 					<Grid item xs={12} md={12} lg={12}>
 						{ranking
 							.filter((c) => {
-								return !filterType || groups[c].summary[filterType] > 0;
+								return !filterType || grouped[c].summary[filterType] > 0;
 							})
 							.map((c) => {
-								const classSummary = groups[c].summary;
-								const classTests = groups[c].tests.filter(
-									(t) => !filterType || t.type === filterType
-								);
-								classTests.forEach((r) => {
-									r.color = this.typeColor(r.type);
+								const classSummary = grouped[c].summary;
+								const classTests = filterType
+									? grouped[c][filterType]
+									: grouped[c].all;
+								classTests.forEach((t) => {
+									t.color = this.typeColor(t.type);
 								});
 								const data = {
 									labels: [c],
-									datasets: this.summaryLabels()
-										.filter((l) => {
-											return (
-												l.text !== "Run" &&
-												classSummary[l.type] &&
-												classSummary[l.type] > 0
-											);
+									datasets: Object.keys(classSummary)
+										.filter((type) => {
+											return type !== "run" && classSummary[type] > 0;
 										})
-										.map((l) => {
+										.map((type) => {
 											return {
-												label: l.text,
-												backgroundColor: this.typeColor(l.type),
+												label: type,
+												backgroundColor: this.typeColor(type),
 												borderWidth: 0,
-												data: [classSummary[l.type] || 0],
+												data: [classSummary[type] || 0],
 											};
 										}),
 								};
