@@ -24,7 +24,7 @@ Retrive active evaluations, i.e., evaluations initiated as explained [here](post
 ```json
 [
 	{
-		"id": "{207CDBB1-6311-4503-A066-1A89B39A1465}",
+		"id": "1",
 		"expression": "Delay wait: 10000"
 	}
 ]

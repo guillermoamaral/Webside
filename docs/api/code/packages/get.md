@@ -7,9 +7,9 @@ Retrieve all packages in the system.
 **Method**: `GET`
 
 **Query Options**
-| Option | Type | Description |
-| :----: | :-----: | --------- |
-| names | boolean | true to get only package names |
+| Option | Type    | Description                    |
+| :----: | ------- | ------------------------------ |
+| names  | boolean | true to get only package names |
 
 ## Success Responses
 

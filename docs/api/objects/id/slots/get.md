@@ -28,7 +28,7 @@ It should be also possible to get the list of both named or indexed slots by mea
 }
 ```
 
-**Example 1:**: `corner` slot of the rectangle with ID `{207CDBB1-6311-4503-A066-1A89B39A1465}`, `GET /objects/{207CDBB1-6311-4503-A066-1A89B39A1465}/corner`
+**Example 1:**: `corner` slot of the rectangle with ID `1`, `GET /objects/1/corner`
 
 ```json
 {
@@ -39,7 +39,7 @@ It should be also possible to get the list of both named or indexed slots by mea
 }
 ```
 
-**Example 2:**: `x` slot of the `corner` slot of the rectangle with ID `{207CDBB1-6311-4503-A066-1A89B39A1465}`, `GET /objects/{207CDBB1-6311-4503-A066-1A89B39A1465}/corner/x`
+**Example 2:**: `x` slot of the `corner` slot of the rectangle with ID `1`, `GET /objects/1/corner/x`
 
 ```json
 {
@@ -50,7 +50,7 @@ It should be also possible to get the list of both named or indexed slots by mea
 }
 ```
 
-**Example 3:**: `named-slots` of the rectangle with ID `{207CDBB1-6311-4503-A066-1A89B39A1465}`, `GET /objects/{207CDBB1-6311-4503-A066-1A89B39A1465}/named-slots`
+**Example 3:**: `named-slots` of the rectangle with ID `1`, `GET /objects/1/named-slots`
 
 ```json
 [
@@ -73,7 +73,7 @@ It should be also possible to get the list of both named or indexed slots by mea
 
 Note the `slot` property in each object.
 
-**Example 4:**: `named-slots` of the `corner` slot of the rectangle with ID `{207CDBB1-6311-4503-A066-1A89B39A1465}`, `GET /objects/{207CDBB1-6311-4503-A066-1A89B39A1465}/corner/named-slots`
+**Example 4:**: `named-slots` of the `corner` slot of the rectangle with ID `1`, `GET /objects/1/corner/named-slots`
 
 ```json
 [
@@ -94,7 +94,7 @@ Note the `slot` property in each object.
 ]
 ```
 
-**Example 5:**: `indexed-slots` of the array with ID `{B53F7681-E7CF-4E92-B260-BC33194D2EBB}`, `GET /objects/{B53F7681-E7CF-4E92-B260-BC33194D2EBB}/indexed-slots`
+**Example 5:**: `indexed-slots` of the array with ID `1`, `GET /objects/1/indexed-slots`
 
 ```json
 [
@@ -122,7 +122,7 @@ Note the `slot` property in each object.
 ]
 ```
 
-**Example 6:**: element at index `2` of the same array as before, `GET /objects/{B53F7681-E7CF-4E92-B260-BC33194D2EBB}/2`
+**Example 6:**: element at index `2` of the same array as before, `GET /objects/1/2`
 
 ```json
 {

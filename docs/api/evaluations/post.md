@@ -106,7 +106,7 @@ For example, the following error is returned after trying to evaluate `1 + `:
 500
 {
 	"description": "primary missing",
-	"evaluation": "{1F60400E-40F3-4934-A8B6-555D048DC9FF}",
+	"evaluation": "1",
 	"stack": "SmalltalkCompiler>>error:stretch:\rSmalltalkCompiler>>error: 'primary missing' at: 3 \rSmalltalkParser>>error: 'primary missing' at: 3 \rSmalltalkParser>>error: 'primary missing' \rSmalltalkParser>>binaryMessage:\rSmalltalkParser>>binarySequence:\rSmalltalkParser>>expression\rSmalltalkParser>>statement\rSmalltalkParser>>statements\rSmalltalkParser>>addStatementsTo:\rSmalltalkParser>>addBodyTo:\rSmalltalkParser>>headlessMethod\rSmalltalkCompiler>>parseExpression\r[] in SmalltalkCompiler>>compileExpression:\rObject(BlockClosure)>>setUnwind:\rBlockClosure>>ensure:\rProcess>>useExceptionHandler:while:\rBlockClosure>>on:do:\rCompiler>>protect:\rSmalltalkCompiler>>compileExpression: '1 +' \rCompiler>>evaluate: '1 +' for: nil \r[] in Compiler>>evaluate:for:ifFail:\rObject(BlockClosure)>>setUnwind:\rBlockClosure>>ensure:\rProcess>>useExceptionHandler:while:\rBlockClosure>>on:do:\rCompiler>>evaluate: '1 +' for: nil ifFail: nil \r[] in WebsideEvaluation>>evaluate\r[] in WebsideEvaluation>>evaluateBlock:\rMessageSend(Message)>>performOn:\rMessageSend>>perform\rMessageSend>>evaluate\rProcess>>privatePerform:\rProcess>>basicEvaluate:\rMessageSend>>newProcess\r"
 }
 ```

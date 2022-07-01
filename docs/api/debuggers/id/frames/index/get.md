@@ -31,7 +31,7 @@ Where `class` is the class of the receiver as defined [here](../../../../code/cl
 }
 ```
 
-**Example:**: 2nd frame of debugger with ID `{7B9C472C-376F-493A-9B88-5CCBA70A4309}`, `GET /debugger/{7B9C472C-376F-493A-9B88-5CCBA70A4309}/frames/2`
+**Example:**: 2nd frame of debugger with ID `1`, `GET /debugger/1/frames/2`
 
 ```json
 {

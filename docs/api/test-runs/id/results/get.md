@@ -10,7 +10,19 @@ Retrive the results of the test run with a given ID.
 
 **Code** : `200 OK`
 
-**Content**: `[result]`, where `result` is defined as:
+**Content**: a `result` defined as:
+
+```json
+{
+	"passed": ["test"],
+	"failed": ["test"],
+	"errors": ["test"],
+	"skipped": ["test"],
+	"knownIssues": ["test"]
+}
+```
+
+Where `test` is defined as:
 
 ```json
 {
@@ -21,23 +33,35 @@ Retrive the results of the test run with a given ID.
 }
 ```
 
-Where `type` can be either `"passed"`, `"failed"`, `"skipped"`, `"error"` or `"knownIssue"`, and `time` is the time required for the test to run.
-
-**Example:**: `GET /test-runs/0a582b87-ea9e-0d00-9d9f-7faf0f32810b/results`
+**Example:**: `GET /test-runs/1/results`
 
 ```json
-[
-	{
-		"class": "DateTest",
-		"selector": "testAddDays",
-		"time": 0,
-		"type": "passed"
-	},
-	{
-		"class": "DateTest",
-		"selector": "testAddMonths",
-		"time": 0,
-		"type": "failed"
-	}
-]
+{
+	"class": "TestResult",
+	"passed": [
+		{
+			"class": "DateTest",
+			"selector": "testAccessing",
+			"time": 0,
+			"seed": 0
+		},
+		{
+			"class": "DateTest",
+			"selector": "testAddDays",
+			"time": 0,
+			"seed": 0
+		}
+	],
+	"failed": [
+		{
+			"class": "DateTest",
+			"selector": "testPrintFormat",
+			"time": 0,
+			"seed": 0
+		}
+	],
+	"errors": [],
+	"skipped": [],
+	"knownIssues": []
+}
 ```

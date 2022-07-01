@@ -19,11 +19,11 @@ Retrive the active evaluation with a given ID.
 }
 ```
 
-**Example:**: `GET /evaluations`
+**Example:**: `GET /evaluations/1`
 
 ```json
 {
-	"id": "{207CDBB1-6311-4503-A066-1A89B39A1465}",
+	"id": "1",
 	"expression": "1000000 factorial"
 }
 ```
