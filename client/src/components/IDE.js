@@ -8,7 +8,6 @@ import {
 	MenuItem,
 	Drawer,
 	Box,
-	Typography,
 } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
 import { withCookies } from "react-cookie";
@@ -22,7 +21,6 @@ import { IDEContext } from "./IDEContext";
 import { DialogProvider } from "./dialogs/index";
 import TranscriptIcon from "./icons/TranscriptIcon";
 import SearchIcon from "@material-ui/icons/Search";
-import CloseIcon from "@material-ui/icons/Close";
 import PackageBrowserIcon from "./icons/PackageBrowserIcon";
 import ClassBrowserIcon from "./icons/ClassBrowserIcon";
 import MethodBrowserIcon from "./icons/MethodBrowserIcon";
