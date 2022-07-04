@@ -72,15 +72,19 @@ class Inspector extends Component {
 			slots = [];
 			this.context.reportError(error);
 		}
-		slots.forEach((slot) => {
-			slot.path = [...object.path, slot.slot];
+		slots = slots.map((retrieved) => {
+			retrieved.path = [...object.path, retrieved.slot];
 			// const dummy = {
-			// 	...slot,
+			// 	...retrieved,
 			// 	dummy: true,
 			// 	slot: "self",
 			// 	path: [],
 			// };
-			// slot.slots = [dummy];
+			// retrieved.slots = [dummy];
+			const existing = (object.slots || []).find(
+				(s) => s.slot === retrieved.slot
+			);
+			return existing ? Object.assign(existing, retrieved) : retrieved;
 		});
 		if (slots.length > 0) {
 			object.slots = slots;
@@ -118,6 +122,12 @@ class Inspector extends Component {
 		}
 		return subpaths;
 	}
+
+	expressionEvaluated = async () => {
+		const selected = this.state.selectedObject;
+		await this.updateObject(selected);
+		this.setState({ selectedObject: selected });
+	};
 
 	render() {
 		const { objectTree, selectedObject } = this.state;
@@ -192,6 +202,7 @@ class Inspector extends Component {
 								context={{ object: root.id }}
 								styles={styles}
 								lineNumbers={false}
+								onEvaluate={this.expressionEvaluated}
 							/>
 						</Paper>
 					</Grid>

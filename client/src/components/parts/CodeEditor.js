@@ -321,11 +321,18 @@ class CodeEditor extends Component {
 				false,
 				this.props.context
 			);
-			this.setState({ progress: false });
+			this.setState({ progress: false }, this.triggerOnEvaluate());
 		} catch (error) {
 			this.setState({ progress: false });
 		}
 	};
+
+	triggerOnEvaluate() {
+		const handler = this.props.onEvaluate;
+		if (handler) {
+			handler();
+		}
+	}
 
 	showEvaluation = async () => {
 		const expression = this.selectedExpression();

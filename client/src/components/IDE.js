@@ -445,6 +445,7 @@ class IDE extends Component {
 			<Inspector
 				styles={this.props.styles}
 				key={object.id}
+				id={object.id}
 				root={object}
 				showWorkspace={true}
 			/>

@@ -125,9 +125,13 @@ class CustomTree extends Component {
 
 	itemToggled = (event, item) => {
 		var expanded = this.state.expandedItems;
-		if (expanded.includes(item)) {
+		const ids = expanded.map((i) => {
+			return this.getItemId(i);
+		});
+		const id = this.getItemId(item);
+		if (ids.includes(id)) {
 			expanded = expanded.filter((i) => {
-				return i !== item;
+				return this.getItemId(i) !== id;
 			});
 		} else {
 			expanded.push(item);
