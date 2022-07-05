@@ -61,7 +61,7 @@ class PackageBrowser extends Component {
 	currentSelections() {
 		return {
 			package: this.state.selectedPackage,
-			class: this.state.selectedClass,
+			species: this.state.selectedClass,
 			category: this.state.selectedCategory,
 			method: this.state.selectedMethod,
 		};
@@ -75,7 +75,7 @@ class PackageBrowser extends Component {
 			}
 			return {
 				selectedPackage: selections.package,
-				selectedClass: selections.class,
+				selectedClass: selections.species,
 				selectedCategory: selections.category,
 				selectedMethod: selections.method,
 			};
@@ -140,7 +140,7 @@ class PackageBrowser extends Component {
 	}
 
 	async updateClass(selections, force = false) {
-		const species = selections.class;
+		const species = selections.species;
 		try {
 			if (force || !species.definition) {
 				const definition = await this.context.api.getClass(species.name);
@@ -171,15 +171,14 @@ class PackageBrowser extends Component {
 	}
 
 	async updateVariables(selections, force = false) {
-		const species = selections.class;
+		const { species, variable } = selections;
 		try {
 			if (force || !species.variables) {
 				species.variables = await this.context.api.getVariables(species.name);
 			}
-			var variable = selections.variable;
 			if (variable) {
-				variable = species.variables.find((v) => v.name === variable.name);
-				selections.variable = !variable ? null : variable;
+				const found = species.variables.find((v) => v.name === variable.name);
+				selections.variable = !found ? null : found;
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -187,7 +186,7 @@ class PackageBrowser extends Component {
 	}
 
 	async updateCategories(selections, force = false) {
-		const species = selections.class;
+		const species = selections.species;
 		try {
 			if (force || !species.categories) {
 				const categories = await this.context.api.getCategories(species.name);
@@ -203,10 +202,7 @@ class PackageBrowser extends Component {
 
 	async updateMethods(selections, force = false) {
 		const pack = selections.package;
-		const species = selections.class;
-		const variable = selections.variable;
-		const access = selections.access;
-		var method = selections.method;
+		const { species, variable, access, method } = selections;
 		if (!pack || !species) {
 			return;
 		}
@@ -228,8 +224,10 @@ class PackageBrowser extends Component {
 				species[variable.name][access] = accessors;
 			}
 			if (method) {
-				method = species.methods.find((m) => m.selector === method.selector);
-				selections.method = !method ? null : method;
+				const found = species.methods.find(
+					(m) => m.selector === method.selector
+				);
+				selections.method = !found ? null : found;
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -237,7 +235,7 @@ class PackageBrowser extends Component {
 	}
 
 	async updateMethod(selections, force = true) {
-		const species = selections.class;
+		const species = selections.species;
 		const selector = selections.method.selector;
 		try {
 			if (force) {
@@ -271,7 +269,7 @@ class PackageBrowser extends Component {
 
 	classSelected = async (species) => {
 		const selections = this.currentSelections();
-		selections.class = species;
+		selections.species = species;
 		await this.updateClass(selections);
 		await this.updateSubclasses(species);
 		await this.updateVariables(selections);
@@ -315,7 +313,7 @@ class PackageBrowser extends Component {
 			}
 		}
 		const selections = this.currentSelections();
-		selections.class = cached;
+		selections.species = cached;
 		await this.updateVariables(selections, true);
 		this.classSelected(cached);
 	};
@@ -368,7 +366,7 @@ class PackageBrowser extends Component {
 		await this.updateVariables(selections, true);
 		await this.updateMethods(selections, true);
 		this.variableSelected(
-			selections.class.variables.find((v) => v.name === variable.name)
+			selections.species.variables.find((v) => v.name === variable.name)
 		);
 	};
 
@@ -390,8 +388,8 @@ class PackageBrowser extends Component {
 	categoryAdded = async (category) => {
 		const selections = this.currentSelections();
 		selections.category = category;
-		selections.class.categories.push(category);
-		selections.class.categories.sort();
+		selections.species.categories.push(category);
+		selections.species.categories.sort();
 		this.applySelections(selections);
 	};
 
@@ -400,7 +398,7 @@ class PackageBrowser extends Component {
 		await this.updateCategories(selections, true);
 		await this.updateMethods(selections, true);
 		this.categorySelected(
-			selections.class.categories.find((c) => c === renamed)
+			selections.species.categories.find((c) => c === renamed)
 		);
 	};
 
@@ -422,7 +420,7 @@ class PackageBrowser extends Component {
 	methodRenamed = async (method) => {
 		const selections = this.currentSelections();
 		await this.updateMethods(selections, true);
-		const species = selections.class;
+		const species = selections.species;
 		selections.method = species.methods.find(
 			(m) => m.selector === method.selector
 		);
@@ -447,7 +445,7 @@ class PackageBrowser extends Component {
 	methodCompiled = async (method) => {
 		const selections = this.currentSelections();
 		const species = this.cache.classes[method.class];
-		selections.class = species;
+		selections.species = species;
 		if (!species.categories.includes(method.category)) {
 			await this.updateCategories(selections, true);
 		}

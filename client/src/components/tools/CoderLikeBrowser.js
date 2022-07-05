@@ -58,7 +58,7 @@ class CoderLikeBrowser extends Component {
 
 	currentSelections() {
 		return {
-			class: this.state.selectedClass,
+			species: this.state.selectedClass,
 			access: this.state.selectedAccess,
 			variable: this.state.selectedVariable,
 			category: this.state.selectedCategory,
@@ -68,12 +68,12 @@ class CoderLikeBrowser extends Component {
 
 	applySelections(selections) {
 		this.setState((prevState, props) => {
-			const species = selections.class;
+			const species = selections.species;
 			if (species && !this.cache[species.name]) {
 				this.cache[species.name] = species;
 			}
 			return {
-				selectedClass: selections.class,
+				selectedClass: selections.species,
 				selectedAccess: selections.access,
 				selectedVariable: selections.variable,
 				selectedCategory: selections.category,
@@ -124,7 +124,7 @@ class CoderLikeBrowser extends Component {
 
 	// Updating...
 	async updateClass(selections, force = false) {
-		const species = selections.class;
+		const species = selections.species;
 		try {
 			if (force || !species.definition) {
 				const definition = await this.context.api.getClass(species.name);
@@ -157,15 +157,14 @@ class CoderLikeBrowser extends Component {
 	}
 
 	async updateVariables(selections, force = false) {
-		const species = selections.class;
+		const { species, variable } = selections;
 		try {
 			if (force || !species.variables) {
 				species.variables = await this.context.api.getVariables(species.name);
 			}
-			var variable = selections.variable;
 			if (variable) {
-				variable = species.variables.find((v) => v.name === variable.name);
-				selections.variable = !variable ? null : variable;
+				const found = species.variables.find((v) => v.name === variable.name);
+				selections.variable = !found ? null : found;
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -173,7 +172,7 @@ class CoderLikeBrowser extends Component {
 	}
 
 	async updateCategories(selections, force = false) {
-		const species = selections.class;
+		const species = selections.species;
 		try {
 			if (force || !species.categories) {
 				const categories = await this.context.api.getCategories(species.name);
@@ -188,10 +187,7 @@ class CoderLikeBrowser extends Component {
 	}
 
 	async updateMethods(selections, force = false) {
-		const species = selections.class;
-		const variable = selections.variable;
-		const access = selections.access;
-		var method = selections.method;
+		const { species, variable, access, method } = selections;
 		if (!species) {
 			return;
 		}
@@ -213,8 +209,10 @@ class CoderLikeBrowser extends Component {
 				species[variable.name][access] = accessors;
 			}
 			if (method) {
-				method = species.methods.find((m) => m.selector === method.selector);
-				selections.method = !method ? null : method;
+				const found = species.methods.find(
+					(m) => m.selector === method.selector
+				);
+				selections.method = !found ? null : found;
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -222,7 +220,7 @@ class CoderLikeBrowser extends Component {
 	}
 
 	async updateMethod(selections, force = true) {
-		const species = selections.class;
+		const species = selections.species;
 		const selector = selections.method.selector;
 		var method;
 		if (force) {
@@ -257,7 +255,7 @@ class CoderLikeBrowser extends Component {
 
 	classSelected = async (species) => {
 		const selections = this.currentSelections();
-		selections.class = species;
+		selections.species = species;
 		await this.updateClass(selections);
 		await this.updateSubclasses(species);
 		await this.updateVariables(selections);
@@ -284,7 +282,7 @@ class CoderLikeBrowser extends Component {
 			}
 		}
 		const selections = this.currentSelections();
-		selections.class = cached;
+		selections.species = cached;
 		await this.updateVariables(selections, true);
 		this.classSelected(cached);
 	};
@@ -339,7 +337,7 @@ class CoderLikeBrowser extends Component {
 		await this.updateVariables(selections, true);
 		await this.updateMethods(selections, true);
 		this.variableSelected(
-			selections.class.variables.find((v) => v.name === variable.name)
+			selections.species.variables.find((v) => v.name === variable.name)
 		);
 	};
 
@@ -361,8 +359,8 @@ class CoderLikeBrowser extends Component {
 	categoryAdded = async (category) => {
 		const selections = this.currentSelections();
 		selections.category = category;
-		selections.class.categories.push(category);
-		selections.class.categories.sort();
+		selections.species.categories.push(category);
+		selections.species.categories.sort();
 		this.applySelections(selections);
 	};
 
@@ -371,7 +369,7 @@ class CoderLikeBrowser extends Component {
 		await this.updateCategories(selections, true);
 		await this.updateMethods(selections, true);
 		this.categorySelected(
-			selections.class.categories.find((c) => c === renamed)
+			selections.species.categories.find((c) => c === renamed)
 		);
 	};
 
@@ -393,7 +391,7 @@ class CoderLikeBrowser extends Component {
 	methodRenamed = async (method) => {
 		const selections = this.currentSelections();
 		await this.updateMethods(selections, true);
-		const species = selections.class;
+		const species = selections.species;
 		selections.method = species.methods.find(
 			(m) => m.selector === method.selector
 		);
@@ -413,7 +411,7 @@ class CoderLikeBrowser extends Component {
 		}
 		const selections = this.currentSelections();
 		const species = this.cache[method.class];
-		selections.class = species;
+		selections.species = species;
 		if (!species.categories.includes(method.category)) {
 			await this.updateCategories(selections, true);
 		}

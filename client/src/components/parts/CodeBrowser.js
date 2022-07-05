@@ -98,21 +98,24 @@ class CodeBrowser extends Component {
 			return;
 		}
 		try {
-			const packagename = this.props.method ? this.props.method.package : null;
-			const category = this.props.method ? this.props.method.category : null;
+			const method = this.props.method;
+			const species = this.props.class;
+			const packagename = method ? method.package : null;
+			const category = method ? method.category : null;
+			const classname = species ? species.name : method ? method.class : null;
 			const change = await this.context.api.compileMethod(
-				this.props.class.name,
+				classname,
 				packagename,
 				category,
 				source
 			);
-			const method = await this.context.api.getMethod(
-				this.props.class.name,
+			const compiled = await this.context.api.getMethod(
+				classname,
 				change.selector
 			);
 			const handler = this.props.onMethodCompiled;
 			if (handler) {
-				handler(method);
+				handler(compiled);
 			}
 		} catch (error) {
 			this.handlerCompilationError(error, source);
