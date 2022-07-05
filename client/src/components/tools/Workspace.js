@@ -94,7 +94,7 @@ class Workspace extends Component {
 								styles={this.props.styles}
 								lineNumbers={false}
 								source={expression}
-								showAccept={true}
+								showAccept
 								acceptIcon={<PlayIcon />}
 								onAccept={this.evaluateClicked}
 								onChange={this.expressionChanged}

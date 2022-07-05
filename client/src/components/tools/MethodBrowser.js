@@ -18,11 +18,17 @@ class MethodBrowser extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			selectedMethod:
-				this.props.methods.length > 0 ? this.props.methods[0] : null,
+			selectedMethod: null,
 			selectedClass: null,
 			showTests: true,
 		};
+	}
+
+	componentDidMount() {
+		const method = this.props.methods.length > 0 ? this.props.methods[0] : null;
+		if (method) {
+			this.methodSelected(method);
+		}
 	}
 
 	methodSelected = async (method) => {
@@ -57,6 +63,7 @@ class MethodBrowser extends Component {
 		const selected = this.state.selectedMethod;
 		if (method.selector === selected.selector) {
 			selected.source = method.source;
+			this.setState({ selectedMethod: method });
 		}
 	};
 
