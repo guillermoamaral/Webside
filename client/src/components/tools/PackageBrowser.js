@@ -88,11 +88,6 @@ class PackageBrowser extends Component {
 		return !pack ? [] : pack.classes;
 	}
 
-	currentVariables() {
-		const species = this.state.selectedClass;
-		return !species || !species.variables ? [] : species.variables;
-	}
-
 	currentCategories = () => {
 		const species = this.state.selectedClass;
 		return !species || !species.categories ? [] : species.categories;
@@ -339,45 +334,6 @@ class PackageBrowser extends Component {
 		this.classSelected(species);
 	};
 
-	accessSelected = async (event) => {
-		const access = event.target.value;
-		const selections = this.currentSelections();
-		selections.access = access;
-		await this.updateMethods(selections);
-		this.applySelections(selections);
-	};
-
-	variableSelected = async (variable) => {
-		const selections = this.currentSelections();
-		selections.variable = variable;
-		await this.updateMethods(selections);
-		this.applySelections(selections);
-	};
-
-	variableAdded = async () => {
-		const selections = this.currentSelections();
-		await this.updateVariables(selections, true);
-		await this.updateMethods(selections, true);
-		this.applySelections(selections);
-	};
-
-	variableRenamed = async (variable) => {
-		const selections = this.currentSelections();
-		await this.updateVariables(selections, true);
-		await this.updateMethods(selections, true);
-		this.variableSelected(
-			selections.species.variables.find((v) => v.name === variable.name)
-		);
-	};
-
-	variableRemoved = async () => {
-		const selections = this.currentSelections();
-		await this.updateClass(selections, true);
-		await this.updateVariables(selections, true);
-		await this.updateMethods(selections);
-		this.applySelections(selections);
-	};
-
 	categorySelected = async (category) => {
 		const selections = this.currentSelections();
 		selections.category = category;
@@ -563,9 +519,9 @@ class PackageBrowser extends Component {
 						styles={styles}
 						class={selectedClass}
 						method={selectedMethod}
-						onMethodCompiled={this.methodCompiled}
-						onClassDefined={this.classDefined}
-						onClassCommented={this.classCommented}
+						onCompileMethod={this.methodCompiled}
+						onDefineClass={this.classDefined}
+						onCommentClass={this.classCommented}
 					/>
 				</Grid>
 			</Grid>

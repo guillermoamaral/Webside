@@ -310,9 +310,9 @@ class Debugger extends PureComponent {
 						class={selectedFrame ? selectedFrame.class : null}
 						method={selectedFrame ? selectedFrame.method : null}
 						selectedInterval={selectedFrame ? selectedFrame.interval : null}
-						onMethodCompiled={this.methodCompiled}
-						onClassDefined={this.classDefined}
-						onClassCommented={this.classCommented}
+						onCompileMethod={this.methodCompiled}
+						onDefineClass={this.classDefined}
+						onCommentClass={this.classCommented}
 					/>
 				</Grid>
 			</Grid>

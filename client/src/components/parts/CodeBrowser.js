@@ -44,7 +44,7 @@ class CodeBrowser extends Component {
 		try {
 			await this.context.api.defineClass(classname, packagename, definition);
 			const species = await this.context.api.getClass(classname);
-			const handler = this.props.onClassDefined;
+			const handler = this.props.onDefineClass;
 			if (handler) {
 				handler(species);
 			}
@@ -84,7 +84,7 @@ class CodeBrowser extends Component {
 		try {
 			await this.context.api.commentClass(this.props.class.name, comment);
 			const species = await this.context.api.getClass(this.props.class.name);
-			const handler = this.props.onClassCommented;
+			const handler = this.props.onCommentClass;
 			if (handler) {
 				handler(species);
 			}
@@ -113,7 +113,7 @@ class CodeBrowser extends Component {
 				classname,
 				change.selector
 			);
-			const handler = this.props.onMethodCompiled;
+			const handler = this.props.onCompileMethod;
 			if (handler) {
 				handler(compiled);
 			}
@@ -138,7 +138,7 @@ class CodeBrowser extends Component {
 							applied.selector
 						);
 					}
-					const handler = this.props.onMethodCompiled;
+					const handler = this.props.onCompileMethod;
 					if (handler) {
 						handler(method);
 					}

@@ -128,9 +128,9 @@ class MethodBrowser extends Component {
 						class={selectedClass}
 						method={selectedMethod}
 						selectedWord={selectedWord}
-						onMethodCompiled={this.methodCompiled}
-						onClassDefined={this.classDefined}
-						onClassCommented={this.classCommented}
+						onCompileMethod={this.methodCompiled}
+						onDefineClass={this.classDefined}
+						onCommentClass={this.classCommented}
 					/>
 				</Grid>
 			</Grid>
