@@ -108,7 +108,15 @@ class CodeEditor extends Component {
 
 	selectRanges(ranges) {
 		if (this.editor) {
+			console.log(ranges);
 			this.editor.setSelections(ranges);
+		}
+	}
+
+	selectRange(range) {
+		if (this.editor) {
+			console.log(range);
+			this.editor.setSelection(range);
 		}
 	}
 
@@ -147,7 +155,8 @@ class CodeEditor extends Component {
 	}
 
 	positionFromOffset(offset) {
-		const lines = this.state.source.slice(0, offset).split("\r");
+		const source = this.state.source || "";
+		const lines = source.slice(0, offset).split("\r");
 		return { line: lines.length - 1, ch: lines[lines.length - 1].length };
 	}
 
@@ -417,12 +426,14 @@ class CodeEditor extends Component {
 	};
 
 	selectionChanged = (selection) => {
+		console.log(selection);
 		if (this.state.selectRanges) {
-			this.setState({ selectRanges: false });
+			//this.setState({ selectRanges: false });
 		}
 	};
 
 	render() {
+		console.log("rendering code editor")
 		this.selectInitialRanges();
 		const { source, evaluating, progress, dirty } = this.state;
 		const mode = this.props.mode || "smalltalk-method";

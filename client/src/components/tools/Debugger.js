@@ -35,7 +35,7 @@ class Debugger extends PureComponent {
 	componentDidMount() {
 		this.context.messageChannel.onEvent("onMessageReceived", (message) => {
 			if (message.type === "debuggerEvent") {
-				this.updateFrames();
+				//this.updateFrames();
 			}
 		});
 		this.updateFrames();
@@ -255,7 +255,7 @@ class Debugger extends PureComponent {
 							</Tooltip>
 						</Grid>
 						<Grid item xs={8} md={8} lg={8}>
-							<Typography variant="subtitle1">
+							<Typography variant="h6">
 								{this.props.title || ""}
 							</Typography>
 						</Grid>
