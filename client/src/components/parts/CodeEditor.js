@@ -32,6 +32,18 @@ require("codemirror/addon/fold/foldcode");
 require("codemirror/addon/fold/brace-fold");
 require("codemirror/addon/fold/comment-fold");
 
+function positionFromOffset(offset, source) {
+	const lines = source.slice(0, offset).split("\r");
+	return { line: lines.length - 1, ch: lines[lines.length - 1].length };
+}
+
+function rangeFromInterval(interval, source) {
+	return {
+		anchor: positionFromOffset(interval.start - 1, source),
+		head: positionFromOffset(interval.end, source),
+	};
+}
+
 class CodeEditor extends Component {
 	static contextType = IDEContext;
 
@@ -44,6 +56,7 @@ class CodeEditor extends Component {
 			selectRanges: true,
 			dirty: false,
 			source: props.source,
+			selectedRanges: [],
 			menuOpen: false,
 			menuPosition: { x: null, y: null },
 			evaluating: false,
@@ -58,12 +71,17 @@ class CodeEditor extends Component {
 			props.selectedInterval !== state.selectedInterval ||
 			props.selectedWord !== state.selectedWord
 		) {
+			const interval = props.selectedInterval;
+			const ranges = interval
+				? [rangeFromInterval(interval, props.source)]
+				: [];
 			return {
 				originalSource: props.source,
 				selectedInterval: props.selectedInterval,
 				selectedWord: props.selectedWord,
 				selectRanges: true,
 				source: props.source,
+				selectedRanges: ranges,
 				evaluating: props.evaluating,
 				dirty: false,
 			};
@@ -108,15 +126,13 @@ class CodeEditor extends Component {
 
 	selectRanges(ranges) {
 		if (this.editor) {
-			console.log(ranges);
 			this.editor.setSelections(ranges);
 		}
 	}
 
 	selectRange(range) {
 		if (this.editor) {
-			console.log(range);
-			this.editor.setSelection(range);
+			this.editor.setSelection(range.anchor, range.head);
 		}
 	}
 
@@ -426,6 +442,7 @@ class CodeEditor extends Component {
 	};
 
 	selectionChanged = (selection) => {
+		console.log("selection changed");
 		console.log(selection);
 		if (this.state.selectRanges) {
 			//this.setState({ selectRanges: false });
@@ -433,9 +450,9 @@ class CodeEditor extends Component {
 	};
 
 	render() {
-		console.log("rendering code editor")
-		this.selectInitialRanges();
-		const { source, evaluating, progress, dirty } = this.state;
+		console.log("rendering code editor");
+		const { source, selectedRanges, evaluating, progress, dirty } = this.state;
+		this.selectRanges(selectedRanges);
 		const mode = this.props.mode || "smalltalk-method";
 		const showAccept = this.props.showAccept;
 		const acceptIcon = this.props.acceptIcon ? (
@@ -447,6 +464,7 @@ class CodeEditor extends Component {
 				style={{ fontSize: 30 }}
 			/>
 		);
+		console.log(selectedRanges)
 		return (
 			<Grid container spacing={1} style={{ height: "100%" }}>
 				<Grid item xs={11} md={showAccept ? 11 : 12} lg={showAccept ? 11 : 12}>
@@ -485,6 +503,7 @@ class CodeEditor extends Component {
 							},
 						}}
 						value={source}
+						selection={{ ranges: selectedRanges, focus: true }}
 						editorDidMount={(editor) => {
 							this.editorDidMount(editor);
 						}}
