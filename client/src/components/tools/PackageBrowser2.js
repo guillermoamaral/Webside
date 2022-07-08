@@ -6,57 +6,34 @@ import {
 	RadioGroup,
 	FormControlLabel,
 	Radio,
-	Select,
-	MenuItem,
-	OutlinedInput,
-	IconButton,
-	Tooltip,
 } from "@material-ui/core";
 import clsx from "clsx";
 import { IDEContext } from "../IDEContext";
-import SearchList2 from "../controls/SearchList2";
+import PackageList from "../parts/PackageList";
 import ClassTree from "../parts/ClassTree";
-import VariableList from "../parts/VariableList";
 import CategoryList from "../parts/CategoryList";
 import MethodList from "../parts/MethodList";
 import CodeBrowser from "../parts/CodeBrowser";
-import UpIcon from "@material-ui/icons/ArrowDropUp";
 
-class ClassBrowser extends Component {
+class PackageBrowser extends Component {
 	static contextType = IDEContext;
 
 	constructor(props) {
 		super(props);
-		this.cache = {};
+		this.cache = { packages: {}, classes: {} };
 		this.state = {
-			root: this.props.root,
+			packages: [],
+			selectedPackage: null,
 			selectedClass: null,
-			selectedAccess: "accessing",
-			selectedVariable: null,
 			selectedCategory: null,
 			selectedMethod: null,
 			selectedSide: "instance",
 		};
 	}
 
-	componentDidMount() {
-		this.changeRootClass(this.state.root);
+	async componentDidMount() {
+		await this.initializePackages();
 	}
-
-	changeRootClass = async (classsname) => {
-		if (!classsname) {
-			return;
-		}
-		try {
-			const species = await this.context.api.getClassTree(classsname, 3);
-			this.cache[classsname] = species;
-			this.setState({ root: classsname }, () => {
-				this.classSelected(species);
-			});
-		} catch (error) {
-			this.context.reportError(error);
-		}
-	};
 
 	methodTemplate() {
 		// Retrieve from back-end to support custom templates for each dialect...
@@ -66,12 +43,34 @@ class ClassBrowser extends Component {
 		};
 	}
 
+	initializePackages = async () => {
+		let names;
+		try {
+			names = await this.context.api.getPackageNames();
+		} catch (error) {
+			names = [];
+			this.context.reportError(error);
+		}
+		var selected;
+		const packages = names.map((name) => {
+			const pack = { name: name };
+			if (this.props.selectedPackage === name) {
+				selected = pack;
+			}
+			return pack;
+		});
+		this.setState({ packages: packages }, () => {
+			if (selected) {
+				this.packageSelected(selected);
+			}
+		});
+	};
+
 	// Selections...
 	currentSelections() {
 		return {
+			package: this.state.selectedPackage,
 			species: this.state.selectedClass,
-			access: this.state.selectedAccess,
-			variable: this.state.selectedVariable,
 			category: this.state.selectedCategory,
 			method: this.state.selectedMethod,
 			side: this.state.selectedSide,
@@ -81,14 +80,13 @@ class ClassBrowser extends Component {
 	applySelections(selections) {
 		this.reviseSelections(selections);
 		this.setState((prevState, props) => {
-			const species = selections.species;
-			if (species && !this.cache[species.name]) {
-				this.cache[species.name] = species;
+			const pack = selections.package;
+			if (pack && !this.cache.packages[pack.name]) {
+				this.cache.packages[pack.name] = pack;
 			}
 			return {
+				selectedPackage: selections.package,
 				selectedClass: selections.species,
-				selectedAccess: selections.access,
-				selectedVariable: selections.variable,
 				selectedCategory: selections.category,
 				selectedMethod: selections.method,
 				selectedSide: selections.side,
@@ -97,43 +95,41 @@ class ClassBrowser extends Component {
 	}
 
 	reviseSelections(selections) {
-		const { variable, access, category, side, method } = selections;
-		const species =
-			side === "instance" ? selections.species : selections.species.metaclass;
-		if (variable) {
-			selections.variable = species.variables.find(
-				(v) => v.name === variable.name
-			);
-		}
-		if (category) {
-			selections.category = species.categories.find((c) => c === category);
-		}
-		if (method) {
-			selections.method = species.methods.find(
-				(m) => m.selector === method.selector
-			);
-			if (selections.method) {
-				if (
-					selections.category &&
-					selections.method.category !== selections.category
-				) {
-					selections.method = null;
-				}
-				if (
-					selections.variable &&
-					access &&
-					species.accessors &&
-					!species.accessors[selections.variable.name][access].some(
-						(m) => m.selector === selections.method.selector
-					)
-				) {
-					selections.method = null;
+		const { category, side, method } = selections;
+		const species = selections.species
+			? side === "instance"
+				? selections.species
+				: selections.species.metaclass
+			: null;
+		if (!species) {
+			selections.category = null;
+			selections.method = null;
+		} else {
+			if (category) {
+				selections.category = species.categories.find((c) => c === category);
+			}
+			if (method) {
+				selections.method = species.methods.find(
+					(m) => m.selector === method.selector
+				);
+				if (selections.method) {
+					if (
+						selections.category &&
+						selections.method.category !== selections.category
+					) {
+						selections.method = null;
+					}
 				}
 			}
 		}
 	}
 
 	// Contents...
+	currentClasses() {
+		const pack = this.state.selectedPackage;
+		return !pack ? [] : pack.classes;
+	}
+
 	currentClass() {
 		const { selectedClass, selectedSide } = this.state;
 		if (!selectedClass) return null;
@@ -142,31 +138,21 @@ class ClassBrowser extends Component {
 			: selectedClass.metaclass;
 	}
 
-	currentVariables() {
-		const species = this.currentClass();
-		return species ? species.variables || [] : [];
-	}
-
 	currentCategories = () => {
 		const species = this.currentClass();
 		return species ? species.categories || [] : [];
 	};
 
 	currentMethods = () => {
+		const pack = this.state.selectedPackage;
 		const species = this.currentClass();
-		if (!species) {
+		const category = this.state.selectedCategory;
+		if (!pack || !species) {
 			return [];
 		}
-		const { variable, access, category } = this.currentSelections();
-		var methods = species.methods;
+		var methods = species.methods.filter((m) => (m.package = pack.name));
 		if (category) {
 			methods = methods.filter((m) => m.category === category);
-		}
-		if (variable && species.accessors && species.accessors[variable.name]) {
-			const accessing = species.accessors[variable.name][access] || [];
-			methods = methods.filter((m) =>
-				accessing.some((n) => n.selector === m.selector)
-			);
 		}
 		if (methods && methods.length === 0) {
 			const template = this.methodTemplate();
@@ -178,6 +164,30 @@ class ClassBrowser extends Component {
 	};
 
 	// Updating...
+	async updatePackage(pack, force = false) {
+		try {
+			if (force || !pack.classes || !pack.methods) {
+				const retrieved = await this.context.api.getPackage(pack.name);
+				Object.assign(pack, retrieved);
+			}
+		} catch (error) {
+			this.context.reportError(error);
+		}
+	}
+
+	async updateClasses(pack, force = false) {
+		if (force || !pack.classes) {
+			try {
+				pack.classes = await this.context.api.getPackageClasses(
+					pack.name,
+					true
+				);
+			} catch (error) {
+				this.context.reportError(error);
+			}
+		}
+	}
+
 	async updateClass(species, force = false) {
 		try {
 			if (force || !species.definition || !species.metaclass) {
@@ -209,16 +219,6 @@ class ClassBrowser extends Component {
 		}
 	}
 
-	async updateVariables(species, force = false) {
-		try {
-			if (force || !species.variables) {
-				species.variables = await this.context.api.getVariables(species.name);
-			}
-		} catch (error) {
-			this.context.reportError(error);
-		}
-	}
-
 	async updateCategories(species, force = false) {
 		try {
 			if (force || !species.categories) {
@@ -230,32 +230,13 @@ class ClassBrowser extends Component {
 		}
 	}
 
-	async updateMethods(species, variable, access, force = false) {
+	async updateMethods(species, force = false) {
 		if (!species) {
 			return;
 		}
 		try {
 			if (force || !species.methods) {
 				species.methods = await this.context.api.getMethods(species.name, true);
-				species.accessors = null;
-			}
-			if (
-				variable &&
-				access &&
-				(force ||
-					!species.accessors ||
-					!species.accessors[variable.name] ||
-					!species.accessors[variable.name][access])
-			) {
-				const accessing = await this.context.api.getMethodsAccessing(
-					species.name,
-					variable.name,
-					access,
-					true
-				);
-				species.accessors = {};
-				species.accessors[variable.name] = {};
-				species.accessors[variable.name][access] = accessing;
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -275,21 +256,21 @@ class ClassBrowser extends Component {
 	}
 
 	// Events...
-	goToSuperclassClicked = () => {
-		const current = this.cache[this.state.root];
-		if (current && current.superclass) {
-			this.changeRootClass(current.superclass);
-		}
-	};
-
 	sideChanged = async (side) => {
 		const selections = this.currentSelections();
 		selections.side = side;
 		const species =
 			side === "instance" ? selections.species : selections.species.metaclass;
-		await this.updateVariables(species);
 		await this.updateCategories(species);
 		await this.updateMethods(species);
+		this.applySelections(selections);
+	};
+
+	packageSelected = async (pack) => {
+		const selections = this.currentSelections();
+		selections.package = pack;
+		await this.updatePackage(pack, true);
+		await this.updateClasses(pack, true);
 		this.applySelections(selections);
 	};
 
@@ -300,7 +281,6 @@ class ClassBrowser extends Component {
 		await this.updateClass(species);
 		await this.updateSubclasses(species);
 		const target = selections.side === "instance" ? species : species.metaclass;
-		await this.updateVariables(target);
 		await this.updateCategories(target);
 		await this.updateMethods(target);
 		this.applySelections(selections);
@@ -308,6 +288,25 @@ class ClassBrowser extends Component {
 
 	classExpanded = async (species) => {
 		await this.updateSubclasses(species);
+	};
+
+	classLabelStyle = (species) => {
+		const pack = this.state.selectedPackage;
+		return pack &&
+			pack.methods &&
+			(pack.methods[species.name] || pack.methods[species.name + " class"])
+			? "italic"
+			: "normal";
+	};
+
+	methodLabelStyle = (method) => {
+		const pack = this.state.selectedPackage;
+		return pack &&
+			pack.methods &&
+			pack.methods[method.class] &&
+			pack.methods[method.class].includes(method.selector)
+			? "italic"
+			: "normal";
 	};
 
 	classDefined = async (species) => {
@@ -319,24 +318,22 @@ class ClassBrowser extends Component {
 		}
 		const instance = { name: name };
 		await this.updateClass(instance, true);
-		this.cache[name] = instance;
-		const superclass = this.cache[instance.superclass];
+		this.cache.classes[name] = instance;
+		const superclass = this.cache.classes[instance.superclass];
 		if (superclass && !superclass.subclasses.some((c) => c.name === name)) {
 			superclass.subclasses.push(instance);
 			superclass.subclasses.sort((a, b) => (a.name <= b.name ? -1 : 1));
 		}
-		const target = (side = "instance" ? instance : instance.metaclass);
-		await this.updateVariables(target, true);
 		this.classSelected(instance);
 	};
 
 	classCommented = async (species) => {
-		this.cache[species.name].comment = species.comment;
+		this.cache.classes[species.name].comment = species.comment;
 	};
 
 	classRemoved = (species) => {
-		delete this.cache[species.name];
-		const superclass = this.cache[species.superclass];
+		delete this.cache.classes[species.name];
+		const superclass = this.cache.classes[species.superclass];
 		if (superclass) {
 			superclass.subclasses = superclass.subclasses.filter(
 				(c) => c.name !== species.name
@@ -349,56 +346,6 @@ class ClassBrowser extends Component {
 
 	classRenamed = (species) => {
 		this.classSelected(species);
-	};
-
-	accessSelected = async (access) => {
-		const selections = this.currentSelections();
-		selections.access = access;
-		const species = this.currentClass();
-		const variable = selections.variable;
-		await this.updateMethods(species, variable, access);
-		this.applySelections(selections);
-	};
-
-	variableSelected = async (variable) => {
-		const selections = this.currentSelections();
-		selections.variable = variable;
-		const species = this.currentClass();
-		const access = selections.access;
-		await this.updateMethods(species, variable, access);
-		this.applySelections(selections);
-	};
-
-	variableAdded = async () => {
-		const selections = this.currentSelections();
-		const { species } = selections;
-		await this.updateClass(species, true);
-		const target = this.currentClass();
-		await this.updateVariables(target, true);
-		this.applySelections(selections);
-	};
-
-	variableRenamed = async (variable, newName) => {
-		const selections = this.currentSelections();
-		const { species, side, access } = selections;
-		await this.updateClass(species, true);
-		const target = this.currentClass();
-		await this.updateVariables(target, true);
-		const renamed = target.variables.find((v) => v.name === newName);
-		selections.variable = renamed;
-		await this.updateMethods(target, renamed, access, true);
-		this.applySelections(selections);
-	};
-
-	variableRemoved = async () => {
-		const selections = this.currentSelections();
-		const { species, side } = selections;
-		selections.variable = null;
-		await this.updateClass(species, true);
-		const target = this.currentClass();
-		await this.updateVariables(target, true);
-		await this.updateMethods(target);
-		this.applySelections(selections);
 	};
 
 	categorySelected = async (category) => {
@@ -499,63 +446,22 @@ class ClassBrowser extends Component {
 	};
 
 	render() {
-		console.log("rendering browser");
 		const {
-			root,
+			packages,
+			selectedPackage,
 			selectedSide,
 			selectedClass,
-			selectedAccess,
-			selectedVariable,
 			selectedCategory,
 			selectedMethod,
 		} = this.state;
 		const styles = this.props.styles;
 		const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
-		const rootclass = this.cache[root];
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
 					<Grid container spacing={1}>
-						<Grid item xs={3} md={3} lg={3}>
-							<Grid container direction="row" alignItems="center">
-								<Grid item xs={11} md={11} lg={11}>
-									<SearchList2
-										value={selectedClass ? selectedClass.name : null}
-										options={this.context.classNames}
-										onChange={(classname) => {
-											this.changeRootClass(classname);
-										}}
-									/>
-								</Grid>
-								<Grid item xs={1} md={1} lg={1}>
-									<Tooltip
-										title={rootclass ? rootclass.superclass : ""}
-										placement="top"
-									>
-										<IconButton
-											color="inherit"
-											size="small"
-											onClick={this.goToSuperclassClicked}
-										>
-											<UpIcon />
-										</IconButton>
-									</Tooltip>
-								</Grid>
-							</Grid>
-						</Grid>
-						<Grid item xs={3} md={3} lg={3}>
-							<Select
-								value={selectedAccess}
-								input={<OutlinedInput margin="dense" fullWidth />}
-								onChange={(event) => {
-									this.accessSelected(event.target.value);
-								}}
-							>
-								<MenuItem value={"using"}>using</MenuItem>
-								<MenuItem value={"assigning"}>assigning</MenuItem>
-								<MenuItem value={"accessing"}>referencing</MenuItem>
-							</Select>
-						</Grid>
+						<Grid item xs={3} md={3} lg={3} />
+						<Grid item xs={3} md={3} lg={3} />
 						<Grid item xs={3} md={3} lg={3}>
 							<Box display="flex" justifyContent="center">
 								<RadioGroup
@@ -581,9 +487,19 @@ class ClassBrowser extends Component {
 						<Grid item xs={3} md={3} lg={3} />
 						<Grid item xs={12} md={3} lg={3}>
 							<Paper className={fixedHeightPaper} variant="outlined">
+								<PackageList
+									packages={packages}
+									selected={selectedPackage}
+									onSelect={this.packageSelected}
+								/>
+							</Paper>
+						</Grid>
+						<Grid item xs={12} md={3} lg={3}>
+							<Paper className={fixedHeightPaper} variant="outlined">
 								<ClassTree
-									roots={rootclass ? [rootclass] : []}
+									roots={selectedPackage ? selectedPackage.classes : []}
 									selected={selectedClass}
+									labelStyle={this.classLabelStyle}
 									onExpand={this.classExpanded}
 									onSelect={this.classSelected}
 									onRemove={this.classRemoved}
@@ -594,21 +510,8 @@ class ClassBrowser extends Component {
 						</Grid>
 						<Grid item xs={12} md={3} lg={3}>
 							<Paper className={fixedHeightPaper} variant="outlined">
-								<VariableList
-									class={this.currentClass()}
-									variables={this.currentVariables()}
-									selected={selectedVariable}
-									onAdd={this.variableAdded}
-									onRename={this.variableRenamed}
-									onSelect={this.variableSelected}
-									onRemove={this.variableRemoved}
-								/>
-							</Paper>
-						</Grid>
-						<Grid item xs={12} md={3} lg={3}>
-							<Paper className={fixedHeightPaper} variant="outlined">
 								<CategoryList
-									class={this.currentClass()}
+									class={selectedClass}
 									categories={this.currentCategories()}
 									selected={selectedCategory}
 									onAdd={this.categoryAdded}
@@ -622,8 +525,8 @@ class ClassBrowser extends Component {
 							<Paper className={fixedHeightPaper} variant="outlined">
 								<MethodList
 									methods={this.currentMethods()}
-									categories={this.currentCategories()}
 									selected={selectedMethod}
+									labelStyle={this.methodLabelStyle}
 									onSelect={this.methodSelected}
 									onRename={this.methodRenamed}
 									onRemove={this.methodRemoved}
@@ -635,11 +538,9 @@ class ClassBrowser extends Component {
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<CodeBrowser
-						context={{
-							class: this.currentClass() ? this.currentClass().name : null,
-						}}
+						context={{ class: selectedClass ? selectedClass.name : null }}
 						styles={styles}
-						class={this.currentClass()}
+						class={selectedClass}
 						method={selectedMethod}
 						onCompileMethod={this.methodCompiled}
 						onDefineClass={this.classDefined}
@@ -651,4 +552,4 @@ class ClassBrowser extends Component {
 	}
 }
 
-export default ClassBrowser;
+export default PackageBrowser;

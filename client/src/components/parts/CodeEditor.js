@@ -130,12 +130,6 @@ class CodeEditor extends Component {
 		}
 	}
 
-	selectRange(range) {
-		if (this.editor) {
-			this.editor.setSelection(range.anchor, range.head);
-		}
-	}
-
 	selectInitialRanges() {
 		const { selectRanges, selectedInterval, selectedWord } = this.state;
 		if (selectRanges) {

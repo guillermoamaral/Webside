@@ -36,7 +36,7 @@ import Sidebar from "./layout/Sidebar";
 import TabControl from "./controls/TabControl";
 import Transcript from "./tools/Transcript";
 import Search from "./tools/Search";
-import PackageBrowser from "./tools/PackageBrowser";
+import PackageBrowser from "./tools/PackageBrowser2";
 import ClassBrowser2 from "./tools/ClassBrowser2";
 import MethodBrowser from "./tools/MethodBrowser";
 import Inspector from "./tools/Inspector";
