@@ -197,7 +197,10 @@ class Inspector extends Component {
 				</Grid>
 				{showWorkspace && (
 					<Grid item xs={12} md={12} lg={12}>
-						<Paper variant="outlined" style={{ height: "100%" }}>
+						<Paper
+							variant="outlined"
+							style={{ minHeight: 100, height: "100%" }}
+						>
 							<CodeEditor
 								context={{ object: root.id }}
 								styles={styles}

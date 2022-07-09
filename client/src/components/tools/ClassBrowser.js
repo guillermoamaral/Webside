@@ -43,15 +43,14 @@ class ClassBrowser extends Component {
 		this.changeRootClass(this.state.root);
 	}
 
-	changeRootClass = async (name) => {
-		if (!name) {
+	changeRootClass = async (classsname) => {
+		if (!classsname) {
 			return;
 		}
 		try {
-			const species = await this.context.api.getClassTree(name, 3);
-			this.cache[name] = species;
-			const side = name.endsWith(" class") ? "class" : "instance";
-			this.setState({ root: name, selectedSide: side }, () => {
+			const species = await this.context.api.getClassTree(classsname, 3);
+			this.cache[classsname] = species;
+			this.setState({ root: classsname }, () => {
 				this.classSelected(species);
 			});
 		} catch (error) {
@@ -59,6 +58,15 @@ class ClassBrowser extends Component {
 		}
 	};
 
+	methodTemplate() {
+		// Retrieve from back-end to support custom templates for each dialect...
+		return {
+			selector: "<new>",
+			source: 'messagePattern\r\t"comment"\r\t| temporaries |\r\tstatements',
+		};
+	}
+
+	// Selections...
 	currentSelections() {
 		return {
 			species: this.state.selectedClass,
@@ -66,10 +74,12 @@ class ClassBrowser extends Component {
 			variable: this.state.selectedVariable,
 			category: this.state.selectedCategory,
 			method: this.state.selectedMethod,
+			side: this.state.selectedSide,
 		};
 	}
 
 	applySelections(selections) {
+		this.reviseSelections(selections);
 		this.setState((prevState, props) => {
 			const species = selections.species;
 			if (species && !this.cache[species.name]) {
@@ -81,73 +91,99 @@ class ClassBrowser extends Component {
 				selectedVariable: selections.variable,
 				selectedCategory: selections.category,
 				selectedMethod: selections.method,
+				selectedSide: selections.side,
 			};
 		});
 	}
 
 	reviseSelections(selections) {
-		const { species, variable, method } = selections;
-		var found;
+		const { variable, access, category, side, method } = selections;
+		const species =
+			side === "instance" ? selections.species : selections.species.metaclass;
 		if (variable) {
-			found = species.variables.find((v) => v.name === variable.name);
-			selections.variable = !found ? null : found;
+			selections.variable = species.variables.find(
+				(v) => v.name === variable.name
+			);
 		}
-		if (!species.categories.includes(selections.category)) {
-			selections.category = null;
+		if (category) {
+			selections.category = species.categories.find((c) => c === category);
 		}
 		if (method) {
-			found = species.methods.find((m) => m.selector === method.selector);
-			selections.method = !found ? null : found;
+			selections.method = species.methods.find(
+				(m) => m.selector === method.selector
+			);
+			if (selections.method) {
+				if (
+					selections.category &&
+					selections.method.category !== selections.category
+				) {
+					selections.method = null;
+				}
+				if (
+					selections.variable &&
+					access &&
+					species.accessors &&
+					!species.accessors[selections.variable.name][access].some(
+						(m) => m.selector === selections.method.selector
+					)
+				) {
+					selections.method = null;
+				}
+			}
 		}
 	}
 
-	// Contents..
+	// Contents...
+	currentClass() {
+		const { selectedClass, selectedSide } = this.state;
+		if (!selectedClass) return null;
+		return selectedSide === "instance"
+			? selectedClass
+			: selectedClass.metaclass;
+	}
+
 	currentVariables() {
-		const species = this.state.selectedClass;
-		return !species || !species.variables ? [] : species.variables;
+		const species = this.currentClass();
+		return species ? species.variables || [] : [];
 	}
 
 	currentCategories = () => {
-		const species = this.state.selectedClass;
-		return !species || !species.categories ? [] : species.categories;
+		const species = this.currentClass();
+		return species ? species.categories || [] : [];
 	};
 
 	currentMethods = () => {
-		const species = this.state.selectedClass;
-		const category = this.state.selectedCategory;
-		const variable = this.state.selectedVariable;
-		const access = this.state.selectedAccess;
+		const species = this.currentClass();
 		if (!species) {
 			return [];
 		}
+		const { variable, access, category } = this.currentSelections();
 		var methods = species.methods;
 		if (category) {
 			methods = methods.filter((m) => m.category === category);
 		}
 		if (variable && species.accessors && species.accessors[variable.name]) {
-			const accessing = species.accessors[variable.name][access];
+			const accessing = species.accessors[variable.name][access] || [];
 			methods = methods.filter((m) =>
 				accessing.some((n) => n.selector === m.selector)
 			);
 		}
 		if (methods && methods.length === 0) {
-			methods.push({
-				class: species,
-				category: category,
-				selector: "<new>",
-				source: 'messagePattern\r\t"comment"\r\t| temporaries |\r\tstatements',
-			});
+			const template = this.methodTemplate();
+			template.class = species;
+			template.category = category;
+			methods.push(template);
 		}
 		return methods;
 	};
 
 	// Updating...
-	async updateClass(selections, force = false) {
-		const species = selections.species;
+	async updateClass(species, force = false) {
 		try {
-			if (force || !species.definition) {
+			if (force || !species.definition || !species.metaclass) {
 				const definition = await this.context.api.getClass(species.name);
 				Object.assign(species, definition);
+				species.metaclass = await this.context.api.getClass(definition.class);
 			}
 			if (force || !species.subclasses) {
 				species.subclasses = await this.context.api.getSubclasses(species.name);
@@ -173,48 +209,39 @@ class ClassBrowser extends Component {
 		}
 	}
 
-	async updateVariables(selections, force = false) {
-		const { species, variable } = selections;
+	async updateVariables(species, force = false) {
 		try {
 			if (force || !species.variables) {
 				species.variables = await this.context.api.getVariables(species.name);
 			}
-			if (variable) {
-				const found = species.variables.find((v) => v.name === variable.name);
-				selections.variable = !found ? null : found;
-			}
 		} catch (error) {
 			this.context.reportError(error);
 		}
 	}
 
-	async updateCategories(selections, force = false) {
-		const species = selections.species;
+	async updateCategories(species, force = false) {
 		try {
 			if (force || !species.categories) {
-				const categories = await this.context.api.getCategories(species.name);
-				species.categories = categories.sort();
-			}
-			if (!species.categories.includes(selections.category)) {
-				selections.category = null;
+				species.categories = await this.context.api.getCategories(species.name);
+				species.categories.sort();
 			}
 		} catch (error) {
 			this.context.reportError(error);
 		}
 	}
 
-	async updateMethods(selections, force = false) {
-		const { species, variable, access, method } = selections;
+	async updateMethods(species, variable, access, force = false) {
 		if (!species) {
 			return;
 		}
 		try {
 			if (force || !species.methods) {
-				const methods = await this.context.api.getMethods(species.name, true);
-				species.methods = methods;
+				species.methods = await this.context.api.getMethods(species.name, true);
+				species.accessors = null;
 			}
 			if (
 				variable &&
+				access &&
 				(force ||
 					!species.accessors ||
 					!species.accessors[variable.name] ||
@@ -230,33 +257,20 @@ class ClassBrowser extends Component {
 				species.accessors[variable.name] = {};
 				species.accessors[variable.name][access] = accessing;
 			}
-			if (method) {
-				const found = species.methods.find(
-					(m) => m.selector === method.selector
-				);
-				selections.method = !found ? null : found;
-			}
 		} catch (error) {
 			this.context.reportError(error);
 		}
 	}
 
-	async updateMethod(selections, force = true) {
-		const species = selections.species;
-		const selector = selections.method.selector;
-		var method;
-		if (force) {
-			try {
-				method = await this.context.api.getMethod(species.name, selector);
-			} catch (error) {
-				this.context.reportError(error);
-			}
-			if (method) {
-				species.methods = species.methods.map((m) =>
-					m.selector === selector ? method : m
-				);
-				selections.method = method;
-			}
+	async updateMethod(method) {
+		try {
+			const retrieved = await this.context.api.getMethod(
+				method.class,
+				method.selector
+			);
+			Object.assign(method, retrieved);
+		} catch (error) {
+			this.context.reportError(error);
 		}
 	}
 
@@ -268,25 +282,27 @@ class ClassBrowser extends Component {
 		}
 	};
 
-	sideChanged = (event, side) => {
-		if (!side || !this.state.root) {
-			return;
-		}
-		var root = this.state.root;
-		root =
-			side === "instance" ? root.slice(0, root.length - 6) : root + " class";
-		this.changeRootClass(root);
+	sideChanged = async (side) => {
+		const selections = this.currentSelections();
+		selections.side = side;
+		const species =
+			side === "instance" ? selections.species : selections.species.metaclass;
+		await this.updateVariables(species);
+		await this.updateCategories(species);
+		await this.updateMethods(species);
+		this.applySelections(selections);
 	};
 
 	classSelected = async (species) => {
 		// this.context.updatePageLabel(this.props.id, species.name);
 		const selections = this.currentSelections();
 		selections.species = species;
-		await this.updateClass(selections);
+		await this.updateClass(species);
 		await this.updateSubclasses(species);
-		await this.updateVariables(selections);
-		await this.updateCategories(selections);
-		await this.updateMethods(selections);
+		const target = selections.side === "instance" ? species : species.metaclass;
+		await this.updateVariables(target);
+		await this.updateCategories(target);
+		await this.updateMethods(target);
 		this.applySelections(selections);
 	};
 
@@ -295,22 +311,23 @@ class ClassBrowser extends Component {
 	};
 
 	classDefined = async (species) => {
-		var cached = this.cache[species.name];
-		if (cached) {
-			cached.definition = species.definition;
-		} else {
-			this.cache[species.name] = species;
-			cached = species;
-			const superclass = this.cache[species.superclass];
-			if (superclass) {
-				superclass.subclasses.push(species);
-				superclass.subclasses.sort((a, b) => (a.name <= b.name ? -1 : 1));
-			}
+		var name = species.name;
+		var side = "instance";
+		if (name.endsWith(" class")) {
+			name = name.slice(0, name.length - 6);
+			side = "class";
 		}
-		const selections = this.currentSelections();
-		selections.species = cached;
-		await this.updateVariables(selections, true);
-		this.classSelected(cached);
+		const instance = { name: name };
+		await this.updateClass(instance, true);
+		this.cache[name] = instance;
+		const superclass = this.cache[instance.superclass];
+		if (superclass && !superclass.subclasses.some((c) => c.name === name)) {
+			superclass.subclasses.push(instance);
+			superclass.subclasses.sort((a, b) => (a.name <= b.name ? -1 : 1));
+		}
+		const target = (side = "instance" ? instance : instance.metaclass);
+		await this.updateVariables(target, true);
+		this.classSelected(instance);
 	};
 
 	classCommented = async (species) => {
@@ -322,7 +339,7 @@ class ClassBrowser extends Component {
 		const superclass = this.cache[species.superclass];
 		if (superclass) {
 			superclass.subclasses = superclass.subclasses.filter(
-				(c) => c !== species
+				(c) => c.name !== species.name
 			);
 			this.classSelected(superclass);
 		} else {
@@ -334,90 +351,102 @@ class ClassBrowser extends Component {
 		this.classSelected(species);
 	};
 
-	accessSelected = async (event) => {
-		const access = event.target.value;
+	accessSelected = async (access) => {
 		const selections = this.currentSelections();
 		selections.access = access;
-		await this.updateMethods(selections);
+		const species = this.currentClass();
+		const variable = selections.variable;
+		await this.updateMethods(species, variable, access);
 		this.applySelections(selections);
 	};
 
 	variableSelected = async (variable) => {
 		const selections = this.currentSelections();
 		selections.variable = variable;
-		await this.updateMethods(selections);
+		const species = this.currentClass();
+		const access = selections.access;
+		await this.updateMethods(species, variable, access);
 		this.applySelections(selections);
 	};
 
 	variableAdded = async () => {
 		const selections = this.currentSelections();
-		await this.updateClass(selections, true);
-		await this.updateVariables(selections, true);
-		await this.updateMethods(selections, true);
+		const { species } = selections;
+		await this.updateClass(species, true);
+		const target = this.currentClass();
+		await this.updateVariables(target, true);
 		this.applySelections(selections);
 	};
 
-	variableRenamed = async (variable) => {
+	variableRenamed = async (variable, newName) => {
 		const selections = this.currentSelections();
-		await this.updateClass(selections, true);
-		await this.updateVariables(selections, true);
-		await this.updateMethods(selections, true);
-		this.variableSelected(
-			selections.species.variables.find((v) => v.name === variable.name)
-		);
+		const { species, side, access } = selections;
+		await this.updateClass(species, true);
+		const target = this.currentClass();
+		await this.updateVariables(target, true);
+		const renamed = target.variables.find((v) => v.name === newName);
+		selections.variable = renamed;
+		await this.updateMethods(target, renamed, access, true);
+		this.applySelections(selections);
 	};
 
 	variableRemoved = async () => {
 		const selections = this.currentSelections();
-		await this.updateClass(selections, true);
-		await this.updateVariables(selections, true);
-		await this.updateMethods(selections);
+		const { species, side } = selections;
+		selections.variable = null;
+		await this.updateClass(species, true);
+		const target = this.currentClass();
+		await this.updateVariables(target, true);
+		await this.updateMethods(target);
 		this.applySelections(selections);
 	};
 
 	categorySelected = async (category) => {
 		const selections = this.currentSelections();
 		selections.category = category;
-		await this.updateMethods(selections);
+		const { species, side } = selections;
+		await this.updateMethods(species, side);
 		this.applySelections(selections);
 	};
 
 	categoryAdded = async (category) => {
 		const selections = this.currentSelections();
 		selections.category = category;
-		selections.species.categories.push(category);
-		selections.species.categories.sort();
+		const species = this.currentClass();
+		species.categories.push(category);
+		species.categories.sort();
 		this.applySelections(selections);
 	};
 
 	categoryRenamed = async (category, renamed) => {
 		const selections = this.currentSelections();
-		await this.updateCategories(selections, true);
-		await this.updateMethods(selections, true);
-		this.categorySelected(
-			selections.species.categories.find((c) => c === renamed)
-		);
+		const species = this.currentClass();
+		await this.updateCategories(species, true);
+		await this.updateMethods(species, null, null, true);
+		selections.category = species.categories.find((c) => c === renamed);
+		this.applySelections(selections);
 	};
 
 	categoryRemoved = async (category) => {
 		const selections = this.currentSelections();
 		selections.category = null;
-		await this.updateCategories(selections, true);
-		await this.updateMethods(selections);
+		const species = this.currentClass();
+		await this.updateCategories(species, true);
+		await this.updateMethods(species, null, null, true);
 		this.applySelections(selections);
 	};
 
 	methodSelected = async (method) => {
 		const selections = this.currentSelections();
+		await this.updateMethod(method);
 		selections.method = method;
-		await this.updateMethod(selections);
 		this.applySelections(selections);
 	};
 
 	methodRenamed = async (method) => {
 		const selections = this.currentSelections();
-		await this.updateMethods(selections, true);
-		const species = selections.species;
+		const species = this.currentClass();
+		await this.updateMethods(species, null, null, true);
 		selections.method = species.methods.find(
 			(m) => m.selector === method.selector
 		);
@@ -425,10 +454,11 @@ class ClassBrowser extends Component {
 	};
 
 	methodRemoved = (method) => {
-		this.cache[method.class].methods = this.cache[method.class].methods.filter(
+		const selections = this.currentSelections();
+		const species = this.currentClass();
+		species.methods = species.methods.filter(
 			(m) => m.selector !== method.selector
 		);
-		const selections = this.currentSelections();
 		selections.method = null;
 		this.applySelections(selections);
 	};
@@ -438,6 +468,7 @@ class ClassBrowser extends Component {
 		if (selections.category) {
 			selections.category = method.category;
 		}
+		selections.method = method;
 		this.applySelections(selections);
 	};
 
@@ -446,19 +477,18 @@ class ClassBrowser extends Component {
 			return;
 		}
 		const selections = this.currentSelections();
-		const species = this.cache[method.class];
-		selections.species = species;
-		if (!species.categories.includes(method.category)) {
-			await this.updateCategories(selections, true);
+		const target = this.currentClass();
+		if (!target.categories.includes(method.category)) {
+			await this.updateCategories(target, true);
 		}
-		selections.category = species.categories.find((c) => c === method.category);
-		const methods = species.methods;
+		selections.category = method.category;
+		const methods = target.methods;
 		const index = methods
 			? methods.findIndex((m) => m.selector === method.selector)
 			: -1;
 		if (index === -1) {
-			await this.updateMethods(selections, true);
-			selections.method = species.methods.find(
+			await this.updateMethods(target, null, null, true);
+			selections.method = target.methods.find(
 				(m) => m.selector === method.selector
 			);
 		} else {
@@ -517,7 +547,9 @@ class ClassBrowser extends Component {
 							<Select
 								value={selectedAccess}
 								input={<OutlinedInput margin="dense" fullWidth />}
-								onChange={this.accessSelected}
+								onChange={(event) => {
+									this.accessSelected(event.target.value);
+								}}
 							>
 								<MenuItem value={"using"}>using</MenuItem>
 								<MenuItem value={"assigning"}>assigning</MenuItem>
@@ -529,7 +561,7 @@ class ClassBrowser extends Component {
 								<RadioGroup
 									name="side"
 									value={selectedSide}
-									onChange={this.sideChanged}
+									onChange={(event, side) => this.sideChanged(side)}
 									defaultValue="instance"
 									row
 								>
@@ -550,9 +582,7 @@ class ClassBrowser extends Component {
 						<Grid item xs={12} md={3} lg={3}>
 							<Paper className={fixedHeightPaper} variant="outlined">
 								<ClassTree
-									roots={
-										root ? (this.cache[root] ? [this.cache[root]] : []) : []
-									}
+									roots={rootclass ? [rootclass] : []}
 									selected={selectedClass}
 									onExpand={this.classExpanded}
 									onSelect={this.classSelected}
@@ -565,7 +595,7 @@ class ClassBrowser extends Component {
 						<Grid item xs={12} md={3} lg={3}>
 							<Paper className={fixedHeightPaper} variant="outlined">
 								<VariableList
-									class={selectedClass}
+									class={this.currentClass()}
 									variables={this.currentVariables()}
 									selected={selectedVariable}
 									onAdd={this.variableAdded}
@@ -578,7 +608,7 @@ class ClassBrowser extends Component {
 						<Grid item xs={12} md={3} lg={3}>
 							<Paper className={fixedHeightPaper} variant="outlined">
 								<CategoryList
-									class={selectedClass}
+									class={this.currentClass()}
 									categories={this.currentCategories()}
 									selected={selectedCategory}
 									onAdd={this.categoryAdded}
@@ -605,9 +635,11 @@ class ClassBrowser extends Component {
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<CodeBrowser
-						context={{ class: selectedClass ? selectedClass.name : null }}
+						context={{
+							class: this.currentClass() ? this.currentClass().name : null,
+						}}
 						styles={styles}
-						class={selectedClass}
+						class={this.currentClass()}
 						method={selectedMethod}
 						onCompileMethod={this.methodCompiled}
 						onDefineClass={this.classDefined}

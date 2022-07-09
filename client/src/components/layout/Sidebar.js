@@ -17,7 +17,6 @@ import SearchIcon from "@material-ui/icons/Search";
 import ResourcesIcon from "@material-ui/icons/Kitchen";
 import ChangesBrowserIcon from "../icons/ChangesBrowserIcon";
 import PeopleIcon from "@material-ui/icons/People";
-import GitHubIcon from "@material-ui/icons/GitHub";
 import SettingsIcon from "@material-ui/icons/Settings";
 import { withDialog } from "../dialogs/index";
 
@@ -93,17 +92,6 @@ class Sidebar extends Component {
 							</Tooltip>
 						</ListItemIcon>
 						<ListItemText primary="Peers" />
-					</ListItem>
-					<ListItem
-						button
-						onClick={(event) => this.props.dialog.alert("Not implemented yet!")}
-					>
-						<Tooltip title="GitHub" placement="top">
-							<ListItemIcon>
-								<GitHubIcon />
-							</ListItemIcon>
-						</Tooltip>
-						<ListItemText primary="GitHub" />
 					</ListItem>
 					<ListItem button onClick={(event) => this.props.onSettingsClicked()}>
 						<Tooltip title="Settings" placement="top">

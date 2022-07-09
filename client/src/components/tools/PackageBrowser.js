@@ -35,6 +35,14 @@ class PackageBrowser extends Component {
 		await this.initializePackages();
 	}
 
+	methodTemplate() {
+		// Retrieve from back-end to support custom templates for each dialect...
+		return {
+			selector: "<new>",
+			source: 'messagePattern\r\t"comment"\r\t| temporaries |\r\tstatements',
+		};
+	}
+
 	initializePackages = async () => {
 		let names;
 		try {
@@ -58,16 +66,19 @@ class PackageBrowser extends Component {
 		});
 	};
 
+	// Selections...
 	currentSelections() {
 		return {
 			package: this.state.selectedPackage,
 			species: this.state.selectedClass,
 			category: this.state.selectedCategory,
 			method: this.state.selectedMethod,
+			side: this.state.selectedSide,
 		};
 	}
 
 	applySelections(selections) {
+		this.reviseSelections(selections);
 		this.setState((prevState, props) => {
 			const pack = selections.package;
 			if (pack && !this.cache.packages[pack.name]) {
@@ -78,8 +89,39 @@ class PackageBrowser extends Component {
 				selectedClass: selections.species,
 				selectedCategory: selections.category,
 				selectedMethod: selections.method,
+				selectedSide: selections.side,
 			};
 		});
+	}
+
+	reviseSelections(selections) {
+		const { category, side, method } = selections;
+		const species = selections.species
+			? side === "instance"
+				? selections.species
+				: selections.species.metaclass
+			: null;
+		if (!species) {
+			selections.category = null;
+			selections.method = null;
+		} else {
+			if (category) {
+				selections.category = species.categories.find((c) => c === category);
+			}
+			if (method) {
+				selections.method = species.methods.find(
+					(m) => m.selector === method.selector
+				);
+				if (selections.method) {
+					if (
+						selections.category &&
+						selections.method.category !== selections.category
+					) {
+						selections.method = null;
+					}
+				}
+			}
+		}
 	}
 
 	// Contents...
@@ -88,14 +130,22 @@ class PackageBrowser extends Component {
 		return !pack ? [] : pack.classes;
 	}
 
+	currentClass() {
+		const { selectedClass, selectedSide } = this.state;
+		if (!selectedClass) return null;
+		return selectedSide === "instance"
+			? selectedClass
+			: selectedClass.metaclass;
+	}
+
 	currentCategories = () => {
-		const species = this.state.selectedClass;
-		return !species || !species.categories ? [] : species.categories;
+		const species = this.currentClass();
+		return species ? species.categories || [] : [];
 	};
 
 	currentMethods = () => {
 		const pack = this.state.selectedPackage;
-		const species = this.state.selectedClass;
+		const species = this.currentClass();
 		const category = this.state.selectedCategory;
 		if (!pack || !species) {
 			return [];
@@ -104,12 +154,17 @@ class PackageBrowser extends Component {
 		if (category) {
 			methods = methods.filter((m) => m.category === category);
 		}
+		if (methods && methods.length === 0) {
+			const template = this.methodTemplate();
+			template.class = species;
+			template.category = category;
+			methods.push(template);
+		}
 		return methods;
 	};
 
 	// Updating...
-	async updatePackage(selections, force = false) {
-		const pack = selections.package;
+	async updatePackage(pack, force = false) {
 		try {
 			if (force || !pack.classes || !pack.methods) {
 				const retrieved = await this.context.api.getPackage(pack.name);
@@ -120,8 +175,7 @@ class PackageBrowser extends Component {
 		}
 	}
 
-	async updateClasses(selections, force = false) {
-		const pack = selections.package;
+	async updateClasses(pack, force = false) {
 		if (force || !pack.classes) {
 			try {
 				pack.classes = await this.context.api.getPackageClasses(
@@ -134,12 +188,12 @@ class PackageBrowser extends Component {
 		}
 	}
 
-	async updateClass(selections, force = false) {
-		const species = selections.species;
+	async updateClass(species, force = false) {
 		try {
-			if (force || !species.definition) {
+			if (force || !species.definition || !species.metaclass) {
 				const definition = await this.context.api.getClass(species.name);
 				Object.assign(species, definition);
+				species.metaclass = await this.context.api.getClass(definition.class);
 			}
 			if (force || !species.subclasses) {
 				species.subclasses = await this.context.api.getSubclasses(species.name);
@@ -165,111 +219,70 @@ class PackageBrowser extends Component {
 		}
 	}
 
-	async updateVariables(selections, force = false) {
-		const { species, variable } = selections;
-		try {
-			if (force || !species.variables) {
-				species.variables = await this.context.api.getVariables(species.name);
-			}
-			if (variable) {
-				const found = species.variables.find((v) => v.name === variable.name);
-				selections.variable = !found ? null : found;
-			}
-		} catch (error) {
-			this.context.reportError(error);
-		}
-	}
-
-	async updateCategories(selections, force = false) {
-		const species = selections.species;
+	async updateCategories(species, force = false) {
 		try {
 			if (force || !species.categories) {
-				const categories = await this.context.api.getCategories(species.name);
-				species.categories = categories.sort();
-			}
-			if (!species.categories.includes(selections.category)) {
-				selections.category = null;
+				species.categories = await this.context.api.getCategories(species.name);
+				species.categories.sort();
 			}
 		} catch (error) {
 			this.context.reportError(error);
 		}
 	}
 
-	async updateMethods(selections, force = false) {
-		const pack = selections.package;
-		const { species, variable, access, method } = selections;
-		if (!pack || !species) {
+	async updateMethods(species, force = false) {
+		if (!species) {
 			return;
 		}
 		try {
 			if (force || !species.methods) {
 				species.methods = await this.context.api.getMethods(species.name, true);
 			}
-			if (
-				variable &&
-				(force || !species[variable.name] || !species[variable.name][access])
-			) {
-				const accessors = await this.context.api.getMethodsAccessing(
-					species.name,
-					variable.name,
-					access,
-					true
-				);
-				species[variable.name] = {};
-				species[variable.name][access] = accessors;
-			}
-			if (method) {
-				const found = species.methods.find(
-					(m) => m.selector === method.selector
-				);
-				selections.method = !found ? null : found;
-			}
 		} catch (error) {
 			this.context.reportError(error);
 		}
 	}
 
-	async updateMethod(selections, force = true) {
-		const species = selections.species;
-		const selector = selections.method.selector;
+	async updateMethod(method) {
 		try {
-			if (force) {
-				const method = await this.context.api.getMethod(species.name, selector);
-				if (method) {
-					species.methods = species.methods.map((m) =>
-						m.selector === selector ? method : m
-					);
-					selections.method = method;
-				}
-			}
+			const retrieved = await this.context.api.getMethod(
+				method.class,
+				method.selector
+			);
+			Object.assign(method, retrieved);
 		} catch (error) {
 			this.context.reportError(error);
 		}
 	}
 
 	// Events...
-	sideChanged = (event, side) => {
-		if (!side) return;
-		this.setState({ selectedSide: side });
-		console.log("to do");
+	sideChanged = async (side) => {
+		const selections = this.currentSelections();
+		selections.side = side;
+		const species =
+			side === "instance" ? selections.species : selections.species.metaclass;
+		await this.updateCategories(species);
+		await this.updateMethods(species);
+		this.applySelections(selections);
 	};
 
 	packageSelected = async (pack) => {
 		const selections = this.currentSelections();
 		selections.package = pack;
-		await this.updatePackage(selections, true);
-		await this.updateClasses(selections, true);
+		await this.updatePackage(pack, true);
+		await this.updateClasses(pack, true);
 		this.applySelections(selections);
 	};
 
 	classSelected = async (species) => {
+		// this.context.updatePageLabel(this.props.id, species.name);
 		const selections = this.currentSelections();
 		selections.species = species;
-		await this.updateClass(selections);
+		await this.updateClass(species);
 		await this.updateSubclasses(species);
-		await this.updateVariables(selections);
-		await this.updateCategories(selections);
-		await this.updateMethods(selections);
+		const target = selections.side === "instance" ? species : species.metaclass;
+		await this.updateCategories(target);
+		await this.updateMethods(target);
 		this.applySelections(selections);
 	};
 
@@ -279,7 +292,9 @@ class PackageBrowser extends Component {
 
 	classLabelStyle = (species) => {
 		const pack = this.state.selectedPackage;
-		return pack && pack.methods && pack.methods[species.name]
+		return pack &&
+			pack.methods &&
+			(pack.methods[species.name] || pack.methods[species.name + " class"])
 			? "italic"
 			: "normal";
 	};
@@ -295,22 +310,21 @@ class PackageBrowser extends Component {
 	};
 
 	classDefined = async (species) => {
-		var cached = this.cache.classes[species.name];
-		if (cached) {
-			cached.definition = species.definition;
-		} else {
-			this.cache.classes[species.name] = species;
-			cached = species;
-			const superclass = this.cache.classes[species.superclass];
-			if (superclass) {
-				superclass.subclasses.push(species);
-				superclass.subclasses.sort((a, b) => (a.name <= b.name ? -1 : 1));
-			}
+		var name = species.name;
+		var side = "instance";
+		if (name.endsWith(" class")) {
+			name = name.slice(0, name.length - 6);
+			side = "class";
 		}
-		const selections = this.currentSelections();
-		selections.species = cached;
-		await this.updateVariables(selections, true);
-		this.classSelected(cached);
+		const instance = { name: name };
+		await this.updateClass(instance, true);
+		this.cache.classes[name] = instance;
+		const superclass = this.cache.classes[instance.superclass];
+		if (superclass && !superclass.subclasses.some((c) => c.name === name)) {
+			superclass.subclasses.push(instance);
+			superclass.subclasses.sort((a, b) => (a.name <= b.name ? -1 : 1));
+		}
+		this.classSelected(instance);
 	};
 
 	classCommented = async (species) => {
@@ -322,11 +336,11 @@ class PackageBrowser extends Component {
 		const superclass = this.cache.classes[species.superclass];
 		if (superclass) {
 			superclass.subclasses = superclass.subclasses.filter(
-				(c) => c !== species
+				(c) => c.name !== species.name
 			);
 			this.classSelected(superclass);
 		} else {
-			this.changeRootProject("Object");
+			this.changeRootClass("Object");
 		}
 	};
 
@@ -337,46 +351,49 @@ class PackageBrowser extends Component {
 	categorySelected = async (category) => {
 		const selections = this.currentSelections();
 		selections.category = category;
-		await this.updateMethods(selections);
+		const { species, side } = selections;
+		await this.updateMethods(species, side);
 		this.applySelections(selections);
 	};
 
 	categoryAdded = async (category) => {
 		const selections = this.currentSelections();
 		selections.category = category;
-		selections.species.categories.push(category);
-		selections.species.categories.sort();
+		const species = this.currentClass();
+		species.categories.push(category);
+		species.categories.sort();
 		this.applySelections(selections);
 	};
 
 	categoryRenamed = async (category, renamed) => {
 		const selections = this.currentSelections();
-		await this.updateCategories(selections, true);
-		await this.updateMethods(selections, true);
-		this.categorySelected(
-			selections.species.categories.find((c) => c === renamed)
-		);
+		const species = this.currentClass();
+		await this.updateCategories(species, true);
+		await this.updateMethods(species, null, null, true);
+		selections.category = species.categories.find((c) => c === renamed);
+		this.applySelections(selections);
 	};
 
 	categoryRemoved = async (category) => {
 		const selections = this.currentSelections();
 		selections.category = null;
-		await this.updateCategories(selections, true);
-		await this.updateMethods(selections);
+		const species = this.currentClass();
+		await this.updateCategories(species, true);
+		await this.updateMethods(species, null, null, true);
 		this.applySelections(selections);
 	};
 
 	methodSelected = async (method) => {
 		const selections = this.currentSelections();
+		await this.updateMethod(method);
 		selections.method = method;
-		await this.updateMethod(selections);
 		this.applySelections(selections);
 	};
 
 	methodRenamed = async (method) => {
 		const selections = this.currentSelections();
-		await this.updateMethods(selections, true);
-		const species = selections.species;
+		const species = this.currentClass();
+		await this.updateMethods(species, null, null, true);
 		selections.method = species.methods.find(
 			(m) => m.selector === method.selector
 		);
@@ -384,10 +401,13 @@ class PackageBrowser extends Component {
 	};
 
 	methodRemoved = (method) => {
-		this.cache.classes[method.class].methods = this.cache.classes[
-			method.class
-		].methods.filter((m) => m.selector !== method.selector);
-		this.setState({ selectedMethod: null });
+		const selections = this.currentSelections();
+		const species = this.currentClass();
+		species.methods = species.methods.filter(
+			(m) => m.selector !== method.selector
+		);
+		selections.method = null;
+		this.applySelections(selections);
 	};
 
 	methodClassified = (method) => {
@@ -395,24 +415,27 @@ class PackageBrowser extends Component {
 		if (selections.category) {
 			selections.category = method.category;
 		}
+		selections.method = method;
 		this.applySelections(selections);
 	};
 
 	methodCompiled = async (method) => {
-		const selections = this.currentSelections();
-		const species = this.cache.classes[method.class];
-		selections.species = species;
-		if (!species.categories.includes(method.category)) {
-			await this.updateCategories(selections, true);
+		if (!method) {
+			return;
 		}
-		selections.category = species.categories.find((c) => c === method.category);
-		const methods = species.methods;
+		const selections = this.currentSelections();
+		const target = this.currentClass();
+		if (!target.categories.includes(method.category)) {
+			await this.updateCategories(target, true);
+		}
+		selections.category = method.category;
+		const methods = target.methods;
 		const index = methods
 			? methods.findIndex((m) => m.selector === method.selector)
 			: -1;
 		if (index === -1) {
-			await this.updateMethods(selections, true);
-			selections.method = species.methods.find(
+			await this.updateMethods(target, null, null, true);
+			selections.method = target.methods.find(
 				(m) => m.selector === method.selector
 			);
 		} else {
@@ -425,8 +448,8 @@ class PackageBrowser extends Component {
 	render() {
 		const {
 			packages,
-			selectedSide,
 			selectedPackage,
+			selectedSide,
 			selectedClass,
 			selectedCategory,
 			selectedMethod,
@@ -444,7 +467,7 @@ class PackageBrowser extends Component {
 								<RadioGroup
 									name="side"
 									value={selectedSide}
-									onChange={this.sideChanged}
+									onChange={(event, side) => this.sideChanged(side)}
 									defaultValue="instance"
 									row
 								>

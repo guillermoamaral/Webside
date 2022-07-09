@@ -88,7 +88,7 @@ class Workspace extends Component {
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={8} lg={8}>
 					<Grid item xs={12} md={12} lg={12}>
-						<Paper variant="outlined">
+						<Paper variant="outlined" style={{minHeight: 200}}>
 							<CodeEditor
 								context={{ workspace: this.props.id }}
 								styles={this.props.styles}
