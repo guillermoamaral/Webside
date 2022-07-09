@@ -589,6 +589,10 @@ class API {
 		return await this.delete("/objects/" + id, "unpin object with id " + id);
 	}
 
+	async unpinAllObjects() {
+		return await this.delete("/objects/", "unpin all objects");
+	}
+
 	async getObjectNamedSlots(id, path) {
 		const response = await this.getObjectSlot(id, path + "/named-slots");
 		return response;

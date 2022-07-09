@@ -6,9 +6,10 @@ import {
 	ListItem,
 	ListItemText,
 	Box,
+	Button,
+	IconButton,
 } from "@material-ui/core";
 import CustomTable from "../controls/CustomTable";
-import Inspector from "./Inspector";
 import { IDEContext } from "../IDEContext";
 import InspectorIcon from "../icons/InspectorIcon";
 import WorkspaceIcon from "../icons/WorkspaceIcon";
@@ -16,6 +17,8 @@ import DebuggerIcon from "../icons/DebuggerIcon";
 import TestRunnerIcon from "../icons/TestRunnerIcon";
 import MemoryIcon from "../icons/MemoryIcon";
 import MemoryStats from "./MemoryStats";
+import RefreshIcon from "@material-ui/icons/Refresh";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 class ResourceBrowser extends Component {
 	static contextType = IDEContext;
@@ -98,6 +101,19 @@ class ResourceBrowser extends Component {
 			await this.context.api.unpinObject(object.id);
 			this.setState({
 				resources: this.state.resources.filter((r) => r.id !== object.id),
+				selectedResource: null,
+			});
+		} catch (error) {
+			this.context.reportError(error);
+		}
+	};
+
+	unpinAllObjects = async () => {
+		try {
+			await this.context.api.unpinAllObjects();
+			this.setState({
+				resources: [],
+				selectedResource: null,
 			});
 		} catch (error) {
 			this.context.reportError(error);
@@ -266,9 +282,8 @@ class ResourceBrowser extends Component {
 		const { selectedType, resources, selectedResource } = this.state;
 		const columns = this.resourceColumns(selectedType);
 		const styles = this.props.styles;
-		const ow = selectedResource && selectedType === "object" ? 6 : 10;
 		return (
-			<Grid container spacing={1}>
+			<Grid container spacing={1} style={{ minHeight: 500 }}>
 				<Grid item xs={2} md={2} lg={2}>
 					<List>
 						{[
@@ -291,31 +306,43 @@ class ResourceBrowser extends Component {
 						))}
 					</List>
 				</Grid>
-				<Grid item xs={ow} md={ow} lg={ow}>
-					{selectedType && selectedType !== "Memory" && (
-						<Paper variant="outlined" style={{ height: "100%" }}>
-							<CustomTable
-								styles={styles}
-								columns={columns}
-								rows={resources}
-								onSelect={this.resourceSelected}
-								menuOptions={this.menuOptions()}
-							/>
-						</Paper>
-					)}
-					{selectedType === "Memory" && <MemoryStats />}
-				</Grid>
-				{selectedResource && selectedType === "object" && (
-					<Grid item xs={4} md={4} lg={4}>
-						<Paper variant="outlined">
-							<Inspector
-								styles={styles}
-								root={selectedResource}
-								showWorkspace={false}
-							/>
-						</Paper>
+				<Grid item xs={10} md={10} lg={10}>
+					<Grid container spacing={1}>
+						<Grid item xs={12} md={12} lg={12}>
+							<Box display="flex" justifyContent="flex-end">
+								{selectedType === "Objects" && resources.length > 0 && (
+									<Button
+										variant="text"
+										startIcon={<DeleteIcon />}
+										onClick={this.unpinAllObjects}
+									>
+										Unpin All
+									</Button>
+								)}
+								<IconButton
+									color="inherit"
+									onClick={() => this.typeSelected(selectedType)}
+								>
+									<RefreshIcon fontSize="small" />
+								</IconButton>
+							</Box>
+						</Grid>
+						<Grid item xs={12} md={12} lg={12}>
+							{selectedType && selectedType !== "Memory" && (
+								<Paper variant="outlined">
+									<CustomTable
+										styles={styles}
+										columns={columns}
+										rows={resources}
+										onSelect={this.resourceSelected}
+										menuOptions={this.menuOptions()}
+									/>
+								</Paper>
+							)}
+							{selectedType === "Memory" && <MemoryStats />}
+						</Grid>
 					</Grid>
-				)}
+				</Grid>
 			</Grid>
 		);
 	}
