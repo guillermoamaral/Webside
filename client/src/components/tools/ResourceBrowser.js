@@ -25,11 +25,23 @@ class ResourceBrowser extends Component {
 
 	constructor(props) {
 		super(props);
+		this.types = [
+			"Objects",
+			"Evaluations",
+			"Workspaces",
+			"Debuggers",
+			"Test Runs",
+			"Memory",
+		];
 		this.state = {
 			selectedType: null,
 			resources: [],
 			selectedResource: null,
 		};
+	}
+
+	componentDidMount() {
+		this.typeSelected("Objects");
 	}
 
 	typeSelected = async (type) => {
@@ -283,17 +295,10 @@ class ResourceBrowser extends Component {
 		const columns = this.resourceColumns(selectedType);
 		const styles = this.props.styles;
 		return (
-			<Grid container spacing={1} style={{ minHeight: 500 }}>
+			<Grid container spacing={1} style={{ height: "100%" }}>
 				<Grid item xs={2} md={2} lg={2}>
 					<List>
-						{[
-							"Objects",
-							"Evaluations",
-							"Workspaces",
-							"Debuggers",
-							"Test Runs",
-							"Memory",
-						].map((type) => (
+						{this.types.map((type) => (
 							<ListItem
 								button
 								key={type}
@@ -327,9 +332,9 @@ class ResourceBrowser extends Component {
 								</IconButton>
 							</Box>
 						</Grid>
-						<Grid item xs={12} md={12} lg={12}>
+						<Grid item xs={12} md={12} lg={12} style={{ minHeight: 500 }}>
 							{selectedType && selectedType !== "Memory" && (
-								<Paper variant="outlined">
+								<Paper variant="outlined" style={{ height: "100%" }}>
 									<CustomTable
 										styles={styles}
 										columns={columns}
