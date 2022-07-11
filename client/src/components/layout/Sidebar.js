@@ -14,10 +14,9 @@ import clsx from "clsx";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import TranscriptIcon from "../icons/TranscriptIcon";
 import SearchIcon from "@material-ui/icons/Search";
-import ResourcesIcon from "@material-ui/icons/Kitchen";
+import ResourcesIcon from "@material-ui/icons/PinDropRounded";
 import ChangesBrowserIcon from "../icons/ChangesBrowserIcon";
 import PeopleIcon from "@material-ui/icons/People";
-import SettingsIcon from "@material-ui/icons/Settings";
 import { withDialog } from "../dialogs/index";
 
 class Sidebar extends Component {
@@ -92,14 +91,6 @@ class Sidebar extends Component {
 							</Tooltip>
 						</ListItemIcon>
 						<ListItemText primary="Peers" />
-					</ListItem>
-					<ListItem button onClick={(event) => this.props.onSettingsClicked()}>
-						<Tooltip title="Settings" placement="top">
-							<ListItemIcon>
-								<SettingsIcon />
-							</ListItemIcon>
-						</Tooltip>
-						<ListItemText primary="Settings" />
 					</ListItem>
 				</List>
 				<Divider />

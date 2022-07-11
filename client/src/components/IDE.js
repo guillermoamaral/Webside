@@ -825,7 +825,6 @@ class IDE extends Component {
 								onChangesClicked={this.browseLastChanges}
 								onResourcesClicked={this.openResources}
 								onPeersClicked={this.openChat}
-								onSettingsClicked={this.openSettings}
 								onClose={this.collapseSidebar}
 							/>
 							<main className={styles.content}>
