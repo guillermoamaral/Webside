@@ -9,3 +9,4 @@ Endpoints to retrieve the objects in the system, either globally accessible or a
 | DELETE | [/objects/{id}](id/delete.md)       | Unpin the object with a given ID              |     -      | -            |
 |  GET   | [/objects/{id}/\*](id/slots/get.md) | Retrive the object reached thru the given URI |     -      | -            |
 |  POST  | [/objects](post.md)                 | Pin the object reached thru the given URI     |     -      | `object URI` |
+| DELETE | [/objects](delete.md)               | Unpin all pinned objects                      |     -      | -            |

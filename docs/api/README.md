@@ -66,6 +66,7 @@ Endpoints to retrieve the objects in the system, either globally accessible or a
 | DELETE | [/objects/{id}](objects/id/delete.md)       | Unpin the object with a given ID              |     -      | -            |
 |  GET   | [/objects/{id}/\*](objects/id/slots/get.md) | Retrive the object reached thru the given URI |     -      | -            |
 |  POST  | [/objects](objects/post.md)                 | Pin the object reached thru the given URI     |     -      | `object URI` |
+| DELETE | [/objects](objects/delete.md)               | Unpin all pinned objects                      |     -      | -            |
 
 ## [Workspaces](workspaces)
 
