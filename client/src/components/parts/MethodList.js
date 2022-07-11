@@ -11,11 +11,10 @@ class MethodList extends Component {
 
 	newMethod = () => {
 		const selected = this.props.selected;
-		const method = {
-			class: selected ? selected.class : null,
-			category: selected ? selected.category : null,
-			source: 'messagePattern\r\t"comment"\r\t| temporaries |\r\tstatements',
-		};
+		const method = this.context.api.methodTemplate();
+		method.class = selected ? selected.class : null;
+		method.category = selected ? selected.category : null;
+		console.log(method)
 		this.props.onSelect(method);
 	};
 

@@ -232,6 +232,15 @@ class API {
 		);
 	}
 
+	methodTemplate() {
+		// Retrieve from back-end to support custom templates for each dialect...
+		return {
+			selector: "<new>",
+			template: true,
+			source: 'messagePattern\r\t"comment"\r\t| temporaries |\r\tstatements',
+		};
+	}
+
 	// Debugging...
 	async getDebuggers() {
 		return await this.get("/debuggers", "debuggers");

@@ -35,14 +35,6 @@ class PackageBrowser extends Component {
 		await this.initializePackages();
 	}
 
-	methodTemplate() {
-		// Retrieve from back-end to support custom templates for each dialect...
-		return {
-			selector: "<new>",
-			source: 'messagePattern\r\t"comment"\r\t| temporaries |\r\tstatements',
-		};
-	}
-
 	initializePackages = async () => {
 		let names;
 		try {
@@ -155,7 +147,7 @@ class PackageBrowser extends Component {
 			methods = methods.filter((m) => m.category === category);
 		}
 		if (methods && methods.length === 0) {
-			const template = this.methodTemplate();
+			const template = this.context.api.methodTemplate();
 			template.class = species;
 			template.category = category;
 			methods.push(template);
@@ -385,7 +377,9 @@ class PackageBrowser extends Component {
 
 	methodSelected = async (method) => {
 		const selections = this.currentSelections();
-		await this.updateMethod(method);
+		if (!method.template) {
+			await this.updateMethod(method);
+		}
 		selections.method = method;
 		this.applySelections(selections);
 	};

@@ -275,7 +275,7 @@ class CodeEditor extends Component {
 		const position = this.editor.getCursor();
 		const offset = this.offsetFromPosition(position);
 		const node = this.astNodeAtOffset(offset);
-		if (node && node.type === "Selector") {
+		if (node && (node.type === "Selector" || node.type === "Literal")) {
 			return node.value;
 		}
 		return this.targetWord();
@@ -436,8 +436,6 @@ class CodeEditor extends Component {
 	};
 
 	selectionChanged = (selection) => {
-		console.log("selection changed");
-		console.log(selection);
 		if (this.state.selectRanges) {
 			//this.setState({ selectRanges: false });
 		}
@@ -458,7 +456,6 @@ class CodeEditor extends Component {
 				style={{ fontSize: 30 }}
 			/>
 		);
-		console.log(selectedRanges)
 		return (
 			<Grid container spacing={1} style={{ height: "100%" }}>
 				<Grid item xs={11} md={showAccept ? 11 : 12} lg={showAccept ? 11 : 12}>

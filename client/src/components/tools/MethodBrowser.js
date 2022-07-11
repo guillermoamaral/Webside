@@ -63,7 +63,7 @@ class MethodBrowser extends Component {
 		const selected = this.state.selectedMethod;
 		if (method.selector === selected.selector) {
 			selected.source = method.source;
-			this.setState({ selectedMethod: method });
+			this.setState({ selectedMethod: selected });
 		}
 	};
 

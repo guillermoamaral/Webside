@@ -58,14 +58,6 @@ class ClassBrowser extends Component {
 		}
 	};
 
-	methodTemplate() {
-		// Retrieve from back-end to support custom templates for each dialect...
-		return {
-			selector: "<new>",
-			source: 'messagePattern\r\t"comment"\r\t| temporaries |\r\tstatements',
-		};
-	}
-
 	// Selections...
 	currentSelections() {
 		return {
@@ -98,8 +90,16 @@ class ClassBrowser extends Component {
 
 	reviseSelections(selections) {
 		const { variable, access, category, side, method } = selections;
-		const species =
-			side === "instance" ? selections.species : selections.species.metaclass;
+		var species = selections.species;
+		if (!species) {
+			selections.variable = null;
+			selections.category = null;
+			selections.method = null;
+			return;
+		}
+		if (side === "class") {
+			species = selections.species.metaclass;
+		}
 		if (variable) {
 			selections.variable = species.variables.find(
 				(v) => v.name === variable.name
@@ -108,7 +108,7 @@ class ClassBrowser extends Component {
 		if (category) {
 			selections.category = species.categories.find((c) => c === category);
 		}
-		if (method) {
+		if (method && !method.template) {
 			selections.method = species.methods.find(
 				(m) => m.selector === method.selector
 			);
@@ -169,7 +169,7 @@ class ClassBrowser extends Component {
 			);
 		}
 		if (methods && methods.length === 0) {
-			const template = this.methodTemplate();
+			const template = this.context.api.methodTemplate();
 			template.class = species;
 			template.category = category;
 			methods.push(template);
@@ -285,11 +285,15 @@ class ClassBrowser extends Component {
 	sideChanged = async (side) => {
 		const selections = this.currentSelections();
 		selections.side = side;
-		const species =
-			side === "instance" ? selections.species : selections.species.metaclass;
-		await this.updateVariables(species);
-		await this.updateCategories(species);
-		await this.updateMethods(species);
+		var species = selections.species;
+		if (species && side == "class") {
+			species = selections.species.metaclass;
+		}
+		if (species) {
+			await this.updateVariables(species);
+			await this.updateCategories(species);
+			await this.updateMethods(species);
+		}
 		this.applySelections(selections);
 	};
 
@@ -438,7 +442,9 @@ class ClassBrowser extends Component {
 
 	methodSelected = async (method) => {
 		const selections = this.currentSelections();
-		await this.updateMethod(method);
+		if (!method.template) {
+			await this.updateMethod(method);
+		}
 		selections.method = method;
 		this.applySelections(selections);
 	};

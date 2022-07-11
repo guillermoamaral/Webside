@@ -383,8 +383,10 @@ class CoderLikeBrowser extends Component {
 
 	methodSelected = async (method) => {
 		const selections = this.currentSelections();
+		if (!method.template) {
+			await this.updateMethod(method);
+		}
 		selections.method = method;
-		await this.updateMethod(selections);
 		this.applySelections(selections);
 	};
 
