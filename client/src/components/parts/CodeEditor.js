@@ -71,16 +71,16 @@ class CodeEditor extends Component {
 			props.selectedInterval !== state.selectedInterval ||
 			props.selectedWord !== state.selectedWord
 		) {
+			const source = props.source;
 			const interval = props.selectedInterval;
-			const ranges = interval
-				? [rangeFromInterval(interval, props.source)]
-				: [];
+			const ranges =
+				source && interval ? [rangeFromInterval(interval, source)] : [];
 			return {
-				originalSource: props.source,
+				originalSource: source,
 				selectedInterval: props.selectedInterval,
 				selectedWord: props.selectedWord,
 				selectRanges: true,
-				source: props.source,
+				source: source,
 				selectedRanges: ranges,
 				evaluating: props.evaluating,
 				dirty: false,
