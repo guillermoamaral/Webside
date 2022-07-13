@@ -11,10 +11,11 @@ import { Icon } from "@iconify/react";
 import RestartIcon from "@iconify/icons-mdi/replay";
 import StepIntoIcon from "@iconify/icons-mdi/debug-step-into";
 import StepOverIcon from "@iconify/icons-mdi/debug-step-over";
+import StepThroughIcon from "@iconify/icons-mdi/debug-step-over";
 import ResumeIcon from "@iconify/icons-mdi/play";
 import TerminateIcon from "@iconify/icons-mdi/stop";
 import { IDEContext } from "../IDEContext";
-import CustomList from "../controls/CustomList";
+import FastCustomList from "../controls/FastCustomList";
 import FrameList from "../parts/FrameList";
 import CodeBrowser from "../parts/CodeBrowser";
 import CodeEditor from "../parts/CodeEditor";
@@ -44,16 +45,20 @@ class Debugger extends PureComponent {
 	async updateFrames() {
 		try {
 			const frames = await this.context.api.getDebuggerFrames(this.props.id);
-			var selected;
+			var frame;
 			if (frames.length > 0) {
-				selected = frames[0];
-				await this.updateFrame(selected);
+				frame = frames[0];
+				await this.updateFrame(frame);
 			}
-			const bindings = selected ? selected.bindings || [] : [];
+			const bindings = frame ? frame.bindings || [] : [];
+			const name = this.state.selectedBinding
+				? this.state.selectedBinding.name
+				: "self";
+			const binding = bindings.find((b) => b.name == name);
 			this.setState({
 				frames: frames,
-				selectedFrame: selected,
-				selectedBinding: bindings.find((b) => (b.name = "self")),
+				selectedFrame: frame,
+				selectedBinding: binding,
 			});
 		} catch (error) {
 			this.context.reportError(error);
@@ -63,7 +68,7 @@ class Debugger extends PureComponent {
 	frameSelected = async (frame) => {
 		await this.updateFrame(frame);
 		const bindings = frame ? frame.bindings || [] : [];
-		const binding = bindings.find((b) => (b.name = "self"));
+		const binding = bindings.find((b) => b.name == "self");
 		this.setState({
 			selectedFrame: frame,
 			selectedBinding: binding,
@@ -135,6 +140,19 @@ class Debugger extends PureComponent {
 				this.state.selectedFrame.index
 			);
 			this.notifyEvent("stepOver");
+			this.updateFrames();
+		} catch (error) {
+			this.context.reportError(error);
+		}
+	};
+
+	stepThroughClicked = async () => {
+		try {
+			await this.context.api.stepThroughDebugger(
+				this.props.id,
+				this.state.selectedFrame.index
+			);
+			this.notifyEvent("stepThrough");
 			this.updateFrames();
 		} catch (error) {
 			this.context.reportError(error);
@@ -217,10 +235,17 @@ class Debugger extends PureComponent {
 									<Icon icon={StepIntoIcon} />
 								</IconButton>
 							</Tooltip>
-							<Tooltip title="Step over" placement="top">
+							<Tooltip
+								title="Step over / Step through (Ctrl+click) "
+								placement="top"
+							>
 								<IconButton
 									style={{ color: "#2ba5de" }}
-									onClick={this.stepOverClicked}
+									onClick={(event) => {
+										event.ctrlKey
+											? this.stepThroughClicked()
+											: this.stepOverClicked();
+									}}
 									size="medium"
 								>
 									<Icon icon={StepOverIcon} />
@@ -255,9 +280,7 @@ class Debugger extends PureComponent {
 							</Tooltip>
 						</Grid>
 						<Grid item xs={8} md={8} lg={8}>
-							<Typography variant="h6">
-								{this.props.title || ""}
-							</Typography>
+							<Typography variant="h6">{this.props.title || ""}</Typography>
 						</Grid>
 					</Grid>
 				</Grid>
@@ -274,7 +297,7 @@ class Debugger extends PureComponent {
 						</Grid>
 						<Grid item xs={12} md={2} lg={2}>
 							<Paper className={fixedHeightPaper} variant="outlined">
-								<CustomList
+								<FastCustomList
 									itemLabel="name"
 									selectedItem={selectedBinding}
 									items={selectedFrame ? selectedFrame.bindings : []}

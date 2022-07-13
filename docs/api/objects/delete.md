@@ -2,7 +2,7 @@
 
 Unpin all pinned objects.
 
-**URL**: `/object`
+**URL**: `/objects`
 
 **Method**: `DELETE`
 

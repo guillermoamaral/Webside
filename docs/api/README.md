@@ -91,6 +91,7 @@ Endpoints to manage debuggers and interact with them.
 |  GET   | [/debuggers/{id}/frames/{index}](debuggers/id/frames/index/get.md)                   | Retrieve the _i_-th frame withing the debugger with a given ID                 |     -      | -            |
 |  GET   | [/debuggers/{id}/frames/{index}/bindings](debuggers/id/frames/index/bindings/get.md) | Retrieve the bindings of the _i_-th frame withing the debugger with a given ID |     -      | -            |
 |  POST  | [/debuggers/{id}/stepover](debuggers/id/stepover/post.md)                            | Step over the current sentence in the debugger with a given ID                 |     -      | -            |
+|  POST  | [/debuggers/{id}/stepthrough](debuggers/id/stepthrough/post.md)                      | Step through the current sentence in the debugger with a given ID              |     -      | -            |
 |  POST  | [/debuggers/{id}/stepinto](debuggers/id/stepinto/post.md)                            | Step into the current sentence in the debugger with a given ID                 |     -      | -            |
 |  POST  | [/debuggers/{id}/restart](debuggers/id/restart/post.md)                              | Restart the debugger with a given ID                                           |     -      | -            |
 |  POST  | [/debuggers/{id}/resume](debuggers/id/resume/post.md)                                | Resume the process of the debugger with a given ID                             |     -      | -            |

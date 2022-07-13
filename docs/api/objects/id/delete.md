@@ -2,7 +2,7 @@
 
 Unpin the object with a given ID.
 
-**URL**: `/object/{id}`
+**URL**: `/objects/{id}`
 
 **Method**: `DELETE`
 

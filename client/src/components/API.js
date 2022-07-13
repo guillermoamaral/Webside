@@ -279,6 +279,7 @@ class API {
 	async stepIntoDebugger(id, index) {
 		return await this.post(
 			"/debuggers/" + id + "/frames/" + index + "/stepinto",
+			null,
 			"step into on frame " + index + " of debugger " + id
 		);
 	}
@@ -286,13 +287,23 @@ class API {
 	async stepOverDebugger(id, index) {
 		return await this.post(
 			"/debuggers/" + id + "/frames/" + index + "/stepover",
+			null,
 			"step over on frame " + index + " of debugger " + id
+		);
+	}
+
+	async stepThroughDebugger(id, index) {
+		return await this.post(
+			"/debuggers/" + id + "/frames/" + index + "/stepthrough",
+			null,
+			"step through on frame " + index + " of debugger " + id
 		);
 	}
 
 	async restartDebugger(id, index, update = false) {
 		return await this.post(
 			"/debuggers/" + id + "/frames/" + index + "/restart?update=" + update,
+			null,
 			"restart on frame " + index + " of debugger " + id
 		);
 	}
@@ -300,6 +311,7 @@ class API {
 	async resumeDebugger(id) {
 		return await this.post(
 			"/debuggers/" + id + "/resume",
+			null,
 			"resume debugger " + id
 		);
 	}
@@ -307,6 +319,7 @@ class API {
 	async terminateDebugger(id) {
 		return await this.post(
 			"/debuggers/" + id + "/terminate",
+			null,
 			"terminate debugger " + id
 		);
 	}

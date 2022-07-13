@@ -1,6 +1,7 @@
 import React from "react";
-import Icon from "@material-ui/icons/PanoramaFishEye";
+import { Icon } from "@iconify/react";
+import TestTube from "@iconify/icons-mdi/test-tube";
 
 export default function TestRunnerIcon() {
-	return <Icon fontSize="small" />;
+	return <Icon icon={TestTube} />;
 }
