@@ -35,7 +35,7 @@ class ClassBrowser extends Component {
 			selectedVariable: null,
 			selectedCategory: null,
 			selectedMethod: null,
-			selectedSide: "instance",
+			selectedSide: this.props.side || "instance",
 		};
 	}
 

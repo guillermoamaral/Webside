@@ -376,19 +376,26 @@ class IDE extends Component {
 
 	browseClass = async (classname) => {
 		try {
-			await this.api.getClass(classname);
-			this.openClassBrowser(classname);
+			var name = classname;
+			var side = "instance";
+			if (classname.endsWith(" class")) {
+				name = classname.slice(0, classname.length - 6);
+				side = "class";
+			}
+			await this.api.getClass(name);
+			this.openClassBrowser(name, side);
 		} catch (error) {
-			this.props.dialog.alert("There is no class named " + classname);
+			this.props.dialog.alert("There is no class named " + name);
 		}
 	};
 
-	openClassBrowser = (classname, selector) => {
+	openClassBrowser = (classname, side, selector) => {
 		const id = this.newPageId();
 		const browser = (
 			<ClassBrowser
 				styles={this.props.styles}
 				root={classname}
+				side={side}
 				selectedSelector={selector}
 				id={id}
 			/>
