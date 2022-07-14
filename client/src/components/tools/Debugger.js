@@ -11,7 +11,7 @@ import { Icon } from "@iconify/react";
 import RestartIcon from "@iconify/icons-mdi/replay";
 import StepIntoIcon from "@iconify/icons-mdi/debug-step-into";
 import StepOverIcon from "@iconify/icons-mdi/debug-step-over";
-//import StepThroughIcon from "@iconify/icons-mdi/debug-step-over";
+import StepThroughIcon from "../icons/StepThroughIcon";
 import ResumeIcon from "@iconify/icons-mdi/play";
 import TerminateIcon from "@iconify/icons-mdi/stop";
 import { IDEContext } from "../IDEContext";
@@ -36,7 +36,7 @@ class Debugger extends PureComponent {
 	componentDidMount() {
 		this.context.messageChannel.onEvent("onMessageReceived", (message) => {
 			if (message.type === "debuggerEvent") {
-				this.updateFrames();
+				//this.updateFrames();
 			}
 		});
 		this.updateFrames();
@@ -235,20 +235,22 @@ class Debugger extends PureComponent {
 									<Icon icon={StepIntoIcon} />
 								</IconButton>
 							</Tooltip>
-							<Tooltip
-								title="Step over / Step through (Ctrl+click) "
-								placement="top"
-							>
+							<Tooltip title="Step over" placement="top">
 								<IconButton
 									style={{ color: "#2ba5de" }}
-									onClick={(event) => {
-										event.ctrlKey
-											? this.stepThroughClicked()
-											: this.stepOverClicked();
-									}}
+									onClick={this.stepOverClicked}
 									size="medium"
 								>
 									<Icon icon={StepOverIcon} />
+								</IconButton>
+							</Tooltip>
+							<Tooltip title="Step through" placement="top">
+								<IconButton
+									style={{ color: "#2ba5de" }}
+									onClick={this.stepThroughClicked}
+									size="medium"
+								>
+									<StepThroughIcon />
 								</IconButton>
 							</Tooltip>
 							<Tooltip title="Restart" placement="top">
