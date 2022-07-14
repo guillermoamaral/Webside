@@ -75,6 +75,7 @@ class CodeEditor extends Component {
 			const interval = props.selectedInterval;
 			const ranges =
 				source && interval ? [rangeFromInterval(interval, source)] : [];
+			console.log(ranges)
 			return {
 				originalSource: source,
 				selectedInterval: props.selectedInterval,
@@ -436,8 +437,9 @@ class CodeEditor extends Component {
 	};
 
 	selectionChanged = (selection) => {
+		console.log("selection changed", selection)
 		if (this.state.selectRanges) {
-			//this.setState({ selectRanges: false });
+			this.setState({ selectRanges: false });
 		}
 	};
 
