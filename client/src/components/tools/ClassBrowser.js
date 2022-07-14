@@ -286,7 +286,7 @@ class ClassBrowser extends Component {
 		const selections = this.currentSelections();
 		selections.side = side;
 		var species = selections.species;
-		if (species && side == "class") {
+		if (species && side === "class") {
 			species = selections.species.metaclass;
 		}
 		if (species) {
@@ -329,7 +329,7 @@ class ClassBrowser extends Component {
 			superclass.subclasses.push(instance);
 			superclass.subclasses.sort((a, b) => (a.name <= b.name ? -1 : 1));
 		}
-		const target = (side = "instance" ? instance : instance.metaclass);
+		const target = side === "instance" ? instance : instance.metaclass;
 		await this.updateVariables(target, true);
 		this.classSelected(instance);
 	};
@@ -384,7 +384,7 @@ class ClassBrowser extends Component {
 
 	variableRenamed = async (variable, newName) => {
 		const selections = this.currentSelections();
-		const { species, side, access } = selections;
+		const { species, access } = selections;
 		await this.updateClass(species, true);
 		const target = this.currentClass();
 		await this.updateVariables(target, true);
@@ -396,7 +396,7 @@ class ClassBrowser extends Component {
 
 	variableRemoved = async () => {
 		const selections = this.currentSelections();
-		const { species, side } = selections;
+		const { species } = selections;
 		selections.variable = null;
 		await this.updateClass(species, true);
 		const target = this.currentClass();

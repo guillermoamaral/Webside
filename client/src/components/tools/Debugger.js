@@ -11,7 +11,7 @@ import { Icon } from "@iconify/react";
 import RestartIcon from "@iconify/icons-mdi/replay";
 import StepIntoIcon from "@iconify/icons-mdi/debug-step-into";
 import StepOverIcon from "@iconify/icons-mdi/debug-step-over";
-import StepThroughIcon from "@iconify/icons-mdi/debug-step-over";
+//import StepThroughIcon from "@iconify/icons-mdi/debug-step-over";
 import ResumeIcon from "@iconify/icons-mdi/play";
 import TerminateIcon from "@iconify/icons-mdi/stop";
 import { IDEContext } from "../IDEContext";
@@ -36,7 +36,7 @@ class Debugger extends PureComponent {
 	componentDidMount() {
 		this.context.messageChannel.onEvent("onMessageReceived", (message) => {
 			if (message.type === "debuggerEvent") {
-				//this.updateFrames();
+				this.updateFrames();
 			}
 		});
 		this.updateFrames();
@@ -54,7 +54,7 @@ class Debugger extends PureComponent {
 			const name = this.state.selectedBinding
 				? this.state.selectedBinding.name
 				: "self";
-			const binding = bindings.find((b) => b.name == name);
+			const binding = bindings.find((b) => b.name === name);
 			this.setState({
 				frames: frames,
 				selectedFrame: frame,
@@ -68,7 +68,7 @@ class Debugger extends PureComponent {
 	frameSelected = async (frame) => {
 		await this.updateFrame(frame);
 		const bindings = frame ? frame.bindings || [] : [];
-		const binding = bindings.find((b) => b.name == "self");
+		const binding = bindings.find((b) => b.name === "self");
 		this.setState({
 			selectedFrame: frame,
 			selectedBinding: binding,

@@ -291,7 +291,7 @@ class ResourceBrowser extends Component {
 	}
 
 	render() {
-		const { selectedType, resources, selectedResource } = this.state;
+		const { selectedType, resources } = this.state;
 		const columns = this.resourceColumns(selectedType);
 		const styles = this.props.styles;
 		return (

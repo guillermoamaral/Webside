@@ -303,10 +303,8 @@ class PackageBrowser extends Component {
 
 	classDefined = async (species) => {
 		var name = species.name;
-		var side = "instance";
 		if (name.endsWith(" class")) {
 			name = name.slice(0, name.length - 6);
-			side = "class";
 		}
 		const instance = { name: name };
 		await this.updateClass(instance, true);

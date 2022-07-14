@@ -41,7 +41,9 @@ class Search extends Component {
 	};
 
 	goToResult = (r) => {
-		console.log(r);
+		if (r.type === "class") {
+			this.context.browseClass(r.text);
+		}
 	};
 
 	render() {
