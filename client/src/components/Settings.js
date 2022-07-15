@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Button, TextField, Grid } from "@material-ui/core";
-import { withCookies } from "react-cookie";
 import axios from "axios";
-import { withRouter } from "react-router-dom";
 
 class Settings extends Component {
 	constructor(props) {
@@ -13,40 +11,17 @@ class Settings extends Component {
 		};
 	}
 
-	saveClicked = async (event) => {
+	acceptClicked = async (event) => {
 		event.preventDefault();
 		const { baseUri, developer } = this.state;
 		if (baseUri && baseUri !== "" && developer && developer !== "") {
-			const cookies = this.props.cookies;
-			var dialect;
-			try {
-				const response = await axios.get(baseUri + "/dialect");
-				dialect = response.data;
-			} catch (error) {
-				console.log(error);
-			}
-			cookies.set("dialect", dialect, { path: "/" });
-			cookies.set("baseUri", baseUri, { path: "/" });
-			cookies.set("developer", developer, { path: "/" });
-			const handler = this.props.onSave;
+			const response = await axios.get(baseUri + "/dialect");
+			const handler = this.props.onAccept;
 			if (handler) {
-				handler();
-			} else {
-				if (!this.props.location.pathname.includes("ide")) {
-					this.props.history.push("/ide");
-				}
+				handler(baseUri, response.data, developer);
 			}
 		} else {
 			alert("You must complete the fields");
-		}
-	};
-
-	getDialect = async () => {
-		try {
-			this.dialect = await this.api.getDialect();
-			this.theme = this.createTheme();
-		} catch (error) {
-			this.reportError(error);
 		}
 	};
 
@@ -54,17 +29,11 @@ class Settings extends Component {
 		const { baseUri, developer } = this.state;
 		return (
 			<div className={this.props.styles.root}>
-				<Grid
-					container
-					direction="column"
-					justify="center"
-					spacing={1}
-					style={{ minHeight: "80vh" }}
-				>
+				<Grid container direction="column" justify="center" spacing={1}>
 					<Grid item>
 						<Grid container direction="row" justify="center" spacing={1}>
 							<Grid item>
-								<form onSubmit={this.saveClicked}>
+								<form onSubmit={this.acceptClicked}>
 									<Grid
 										container
 										direction="column"
@@ -108,7 +77,7 @@ class Settings extends Component {
 										</Grid>
 										<Grid item>
 											<Button variant="outlined" type="submit">
-												Save
+												{this.props.acceptLabel || "Accept"}
 											</Button>
 										</Grid>
 									</Grid>
@@ -122,4 +91,4 @@ class Settings extends Component {
 	}
 }
 
-export default withRouter(withCookies(Settings));
+export default Settings;

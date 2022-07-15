@@ -53,15 +53,14 @@ import Settings from "./Settings";
 import ResourceBrowser from "./tools/ResourceBrowser";
 import CoderLikeBrowser from "./tools/CoderLikeBrowser";
 import CustomSnacks from "./controls/CustomSnacks";
+import axios from "axios";
 
 class IDE extends Component {
 	constructor(props) {
 		super(props);
-		this.updateSettings();
-		this.updateTheme();
-		this.initializeAPI();
-		this.initializeMessageChannel();
+		this.initializeSettings();
 		this.state = {
+			dialect: null,
 			sidebarExpanded: false,
 			addPageMenuOpen: false,
 			selectedPage: null,
@@ -75,7 +74,6 @@ class IDE extends Component {
 	}
 
 	componentDidMount() {
-		this.cacheNames();
 		this.openTranscript();
 		const classname = this.props.match.params.classname;
 		if (classname) {
@@ -92,22 +90,25 @@ class IDE extends Component {
 		return false;
 	}
 
-	updateSettings() {
+	queryOptions() {
 		const query = new URLSearchParams(this.props.location.search);
 		const options = {};
 		for (let option of query.entries()) {
 			options[option[0]] = option[1];
 		}
-		const cookies = this.props.cookies;
-		["dialect", "baseUri", "developer"].forEach((setting) => {
-			if (options[setting]) {
-				cookies.set(setting, options[setting], { path: "/" });
-			}
-		});
-		this.dialect = cookies.get("dialect");
-		this.baseUri = cookies.get("baseUri");
-		this.developer = cookies.get("developer");
+		return options;
+	}
+
+	async updateSettings(baseUri, dialect, developer) {
+		this.baseUri = baseUri;
+		this.developer = developer;
+		this.dialect = dialect;
+		document.title = dialect;
 		this.messageChannelUrl = "http://localhost:4200";
+		this.initializeAPI(baseUri, developer);
+		this.updateTheme(dialect);
+		this.initializeMessageChannel();
+		this.cacheNames();
 	}
 
 	welcomeMessage() {
@@ -128,13 +129,13 @@ class IDE extends Component {
 		);
 	}
 
-	initializeAPI() {
-		this.api = new API(
-			this.baseUri,
-			this.developer,
-			this.reportError,
-			this.reportChange
-		);
+	initializeSettings = async () => {
+		const options = this.queryOptions();
+		this.updateSettings(options.baseUri, options.dialect, options.developer);
+	};
+
+	initializeAPI(baseUri, developer) {
+		this.api = new API(baseUri, developer, this.reportError, this.reportChange);
 	}
 
 	initializeMessageChannel() {
@@ -154,10 +155,10 @@ class IDE extends Component {
 		}
 	};
 
-	updateTheme() {
+	updateTheme(dialect) {
 		var mainPrimaryColor;
 		var mainSecondaryColor;
-		switch (this.dialect) {
+		switch (dialect) {
 			case "Bee":
 				mainPrimaryColor = amber[300];
 				mainSecondaryColor = amber[800];
@@ -528,13 +529,10 @@ class IDE extends Component {
 					styles={this.props.styles}
 					baseUri={this.baseUri}
 					developer={this.developer}
-					onSave={() => {
+					acceptLabel="Save"
+					onAccept={(baseUri, dialect, developer) => {
 						this.removeAllPages();
-						this.updateSettings();
-						this.updateTheme();
-						this.initializeAPI();
-						this.initializeMessageChannel();
-						this.cacheNames();
+						this.updateSettings(baseUri, dialect, developer);
 					}}
 				/>
 			);
