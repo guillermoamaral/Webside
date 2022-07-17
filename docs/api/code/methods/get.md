@@ -11,24 +11,27 @@ Note that this could be other than a class (a package for instance). It will dep
 **Method**: `GET`
 
 **Filtering Query Options**
-| Option | Type | Description |
-| -- | -- | -- |
-| class | string | to get methods of a given class |
-| selector | string | to get implementors of a given selector |
-| category | string | to get methods under a given category |
-| accessing | string | to get those methods accessing a given variable (either using or assigning it) |
-| using | string | to get those methods using a given variable |
-| assigning | string | to get those methods assigning a given variable |
-| sending | string | to get senders of a given selector |
-| referencingClass | string | to get those methods referencing a given class |
-| scope | string | used to restrict the search to a given scope (only class at the moment of this writing) |
+
+| Option           |  Type  | Description                                                                             |
+| ---------------- | :----: | --------------------------------------------------------------------------------------- |
+| class            | string | to get methods of a given class                                                         |
+| selector         | string | to get implementors of a given selector                                                 |
+| category         | string | to get methods under a given category                                                   |
+| accessing        | string | to get those methods accessing a given variable (either using or assigning it)          |
+| using            | string | to get those methods using a given variable                                             |
+| assigning        | string | to get those methods assigning a given variable                                         |
+| sending          | string | to get senders of a given selector                                                      |
+| referencingClass | string | to get those methods referencing a given class                                          |
+| selectorMatching | string | to get those methods with a selector matching pattern string                            |
+| scope            | string | used to restrict the search to a given scope (only class at the moment of this writing) |
 
 **Decoration Query Options**
-| Option | Type | Description |
-| -- | -- | -- |
-| ast | boolean | to get methods' AST (see below) |
-| bytecodes | boolean | to get methods' bytecodes |
-| disassembly | boolean | to get methods' disassembly |
+
+|   Option    |  Type   | Description                     |
+| :---------: | :-----: | ------------------------------- |
+|     ast     | boolean | to get methods' AST (see below) |
+|  bytecodes  | boolean | to get methods' bytecodes       |
+| disassembly | boolean | to get methods' disassembly     |
 
 ## Success Responses
 

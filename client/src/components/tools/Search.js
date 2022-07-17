@@ -10,6 +10,7 @@ import {
 	ListItem,
 	ListItemText,
 	Typography,
+	LinearProgress,
 } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
 import { IDEContext } from "../IDEContext";
@@ -21,41 +22,83 @@ class Search extends Component {
 		super(props);
 		this.itemsPerPage = 10;
 		this.state = {
+			selectedType: "classes",
 			text: "",
 			results: [],
 			currentPage: 1,
+			searching: false,
 		};
 	}
 
 	search = async () => {
-		//const results = await this.context.referencesToString(this.state.text);
+		this.setState({ searching: true, results: [] });
 		const text = this.state.text.toLowerCase();
-		const results = this.context.classNames
+		const type = this.state.selectedType;
+		var results;
+		switch (type) {
+			case "classes":
+				results = this.searchClasses(text);
+				break;
+			case "selectors":
+				results = await this.searchSelectors(text);
+				break;
+			case "string references":
+				results = await this.searchStringReferences(text);
+				break;
+			default:
+				results = [];
+		}
+		this.setState({
+			searching: false,
+			results: results,
+			currentPage: 1,
+		});
+	};
+
+	searchClasses(text) {
+		return this.context.classNames
 			.filter((n) => {
 				return n.toLowerCase().includes(text);
 			})
 			.map((n) => {
 				return { title: n, type: "class", text: n };
 			});
-		this.setState({ text: "", results: results, currentPage: 1 });
-	};
+	}
+
+	async searchSelectors(text) {
+		const methods = await this.context.api.getMethodsMatching(text);
+		return methods.map((m) => {
+			return { title: m.class, type: "method", text: m.selector };
+		});
+	}
+
+	async searchStringReferences(text) {
+		const methods = await this.context.api.getStringReferences(text);
+		return methods.map((m) => {
+			return { title: m.class, type: "method", text: m.selector };
+		});
+	}
 
 	goToResult = (r) => {
 		if (r.type === "class") {
 			this.context.browseClass(r.text);
 		}
+		if (r.type === "method") {
+			this.context.browseMethod({ class: r.title, selector: r.text });
+		}
 	};
 
 	render() {
-		const pages = Math.ceil(this.state.results.length / this.itemsPerPage);
-		const begin = (this.state.currentPage - 1) * this.itemsPerPage;
+		const { text, selectedType, results, searching, currentPage } = this.state;
+		const pages = Math.ceil(results.length / this.itemsPerPage);
+		const begin = (currentPage - 1) * this.itemsPerPage;
 		const end = begin + this.itemsPerPage;
-		const pageResults = this.state.results.slice(begin, end);
+		const pageResults = results.slice(begin, end);
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
 					<TextField
-						value={this.state.text}
+						value={text}
 						onChange={(event) => this.setState({ text: event.target.value })}
 						placeholder="Search ..."
 						name="text"
@@ -64,6 +107,7 @@ class Search extends Component {
 						margin="dense"
 						autoFocus
 						type="text"
+						disabled={searching}
 						onKeyPress={(event) => {
 							if (event.key === "Enter") {
 								this.search();
@@ -75,13 +119,12 @@ class Search extends Component {
 					<Box display="flex" justifyContent="center">
 						<RadioGroup
 							name="side"
-							value={this.state.type}
-							onChange={this.typeChanged}
+							value={selectedType}
+							onChange={(event, type) => this.setState({ selectedType: type })}
 							defaultValue="classes"
 							row
 						>
 							{[
-								"All",
 								"Classes",
 								"Selectors",
 								"Pools",
@@ -94,6 +137,7 @@ class Search extends Component {
 										control={<Radio size="small" color="primary" />}
 										label={s}
 										key={s}
+										disabled={searching}
 									/>
 								);
 							})}
@@ -134,11 +178,13 @@ class Search extends Component {
 						<Pagination
 							count={pages}
 							size="medium"
-							page={this.state.currentPage}
+							page={currentPage}
 							variant="text"
 							onChange={(event, page) => this.setState({ currentPage: page })}
 						/>
 					)}
+					{!searching && results.length === 0 && "No results"}
+					{searching && <LinearProgress variant="indeterminate" />}
 				</Grid>
 			</Grid>
 		);

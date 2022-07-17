@@ -379,8 +379,8 @@ class IDE extends Component {
 		try {
 			var name = classname;
 			var side = "instance";
-			if (classname.endsWith(" class")) {
-				name = classname.slice(0, classname.length - 6);
+			if (name.endsWith(" class")) {
+				name = name.slice(0, name.length - 6);
 				side = "class";
 			}
 			await this.api.getClass(name);
@@ -388,6 +388,16 @@ class IDE extends Component {
 		} catch (error) {
 			this.props.dialog.alert("There is no class named " + name);
 		}
+	};
+
+	browseMethod = (method) => {
+		var name = method.class;
+		var side = "instance";
+		if (name.endsWith(" class")) {
+			name = name.slice(0, name.length - 6);
+			side = "class";
+		}
+		this.openClassBrowser(name, side, method.selector);
 	};
 
 	openClassBrowser = (classname, side, selector) => {
@@ -643,6 +653,21 @@ class IDE extends Component {
 		}
 	};
 
+	browseMethodsMatching = async (pattern) => {
+		try {
+			const matching = await this.api.getMethodsMatching(pattern);
+			console.log(pattern, matching);
+			this.openMethodBrowser(
+				matching,
+				"Methods with selector matching " + pattern,
+				null,
+				"class"
+			);
+		} catch (error) {
+			this.reportError(error);
+		}
+	};
+
 	browseLastChanges = async () => {
 		try {
 			const changes = await this.api.getChanges();
@@ -786,11 +811,13 @@ class IDE extends Component {
 			openWorkspace: this.openWorkspace,
 			browsePackage: this.openPackageBrowser,
 			browseClass: this.browseClass,
+			browseMethod: this.browseMethod,
 			browseSenders: this.browseSenders,
 			browseLocalSenders: this.browseLocalSenders,
 			browseImplementors: this.browseImplementors,
 			browseLocalImplementors: this.browseLocalImplementors,
 			browseClassReferences: this.browseClassReferences,
+			browseMethodsMatching: this.browseMethodsMatching,
 			browseStringReferences: this.browseStringReferences,
 			evaluateExpression: this.evaluateExpression,
 			debugExpression: this.debugExpression,

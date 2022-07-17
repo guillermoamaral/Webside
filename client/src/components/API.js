@@ -232,6 +232,13 @@ class API {
 		);
 	}
 
+	async getMethodsMatching(pattern) {
+		return await this.get(
+			"/methods?selectorMatching=" + pattern,
+			"methods with selector matching " + pattern
+		);
+	}
+
 	methodTemplate() {
 		// Retrieve from back-end to support custom templates for each dialect...
 		return {
