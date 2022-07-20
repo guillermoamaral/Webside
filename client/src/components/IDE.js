@@ -606,6 +606,7 @@ class IDE extends Component {
 			this.openMethodBrowser(
 				implementors,
 				"Implementors of " + selector,
+				null,
 				"class"
 			);
 		} catch (error) {
@@ -669,11 +670,16 @@ class IDE extends Component {
 	};
 
 	browseLastChanges = async () => {
-		try {
-			const changes = await this.api.getChanges();
-			this.browseChanges(changes, "Last changes");
-		} catch (error) {
-			this.reportError(error);
+		const page = this.pageLabeled("Last changes");
+		if (page) {
+			this.selectPage(page);
+		} else {
+			try {
+				const changes = await this.api.getChanges();
+				this.browseChanges(changes, "Last changes");
+			} catch (error) {
+				this.reportError(error);
+			}
 		}
 	};
 

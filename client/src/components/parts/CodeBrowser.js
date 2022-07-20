@@ -42,8 +42,12 @@ class CodeBrowser extends Component {
 		const classname = this.props.class ? this.props.class.name : null;
 		const packagename = this.props.class ? this.props.class.package : null;
 		try {
-			await this.context.api.defineClass(classname, packagename, definition);
-			const species = await this.context.api.getClass(classname);
+			const change = await this.context.api.defineClass(
+				classname,
+				packagename,
+				definition
+			);
+			const species = await this.context.api.getClass(change.class);
 			const handler = this.props.onDefineClass;
 			if (handler) {
 				handler(species);

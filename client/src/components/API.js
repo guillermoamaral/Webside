@@ -199,7 +199,7 @@ class API {
 
 	async getLocalSenders(selector, classname) {
 		return await this.get(
-			"/methods?sending=" + selector + "&scope=" + classname,
+			"/methods?sending=" + selector + "&hierarchy=" + classname,
 			"senders of " + selector + " in class " + classname
 		);
 	}
@@ -227,7 +227,7 @@ class API {
 
 	async getLocalImplementors(selector, classname) {
 		return await this.get(
-			"/methods?selector=" + selector + "&scope=" + classname,
+			"/methods?selector=" + selector + "&hierarchy=" + classname,
 			"local implementors of " + selector + " in class " + classname
 		);
 	}

@@ -89,7 +89,8 @@ class ClassBrowser extends Component {
 	}
 
 	reviseSelections(selections) {
-		const { variable, access, category, side, method } = selections;
+		const { access, category, side, method } = selections;
+		var variable = selections.variable;
 		var species = selections.species;
 		if (!species) {
 			selections.variable = null;
@@ -112,6 +113,8 @@ class ClassBrowser extends Component {
 			selections.method = species.methods.find(
 				(m) => m.selector === method.selector
 			);
+			const accessors = species.accessors;
+			variable = selections.variable;
 			if (selections.method) {
 				if (
 					selections.category &&
@@ -120,10 +123,13 @@ class ClassBrowser extends Component {
 					selections.method = null;
 				}
 				if (
-					selections.variable &&
+					selections.method &&
 					access &&
-					species.accessors &&
-					!species.accessors[selections.variable.name][access].some(
+					variable &&
+					accessors &&
+					accessors[variable.name] &&
+					accessors[variable.name][access] &&
+					!accessors[variable.name][access].some(
 						(m) => m.selector === selections.method.selector
 					)
 				) {
@@ -331,8 +337,22 @@ class ClassBrowser extends Component {
 		}
 		const target = side === "instance" ? instance : instance.metaclass;
 		await this.updateVariables(target, true);
-		this.classSelected(instance);
+		if (this.isInSubclasses(this.state.root, instance.superclass)) {
+			this.classSelected(instance);
+		} else {
+			this.changeRootClass(instance.name);
+		}
 	};
+
+	isInSubclasses(rootname, classname) {
+		const root = this.cache[rootname];
+		if (!root || !root.subclasses) {
+			return false;
+		}
+		return root.subclasses.some((c) => {
+			return c.name === classname || this.isInSubclasses(c, classname);
+		});
+	}
 
 	classCommented = async (species) => {
 		this.cache[species.name].comment = species.comment;
@@ -634,6 +654,7 @@ class ClassBrowser extends Component {
 									onRename={this.methodRenamed}
 									onRemove={this.methodRemoved}
 									onClassify={this.methodClassified}
+									onCategoryAdd={this.categoryAdded}
 								/>
 							</Paper>
 						</Grid>

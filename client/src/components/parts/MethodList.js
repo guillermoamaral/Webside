@@ -14,7 +14,6 @@ class MethodList extends Component {
 		const method = this.context.api.methodTemplate();
 		method.class = selected ? selected.class : null;
 		method.category = selected ? selected.category : null;
-		console.log(method)
 		this.props.onSelect(method);
 	};
 
@@ -34,9 +33,8 @@ class MethodList extends Component {
 				newSelector
 			);
 			method.selector = newSelector;
-			const handler = this.props.onRename;
-			if (handler) {
-				handler(method);
+			if (this.props.onRename) {
+				this.props.onRename(method);
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -46,26 +44,40 @@ class MethodList extends Component {
 	removeMethod = async (method) => {
 		try {
 			await this.context.api.removeMethod(method.class, method.selector);
-			const handler = this.props.onRemove;
-			if (handler) {
-				handler(method);
+			if (this.props.onRemove) {
+				this.props.onRemove(method);
 			}
 		} catch (error) {
 			this.context.reportError(error);
 		}
 	};
 
+	newCategory = async () => {
+		try {
+			const category = await this.props.dialog.prompt({
+				title: "New category",
+			});
+			if (category && this.props.onCategoryAdd) {
+				this.props.onCategoryAdd(category);
+			}
+			return category;
+		} catch (error) {}
+	};
+
 	classifyMethod = async (method, category) => {
+		var target = category;
+		if (!target) {
+			target = await this.newCategory();
+		}
 		try {
 			await this.context.api.classifyMethod(
 				method.class,
 				method.selector,
-				category
+				target
 			);
-			method.category = category;
-			const handler = this.props.onClassify;
-			if (handler) {
-				handler(method);
+			method.category = target;
+			if (this.props.onClassify) {
+				this.props.onClassify(method);
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -114,22 +126,32 @@ class MethodList extends Component {
 		}
 	};
 
+	categoryOptions() {
+		const categories = this.props.categories || [];
+		const options = categories.map((c) => {
+			return {
+				label: c,
+				action: (m) => this.classifyMethod(m, c),
+			};
+		});
+		options.push({
+			label: "New..",
+			action: (m) => this.classifyMethod(m),
+		});
+		return options;
+	}
+
 	menuOptions = () => {
 		const options = [
 			{ label: "New", action: this.newMethod },
 			{ label: "Rename", action: this.renameMethod },
 			{ label: "Remove", action: this.removeMethod },
 		];
-		const categories = this.props.categories || [];
+		const categories = this.categoryOptions();
 		if (categories.length > 0) {
 			options.push({
 				label: "Classify under...",
-				suboptions: categories.map((c) => {
-					return {
-						label: c,
-						action: (m) => this.classifyMethod(m, c),
-					};
-				}),
+				suboptions: categories,
 			});
 		}
 		options.push(
