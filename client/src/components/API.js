@@ -17,8 +17,8 @@ class APIError extends Error {
 class API {
 	constructor(uri, author, reportError, reportChange) {
 		this.baseUri = uri;
-		this.reportError = reportError.bind();
-		this.reportChange = reportChange.bind();
+		this.reportError = reportError ? reportError.bind() : null;
+		this.reportChange = reportChange ? reportChange.bind() : null;
 		this.author = author;
 	}
 
@@ -362,7 +362,9 @@ class API {
 
 	async postChange(change, description) {
 		const applied = await this.post("/changes", change, description);
-		this.reportChange(applied);
+		if (this.reportChange) {
+			this.reportChange(applied);
+		}
 		return applied;
 	}
 

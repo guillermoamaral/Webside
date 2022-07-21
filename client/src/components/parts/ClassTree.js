@@ -101,6 +101,12 @@ class ClassTree extends Component {
 		}
 	};
 
+	migrateClass = (species) => {
+		if (species) {
+			this.context.migrateClass(species.name);
+		}
+	};
+
 	menuOptions() {
 		return [
 			{ label: "New", action: this.newSubclass },
@@ -112,6 +118,7 @@ class ClassTree extends Component {
 			{ label: "References", action: this.browseClassReferences },
 			null,
 			{ label: "Test", action: this.runTests },
+			{ label: "Migrate", action: this.migrateClass },
 		];
 	}
 

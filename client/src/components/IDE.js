@@ -19,8 +19,10 @@ import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
 import API from "./API";
 import { IDEContext } from "./IDEContext";
 import { DialogProvider } from "./dialogs/index";
+import CustomSnacks from "./controls/CustomSnacks";
 import TranscriptIcon from "./icons/TranscriptIcon";
 import SearchIcon from "@material-ui/icons/Search";
+import MigratorIcon from "@material-ui/icons/Send";
 import PackageBrowserIcon from "./icons/PackageBrowserIcon";
 import ClassBrowserIcon from "./icons/ClassBrowserIcon";
 import MethodBrowserIcon from "./icons/MethodBrowserIcon";
@@ -52,8 +54,7 @@ import CodeDifferences from "./tools/CodeDifferences";
 import Settings from "./Settings";
 import ResourceBrowser from "./tools/ResourceBrowser";
 import CoderLikeBrowser from "./tools/CoderLikeBrowser";
-import CustomSnacks from "./controls/CustomSnacks";
-import axios from "axios";
+import CodeMigrator from "./tools/CodeMigrator";
 
 class IDE extends Component {
 	constructor(props) {
@@ -74,7 +75,7 @@ class IDE extends Component {
 	}
 
 	componentDidMount() {
-		this.openTranscript();
+		//this.openTranscript();
 		const classname = this.props.match.params.classname;
 		if (classname) {
 			this.openClassBrowser(classname);
@@ -338,6 +339,13 @@ class IDE extends Component {
 	openSearch = () => {
 		const search = <Search styles={this.props.styles} />;
 		this.addPage("Search", <SearchIcon />, search);
+	};
+
+	migrateClass = (classname) => {
+		const search = (
+			<CodeMigrator styles={this.props.styles} class={classname} />
+		);
+		this.addPage("Migrator", <MigratorIcon />, search);
 	};
 
 	toggleShowTranscript = () => {
@@ -837,6 +845,7 @@ class IDE extends Component {
 			inspectObject: this.openInspector,
 			reportError: this.reportError,
 			updatePageLabel: this.updatePageLabel,
+			migrateClass: this.migrateClass,
 		};
 		const styles = this.props.styles;
 		return (
