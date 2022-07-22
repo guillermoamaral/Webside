@@ -97,6 +97,9 @@ class Search extends Component {
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
+					(Warning: this component is under construction and might not work)
+				</Grid>
+				<Grid item xs={12} md={12} lg={12}>
 					<TextField
 						value={text}
 						onChange={(event) => this.setState({ text: event.target.value })}
@@ -183,7 +186,9 @@ class Search extends Component {
 							onChange={(event, page) => this.setState({ currentPage: page })}
 						/>
 					)}
-					{!searching && results.length === 0 && "No results"}
+					{!searching && results.length === 0 && (
+						<Typography variant="h6">No results</Typography>
+					)}
 					{searching && <LinearProgress variant="indeterminate" />}
 				</Grid>
 			</Grid>

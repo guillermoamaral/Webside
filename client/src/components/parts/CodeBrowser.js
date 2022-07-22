@@ -122,14 +122,18 @@ class CodeBrowser extends Component {
 				handler(compiled);
 			}
 		} catch (error) {
-			this.handlerCompilationError(error, source);
+			this.handleCompilationError(error, source);
 		}
 	};
 
-	async handlerCompilationError(error, source) {
+	async handleCompilationError(error, source) {
 		const method = this.props.method;
+		if (!method) {
+			return;
+		}
 		method.source = source;
 		const data = error.data;
+		console.log(data);
 		if (data && data.suggestion && data.changes) {
 			const retry = await this.props.dialog.confirm(data.suggestion + "?");
 			if (retry) {
@@ -147,7 +151,7 @@ class CodeBrowser extends Component {
 						handler(method);
 					}
 				} catch (error) {
-					this.handlerCompilationError(
+					this.handleCompilationError(
 						error,
 						data.changes[data.changes.length - 1].sourceCode
 					);
@@ -163,6 +167,9 @@ class CodeBrowser extends Component {
 						description: data.description,
 					},
 				];
+			} else {
+				const description = data ? data.description : null;
+				this.context.reportError(description || "Unknown compilation error");
 			}
 			this.setState({ method: method });
 		}
