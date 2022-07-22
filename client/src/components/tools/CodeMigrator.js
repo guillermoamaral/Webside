@@ -38,7 +38,7 @@ class CodeMigrator extends Component {
 			sources.classes.map(async (name) => {
 				const species = await this.context.api.getClass(name);
 				change = {
-					type: "ClassDefinition",
+					type: "AddClass",
 					author: this.context.api.author,
 					class: species.name,
 					label: species.name,
@@ -49,7 +49,7 @@ class CodeMigrator extends Component {
 				const methods = await this.context.api.getMethods(name, true);
 				methods.forEach((m) => {
 					change = {
-						type: "MethodDefinition",
+						type: "AddMethod",
 						author: this.context.api.author,
 						class: m.class,
 						label: m.selector,

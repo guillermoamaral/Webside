@@ -31,31 +31,31 @@ Retrieve all changes made to the system in the current session.
 
 And `type` can be one of the following:
 
-- `"MethodDefinition"`
-- `"MethodRemove"`
-- `"MethodClassification"`
-- `"SelectorRename"`
-- `"ClassDefinition"`
-- `"ClassCommentDefinition"`
-- `"ClassRemove"`
-- `"ClassRename"`
-- `"InstanceVariableAddition"`
-- `"InstanceVariableRename"`
-- `"InstanceVariableRemove"`
-- `"InstanceVariableMoveUp"`
-- `"InstanceVariableMoveDown"`
-- `"ClassVariableAddition"`
-- `"ClassVariableRename"`
-- `"ClassVariableRemove"`
-- `"CategoryRename"`
-- `"CategoryRemove"`
+- `"AddMethod"`
+- `"RemoveMethod"`
+- `"ClassifyMethod"`
+- `"RenameMethod"`
+- `"AddClass"`
+- `"CommentClass"`
+- `"RemoveClass"`
+- `"RenameClass"`
+- `"AddInstanceVariable"`
+- `"RenameInstanceVariable"`
+- `"RemoveInstanceVariable"`
+- `"MoveUpInstanceVariable"`
+- `"MoveDownInstanceVariable"`
+- `"AddClassVariable"`
+- `"RenameClassVariable"`
+- `"RemoveClassVariable"`
+- `"RenameCategory"`
+- `"RemoveCategory"`
 
 **Example:**: retrieve changes made by `guille`, `GET /changes?author=guille`.
 
 ```json
 [
 	{
-		"type": "MethodDefinition",
+		"type": "AddMethod",
 		"label": "Float class ≫ phi",
 		"package": "Default",
 		"timestamp": "2020-12-05T19:13:44.166-03:00",
