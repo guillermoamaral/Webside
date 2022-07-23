@@ -82,16 +82,14 @@ class FastCustomList extends Component {
 	}
 
 	itemDoubleClicked = (item) => {
-		const handler = this.props.onDoubleClick;
-		if (handler) {
-			handler(item);
+		if (this.props.onDoubleClick) {
+			this.props.onDoubleClick(item);
 		}
 	};
 
 	itemSelected = (item) => {
-		const handler = this.props.onSelect;
-		if (handler) {
-			handler(item);
+		if (this.props.onSelect) {
+			this.props.onSelect(item);
 		}
 	};
 
@@ -263,7 +261,7 @@ class FastCustomList extends Component {
 			<div style={style}>
 				<ListItem
 					disableGutters={divider}
-					autoFocus={selected}
+					//autoFocus={selected}
 					style={{
 						paddingTop: 0,
 						paddingBottom: 0,

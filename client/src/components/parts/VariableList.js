@@ -26,9 +26,8 @@ class VariableList extends Component {
 
 	variableSelected = (variable) => {
 		const selected = variable.type === "separator" ? null : variable;
-		const handler = this.props.onSelect;
-		if (handler) {
-			handler(selected);
+		if (this.props.onSelect) {
+			this.props.onSelect(this.props.onSelect);
 		}
 	};
 
@@ -39,9 +38,8 @@ class VariableList extends Component {
 				required: true,
 			});
 			await this.context.api.addInstanceVariable(this.props.class.name, name);
-			const handler = this.props.onAdd;
-			if (handler) {
-				handler();
+			if (this.props.onAdd) {
+				this.props.onAdd();
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -58,7 +56,7 @@ class VariableList extends Component {
 				defaultValue: variable.name,
 				required: true,
 			});
-			console.log(variable)
+			console.log(variable);
 			if (variable.type === "instance") {
 				await this.context.api.renameInstanceVariable(
 					this.props.class.name,
@@ -73,9 +71,8 @@ class VariableList extends Component {
 				);
 			}
 			variable.name = newName;
-			const handler = this.props.onRename;
-			if (handler) {
-				handler(variable, newName);
+			if (this.props.onRename) {
+				this.props.onRename(variable, newName);
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -98,9 +95,8 @@ class VariableList extends Component {
 					variable.name
 				);
 			}
-			const handler = this.props.onRemove;
-			if (handler) {
-				handler();
+			if (this.props.onRemove) {
+				this.props.onRemove();
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -116,9 +112,8 @@ class VariableList extends Component {
 				this.props.class.name,
 				variable.name
 			);
-			const handler = this.props.onMoveUp;
-			if (handler) {
-				handler(variable);
+			if (this.props.onMoveUp) {
+				this.props.onMoveUp(variable);
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -135,9 +130,8 @@ class VariableList extends Component {
 				variable.name,
 				target
 			);
-			const handler = this.props.onRemove;
-			if (handler) {
-				handler(variable);
+			if (this.props.onRemove) {
+				this.props.onRemove(variable);
 			}
 		} catch (error) {
 			this.context.reportError(error);

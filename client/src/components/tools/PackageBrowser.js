@@ -266,6 +266,49 @@ class PackageBrowser extends Component {
 		this.applySelections(selections);
 	};
 
+	packageCreated = async (pack) => {
+		await this.updatePackage(pack, true);
+		this.cache.packages[pack.name] = pack;
+		const packages = this.state.packages;
+		packages.push(pack);
+		packages.sort((a, b) => (a.name <= b.name ? -1 : 1));
+		this.setState({
+			packages: packages,
+			selectedPackage: pack,
+			selectedClass: null,
+			selectedCategory: null,
+			selectedMethod: null,
+			selectedSide: null,
+		});
+	};
+
+	packageRemoved = (pack) => {
+		delete this.cache.packages[pack.name];
+		const packages = this.state.packages;
+		const index = packages.indexOf(pack);
+		if (index > -1) {
+			packages.splice(index, 1);
+			const selected =
+				index - 1 >= 0
+					? packages[index - 1]
+					: index + 1 < packages.length
+					? packages[index + 1]
+					: null;
+			this.setState({
+				packages: packages,
+				selectedPackage: selected,
+				selectedClass: null,
+				selectedCategory: null,
+				selectedMethod: null,
+				selectedSide: null,
+			});
+		}
+	};
+
+	packageRenamed = (pack) => {
+		this.packageSelected(pack);
+	};
+
 	classSelected = async (species) => {
 		// this.context.updatePageLabel(this.props.id, species.name);
 		const selections = this.currentSelections();
@@ -483,6 +526,9 @@ class PackageBrowser extends Component {
 									packages={packages}
 									selected={selectedPackage}
 									onSelect={this.packageSelected}
+									onRemove={this.packageRemoved}
+									onRename={this.packageRenamed}
+									onCreate={this.packageCreated}
 								/>
 							</Paper>
 						</Grid>

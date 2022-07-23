@@ -12,10 +12,10 @@ class PackageList extends Component {
 				title: "New package",
 				required: true,
 			});
-			const pack = await this.context.api.createPackage(name);
-			const handler = this.props.onCreate;
-			if (handler) {
-				handler(pack);
+			await this.context.api.createPackage(name);
+			const pack = await this.context.api.getPackage(name);
+			if (this.props.onCreate) {
+				this.props.onCreate(pack);
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -34,10 +34,9 @@ class PackageList extends Component {
 			return;
 		}
 		try {
-			await this.context.api.deletePackage(pack.name);
-			const handler = this.props.onRemove;
-			if (handler) {
-				handler(pack);
+			await this.context.api.removePackage(pack.name);
+			if (this.props.onRemove) {
+				this.props.onRemove(pack);
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -56,9 +55,8 @@ class PackageList extends Component {
 			});
 			await this.context.api.renamePackage(pack.name, newName);
 			pack.name = newName;
-			const handler = this.props.onRename;
-			if (handler) {
-				handler(pack);
+			if (this.props.onRename) {
+				this.props.onRename(pack);
 			}
 		} catch (error) {
 			this.context.reportError(error);

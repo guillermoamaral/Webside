@@ -9,9 +9,8 @@ class CustomSnacks extends Component {
 	}
 
 	closeClicked = () => {
-		const handler = this.props.onClose;
-		if (handler) {
-			handler();
+		if (this.props.onClose) {
+			this.props.onClose();
 		} else {
 			this.setState({ open: false });
 		}

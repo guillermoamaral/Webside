@@ -48,9 +48,8 @@ class CodeBrowser extends Component {
 				definition
 			);
 			const species = await this.context.api.getClass(change.class);
-			const handler = this.props.onDefineClass;
-			if (handler) {
-				handler(species);
+			if (this.props.onDefineClass) {
+				this.props.onDefineClass(species);
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -72,9 +71,8 @@ class CodeBrowser extends Component {
 			});
 			await this.context.api.renameClass(target, newName);
 			this.props.class.name = newName;
-			const handler = this.props.onRenameClass;
-			if (handler) {
-				handler(this.props.class);
+			if (this.props.onRenameClass) {
+				this.props.onRenameClass(this.props.class);
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -88,9 +86,8 @@ class CodeBrowser extends Component {
 		try {
 			await this.context.api.commentClass(this.props.class.name, comment);
 			const species = await this.context.api.getClass(this.props.class.name);
-			const handler = this.props.onCommentClass;
-			if (handler) {
-				handler(species);
+			if (this.props.onCommentClass) {
+				this.props.onCommentClass(species);
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -117,9 +114,8 @@ class CodeBrowser extends Component {
 				classname,
 				change.selector
 			);
-			const handler = this.props.onCompileMethod;
-			if (handler) {
-				handler(compiled);
+			if (this.props.onCompileMethod) {
+				this.props.onCompileMethod(compiled);
 			}
 		} catch (error) {
 			this.handleCompilationError(error, source);
@@ -146,9 +142,8 @@ class CodeBrowser extends Component {
 							applied.selector
 						);
 					}
-					const handler = this.props.onCompileMethod;
-					if (handler) {
-						handler(method);
+					if (this.props.onCompileMethod) {
+						this.props.onCompileMethod(method);
 					}
 				} catch (error) {
 					this.handleCompilationError(

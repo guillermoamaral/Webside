@@ -91,9 +91,8 @@ ListboxComponent.propTypes = {
 
 class SearchList extends Component {
 	valueChanged(value) {
-		const handler = this.props.onChange;
-		if (handler) {
-			handler(value);
+		if (this.props.onChange) {
+			this.props.onChange(value);
 		}
 	}
 

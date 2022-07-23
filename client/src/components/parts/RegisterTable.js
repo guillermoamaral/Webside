@@ -6,9 +6,8 @@ class RegisterTable extends Component {
 	static contextType = IDEContext;
 
 	registerSelected = (frame) => {
-		const handler = this.props.onSelect;
-		if (handler) {
-			handler(frame);
+		if (this.props.onSelect) {
+			this.props.onSelect(frame);
 		}
 	};
 

@@ -13,9 +13,8 @@ class CategoryList extends Component {
 
 	categorySelected = (category) => {
 		const selected = category === this.all ? null : category;
-		const handler = this.props.onSelect;
-		if (handler) {
-			handler(selected);
+		if (this.props.onSelect) {
+			this.props.onSelect(selected);
 		}
 	};
 

@@ -369,10 +369,23 @@ class API {
 	}
 
 	// Change helpers...
-	async createPackage(name) {
+	async createPackage(packagename) {
 		const change = this.newChange("AddPackage");
-		change.name = name;
-		return await this.postChange(change, "create package " + name);
+		change.name = packagename;
+		return await this.postChange(change, "create package " + packagename);
+	}
+
+	async removePackage(packagename) {
+		const change = this.newChange("RemovePackage");
+		change.name = packagename;
+		return await this.postChange(change, "remove package " + packagename);
+	}
+
+	async renamePackage(packagename, newName) {
+		const change = this.newChange("RenamePackage");
+		change.name = packagename;
+		change.newName = newName;
+		return await this.postChange(change, "rename package " + packagename);
 	}
 
 	async defineClass(classname, packagename, definition) {

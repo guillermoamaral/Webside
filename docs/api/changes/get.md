@@ -40,15 +40,18 @@ And `type` can be one of the following:
 - `"RemoveClass"`
 - `"RenameClass"`
 - `"AddInstanceVariable"`
-- `"RenameInstanceVariable"`
 - `"RemoveInstanceVariable"`
+- `"RenameInstanceVariable"`
 - `"MoveUpInstanceVariable"`
 - `"MoveDownInstanceVariable"`
 - `"AddClassVariable"`
-- `"RenameClassVariable"`
 - `"RemoveClassVariable"`
+- `"RenameClassVariable"`
 - `"RenameCategory"`
 - `"RemoveCategory"`
+- `"AddPackage"`
+- `"RemovePackage"`
+- `"RenamePackage"`
 
 **Example:**: retrieve changes made by `guille`, `GET /changes?author=guille`.
 

@@ -22,9 +22,8 @@ class CustomTable extends Component {
 
 	rowSelected = (row) => {
 		this.setState({ selectedRow: row });
-		const handler = this.props.onSelect;
-		if (handler) {
-			handler(row);
+		if (this.props.onSelect) {
+			this.props.onSelect(row);
 		}
 	};
 

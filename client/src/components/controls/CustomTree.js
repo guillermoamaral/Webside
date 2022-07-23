@@ -117,9 +117,8 @@ class CustomTree extends Component {
 	itemSelected = (event, item) => {
 		event.preventDefault();
 		this.setState({ selectedItem: item });
-		const handler = this.props.onSelect;
-		if (handler) {
-			handler(item);
+		if (this.props.onSelect) {
+			this.props.onSelect(item);
 		}
 	};
 
@@ -137,9 +136,8 @@ class CustomTree extends Component {
 			expanded.push(item);
 		}
 		this.setState({ expandedItems: expanded });
-		const handler = this.props.onExpand;
-		if (handler) {
-			handler(item);
+		if (this.props.onExpand) {
+			this.props.onExpand(item);
 		}
 	};
 

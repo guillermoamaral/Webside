@@ -7,7 +7,7 @@ import { withDialog } from "../dialogs/index";
 class ClassTree extends Component {
 	static contextType = IDEContext;
 
-	newSubclass = async (superclass) => {
+	newClass = async (superclass) => {
 		if (!superclass) {
 			return;
 		}
@@ -25,9 +25,8 @@ class ClassTree extends Component {
 				" instanceVariableNames: '' classVariableNames: '' poolDictionaries: ''";
 			await this.context.api.defineClass(name, packagename, definition);
 			const species = await this.context.api.getClass(name);
-			const handler = this.props.onCreate;
-			if (handler) {
-				handler(species);
+			if (this.props.onCreate) {
+				this.props.onCreate(species);
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -47,9 +46,8 @@ class ClassTree extends Component {
 				return;
 			}
 			await this.context.api.removeClass(species.name);
-			const handler = this.props.onRemove;
-			if (handler) {
-				handler(species);
+			if (this.props.onRemove) {
+				this.props.onRemove(species);
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -68,9 +66,8 @@ class ClassTree extends Component {
 			});
 			await this.context.api.renameClass(species.name, newName);
 			species.name = newName;
-			const handler = this.props.onRename;
-			if (handler) {
-				handler(species);
+			if (this.props.onRename) {
+				this.props.onRename(species);
 			}
 		} catch (error) {
 			this.context.reportError(error);
@@ -109,7 +106,7 @@ class ClassTree extends Component {
 
 	menuOptions() {
 		return [
-			{ label: "New", action: this.newSubclass },
+			{ label: "New", action: this.newClass },
 			{ label: "Rename", action: this.renameClass },
 			{ label: "Remove", action: this.removeClass },
 			null,

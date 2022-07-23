@@ -15,9 +15,8 @@ class CustomGrid extends Component {
 
 	rowSelected = (event, row) => {
 		this.setState({ selectedRow: row });
-		const handler = this.props.onSelect;
-		if (handler) {
-			handler(row);
+		if (this.props.onSelect) {
+			this.props.onSelect(row);
 		}
 	};
 

@@ -4,21 +4,18 @@ import TabPanel from "./TabPanel";
 import TabLabel from "./TabLabel";
 
 class TabControl extends PureComponent {
-	
 	tabChanged = (event, index) => {
 		event.preventDefault();
-		const handler = this.props.onSelect;
-		if (handler) {
-			handler(this.props.pages[index]);
+		if (this.props.onSelect) {
+			this.props.onSelect(this.props.pages[index]);
 		}
 	};
 
 	closeTab = (event, index) => {
 		event.stopPropagation();
 		const page = this.props.pages[index];
-		const handler = this.props.onClose;
-		if (handler) {
-			handler(page);
+		if (this.props.onClose) {
+			this.props.onClose(page);
 		}
 	};
 

@@ -16,9 +16,8 @@ class Settings extends Component {
 		const { baseUri, developer } = this.state;
 		if (baseUri && baseUri !== "" && developer && developer !== "") {
 			const response = await axios.get(baseUri + "/dialect");
-			const handler = this.props.onAccept;
-			if (handler) {
-				handler(baseUri, response.data, developer);
+			if (this.props.onAccept) {
+				this.props.onAccept(baseUri, response.data, developer);
 			}
 		} else {
 			alert("You must complete the fields");

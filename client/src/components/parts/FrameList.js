@@ -6,9 +6,8 @@ class FrameList extends Component {
 	static contextType = IDEContext;
 
 	frameSelected = (frame) => {
-		const handler = this.props.onSelect;
-		if (handler) {
-			handler(frame);
+		if (this.props.onSelect) {
+			this.props.onSelect(frame);
 		}
 	};
 

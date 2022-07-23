@@ -237,9 +237,8 @@ class CodeEditor extends Component {
 	}
 
 	sourceChanged = (source) => {
-		const handler = this.props.onChange;
-		if (handler) {
-			handler(source);
+		if (this.props.onChange) {
+			this.props.onChange(source);
 		} else {
 			this.setState({
 				source: source,
@@ -250,9 +249,8 @@ class CodeEditor extends Component {
 	};
 
 	acceptClicked = () => {
-		const handler = this.props.onAccept;
-		if (handler) {
-			handler(this.state.source);
+		if (this.props.onAccept) {
+			this.props.onAccept(this.state.source);
 		}
 	};
 
@@ -353,9 +351,8 @@ class CodeEditor extends Component {
 	};
 
 	triggerOnEvaluate() {
-		const handler = this.props.onEvaluate;
-		if (handler) {
-			handler();
+		if (this.props.onEvaluate) {
+			this.props.onEvaluate();
 		}
 	}
 
@@ -435,9 +432,8 @@ class CodeEditor extends Component {
 		if (!target || target === "") {
 			return;
 		}
-		const handler = this.props.onRename;
-		if (handler) {
-			handler(target);
+		if (this.props.onRename) {
+			this.props.onRename(target);
 		}
 	};
 

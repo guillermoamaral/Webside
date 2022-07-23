@@ -31,6 +31,23 @@ class MethodBrowser extends Component {
 		}
 	}
 
+	methodRemoved = (method) => {
+		const methods = this.props.methods;
+		const index = methods.indexOf(method);
+		if (index > -1) {
+			methods.splice(index, 1);
+			const selected =
+				index - 1 >= 0
+					? methods[index - 1]
+					: index + 1 < methods.length
+					? methods[index + 1]
+					: null;
+			if (selected) {
+				this.methodSelected(selected);
+			}
+		}
+	};
+
 	methodSelected = async (method) => {
 		try {
 			const species = await this.context.api.getClass(method.class);
@@ -120,6 +137,7 @@ class MethodBrowser extends Component {
 							selected={selectedMethod}
 							methods={methods}
 							onSelect={this.methodSelected}
+							onRemove={this.methodRemoved}
 						/>
 					</Paper>
 				</Grid>
