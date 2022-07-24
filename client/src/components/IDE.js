@@ -399,13 +399,7 @@ class IDE extends Component {
 	};
 
 	browseMethod = (method) => {
-		var name = method.class;
-		var side = "instance";
-		if (name.endsWith(" class")) {
-			name = name.slice(0, name.length - 6);
-			side = "class";
-		}
-		this.openClassBrowser(name, side, method.selector);
+		this.openMethodBrowser([method]);
 	};
 
 	openClassBrowser = (classname, side, selector) => {

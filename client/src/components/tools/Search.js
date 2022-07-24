@@ -56,27 +56,40 @@ class Search extends Component {
 	};
 
 	searchClasses(text) {
-		return this.context.classNames
-			.filter((n) => {
-				return n.toLowerCase().includes(text);
-			})
-			.map((n) => {
-				return { title: n, type: "class", text: n };
-			});
+		try {
+			return this.context.classNames
+				.filter((n) => {
+					return n.toLowerCase().includes(text);
+				})
+				.map((n) => {
+					return { title: n, type: "class", text: n };
+				});
+		} catch (error) {
+			this.context.reportError(error);
+		}
 	}
 
 	async searchSelectors(text) {
-		const methods = await this.context.api.getMethodsMatching(text);
-		return methods.map((m) => {
-			return { title: m.class, type: "method", text: m.selector };
-		});
+		try {
+			const methods = await this.context.api.getMethodsMatching(text);
+			console.log(methods)
+			return methods.map((m) => {
+				return { title: m.class, type: "method", text: m.selector };
+			});
+		} catch (error) {
+			this.context.reportError(error);
+		}
 	}
 
 	async searchStringReferences(text) {
-		const methods = await this.context.api.getStringReferences(text);
-		return methods.map((m) => {
-			return { title: m.class, type: "method", text: m.selector };
-		});
+		try {
+			const methods = await this.context.api.getStringReferences(text);
+			return methods.map((m) => {
+				return { title: m.class, type: "method", text: m.selector };
+			});
+		} catch (error) {
+			this.context.reportError(error);
+		}
 	}
 
 	goToResult = (r) => {
