@@ -341,11 +341,29 @@ class IDE extends Component {
 		this.addPage("Search", <SearchIcon />, search);
 	};
 
+	migratePackage = (packagename) => {
+		const migrator = (
+			<CodeMigrator styles={this.props.styles} package={packagename} />
+		);
+		this.addPage("Migrate: " + packagename, <MigratorIcon />, migrator);
+	};
+
 	migrateClass = (classname) => {
-		const search = (
+		const migrator = (
 			<CodeMigrator styles={this.props.styles} class={classname} />
 		);
-		this.addPage("Migrator", <MigratorIcon />, search);
+		this.addPage("Migrate: " + classname, <MigratorIcon />, migrator);
+	};
+
+	migrateMethod = (method) => {
+		const migrator = (
+			<CodeMigrator styles={this.props.styles} method={method} />
+		);
+		this.addPage(
+			"Migrate: " + method.class + ">>" + method.selector,
+			<MigratorIcon />,
+			migrator
+		);
 	};
 
 	toggleShowTranscript = () => {
@@ -544,6 +562,14 @@ class IDE extends Component {
 					acceptLabel="Save"
 					onAccept={(baseUri, dialect, developer) => {
 						this.removeAllPages();
+						this.props.history.push(
+							"/ide?baseUri=" +
+								baseUri +
+								"&dialect=" +
+								dialect +
+								"&developer=" +
+								developer
+						);
 						this.updateSettings(baseUri, dialect, developer);
 					}}
 				/>
@@ -839,7 +865,9 @@ class IDE extends Component {
 			inspectObject: this.openInspector,
 			reportError: this.reportError,
 			updatePageLabel: this.updatePageLabel,
+			migratePackage: this.migratePackage,
 			migrateClass: this.migrateClass,
+			migrateMethod: this.migrateMethod,
 		};
 		const styles = this.props.styles;
 		return (

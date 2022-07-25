@@ -69,6 +69,12 @@ class PackageList extends Component {
 		}
 	};
 
+	migratePackage = (pack) => {
+		if (pack) {
+			this.context.migratePackage(pack.name);
+		}
+	};
+
 	menuOptions() {
 		return [
 			{ label: "New", action: this.createPackage },
@@ -76,6 +82,8 @@ class PackageList extends Component {
 			{ label: "Remove", action: this.removePackage },
 			null,
 			{ label: "Test", action: this.runTests },
+			null,
+			{ label: "Migrate", action: this.migratePackage },
 		];
 	}
 

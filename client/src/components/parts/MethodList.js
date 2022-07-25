@@ -126,6 +126,12 @@ class MethodList extends Component {
 		}
 	};
 
+	migrateMethod = (method) => {
+		if (method) {
+			this.context.migrateMethod(method);
+		}
+	};
+
 	categoryOptions() {
 		const categories = this.props.categories || [];
 		const options = categories.map((c) => {
@@ -165,6 +171,8 @@ class MethodList extends Component {
 				{ label: "Class references", action: this.browseClassReferences },
 				null,
 				{ label: "Test", action: this.runTest },
+				null,
+				{ label: "Migrate", action: this.migrateMethod },
 			]
 		);
 		return options;

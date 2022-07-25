@@ -19,8 +19,13 @@ class CodeMigrator extends Component {
 		const packages = this.props.package ? [this.props.package] : [];
 		const classes = this.props.class ? [this.props.class] : [];
 		const methods = this.props.method ? [this.props.method] : [];
+		var sourceLabel = this.props.package || this.props.class || "";
+		if (this.props.method) {
+			sourceLabel = this.props.method.class + ">>" + this.props.method.selector;
+		}
 		this.state = {
 			sources: { packages: packages, classes: classes, methods: methods },
+			sourceLabel: sourceLabel,
 			targetURL: "",
 			changes: [],
 			generating: false,
@@ -35,32 +40,59 @@ class CodeMigrator extends Component {
 		const changes = [];
 		this.setState({ changes: [], generating: true });
 		await Promise.all(
-			sources.classes.map(async (name) => {
-				const species = await this.context.api.getClass(name);
-				change = {
-					type: "AddClass",
-					author: this.context.api.author,
-					class: species.name,
-					label: species.name,
-					package: species.package,
-					definition: species.definition,
-				};
-				changes.push(change);
-				const methods = await this.context.api.getMethods(name, true);
-				methods.forEach((m) => {
-					change = {
-						type: "AddMethod",
-						author: this.context.api.author,
-						class: m.class,
-						label: m.selector,
-						package: m.package,
-						sourceCode: m.source,
-					};
-					changes.push(change);
-				});
+			sources.packages.map(async (name) => {
+				const pack = await this.context.api.getPackage(name);
+				await Promise.all(
+					pack.classes.map(async (classname) => {
+						const species = await this.context.api.getClass(classname);
+						const chs = await this.classChanges(species);
+						changes.push(...chs);
+					})
+				);
 			})
 		);
+		await Promise.all(
+			sources.classes.map(async (name) => {
+				const species = await this.context.api.getClass(name);
+				const chs = await this.classChanges(species);
+				changes.push(...chs);
+			})
+		);
+		changes.push(...this.methodChanges(sources.methods));
 		this.setState({ changes: changes, generating: false });
+	};
+
+	classChanges = async (species) => {
+		const changes = [];
+		const change = {
+			type: "AddClass",
+			author: this.context.api.author,
+			class: species.name,
+			label: species.name,
+			package: species.package,
+			definition: species.definition,
+		};
+		changes.push(change);
+		const methods = await this.context.api.getMethods(species.name, true);
+		const chs = this.methodChanges(methods);
+		changes.push(...chs);
+		return changes;
+	};
+
+	methodChanges = (methods) => {
+		const changes = [];
+		methods.forEach((m) => {
+			const change = {
+				type: "AddMethod",
+				author: this.context.api.author,
+				class: m.class,
+				label: m.class + ">>" + m.selector,
+				package: m.package,
+				sourceCode: m.source,
+			};
+			changes.push(change);
+		});
+		return changes;
 	};
 
 	applyChanges = async () => {
@@ -85,10 +117,14 @@ class CodeMigrator extends Component {
 	};
 
 	render() {
-		const { targetURL, changes, selectedChange, generating, migrating } =
-			this.state;
-		const source =
-			this.props.package || this.props.class || this.props.method || "";
+		const {
+			targetURL,
+			changes,
+			selectedChange,
+			generating,
+			migrating,
+			sourceLabel,
+		} = this.state;
 		const error =
 			selectedChange && selectedChange.error
 				? selectedChange.error.description
@@ -97,7 +133,7 @@ class CodeMigrator extends Component {
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
 					<Typography variant="h6" color="primary">
-						Migrate: {source}
+						Migrate: {sourceLabel}
 					</Typography>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
