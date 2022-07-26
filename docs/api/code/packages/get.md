@@ -7,9 +7,9 @@ Retrieve all packages in the system.
 **Method**: `GET`
 
 **Query Options**
-| Option | Type    | Description                    |
+| Option | Type | Description |
 | :----: | ------- | ------------------------------ |
-| names  | boolean | true to get only package names |
+| names | boolean | true to get only package names |
 
 ## Success Responses
 
@@ -21,12 +21,9 @@ Retrieve all packages in the system.
 {
 	"name": "string",
 	"classes": ["string"],
-	"methods": [
-		{
-			"class": "string",
-			"selector": "string"
-		}
-	]
+	"methods": {
+		"classname": ["selector"]
+	}
 }
 ```
 
