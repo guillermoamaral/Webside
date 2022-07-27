@@ -42,12 +42,7 @@ class ObjectPresenter extends Component {
 					/>
 				)}
 				{custom && presentation.type === "html" && (
-					<div
-						styles={styles}
-						dangerouslySetInnerHTML={{
-							__html: presentation.code,
-						}}
-					/>
+					<iframe styles={styles} srcdoc={presentation.code} />
 				)}
 				{!custom && (
 					<CodeEditor

@@ -345,6 +345,9 @@ class ClassBrowser extends Component {
 	};
 
 	isInSubclasses(rootname, classname) {
+		if (rootname === classname) {
+			return true;
+		}
 		const root = this.cache[rootname];
 		if (!root || !root.subclasses) {
 			return false;
