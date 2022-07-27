@@ -6,6 +6,7 @@ import {
 	Button,
 	TextField,
 	Typography,
+	LinearProgress,
 } from "@material-ui/core";
 import { IDEContext } from "../IDEContext";
 import ChangesTable from "../parts/ChangesTable";
@@ -173,9 +174,14 @@ class CodeMigrator extends Component {
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
-					<Typography variant="h6" color="primary">
-						Migrate: {this.sourceLabel()}
+					<Typography variant="h6" color="default">
+						Source: {this.sourceLabel()}
 					</Typography>
+				</Grid>
+				<Grid item xs={12} md={12} lg={12}>
+					{(generating || migrating) && (
+						<LinearProgress variant="indeterminate" />
+					)}
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<TextField

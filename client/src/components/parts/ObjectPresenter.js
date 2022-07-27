@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Paper } from "@material-ui/core";
 import { IDEContext } from "../IDEContext";
-import CustomTable from "../controls/CustomTable";
+import PaginatedTable from "../controls/PaginatedTable";
 import CodeEditor from "../parts/CodeEditor";
 
 class ObjectPresenter extends Component {
@@ -35,14 +35,28 @@ class ObjectPresenter extends Component {
 		return (
 			<Paper variant="outlined" style={{ height: "100%" }}>
 				{custom && presentation.type === "table" && (
-					<CustomTable
+					<PaginatedTable
 						styles={styles}
 						columns={presentation.columns}
 						rows={presentation.rows}
+						rowsPerPage={10}
 					/>
 				)}
 				{custom && presentation.type === "html" && (
-					<iframe styles={styles} srcdoc={presentation.code} />
+					<iframe
+						styles={styles}
+						srcdoc={presentation.code}
+						height="100%"
+						width="100%"
+					/>
+					// <iframe
+					// 	src="http://example.com"
+					// 	name="test"
+					// 	height="100%"
+					// 	width="100%"
+					// >
+					// 	You need a Frames Capable browser to view this content.
+					// </iframe>
 				)}
 				{!custom && (
 					<CodeEditor
