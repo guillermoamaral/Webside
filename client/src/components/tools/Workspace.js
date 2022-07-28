@@ -36,6 +36,7 @@ class Workspace extends Component {
 				styles={this.props.styles}
 				root={object}
 				showWorkspace={false}
+				embedded={true}
 			/>
 		);
 		const inspectors = this.state.inspectors;
@@ -82,15 +83,21 @@ class Workspace extends Component {
 		}
 	};
 
+	evaluationContext() {
+		return {
+			workspace: this.props.id,
+		};
+	}
+
 	render() {
 		const { expression, inspectors, evaluating } = this.state;
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={8} lg={8}>
 					<Grid item xs={12} md={12} lg={12}>
-						<Paper variant="outlined" style={{minHeight: 200}}>
+						<Paper variant="outlined" style={{ minHeight: 200 }}>
 							<CodeEditor
-								context={{ workspace: this.props.id }}
+								context={this.evaluationContext()}
 								styles={this.props.styles}
 								lineNumbers={false}
 								source={expression}

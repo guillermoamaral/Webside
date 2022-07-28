@@ -129,10 +129,14 @@ class Inspector extends Component {
 		this.setState({ selectedObject: selected });
 	};
 
+	evaluationContext() {
+		return { object: this.props.root.id };
+	}
+
 	render() {
 		const { objectTree, selectedObject } = this.state;
 		const { root, styles, showWorkspace } = this.props;
-		const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
+		const minHeight = this.props.embedded ? 200 : 400;
 		const path = selectedObject ? selectedObject.path : [];
 		const subpaths = this.subpaths(path);
 		return (
@@ -179,7 +183,7 @@ class Inspector extends Component {
 					</Box>
 				</Grid>
 				<Grid item xs={12} md={4} lg={4}>
-					<Paper className={fixedHeightPaper} variant="outlined">
+					<Paper variant="outlined" style={{ minHeight: minHeight }}>
 						<ObjectTree
 							roots={objectTree}
 							selected={selectedObject}
@@ -202,7 +206,7 @@ class Inspector extends Component {
 							style={{ minHeight: 100, height: "100%" }}
 						>
 							<CodeEditor
-								context={{ object: root.id }}
+								context={this.evaluationContext()}
 								styles={styles}
 								lineNumbers={false}
 								onEvaluate={this.expressionEvaluated}

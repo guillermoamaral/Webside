@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Paper } from "@material-ui/core";
 import { IDEContext } from "../IDEContext";
+import CustomTable from "../controls/CustomTable";
 import PaginatedTable from "../controls/PaginatedTable";
 import CodeEditor from "../parts/CodeEditor";
 
@@ -28,20 +29,35 @@ class ObjectPresenter extends Component {
 		return null;
 	}
 
+	evaluationContext() {
+		return { object: this.props.root.id };
+	}
+
 	render() {
 		const custom = this.state.custom;
-		const { root, object, styles } = this.props;
+		const { object, styles } = this.props;
 		const presentation = object ? object.presentation : null;
 		return (
 			<Paper variant="outlined" style={{ height: "100%" }}>
-				{custom && presentation.type === "table" && (
-					<PaginatedTable
-						styles={styles}
-						columns={presentation.columns}
-						rows={presentation.rows}
-						rowsPerPage={10}
-					/>
-				)}
+				{custom &&
+					presentation.type === "table" &&
+					presentation.rows.length > 100 && (
+						<PaginatedTable
+							styles={styles}
+							columns={presentation.columns}
+							rows={presentation.rows}
+							rowsPerPage={20}
+						/>
+					)}
+				{custom &&
+					presentation.type === "table" &&
+					presentation.rows.length <= 100 && (
+						<CustomTable
+							styles={styles}
+							columns={presentation.columns}
+							rows={presentation.rows}
+						/>
+					)}
 				{custom && presentation.type === "html" && (
 					<iframe
 						styles={styles}
@@ -60,7 +76,7 @@ class ObjectPresenter extends Component {
 				)}
 				{!custom && (
 					<CodeEditor
-						context={{ object: root.id }}
+						context={this.evaluationContext()}
 						styles={styles}
 						lineNumbers={false}
 						source={!object ? "" : object.printString}

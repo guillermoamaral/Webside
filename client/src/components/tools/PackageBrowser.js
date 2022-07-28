@@ -480,6 +480,11 @@ class PackageBrowser extends Component {
 		this.applySelections(selections);
 	};
 
+	evalulationContext() {
+		const species = this.state.selectedClass;
+		return species ? { class: species.name } : {};
+	}
+
 	render() {
 		const {
 			packages,
@@ -576,7 +581,7 @@ class PackageBrowser extends Component {
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<CodeBrowser
-						context={{ class: selectedClass ? selectedClass.name : null }}
+						context={this.evalulationContext()}
 						styles={styles}
 						class={selectedClass}
 						method={selectedMethod}

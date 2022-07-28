@@ -211,6 +211,16 @@ class Debugger extends PureComponent {
 		this.context.messageChannel.sendDebuggerEvent(event, this.props.id);
 	}
 
+	evaluationContext() {
+		const frame = this.state.selectedFrame;
+		return frame
+			? {
+					debugger: this.props.id,
+					frame: frame.index,
+			  }
+			: {};
+	}
+
 	render() {
 		const { frames, selectedFrame, selectedBinding } = this.state;
 		const styles = this.props.styles;
@@ -327,10 +337,7 @@ class Debugger extends PureComponent {
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<CodeBrowser
-						context={{
-							debugger: this.props.id,
-							frame: selectedFrame ? selectedFrame.index : null,
-						}}
+						context={this.evaluationContext()}
 						styles={styles}
 						class={selectedFrame ? selectedFrame.class : null}
 						method={selectedFrame ? selectedFrame.method : null}

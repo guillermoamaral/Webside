@@ -19,6 +19,11 @@ class ChangesBrowser extends Component {
 		this.setState({ selectedChange: change });
 	};
 
+	evaluationContext() {
+		const change = this.state.selectedChange;
+		return change && change.class ? { class: change.class } : {};
+	}
+
 	render() {
 		const styles = this.props.styles;
 		const change = this.state.selectedChange;
@@ -36,13 +41,13 @@ class ChangesBrowser extends Component {
 				<Grid item xs={12} md={12} lg={12}>
 					<Paper variant="outlined">
 						{/* <CodeMerge
-							context={{ class: change ? change.class : null }}
+							context={this.evaluationContext()}
 							styles={this.props.styles}
 							leftCode={change ? change.sourceCode : ""}
 							rightCode={change ? change.currentSourceCode : ""}
 						/> */}
 						<CodeEditor
-							context={{ class: change ? change.class : null }}
+							context={this.evaluationContext()}
 							styles={this.props.styles}
 							lineNumbers
 							source={change ? change.sourceCode : ""}

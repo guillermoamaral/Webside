@@ -139,6 +139,16 @@ class NativeDebugger extends Component {
 		return color;
 	}
 
+	evaluationContext() {
+		const frame = this.state.selectedFrame;
+		return frame
+			? {
+					debugger: this.props.id,
+					frame: frame.index,
+			  }
+			: {};
+	}
+
 	render() {
 		const styles = this.props.styles;
 		const { running, frames, selectedFrame, registers, spaces } = this.state;
@@ -223,10 +233,7 @@ class NativeDebugger extends Component {
 				</Grid>
 				<Grid item xs={7} md={7} lg={7}>
 					<CodeBrowser
-						context={{
-							debugger: this.props.id,
-							frame: selectedFrame ? selectedFrame.index : null,
-						}}
+						context={this.evaluationContext()}
 						styles={styles}
 						class={selectedFrame ? selectedFrame.class : null}
 						method={selectedFrame ? selectedFrame.method : null}

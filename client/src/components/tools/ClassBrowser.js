@@ -527,6 +527,15 @@ class ClassBrowser extends Component {
 		this.applySelections(selections);
 	};
 
+	evaluationContext() {
+		const species = this.currentClass();
+		return species
+			? {
+					class: species.name,
+			  }
+			: {};
+	}
+
 	render() {
 		console.log("rendering browser");
 		const {
@@ -665,9 +674,7 @@ class ClassBrowser extends Component {
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<CodeBrowser
-						context={{
-							class: this.currentClass() ? this.currentClass().name : null,
-						}}
+						context={this.evaluationContext()}
 						styles={styles}
 						class={this.currentClass()}
 						method={selectedMethod}
