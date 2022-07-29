@@ -27,7 +27,7 @@ class VariableList extends Component {
 	variableSelected = (variable) => {
 		const selected = variable.type === "separator" ? null : variable;
 		if (this.props.onSelect) {
-			this.props.onSelect(this.props.onSelect);
+			this.props.onSelect(selected);
 		}
 	};
 
