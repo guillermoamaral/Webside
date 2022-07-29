@@ -28,9 +28,8 @@ class RegisterTable extends Component {
 		}
 	};
 
-	render() {
-		const styles = this.props.styles;
-		const columns = [
+	registerColums() {
+		return [
 			{ field: "name", label: "Register", align: "left" },
 			{
 				field: (r) => {
@@ -41,10 +40,14 @@ class RegisterTable extends Component {
 			},
 			{ field: "object", label: "Object", align: "left" },
 		];
+	}
+
+	render() {
+		const styles = this.props.styles;
 		return (
 			<CustomTable
 				styles={styles}
-				columns={columns}
+				columns={this.registerColumns()}
 				rows={this.props.registers}
 				onSelect={this.registerSelected}
 				menuOptions={this.menuOptions()}

@@ -6,9 +6,23 @@ import {
 	TableBody,
 	TableRow,
 	TableCell,
+	Box,
+	IconButton,
 } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
 import PopupMenu from "./PopupMenu";
 import Scrollable from "./Scrollable";
+
+const styles = () => ({
+	row: {
+		"& .button": {
+			display: "none",
+		},
+		"&:hover .button": {
+			display: "block",
+		},
+	},
+});
 
 class CustomTable extends Component {
 	constructor(props) {
@@ -88,8 +102,48 @@ class CustomTable extends Component {
 		}
 	};
 
+	columns() {
+		const columns = [...this.props.columns];
+		const extra = {
+			field: "actions",
+			label: "",
+			align: "center",
+		};
+		columns.push(extra);
+		return columns;
+	}
+
+	rowActionButtons(row, index) {
+		const actions = this.props.rowActions || [];
+		return (
+			<Box display="flex" alignItems="center">
+				{actions.map((action) => {
+					const visible =
+						(typeof action.visible == "boolean" && action.visible) ||
+						(typeof action.visible == "function" && action.visible(row));
+					return (
+						visible && (
+							<IconButton
+								className="button"
+								key={action.label + index}
+								color="inherit"
+								size="small"
+								onClick={(event) => {
+									action.handler(row);
+								}}
+							>
+								{action.icon}
+							</IconButton>
+						)
+					);
+				})}
+			</Box>
+		);
+	}
+
 	render() {
-		const columns = this.props.columns;
+		const { selectedRow, menuOpen, menuPosition } = this.state;
+		const columns = this.columns();
 		const rows = this.props.rows || [];
 		return (
 			<Scrollable>
@@ -115,9 +169,10 @@ class CustomTable extends Component {
 								return (
 									<TableRow
 										hover
+										className={this.props.classes.row}
 										tabIndex={-1}
 										key={index}
-										selected={row === this.state.selectedRow}
+										selected={row === selectedRow}
 										onClick={(event) => this.rowSelected(row)}
 										onContextMenu={this.openMenu}
 									>
@@ -128,7 +183,9 @@ class CustomTable extends Component {
 													align={column.align}
 													style={{ color: row.color || "default" }}
 												>
-													{this.getCellValue(row, column)}
+													{column.field === "actions"
+														? this.rowActionButtons(row, index)
+														: this.getCellValue(row, column)}
 												</TableCell>
 											);
 										})}
@@ -140,8 +197,8 @@ class CustomTable extends Component {
 				</TableContainer>
 				<PopupMenu
 					options={this.props.menuOptions}
-					open={this.state.menuOpen}
-					position={this.state.menuPosition}
+					open={menuOpen}
+					position={menuPosition}
 					onOptionClick={this.menuOptionClicked}
 					onOptionEnable={this.getMenuOptionEnabled}
 					onClose={this.closeMenu}
@@ -151,4 +208,4 @@ class CustomTable extends Component {
 	}
 }
 
-export default CustomTable;
+export default withStyles(styles)(CustomTable);

@@ -300,9 +300,12 @@ class FastCustomList extends Component {
 	};
 
 	render() {
+		const { filterEnabled, filterText, filteredItems, menuOpen, menuPosition } =
+			this.state;
+		const count = filteredItems ? filteredItems.length : 0;
 		return (
 			<Box style={{ height: "100%" }}>
-				{this.state.filterEnabled && (
+				{filterEnabled && (
 					<TextField
 						id="filter"
 						variant="standard"
@@ -313,7 +316,7 @@ class FastCustomList extends Component {
 						fullWidth
 						autoFocus
 						name="filter"
-						value={this.state.filterText}
+						value={filterText}
 						onKeyDown={(event) => {
 							if (event.key === "Escape") {
 								this.clearFilter();
@@ -329,7 +332,7 @@ class FastCustomList extends Component {
 							height={height}
 							width={width}
 							itemSize={30}
-							itemCount={this.state.filteredItems.length}
+							itemCount={count}
 							overscanCount={5}
 							onKeyDown={this.keyDown}
 							style={{ paddingTop: 0, paddingBottom: 0 }}
@@ -351,8 +354,8 @@ class FastCustomList extends Component {
 				</AutoSizer>
 				<PopupMenu
 					options={this.props.menuOptions}
-					open={this.state.menuOpen}
-					position={this.state.menuPosition}
+					open={menuOpen}
+					position={menuPosition}
 					onOptionClick={this.menuOptionClicked}
 					onOptionEnable={this.getMenuOptionEnabled}
 					onClose={this.closeMenu}

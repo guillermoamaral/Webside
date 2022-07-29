@@ -267,9 +267,9 @@ class ResourceBrowser extends Component {
 		];
 	}
 
-	resourceColumns(type) {
+	resourceColumns() {
 		var columns;
-		switch (type) {
+		switch (this.state.selectedType) {
 			case "Objects":
 				columns = this.objectColumns();
 				break;
@@ -292,7 +292,6 @@ class ResourceBrowser extends Component {
 
 	render() {
 		const { selectedType, resources } = this.state;
-		const columns = this.resourceColumns(selectedType);
 		const styles = this.props.styles;
 		return (
 			<Grid container spacing={1} style={{ height: "100%" }}>
@@ -337,7 +336,7 @@ class ResourceBrowser extends Component {
 								<Paper variant="outlined" style={{ height: "100%" }}>
 									<CustomTable
 										styles={styles}
-										columns={columns}
+										columns={this.resourceColumns()}
 										rows={resources}
 										onSelect={this.resourceSelected}
 										menuOptions={this.menuOptions()}

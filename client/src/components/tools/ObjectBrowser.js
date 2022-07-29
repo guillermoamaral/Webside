@@ -7,7 +7,7 @@ import clsx from "clsx";
 
 class ObjectBrowser extends Component {
 	static contextType = IDEContext;
-	
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -31,10 +31,8 @@ class ObjectBrowser extends Component {
 		return [{ label: "Unpin", action: this.unpinObject }];
 	}
 
-	render() {
-		const selectedObject = this.state.selectedObject;
-		const rows = this.props.objects;
-		const columns = [
+	objectColums() {
+		return [
 			{ field: "id", label: "ID", align: "left" },
 			{
 				field: "printString",
@@ -43,6 +41,11 @@ class ObjectBrowser extends Component {
 				align: "left",
 			},
 		];
+	}
+
+	render() {
+		const selectedObject = this.state.selectedObject;
+		const rows = this.props.objects;
 		const styles = this.props.styles;
 		const ow = selectedObject ? 8 : 12;
 		const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
@@ -52,7 +55,7 @@ class ObjectBrowser extends Component {
 					<Paper className={fixedHeightPaper} variant="outlined">
 						<CustomTable
 							styles={styles}
-							columns={columns}
+							columns={this.objectColumns()}
 							rows={rows}
 							onSelect={this.objectSelected}
 							menuOptions={this.menuOptions()}

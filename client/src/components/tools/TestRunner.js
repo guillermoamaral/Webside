@@ -22,6 +22,7 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
+import DebuggerIcon from "../icons/DebuggerIcon";
 
 ChartJS.register(
 	CategoryScale,
@@ -226,6 +227,24 @@ class TestRunner extends Component {
 		return test && (test.type === "failed" || test.type === "errors");
 	};
 
+	testColumns() {
+		return [
+			{ field: "selector", label: "Selector", minWidth: 100, align: "left" },
+			{ field: "time", label: "Time (ms)", minWidth: 100, align: "right" },
+		];
+	}
+
+	testActions() {
+		return [
+			{
+				label: "Debug",
+				icon: <DebuggerIcon fontSize="small" />,
+				handler: this.debugTest,
+				visible: this.canDebugTest,
+			},
+		];
+	}
+
 	render() {
 		const styles = this.props.styles;
 		const { status, results, filterType } = this.state;
@@ -240,10 +259,6 @@ class TestRunner extends Component {
 				grouped[c2].summary.failed || 0 + grouped[c2].summary.error || 0;
 			return n1 > n2 ? -1 : n1 < n2 ? 1 : 0;
 		});
-		const testColumns = [
-			{ field: "selector", label: "Selector", minWidth: 100, align: "left" },
-			{ field: "time", label: "Time (ms)", minWidth: 100, align: "right" },
-		];
 		return (
 			<div>
 				<Grid
@@ -399,9 +414,10 @@ class TestRunner extends Component {
 											>
 												<CustomTable
 													styles={styles}
-													columns={testColumns}
+													columns={this.testColumns()}
 													rows={classTests}
 													menuOptions={this.menuOptions()}
+													rowActions={this.testActions()}
 												></CustomTable>
 											</Grid>
 										</Grid>

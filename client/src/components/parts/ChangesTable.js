@@ -29,10 +29,8 @@ class ChangesTable extends Component {
 		return [{ label: "Browse", action: this.browseClass }];
 	}
 
-	render() {
-		const styles = this.props.styles;
-		const rows = this.props.changes;
-		const columns = [
+	changeColums() {
+		return [
 			{ field: "type", label: "Type", minWidth: 150, align: "left" },
 			{ field: "label", label: "Target", minWidth: 250, align: "left" },
 			{ field: "package", label: "Package", minWidth: 150, align: "left" },
@@ -47,11 +45,16 @@ class ChangesTable extends Component {
 				},
 			},
 		];
+	}
+
+	render() {
+		const styles = this.props.styles;
+		const rows = this.props.changes;
 		return (
 			<CustomTable
 				style={{ height: "100%" }}
 				styles={styles}
-				columns={columns}
+				columns={this.changeColums()}
 				rows={rows}
 				onSelect={this.changeSelected}
 				menuOptions={this.menuOptions()}
