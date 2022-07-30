@@ -183,7 +183,10 @@ class Inspector extends Component {
 					</Box>
 				</Grid>
 				<Grid item xs={12} md={4} lg={4}>
-					<Paper variant="outlined" style={{ minHeight: minHeight }}>
+					<Paper
+						variant="outlined"
+						style={{ height: "100%", minHeight: minHeight }}
+					>
 						<ObjectTree
 							roots={objectTree}
 							selected={selectedObject}

@@ -640,7 +640,7 @@ class API {
 	}
 
 	async unpinAllObjects() {
-		return await this.delete("/objects/", "unpin all objects");
+		return await this.delete("/objects", "unpin all objects");
 	}
 
 	async getObjectNamedSlots(id, path) {

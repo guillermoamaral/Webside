@@ -122,19 +122,21 @@ class CustomTable extends Component {
 						(typeof action.visible == "boolean" && action.visible) ||
 						(typeof action.visible == "function" && action.visible(row));
 					return (
-						visible && (
-							<IconButton
-								className="button"
-								key={action.label + index}
-								color="inherit"
-								size="small"
-								onClick={(event) => {
-									action.handler(row);
-								}}
-							>
-								{action.icon}
-							</IconButton>
-						)
+						<Box style={{ minWidth: 10 }}>
+							{visible && (
+								<IconButton
+									className="button"
+									key={action.label + index}
+									color="inherit"
+									size="small"
+									onClick={(event) => {
+										action.handler(row);
+									}}
+								>
+									{action.icon}
+								</IconButton>
+							)}
+						</Box>
 					);
 				})}
 			</Box>
