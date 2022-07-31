@@ -368,6 +368,14 @@ class API {
 		return applied;
 	}
 
+	async downloadChangeset(changes) {
+		return await this.post("/changesets/download", changes, "download changeset");
+	}
+
+	async uploadChangeset(changes) {
+		return await this.post("/changesets/upload", changes, "upload changeset");
+	}
+
 	// Change helpers...
 	async createPackage(packagename) {
 		const change = this.newChange("AddPackage");

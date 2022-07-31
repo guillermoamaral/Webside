@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { Grid, Paper } from "@material-ui/core";
+import { Grid, Paper, Box, IconButton } from "@material-ui/core";
 //import CodeMerge from "../parts/CodeMerge";
 import CodeEditor from "../parts/CodeEditor";
 import { IDEContext } from "../IDEContext";
 import ChangesTable from "../parts/ChangesTable";
+import DownloadIcon from "@material-ui/icons/GetApp";
 
 class ChangesBrowser extends Component {
 	static contextType = IDEContext;
@@ -24,11 +25,31 @@ class ChangesBrowser extends Component {
 		return change && change.class ? { class: change.class } : {};
 	}
 
+	download = async (event) => {
+		event.preventDefault();
+		const ch = await this.context.api.downloadChangeset(this.props.changes);
+		const blob = new Blob([ch]);
+		const url = window.URL.createObjectURL(blob);
+		const link = document.createElement("a");
+		link.href = url;
+		link.setAttribute("download", "changes.ch");
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	};
+
 	render() {
 		const styles = this.props.styles;
 		const change = this.state.selectedChange;
 		return (
 			<Grid container spacing={1}>
+				<Grid item xs={12} md={12} lg={12}>
+					<Box display="flex" justifyContent="flex-end">
+						<IconButton color="inherit" onClick={this.download}>
+							<DownloadIcon fontSize="small" />
+						</IconButton>
+					</Box>
+				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<Paper variant="outlined" style={{ height: 500 }}>
 						<ChangesTable

@@ -81,6 +81,8 @@ class CodeMigrator extends Component {
 					pack.classes.map(async (classname) => {
 						const species = await this.context.api.getClass(classname);
 						classes.push(species);
+						const meta = await this.context.api.getClass(species.class);
+						classes.push(meta);
 					})
 				);
 			})
@@ -89,6 +91,8 @@ class CodeMigrator extends Component {
 			this.state.sources.classes.map(async (name) => {
 				const species = await this.context.api.getClass(name);
 				classes.push(species);
+				const meta = await this.context.api.getClass(species.class);
+				classes.push(meta);
 			})
 		);
 		return classes;
@@ -174,9 +178,7 @@ class CodeMigrator extends Component {
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
-					<Typography variant="h6" color="default">
-						Source: {this.sourceLabel()}
-					</Typography>
+					<Typography variant="h6">Source: {this.sourceLabel()}</Typography>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					{(generating || migrating) && (
