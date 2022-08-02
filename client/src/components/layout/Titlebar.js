@@ -12,14 +12,39 @@ import {
 import clsx from "clsx";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
+import { IDEContext } from "../IDEContext";
 
 class Titlebar extends Component {
+	static contextType = IDEContext;
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			searchValue: "",
+		};
+	}
+
+	imageFor(dialect) {
+		return dialect === "VA Smalltalk" ? "vast.png" : dialect + ".png";
+	}
+
+	search = async () => {
+		const value = this.state.searchValue;
+		if (value && value.length > 0) {
+			try {
+				await this.context.api.getClass(value);
+				this.context.browseClass(value);
+			} catch (error) {}
+		}
+	};
+
 	render() {
 		const { dialect, baseUri, developer } = this.props;
 		let logo;
+		let png = this.imageFor(dialect);
 		if (dialect) {
 			try {
-				logo = require("../../resources/" + dialect + ".png");
+				logo = require("../../resources/" + png);
 			} catch (error) {}
 		}
 		const styles = this.props.styles;
@@ -75,6 +100,14 @@ class Titlebar extends Component {
 								input: styles.globalSearchInputInput,
 							}}
 							inputProps={{ "aria-label": "search" }}
+							onChange={(event) => {
+								this.setState({ searchValue: event.target.value });
+							}}
+							onKeyPress={(event) => {
+								if (event.key === "Enter") {
+									this.search();
+								}
+							}}
 						/>
 					</div>
 					<Box flexGrow={1} />

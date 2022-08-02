@@ -372,8 +372,8 @@ class API {
 		return await this.post("/changesets/download", changes, "download changeset");
 	}
 
-	async uploadChangeset(changes) {
-		return await this.post("/changesets/upload", changes, "upload changeset");
+	async uploadChangeset(changeset) {
+		return await this.post("/changesets/upload", changeset, "upload changeset");
 	}
 
 	// Change helpers...

@@ -139,7 +139,7 @@ class PackageBrowser extends Component {
 		const pack = this.state.selectedPackage;
 		const species = this.currentClass();
 		const category = this.state.selectedCategory;
-		if (!pack || !species) {
+		if (!pack || !species || !species.methods) {
 			return [];
 		}
 		var methods = species.methods.filter((m) => (m.package = pack.name));

@@ -173,8 +173,8 @@ class IDE extends Component {
 				mainSecondaryColor = blue[800];
 				break;
 			case "VA Smalltalk":
-				mainPrimaryColor = "#9d2f69";
-				mainSecondaryColor = "#3f010c";
+				mainPrimaryColor = "#28AAE1";
+				mainSecondaryColor = "#003865";
 				break;
 			case "Python":
 				mainPrimaryColor = "#2b5b84";
@@ -832,6 +832,30 @@ class IDE extends Component {
 		}
 	};
 
+	addChangesBrowserClicked = async () => {
+		this.setState({ addPageMenuOpen: false });
+		try {
+			var input = document.createElement("input");
+			input.type = "file";
+			input.onchange = (e) => {
+				var file = e.target.files[0];
+				if (file) {
+					var reader = new FileReader();
+					reader.onload = async () => {
+						const ch = reader.result;
+						const changes = await this.api.uploadChangeset(ch);
+						console.log(changes);
+						this.browseChanges(changes);
+					};
+					reader.readAsText(file, "UTF-8");
+				}
+			};
+			input.click();
+		} catch (error) {
+			this.reportError(error);
+		}
+	};
+
 	render() {
 		console.log("rendering IDE");
 		const context = {
@@ -966,6 +990,19 @@ class IDE extends Component {
 															<PackageBrowserIcon />
 														</Box>
 														<Box>Package Browser</Box>
+													</Box>
+												</MenuItem>
+												<MenuItem onClick={this.addChangesBrowserClicked}>
+													<Box
+														display="flex"
+														flexWrap="nowrap"
+														alignItems="center"
+														justifyContent="center"
+													>
+														<Box pt={1} pr={1}>
+															<ChangesBrowserIcon />
+														</Box>
+														<Box>Changes Browser</Box>
 													</Box>
 												</MenuItem>
 											</Menu>

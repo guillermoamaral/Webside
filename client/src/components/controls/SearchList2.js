@@ -2,8 +2,15 @@ import React from "react";
 import Autosuggest from "react-autosuggest";
 import match from "autosuggest-highlight/match";
 import parse from "autosuggest-highlight/parse";
-import { TextField, MenuItem, Box, Typography } from "@material-ui/core";
+import {
+	TextField,
+	MenuItem,
+	Box,
+	Typography,
+	InputAdornment,
+} from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
+import SearchIcon from "@material-ui/icons/SearchRounded";
 
 const styles = (theme) => ({
 	container: {
@@ -144,6 +151,11 @@ class SearchList2 extends React.Component {
 					placeholder: "Search...",
 					value: this.state.value,
 					onChange: this.inputChanged,
+					// startAdornment: (
+					// 	<InputAdornment position="start">
+					// 		<SearchIcon />
+					// 	</InputAdornment>
+					// ),
 				}}
 			/>
 		);
