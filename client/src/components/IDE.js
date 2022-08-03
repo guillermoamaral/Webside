@@ -172,7 +172,7 @@ class IDE extends Component {
 				mainPrimaryColor = "#1d7bb9";
 				mainSecondaryColor = blue[800];
 				break;
-			case "VA Smalltalk":
+			case "VAST":
 				mainPrimaryColor = "#28AAE1";
 				mainSecondaryColor = "#003865";
 				break;

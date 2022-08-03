@@ -24,10 +24,6 @@ class Titlebar extends Component {
 		};
 	}
 
-	imageFor(dialect) {
-		return dialect === "VA Smalltalk" ? "vast.png" : dialect + ".png";
-	}
-
 	search = async () => {
 		const value = this.state.searchValue;
 		if (value && value.length > 0) {
@@ -41,10 +37,9 @@ class Titlebar extends Component {
 	render() {
 		const { dialect, baseUri, developer } = this.props;
 		let logo;
-		let png = this.imageFor(dialect);
 		if (dialect) {
 			try {
-				logo = require("../../resources/" + png);
+				logo = require("../../resources/" + dialect + ".png");
 			} catch (error) {}
 		}
 		const styles = this.props.styles;
