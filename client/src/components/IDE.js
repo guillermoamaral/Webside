@@ -843,9 +843,12 @@ class IDE extends Component {
 					var reader = new FileReader();
 					reader.onload = async () => {
 						const ch = reader.result;
-						const changes = await this.api.uploadChangeset(ch);
-						console.log(changes);
-						this.browseChanges(changes);
+						try {
+							const changes = await this.api.uploadChangeset(ch);
+							this.browseChanges(changes);
+						} catch (error) {
+							this.reportError(error);
+						}
 					};
 					reader.readAsText(file, "UTF-8");
 				}

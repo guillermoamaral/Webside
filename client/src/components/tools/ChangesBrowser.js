@@ -27,15 +27,19 @@ class ChangesBrowser extends Component {
 
 	download = async (event) => {
 		event.preventDefault();
-		const ch = await this.context.api.downloadChangeset(this.props.changes);
-		const blob = new Blob([ch]);
-		const url = window.URL.createObjectURL(blob);
-		const link = document.createElement("a");
-		link.href = url;
-		link.setAttribute("download", "changes.ch");
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
+		try {
+			const ch = await this.context.api.downloadChangeset(this.props.changes);
+			const blob = new Blob([ch]);
+			const url = window.URL.createObjectURL(blob);
+			const link = document.createElement("a");
+			link.href = url;
+			link.setAttribute("download", "changes.ch");
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		} catch (error) {
+			this.reportError();
+		}
 	};
 
 	render() {
