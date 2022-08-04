@@ -220,6 +220,9 @@ class CodeEditor extends Component {
 
 	menuOptions() {
 		return [
+			{ label: "Copy (Ctrl+c)", action: this.copyToClipboard },
+			{ label: "Paste (Ctrl+v)", action: this.pasteFromClipboard },
+			null,
 			{ label: "Do it (Ctrl+d)", action: this.evaluateExpression },
 			{ label: "Print it (Ctrl+p)", action: this.showEvaluation },
 			{ label: "Inspect it (Ctrl+i)", action: this.inspectEvaluation },
@@ -235,6 +238,21 @@ class CodeEditor extends Component {
 			{ label: "String references", action: this.browseStringReferences },
 		];
 	}
+
+	copyToClipboard = () => {
+		const text = this.editor.getSelection();
+		navigator.clipboard.writeText(text);
+	};
+
+	pasteFromClipboard = () => {
+		const text = this.editor.getSelection();
+		navigator.clipboard.readText().then(
+			(text) => {
+				this.editor.replaceSelection(text);
+			},
+			(error) => console.log(error)
+		);
+	};
 
 	sourceChanged = (source) => {
 		if (this.props.onChange) {
