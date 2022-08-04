@@ -282,7 +282,7 @@ class FastCustomList extends Component {
 					</Box>
 					<ListItemText
 						primary={
-							<Typography component="div">
+							<Typography noWrap component="div">
 								<Box
 									fontWeight={weight}
 									fontStyle={fontStyle}

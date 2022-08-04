@@ -36,14 +36,18 @@ class CodeBrowser extends Component {
 	}
 
 	defineClass = async (definition) => {
-		if (!this.props.class) {
-			return;
-		}
-		const classname = this.props.class ? this.props.class.name : null;
-		const packagename = this.props.class ? this.props.class.package : null;
+		// if (!this.props.class) {
+		// 	return;
+		// }
+		const pack = this.props.package;
+		const species = this.props.class;
+		const classname = species ? species.name : null;
+		const superclass = species ? species.superclass : null;
+		const packagename = species ? species.package : pack ? pack.name : null;
 		try {
 			const change = await this.context.api.defineClass(
 				classname,
+				superclass,
 				packagename,
 				definition
 			);
@@ -99,9 +103,16 @@ class CodeBrowser extends Component {
 			return;
 		}
 		try {
-			const method = this.props.method;
+			const pack = this.props.package;
 			const species = this.props.class;
-			const packagename = method ? method.package : null;
+			const method = this.props.method;
+			const packagename = method
+				? method.package
+				: species
+				? species.package
+				: pack
+				? pack.name
+				: null;
 			const category = method ? method.category : null;
 			const classname = species ? species.name : method ? method.class : null;
 			const change = await this.context.api.compileMethod(

@@ -583,6 +583,7 @@ class PackageBrowser extends Component {
 					<CodeBrowser
 						context={this.evalulationContext()}
 						styles={styles}
+						package={selectedPackage}
 						class={selectedClass}
 						method={selectedMethod}
 						onCompileMethod={this.methodCompiled}

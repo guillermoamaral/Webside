@@ -396,9 +396,10 @@ class API {
 		return await this.postChange(change, "rename package " + packagename);
 	}
 
-	async defineClass(classname, packagename, definition) {
+	async defineClass(classname, superclassname, packagename, definition) {
 		const change = this.newChange("AddClass");
 		change.class = classname;
+		change.superclass = superclassname;
 		change.package = packagename;
 		change.definition = definition;
 		return await this.postChange(change, "define class " + classname);
