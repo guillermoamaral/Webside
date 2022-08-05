@@ -16,7 +16,7 @@ Where change corresponds to the ones defined [here](../changes/post.md)
 
 **Code** : `200 OK`
 
-**Content**: the contents of a chunk formatted file.
+**Content**: `string` corresponding to the contents of a chunk formatted file.
 
 **Example:**:
 

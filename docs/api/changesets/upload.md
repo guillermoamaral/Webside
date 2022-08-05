@@ -1,4 +1,4 @@
-# JSON changes to chunk-formatted file 
+# JSON changes to chunk-formatted file
 
 This is a handy service to transform a file in chunk format specific of the dialect at hand to a set of changes in JSON.
 
@@ -8,7 +8,7 @@ Note: the use of `/upload` in the URI comes from the fact that this endpoint is 
 
 **Method**: `POST`
 
-**Body**: the contents of a chunk formatted file.
+**Body**: `string` corresponding to the contents of a chunk formatted file.
 
 ## Success Responses
 

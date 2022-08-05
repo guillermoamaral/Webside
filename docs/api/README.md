@@ -39,10 +39,12 @@ These are the endpoints used to retrieve system code: packages, classes and meth
 
 Endpoints to apply changes and retrieve changes made to the system.
 
-| Method | Path                        | Description                         | Parameters | Payload |
-| :----: | --------------------------- | ----------------------------------- | :--------: | ------- |
-|  GET   | [/changes](changes/get.md)  | Retrieve changes made to the system |   author   | -       |
-|  POST  | [/changes](changes/post.md) | Apply a change to the system        |     -      | -       |
+| Method | Path                                           | Description                                                 | Parameters |  Payload   |
+| :----: | ---------------------------------------------- | ----------------------------------------------------------- | :--------: | :--------: |
+|  GET   | [/changes](changes/get.md)                     | Retrieve changes made to the system                         |   author   |     -      |
+|  POST  | [/changes](changes/post.md)                    | Apply a change to the system                                |     -      |  `change`  |
+|  POST  | [/changesets/download](changesets/download.md) | Convert a set of changes (JSON) into a chunk formatted-file |     -      | `[change]` |
+|  POST  | [/changesets/upload](changesets/upload.md)     | Convert a chunk-formatted file into a set of changes (JSON) |     -      |  `string`  |
 
 ## [Evaluations](evaluations)
 
