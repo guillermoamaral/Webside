@@ -18,7 +18,7 @@ Where change corresponds to the ones defined [here](../changes/post.md)
 
 **Content**: `string` corresponding to the contents of a chunk formatted file.
 
-**Example:**:
+**Example:**: changes to Bee chunk file.
 
 ```json
 [

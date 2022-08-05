@@ -18,7 +18,7 @@ Note: the use of `/upload` in the URI comes from the fact that this endpoint is 
 
 Where change corresponds to the ones defined [here](../changes/post.md)
 
-**Example:**:
+**Example:**: Bee chunk file to changes.
 
 ```
 !ClassDefinition
