@@ -20,11 +20,12 @@ Where change corresponds to the ones defined [here](../changes/post.md)
 
 **Example:**:
 
+```
 !ClassDefinition
 timestamp: '2022-08-05T09:27:46.698-03:00'
 author: 'guille'
 className: 'MyPoint'
-project: 'Examples'!  
+project: 'Examples'!
 Point subclass: 'MyPoint' instanceVariableNames: '' classVariableNames: '' poolDictionaries: ''!
 
 !MethodDefinition
@@ -33,9 +34,10 @@ author: 'guille'
 className: 'MyPoint'
 selector: #xTimesY
 category: #unclassified
-project: 'Examples'!  
+project: 'Examples'!
 xTimesY
 ^x \* y!
+```
 
 **Response body** : `200 OK`
 
