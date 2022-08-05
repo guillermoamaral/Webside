@@ -357,24 +357,35 @@ class PackageBrowser extends Component {
 			superclass.subclasses.push(instance);
 			superclass.subclasses.sort((a, b) => (a.name <= b.name ? -1 : 1));
 		}
-		this.classSelected(instance);
+		const selections = this.currentSelections();
+		const pack = selections.package;
+		selections.species = instance;
+		await this.updateClasses(pack, true);
+		await this.updateSubclasses(instance);
+		const target =
+			selections.side === "instance" ? instance : instance.metaclass;
+		await this.updateCategories(target);
+		await this.updateMethods(target);
+		this.applySelections(selections);
 	};
 
 	classCommented = async (species) => {
 		this.cache.classes[species.name].comment = species.comment;
 	};
 
-	classRemoved = (species) => {
+	classRemoved = async (species) => {
 		delete this.cache.classes[species.name];
 		const superclass = this.cache.classes[species.superclass];
 		if (superclass) {
 			superclass.subclasses = superclass.subclasses.filter(
 				(c) => c.name !== species.name
 			);
-			this.classSelected(superclass);
-		} else {
-			this.changeRootClass("Object");
 		}
+		const selections = this.currentSelections();
+		const pack = selections.package;
+		await this.updateClasses(pack, true);
+		selections.species = null;
+		this.applySelections(selections);
 	};
 
 	classRenamed = (species) => {
@@ -547,7 +558,7 @@ class PackageBrowser extends Component {
 									onSelect={this.classSelected}
 									onRemove={this.classRemoved}
 									onRename={this.classRenamed}
-									onCreate={this.classDefined}
+									onDefine={this.classDefined}
 								/>
 							</Paper>
 						</Grid>

@@ -19,8 +19,8 @@ class ClassTree extends Component {
 			const packagename = superclass.package;
 			await this.context.api.defineClass(name, superclass.name, packagename);
 			const species = await this.context.api.getClass(name);
-			if (this.props.onCreate) {
-				this.props.onCreate(species);
+			if (this.props.onDefine) {
+				this.props.onDefine(species);
 			}
 		} catch (error) {
 			this.context.reportError(error);

@@ -288,7 +288,7 @@ class CodeEditor extends Component {
 	targetSelector() {
 		const selected = this.editor.getSelection();
 		if (selected.length > 0) {
-			return selected;
+			return selected.trim();
 		}
 		const position = this.editor.getCursor();
 		const offset = this.offsetFromPosition(position);

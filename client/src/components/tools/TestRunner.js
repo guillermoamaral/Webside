@@ -89,7 +89,7 @@ class TestRunner extends Component {
 				color = "#28a745";
 				break;
 			case "failed":
-				color = "#ffc107";
+				color = "#ef6011";
 				break;
 			case "errors":
 				color = "#dc3545";

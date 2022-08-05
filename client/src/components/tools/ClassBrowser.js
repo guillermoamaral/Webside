@@ -626,7 +626,7 @@ class ClassBrowser extends Component {
 									onSelect={this.classSelected}
 									onRemove={this.classRemoved}
 									onRename={this.classRenamed}
-									onCreate={this.classDefined}
+									onDefine={this.classDefined}
 								/>
 							</Paper>
 						</Grid>
