@@ -314,15 +314,17 @@ class ResourceBrowser extends Component {
 					<Grid container spacing={1}>
 						<Grid item xs={12} md={12} lg={12}>
 							<Box display="flex" justifyContent="flex-end">
-								{selectedType === "Objects" && resources.length > 0 && (
-									<Button
-										variant="text"
-										startIcon={<DeleteIcon />}
-										onClick={this.unpinAllObjects}
-									>
-										Unpin All
-									</Button>
-								)}
+								{selectedType === "Objects" &&
+									resources &&
+									resources.length > 0 && (
+										<Button
+											variant="text"
+											startIcon={<DeleteIcon />}
+											onClick={this.unpinAllObjects}
+										>
+											Unpin All
+										</Button>
+									)}
 								<IconButton
 									color="inherit"
 									onClick={() => this.typeSelected(selectedType)}

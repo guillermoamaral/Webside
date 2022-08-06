@@ -274,11 +274,13 @@ class Debugger extends PureComponent {
 							</Paper>
 						</Grid>
 						<Grid item xs={12} md={4} lg={4}>
-							<BindingTable
-								styles={styles}
-								id={this.props.id}
-								frame={selectedFrame}
-							/>
+							<Paper className={fixedHeightPaper} variant="outlined">
+								<BindingTable
+									styles={styles}
+									id={this.props.id}
+									frame={selectedFrame}
+								/>
+							</Paper>
 						</Grid>
 					</Grid>
 				</Grid>

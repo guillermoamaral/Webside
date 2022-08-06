@@ -1,6 +1,5 @@
 import React, { PureComponent } from "react";
 import { Box, Paper } from "@material-ui/core";
-import clsx from "clsx";
 import { IDEContext } from "../IDEContext";
 import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";
@@ -69,6 +68,12 @@ class BindingTable extends PureComponent {
 		return color;
 	}
 
+	bindingValue(binding) {
+		const value = binding.value;
+		const max = 100;
+		return value.length > max ? value.substr(0, 99) + "…" : value;
+	}
+
 	bindingColumns() {
 		return [
 			{
@@ -79,7 +84,13 @@ class BindingTable extends PureComponent {
 					return this.bindingColor(b);
 				},
 			},
-			{ field: "value", label: "Value", align: "left" },
+			{
+				field: (b) => {
+					return this.bindingValue(b);
+				},
+				label: "Value",
+				align: "left",
+			},
 		];
 	}
 
@@ -91,10 +102,10 @@ class BindingTable extends PureComponent {
 		const { frame, styles } = this.props;
 		const bindings = frame ? frame.bindings : [];
 		const { selectedBinding } = this.state;
-		const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
+		const percent = selectedBinding ? "80%" : "100%";
 		return (
-			<Paper style={{ height: "100%" }} variant="outlined">
-				<Box pb={1} flexGrow={1} height="80%">
+			<Box style={{ height: "100%" }}>
+				<Box pb={1} flexGrow={1} height={percent}>
 					<CustomTable
 						styles={styles}
 						columns={this.bindingColumns()}
@@ -103,15 +114,17 @@ class BindingTable extends PureComponent {
 						menuOptions={this.bindingOptions()}
 					/>
 				</Box>
-				<Box>
-					<CodeEditor
-						styles={styles}
-						lineNumbers={false}
-						source={selectedBinding ? selectedBinding.value : ""}
-						onAccept={this.saveBinding}
-					/>
-				</Box>
-			</Paper>
+				{selectedBinding && (
+					<Box>
+						<CodeEditor
+							styles={styles}
+							lineNumbers={false}
+							source={selectedBinding ? selectedBinding.value : ""}
+							onAccept={this.saveBinding}
+						/>
+					</Box>
+				)}
+			</Box>
 		);
 	}
 }
