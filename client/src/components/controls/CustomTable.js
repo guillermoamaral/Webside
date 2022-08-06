@@ -130,6 +130,7 @@ class CustomTable extends Component {
 			<Box display="flex" alignItems="center">
 				{actions.map((action) => {
 					const visible =
+						action.visible === undefined ||
 						(typeof action.visible == "boolean" && action.visible) ||
 						(typeof action.visible == "function" && action.visible(row));
 					return (

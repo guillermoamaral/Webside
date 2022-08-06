@@ -19,6 +19,7 @@ import MemoryIcon from "../icons/MemoryIcon";
 import MemoryStats from "./MemoryStats";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import DeleteIcon from "@material-ui/icons/Delete";
+import StopIcon from "@material-ui/icons/Stop";
 
 class ResourceBrowser extends Component {
 	static contextType = IDEContext;
@@ -160,13 +161,44 @@ class ResourceBrowser extends Component {
 		}
 	};
 
+	deleteWorkspace = async (w) => {
+		if (w) {
+			try {
+				await this.context.api.deleteWorkspace(w.id);;
+				this.setState({
+					resources: this.state.resources.filter((r) => r.id !== w.id),
+					selectedResource: null,
+				});
+			} catch (error) {
+				this.context.reportError(error);
+			}
+		}
+	};
+
 	workspaceOptions() {
-		return [{ label: "Open", action: this.openWorkspace }];
+		return [
+			{ label: "Open", action: this.openWorkspace },
+			{ label: "Delete", action: this.deleteWorkspace },
+		];
 	}
 
 	openDebugger = (d) => {
 		if (d) {
 			this.context.openDebugger(d.id, d.description);
+		}
+	};
+
+	terminateDebugger = async (d) => {
+		if (d) {
+			try {
+				await this.context.api.terminateDebugger(d.id);
+				this.setState({
+					resources: this.state.resources.filter((r) => r.id !== d.id),
+					selectedResource: null,
+				});
+			} catch (error) {
+				this.context.reportError(error);
+			}
 		}
 	};
 
@@ -177,7 +209,10 @@ class ResourceBrowser extends Component {
 	};
 
 	debuggerOptions() {
-		return [{ label: "Open", action: this.openDebugger }];
+		return [
+			{ label: "Open", action: this.openDebugger },
+			{ label: "Terminate", action: this.terminateDebugger },
+		];
 	}
 
 	testRunOptions() {
@@ -205,6 +240,83 @@ class ResourceBrowser extends Component {
 			default:
 		}
 		return options;
+	}
+
+	rowActions() {
+		var options;
+		switch (this.state.selectedType) {
+			case "Objects":
+				options = this.objectActions();
+				break;
+			case "Evaluations":
+				options = this.evaluationActions();
+				break;
+			case "Workspaces":
+				options = this.workspaceActions();
+				break;
+			case "Debuggers":
+				options = this.debuggerActions();
+				break;
+			case "Test Runs":
+				options = this.testRunActions();
+				break;
+			default:
+		}
+		return options;
+	}
+
+	objectActions() {
+		return [
+			{
+				label: "Inspect",
+				icon: <InspectorIcon fontSize="small" />,
+				handler: this.inspectObject,
+			},
+			{
+				label: "Unpin",
+				icon: <DeleteIcon fontSize="small" />,
+				handler: this.unpinObject,
+			},
+		];
+	}
+
+	evaluationActions() {
+		return [
+			{
+				label: "Stop",
+				icon: <StopIcon fontSize="small" />,
+				handler: this.cancelEvaluation,
+			},
+		];
+	}
+
+	workspaceActions() {
+		return [
+			{
+				label: "Open",
+				icon: <InspectorIcon fontSize="small" />,
+				handler: this.openWorkspace,
+			},
+			{
+				label: "Delete",
+				icon: <DeleteIcon fontSize="small" />,
+				handler: this.deleteWorkspace,
+			},
+		];
+	}
+
+	debuggerActions() {
+		return [
+			{
+				label: "Terminate",
+				icon: <StopIcon fontSize="small" />,
+				handler: this.terminateDebugger,
+			},
+		];
+	}
+
+	testRunActions() {
+		return [];
 	}
 
 	objectColumns() {
@@ -342,6 +454,7 @@ class ResourceBrowser extends Component {
 										rows={resources}
 										onSelect={this.resourceSelected}
 										menuOptions={this.menuOptions()}
+										rowActions={this.rowActions()}
 									/>
 								</Paper>
 							)}
