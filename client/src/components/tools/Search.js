@@ -72,9 +72,8 @@ class Search extends Component {
 	async searchSelectors(text) {
 		try {
 			const methods = await this.context.api.getMethodsMatching(text);
-			console.log(methods)
 			return methods.map((m) => {
-				return { title: m.class, type: "method", text: m.selector };
+				return { title: m.methodClass, type: "method", text: m.selector };
 			});
 		} catch (error) {
 			this.context.reportError(error);
@@ -85,7 +84,7 @@ class Search extends Component {
 		try {
 			const methods = await this.context.api.getStringReferences(text);
 			return methods.map((m) => {
-				return { title: m.class, type: "method", text: m.selector };
+				return { title: m.methodClass, type: "method", text: m.selector };
 			});
 		} catch (error) {
 			this.context.reportError(error);

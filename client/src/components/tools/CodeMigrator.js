@@ -39,7 +39,7 @@ class CodeMigrator extends Component {
 		}
 		if (this.props.method) {
 			return (
-				"Method " + this.props.method.class + ">>" + this.props.method.selector
+				"Method " + this.props.method.methodClass + ">>" + this.props.method.selector
 			);
 		}
 		return "Mixed source";
@@ -140,8 +140,8 @@ class CodeMigrator extends Component {
 		return {
 			type: "AddMethod",
 			author: this.context.api.author,
-			class: method.class,
-			label: method.class + ">>" + method.selector,
+			class: method.methodClass,
+			label: method.methodClass + ">>" + method.selector,
 			package: method.package,
 			sourceCode: method.source,
 		};

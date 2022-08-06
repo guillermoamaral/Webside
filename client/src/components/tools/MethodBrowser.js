@@ -50,9 +50,9 @@ class MethodBrowser extends Component {
 
 	methodSelected = async (method) => {
 		try {
-			const species = await this.context.api.getClass(method.class);
+			const species = await this.context.api.getClass(method.methodClass);
 			const retrieved = await this.context.api.getMethod(
-				method.class,
+				method.methodClass,
 				method.selector
 			);
 			Object.assign(method, retrieved);

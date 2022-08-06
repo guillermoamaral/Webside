@@ -114,7 +114,7 @@ class CodeBrowser extends Component {
 				? pack.name
 				: null;
 			const category = method ? method.category : null;
-			const classname = species ? species.name : method ? method.class : null;
+			const classname = species ? species.name : method ? method.methodClass : null;
 			const change = await this.context.api.compileMethod(
 				classname,
 				packagename,

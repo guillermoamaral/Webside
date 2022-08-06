@@ -148,7 +148,7 @@ class PackageBrowser extends Component {
 		}
 		if (methods && methods.length === 0) {
 			const template = this.context.api.methodTemplate();
-			template.class = species;
+			template.methodClass = species;
 			template.category = category;
 			methods.push(template);
 		}
@@ -238,7 +238,7 @@ class PackageBrowser extends Component {
 	async updateMethod(method) {
 		try {
 			const retrieved = await this.context.api.getMethod(
-				method.class,
+				method.methodClass,
 				method.selector
 			);
 			Object.assign(method, retrieved);
@@ -338,8 +338,8 @@ class PackageBrowser extends Component {
 		const pack = this.state.selectedPackage;
 		return pack &&
 			pack.methods &&
-			pack.methods[method.class] &&
-			pack.methods[method.class].includes(method.selector)
+			pack.methods[method.methodClass] &&
+			pack.methods[method.methodClass].includes(method.selector)
 			? "italic"
 			: "normal";
 	};

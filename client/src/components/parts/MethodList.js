@@ -12,7 +12,7 @@ class MethodList extends Component {
 	newMethod = () => {
 		const selected = this.props.selected;
 		const method = this.context.api.methodTemplate();
-		method.class = selected ? selected.class : null;
+		method.methocClass = selected ? selected.methocClass : null;
 		method.category = selected ? selected.category : null;
 		this.props.onSelect(method);
 	};
@@ -28,7 +28,7 @@ class MethodList extends Component {
 				required: true,
 			});
 			await this.context.api.renameSelector(
-				method.class,
+				method.methocClass,
 				method.selector,
 				newSelector
 			);
@@ -43,7 +43,7 @@ class MethodList extends Component {
 
 	removeMethod = async (method) => {
 		try {
-			await this.context.api.removeMethod(method.class, method.selector);
+			await this.context.api.removeMethod(method.methocClass, method.selector);
 			if (this.props.onRemove) {
 				this.props.onRemove(method);
 			}
@@ -71,7 +71,7 @@ class MethodList extends Component {
 		}
 		try {
 			await this.context.api.classifyMethod(
-				method.class,
+				method.methocClass,
 				method.selector,
 				target
 			);
@@ -86,7 +86,7 @@ class MethodList extends Component {
 
 	browseClass = (method) => {
 		if (method) {
-			this.context.browseClass(method.class);
+			this.context.browseClass(method.methocClass);
 		}
 	};
 
@@ -98,7 +98,7 @@ class MethodList extends Component {
 
 	browseLocalSenders = (method) => {
 		if (method) {
-			this.context.browseLocalSenders(method.selector, method.class);
+			this.context.browseLocalSenders(method.selector, method.methocClass);
 		}
 	};
 
@@ -110,19 +110,19 @@ class MethodList extends Component {
 
 	browseLocalImplementors = (method) => {
 		if (method) {
-			this.context.browseLocalImplementors(method.selector, method.class);
+			this.context.browseLocalImplementors(method.selector, method.methocClass);
 		}
 	};
 
 	browseClassReferences = (method) => {
 		if (method) {
-			this.context.browseClassReferences(method.class);
+			this.context.browseClassReferences(method.methocClass);
 		}
 	};
 
 	runTest = (method) => {
 		if (method) {
-			this.context.runTest(method.class, method.selector);
+			this.context.runTest(method.methocClass, method.selector);
 		}
 	};
 
@@ -180,7 +180,7 @@ class MethodList extends Component {
 
 	methodLabel = (method) => {
 		return this.props.showClass === true
-			? method.class + ">>#" + method.selector
+			? method.methocClass + ">>#" + method.selector
 			: method.selector;
 	};
 

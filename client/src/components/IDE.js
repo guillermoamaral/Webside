@@ -360,7 +360,7 @@ class IDE extends Component {
 			<CodeMigrator styles={this.props.styles} method={method} />
 		);
 		this.addPage(
-			"Migrate: " + method.class + ">>" + method.selector,
+			"Migrate: " + method.methodClass + ">>" + method.selector,
 			<MigratorIcon />,
 			migrator
 		);

@@ -401,7 +401,7 @@ class CoderLikeBrowser extends Component {
 	};
 
 	methodRemoved = (method) => {
-		this.cache[method.class].methods = this.cache[method.class].methods.filter(
+		this.cache[method.methodClass].methods = this.cache[method.methodClass].methods.filter(
 			(m) => m.selector !== method.selector
 		);
 		this.setState({ selectedMethod: null });
@@ -412,7 +412,7 @@ class CoderLikeBrowser extends Component {
 			return;
 		}
 		const selections = this.currentSelections();
-		const species = this.cache[method.class];
+		const species = this.cache[method.methodClass];
 		selections.species = species;
 		if (!species.categories.includes(method.category)) {
 			await this.updateCategories(selections, true);
