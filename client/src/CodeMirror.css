@@ -7,6 +7,12 @@ Guille Amaral
   background-color: #303030;
 }
 
+.cm-s-material .CodeMirror-gutters {
+  background: #303030;
+  color: #546E7A;
+  border: none;
+}
+
 .highlight {color: orange}
 
 .cm-matchhighlight {background-color: lightblue}

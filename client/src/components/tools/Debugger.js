@@ -15,11 +15,9 @@ import StepThroughIcon from "../icons/StepThroughIcon";
 import ResumeIcon from "@iconify/icons-mdi/play";
 import TerminateIcon from "@iconify/icons-mdi/stop";
 import { IDEContext } from "../IDEContext";
-import FastCustomList from "../controls/FastCustomList";
 import FrameList from "../parts/FrameList";
+import BindingTable from "../parts/BindingTable";
 import CodeBrowser from "../parts/CodeBrowser";
-import CodeEditor from "../parts/CodeEditor";
-import Scrollable from "../controls/Scrollable";
 
 class Debugger extends PureComponent {
 	static contextType = IDEContext;
@@ -29,7 +27,6 @@ class Debugger extends PureComponent {
 		this.state = {
 			frames: [],
 			selectedFrame: null,
-			selectedBinding: null,
 		};
 	}
 
@@ -50,15 +47,9 @@ class Debugger extends PureComponent {
 				frame = frames[0];
 				await this.updateFrame(frame);
 			}
-			const bindings = frame ? frame.bindings || [] : [];
-			const name = this.state.selectedBinding
-				? this.state.selectedBinding.name
-				: "self";
-			const binding = bindings.find((b) => b.name === name);
 			this.setState({
 				frames: frames,
 				selectedFrame: frame,
-				selectedBinding: binding,
 			});
 		} catch (error) {
 			this.context.reportError(error);
@@ -69,32 +60,7 @@ class Debugger extends PureComponent {
 		await this.updateFrame(frame);
 		const bindings = frame ? frame.bindings || [] : [];
 		const binding = bindings.find((b) => b.name === "self");
-		this.setState({
-			selectedFrame: frame,
-			selectedBinding: binding,
-		});
-	};
-
-	bindingSelected = async (binding) => {
-		this.setState({ selectedBinding: binding });
-	};
-
-	inspectBinding = async (binding) => {
-		try {
-			const context = {
-				debugger: this.props.id,
-				frame: this.state.selectedFrame ? this.state.selectedFrame.index : null,
-			};
-			const object = await this.context.evaluateExpression(
-				binding.name,
-				false,
-				true,
-				context
-			);
-			this.context.inspectObject(object);
-		} catch (error) {
-			this.context.reportError(error);
-		}
+		this.setState({ selectedFrame: frame });
 	};
 
 	updateFrame = async (frame) => {
@@ -222,7 +188,7 @@ class Debugger extends PureComponent {
 	}
 
 	render() {
-		const { frames, selectedFrame, selectedBinding } = this.state;
+		const { frames, selectedFrame } = this.state;
 		const styles = this.props.styles;
 		const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
 		return (
@@ -307,31 +273,12 @@ class Debugger extends PureComponent {
 								/>
 							</Paper>
 						</Grid>
-						<Grid item xs={12} md={2} lg={2}>
-							<Paper className={fixedHeightPaper} variant="outlined">
-								<FastCustomList
-									itemLabel="name"
-									selectedItem={selectedBinding}
-									items={selectedFrame ? selectedFrame.bindings : []}
-									onSelect={this.bindingSelected}
-									onDoubleClick={this.inspectBinding}
-									menuOptions={[
-										{ label: "Inspect", action: this.inspectBinding },
-									]}
-								/>
-							</Paper>
-						</Grid>
-						<Grid item xs={12} md={2} lg={2}>
-							<Paper className={fixedHeightPaper} variant="outlined">
-								<Scrollable>
-									<CodeEditor
-										styles={this.props.styles}
-										lineNumbers={false}
-										source={selectedBinding ? selectedBinding.value : ""}
-										onAccept={this.saveBinding}
-									/>
-								</Scrollable>
-							</Paper>
+						<Grid item xs={12} md={4} lg={4}>
+							<BindingTable
+								styles={styles}
+								id={this.props.id}
+								frame={selectedFrame}
+							/>
 						</Grid>
 					</Grid>
 				</Grid>

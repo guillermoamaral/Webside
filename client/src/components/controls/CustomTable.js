@@ -69,9 +69,20 @@ class CustomTable extends Component {
 	};
 
 	getCellValue = (row, column) => {
-		const getter = column.field;
-		const value = typeof getter == "string" ? row[getter] : getter(row);
+		const field = column.field;
+		const value = typeof field == "string" ? row[field] : field(row);
 		return column.formatter ? column.formatter(value) : value;
+	};
+
+	getCellColor = (row, column) => {
+		const color = column.color;
+		if (typeof color == "function") {
+			return color(row);
+		}
+		if (typeof color == "string") {
+			return color;
+		}
+		return row.color ? row.color : "default";
 	};
 
 	keyDown = (event) => {
@@ -179,11 +190,12 @@ class CustomTable extends Component {
 										onContextMenu={this.openMenu}
 									>
 										{columns.map((column) => {
+											const color = this.getCellColor(row, column);
 											return (
 												<TableCell
 													key={column.field}
 													align={column.align}
-													style={{ color: row.color || "default" }}
+													style={{ color: color }}
 												>
 													{column.field === "actions"
 														? this.rowActionButtons(row, index)
