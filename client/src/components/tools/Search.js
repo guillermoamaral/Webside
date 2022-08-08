@@ -37,7 +37,7 @@ class Search extends Component {
 		var results;
 		switch (type) {
 			case "classes":
-				results = this.searchClasses(text);
+				results = await this.searchClasses(text);
 				break;
 			case "selectors":
 				results = await this.searchSelectors(text);
@@ -55,9 +55,10 @@ class Search extends Component {
 		});
 	};
 
-	searchClasses(text) {
+	async searchClasses(text) {
 		try {
-			return this.context.classNames
+			const names = await this.context.api.getClassNames();
+			return names
 				.filter((n) => {
 					return n.toLowerCase().includes(text);
 				})
@@ -96,7 +97,7 @@ class Search extends Component {
 			this.context.browseClass(r.text);
 		}
 		if (r.type === "method") {
-			this.context.browseMethod({ class: r.title, selector: r.text });
+			this.context.browseMethod({ methodClass: r.title, selector: r.text });
 		}
 	};
 

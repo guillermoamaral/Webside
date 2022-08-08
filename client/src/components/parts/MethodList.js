@@ -180,7 +180,7 @@ class MethodList extends Component {
 
 	methodLabel = (method) => {
 		return this.props.showClass === true
-			? method.methocClass + ">>#" + method.selector
+			? method.methodClass + ">>#" + method.selector
 			: method.selector;
 	};
 

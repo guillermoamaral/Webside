@@ -446,7 +446,7 @@ class CoderLikeBrowser extends Component {
 			<Grid container spacing={1}>
 				<Grid item xs={3} md={3} lg={3}>
 					<SearchList2
-						options={this.context.classNames}
+						options={[]}
 						onChange={(classname) => {
 							this.changeRootClass(classname);
 						}}

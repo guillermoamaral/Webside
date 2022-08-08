@@ -29,6 +29,7 @@ class ClassBrowser extends Component {
 		super(props);
 		this.cache = {};
 		this.state = {
+			classNames: [],
 			root: this.props.root,
 			selectedClass: null,
 			selectedAccess: "accessing",
@@ -39,8 +40,18 @@ class ClassBrowser extends Component {
 		};
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
+		await this.initializeClassNames();
 		this.changeRootClass(this.state.root);
+	}
+
+	async initializeClassNames() {
+		try {
+			const names = await this.context.api.getClassNames();
+			this.setState({ classNames: names });
+		} catch (error) {
+			this.context.reportError(error);
+		}
 	}
 
 	changeRootClass = async (classsname) => {
@@ -539,6 +550,7 @@ class ClassBrowser extends Component {
 	render() {
 		console.log("rendering browser");
 		const {
+			classNames,
 			root,
 			selectedSide,
 			selectedClass,
@@ -559,7 +571,7 @@ class ClassBrowser extends Component {
 								<Grid item xs={11} md={11} lg={11}>
 									<SearchList2
 										value={selectedClass ? selectedClass.name : null}
-										options={this.context.classNames}
+										options={classNames}
 										onChange={(classname) => {
 											this.changeRootClass(classname);
 										}}

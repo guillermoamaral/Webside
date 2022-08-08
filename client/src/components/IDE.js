@@ -109,7 +109,6 @@ class IDE extends Component {
 		this.initializeAPI(baseUri, developer);
 		this.updateTheme(dialect);
 		this.initializeMessageChannel();
-		this.cacheNames();
 	}
 
 	welcomeMessage() {
@@ -211,21 +210,6 @@ class IDE extends Component {
 			},
 		});
 	}
-
-	cacheNames = async () => {
-		try {
-			this.packageNames = await this.api.getPackageNames();
-		} catch (error) {
-			this.packageNames = [];
-			this.reportError(error);
-		}
-		try {
-			this.classNames = await this.api.getClassNames();
-		} catch (error) {
-			this.classNames = [];
-			this.reportError(error);
-		}
-	};
 
 	newPageId() {
 		const pages = this.state.pages;
@@ -866,8 +850,6 @@ class IDE extends Component {
 			dialect: this.dialect,
 			transcriptText: this.state.transcriptText,
 			messageChannel: this.messageChannel,
-			packageNames: this.packageNames,
-			classNames: this.classNames,
 			openChat: this.openChat,
 			openWorkspace: this.openWorkspace,
 			browsePackage: this.openPackageBrowser,
@@ -908,7 +890,7 @@ class IDE extends Component {
 								styles={styles}
 								sidebarExpanded={this.state.sidebarExpanded}
 								expandSidebar={this.expandSidebar}
-								searchOptions={this.classNames || []}
+								searchOptions={[]}
 								onAvatarClicked={this.openSettings}
 							/>
 							<Sidebar
