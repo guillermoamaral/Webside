@@ -17,6 +17,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import ResourcesIcon from "@material-ui/icons/PinDropRounded";
 import ChangesBrowserIcon from "../icons/ChangesBrowserIcon";
 import PeopleIcon from "@material-ui/icons/People";
+import SaveImageIcon from "@material-ui/icons/Save"
 import { withDialog } from "../dialogs/index";
 
 class Sidebar extends Component {
@@ -40,6 +41,14 @@ class Sidebar extends Component {
 				</div>
 				<Divider />
 				<List>
+					<ListItem button onClick={this.props.onSaveImageClicked}>
+						<ListItemIcon>
+							<Tooltip title="Save image" placement="top">
+								<SaveImageIcon />
+							</Tooltip>
+						</ListItemIcon>
+						<ListItemText primary="Save image" />
+					</ListItem>
 					<ListItem button onClick={this.props.onTranscriptClicked}>
 						<ListItemIcon>
 							<Tooltip title="Transcript" placement="top">

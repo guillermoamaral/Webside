@@ -7,6 +7,7 @@
   - [Key aspects](#key-aspects)
   - [Building blocks](#building-blocks)
 - [API](api)
+  - [General](api/general)
   - [Code](api/code)
   - [Changes](api/changes)
   - [Evaluations](api/evaluations)

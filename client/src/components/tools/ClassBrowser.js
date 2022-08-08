@@ -187,7 +187,7 @@ class ClassBrowser extends Component {
 		}
 		if (methods && methods.length === 0) {
 			const template = this.context.api.methodTemplate();
-			template.methocClass = species;
+			template.methodClass = species;
 			template.category = category;
 			methods.push(template);
 		}

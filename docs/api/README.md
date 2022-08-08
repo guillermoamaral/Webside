@@ -17,13 +17,21 @@ These are the different sections of the API.
 
 _Note: URL path does not include the base URI. The base URI targeting a particular Smalltalk system will be prompted at the moment of opening Webside._
 
+## [General](general)
+
+These are the endpoints used to retrieve system code: packages, classes and methods.
+
+| Method | Path                       | Description                    | Parameters | Payload |
+| :----: | -------------------------- | ------------------------------ | :--------: | ------- |
+|  GET   | [/dialect](dialect/get.md) | Retrieve the Smalltalk dialect |     -      | -       |
+|  POST  | [/general](save/post.md)   | Save the image                 |     -      | -       |
+
 ## [Code](code)
 
 These are the endpoints used to retrieve system code: packages, classes and methods.
 
 | Method | Path                                                                              | Description                                                                                                                                                                                                             |                                                                   Parameters                                                                    | Payload |
 | :----: | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------: | ------- |
-|  GET   | [/dialect](code/dialect/get.md)                                                   | -                                                                                                                                                                                                                       |                                                                        -                                                                        | -       |
 |  GET   | [/methods](code/methods/get.md)                                                   | Retrieve methods satisfying the condition specified in the query (or all the methods in the system if no condition is provided)                                                                                         | `selector`, `category`, `accessing`, `using`, `assigning`, `sending`, `referencingClass`, `selectorMatching`, `ast`, `bytecodes`, `dissasembly` | -       |
 |  GET   | [/classes](code/classes/get.md)                                                   | Retrieve all subclasses of a given root class (if no root is provided, the uppermost class in the system is used). It is also possible get a tree-like structure as well as to limit the depth in the classes hierarchy |                                                        `root`, `names`, `tree`, `depth`                                                         | -       |
 |  GET   | [/classes/{name}](code/classes/name/get.md)                                       | Retrieve a given class                                                                                                                                                                                                  |                                                                        -                                                                        | -       |

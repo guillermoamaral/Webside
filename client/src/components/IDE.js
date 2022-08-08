@@ -149,6 +149,14 @@ class IDE extends Component {
 		this.messageChannel.onEvent("onMessagesSeen", this.messageReceived, this);
 	}
 
+	saveImage = async () => {
+		try {
+			const objects = await this.api.saveImage();
+		} catch (error) {
+			this.reportError(error);
+		}
+	};
+
 	messageReceived = (message) => {
 		if (message.type === "text") {
 			this.setState({ unreadMessages: this.messageChannel.unseenMessages() });
@@ -355,15 +363,6 @@ class IDE extends Component {
 			transcriptOpen: !this.state.transcriptOpen,
 			unreadErrorsCount: 0,
 		});
-	};
-
-	openInspectors = async () => {
-		try {
-			const objects = await this.api.getObjects();
-			objects.forEach((o) => this.openInspector(o));
-		} catch (error) {
-			this.reportError(error);
-		}
 	};
 
 	openResources = async () => {
@@ -898,6 +897,7 @@ class IDE extends Component {
 								expanded={this.state.sidebarExpanded}
 								unreadErrorsCount={this.state.unreadErrorsCount}
 								unreadMessages={this.state.unreadMessages}
+								onSaveImageClicked={this.saveImage}
 								onTranscriptClicked={this.openTranscript}
 								onSearchClicked={this.openSearch}
 								onChangesClicked={this.browseLastChanges}

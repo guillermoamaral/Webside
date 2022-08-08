@@ -77,8 +77,13 @@ class API {
 		throw exception;
 	}
 
+	// General...
 	async getDialect() {
 		return await this.get("/dialect", "dialect");
+	}
+
+	async saveImage() {
+		return await this.post("/save", null, "save image");
 	}
 
 	// Code...
@@ -369,7 +374,11 @@ class API {
 	}
 
 	async downloadChangeset(changes) {
-		return await this.post("/changesets/download", changes, "download changeset");
+		return await this.post(
+			"/changesets/download",
+			changes,
+			"download changeset"
+		);
 	}
 
 	async uploadChangeset(changeset) {

@@ -12,7 +12,7 @@ class MethodList extends Component {
 	newMethod = () => {
 		const selected = this.props.selected;
 		const method = this.context.api.methodTemplate();
-		method.methocClass = selected ? selected.methocClass : null;
+		method.methodClass = selected ? selected.methodClass : null;
 		method.category = selected ? selected.category : null;
 		this.props.onSelect(method);
 	};
@@ -28,7 +28,7 @@ class MethodList extends Component {
 				required: true,
 			});
 			await this.context.api.renameSelector(
-				method.methocClass,
+				method.methodClass,
 				method.selector,
 				newSelector
 			);
@@ -43,7 +43,7 @@ class MethodList extends Component {
 
 	removeMethod = async (method) => {
 		try {
-			await this.context.api.removeMethod(method.methocClass, method.selector);
+			await this.context.api.removeMethod(method.methodClass, method.selector);
 			if (this.props.onRemove) {
 				this.props.onRemove(method);
 			}
@@ -71,7 +71,7 @@ class MethodList extends Component {
 		}
 		try {
 			await this.context.api.classifyMethod(
-				method.methocClass,
+				method.methodClass,
 				method.selector,
 				target
 			);
@@ -86,7 +86,7 @@ class MethodList extends Component {
 
 	browseClass = (method) => {
 		if (method) {
-			this.context.browseClass(method.methocClass);
+			this.context.browseClass(method.methodClass);
 		}
 	};
 
@@ -98,7 +98,7 @@ class MethodList extends Component {
 
 	browseLocalSenders = (method) => {
 		if (method) {
-			this.context.browseLocalSenders(method.selector, method.methocClass);
+			this.context.browseLocalSenders(method.selector, method.methodClass);
 		}
 	};
 
@@ -110,19 +110,19 @@ class MethodList extends Component {
 
 	browseLocalImplementors = (method) => {
 		if (method) {
-			this.context.browseLocalImplementors(method.selector, method.methocClass);
+			this.context.browseLocalImplementors(method.selector, method.methodClass);
 		}
 	};
 
 	browseClassReferences = (method) => {
 		if (method) {
-			this.context.browseClassReferences(method.methocClass);
+			this.context.browseClassReferences(method.methodClass);
 		}
 	};
 
 	runTest = (method) => {
 		if (method) {
-			this.context.runTest(method.methocClass, method.selector);
+			this.context.runTest(method.methodClass, method.selector);
 		}
 	};
 
