@@ -17,7 +17,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import ResourcesIcon from "@material-ui/icons/PinDropRounded";
 import ChangesBrowserIcon from "../icons/ChangesBrowserIcon";
 import PeopleIcon from "@material-ui/icons/People";
-import SaveImageIcon from "@material-ui/icons/Save"
+import SaveImageIcon from "@material-ui/icons/CameraAlt";
 import { withDialog } from "../dialogs/index";
 
 class Sidebar extends Component {

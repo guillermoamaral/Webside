@@ -38,7 +38,7 @@ class ChangesBrowser extends Component {
 			link.click();
 			document.body.removeChild(link);
 		} catch (error) {
-			this.reportError();
+			this.context.reportError();
 		}
 	};
 
