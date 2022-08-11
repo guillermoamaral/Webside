@@ -56,7 +56,6 @@ class VariableList extends Component {
 				defaultValue: variable.name,
 				required: true,
 			});
-			console.log(variable);
 			if (variable.type === "instance") {
 				await this.context.api.renameInstanceVariable(
 					this.props.class.name,

@@ -1,9 +1,9 @@
 import React, { PureComponent } from "react";
-import { Box, Paper } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import { IDEContext } from "../IDEContext";
 import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";
-import Scrollable from "../controls/Scrollable";
+//import Scrollable from "../controls/Scrollable";
 
 class BindingTable extends PureComponent {
 	static contextType = IDEContext;

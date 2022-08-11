@@ -6,11 +6,10 @@ import {
 	TextField,
 	MenuItem,
 	Box,
-	Typography,
-	InputAdornment,
+	Typography
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-import SearchIcon from "@material-ui/icons/SearchRounded";
+//import SearchIcon from "@material-ui/icons/SearchRounded";
 
 const styles = (theme) => ({
 	container: {

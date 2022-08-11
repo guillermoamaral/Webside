@@ -165,7 +165,7 @@ class CustomTable extends Component {
 					<Table stickyHeader size="small" onKeyDown={this.keyDown}>
 						{!this.props.noHeaders && (
 							<TableHead>
-								<TableRow>
+								<TableRow key="header">
 									{columns.map((column) => (
 										<TableCell
 											key={column.field}
@@ -194,7 +194,7 @@ class CustomTable extends Component {
 											const color = this.getCellColor(row, column);
 											return (
 												<TableCell
-													key={column.field}
+													key={column.field + index}
 													align={column.align}
 													style={{ color: color }}
 												>

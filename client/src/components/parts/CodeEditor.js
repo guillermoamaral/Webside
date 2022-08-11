@@ -50,10 +50,10 @@ class CodeEditor extends Component {
 	constructor(props) {
 		super(props);
 		this.editor = null;
+		this.selectsRanges = true;
 		this.state = {
 			originalSource: props.source,
 			selectedInterval: null,
-			selectRanges: true,
 			dirty: false,
 			source: props.source,
 			selectedRanges: [],
@@ -68,26 +68,24 @@ class CodeEditor extends Component {
 		if (
 			/*!state.dirty &&*/
 			props.source !== state.originalSource ||
-			props.selectedInterval !== state.selectedInterval ||
+			JSON.stringify(props.selectedInterval) !== JSON.stringify(state.selectedInterval) ||
 			props.selectedWord !== state.selectedWord
 		) {
 			const source = props.source;
 			const interval = props.selectedInterval;
 			const ranges =
 				source && interval ? [rangeFromInterval(interval, source)] : [];
-			console.log(ranges);
 			return {
 				originalSource: source,
-				selectedInterval: props.selectedInterval,
+				selectedInterval: interval,
 				selectedWord: props.selectedWord,
-				selectRanges: true,
 				source: source,
 				selectedRanges: ranges,
 				evaluating: props.evaluating,
 				dirty: false,
 			};
 		}
-		if (state.evaluating !== props.evaluating) {
+		if (props.evaluating !== state.evaluating) {
 			return {
 				evaluating: props.evaluating,
 			};
@@ -95,9 +93,26 @@ class CodeEditor extends Component {
 		return null;
 	}
 
-	componentDidMount() {
-		// console.log("CodeEditor componentDidMount");
-		// this.setState({ selectRanges: false });
+	shouldComponentUpdate(nextProps, nextState) {
+		if (
+			nextProps.source !== this.props.source ||
+			JSON.stringify(nextProps.selectedInterval) !== JSON.stringify(this.props.selectedInterval) ||
+			nextProps.selectedWord !== this.props.selectedWord
+		) {
+			this.selectsRanges = true;
+			const ranges =
+				nextProps.source && nextProps.selectedInterval ? [rangeFromInterval(nextProps.selectedInterval, nextProps.source)] : [];
+			if (ranges) {
+				//this.selectRanges(ranges);
+			}
+		}
+		return true;
+	}
+
+	componentDidUpdate() {
+		if (this.selectsRanges && this.state.selectedRanges) {
+			this.selectRanges(this.state.selectedRanges)
+		};
 	}
 
 	editorDidMount(editor) {
@@ -123,24 +138,6 @@ class CodeEditor extends Component {
 	selectWord(word) {
 		const ranges = this.rangesContainingWord(word);
 		this.selectRanges(ranges);
-	}
-
-	selectRanges(ranges) {
-		if (this.editor) {
-			this.editor.setSelections(ranges);
-		}
-	}
-
-	selectInitialRanges() {
-		const { selectRanges, selectedInterval, selectedWord } = this.state;
-		if (selectRanges) {
-			if (selectedInterval) {
-				this.selectInterval(selectedInterval);
-			}
-			if (selectedWord) {
-				this.selectWord(selectedWord);
-			}
-		}
 	}
 
 	rangeFromInterval(interval) {
@@ -245,25 +242,12 @@ class CodeEditor extends Component {
 	};
 
 	pasteFromClipboard = () => {
-		const text = this.editor.getSelection();
 		navigator.clipboard.readText().then(
 			(text) => {
 				this.editor.replaceSelection(text);
 			},
 			(error) => console.log(error)
 		);
-	};
-
-	sourceChanged = (source) => {
-		if (this.props.onChange) {
-			this.props.onChange(source);
-		} else {
-			this.setState({
-				source: source,
-				dirty: true,
-				selectRanges: false,
-			});
-		}
 	};
 
 	acceptClicked = () => {
@@ -342,14 +326,14 @@ class CodeEditor extends Component {
 		const expression = this.selectedExpression();
 		try {
 			await this.context.debugExpression(expression, this.props.context);
-		} catch (error) {}
+		} catch (error) { }
 	};
 
 	profileExpression = async () => {
 		const expression = this.selectedExpression();
 		try {
 			await this.context.profileExpression(expression, this.props.context);
-		} catch (error) {}
+		} catch (error) { }
 	};
 
 	evaluateExpression = async () => {
@@ -455,17 +439,33 @@ class CodeEditor extends Component {
 		}
 	};
 
-	selectionChanged = (selection) => {
-		console.log("selection changed", selection);
-		if (this.state.selectRanges) {
-			this.setState({ selectRanges: false });
+	selectRanges(ranges) {
+		const selectsRanges = this.selectsRanges;
+		if (this.editor) {
+			this.editor.setSelections(ranges);
 		}
+		this.selectsRanges = selectsRanges;
+	}
+
+	sourceChanged = (source) => {
+		this.selectsRanges = false;
+		this.setState({
+			source: source,
+			dirty: true,
+		}, () => {
+			if (this.props.onChange) {
+				this.props.onChange(source);
+			}
+		});
+
+	};
+
+	selectionChanged = (selection) => {
+		//this.selectsRanges = false;
 	};
 
 	render() {
-		console.log("rendering code editor");
 		const { source, selectedRanges, evaluating, progress, dirty } = this.state;
-		this.selectRanges(selectedRanges);
 		const mode = this.props.mode || "smalltalk-method";
 		const showAccept = this.props.showAccept;
 		const acceptIcon = this.props.acceptIcon ? (
@@ -535,7 +535,7 @@ class CodeEditor extends Component {
 						onSelection={(editor, selection) => {
 							this.selectionChanged(selection);
 						}}
-						onCursorActivity={(editor, event) => {}}
+						onCursorActivity={(editor, event) => { }}
 					/>
 					{/* </Scrollable> */}
 					{(evaluating || progress) && (

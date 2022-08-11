@@ -4,10 +4,6 @@ import Settings from "./Settings";
 import { withRouter } from "react-router-dom";
 
 class Login extends Component {
-	constructor(props) {
-		super(props);
-	}
-
 	connectClicked = (baseUri, dialect, developer) => {
 		this.props.history.push(
 			"/ide?baseUri=" +

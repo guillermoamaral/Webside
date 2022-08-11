@@ -58,8 +58,6 @@ class Debugger extends PureComponent {
 
 	frameSelected = async (frame) => {
 		await this.updateFrame(frame);
-		const bindings = frame ? frame.bindings || [] : [];
-		const binding = bindings.find((b) => b.name === "self");
 		this.setState({ selectedFrame: frame });
 	};
 

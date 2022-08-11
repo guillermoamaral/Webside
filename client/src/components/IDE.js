@@ -151,7 +151,7 @@ class IDE extends Component {
 
 	saveImage = async () => {
 		try {
-			const objects = await this.api.saveImage();
+			await this.api.saveImage();
 		} catch (error) {
 			this.reportError(error);
 		}
@@ -285,10 +285,10 @@ class IDE extends Component {
 			pages.length === 1
 				? null
 				: page !== selectedPage
-				? selectedPage
-				: i > 0
-				? pages[i - 1]
-				: pages[i + 1];
+					? selectedPage
+					: i > 0
+						? pages[i - 1]
+						: pages[i + 1];
 		this.setState({
 			pages: pages.filter((p) => p !== page),
 			selectedPage: selected,
@@ -547,11 +547,11 @@ class IDE extends Component {
 						this.removeAllPages();
 						this.props.history.push(
 							"/ide?baseUri=" +
-								baseUri +
-								"&dialect=" +
-								dialect +
-								"&developer=" +
-								developer
+							baseUri +
+							"&dialect=" +
+							dialect +
+							"&developer=" +
+							developer
 						);
 						this.updateSettings(baseUri, dialect, developer);
 					}}
@@ -668,7 +668,6 @@ class IDE extends Component {
 	browseMethodsMatching = async (pattern) => {
 		try {
 			const matching = await this.api.getMethodsMatching(pattern);
-			console.log(pattern, matching);
 			this.openMethodBrowser(
 				matching,
 				"Methods with selector matching " + pattern,
