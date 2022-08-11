@@ -4,7 +4,7 @@ import AcceptIcon from "@material-ui/icons/CheckCircle";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import PopupMenu from "../controls/PopupMenu";
 import { IDEContext } from "../IDEContext";
-//import Scrollable from "../controls/Scrollable";
+import Scrollable from "../controls/Scrollable";
 import "../../SmalltalkMode.css";
 import "../../SmalltalkMode.js";
 
@@ -478,7 +478,7 @@ class CodeEditor extends Component {
 			/>
 		);
 		return (
-			<Grid container spacing={1} style={{ height: "100%" }}>
+			<Grid container spacing={1}>
 				<Grid item xs={11} md={showAccept ? 11 : 12} lg={showAccept ? 11 : 12}>
 					{/* <Scrollable> */}
 					<CodeMirror

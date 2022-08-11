@@ -179,9 +179,9 @@ class Debugger extends PureComponent {
 		const frame = this.state.selectedFrame;
 		return frame
 			? {
-					debugger: this.props.id,
-					frame: frame.index,
-			  }
+				debugger: this.props.id,
+				frame: frame.index,
+			}
 			: {};
 	}
 
@@ -263,7 +263,7 @@ class Debugger extends PureComponent {
 				<Grid item xs={12} md={12} lg={12}>
 					<Grid container spacing={1}>
 						<Grid item xs={12} md={8} lg={8}>
-							<Paper className={fixedHeightPaper} variant="outlined">
+							<Paper style={{ height: 300 }} variant="outlined">
 								<FrameList
 									frames={frames}
 									selected={selectedFrame}
@@ -272,13 +272,12 @@ class Debugger extends PureComponent {
 							</Paper>
 						</Grid>
 						<Grid item xs={12} md={4} lg={4}>
-							<Paper className={fixedHeightPaper} variant="outlined">
-								<BindingTable
-									styles={styles}
-									id={this.props.id}
-									frame={selectedFrame}
-								/>
-							</Paper>
+							<BindingTable
+								style={{ height: 300 }}
+								styles={styles}
+								id={this.props.id}
+								frame={selectedFrame}
+							/>
 						</Grid>
 					</Grid>
 				</Grid>

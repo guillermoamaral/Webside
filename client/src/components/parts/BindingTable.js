@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Box } from "@material-ui/core";
+import { Box, Paper } from "@material-ui/core";
 import { IDEContext } from "../IDEContext";
 import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";
@@ -15,11 +15,16 @@ class BindingTable extends PureComponent {
 		};
 	}
 
-	// al actualizar deberia dejar seleccionado el binding con el mismo nombre que estaba seleccionado
-	// const bindings = frame ? frame.bindings || [] : [];
-	// const name = this.state.selectedBinding
-	// 	? this.state.selectedBinding.name
-	// 	: "self";
+	static getDerivedStateFromProps(props, state) {
+		if (props.frame) {
+			const name = state.selectedBinding ? state.selectedBinding.name : "self";
+			const selected = (props.frame.bindings).find(b => b.name === name)
+			return {
+				selectedBinding: selected
+			};
+		} else { return null }
+
+	}
 
 	bindingSelected = async (binding) => {
 		this.setState({ selectedBinding: binding });
@@ -47,9 +52,9 @@ class BindingTable extends PureComponent {
 		const frame = this.state.selectedFrame;
 		return frame
 			? {
-					debugger: this.props.id,
-					frame: frame.index,
-			  }
+				debugger: this.props.id,
+				frame: frame.index,
+			}
 			: {};
 	}
 
@@ -102,26 +107,30 @@ class BindingTable extends PureComponent {
 		const { frame, styles } = this.props;
 		const bindings = frame ? frame.bindings : [];
 		const { selectedBinding } = this.state;
-		const percent = selectedBinding ? "80%" : "100%";
+		const percent = selectedBinding ? 70 : 100;
 		return (
 			<Box style={{ height: "100%" }}>
-				<Box pb={1} flexGrow={1} height={percent}>
-					<CustomTable
-						styles={styles}
-						columns={this.bindingColumns()}
-						rows={bindings}
-						onSelect={this.bindingSelected}
-						menuOptions={this.bindingOptions()}
-					/>
+				<Box pb={1} flexGrow={1} height={percent + "%"}>
+					<Paper variant="outlined" style={{ height: "100%" }}>
+						<CustomTable
+							styles={styles}
+							columns={this.bindingColumns()}
+							rows={bindings}
+							onSelect={this.bindingSelected}
+							menuOptions={this.bindingOptions()}
+						/>
+					</Paper>
 				</Box>
 				{selectedBinding && (
-					<Box>
-						<CodeEditor
-							styles={styles}
-							lineNumbers={false}
-							source={selectedBinding ? selectedBinding.value : ""}
-							onAccept={this.saveBinding}
-						/>
+					<Box pb={1} height={100 - percent + "%"}>
+						<Paper variant="outlined" style={{ height: "100%" }}>
+							<CodeEditor
+								styles={styles}
+								lineNumbers={false}
+								source={selectedBinding ? selectedBinding.value : ""}
+								onAccept={this.saveBinding}
+							/>
+						</Paper>
 					</Box>
 				)}
 			</Box>

@@ -15,7 +15,7 @@ Guille Amaral
 
 .highlight {color: orange}
 
-.cm-matchhighlight {background-color: lightblue}
+.cm-matchhighlight {background-color: rgba(128, 203, 196, 0.2)}
 
 .CodeMirror-selection-highlight-scrollbar {background-color: darkblue}
 
