@@ -6,6 +6,7 @@ import {
 	RadioGroup,
 	FormControlLabel,
 	Radio,
+	TextField,
 } from "@material-ui/core";
 import clsx from "clsx";
 import { IDEContext } from "../IDEContext";
@@ -22,6 +23,7 @@ class PackageBrowser extends Component {
 		super(props);
 		this.cache = { packages: {}, classes: {} };
 		this.state = {
+			packageFilter: "",
 			packages: [],
 			selectedPackage: null,
 			selectedClass: null,
@@ -292,8 +294,8 @@ class PackageBrowser extends Component {
 				index - 1 >= 0
 					? packages[index - 1]
 					: index + 1 < packages.length
-					? packages[index + 1]
-					: null;
+						? packages[index + 1]
+						: null;
 			this.setState({
 				packages: packages,
 				selectedPackage: selected,
@@ -498,6 +500,7 @@ class PackageBrowser extends Component {
 
 	render() {
 		const {
+			packageFilter,
 			packages,
 			selectedPackage,
 			selectedSide,
@@ -507,11 +510,30 @@ class PackageBrowser extends Component {
 		} = this.state;
 		const styles = this.props.styles;
 		const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
+		const prefix = packageFilter.toLowerCase();
+		const filtered = prefix !== "" ? packages.filter(p => { return p.name.toLowerCase().startsWith(prefix) }) : packages;
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
 					<Grid container spacing={1}>
-						<Grid item xs={3} md={3} lg={3} />
+						<Grid item xs={3} md={3} lg={3} >
+							<TextField
+								value={packageFilter}
+								onChange={(event) => this.setState({ packageFilter: event.target.value })}
+								placeholder="Filter ..."
+								name="text"
+								variant="outlined"
+								fullWidth
+								margin="dense"
+								autoFocus
+								type="text"
+							// onKeyPress={(event) => {
+							// 	if (event.key === "Enter") {
+							// 		this.filterPackages();
+							// 	}
+							// }}
+							/>
+						</Grid>
 						<Grid item xs={3} md={3} lg={3} />
 						<Grid item xs={3} md={3} lg={3}>
 							<Box display="flex" justifyContent="center">
@@ -539,7 +561,7 @@ class PackageBrowser extends Component {
 						<Grid item xs={12} md={3} lg={3}>
 							<Paper className={fixedHeightPaper} variant="outlined">
 								<PackageList
-									packages={packages}
+									packages={filtered}
 									selected={selectedPackage}
 									onSelect={this.packageSelected}
 									onRemove={this.packageRemoved}

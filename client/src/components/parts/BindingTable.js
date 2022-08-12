@@ -18,7 +18,7 @@ class BindingTable extends PureComponent {
 	static getDerivedStateFromProps(props, state) {
 		if (props.frame) {
 			const name = state.selectedBinding ? state.selectedBinding.name : "self";
-			const selected = (props.frame.bindings).find(b => b.name === name)
+			const selected = (props.frame.bindings || []).find(b => b.name === name)
 			return {
 				selectedBinding: selected
 			};

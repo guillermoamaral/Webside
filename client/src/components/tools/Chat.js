@@ -100,6 +100,11 @@ class Chat extends Component {
 								margin="dense"
 								autoFocus
 								type="text"
+								onKeyPress={(event) => {
+									if (event.key === "Enter") {
+										this.sendMessage();
+									}
+								}}
 							/>
 						</Grid>
 						<Grid item xs={1} md={1} lg={1}>
