@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import CustomList from "../controls/CustomList";
+import FastCustomList from "../controls/FastCustomList";
 import { IDEContext } from "../IDEContext";
 import { withDialog } from "../dialogs/index";
 
@@ -80,7 +80,7 @@ class CategoryList extends Component {
 			categories.unshift(this.all);
 		}
 		return (
-			<CustomList
+			<FastCustomList
 				items={categories}
 				itemDivider={(item) => item === this.all}
 				labelStyle={(item) => (item === this.all ? "italic" : "normal")}

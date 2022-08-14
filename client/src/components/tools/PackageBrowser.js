@@ -527,11 +527,6 @@ class PackageBrowser extends Component {
 								margin="dense"
 								autoFocus
 								type="text"
-							// onKeyPress={(event) => {
-							// 	if (event.key === "Enter") {
-							// 		this.filterPackages();
-							// 	}
-							// }}
 							/>
 						</Grid>
 						<Grid item xs={3} md={3} lg={3} />

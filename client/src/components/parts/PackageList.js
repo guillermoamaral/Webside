@@ -90,6 +90,7 @@ class PackageList extends Component {
 	render() {
 		return (
 			<FastCustomList
+				enableFilter={false}
 				items={this.props.packages}
 				itemLabel="name"
 				selectedItem={this.props.selected}

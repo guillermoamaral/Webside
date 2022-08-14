@@ -134,6 +134,7 @@ class CodeBrowser extends Component {
 	};
 
 	async handleCompilationError(error, source) {
+		console.log(error)
 		const method = this.props.method;
 		if (!method) {
 			return;
