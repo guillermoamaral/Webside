@@ -57,12 +57,20 @@ Besides the internal errors in the server (HTTP code `500`), changes might resul
 		"start": "number",
 		"end": "number"
 	},
-	"suggestion": "string",
-	"changes": ["change"]
+	"suggestions": ["suggestion"],
 }
 ```
 
-Here, `suggestion` describes a set of `changes` that can be applied to mitigate the reported compilation error.
+Here, `suggestion` has the following shape:
+
+```json
+{
+	"description": "string",
+	"changes": ["change"],
+}
+```
+
+where `changes` is the set of changes that can be applied to mitigate the reported compilation error.
 
 For example, the following error is returned after trying to compile (via a `AddMethod`) the method `m` in `Number` with the source `^1 + `. Note that the interval corresponds the the missing part and there is no suggestion.
 
@@ -74,9 +82,7 @@ For example, the following error is returned after trying to compile (via a `Add
 	"interval": {
 		"start": 7,
 		"end": 7
-	},
-	"suggestion": null,
-	"changes": []
+	}
 }
 ```
 
@@ -93,15 +99,19 @@ The error returned should look like:
 		"start": 4,
 		"end": 4
 	},
-	"suggestion": "Declare 't' as a temporary",
-	"changes": [
+	"suggestions": [
 		{
-			"type": "AddMethod",
-			"author": "guille",
-			"sourceCode": "m\r\t | t | \r\tt := 1",
-			"class": "Number",
-			"selector": "m",
-			"category": "arithmetic"
+			"description": "Declare 't' as a temporary",
+			"changes": [
+				{
+					"type": "AddMethod",
+					"author": "guille",
+					"sourceCode": "m\r\t | t | \r\tt := 1",
+					"class": "Number",
+					"selector": "m",
+					"category": "arithmetic"
+				}
+			]
 		}
 	]
 }
@@ -109,7 +119,7 @@ The error returned should look like:
 
 Note that `changes` contains a list with another `AddMethod` with a modified source, which corresponds to accepting the suggestion.
 
-Note also that in the case that the original source had more than one compilation error with potential suggestions, they are handled one by one, asking the user to accept each suggestion at a time (i.c. Webside sends the first attempt and after receiving an error with a suggestion, it asks the user; should the user accept the suggestion, Webside retries with the suggested changes and if the server finds a new error, the process repeats).
+Note also that in the case that the original source had more than one compilation error with potential suggestions, they are handled one by one, asking the user to choose what to do for each one: Webside sends a first attempt and after receiving an error with a list of suggestions, it asks the user; should the user accept any suggestion, Webside retries with the suggested changes, and if the server finds a new error, the process repeats.
 
 **Example:**: compile method `phi` in `Float`
 `POST /changes`

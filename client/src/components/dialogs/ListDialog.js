@@ -8,6 +8,7 @@ import {
 	DialogContentText,
 	DialogTitle,
 	Button,
+	Paper,
 } from "@material-ui/core";
 import CustomList from "../controls/CustomList";
 
@@ -43,15 +44,18 @@ function ListDialog(props, context) {
 				) : (
 					message
 				)}
-				<CustomList
-					autoFocus
-					items={items}
-					selectedItem={value}
-					onSelect={handleChange}
-				/>
+				<Paper variant="outlined">
+					<CustomList
+						autoFocus
+						items={items}
+						selectedItem={value}
+						onSelect={handleChange}
+					/>
+				</Paper>
 			</DialogContent>
 			<DialogActions>
 				<Button
+					type="submit"
 					onClick={() => onClose(value)}
 					color={ok.color}
 					variant={ok.variant}
@@ -82,7 +86,6 @@ ListDialog.propTypes = {
 	title: PropTypes.string,
 	message: PropTypes.node,
 	items: PropTypes.array.isRequired,
-	placeholder: PropTypes.string,
 	ok: PropTypes.shape({
 		text: PropTypes.string,
 		color: PropTypes.string,
@@ -106,7 +109,6 @@ ListDialog.propTypes = {
 ListDialog.defaultProps = {
 	open: false,
 	title: "Select an item",
-	placeholder: "",
 	ok: {
 		text: "OK",
 		color: "primary",
