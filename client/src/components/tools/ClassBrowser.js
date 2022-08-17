@@ -286,6 +286,11 @@ class ClassBrowser extends Component {
 				method.selector
 			);
 			Object.assign(method, retrieved);
+			if (!retrieved) {
+				method.source = "method cannot be found";
+				method.ast = null;
+				method.bytecodes = null;
+			}
 		} catch (error) {
 			this.context.reportError(error);
 		}
