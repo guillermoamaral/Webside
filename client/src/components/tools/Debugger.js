@@ -6,7 +6,6 @@ import {
 	Tooltip,
 	Typography,
 } from "@material-ui/core";
-import clsx from "clsx";
 import { Icon } from "@iconify/react";
 import RestartIcon from "@iconify/icons-mdi/replay";
 import StepIntoIcon from "@iconify/icons-mdi/debug-step-into";
@@ -72,7 +71,7 @@ class Debugger extends PureComponent {
 				frame.class = info.class;
 				frame.interval = info.interval;
 			}
-			if (!frame.bindings) {
+			if (!frame.bindings || true) {
 				const bindings = await this.context.api.getFrameBindings(
 					this.props.id,
 					frame.index
@@ -179,16 +178,15 @@ class Debugger extends PureComponent {
 		const frame = this.state.selectedFrame;
 		return frame
 			? {
-				debugger: this.props.id,
-				frame: frame.index,
-			}
+					debugger: this.props.id,
+					frame: frame.index,
+			  }
 			: {};
 	}
 
 	render() {
 		const { frames, selectedFrame } = this.state;
 		const styles = this.props.styles;
-		const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>

@@ -18,12 +18,15 @@ class BindingTable extends PureComponent {
 	static getDerivedStateFromProps(props, state) {
 		if (props.frame) {
 			const name = state.selectedBinding ? state.selectedBinding.name : "self";
-			const selected = (props.frame.bindings || []).find(b => b.name === name)
+			const selected = (props.frame.bindings || []).find(
+				(b) => b.name === name
+			);
 			return {
-				selectedBinding: selected
+				selectedBinding: selected,
 			};
-		} else { return null }
-
+		} else {
+			return null;
+		}
 	}
 
 	bindingSelected = async (binding) => {
@@ -49,12 +52,12 @@ class BindingTable extends PureComponent {
 	};
 
 	evaluationContext() {
-		const frame = this.state.selectedFrame;
+		const frame = this.props.frame;
 		return frame
 			? {
-				debugger: this.props.id,
-				frame: frame.index,
-			}
+					debugger: this.props.id,
+					frame: frame.index,
+			  }
 			: {};
 	}
 
@@ -128,7 +131,8 @@ class BindingTable extends PureComponent {
 								styles={styles}
 								lineNumbers={false}
 								source={selectedBinding ? selectedBinding.value : ""}
-								onAccept={this.saveBinding}
+								//onAccept={this.saveBinding}
+								context={this.evaluationContext()}
 							/>
 						</Paper>
 					</Box>

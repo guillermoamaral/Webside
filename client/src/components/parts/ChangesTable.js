@@ -25,8 +25,17 @@ class ChangesTable extends Component {
 		}
 	};
 
+	applyChange = (change) => {
+		if (change) {
+			this.context.api.postChange(change);
+		}
+	};
+
 	menuOptions() {
-		return [{ label: "Browse", action: this.browseClass }];
+		return [
+			{ label: "Browse", action: this.browseClass },
+			{ label: "Apply", action: this.applyChange },
+		];
 	}
 
 	changeColums() {

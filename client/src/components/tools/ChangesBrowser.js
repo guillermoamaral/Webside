@@ -42,6 +42,21 @@ class ChangesBrowser extends Component {
 		}
 	};
 
+	currentSourceCode(change) {
+		if (!change) {
+			return "";
+		}
+		let source;
+		switch (change.type) {
+			case "AddMethod":
+				source = "...";
+				break
+			default:
+				source = "";
+		}
+		return source;
+	}
+
 	render() {
 		const styles = this.props.styles;
 		const change = this.state.selectedChange;
@@ -55,7 +70,7 @@ class ChangesBrowser extends Component {
 					</Box>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
-					<Paper variant="outlined" style={{ height: 500 }}>
+					<Paper variant="outlined" style={{ height: 450 }}>
 						<ChangesTable
 							styles={styles}
 							changes={this.props.changes}
@@ -64,21 +79,42 @@ class ChangesBrowser extends Component {
 					</Paper>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
-					<Paper variant="outlined">
-						{/* <CodeMerge
+					<Grid container spacing={1}>
+						<Grid item xs={6} md={6} lg={6}>
+							<Paper variant="outlined" style={{ minHeight: 300 }}>
+								{/* <CodeMerge
 							context={this.evaluationContext()}
 							styles={this.props.styles}
 							leftCode={change ? change.sourceCode : ""}
 							rightCode={change ? change.currentSourceCode : ""}
 						/> */}
-						<CodeEditor
-							context={this.evaluationContext()}
-							styles={this.props.styles}
-							lineNumbers
-							source={change ? change.sourceCode : ""}
-							showAccept={false}
-						/>
-					</Paper>
+								<CodeEditor
+									context={this.evaluationContext()}
+									styles={this.props.styles}
+									lineNumbers
+									source={change ? change.sourceCode : ""}
+									showAccept={false}
+								/>
+							</Paper>
+						</Grid>
+						<Grid item xs={6} md={6} lg={6}>
+							<Paper variant="outlined" style={{ minHeight: 300 }}>
+								{/* <CodeMerge
+									context={this.evaluationContext()}
+									styles={this.props.styles}
+									leftCode={change ? change.sourceCode : ""}
+									rightCode={change ? change.currentSourceCode : ""}
+								/> */}
+								<CodeEditor
+									context={this.evaluationContext()}
+									styles={this.props.styles}
+									lineNumbers
+									source={this.currentSourceCode(change)}
+									showAccept={false}
+								/>
+							</Paper>
+						</Grid>
+					</Grid>
 				</Grid>
 			</Grid>
 		);

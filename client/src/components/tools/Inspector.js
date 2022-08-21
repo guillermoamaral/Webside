@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Grid, Box, Paper, Breadcrumbs, Link } from "@material-ui/core";
-import clsx from "clsx";
 import { IDEContext } from "../IDEContext";
 import ObjectTree from "../parts/ObjectTree";
 import ObjectPresenter from "../parts/ObjectPresenter";
