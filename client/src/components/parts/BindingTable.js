@@ -106,6 +106,16 @@ class BindingTable extends PureComponent {
 		return [{ label: "Inspect", action: this.inspectBinding }];
 	}
 
+	evaluationContext() {
+		const frame = this.props.frame;
+		return frame
+			? {
+					debugger: this.props.id,
+					frame: frame.index,
+			  }
+			: {};
+	}
+
 	render() {
 		const { frame, styles } = this.props;
 		const bindings = frame ? frame.bindings : [];

@@ -4,7 +4,7 @@ import AcceptIcon from "@material-ui/icons/CheckCircle";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import PopupMenu from "../controls/PopupMenu";
 import { IDEContext } from "../IDEContext";
-import Scrollable from "../controls/Scrollable";
+//import Scrollable from "../controls/Scrollable";
 import "../../SmalltalkMode.css";
 import "../../SmalltalkMode.js";
 
@@ -31,6 +31,7 @@ require("codemirror/addon/fold/foldgutter.css");
 require("codemirror/addon/fold/foldcode");
 require("codemirror/addon/fold/brace-fold");
 require("codemirror/addon/fold/comment-fold");
+require("codemirror/addon/hint/show-hint");
 
 function positionFromOffset(offset, source) {
 	const lines = source.slice(0, offset).split("\r");
