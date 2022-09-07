@@ -37,7 +37,7 @@ class Login extends Component {
 					<Grid item>
 						<Settings
 							styles={this.props.styles}
-							acceptLabel="Connect2"
+							acceptLabel="Connect"
 							onAccept={this.connectClicked}
 						/>
 					</Grid>
