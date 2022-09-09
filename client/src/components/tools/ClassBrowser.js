@@ -41,14 +41,15 @@ class ClassBrowser extends Component {
 	}
 
 	async componentDidMount() {
-		await this.initializeClassNames();
-		this.changeRootClass(this.state.root);
+		this.initializeClassNames();
 	}
 
 	async initializeClassNames() {
 		try {
 			const names = await this.context.api.getClassNames();
-			this.setState({ classNames: names });
+			this.setState({ classNames: names }, () => {
+				this.changeRootClass(this.state.root);
+			});
 		} catch (error) {
 			this.context.reportError(error);
 		}

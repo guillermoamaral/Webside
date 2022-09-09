@@ -30,11 +30,13 @@ class Debugger extends PureComponent {
 	}
 
 	componentDidMount() {
-		this.context.messageChannel.onEvent("onMessageReceived", (message) => {
-			if (message.type === "debuggerEvent") {
-				//this.updateFrames();
-			}
-		});
+		if (this.context.messageChannel) {
+			this.context.messageChannel.onEvent("onMessageReceived", (message) => {
+				if (message.type === "debuggerEvent") {
+					//this.updateFrames();
+				}
+			});
+		}
 		this.updateFrames();
 	}
 
@@ -171,7 +173,9 @@ class Debugger extends PureComponent {
 	};
 
 	notifyEvent(event) {
-		this.context.messageChannel.sendDebuggerEvent(event, this.props.id);
+		if (this.context.messageChannel) {
+			this.context.messageChannel.sendDebuggerEvent(event, this.props.id);
+		}
 	}
 
 	evaluationContext() {

@@ -55,6 +55,7 @@ import Settings from "./Settings";
 import ResourceBrowser from "./tools/ResourceBrowser";
 import CoderLikeBrowser from "./tools/CoderLikeBrowser";
 import CodeMigrator from "./tools/CodeMigrator";
+import Hotkeys from "react-hot-keys";
 
 class IDE extends Component {
 	constructor(props) {
@@ -100,15 +101,14 @@ class IDE extends Component {
 		return options;
 	}
 
-	async updateSettings(baseUri, dialect, developer) {
+	async updateSettings(baseUri, dialect, developer, messageChannelUrl) {
 		this.baseUri = baseUri;
 		this.developer = developer;
 		this.dialect = dialect;
 		document.title = dialect;
-		this.messageChannelUrl = "http://localhost:4200";
 		this.initializeAPI(baseUri, developer);
 		this.updateTheme(dialect);
-		this.initializeMessageChannel();
+		this.initializeMessageChannel(messageChannelUrl);
 	}
 
 	welcomeMessage() {
@@ -138,9 +138,12 @@ class IDE extends Component {
 		this.api = new API(baseUri, developer, this.reportError, this.reportChange);
 	}
 
-	initializeMessageChannel() {
+	initializeMessageChannel(url) {
+		if (!url) {
+			return;
+		}
 		this.messageChannel = new MessageChannel();
-		this.messageChannel.login(this.messageChannelUrl, this.developer);
+		this.messageChannel.login(url, this.developer);
 		this.messageChannel.onEvent(
 			"onMessageReceived",
 			this.messageReceived,
@@ -251,6 +254,22 @@ class IDE extends Component {
 		this.setState(state);
 	};
 
+	selectPageAtOffset(offset) {
+		const pages = this.state.pages;
+		var page = this.state.selectedPage;
+		var index = pages.indexOf(page);
+		if (index >= 0) {
+			index = index + offset;
+			console.log(index);
+			if (index < 0) {
+				index = pages.length;
+			} else if (index >= pages.length) {
+				index = 0;
+			}
+			this.selectPage(pages[index]);
+		}
+	}
+
 	updatePageLabel = (id, label) => {
 		const page = this.state.pages.find((p) => p.id === id);
 		if (page) {
@@ -285,10 +304,10 @@ class IDE extends Component {
 			pages.length === 1
 				? null
 				: page !== selectedPage
-					? selectedPage
-					: i > 0
-						? pages[i - 1]
-						: pages[i + 1];
+				? selectedPage
+				: i > 0
+				? pages[i - 1]
+				: pages[i + 1];
 		this.setState({
 			pages: pages.filter((p) => p !== page),
 			selectedPage: selected,
@@ -440,6 +459,15 @@ class IDE extends Component {
 		);
 	};
 
+	newWorkspace = async () => {
+		try {
+			const id = await this.api.createWorkspace();
+			this.openWorkspace(id);
+		} catch (error) {
+			this.reportError(error);
+		}
+	};
+
 	openWorkspace = (id) => {
 		const workspace = <Workspace styles={this.props.styles} key={id} id={id} />;
 		this.addPage("Workspace", <WorkspaceIcon />, workspace);
@@ -514,6 +542,10 @@ class IDE extends Component {
 	};
 
 	openChat = (peername) => {
+		if (!this.messageChannel) {
+			this.props.dialog.alert("There is no channel for chatting");
+			return;
+		}
 		if (peername === this.developer) return;
 		const peer = this.messageChannel.peerNamed(peername);
 		if (peername && !peer) return;
@@ -547,11 +579,11 @@ class IDE extends Component {
 						this.removeAllPages();
 						this.props.history.push(
 							"/ide?baseUri=" +
-							baseUri +
-							"&dialect=" +
-							dialect +
-							"&developer=" +
-							developer
+								baseUri +
+								"&dialect=" +
+								dialect +
+								"&developer=" +
+								developer
 						);
 						this.updateSettings(baseUri, dialect, developer);
 					}}
@@ -806,12 +838,7 @@ class IDE extends Component {
 
 	addWorkspaceClicked = async () => {
 		this.setState({ addPageMenuOpen: false });
-		try {
-			const id = await this.api.createWorkspace();
-			this.openWorkspace(id);
-		} catch (error) {
-			this.reportError(error);
-		}
+		this.newWorkspace();
 	};
 
 	addChangesBrowserClicked = async () => {
@@ -838,6 +865,24 @@ class IDE extends Component {
 			input.click();
 		} catch (error) {
 			this.reportError(error);
+		}
+	};
+
+	hotkeyPressed = async (hotkey) => {
+		switch (hotkey) {
+			case "ctrl+b":
+				this.openClassBrowser();
+				break;
+			case "ctrl+alt+w":
+				this.newWorkspace();
+				break;
+			case "ctrl+alt+left":
+				this.selectPageAtOffset(-1);
+				break;
+			case "ctrl+alt+right":
+				this.selectPageAtOffset(1);
+				break;
+			default:
 		}
 	};
 
@@ -878,162 +923,171 @@ class IDE extends Component {
 		};
 		const styles = this.props.styles;
 		return (
-			<IDEContext.Provider value={context}>
-				<ThemeProvider theme={this.theme}>
-					<DialogProvider>
-						<div className={styles.root}>
-							<Titlebar
-								developer={this.developer}
-								dialect={this.dialect}
-								styles={styles}
-								sidebarExpanded={this.state.sidebarExpanded}
-								expandSidebar={this.expandSidebar}
-								searchOptions={[]}
-								onAvatarClicked={this.openSettings}
-							/>
-							<Sidebar
-								styles={styles}
-								expanded={this.state.sidebarExpanded}
-								unreadErrorsCount={this.state.unreadErrorsCount}
-								unreadMessages={this.state.unreadMessages}
-								onSaveImageClicked={this.saveImage}
-								onTranscriptClicked={this.openTranscript}
-								onSearchClicked={this.openSearch}
-								onChangesClicked={this.browseLastChanges}
-								onResourcesClicked={this.openResources}
-								onPeersClicked={this.openChat}
-								onClose={this.collapseSidebar}
-							/>
-							<main className={styles.content}>
-								<div className={styles.appBarSpacer} />
-								<Container className={styles.container}>
-									<Grid container spacing={1} style={{ height: "100%" }}>
-										<Grid item xs={11} md={11} lg={11}>
-											<TabControl
-												style={{ height: "100%" }}
-												styles={styles}
-												selectedPage={this.state.selectedPage}
-												pages={this.state.pages}
-												onSelect={this.selectPage}
-												onClose={this.removePage}
-											/>
-										</Grid>
-										<Grid item xs={1} md={1} lg={1}>
-											<IconButton
-												id="addPageButton"
-												color="primary"
-												onClick={() => {
-													this.setState({ addPageMenuOpen: true });
-												}}
-											>
-												<AddIcon style={{ fontSize: 40 }} />
-											</IconButton>
-											<Menu
-												id="addPageMenu"
-												anchorEl={document.getElementById("addPageButton")}
-												keepMounted
-												open={this.state.addPageMenuOpen}
-												onClose={() => {
-													this.setState({ addPageMenuOpen: false });
-												}}
-											>
-												<MenuItem onClick={this.addWorkspaceClicked}>
-													<Box
-														display="flex"
-														flexWrap="nowrap"
-														alignItems="center"
-														justifyContent="center"
-													>
-														<Box pt={1} pr={1}>
-															<WorkspaceIcon />
+			<Hotkeys
+				keyName="ctrl+b, ctrl+alt+w, ctrl+alt+left, ctrl+alt+right"
+				filter={(event) => {
+					return true;
+				}}
+				allowRepeat={false}
+				onKeyDown={(hotkey, e, handle) => this.hotkeyPressed(hotkey)}
+			>
+				<IDEContext.Provider value={context}>
+					<ThemeProvider theme={this.theme}>
+						<DialogProvider>
+							<div className={styles.root}>
+								<Titlebar
+									developer={this.developer}
+									dialect={this.dialect}
+									styles={styles}
+									sidebarExpanded={this.state.sidebarExpanded}
+									expandSidebar={this.expandSidebar}
+									searchOptions={[]}
+									onAvatarClicked={this.openSettings}
+								/>
+								<Sidebar
+									styles={styles}
+									expanded={this.state.sidebarExpanded}
+									unreadErrorsCount={this.state.unreadErrorsCount}
+									unreadMessages={this.state.unreadMessages}
+									onSaveImageClicked={this.saveImage}
+									onTranscriptClicked={this.openTranscript}
+									onSearchClicked={this.openSearch}
+									onChangesClicked={this.browseLastChanges}
+									onResourcesClicked={this.openResources}
+									onPeersClicked={this.openChat}
+									onClose={this.collapseSidebar}
+								/>
+								<main className={styles.content}>
+									<div className={styles.appBarSpacer} />
+									<Container className={styles.container}>
+										<Grid container spacing={1} style={{ height: "100%" }}>
+											<Grid item xs={11} md={11} lg={11}>
+												<TabControl
+													style={{ height: "100%" }}
+													styles={styles}
+													selectedPage={this.state.selectedPage}
+													pages={this.state.pages}
+													onSelect={this.selectPage}
+													onClose={this.removePage}
+												/>
+											</Grid>
+											<Grid item xs={1} md={1} lg={1}>
+												<IconButton
+													id="addPageButton"
+													color="primary"
+													onClick={() => {
+														this.setState({ addPageMenuOpen: true });
+													}}
+												>
+													<AddIcon style={{ fontSize: 40 }} />
+												</IconButton>
+												<Menu
+													id="addPageMenu"
+													anchorEl={document.getElementById("addPageButton")}
+													keepMounted
+													open={this.state.addPageMenuOpen}
+													onClose={() => {
+														this.setState({ addPageMenuOpen: false });
+													}}
+												>
+													<MenuItem onClick={this.addWorkspaceClicked}>
+														<Box
+															display="flex"
+															flexWrap="nowrap"
+															alignItems="center"
+															justifyContent="center"
+														>
+															<Box pt={1} pr={1}>
+																<WorkspaceIcon />
+															</Box>
+															<Box>Workspace</Box>
 														</Box>
-														<Box>Workspace</Box>
-													</Box>
-												</MenuItem>
-												<MenuItem onClick={this.addClassBrowserClicked}>
-													<Box
-														display="flex"
-														flexWrap="nowrap"
-														alignItems="center"
-														justifyContent="center"
-													>
-														<Box pt={1} pr={1}>
-															<ClassBrowserIcon />
+													</MenuItem>
+													<MenuItem onClick={this.addClassBrowserClicked}>
+														<Box
+															display="flex"
+															flexWrap="nowrap"
+															alignItems="center"
+															justifyContent="center"
+														>
+															<Box pt={1} pr={1}>
+																<ClassBrowserIcon />
+															</Box>
+															<Box>Class Browser</Box>
 														</Box>
-														<Box>Class Browser</Box>
-													</Box>
-												</MenuItem>
-												<MenuItem onClick={this.addPackageBrowserClicked}>
-													<Box
-														display="flex"
-														flexWrap="nowrap"
-														alignItems="center"
-														justifyContent="center"
-													>
-														<Box pt={1} pr={1}>
-															<PackageBrowserIcon />
+													</MenuItem>
+													<MenuItem onClick={this.addPackageBrowserClicked}>
+														<Box
+															display="flex"
+															flexWrap="nowrap"
+															alignItems="center"
+															justifyContent="center"
+														>
+															<Box pt={1} pr={1}>
+																<PackageBrowserIcon />
+															</Box>
+															<Box>Package Browser</Box>
 														</Box>
-														<Box>Package Browser</Box>
-													</Box>
-												</MenuItem>
-												<MenuItem onClick={this.addChangesBrowserClicked}>
-													<Box
-														display="flex"
-														flexWrap="nowrap"
-														alignItems="center"
-														justifyContent="center"
-													>
-														<Box pt={1} pr={1}>
-															<ChangesBrowserIcon />
+													</MenuItem>
+													<MenuItem onClick={this.addChangesBrowserClicked}>
+														<Box
+															display="flex"
+															flexWrap="nowrap"
+															alignItems="center"
+															justifyContent="center"
+														>
+															<Box pt={1} pr={1}>
+																<ChangesBrowserIcon />
+															</Box>
+															<Box>Changes Browser</Box>
 														</Box>
-														<Box>Changes Browser</Box>
-													</Box>
-												</MenuItem>
-											</Menu>
-										</Grid>
-										<React.Fragment key="bottom">
-											<Drawer
-												anchor="bottom"
-												variant="persistent"
-												open={this.state.transcriptOpen}
-											>
-												<Grid container spacing={0}>
-													<Grid item xs={11} md={11} lg={11}>
-														{this.state.transcriptOpen && (
-															<Transcript
-																styles={styles}
-																text={this.state.transcriptText}
-																onChange={this.transcriptChanged}
-															/>
-														)}
+													</MenuItem>
+												</Menu>
+											</Grid>
+											<React.Fragment key="bottom">
+												<Drawer
+													anchor="bottom"
+													variant="persistent"
+													open={this.state.transcriptOpen}
+												>
+													<Grid container spacing={0}>
+														<Grid item xs={11} md={11} lg={11}>
+															{this.state.transcriptOpen && (
+																<Transcript
+																	styles={styles}
+																	text={this.state.transcriptText}
+																	onChange={this.transcriptChanged}
+																/>
+															)}
+														</Grid>
+														<Grid item xs={1} md={1} lg={1}>
+															<Box display="flex" justifyContent="center">
+																<IconButton
+																	onClick={() =>
+																		this.setState({ transcriptOpen: false })
+																	}
+																>
+																	<KeyboardArrowDown />
+																</IconButton>
+															</Box>
+														</Grid>
 													</Grid>
-													<Grid item xs={1} md={1} lg={1}>
-														<Box display="flex" justifyContent="center">
-															<IconButton
-																onClick={() =>
-																	this.setState({ transcriptOpen: false })
-																}
-															>
-																<KeyboardArrowDown />
-															</IconButton>
-														</Box>
-													</Grid>
-												</Grid>
-											</Drawer>
-										</React.Fragment>
-									</Grid>
-								</Container>
-							</main>
-						</div>
-						<CustomSnacks
-							open={this.state.lastError !== null}
-							onClose={() => this.setState({ lastError: null })}
-							text={this.state.lastError}
-							severity="error"
-						/>
-					</DialogProvider>
-				</ThemeProvider>
-			</IDEContext.Provider>
+												</Drawer>
+											</React.Fragment>
+										</Grid>
+									</Container>
+								</main>
+							</div>
+							<CustomSnacks
+								open={this.state.lastError !== null}
+								onClose={() => this.setState({ lastError: null })}
+								text={this.state.lastError}
+								severity="error"
+							/>
+						</DialogProvider>
+					</ThemeProvider>
+				</IDEContext.Provider>
+			</Hotkeys>
 		);
 	}
 }

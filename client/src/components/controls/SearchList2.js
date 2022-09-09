@@ -45,7 +45,6 @@ class SearchList2 extends React.Component {
 		return inputLength === 0 || !this.props.options
 			? []
 			: this.props.options.filter((option) => {
-					console.log(option)
 					const keep =
 						count < suggestionLimit && option &&
 						option.toLowerCase().slice(0, inputLength) === inputValue;
