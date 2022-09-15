@@ -28,7 +28,7 @@ Where change corresponds to the ones defined [here](../changes/post.md)
 		"package": "Examples",
 		"timestamp": "2022-08-05T09:27:02.398-03:00",
 		"author": "guille",
-		"class": "MyPoint",
+		"className": "MyPoint",
 		"definition": "Point subclass: 'MyPoint' instanceVariableNames: '' classVariableNames: '' poolDictionaries: ''"
 	},
 	{
@@ -38,7 +38,7 @@ Where change corresponds to the ones defined [here](../changes/post.md)
 		"timestamp": "2022-08-05T09:27:23.414-03:00",
 		"author": "guille",
 		"sourceCode": "xTimesY\r\t^x * y",
-		"class": "MyPoint",
+		"className": "MyPoint",
 		"selector": "xTimesY",
 		"category": "unclassified"
 	}

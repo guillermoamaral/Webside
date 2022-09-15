@@ -21,7 +21,7 @@ class ChangesTable extends Component {
 
 	browseClass = (change) => {
 		if (change) {
-			this.context.browseClass(change.class);
+			this.context.browseClass(change.className);
 		}
 	};
 

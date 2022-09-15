@@ -51,7 +51,7 @@ class CodeBrowser extends Component {
         packagename,
         definition
       );
-      const species = await this.context.api.getClass(change.class);
+      const species = await this.context.api.getClass(change.className);
       if (this.props.onDefineClass) {
         this.props.onDefineClass(species);
       }

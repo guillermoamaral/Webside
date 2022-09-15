@@ -407,7 +407,7 @@ class API {
 
 	async defineClass(classname, superclassname, packagename, definition) {
 		const change = this.newChange("AddClass");
-		change.class = classname;
+		change.className = classname;
 		change.superclass = superclassname;
 		change.package = packagename;
 		change.definition = definition;
@@ -416,20 +416,20 @@ class API {
 
 	async commentClass(classname, comment) {
 		const change = this.newChange("CommentClass");
-		change.class = classname;
+		change.className = classname;
 		change.comment = comment;
 		return await this.postChange(change, "comment class " + classname);
 	}
 
 	async removeClass(classname) {
 		const change = this.newChange("RemoveClass");
-		change.class = classname;
+		change.className = classname;
 		return await this.postChange(change, "remove class " + classname);
 	}
 
 	async renameClass(classname, newName, renameReferences = true) {
 		const change = this.newChange("RenameClass");
-		change.class = classname;
+		change.className = classname;
 		change.newName = newName;
 		change.renameReferences = renameReferences;
 		return await this.postChange(change, "rename class " + classname);
@@ -437,7 +437,7 @@ class API {
 
 	async addInstanceVariable(classname, variable) {
 		const change = this.newChange("AddInstanceVariable");
-		change.class = classname;
+		change.className = classname;
 		change.variable = variable;
 		return await this.postChange(
 			change,
@@ -447,7 +447,7 @@ class API {
 
 	async addClassVariable(classname, variable) {
 		const change = this.newChange("AddClassVariable");
-		change.class = classname;
+		change.className = classname;
 		change.variable = variable;
 		return await this.postChange(
 			change,
@@ -457,7 +457,7 @@ class API {
 
 	async renameInstanceVariable(classname, variable, newName) {
 		const change = this.newChange("RenameInstanceVariable");
-		change.class = classname;
+		change.className = classname;
 		change.variable = variable;
 		change.newName = newName;
 		return await this.postChange(
@@ -473,7 +473,7 @@ class API {
 
 	async renameClassVariable(classname, variable, newName) {
 		const change = this.newChange("RenameClassVariable");
-		change.class = classname;
+		change.className = classname;
 		change.variable = variable;
 		change.newName = newName;
 		return await this.postChange(
@@ -489,7 +489,7 @@ class API {
 
 	async removeInstanceVariable(classname, variable) {
 		const change = this.newChange("RemoveInstanceVariable");
-		change.class = classname;
+		change.className = classname;
 		change.variable = variable;
 		return await this.postChange(
 			change,
@@ -499,7 +499,7 @@ class API {
 
 	async removeClassVariable(classname, variable) {
 		const change = this.newChange("RemoveClassVariable");
-		change.class = classname;
+		change.className = classname;
 		change.variable = variable;
 		return await this.postChange(
 			change,
@@ -509,7 +509,7 @@ class API {
 
 	async moveInstanceVariableUp(classname, variable) {
 		const change = this.newChange("MoveUpInstanceVariable");
-		change.class = classname;
+		change.className = classname;
 		change.variable = variable;
 		return await this.postChange(
 			change,
@@ -519,7 +519,7 @@ class API {
 
 	async moveInstanceVariableDown(classname, variable, target) {
 		const change = this.newChange("MoveDownInstanceVariable");
-		change.class = classname;
+		change.className = classname;
 		change.variable = variable;
 		change.target = target;
 		return await this.postChange(
@@ -530,7 +530,7 @@ class API {
 
 	async renameCategory(classname, category, newName) {
 		const change = this.newChange("RenameCategory");
-		change.class = classname;
+		change.className = classname;
 		change.category = category;
 		change.newName = newName;
 		return await this.postChange(
@@ -546,7 +546,7 @@ class API {
 
 	async removeCategory(classname, category) {
 		const change = this.newChange("RemoveCategory");
-		change.class = classname;
+		change.className = classname;
 		change.category = category;
 		return await this.postChange(
 			change,
@@ -556,7 +556,7 @@ class API {
 
 	async compileMethod(classname, packagename, category, source) {
 		const change = this.newChange("AddMethod");
-		change.class = classname;
+		change.className = classname;
 		change.package = packagename;
 		change.category = category;
 		change.sourceCode = source;
@@ -568,7 +568,7 @@ class API {
 
 	async removeMethod(classname, selector) {
 		const change = this.newChange("RemoveMethod");
-		change.class = classname;
+		change.className = classname;
 		change.selector = selector;
 		return await this.postChange(
 			change,
@@ -578,7 +578,7 @@ class API {
 
 	async classifyMethod(classname, selector, category) {
 		const change = this.newChange("ClassifyMethod");
-		change.class = classname;
+		change.className = classname;
 		change.selector = selector;
 		change.category = category;
 		return await this.postChange(
@@ -589,7 +589,7 @@ class API {
 
 	async renameSelector(classname, selector, newSelector) {
 		const change = this.newChange("RenameMethod");
-		change.class = classname;
+		change.className = classname;
 		change.selector = selector;
 		change.newSelector = newSelector;
 		return await this.postChange(

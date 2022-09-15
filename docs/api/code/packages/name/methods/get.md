@@ -18,7 +18,7 @@ Retrieve extended methods of a given package.
 [
 	{
 		"selector": "asWebsideJson",
-		"class": "RBVariableNode",
+		"methodClass": "RBVariableNode",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^ super asWebsideJson\r\t\tat: 'value' put: name;\r\t\tyourself",
@@ -29,7 +29,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RPackageTag",
+		"methodClass": "RPackageTag",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^ super asWebsideJson\r\t\tat: 'name' put: name;\r\t\tat: 'classes' put: classNames;\r\t\tyourself",
@@ -40,7 +40,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "Dictionary",
+		"methodClass": "Dictionary",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t| columns rows presentation |\r\tcolumns := OrderedCollection new.\r\tcolumns\r\t\tadd:\r\t\t\t(NeoJSONObject new\r\t\t\t\tat: 'field' put: 'key';\r\t\t\t\tat: 'label' put: 'Key';\r\t\t\t\tat: 'align' put: 'left';\r\t\t\t\tyourself);\r\t\tadd:\r\t\t\t(NeoJSONObject new\r\t\t\t\tat: 'field' put: 'value';\r\t\t\t\tat: 'label' put: 'Value';\r\t\t\t\tat: 'align' put: 'left';\r\t\t\t\tyourself).\r\trows := self associations\r\t\tcollect: [ :a | \r\t\t\tNeoJSONObject new\r\t\t\t\tat: 'key' put: a key asString ;\r\t\t\t\tat: 'value' put: a value asString;\r\t\t\t\tyourself ].\r\tpresentation := NeoJSONObject new\r\t\tat: 'type' put: 'table';\r\t\tat: 'title' put: 'Items';\r\t\tat: 'columns' put: columns;\r\t\tat: 'rows' put: rows;\r\t\tyourself.\r\t^ super asWebsideJson\r\t\tat: 'presentation' put: presentation;\r\t\tyourself",
@@ -51,7 +51,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBRefactoring",
+		"methodClass": "RBRefactoring",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json",
@@ -62,7 +62,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBRefactoring",
+		"methodClass": "RBRefactoring",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^ NeoJSONObject new\r\t\tat: 'type' put: self class websideType asString;\r\t\tat: 'label' put: self printString;\r\t\tat: 'package' put: nil;\r\t\tat: 'timestamp' put: DateAndTime now asString;\r\t\tat: 'author' put: Author uniqueInstance fullName;\r\t\tyourself",
@@ -73,7 +73,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBLiteralValueNode",
+		"methodClass": "RBLiteralValueNode",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^ super asWebsideJson\r\t\tat: 'value' put: value asString;\r\t\tyourself",
@@ -84,7 +84,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBCascadeNode",
+		"methodClass": "RBCascadeNode",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson \r| children |\rchildren := messages collect: [ :n | n asWebsideJson  ].\r^super asWebsideJson at: 'children' put: children; yourself ",
@@ -95,7 +95,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBVariableRefactoring",
+		"methodClass": "RBVariableRefactoring",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json\r\tsuper fromWebsideJson: json.\r\tclass := json at: 'class' ifAbsent: nil.\r\tclass ifNotNil: [ class := self classObjectFor: class asSymbol ].\r\tvariableName := json at: 'variable' ifAbsent: nil",
@@ -106,7 +106,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBVariableRefactoring",
+		"methodClass": "RBVariableRefactoring",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^ super asWebsideJson\r\t\tat: 'class' put: class name;\r\t\tat: 'variable' put: variableName;\r\t\tyourself",
@@ -117,7 +117,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBPullUpInstanceVariableRefactoring",
+		"methodClass": "RBPullUpInstanceVariableRefactoring",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json\r\tsuper fromWebsideJson: json.\r\tclass notNil\r\t\tifTrue: [ class := class superclass ]",
@@ -128,7 +128,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "Object",
+		"methodClass": "Object",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^ NeoJSONObject new\r\t\tat: 'class' put: self class name;\r\t\tat: 'indexable' put: self class isVariable;\r\t\tat: 'size' put: (self class isVariable ifTrue: [self size] ifFalse: [0]);\r\t\tat: 'printString' put: self printString;\r\t\tyourself",
@@ -139,7 +139,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBMethodNode",
+		"methodClass": "RBMethodNode",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t| children |\r\tchildren := OrderedCollection with: selector asWebsideJson.\r\targuments do: [ :n | children add: n asWebsideJson  ].\r\tchildren add: body asWebsideJson .\r\t^super asWebsideJson at: 'children' put: children; yourself ",
@@ -150,7 +150,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBAddMethodChange",
+		"methodClass": "RBAddMethodChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json\r\t| category |\r\tsuper fromWebsideJson: json.\r\tselector := json at: 'selector' ifAbsent: nil.\r\tselector ifNotNil: [ selector := selector asSymbol ].\r\tsource := json at: 'sourceCode' ifAbsent: nil.\r\tcategory := json at: 'category' ifAbsent: nil.\r\tcategory ifNil: [ category := Protocol unclassified ].\r\tself protocols: {category asSymbol}",
@@ -161,7 +161,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBAddMethodChange",
+		"methodClass": "RBAddMethodChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t| json |\r\tjson := super asWebsideJson.\r\tself source ifNotNil: [ :s | json at: 'sourceCode' put: s ].\r\t^ json\r\t\tat: 'selector' put: self selector;\r\t\tat: 'category' put: self protocol;\r\t\tyourself",
@@ -172,7 +172,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBReturnNode",
+		"methodClass": "RBReturnNode",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson \r\t^super asWebsideJson at: 'children' put: { value asWebsideJson  }; yourself",
@@ -183,7 +183,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBRemoveMethodChange",
+		"methodClass": "RBRemoveMethodChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json\r\tsuper fromWebsideJson: json.\r\tselector := json at: 'selector' ifAbsent: nil.\r\tselector ifNotNil: [selector := selector asSymbol]",
@@ -194,7 +194,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBRemoveMethodChange",
+		"methodClass": "RBRemoveMethodChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^super asWebsideJson at: 'selector' put: selector; yourself",
@@ -205,7 +205,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBAddClassChange",
+		"methodClass": "RBAddClassChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json\r\t\r\tsuper fromWebsideJson: json.\r\tdefinition := json at: 'definition' ifAbsent: ''.\r\t(definition includesSubstring: 'category:')\r\t\tifFalse: [ definition := definition , ' category: #Undefined' ]",
@@ -216,7 +216,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBRenameMethodRefactoring",
+		"methodClass": "RBRenameMethodRefactoring",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json\r\tsuper fromWebsideJson: json.\r\toldSelector := json at: 'selector' ifAbsent: nil.\r\toldSelector ifNotNil: [ oldSelector := oldSelector asSymbol.\r\t\t\tpermutation := 1 to: oldSelector numArgs ].\r\tnewSelector := json at: 'newSelector' ifAbsent: nil.\r\tnewSelector ifNotNil: [ newSelector := newSelector asSymbol ].\r",
@@ -227,7 +227,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBRenameMethodRefactoring",
+		"methodClass": "RBRenameMethodRefactoring",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^super asWebsideJson\r\tat: 'selector' put: oldSelector;\r\tat: 'newSelector' put: newSelector; yourself",
@@ -238,7 +238,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBRefactoryProtocolChange",
+		"methodClass": "RBRefactoryProtocolChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json\r\tsuper fromWebsideJson: json.\r\tprotocol := json at: 'category' ifAbsent: nil",
@@ -249,7 +249,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBRefactoryProtocolChange",
+		"methodClass": "RBRefactoryProtocolChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^ super asWebsideJson\r\t\tat: 'category' put: protocol;\r\t\tyourself",
@@ -260,7 +260,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "String",
+		"methodClass": "String",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^ super asWebsideJson\r\t\tremoveKey: 'presentation' ifAbsent: [  ];\r\t\tyourself",
@@ -271,7 +271,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RPackage",
+		"methodClass": "RPackage",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t| methods |\r\tmethods := NeoJSONObject new.\r\tclassExtensionSelectors\r\t\tkeysAndValuesDo: [ :c :m | methods at: c asString put: m ].\r\tmetaclassExtensionSelectors\r\t\tkeysAndValuesDo: [ :c :m | methods at: c asString put: m ].\r\t^ super asWebsideJson\r\t\tat: 'name' put: name;\r\t\tat: 'classes' put: self definedClassNames;\r\t\tat: 'methods' put: methods;\r\t\tyourself",
@@ -282,7 +282,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBMethodProtocolChange",
+		"methodClass": "RBMethodProtocolChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json\r\t| method |\r\tsuper fromWebsideJson: json.\r\r\tsource\r\t\tifNil: [ method := self changeClass >> selector.\r\t\t\tmethod ifNotNil: [ source := method sourceCode ] ]",
@@ -293,7 +293,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "Context",
+		"methodClass": "Context",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson \r\t| interval |\r\tinterval := self pcRange.\r\tinterval := NeoJSONObject new at: 'start' put: interval first; at: 'end' put: interval last; yourself.\r\t^NeoJSONObject new at: 'label' put: self method printString;\r\tat: 'class' put: self receiver class asWebsideJson ;\r\tat: 'method' put: self method asWebsideJson ;\r\tat: 'interval' put: interval; yourself ",
@@ -304,7 +304,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "SyntaxErrorNotification",
+		"methodClass": "SyntaxErrorNotification",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t| interval |\r\tinterval := NeoJSONObject new\r\t\tat: 'start' put: location;\r\t\tat: 'end' put: location; yourself.\r\t^ NeoJSONObject new\r\t\tat: 'description' put: self messageText;\r\t\tat: 'interval' put: interval;\r\t\tyourself\r\t\t",
@@ -315,7 +315,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBAssignmentNode",
+		"methodClass": "RBAssignmentNode",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson \r\t^super asWebsideJson at: 'children' put: { variable asWebsideJson . value asWebsideJson }",
@@ -326,7 +326,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "ClassDescription",
+		"methodClass": "ClassDescription",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^ super asWebsideJson\r\t\tat: 'name' put: self name;\r\t\tat: 'definition' put: self oldDefinition;\r\t\tat: 'superclass' put: (self superclass ifNotNil: [ :c | c name ]);\r\t\tat: 'comment' put: self comment;\r\t\tat: 'variable' put: self isVariable;\r\t\tat: 'package' put: self package name;\r\t\tyourself",
@@ -337,7 +337,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBCommentChange",
+		"methodClass": "RBCommentChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json\r\tsuper fromWebsideJson: json.\r\tcomment := json at: 'comment' ifAbsent: ''",
@@ -348,7 +348,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBCommentChange",
+		"methodClass": "RBCommentChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^super asWebsideJson\r\t\tat: 'comment' put: comment; yourself",
@@ -359,7 +359,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBRefactoryChange",
+		"methodClass": "RBRefactoryChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json",
@@ -370,7 +370,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBRefactoryChange",
+		"methodClass": "RBRefactoryChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^ NeoJSONObject new\r\t\tat: 'type' put: self class websideType asString;\r\t\tat: 'label' put: self changeString;\r\t\tat: 'package' put: nil;\r\t\tat: 'timestamp' put: DateAndTime now asString;\r\t\tat: 'author' put: Author uniqueInstance fullName;\r\t\tyourself",
@@ -381,7 +381,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBRefactoryClassChange",
+		"methodClass": "RBRefactoryClassChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json\r\tsuper fromWebsideJson: json.\r\tclassName := json at: 'class' ifAbsent: nil.\r\tclassName ifNotNil: [ className := className asSymbol ].\r\tisMeta := className notNil and: [ className endsWith: ' class' ]\r\t",
@@ -392,7 +392,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBRefactoryClassChange",
+		"methodClass": "RBRefactoryClassChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^ super asWebsideJson\r\t\tat: 'class' put: className ;\r\t\tyourself",
@@ -403,7 +403,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "CompiledMethod",
+		"methodClass": "CompiledMethod",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^ NeoJSONObject new\r\t\tat: 'selector' put: self selector;\r\t\tat: 'class' put: self methodClass name;\r\t\tat: 'category' put: self category;\r\t\tat: 'package' put: self package name;\r\t\tat: 'source' put: self sourceCode;\r\t\tat: 'author' put: self author;\r\t\tat: 'timestamp' put: self timeStamp;\r\t\tat: 'overriding' put: self isOverriding;\r\t\tat: 'overriden' put: self isOverridden;\r\t\tyourself",
@@ -414,7 +414,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBRenameVariableChange",
+		"methodClass": "RBRenameVariableChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json\r\tsuper fromWebsideJson: json.\r\tclassName := json at: 'class' ifAbsent: nil.\r\tclassName ifNotNil: [ className := className asSymbol ].\r\tisMeta := className notNil and: [ className endsWith: ' class' ].\r\toldName  := json at: 'variable' ifAbsent: nil.\r\tnewName := json at: 'newName' ifAbsent: nil",
@@ -425,7 +425,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBRenameVariableChange",
+		"methodClass": "RBRenameVariableChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^super asWebsideJson\r\tat: 'class' put: className; at: 'variable'  put: oldName; at: 'newName'put: newName; yourself ",
@@ -436,7 +436,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBMessageNode",
+		"methodClass": "RBMessageNode",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t| s children |\r\ts := NeoJSONObject new\r\t\tat: 'type' put: 'Selector';\r\t\tat: 'start' put: self start;\r\t\tat: 'end' put: self start + selector size;\r\t\tat: 'value' put: selector;\r\t\tyourself.\r\tchildren := OrderedCollection\r\t\twith: receiver asWebsideJson\r\t\twith: s.\r\targuments do: [ :n | children add: n asWebsideJson ].\r\t^ super asWebsideJson\r\t\tat: 'children' put: children;\r\t\tyourself",
@@ -447,7 +447,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBSequenceNode",
+		"methodClass": "RBSequenceNode",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson \r\t| children |\r\tchildren := OrderedCollection new.\r\ttemporaries do: [ :n | children add: n asWebsideJson  ].\r\tstatements do: [ :n |  children add: n asWebsideJson].\r\t^super asWebsideJson at: 'children' put: children ; yourself",
@@ -458,7 +458,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBRefactoryDefinitionChange",
+		"methodClass": "RBRefactoryDefinitionChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^super asWebsideJson\r\t\tat: 'sourceCode' put: self definition;\r\t\tyourself",
@@ -469,7 +469,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBMethodRefactoring",
+		"methodClass": "RBMethodRefactoring",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json\r\tsuper fromWebsideJson: json.\r\tclass := json at: 'class' ifAbsent: nil.\r\tclass ifNotNil: [class := self classObjectFor: class asSymbol].",
@@ -480,7 +480,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBMethodRefactoring",
+		"methodClass": "RBMethodRefactoring",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^ super asWebsideJson\r\t\tat: 'class' put: class name;\r\t\tyourself",
@@ -491,7 +491,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBLiteralArrayNode",
+		"methodClass": "RBLiteralArrayNode",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson \r\t| children |\r\tchildren := contents collect: [ :n | n asWebsideJson  ].\r\t^super asWebsideJson at: 'children' put: children; yourself ",
@@ -502,7 +502,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RGMethodDefinition",
+		"methodClass": "RGMethodDefinition",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^ self compiledMethod asWebsideJson ",
@@ -513,7 +513,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBRefactoryVariableChange",
+		"methodClass": "RBRefactoryVariableChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json\r\tsuper fromWebsideJson: json.\r\tvariable := json at: 'variable' ifAbsent: nil",
@@ -524,7 +524,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBRefactoryVariableChange",
+		"methodClass": "RBRefactoryVariableChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t^ super asWebsideJson\r\t\tat: 'variable' put:  variable;\r\t\tyourself",
@@ -535,7 +535,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBRenameClassChange",
+		"methodClass": "RBRenameClassChange",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json\r\tsuper fromWebsideJson: json.\r\toldName := json at: 'class' ifAbsent: nil.\r\tnewName := json at: 'newName' ifAbsent: nil.",
@@ -546,7 +546,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBNode",
+		"methodClass": "RBNode",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType\r\t^self class websideType",
@@ -557,7 +557,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "RBNode",
+		"methodClass": "RBNode",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\r\t^ NeoJSONObject new\r\t\tat: 'type' put: self websideType;\r\t\tat: 'start' put: self start;\r\t\tat: 'end' put: self stop;\r\t\tyourself",
@@ -568,7 +568,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "asWebsideJson",
-		"class": "Collection",
+		"methodClass": "Collection",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "asWebsideJson\r\t| columns rows presentation |\r\tcolumns := OrderedCollection new.\r\tcolumns\r\t\tadd:\r\t\t\t(NeoJSONObject new\r\t\t\t\tat: 'field' put: 'index';\r\t\t\t\tat: 'label' put: '#';\r\t\t\t\tat: 'align' put: 'left';\r\t\t\t\tyourself);\r\t\tadd:\r\t\t\t(NeoJSONObject new\r\t\t\t\tat: 'field' put: 'value';\r\t\t\t\tat: 'label' put: 'Value';\r\t\t\t\tat: 'align' put: 'left';\r\t\t\t\tyourself).\r\trows := self asArray\r\t\twithIndexCollect: [ :e :i | \r\t\t\tNeoJSONObject new\r\t\t\t\tat: 'index' put: i;\r\t\t\t\tat: 'value' put: e asString;\r\t\t\t\tyourself ].\r\tpresentation := NeoJSONObject new\r\t\tat: 'type' put: 'table';\r\t\tat: 'title' put: 'Items';\r\t\tat: 'columns' put: columns;\r\t\tat: 'rows' put: rows;\r\t\tyourself.\r\t^ super asWebsideJson\r\t\tat: 'presentation' put: presentation;\r\t\tyourself",
@@ -579,7 +579,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBRemoveProtocolChange class",
+		"methodClass": "RBRemoveProtocolChange class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType\r\t^ 'RemoveCategory'",
@@ -590,7 +590,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBAddClassVariableChange class",
+		"methodClass": "RBAddClassVariableChange class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType\r\t^ 'AddClassVariable'",
@@ -601,7 +601,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBVariableNode class",
+		"methodClass": "RBVariableNode class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType \r^'Identifier'",
@@ -612,7 +612,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBMethodProtocolChange class",
+		"methodClass": "RBMethodProtocolChange class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType \r\t^'ClassifyMethod'",
@@ -623,7 +623,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBRemoveClassChange class",
+		"methodClass": "RBRemoveClassChange class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType\r\t^ 'RemoveClass'",
@@ -634,7 +634,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBRemoveInstanceVariableChange class",
+		"methodClass": "RBRemoveInstanceVariableChange class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType\r\t^ 'RemoveInstanceVariable'",
@@ -645,7 +645,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBRenameMethodRefactoring class",
+		"methodClass": "RBRenameMethodRefactoring class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType\r\t^ 'RenameMethod'",
@@ -656,7 +656,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "acceptsWebsideJson:",
-		"class": "RBReplaceMethodRefactoring class",
+		"methodClass": "RBReplaceMethodRefactoring class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "acceptsWebsideJson: json\r\t| classname class method selector |\r\t(super acceptsWebsideJson: json)\r\t\tifFalse: [ ^ false ].\r\tclassname := json at: 'class' ifAbsent: [ ^ false ].\r\tclass := Smalltalk classNamed: classname.\r\tclass ifNil: [ ^ false ].\r\tmethod := RBParser parseMethod: (json at: 'sourceCode') onError: nil.\r\tmethod ifNil: [ ^ false ].\r\tselector := method selector.\r\tselector ifNil: [ ^ false ].\r\t^ class includesSelector: selector",
@@ -667,7 +667,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBAddMethodRefactoring class",
+		"methodClass": "RBAddMethodRefactoring class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType\r\t^ 'AddMethod'",
@@ -678,7 +678,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "acceptsWebsideJson:",
-		"class": "RBAddMethodRefactoring class",
+		"methodClass": "RBAddMethodRefactoring class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "acceptsWebsideJson: json\r\t| classname class method selector |\r\t(super acceptsWebsideJson: json)\r\t\tifFalse: [ ^ false ].\r\tclassname := json at: 'class' ifAbsent: [ ^ false ].\r\tclass := Smalltalk classNamed: classname.\r\tclass ifNil: [ ^ false ].\r\tmethod := RBParser parseMethod: (json at: 'sourceCode') onError: nil.\r\tmethod ifNil: [ ^ false ].\r\tselector := method selector.\r\tselector ifNil: [ ^ false ].\r\t^ (class includesSelector: selector) not",
@@ -689,7 +689,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBRenameClassChange class",
+		"methodClass": "RBRenameClassChange class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType\r\t^ 'RenameClass'",
@@ -700,7 +700,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBAddMethodChange class",
+		"methodClass": "RBAddMethodChange class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType\r\t^ 'AddMethod'",
@@ -711,7 +711,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBRefactoryChange class",
+		"methodClass": "RBRefactoryChange class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json\r\t| class |\r\tclass := self classForWebsideJson: json.\r\t^ class ifNotNil: [ class new fromWebsideJson: json ] ",
@@ -722,7 +722,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBRefactoryChange class",
+		"methodClass": "RBRefactoryChange class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType\r\t^ nil",
@@ -733,7 +733,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "acceptsWebsideJson:",
-		"class": "RBRefactoryChange class",
+		"methodClass": "RBRefactoryChange class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "acceptsWebsideJson: json\r\t| type |\r\ttype := json at: 'type' ifAbsent: nil.\r\t^ self websideType = type",
@@ -744,7 +744,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "classForWebsideJson:",
-		"class": "RBRefactoryChange class",
+		"methodClass": "RBRefactoryChange class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "classForWebsideJson: json\r\t^ self allSubclasses\r\t\tdetect: [ :c | c acceptsWebsideJson: json ]\r\t\tifNone: nil",
@@ -755,7 +755,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBCommentChange class",
+		"methodClass": "RBCommentChange class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType\r\t^ 'CommentClass'",
@@ -766,7 +766,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBNode class",
+		"methodClass": "RBNode class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType \r\t^(self name withoutPrefix: 'RB') withoutSuffix: 'Node'.",
@@ -777,7 +777,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBPushDownInstanceVariableRefactoring class",
+		"methodClass": "RBPushDownInstanceVariableRefactoring class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType\r\t^ 'MoveDownInstanceVariable'",
@@ -788,7 +788,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBAddInstanceVariableChange class",
+		"methodClass": "RBAddInstanceVariableChange class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType\r\t^ 'AddInstanceVariable'",
@@ -799,7 +799,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBPullUpInstanceVariableRefactoring class",
+		"methodClass": "RBPullUpInstanceVariableRefactoring class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType \r\t^'MoveUpInstanceVariable'",
@@ -810,7 +810,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBAddClassChange class",
+		"methodClass": "RBAddClassChange class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType\r\t^ 'AddClass'",
@@ -821,7 +821,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "fromWebsideJson:",
-		"class": "RBRefactoring class",
+		"methodClass": "RBRefactoring class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "fromWebsideJson: json\r\t| class |\r\tclass := self classForWebsideJson: json.\r\t^ class ifNotNil: [class new fromWebsideJson: json]",
@@ -832,7 +832,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBRefactoring class",
+		"methodClass": "RBRefactoring class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType\r\t^ nil",
@@ -843,7 +843,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "acceptsWebsideJson:",
-		"class": "RBRefactoring class",
+		"methodClass": "RBRefactoring class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "acceptsWebsideJson: json\r\t| type |\r\ttype := json at: 'type' ifAbsent: nil.\r\t^ self websideType = type",
@@ -854,7 +854,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "classForWebsideJson:",
-		"class": "RBRefactoring class",
+		"methodClass": "RBRefactoring class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "classForWebsideJson: json\r\t^ self allSubclasses\r\t\tdetect: [ :c | c acceptsWebsideJson: json ]\r\t\tifNone: nil",
@@ -865,7 +865,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBRemoveMethodChange class",
+		"methodClass": "RBRemoveMethodChange class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType\r\t^ 'RemoveMethod'",
@@ -876,7 +876,7 @@ Retrieve extended methods of a given package.
 	},
 	{
 		"selector": "websideType",
-		"class": "RBRenameInstanceVariableChange class",
+		"methodClass": "RBRenameInstanceVariableChange class",
 		"category": "*Webside",
 		"package": "Webside",
 		"source": "websideType\r\t^ 'RenameInstanceVariable'",

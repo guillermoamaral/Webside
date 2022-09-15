@@ -65,7 +65,7 @@ _Note: optional properties such as `bytecodes` or `disassembly` should not be in
 	{
 		"selector": "/",
 		"source": "/ aNumber\r\t\"Answer the result of dividing the receiver by aNumber.\"\r\taNumber isFraction\r\t\tifTrue: [^self * aNumber reciprocal].\r\t^ aNumber adaptToFraction: self andSend: #/",
-		"class": "Fraction",
+		"methodClass": "Fraction",
 		"category": "arithmetic"
 	}
 ]

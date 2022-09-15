@@ -15,24 +15,24 @@ All changes should include `author` proprerty and might specify a `package` prop
 
 |           Type           | Description                                                            | Payload                                                                                                                            |
 | :----------------------: | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-|        AddMethod         | Define a method within a given class and category.                     | <pre>{<br> "type": "AddMethod",<br> "class": "string",<br> "category": "string",<br> "sourceCode": "string"<br>} </pre>            |
-|       RemoveMethod       | Remove a given method                                                  | <pre>{<br> "type": "RemoveMethod",<br> "class": "string",<br> "selector": "string"<br>} </pre>                                     |
-|      ClassifyMethod      | Classify a given method under a given category                         | <pre>{<br> "type": "ClassifyMethod",<br> "class": "string",<br> "selector": "string",<br> "category": "string"<br>} </pre>         |
-|       RenameMethod       | Rename a given selector. The scope is the whole system.                | <pre>{<br> "type": "RenameMethod",<br> "class": "string",<br> "selector": "string",<br> "newSelector": "string"<br>} </pre>        |
-|         AddClass         | Define a new class or changes the definition of an existing one.       | <pre>{<br> "type": "AddClass",<br> "class": "string",<br> "definition": "string"<br>} </pre>                                       |
-|       CommentClass       | Change the comment of a given class.                                   | <pre>{<br> "type": "CommentClass",<br> "class": "string",<br> "comment": "string"<br>} </pre>                                      |
-|       RemoveClass        | Remove a given class from the system.                                  | <pre>{<br> "type": "RemoveClass",<br> "class": "string"<br>} </pre>                                                                |
-|       RenameClass        | Rename a given class.                                                  | <pre>{<br> "type": "RenameClass",<br> "class": "string",<br> "newName": "string",<br> "renameDiferences": "boolean"<br>} </pre>    |
-|   AddInstanceVariable    | Add a new instance variable to a given class.                          | <pre>{<br> "type": "AddInstanceVariable",<br> "class": "string",<br> "variable": "string"<br>} </pre>                              |
-|  RemoveInstanceVariable  | Remove an instance variable from a given class.                        | <pre>{<br> "type": "RemoveInstanceVariable",<br> "class": "string",<br> "variable": "string"<br>} </pre>                           |
-|  RenameInstanceVariable  | Rename an instance variable of a given class.                          | <pre>{<br> "type": "RenameInstanceVariable",<br> "class": "string",<br> "variable": "string",<br> "newName": "string"<br>} </pre>  |
-|  MoveUpInstanceVariable  | Move an instance variable from a given class to its superclass.        | <pre>{<br> "type": "MoveUpInstanceVariable",<br> "class": "string",<br> "variable": "string"<br>} </pre>                           |
-| MoveDownInstanceVariable | Move an instance variable from a given class to one of its subclasses. | <pre>{<br> "type": "MoveDownInstanceVariable",<br> "class": "string",<br> "variable": "string",<br> "target": "string"<br>} </pre> |
-|     AddClassVariable     | Add a new class variable to a given class.                             | <pre>{<br> "type": "AddClassVariable",<br> "class": "string",<br> "variable": "string"<br>} </pre>                                 |
-|   RemoveClassVariable    | Remove a class variable from a given class.                            | <pre>{<br> "type": "RemoveClassVariable",<br> "class": "string",<br> "variable": "string"<br>} </pre>                              |
-|   RenameClassVariable    | Rename a class variable of a given class.                              | <pre>{<br> "type": "RenameClassVariable",<br> "class": "string",<br> "variable": "string",<br> "newName": "string"<br>} </pre>     |
-|      RenameCategory      | Rename a category within a class.                                      | <pre>{<br> "type": "RenameCategory",<br> "class": "string",<br> "category": "string",<br> "newName": "string"<br>} </pre>          |
-|      RemoveCategory      | Remove a category from a class.                                        | <pre>{<br> "type": "RemoveCategory",<br> "class": "string",<br> "category": "string"<br>} </pre>                                   |
+|        AddMethod         | Define a method within a given class and category.                     | <pre>{<br> "type": "AddMethod",<br> "className": "string",<br> "category": "string",<br> "sourceCode": "string"<br>} </pre>            |
+|       RemoveMethod       | Remove a given method                                                  | <pre>{<br> "type": "RemoveMethod",<br> "className": "string",<br> "selector": "string"<br>} </pre>                                     |
+|      ClassifyMethod      | Classify a given method under a given category                         | <pre>{<br> "type": "ClassifyMethod",<br> "className": "string",<br> "selector": "string",<br> "category": "string"<br>} </pre>         |
+|       RenameMethod       | Rename a given selector. The scope is the whole system.                | <pre>{<br> "type": "RenameMethod",<br> "className": "string",<br> "selector": "string",<br> "newSelector": "string"<br>} </pre>        |
+|         AddClass         | Define a new class or changes the definition of an existing one.       | <pre>{<br> "type": "AddClass",<br> "className": "string",<br> "definition": "string"<br>} </pre>                                       |
+|       CommentClass       | Change the comment of a given class.                                   | <pre>{<br> "type": "CommentClass",<br> "className": "string",<br> "comment": "string"<br>} </pre>                                      |
+|       RemoveClass        | Remove a given class from the system.                                  | <pre>{<br> "type": "RemoveClass",<br> "className": "string"<br>} </pre>                                                                |
+|       RenameClass        | Rename a given class.                                                  | <pre>{<br> "type": "RenameClass",<br> "className": "string",<br> "newName": "string",<br> "renameDiferences": "boolean"<br>} </pre>    |
+|   AddInstanceVariable    | Add a new instance variable to a given class.                          | <pre>{<br> "type": "AddInstanceVariable",<br> "className": "string",<br> "variable": "string"<br>} </pre>                              |
+|  RemoveInstanceVariable  | Remove an instance variable from a given class.                        | <pre>{<br> "type": "RemoveInstanceVariable",<br> "className": "string",<br> "variable": "string"<br>} </pre>                           |
+|  RenameInstanceVariable  | Rename an instance variable of a given class.                          | <pre>{<br> "type": "RenameInstanceVariable",<br> "className": "string",<br> "variable": "string",<br> "newName": "string"<br>} </pre>  |
+|  MoveUpInstanceVariable  | Move an instance variable from a given class to its superclass.        | <pre>{<br> "type": "MoveUpInstanceVariable",<br> "className": "string",<br> "variable": "string"<br>} </pre>                           |
+| MoveDownInstanceVariable | Move an instance variable from a given class to one of its subclasses. | <pre>{<br> "type": "MoveDownInstanceVariable",<br> "className": "string",<br> "variable": "string",<br> "target": "string"<br>} </pre> |
+|     AddClassVariable     | Add a new class variable to a given class.                             | <pre>{<br> "type": "AddClassVariable",<br> "className": "string",<br> "variable": "string"<br>} </pre>                                 |
+|   RemoveClassVariable    | Remove a class variable from a given class.                            | <pre>{<br> "type": "RemoveClassVariable",<br> "className": "string",<br> "variable": "string"<br>} </pre>                              |
+|   RenameClassVariable    | Rename a class variable of a given class.                              | <pre>{<br> "type": "RenameClassVariable",<br> "className": "string",<br> "variable": "string",<br> "newName": "string"<br>} </pre>     |
+|      RenameCategory      | Rename a category within a class.                                      | <pre>{<br> "type": "RenameCategory",<br> "className": "string",<br> "category": "string",<br> "newName": "string"<br>} </pre>          |
+|      RemoveCategory      | Remove a category from a class.                                        | <pre>{<br> "type": "RemoveCategory",<br> "className": "string",<br> "category": "string"<br>} </pre>                                   |
 |        AddPackage        | Add a new pacakge with a given name.                                   | <pre>{<br> "type": "AddPackage",<br> "name": "string"<br>} </pre>                                                                  |
 |      RemovePackage       | Remove a given package                                                 | <pre>{<br> "type": "RemovePackage",<br> "name": "string"<br>} </pre>                                                               |
 |      RenamePackage       | Rename a given package.                                                | <pre>{<br> "type": "RenamePackage",<br> "name": "string",<br> "newName": "string"<br>} </pre>                                      |
@@ -107,7 +107,7 @@ The error returned should look like:
 					"type": "AddMethod",
 					"author": "guille",
 					"sourceCode": "m\r\t | t | \r\tt := 1",
-					"class": "Number",
+					"className": "Number",
 					"selector": "m",
 					"category": "arithmetic"
 				}
@@ -127,7 +127,7 @@ Note also that in the case that the original source had more than one compilatio
 ```json
 {
 	"type": "AddMethod",
-	"class": "Float class",
+	"className": "Float class",
 	"category": "constants",
 	"sourceCode": "phi\r\t^1.0 + 5.0 sqrt / 2.0",
 	"author": "guille"

@@ -22,7 +22,7 @@ class ChangesBrowser extends Component {
 
 	evaluationContext() {
 		const change = this.state.selectedChange;
-		return change && change.class ? { class: change.class } : {};
+		return change && change.className ? { class: change.className } : {};
 	}
 
 	download = async (event) => {

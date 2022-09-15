@@ -8,6 +8,7 @@ import { DialogProvider } from "./components/dialogs/index";
 import { CookiesProvider } from "react-cookie";
 import Login from "./components/Login";
 import IDE from "./components/IDE";
+import Change from "./model/Change";
 
 const theme = createMuiTheme({
 	typography: {
@@ -34,6 +35,14 @@ const theme = createMuiTheme({
 
 class App extends Component {
 	render() {
+		console.log(
+			Change.fromJson({
+				type: "AddMethod",
+				class: "Object",
+				selector: "copy",
+				category: "copying",
+			})
+		);
 		return (
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
