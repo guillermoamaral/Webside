@@ -5,7 +5,7 @@ import CodeEditor from "../parts/CodeEditor";
 import { ide } from "../IDE";
 import ChangesTable from "../parts/ChangesTable";
 import DownloadIcon from "@material-ui/icons/GetApp";
-import Changeset from "../../model/Changset";
+import Changeset from "../../model/Changeset";
 
 class ChangesBrowser extends Component {
 	constructor(props) {
