@@ -13,7 +13,7 @@ import {
 	Tooltip,
 } from "@material-ui/core";
 import clsx from "clsx";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import SearchList2 from "../controls/SearchList2";
 import ClassTree from "../parts/ClassTree";
 import VariableList from "../parts/VariableList";
@@ -23,8 +23,6 @@ import CodeBrowser from "../parts/CodeBrowser";
 import UpIcon from "@material-ui/icons/ArrowDropUp";
 
 class ClassBrowser extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.cache = {};
@@ -46,12 +44,12 @@ class ClassBrowser extends Component {
 
 	async initializeClassNames() {
 		try {
-			const names = await this.context.api.getClassNames();
+			const names = await ide.api.getClassNames();
 			this.setState({ classNames: names }, () => {
 				this.changeRootClass(this.state.root);
 			});
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
@@ -60,13 +58,13 @@ class ClassBrowser extends Component {
 			return;
 		}
 		try {
-			const species = await this.context.api.getClassTree(classsname, 3);
+			const species = await ide.api.getClassTree(classsname, 3);
 			this.cache[classsname] = species;
 			this.setState({ root: classsname }, () => {
 				this.classSelected(species);
 			});
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -187,7 +185,7 @@ class ClassBrowser extends Component {
 			);
 		}
 		if (methods && methods.length === 0) {
-			const template = this.context.api.methodTemplate();
+			const template = ide.api.methodTemplate();
 			template.methodClass = species;
 			template.category = category;
 			methods.push(template);
@@ -199,15 +197,15 @@ class ClassBrowser extends Component {
 	async updateClass(species, force = false) {
 		try {
 			if (force || !species.definition || !species.metaclass) {
-				const definition = await this.context.api.getClass(species.name);
+				const definition = await ide.api.getClass(species.name);
 				Object.assign(species, definition);
-				species.metaclass = await this.context.api.getClass(definition.class);
+				species.metaclass = await ide.api.getClass(definition.class);
 			}
 			if (force || !species.subclasses) {
-				species.subclasses = await this.context.api.getSubclasses(species.name);
+				species.subclasses = await ide.api.getSubclasses(species.name);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
@@ -217,34 +215,34 @@ class ClassBrowser extends Component {
 				await Promise.all(
 					species.subclasses.map(async (c) => {
 						if (!c.subclasses) {
-							c.subclasses = await this.context.api.getSubclasses(c.name);
+							c.subclasses = await ide.api.getSubclasses(c.name);
 						}
 					})
 				);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
 	async updateVariables(species, force = false) {
 		try {
 			if (force || !species.variables) {
-				species.variables = await this.context.api.getVariables(species.name);
+				species.variables = await ide.api.getVariables(species.name);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
 	async updateCategories(species, force = false) {
 		try {
 			if (force || !species.categories) {
-				species.categories = await this.context.api.getCategories(species.name);
+				species.categories = await ide.api.getCategories(species.name);
 				species.categories.sort();
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
@@ -254,7 +252,7 @@ class ClassBrowser extends Component {
 		}
 		try {
 			if (force || !species.methods) {
-				species.methods = await this.context.api.getMethods(species.name, true);
+				species.methods = await ide.api.getMethods(species.name, true);
 				species.accessors = null;
 			}
 			if (
@@ -265,7 +263,7 @@ class ClassBrowser extends Component {
 					!species.accessors[variable.name] ||
 					!species.accessors[variable.name][access])
 			) {
-				const accessing = await this.context.api.getMethodsAccessing(
+				const accessing = await ide.api.getMethodsAccessing(
 					species.name,
 					variable.name,
 					access,
@@ -276,13 +274,13 @@ class ClassBrowser extends Component {
 				species.accessors[variable.name][access] = accessing;
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
 	async updateMethod(method) {
 		try {
-			const retrieved = await this.context.api.getMethod(
+			const retrieved = await ide.api.getMethod(
 				method.methodClass,
 				method.selector
 			);
@@ -293,7 +291,7 @@ class ClassBrowser extends Component {
 				method.bytecodes = null;
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
@@ -321,7 +319,7 @@ class ClassBrowser extends Component {
 	};
 
 	classSelected = async (species) => {
-		// this.context.updatePageLabel(this.props.id, species.name);
+		// ide.updatePageLabel(this.props.id, species.name);
 		const selections = this.currentSelections();
 		selections.species = species;
 		await this.updateClass(species);

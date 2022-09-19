@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import {
 	Accordion,
@@ -33,8 +33,6 @@ ChartJS.register(
 );
 
 class TestRunner extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -112,19 +110,19 @@ class TestRunner extends Component {
 		const results = this.newResults();
 		this.setState({ status: status, results: results });
 		try {
-			await this.context.api.runTestRun(this.props.id);
+			await ide.api.runTestRun(this.props.id);
 			this.updateStatus();
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
 	async stopClicked() {
 		try {
-			await this.context.api.stopTestRun(this.props.id);
+			await ide.api.stopTestRun(this.props.id);
 			this.updateStatus();
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
@@ -134,7 +132,7 @@ class TestRunner extends Component {
 		}
 		this.setState({ updating: true });
 		try {
-			const status = await this.context.api.getTestRunStatus(this.props.id);
+			const status = await ide.api.getTestRunStatus(this.props.id);
 			if (status.running) {
 				setTimeout(() => {
 					this.updateStatus();
@@ -145,7 +143,7 @@ class TestRunner extends Component {
 				this.updateResults();
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
@@ -154,12 +152,12 @@ class TestRunner extends Component {
 			return;
 		}
 		try {
-			const results = await this.context.api.getTestRunResults(this.props.id);
+			const results = await ide.api.getTestRunResults(this.props.id);
 			results.grouped = this.groupByClass(results);
 			results.updated = true;
 			this.setState({ results: results });
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
@@ -192,13 +190,13 @@ class TestRunner extends Component {
 
 	browseImplementors = (test) => {
 		if (test) {
-			this.context.browseImplementors(test.selector);
+			ide.browseImplementors(test.selector);
 		}
 	};
 
 	browseClass = (test) => {
 		if (test) {
-			this.context.browseClass(test.class);
+			ide.browseClass(test.class);
 		}
 	};
 
@@ -212,17 +210,17 @@ class TestRunner extends Component {
 
 	debugTest = async (test) => {
 		try {
-			const d = await this.context.api.debugTest(
+			const d = await ide.api.debugTest(
 				this.props.id,
 				test.class,
 				test.selector
 			);
-			this.context.openDebugger(
+			ide.openDebugger(
 				d.id,
 				d.description || "Debugging test " + test.selector
 			);
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 

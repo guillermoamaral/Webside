@@ -57,9 +57,12 @@ import CoderLikeBrowser from "./tools/CoderLikeBrowser";
 import CodeMigrator from "./tools/CodeMigrator";
 import Hotkeys from "react-hot-keys";
 
+var ide = null;
+
 class IDE extends Component {
 	constructor(props) {
 		super(props);
+		ide = this;
 		this.initializeSettings();
 		this.state = {
 			dialect: null,
@@ -1093,3 +1096,5 @@ class IDE extends Component {
 }
 
 export default withDialog()(withRouter(withCookies(IDE)));
+
+export { ide };

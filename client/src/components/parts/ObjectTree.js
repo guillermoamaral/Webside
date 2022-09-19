@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import CustomTree from "../controls/CustomTree";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 
 class ObjectTree extends Component {
-	static contextType = IDEContext;
-
 	browseClass = (object) => {
 		if (object) {
-			this.context.browseClass(object.class);
+			ide.browseClass(object.class);
 		}
 	};
 
@@ -15,10 +13,10 @@ class ObjectTree extends Component {
 		try {
 			const id = this.props.roots[0].id;
 			const path = this.objectURIPath(object);
-			const pinned = await this.context.api.pinObjectSlot(id, path);
-			this.context.inspectObject(pinned);
+			const pinned = await ide.api.pinObjectSlot(id, path);
+			ide.inspectObject(pinned);
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 

@@ -5,15 +5,13 @@ import { Icon } from "@iconify/react";
 import SuspendIcon from "@iconify/icons-mdi/pause";
 import ResumeIcon from "@iconify/icons-mdi/play";
 import TerminateIcon from "@iconify/icons-mdi/stop";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import FrameList from "../parts/FrameList";
 import RegisterTable from "../parts/RegisterTable";
 import CodeBrowser from "../parts/CodeBrowser";
 import { Bar } from "react-chartjs-2";
 
 class NativeDebugger extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -31,22 +29,16 @@ class NativeDebugger extends Component {
 
 	async updateInfo() {
 		try {
-			const native = await this.context.api.getNativeDebugger(this.props.id);
+			const native = await ide.api.getNativeDebugger(this.props.id);
 			const running = native.state === "running";
-			const frames = await this.context.api.getNativeDebuggerFrames(
-				this.props.id
-			);
+			const frames = await ide.api.getNativeDebuggerFrames(this.props.id);
 			let selected = null;
 			if (frames.length > 0) {
 				selected = frames[0];
 				await this.updateFrame(selected);
 			}
-			const registers = await this.context.api.getNativeDebuggerRegisters(
-				this.props.id
-			);
-			const spaces = await this.context.api.getNativeDebuggerSpaces(
-				this.props.id
-			);
+			const registers = await ide.api.getNativeDebuggerRegisters(this.props.id);
+			const spaces = await ide.api.getNativeDebuggerSpaces(this.props.id);
 			spaces.forEach((s) => (s.color = this.colorForSpace(s)));
 			this.setState({
 				running: running,
@@ -56,26 +48,26 @@ class NativeDebugger extends Component {
 				spaces: spaces,
 			});
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
 	resumeClicked = async () => {
 		try {
-			await this.context.api.resumeNativeDebugger(this.props.id);
+			await ide.api.resumeNativeDebugger(this.props.id);
 			this.setState({ running: true });
 			this.updateInfo();
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
 	suspendClicked = async () => {
 		try {
-			await this.context.api.suspendNativeDebugger(this.props.id);
+			await ide.api.suspendNativeDebugger(this.props.id);
 			this.setState({ running: false });
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -87,7 +79,7 @@ class NativeDebugger extends Component {
 	updateFrame = async (frame) => {
 		if (!frame.method) {
 			try {
-				const info = await this.context.api.getNativeDebuggerFrame(
+				const info = await ide.api.getNativeDebuggerFrame(
 					this.props.id,
 					frame.index
 				);
@@ -95,7 +87,7 @@ class NativeDebugger extends Component {
 				frame.class = info.class;
 				frame.interval = info.interval;
 			} catch (error) {
-				this.context.reportError(error);
+				ide.reportError(error);
 			}
 		}
 	};

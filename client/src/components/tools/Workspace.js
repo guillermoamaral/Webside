@@ -14,11 +14,9 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import InspectorIcon from "../icons/InspectorIcon";
 import CodeEditor from "../parts/CodeEditor";
 import Inspector from "./Inspector";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 
 class Workspace extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -47,12 +45,12 @@ class Workspace extends Component {
 	closeInspector = async (event, id) => {
 		event.stopPropagation();
 		try {
-			await this.context.api.unpinObject(id);
+			await ide.api.unpinObject(id);
 			this.setState({
 				inspectors: this.state.inspectors.filter((i) => i.key !== id),
 			});
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -63,12 +61,13 @@ class Workspace extends Component {
 	evaluateClicked = async () => {
 		try {
 			this.setState({ evaluating: true });
-			const object = await this.context.evaluateExpression(
+			const object = await ide.evaluateExpression(
 				this.state.expression,
 				false,
 				true,
 				{ workspace: this.props.id }
 			);
+			console.log(object);
 			if (this.state.opensInspector) {
 				this.setState({ evaluating: false });
 				this.openInspector(object);

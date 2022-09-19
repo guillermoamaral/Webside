@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 import FastCustomList from "../controls/FastCustomList";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import { withDialog } from "../dialogs/index";
 
 class CategoryList extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.all = "All selectors";
@@ -38,7 +36,7 @@ class CategoryList extends Component {
 				title: "Rename category",
 				defaultValue: category,
 			});
-			await this.context.api.renameCategory(
+			await ide.api.renameCategory(
 				this.props.class.name,
 				category,
 				newName
@@ -47,7 +45,7 @@ class CategoryList extends Component {
 				this.props.onRename(category, newName);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -56,12 +54,12 @@ class CategoryList extends Component {
 			return;
 		}
 		try {
-			await this.context.api.removeCategory(this.props.class.name, category);
+			await ide.api.removeCategory(this.props.class.name, category);
 			if (this.props.onRemove) {
 				this.props.onRemove(category);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 

@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import CustomTree from "../controls/CustomTree";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import { withDialog } from "../dialogs/index";
 //import Scrollable from "../controls/Scrollable";
 
 class ClassTree extends Component {
-	static contextType = IDEContext;
-
 	newClass = async (superclass) => {
 		if (!superclass) {
 			return;
@@ -17,13 +15,13 @@ class ClassTree extends Component {
 				required: true,
 			});
 			const packagename = superclass.package;
-			await this.context.api.defineClass(name, superclass.name, packagename);
-			const species = await this.context.api.getClass(name);
+			await ide.api.defineClass(name, superclass.name, packagename);
+			const species = await ide.api.getClass(name);
 			if (this.props.onDefine) {
 				this.props.onDefine(species);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -39,12 +37,12 @@ class ClassTree extends Component {
 			if (!confirm) {
 				return;
 			}
-			await this.context.api.removeClass(species.name);
+			await ide.api.removeClass(species.name);
 			if (this.props.onRemove) {
 				this.props.onRemove(species);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -58,43 +56,43 @@ class ClassTree extends Component {
 				defaultValue: species.name,
 				required: true,
 			});
-			await this.context.api.renameClass(species.name, newName);
+			await ide.api.renameClass(species.name, newName);
 			species.name = newName;
 			if (this.props.onRename) {
 				this.props.onRename(species);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
 	browseClass = (species) => {
 		if (species) {
-			this.context.browseClass(species.name);
+			ide.browseClass(species.name);
 		}
 	};
 
 	browsePackage = (species) => {
 		if (species) {
-			this.context.browsePackage(species.package);
+			ide.browsePackage(species.package);
 		}
 	};
 
 	browseClassReferences = (species) => {
 		if (species) {
-			this.context.browseClassReferences(species.name);
+			ide.browseClassReferences(species.name);
 		}
 	};
 
 	runTests = (species) => {
 		if (species) {
-			this.context.runTestClass(species.name);
+			ide.runTestClass(species.name);
 		}
 	};
 
 	migrateClass = (species) => {
 		if (species) {
-			this.context.migrateClass(species.name);
+			ide.migrateClass(species.name);
 		}
 	};
 

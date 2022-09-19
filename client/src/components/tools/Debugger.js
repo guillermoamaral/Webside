@@ -13,14 +13,12 @@ import StepOverIcon from "@iconify/icons-mdi/debug-step-over";
 import StepThroughIcon from "../icons/StepThroughIcon";
 import ResumeIcon from "@iconify/icons-mdi/play";
 import TerminateIcon from "@iconify/icons-mdi/stop";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import FrameList from "../parts/FrameList";
 import BindingTable from "../parts/BindingTable";
 import CodeBrowser from "../parts/CodeBrowser";
 
 class Debugger extends PureComponent {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -30,8 +28,8 @@ class Debugger extends PureComponent {
 	}
 
 	componentDidMount() {
-		if (this.context.messageChannel) {
-			this.context.messageChannel.onEvent("onMessageReceived", (message) => {
+		if (ide.messageChannel) {
+			ide.messageChannel.onEvent("onMessageReceived", (message) => {
 				if (message.type === "debuggerEvent") {
 					//this.updateFrames();
 				}
@@ -42,7 +40,7 @@ class Debugger extends PureComponent {
 
 	async updateFrames() {
 		try {
-			const frames = await this.context.api.getDebuggerFrames(this.props.id);
+			const frames = await ide.api.getDebuggerFrames(this.props.id);
 			var frame;
 			if (frames.length > 0) {
 				frame = frames[0];
@@ -53,7 +51,7 @@ class Debugger extends PureComponent {
 				selectedFrame: frame,
 			});
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
@@ -65,7 +63,7 @@ class Debugger extends PureComponent {
 	updateFrame = async (frame) => {
 		try {
 			if (!frame.method) {
-				const info = await this.context.api.getDebuggerFrame(
+				const info = await ide.api.getDebuggerFrame(
 					this.props.id,
 					frame.index
 				);
@@ -74,84 +72,84 @@ class Debugger extends PureComponent {
 				frame.interval = info.interval;
 			}
 			if (!frame.bindings || true) {
-				const bindings = await this.context.api.getFrameBindings(
+				const bindings = await ide.api.getFrameBindings(
 					this.props.id,
 					frame.index
 				);
 				frame.bindings = bindings;
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
 	stepIntoClicked = async () => {
 		try {
-			await this.context.api.stepIntoDebugger(
+			await ide.api.stepIntoDebugger(
 				this.props.id,
 				this.state.selectedFrame.index
 			);
 			this.notifyEvent("stepInto");
 			this.updateFrames();
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
 	stepOverClicked = async () => {
 		try {
-			await this.context.api.stepOverDebugger(
+			await ide.api.stepOverDebugger(
 				this.props.id,
 				this.state.selectedFrame.index
 			);
 			this.notifyEvent("stepOver");
 			this.updateFrames();
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
 	stepThroughClicked = async () => {
 		try {
-			await this.context.api.stepThroughDebugger(
+			await ide.api.stepThroughDebugger(
 				this.props.id,
 				this.state.selectedFrame.index
 			);
 			this.notifyEvent("stepThrough");
 			this.updateFrames();
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
 	restartClicked = async () => {
 		try {
-			await this.context.api.restartDebugger(
+			await ide.api.restartDebugger(
 				this.props.id,
 				this.state.selectedFrame.index
 			);
 			this.notifyEvent("restart");
 			this.updateFrames();
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
 	resumeClicked = async () => {
 		try {
-			await this.context.api.resumeDebugger(this.props.id);
-			this.context.closeDebugger(this.props.id);
+			await ide.api.resumeDebugger(this.props.id);
+			ide.closeDebugger(this.props.id);
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
 	terminateClicked = async () => {
 		try {
-			await this.context.api.terminateDebugger(this.props.id);
-			this.context.closeDebugger(this.props.id);
+			await ide.api.terminateDebugger(this.props.id);
+			ide.closeDebugger(this.props.id);
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -161,20 +159,20 @@ class Debugger extends PureComponent {
 			return;
 		}
 		try {
-			await this.context.api.restartDebugger(
+			await ide.api.restartDebugger(
 				this.props.id,
 				this.state.selectedFrame.index,
 				true
 			);
 			this.updateFrames();
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
 	notifyEvent(event) {
-		if (this.context.messageChannel) {
-			this.context.messageChannel.sendDebuggerEvent(event, this.props.id);
+		if (ide.messageChannel) {
+			ide.messageChannel.sendDebuggerEvent(event, this.props.id);
 		}
 	}
 

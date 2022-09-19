@@ -1,14 +1,12 @@
 import React, { Component } from "react";
 import { Grid, Paper, Link } from "@material-ui/core";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import CodeEditor from "./CodeEditor";
 import { withDialog } from "../dialogs/index";
 //import clsx from "clsx";
 
 class CodeBrowser extends Component {
-  static contextType = IDEContext;
-
   constructor(props) {
     super(props);
     this.state = {
@@ -45,18 +43,18 @@ class CodeBrowser extends Component {
     const superclass = species ? species.superclass : null;
     const packagename = species ? species.package : pack ? pack.name : null;
     try {
-      const change = await this.context.api.defineClass(
+      const change = await ide.api.defineClass(
         classname,
         superclass,
         packagename,
         definition
       );
-      const species = await this.context.api.getClass(change.className);
+      const species = await ide.api.getClass(change.className);
       if (this.props.onDefineClass) {
         this.props.onDefineClass(species);
       }
     } catch (error) {
-      this.context.reportError(error);
+      ide.reportError(error);
     }
   };
 
@@ -73,13 +71,13 @@ class CodeBrowser extends Component {
         defaultValue: target,
         required: true,
       });
-      await this.context.api.renameClass(target, newName);
+      await ide.api.renameClass(target, newName);
       this.props.class.name = newName;
       if (this.props.onRenameClass) {
         this.props.onRenameClass(this.props.class);
       }
     } catch (error) {
-      this.context.reportError(error);
+      ide.reportError(error);
     }
   };
 
@@ -88,13 +86,13 @@ class CodeBrowser extends Component {
       return;
     }
     try {
-      await this.context.api.commentClass(this.props.class.name, comment);
-      const species = await this.context.api.getClass(this.props.class.name);
+      await ide.api.commentClass(this.props.class.name, comment);
+      const species = await ide.api.getClass(this.props.class.name);
       if (this.props.onCommentClass) {
         this.props.onCommentClass(species);
       }
     } catch (error) {
-      this.context.reportError(error);
+      ide.reportError(error);
     }
   };
 
@@ -119,13 +117,13 @@ class CodeBrowser extends Component {
         : method
         ? method.methodClass
         : null;
-      const change = await this.context.api.compileMethod(
+      const change = await ide.api.compileMethod(
         classname,
         packagename,
         category,
         source
       );
-      const compiled = await this.context.api.getMethod(
+      const compiled = await ide.api.getMethod(
         classname,
         change.selector
       );
@@ -158,8 +156,8 @@ class CodeBrowser extends Component {
         try {
           let method;
           for (const change of suggestion.changes) {
-            const applied = await this.context.api.postChange(change);
-            method = await this.context.api.getMethod(
+            const applied = await ide.api.postChange(change);
+            method = await ide.api.getMethod(
               this.props.class.name,
               applied.selector
             );
@@ -186,7 +184,7 @@ class CodeBrowser extends Component {
         ];
       } else {
         const description = data ? data.description : null;
-        this.context.reportError(description || "Unknown compilation error");
+        ide.reportError(description || "Unknown compilation error");
       }
       this.setState({ method: method });
     }
@@ -254,7 +252,7 @@ class CodeBrowser extends Component {
         break;
       default:
         mode =
-          this.context.dialect === "Python" ? "python" : "smalltalk-method";
+          ide.dialect === "Python" ? "python" : "smalltalk-method";
     }
     return mode;
   };
@@ -371,7 +369,7 @@ class CodeBrowser extends Component {
           {timestamp}
           {author ? " by " : ""}
           {author && (
-            <Link href="#" onClick={() => this.context.openChat(author)}>
+            <Link href="#" onClick={() => ide.openChat(author)}>
               {author}
             </Link>
           )}
@@ -379,7 +377,7 @@ class CodeBrowser extends Component {
           {packagename && (
             <Link
               href="#"
-              onClick={() => this.context.browsePackage(packagename)}
+              onClick={() => ide.browsePackage(packagename)}
             >
               {packagename}
             </Link>

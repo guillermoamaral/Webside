@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import { Grid, Paper, LinearProgress } from "@material-ui/core";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import CodeEditor from "../parts/CodeEditor";
@@ -8,8 +8,6 @@ import { FlameGraph } from "react-flame-graph";
 import { Bar } from "react-chartjs-2";
 
 class Profiler extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -27,13 +25,11 @@ class Profiler extends Component {
 
 	async updateResults() {
 		try {
-			const tree = await this.context.api.getProfilerTreeResults(this.props.id);
-			const ranking = await this.context.api.getProfilerRankingResults(
-				this.props.id
-			);
+			const tree = await ide.api.getProfilerTreeResults(this.props.id);
+			const ranking = await ide.api.getProfilerRankingResults(this.props.id);
 			this.setState({ tree: tree, ranking: ranking, loading: false });
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
@@ -44,9 +40,9 @@ class Profiler extends Component {
 		} else {
 			const parts = signature.split(") ")[1].split(">>");
 			try {
-				method = await this.context.api.getMethod(parts[0], parts[1]);
+				method = await ide.api.getMethod(parts[0], parts[1]);
 			} catch (error) {
-				this.context.reportError(error);
+				ide.reportError(error);
 			}
 		}
 		this.setState({ selectedMethod: method });

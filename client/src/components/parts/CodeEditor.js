@@ -3,7 +3,7 @@ import { Grid, Box, IconButton, LinearProgress } from "@material-ui/core";
 import AcceptIcon from "@material-ui/icons/CheckCircle";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import PopupMenu from "../controls/PopupMenu";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 //import Scrollable from "../controls/Scrollable";
 import "../../SmalltalkMode.css";
 import "../../SmalltalkMode.js";
@@ -46,8 +46,6 @@ function rangeFromInterval(interval, source) {
 }
 
 class CodeEditor extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.editor = null;
@@ -290,28 +288,28 @@ class CodeEditor extends Component {
 	};
 
 	browseSenders = () => {
-		this.context.browseSenders(this.targetSelector());
+		ide.browseSenders(this.targetSelector());
 		return false;
 	};
 
 	browseImplementors = () => {
-		this.context.browseImplementors(this.targetSelector());
+		ide.browseImplementors(this.targetSelector());
 	};
 
 	browseClass = () => {
-		this.context.browseClass(this.targetWord());
+		ide.browseClass(this.targetWord());
 	};
 
 	browseClassReferences = () => {
-		this.context.browseClassReferences(this.targetWord());
+		ide.browseClassReferences(this.targetWord());
 	};
 
 	browseMethodsMatching = () => {
-		this.context.browseMethodsMatching(this.targetWord());
+		ide.browseMethodsMatching(this.targetWord());
 	};
 
 	browseStringReferences = () => {
-		this.context.browseStringReferences(this.targetWord());
+		ide.browseStringReferences(this.targetWord());
 	};
 
 	selectedExpression() {
@@ -326,14 +324,14 @@ class CodeEditor extends Component {
 	debugExpression = async () => {
 		const expression = this.selectedExpression();
 		try {
-			await this.context.debugExpression(expression, this.props.context);
+			await ide.debugExpression(expression, this.props.context);
 		} catch (error) { }
 	};
 
 	profileExpression = async () => {
 		const expression = this.selectedExpression();
 		try {
-			await this.context.profileExpression(expression, this.props.context);
+			await ide.profileExpression(expression, this.props.context);
 		} catch (error) { }
 	};
 
@@ -341,7 +339,7 @@ class CodeEditor extends Component {
 		const expression = this.selectedExpression();
 		try {
 			this.setState({ progress: true });
-			await this.context.evaluateExpression(
+			await ide.evaluateExpression(
 				expression,
 				false,
 				false,
@@ -363,7 +361,7 @@ class CodeEditor extends Component {
 		const expression = this.selectedExpression();
 		try {
 			this.setState({ progress: true });
-			const object = await this.context.evaluateExpression(
+			const object = await ide.evaluateExpression(
 				expression,
 				false,
 				false,
@@ -387,14 +385,14 @@ class CodeEditor extends Component {
 		const expression = this.selectedExpression();
 		try {
 			this.setState({ progress: true });
-			const object = await this.context.evaluateExpression(
+			const object = await ide.evaluateExpression(
 				expression,
 				false,
 				true,
 				this.props.context
 			);
 			this.setState({ progress: false });
-			this.context.inspectObject(object);
+			ide.inspectObject(object);
 		} catch (error) {
 			this.setState({ progress: false });
 		}

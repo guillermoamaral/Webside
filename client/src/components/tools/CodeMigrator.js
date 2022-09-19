@@ -8,13 +8,11 @@ import {
 	Typography,
 	LinearProgress,
 } from "@material-ui/core";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import ChangesTable from "../parts/ChangesTable";
 import API from "../API";
 
 class CodeMigrator extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		const packages = this.props.package ? [this.props.package] : [];
@@ -66,7 +64,7 @@ class CodeMigrator extends Component {
 		const packages = [];
 		await Promise.all(
 			this.state.sources.packages.map(async (name) => {
-				const pack = await this.context.api.getPackage(name);
+				const pack = await ide.api.getPackage(name);
 				packages.push(pack);
 			})
 		);
@@ -79,9 +77,9 @@ class CodeMigrator extends Component {
 			packages.map(async (pack) => {
 				await Promise.all(
 					pack.classes.map(async (classname) => {
-						const species = await this.context.api.getClass(classname);
+						const species = await ide.api.getClass(classname);
 						classes.push(species);
-						const meta = await this.context.api.getClass(species.class);
+						const meta = await ide.api.getClass(species.class);
 						classes.push(meta);
 					})
 				);
@@ -89,9 +87,9 @@ class CodeMigrator extends Component {
 		);
 		await Promise.all(
 			this.state.sources.classes.map(async (name) => {
-				const species = await this.context.api.getClass(name);
+				const species = await ide.api.getClass(name);
 				classes.push(species);
-				const meta = await this.context.api.getClass(species.class);
+				const meta = await ide.api.getClass(species.class);
 				classes.push(meta);
 			})
 		);
@@ -104,7 +102,7 @@ class CodeMigrator extends Component {
 			packages.map(async (pack) => {
 				Object.entries(pack.methods).forEach(async (selectors) => {
 					selectors[1].forEach(async (selector) => {
-						const method = await this.context.api.getMethod(
+						const method = await ide.api.getMethod(
 							selectors[0],
 							selector
 						);
@@ -115,7 +113,7 @@ class CodeMigrator extends Component {
 		);
 		await Promise.all(
 			classes.map(async (species) => {
-				const retrieved = await this.context.api.getMethods(species.name, true);
+				const retrieved = await ide.api.getMethods(species.name, true);
 				retrieved.forEach(async (method) => {
 					methods.push(method);
 				});
@@ -128,7 +126,7 @@ class CodeMigrator extends Component {
 	classDefinition(species) {
 		return {
 			type: "AddClass",
-			author: this.context.api.author,
+			author: ide.api.author,
 			class: species.name,
 			label: species.name,
 			package: species.package,
@@ -139,7 +137,7 @@ class CodeMigrator extends Component {
 	methodDefinition(method) {
 		return {
 			type: "AddMethod",
-			author: this.context.api.author,
+			author: ide.api.author,
 			class: method.methodClass,
 			label: method.methodClass + ">>" + method.selector,
 			package: method.package,
@@ -150,7 +148,7 @@ class CodeMigrator extends Component {
 	applyChanges = async () => {
 		const api = new API(
 			this.state.targetURL,
-			this.context.api.author,
+			ide.api.author,
 			this.reportError,
 			this.reportChange
 		);

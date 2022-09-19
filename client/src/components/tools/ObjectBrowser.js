@@ -2,12 +2,10 @@ import React, { Component } from "react";
 import { Grid, Paper } from "@material-ui/core";
 import CustomTable from "../controls/CustomTable";
 import Inspector from "./Inspector";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import clsx from "clsx";
 
 class ObjectBrowser extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -21,9 +19,9 @@ class ObjectBrowser extends Component {
 
 	unpinObject = async (object) => {
 		try {
-			await this.context.api.unpinObject(object.id);
+			await ide.api.unpinObject(object.id);
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 

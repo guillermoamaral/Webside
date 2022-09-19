@@ -13,8 +13,8 @@ Special attention must be paid to the way the API should handle compilation erro
 **Body**: The body will contain the change to be applied in JSON format. The table below lists all supported changes at this moment. Though types are self-descripted, a short description of what they do is included.
 All changes should include `author` proprerty and might specify a `package` property indicating the package in which the change should be applied (for example, the package that will contain a new class).
 
-|           Type           | Description                                                            | Payload                                                                                                                            |
-| :----------------------: | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+|           Type           | Description                                                            | Payload                                                                                                                                |
+| :----------------------: | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 |        AddMethod         | Define a method within a given class and category.                     | <pre>{<br> "type": "AddMethod",<br> "className": "string",<br> "category": "string",<br> "sourceCode": "string"<br>} </pre>            |
 |       RemoveMethod       | Remove a given method                                                  | <pre>{<br> "type": "RemoveMethod",<br> "className": "string",<br> "selector": "string"<br>} </pre>                                     |
 |      ClassifyMethod      | Classify a given method under a given category                         | <pre>{<br> "type": "ClassifyMethod",<br> "className": "string",<br> "selector": "string",<br> "category": "string"<br>} </pre>         |
@@ -22,7 +22,7 @@ All changes should include `author` proprerty and might specify a `package` prop
 |         AddClass         | Define a new class or changes the definition of an existing one.       | <pre>{<br> "type": "AddClass",<br> "className": "string",<br> "definition": "string"<br>} </pre>                                       |
 |       CommentClass       | Change the comment of a given class.                                   | <pre>{<br> "type": "CommentClass",<br> "className": "string",<br> "comment": "string"<br>} </pre>                                      |
 |       RemoveClass        | Remove a given class from the system.                                  | <pre>{<br> "type": "RemoveClass",<br> "className": "string"<br>} </pre>                                                                |
-|       RenameClass        | Rename a given class.                                                  | <pre>{<br> "type": "RenameClass",<br> "className": "string",<br> "newName": "string",<br> "renameDiferences": "boolean"<br>} </pre>    |
+|       RenameClass        | Rename a given class.                                                  | <pre>{<br> "type": "RenameClass",<br> "className": "string",<br> "newName": "string",<br> "renameReferences": "boolean"<br>} </pre>    |
 |   AddInstanceVariable    | Add a new instance variable to a given class.                          | <pre>{<br> "type": "AddInstanceVariable",<br> "className": "string",<br> "variable": "string"<br>} </pre>                              |
 |  RemoveInstanceVariable  | Remove an instance variable from a given class.                        | <pre>{<br> "type": "RemoveInstanceVariable",<br> "className": "string",<br> "variable": "string"<br>} </pre>                           |
 |  RenameInstanceVariable  | Rename an instance variable of a given class.                          | <pre>{<br> "type": "RenameInstanceVariable",<br> "className": "string",<br> "variable": "string",<br> "newName": "string"<br>} </pre>  |
@@ -33,9 +33,9 @@ All changes should include `author` proprerty and might specify a `package` prop
 |   RenameClassVariable    | Rename a class variable of a given class.                              | <pre>{<br> "type": "RenameClassVariable",<br> "className": "string",<br> "variable": "string",<br> "newName": "string"<br>} </pre>     |
 |      RenameCategory      | Rename a category within a class.                                      | <pre>{<br> "type": "RenameCategory",<br> "className": "string",<br> "category": "string",<br> "newName": "string"<br>} </pre>          |
 |      RemoveCategory      | Remove a category from a class.                                        | <pre>{<br> "type": "RemoveCategory",<br> "className": "string",<br> "category": "string"<br>} </pre>                                   |
-|        AddPackage        | Add a new pacakge with a given name.                                   | <pre>{<br> "type": "AddPackage",<br> "name": "string"<br>} </pre>                                                                  |
-|      RemovePackage       | Remove a given package                                                 | <pre>{<br> "type": "RemovePackage",<br> "name": "string"<br>} </pre>                                                               |
-|      RenamePackage       | Rename a given package.                                                | <pre>{<br> "type": "RenamePackage",<br> "name": "string",<br> "newName": "string"<br>} </pre>                                      |
+|        AddPackage        | Add a new pacakge with a given name.                                   | <pre>{<br> "type": "AddPackage",<br> "name": "string"<br>} </pre>                                                                      |
+|      RemovePackage       | Remove a given package                                                 | <pre>{<br> "type": "RemovePackage",<br> "name": "string"<br>} </pre>                                                                   |
+|      RenamePackage       | Rename a given package.                                                | <pre>{<br> "type": "RenamePackage",<br> "name": "string",<br> "newName": "string"<br>} </pre>                                          |
 
 ## Success Responses
 
@@ -57,7 +57,7 @@ Besides the internal errors in the server (HTTP code `500`), changes might resul
 		"start": "number",
 		"end": "number"
 	},
-	"suggestions": ["suggestion"],
+	"suggestions": ["suggestion"]
 }
 ```
 
@@ -66,7 +66,7 @@ Here, `suggestion` has the following shape:
 ```json
 {
 	"description": "string",
-	"changes": ["change"],
+	"changes": ["change"]
 }
 ```
 

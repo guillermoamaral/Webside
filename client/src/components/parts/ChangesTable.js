@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import CustomTable from "../controls/CustomTable";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 
 class ChangesTable extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -21,13 +19,13 @@ class ChangesTable extends Component {
 
 	browseClass = (change) => {
 		if (change) {
-			this.context.browseClass(change.className);
+			ide.browseClass(change.className);
 		}
 	};
 
 	applyChange = (change) => {
 		if (change) {
-			this.context.api.postChange(change);
+			ide.api.postChange(change);
 		}
 	};
 

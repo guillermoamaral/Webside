@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import { Grid, Box, Paper, Breadcrumbs, Link } from "@material-ui/core";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import ObjectTree from "../parts/ObjectTree";
 import ObjectPresenter from "../parts/ObjectPresenter";
 import CodeEditor from "../parts/CodeEditor";
 
 class Inspector extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		const root = props.root;
@@ -48,11 +46,11 @@ class Inspector extends Component {
 		try {
 			const id = this.props.root.id;
 			const path = this.objectURIPath(object);
-			const retrieved = await this.context.api.getObjectSlot(id, path);
+			const retrieved = await ide.api.getObjectSlot(id, path);
 			Object.assign(object, retrieved);
 			await this.updateSlots(object);
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -65,11 +63,11 @@ class Inspector extends Component {
 		var slots;
 		try {
 			slots = object.indexable
-				? await this.context.api.getObjectIndexedSlots(id, path)
-				: await this.context.api.getObjectNamedSlots(id, path);
+				? await ide.api.getObjectIndexedSlots(id, path)
+				: await ide.api.getObjectNamedSlots(id, path);
 		} catch (error) {
 			slots = [];
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 		slots = slots.map((retrieved) => {
 			retrieved.path = [...object.path, retrieved.slot];
@@ -111,7 +109,7 @@ class Inspector extends Component {
 	};
 
 	browseClass = (classname) => {
-		this.context.browseClass(classname);
+		ide.browseClass(classname);
 	};
 
 	subpaths(path) {

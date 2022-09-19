@@ -1,13 +1,10 @@
 import React, { Component } from "react";
 import { Paper } from "@material-ui/core";
-import { IDEContext } from "../IDEContext";
 import CustomTable from "../controls/CustomTable";
 import PaginatedTable from "../controls/PaginatedTable";
 import CodeEditor from "../parts/CodeEditor";
 
 class ObjectPresenter extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.state = {

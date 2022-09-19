@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import { Grid } from "@material-ui/core";
 import {
 	Chart as ChartJS,
@@ -24,8 +24,6 @@ ChartJS.register(
 );
 
 class MemoryStats extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -50,11 +48,11 @@ class MemoryStats extends Component {
 
 	async updateStats() {
 		try {
-			const stats = await this.context.api.getMemoryStats(100);
+			const stats = await ide.api.getMemoryStats(100);
 			this.setState({ stats: stats, loading: false });
 			this.setTimer();
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 

@@ -12,11 +12,9 @@ import {
 import clsx from "clsx";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 
 class Titlebar extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -28,8 +26,8 @@ class Titlebar extends Component {
 		const value = this.state.searchValue;
 		if (value && value.length > 0) {
 			try {
-				await this.context.api.getClass(value);
-				this.context.browseClass(value);
+				await ide.api.getClass(value);
+				ide.browseClass(value);
 			} catch (error) {}
 		}
 	};

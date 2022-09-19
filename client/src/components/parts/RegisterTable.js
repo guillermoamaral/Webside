@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import CustomTable from "../controls/CustomTable";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 
 class RegisterTable extends Component {
-	static contextType = IDEContext;
-
 	registerSelected = (frame) => {
 		if (this.props.onSelect) {
 			this.props.onSelect(frame);
@@ -17,14 +15,14 @@ class RegisterTable extends Component {
 
 	inspect = async (register) => {
 		try {
-			await this.context.api.pinNativeDebuggerRegister(
+			await ide.api.pinNativeDebuggerRegister(
 				this.props.debugger,
 				register.name
 			);
-			const object = await this.context.api.getObject(register.name);
-			this.context.inspectObject(object);
+			const object = await ide.api.getObject(register.name);
+			ide.inspectObject(object);
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 

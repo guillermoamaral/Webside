@@ -2,13 +2,12 @@ import React, { Component } from "react";
 import { Grid, Paper, Box, IconButton } from "@material-ui/core";
 //import CodeMerge from "../parts/CodeMerge";
 import CodeEditor from "../parts/CodeEditor";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import ChangesTable from "../parts/ChangesTable";
 import DownloadIcon from "@material-ui/icons/GetApp";
+import Changeset from "../../model/Changset";
 
 class ChangesBrowser extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -28,7 +27,7 @@ class ChangesBrowser extends Component {
 	download = async (event) => {
 		event.preventDefault();
 		try {
-			const ch = await this.context.api.downloadChangeset(this.props.changes);
+			const ch = await ide.api.downloadChangeset(this.props.changes);
 			const blob = new Blob([ch]);
 			const url = window.URL.createObjectURL(blob);
 			const link = document.createElement("a");
@@ -38,7 +37,7 @@ class ChangesBrowser extends Component {
 			link.click();
 			document.body.removeChild(link);
 		} catch (error) {
-			this.context.reportError();
+			ide.reportError();
 		}
 	};
 
@@ -50,7 +49,7 @@ class ChangesBrowser extends Component {
 		switch (change.type) {
 			case "AddMethod":
 				source = "...";
-				break
+				break;
 			default:
 				source = "";
 		}
@@ -60,6 +59,7 @@ class ChangesBrowser extends Component {
 	render() {
 		const styles = this.props.styles;
 		const change = this.state.selectedChange;
+		console.log(Changeset.fromJson(this.props.changes));
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>

@@ -1,24 +1,22 @@
 import React, { Component } from "react";
 import FastCustomList from "../controls/FastCustomList";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import { withDialog } from "../dialogs/index";
 
 class PackageList extends Component {
-	static contextType = IDEContext;
-
 	createPackage = async () => {
 		try {
 			const name = await this.props.dialog.prompt({
 				title: "New package",
 				required: true,
 			});
-			await this.context.api.createPackage(name);
-			const pack = await this.context.api.getPackage(name);
+			await ide.api.createPackage(name);
+			const pack = await ide.api.getPackage(name);
 			if (this.props.onCreate) {
 				this.props.onCreate(pack);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -34,12 +32,12 @@ class PackageList extends Component {
 			return;
 		}
 		try {
-			await this.context.api.removePackage(pack.name);
+			await ide.api.removePackage(pack.name);
 			if (this.props.onRemove) {
 				this.props.onRemove(pack);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -53,25 +51,25 @@ class PackageList extends Component {
 				defaultValue: pack.name,
 				required: true,
 			});
-			await this.context.api.renamePackage(pack.name, newName);
+			await ide.api.renamePackage(pack.name, newName);
 			pack.name = newName;
 			if (this.props.onRename) {
 				this.props.onRename(pack);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
 	runTests = (pack) => {
 		if (pack) {
-			this.context.runTestPackage(pack.name);
+			ide.runTestPackage(pack.name);
 		}
 	};
 
 	migratePackage = (pack) => {
 		if (pack) {
-			this.context.migratePackage(pack.name);
+			ide.migratePackage(pack.name);
 		}
 	};
 

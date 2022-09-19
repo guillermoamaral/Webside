@@ -10,15 +10,13 @@ import {
 	AccordionSummary,
 	Typography,
 } from "@material-ui/core";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import SearchList2 from "../controls/SearchList2";
 import ClassTree from "../parts/ClassTree";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CodeEditor from "../parts/CodeEditor";
 
 class CoderLikeBrowser extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.cache = {};
@@ -46,13 +44,13 @@ class CoderLikeBrowser extends Component {
 			return;
 		}
 		try {
-			const species = await this.context.api.getClassTree(name, 3);
+			const species = await ide.api.getClassTree(name, 3);
 			this.cache[name] = species;
 			this.setState({ root: name }, () => {
 				this.classSelected(species);
 			});
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -127,16 +125,16 @@ class CoderLikeBrowser extends Component {
 		const species = selections.species;
 		try {
 			if (force || !species.definition) {
-				const definition = await this.context.api.getClass(species.name);
+				const definition = await ide.api.getClass(species.name);
 				species.definition = definition.definition;
 				species.comment = definition.comment;
 				species.superclass = definition.superclass;
 			}
 			if (force || !species.subclasses) {
-				species.subclasses = await this.context.api.getSubclasses(species.name);
+				species.subclasses = await ide.api.getSubclasses(species.name);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
@@ -146,13 +144,13 @@ class CoderLikeBrowser extends Component {
 				await Promise.all(
 					species.subclasses.map(async (c) => {
 						if (!c.subclasses) {
-							c.subclasses = await this.context.api.getSubclasses(c.name);
+							c.subclasses = await ide.api.getSubclasses(c.name);
 						}
 					})
 				);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
@@ -160,14 +158,14 @@ class CoderLikeBrowser extends Component {
 		const { species, variable } = selections;
 		try {
 			if (force || !species.variables) {
-				species.variables = await this.context.api.getVariables(species.name);
+				species.variables = await ide.api.getVariables(species.name);
 			}
 			if (variable) {
 				const found = species.variables.find((v) => v.name === variable.name);
 				selections.variable = !found ? null : found;
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
@@ -175,14 +173,14 @@ class CoderLikeBrowser extends Component {
 		const species = selections.species;
 		try {
 			if (force || !species.categories) {
-				const categories = await this.context.api.getCategories(species.name);
+				const categories = await ide.api.getCategories(species.name);
 				species.categories = categories.sort();
 			}
 			if (!species.categories.includes(selections.category)) {
 				selections.category = null;
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
@@ -193,13 +191,13 @@ class CoderLikeBrowser extends Component {
 		}
 		try {
 			if (force || !species.methods) {
-				species.methods = await this.context.api.getMethods(species.name, true);
+				species.methods = await ide.api.getMethods(species.name, true);
 			}
 			if (
 				variable &&
 				(force || !species[variable.name] || !species[variable.name][access])
 			) {
-				const accessors = await this.context.api.getMethodsAccessing(
+				const accessors = await ide.api.getMethodsAccessing(
 					species.name,
 					variable.name,
 					access,
@@ -215,7 +213,7 @@ class CoderLikeBrowser extends Component {
 				selections.method = !found ? null : found;
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
@@ -225,9 +223,9 @@ class CoderLikeBrowser extends Component {
 		var method;
 		if (force) {
 			try {
-				method = await this.context.api.getMethod(species.name, selector);
+				method = await ide.api.getMethod(species.name, selector);
 			} catch (error) {
-				this.context.reportError(error);
+				ide.reportError(error);
 			}
 			if (method) {
 				species.methods = species.methods.map((m) =>

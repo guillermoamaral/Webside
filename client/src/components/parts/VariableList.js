@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 import FastCustomList from "../controls/FastCustomList";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import { withDialog } from "../dialogs/index";
 
 class VariableList extends Component {
-	static contextType = IDEContext;
-
 	extendedVariables(variables) {
 		let extended = [];
 		if (variables) {
@@ -37,12 +35,12 @@ class VariableList extends Component {
 				title: "New variable",
 				required: true,
 			});
-			await this.context.api.addInstanceVariable(this.props.class.name, name);
+			await ide.api.addInstanceVariable(this.props.class.name, name);
 			if (this.props.onAdd) {
 				this.props.onAdd();
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -57,13 +55,13 @@ class VariableList extends Component {
 				required: true,
 			});
 			if (variable.type === "instance") {
-				await this.context.api.renameInstanceVariable(
+				await ide.api.renameInstanceVariable(
 					this.props.class.name,
 					variable.name,
 					newName
 				);
 			} else {
-				await this.context.api.renameClassVariable(
+				await ide.api.renameClassVariable(
 					this.props.class.name,
 					variable.name,
 					newName
@@ -74,7 +72,7 @@ class VariableList extends Component {
 				this.props.onRename(variable, newName);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -84,12 +82,12 @@ class VariableList extends Component {
 		}
 		try {
 			if (variable.type === "instance") {
-				await this.context.api.removeInstanceVariable(
+				await ide.api.removeInstanceVariable(
 					this.props.class.name,
 					variable.name
 				);
 			} else {
-				await this.context.api.removeClassVariable(
+				await ide.api.removeClassVariable(
 					this.props.class.name,
 					variable.name
 				);
@@ -98,7 +96,7 @@ class VariableList extends Component {
 				this.props.onRemove();
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -107,7 +105,7 @@ class VariableList extends Component {
 			return;
 		}
 		try {
-			await this.context.api.moveInstanceVariableUp(
+			await ide.api.moveInstanceVariableUp(
 				this.props.class.name,
 				variable.name
 			);
@@ -115,7 +113,7 @@ class VariableList extends Component {
 				this.props.onMoveUp(variable);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -124,7 +122,7 @@ class VariableList extends Component {
 			return;
 		}
 		try {
-			await this.context.api.moveInstanceVariableDown(
+			await ide.api.moveInstanceVariableDown(
 				this.props.class.name,
 				variable.name,
 				target
@@ -133,7 +131,7 @@ class VariableList extends Component {
 				this.props.onRemove(variable);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 

@@ -3,15 +3,13 @@ import FastCustomList from "../controls/FastCustomList";
 import OverridenIcon from "@material-ui/icons/ExpandMore";
 import OverridingIcon from "@material-ui/icons/ExpandLess";
 import OverridingOverridenIcon from "@material-ui/icons/UnfoldMore";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import { withDialog } from "../dialogs/index";
 
 class MethodList extends Component {
-	static contextType = IDEContext;
-
 	newMethod = () => {
 		const selected = this.props.selected;
-		const method = this.context.api.methodTemplate();
+		const method = ide.api.methodTemplate();
 		method.methodClass = selected ? selected.methodClass : null;
 		method.category = selected ? selected.category : null;
 		this.props.onSelect(method);
@@ -27,7 +25,7 @@ class MethodList extends Component {
 				defaultValue: method.selector,
 				required: true,
 			});
-			await this.context.api.renameSelector(
+			await ide.api.renameSelector(
 				method.methodClass,
 				method.selector,
 				newSelector
@@ -37,18 +35,18 @@ class MethodList extends Component {
 				this.props.onRename(method);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
 	removeMethod = async (method) => {
 		try {
-			await this.context.api.removeMethod(method.methodClass, method.selector);
+			await ide.api.removeMethod(method.methodClass, method.selector);
 			if (this.props.onRemove) {
 				this.props.onRemove(method);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -70,7 +68,7 @@ class MethodList extends Component {
 			target = await this.newCategory();
 		}
 		try {
-			await this.context.api.classifyMethod(
+			await ide.api.classifyMethod(
 				method.methodClass,
 				method.selector,
 				target
@@ -80,55 +78,55 @@ class MethodList extends Component {
 				this.props.onClassify(method);
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
 	browseClass = (method) => {
 		if (method) {
-			this.context.browseClass(method.methodClass);
+			ide.browseClass(method.methodClass);
 		}
 	};
 
 	browseSenders = (method) => {
 		if (method) {
-			this.context.browseSenders(method.selector);
+			ide.browseSenders(method.selector);
 		}
 	};
 
 	browseLocalSenders = (method) => {
 		if (method) {
-			this.context.browseLocalSenders(method.selector, method.methodClass);
+			ide.browseLocalSenders(method.selector, method.methodClass);
 		}
 	};
 
 	browseImplementors = (method) => {
 		if (method) {
-			this.context.browseImplementors(method.selector);
+			ide.browseImplementors(method.selector);
 		}
 	};
 
 	browseLocalImplementors = (method) => {
 		if (method) {
-			this.context.browseLocalImplementors(method.selector, method.methodClass);
+			ide.browseLocalImplementors(method.selector, method.methodClass);
 		}
 	};
 
 	browseClassReferences = (method) => {
 		if (method) {
-			this.context.browseClassReferences(method.methodClass);
+			ide.browseClassReferences(method.methodClass);
 		}
 	};
 
 	runTest = (method) => {
 		if (method) {
-			this.context.runTest(method.methodClass, method.selector);
+			ide.runTest(method.methodClass, method.selector);
 		}
 	};
 
 	migrateMethod = (method) => {
 		if (method) {
-			this.context.migrateMethod(method);
+			ide.migrateMethod(method);
 		}
 	};
 

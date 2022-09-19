@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import { Grid, Paper } from "@material-ui/core";
-import { IDEContext } from "../IDEContext";
 import CodeMerge from "../parts/CodeMerge";
 
 class CodeDifferences extends Component {
-	static contextType = IDEContext;
-
 	render() {
 		return (
 			<Grid container spacing={1}>

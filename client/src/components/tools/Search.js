@@ -13,11 +13,9 @@ import {
 	LinearProgress,
 } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 
 class Search extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.itemsPerPage = 10;
@@ -57,7 +55,7 @@ class Search extends Component {
 
 	async searchClasses(text) {
 		try {
-			const names = await this.context.api.getClassNames();
+			const names = await ide.api.getClassNames();
 			return names
 				.filter((n) => {
 					return n.toLowerCase().includes(text);
@@ -66,38 +64,38 @@ class Search extends Component {
 					return { title: n, type: "class", text: n };
 				});
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
 	async searchSelectors(text) {
 		try {
-			const methods = await this.context.api.getMethodsMatching(text);
+			const methods = await ide.api.getMethodsMatching(text);
 			return methods.map((m) => {
 				return { title: m.methodClass, type: "method", text: m.selector };
 			});
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
 	async searchStringReferences(text) {
 		try {
-			const methods = await this.context.api.getStringReferences(text);
+			const methods = await ide.api.getStringReferences(text);
 			return methods.map((m) => {
 				return { title: m.methodClass, type: "method", text: m.selector };
 			});
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
 	goToResult = (r) => {
 		if (r.type === "class") {
-			this.context.browseClass(r.text);
+			ide.browseClass(r.text);
 		}
 		if (r.type === "method") {
-			this.context.browseMethod({ methodClass: r.title, selector: r.text });
+			ide.browseMethod({ methodClass: r.title, selector: r.text });
 		}
 	};
 

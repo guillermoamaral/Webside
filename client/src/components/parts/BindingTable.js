@@ -1,13 +1,11 @@
 import React, { PureComponent } from "react";
 import { Box, Paper } from "@material-ui/core";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";
 //import Scrollable from "../controls/Scrollable";
 
 class BindingTable extends PureComponent {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -39,15 +37,15 @@ class BindingTable extends PureComponent {
 				debugger: this.props.id,
 				frame: this.props.frame ? this.props.frame.index : null,
 			};
-			const object = await this.context.evaluateExpression(
+			const object = await ide.evaluateExpression(
 				binding.name,
 				false,
 				true,
 				context
 			);
-			this.context.inspectObject(object);
+			ide.inspectObject(object);
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 

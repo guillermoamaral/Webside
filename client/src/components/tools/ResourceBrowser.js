@@ -10,7 +10,7 @@ import {
 	IconButton,
 } from "@material-ui/core";
 import CustomTable from "../controls/CustomTable";
-import { IDEContext } from "../IDEContext";
+import { ide } from "../IDE";
 import InspectorIcon from "../icons/InspectorIcon";
 import WorkspaceIcon from "../icons/WorkspaceIcon";
 import DebuggerIcon from "../icons/DebuggerIcon";
@@ -22,8 +22,6 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import StopIcon from "@material-ui/icons/Stop";
 
 class ResourceBrowser extends Component {
-	static contextType = IDEContext;
-
 	constructor(props) {
 		super(props);
 		this.types = [
@@ -50,24 +48,24 @@ class ResourceBrowser extends Component {
 		try {
 			switch (type) {
 				case "Objects":
-					resources = await this.context.api.getObjects();
+					resources = await ide.api.getObjects();
 					break;
 				case "Evaluations":
-					resources = await this.context.api.getEvaluations();
+					resources = await ide.api.getEvaluations();
 					break;
 				case "Workspaces":
-					resources = await this.context.api.getWorkspaces();
+					resources = await ide.api.getWorkspaces();
 					break;
 				case "Debuggers":
-					resources = await this.context.api.getDebuggers();
+					resources = await ide.api.getDebuggers();
 					break;
 				case "Test Runs":
-					resources = await this.context.api.getTestRuns();
+					resources = await ide.api.getTestRuns();
 					break;
 				default:
 			}
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 		this.setState({ selectedType: type, resources: resources });
 	};
@@ -105,31 +103,31 @@ class ResourceBrowser extends Component {
 
 	inspectObject = (object) => {
 		if (object) {
-			this.context.inspectObject(object);
+			ide.inspectObject(object);
 		}
 	};
 
 	unpinObject = async (object) => {
 		try {
-			await this.context.api.unpinObject(object.id);
+			await ide.api.unpinObject(object.id);
 			this.setState({
 				resources: this.state.resources.filter((r) => r.id !== object.id),
 				selectedResource: null,
 			});
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
 	unpinAllObjects = async () => {
 		try {
-			await this.context.api.unpinAllObjects();
+			await ide.api.unpinAllObjects();
 			this.setState({
 				resources: [],
 				selectedResource: null,
 			});
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -142,12 +140,12 @@ class ResourceBrowser extends Component {
 
 	cancelEvaluation = async (evaluation) => {
 		try {
-			await this.context.api.cancelEvaluation(evaluation.id);
+			await ide.api.cancelEvaluation(evaluation.id);
 			this.setState({
 				resources: this.state.resources.filter((r) => r.id !== evaluation.id),
 			});
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -157,20 +155,20 @@ class ResourceBrowser extends Component {
 
 	openWorkspace = (workspace) => {
 		if (workspace) {
-			this.context.openWorkspace(workspace.id);
+			ide.openWorkspace(workspace.id);
 		}
 	};
 
 	deleteWorkspace = async (w) => {
 		if (w) {
 			try {
-				await this.context.api.deleteWorkspace(w.id);;
+				await ide.api.deleteWorkspace(w.id);
 				this.setState({
 					resources: this.state.resources.filter((r) => r.id !== w.id),
 					selectedResource: null,
 				});
 			} catch (error) {
-				this.context.reportError(error);
+				ide.reportError(error);
 			}
 		}
 	};
@@ -184,27 +182,27 @@ class ResourceBrowser extends Component {
 
 	openDebugger = (d) => {
 		if (d) {
-			this.context.openDebugger(d.id, d.description);
+			ide.openDebugger(d.id, d.description);
 		}
 	};
 
 	terminateDebugger = async (d) => {
 		if (d) {
 			try {
-				await this.context.api.terminateDebugger(d.id);
+				await ide.api.terminateDebugger(d.id);
 				this.setState({
 					resources: this.state.resources.filter((r) => r.id !== d.id),
 					selectedResource: null,
 				});
 			} catch (error) {
-				this.context.reportError(error);
+				ide.reportError(error);
 			}
 		}
 	};
 
 	openTestRun = (t) => {
 		if (t) {
-			this.context.openTestRunner(t.id, t.name);
+			ide.openTestRunner(t.id, t.name);
 		}
 	};
 
