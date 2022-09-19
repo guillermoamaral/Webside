@@ -17,7 +17,6 @@ import { amber, blue } from "@material-ui/core/colors";
 import AddIcon from "@material-ui/icons/AddCircle";
 import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
 import API from "./API";
-import { IDEContext } from "./IDEContext";
 import { DialogProvider } from "./dialogs/index";
 import CustomSnacks from "./controls/CustomSnacks";
 import TranscriptIcon from "./icons/TranscriptIcon";
@@ -130,6 +129,10 @@ class IDE extends Component {
 			this.baseUri +
 			'"'
 		);
+	}
+
+	transcriptText() {
+		return this.state.transcriptText;
 	}
 
 	initializeSettings = async () => {
@@ -891,39 +894,6 @@ class IDE extends Component {
 
 	render() {
 		console.log("rendering IDE");
-		const context = {
-			api: this.api,
-			dialect: this.dialect,
-			transcriptText: this.state.transcriptText,
-			messageChannel: this.messageChannel,
-			openChat: this.openChat,
-			openWorkspace: this.openWorkspace,
-			browsePackage: this.openPackageBrowser,
-			browseClass: this.browseClass,
-			browseMethod: this.browseMethod,
-			browseSenders: this.browseSenders,
-			browseLocalSenders: this.browseLocalSenders,
-			browseImplementors: this.browseImplementors,
-			browseLocalImplementors: this.browseLocalImplementors,
-			browseClassReferences: this.browseClassReferences,
-			browseMethodsMatching: this.browseMethodsMatching,
-			browseStringReferences: this.browseStringReferences,
-			evaluateExpression: this.evaluateExpression,
-			debugExpression: this.debugExpression,
-			openDebugger: this.openDebugger,
-			closeDebugger: this.closeDebugger,
-			profileExpression: this.profileExpression,
-			runTest: this.runTest,
-			runTestClass: this.runTestClass,
-			runTestPackage: this.runTestPackage,
-			openTestRunner: this.openTestRunner,
-			inspectObject: this.openInspector,
-			reportError: this.reportError,
-			updatePageLabel: this.updatePageLabel,
-			migratePackage: this.migratePackage,
-			migrateClass: this.migrateClass,
-			migrateMethod: this.migrateMethod,
-		};
 		const styles = this.props.styles;
 		return (
 			<Hotkeys
@@ -934,162 +904,160 @@ class IDE extends Component {
 				allowRepeat={false}
 				onKeyDown={(hotkey, e, handle) => this.hotkeyPressed(hotkey)}
 			>
-				<IDEContext.Provider value={context}>
-					<ThemeProvider theme={this.theme}>
-						<DialogProvider>
-							<div className={styles.root}>
-								<Titlebar
-									developer={this.developer}
-									dialect={this.dialect}
-									styles={styles}
-									sidebarExpanded={this.state.sidebarExpanded}
-									expandSidebar={this.expandSidebar}
-									searchOptions={[]}
-									onAvatarClicked={this.openSettings}
-								/>
-								<Sidebar
-									styles={styles}
-									expanded={this.state.sidebarExpanded}
-									unreadErrorsCount={this.state.unreadErrorsCount}
-									unreadMessages={this.state.unreadMessages}
-									onSaveImageClicked={this.saveImage}
-									onTranscriptClicked={this.openTranscript}
-									onSearchClicked={this.openSearch}
-									onChangesClicked={this.browseLastChanges}
-									onResourcesClicked={this.openResources}
-									onPeersClicked={this.openChat}
-									onClose={this.collapseSidebar}
-								/>
-								<main className={styles.content}>
-									<div className={styles.appBarSpacer} />
-									<Container className={styles.container}>
-										<Grid container spacing={1} style={{ height: "100%" }}>
-											<Grid item xs={11} md={11} lg={11}>
-												<TabControl
-													style={{ height: "100%" }}
-													styles={styles}
-													selectedPage={this.state.selectedPage}
-													pages={this.state.pages}
-													onSelect={this.selectPage}
-													onClose={this.removePage}
-												/>
-											</Grid>
-											<Grid item xs={1} md={1} lg={1}>
-												<IconButton
-													id="addPageButton"
-													color="primary"
-													onClick={() => {
-														this.setState({ addPageMenuOpen: true });
-													}}
-												>
-													<AddIcon style={{ fontSize: 40 }} />
-												</IconButton>
-												<Menu
-													id="addPageMenu"
-													anchorEl={document.getElementById("addPageButton")}
-													keepMounted
-													open={this.state.addPageMenuOpen}
-													onClose={() => {
-														this.setState({ addPageMenuOpen: false });
-													}}
-												>
-													<MenuItem onClick={this.addWorkspaceClicked}>
-														<Box
-															display="flex"
-															flexWrap="nowrap"
-															alignItems="center"
-															justifyContent="center"
-														>
-															<Box pt={1} pr={1}>
-																<WorkspaceIcon />
-															</Box>
-															<Box>Workspace</Box>
-														</Box>
-													</MenuItem>
-													<MenuItem onClick={this.addClassBrowserClicked}>
-														<Box
-															display="flex"
-															flexWrap="nowrap"
-															alignItems="center"
-															justifyContent="center"
-														>
-															<Box pt={1} pr={1}>
-																<ClassBrowserIcon />
-															</Box>
-															<Box>Class Browser</Box>
-														</Box>
-													</MenuItem>
-													<MenuItem onClick={this.addPackageBrowserClicked}>
-														<Box
-															display="flex"
-															flexWrap="nowrap"
-															alignItems="center"
-															justifyContent="center"
-														>
-															<Box pt={1} pr={1}>
-																<PackageBrowserIcon />
-															</Box>
-															<Box>Package Browser</Box>
-														</Box>
-													</MenuItem>
-													<MenuItem onClick={this.addChangesBrowserClicked}>
-														<Box
-															display="flex"
-															flexWrap="nowrap"
-															alignItems="center"
-															justifyContent="center"
-														>
-															<Box pt={1} pr={1}>
-																<ChangesBrowserIcon />
-															</Box>
-															<Box>Changes Browser</Box>
-														</Box>
-													</MenuItem>
-												</Menu>
-											</Grid>
-											<React.Fragment key="bottom">
-												<Drawer
-													anchor="bottom"
-													variant="persistent"
-													open={this.state.transcriptOpen}
-												>
-													<Grid container spacing={0}>
-														<Grid item xs={11} md={11} lg={11}>
-															{this.state.transcriptOpen && (
-																<Transcript
-																	styles={styles}
-																	text={this.state.transcriptText}
-																	onChange={this.transcriptChanged}
-																/>
-															)}
-														</Grid>
-														<Grid item xs={1} md={1} lg={1}>
-															<Box display="flex" justifyContent="center">
-																<IconButton
-																	onClick={() =>
-																		this.setState({ transcriptOpen: false })
-																	}
-																>
-																	<KeyboardArrowDown />
-																</IconButton>
-															</Box>
-														</Grid>
-													</Grid>
-												</Drawer>
-											</React.Fragment>
-										</Grid>
-									</Container>
-								</main>
-							</div>
-							<CustomSnacks
-								open={this.state.lastError !== null}
-								onClose={() => this.setState({ lastError: null })}
-								text={this.state.lastError}
-								severity="error"
+				<ThemeProvider theme={this.theme}>
+					<DialogProvider>
+						<div className={styles.root}>
+							<Titlebar
+								developer={this.developer}
+								dialect={this.dialect}
+								styles={styles}
+								sidebarExpanded={this.state.sidebarExpanded}
+								expandSidebar={this.expandSidebar}
+								searchOptions={[]}
+								onAvatarClicked={this.openSettings}
 							/>
-						</DialogProvider>
-					</ThemeProvider>
-				</IDEContext.Provider>
+							<Sidebar
+								styles={styles}
+								expanded={this.state.sidebarExpanded}
+								unreadErrorsCount={this.state.unreadErrorsCount}
+								unreadMessages={this.state.unreadMessages}
+								onSaveImageClicked={this.saveImage}
+								onTranscriptClicked={this.openTranscript}
+								onSearchClicked={this.openSearch}
+								onChangesClicked={this.browseLastChanges}
+								onResourcesClicked={this.openResources}
+								onPeersClicked={this.openChat}
+								onClose={this.collapseSidebar}
+							/>
+							<main className={styles.content}>
+								<div className={styles.appBarSpacer} />
+								<Container className={styles.container}>
+									<Grid container spacing={1} style={{ height: "100%" }}>
+										<Grid item xs={11} md={11} lg={11}>
+											<TabControl
+												style={{ height: "100%" }}
+												styles={styles}
+												selectedPage={this.state.selectedPage}
+												pages={this.state.pages}
+												onSelect={this.selectPage}
+												onClose={this.removePage}
+											/>
+										</Grid>
+										<Grid item xs={1} md={1} lg={1}>
+											<IconButton
+												id="addPageButton"
+												color="primary"
+												onClick={() => {
+													this.setState({ addPageMenuOpen: true });
+												}}
+											>
+												<AddIcon style={{ fontSize: 40 }} />
+											</IconButton>
+											<Menu
+												id="addPageMenu"
+												anchorEl={document.getElementById("addPageButton")}
+												keepMounted
+												open={this.state.addPageMenuOpen}
+												onClose={() => {
+													this.setState({ addPageMenuOpen: false });
+												}}
+											>
+												<MenuItem onClick={this.addWorkspaceClicked}>
+													<Box
+														display="flex"
+														flexWrap="nowrap"
+														alignItems="center"
+														justifyContent="center"
+													>
+														<Box pt={1} pr={1}>
+															<WorkspaceIcon />
+														</Box>
+														<Box>Workspace</Box>
+													</Box>
+												</MenuItem>
+												<MenuItem onClick={this.addClassBrowserClicked}>
+													<Box
+														display="flex"
+														flexWrap="nowrap"
+														alignItems="center"
+														justifyContent="center"
+													>
+														<Box pt={1} pr={1}>
+															<ClassBrowserIcon />
+														</Box>
+														<Box>Class Browser</Box>
+													</Box>
+												</MenuItem>
+												<MenuItem onClick={this.addPackageBrowserClicked}>
+													<Box
+														display="flex"
+														flexWrap="nowrap"
+														alignItems="center"
+														justifyContent="center"
+													>
+														<Box pt={1} pr={1}>
+															<PackageBrowserIcon />
+														</Box>
+														<Box>Package Browser</Box>
+													</Box>
+												</MenuItem>
+												<MenuItem onClick={this.addChangesBrowserClicked}>
+													<Box
+														display="flex"
+														flexWrap="nowrap"
+														alignItems="center"
+														justifyContent="center"
+													>
+														<Box pt={1} pr={1}>
+															<ChangesBrowserIcon />
+														</Box>
+														<Box>Changes Browser</Box>
+													</Box>
+												</MenuItem>
+											</Menu>
+										</Grid>
+										<React.Fragment key="bottom">
+											<Drawer
+												anchor="bottom"
+												variant="persistent"
+												open={this.state.transcriptOpen}
+											>
+												<Grid container spacing={0}>
+													<Grid item xs={11} md={11} lg={11}>
+														{this.state.transcriptOpen && (
+															<Transcript
+																styles={styles}
+																text={this.state.transcriptText}
+																onChange={this.transcriptChanged}
+															/>
+														)}
+													</Grid>
+													<Grid item xs={1} md={1} lg={1}>
+														<Box display="flex" justifyContent="center">
+															<IconButton
+																onClick={() =>
+																	this.setState({ transcriptOpen: false })
+																}
+															>
+																<KeyboardArrowDown />
+															</IconButton>
+														</Box>
+													</Grid>
+												</Grid>
+											</Drawer>
+										</React.Fragment>
+									</Grid>
+								</Container>
+							</main>
+						</div>
+						<CustomSnacks
+							open={this.state.lastError !== null}
+							onClose={() => this.setState({ lastError: null })}
+							text={this.state.lastError}
+							severity="error"
+						/>
+					</DialogProvider>
+				</ThemeProvider>
 			</Hotkeys>
 		);
 	}
