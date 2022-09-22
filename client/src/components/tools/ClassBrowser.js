@@ -683,6 +683,7 @@ class ClassBrowser extends Component {
 									onRemove={this.methodRemoved}
 									onClassify={this.methodClassified}
 									onCategoryAdd={this.categoryAdded}
+									showNewOption
 								/>
 							</Paper>
 						</Grid>

@@ -65,7 +65,7 @@ class Change extends Object {
 		return "";
 	}
 
-	currentSourceCode() {
+	currentSourceCodeIn(api) {
 		return "";
 	}
 
@@ -133,6 +133,17 @@ class AddMethod extends MethodChange {
 	sourceCode() {
 		return this.sourceCode;
 	}
+
+	async currentSourceCodeIn(api) {
+		var current;
+		try {
+			const method = await api.getMethod(this.className, this.selector);
+			current = method.sourceCode;
+		} catch (error) {
+			current = "";
+		}
+		return current;
+	}
 }
 
 class RemoveMethod extends MethodChange {}
@@ -192,6 +203,17 @@ class AddClass extends ClassChange {
 
 	sourceCode() {
 		return this.definition;
+	}
+
+	async currentSourceCodeIn(api) {
+		var current;
+		try {
+			const species = await api.getClass(this.className);
+			current = species.definition;
+		} catch (error) {
+			current = "";
+		}
+		return current;
 	}
 }
 

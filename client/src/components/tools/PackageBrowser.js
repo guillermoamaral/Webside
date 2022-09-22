@@ -609,6 +609,7 @@ class PackageBrowser extends Component {
 									onRename={this.methodRenamed}
 									onRemove={this.methodRemoved}
 									onClassify={this.methodClassified}
+									showNewOption
 								/>
 							</Paper>
 						</Grid>

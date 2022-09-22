@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import CustomList from "../controls/CustomList";
+import FastCustomList from "../controls/FastCustomList";
 import { ide } from "../IDE";
 
 class FrameList extends Component {
@@ -35,10 +35,7 @@ class FrameList extends Component {
 
 	browseLocalImplementors = (frame) => {
 		if (frame) {
-			ide.browseLocalImplementors(
-				frame.method.selector,
-				frame.class.name
-			);
+			ide.browseLocalImplementors(frame.method.selector, frame.class.name);
 		}
 	};
 
@@ -61,7 +58,7 @@ class FrameList extends Component {
 
 	render() {
 		return (
-			<CustomList
+			<FastCustomList
 				itemLabel="label"
 				items={this.props.frames}
 				selectedItem={this.props.selected}

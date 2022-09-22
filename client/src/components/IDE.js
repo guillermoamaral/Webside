@@ -628,7 +628,7 @@ class IDE extends Component {
 				senders,
 				"Senders of " + selector,
 				selector,
-				"class"
+				"methodClass"
 			);
 		} catch (error) {
 			this.reportError(error);
@@ -656,7 +656,7 @@ class IDE extends Component {
 				implementors,
 				"Implementors of " + selector,
 				null,
-				"class"
+				"methodClass"
 			);
 		} catch (error) {
 			this.reportError(error);
@@ -682,7 +682,7 @@ class IDE extends Component {
 				references,
 				"References to " + classname,
 				classname,
-				"class"
+				"methodClass"
 			);
 		} catch (error) {
 			this.reportError(error);
@@ -696,7 +696,7 @@ class IDE extends Component {
 				references,
 				"References to '" + string + "'",
 				string,
-				"class"
+				"methodClass"
 			);
 		} catch (error) {
 			this.reportError(error);
@@ -710,7 +710,7 @@ class IDE extends Component {
 				matching,
 				"Methods with selector matching " + pattern,
 				null,
-				"class"
+				"methocClass"
 			);
 		} catch (error) {
 			this.reportError(error);

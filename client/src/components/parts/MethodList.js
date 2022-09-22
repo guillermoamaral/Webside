@@ -1,20 +1,13 @@
 import React, { Component } from "react";
-import FastCustomList from "../controls/FastCustomList";
 import OverridenIcon from "@material-ui/icons/ExpandMore";
 import OverridingIcon from "@material-ui/icons/ExpandLess";
 import OverridingOverridenIcon from "@material-ui/icons/UnfoldMore";
+import FastCustomList from "../controls/FastCustomList";
+import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
 import { withDialog } from "../dialogs/index";
 
 class MethodList extends Component {
-	newMethod = () => {
-		const selected = this.props.selected;
-		const method = ide.api.methodTemplate();
-		method.methodClass = selected ? selected.methodClass : null;
-		method.category = selected ? selected.category : null;
-		this.props.onSelect(method);
-	};
-
 	renameMethod = async (method) => {
 		if (!method) {
 			return;
@@ -146,11 +139,16 @@ class MethodList extends Component {
 	}
 
 	menuOptions = () => {
-		const options = [
-			{ label: "New", action: this.newMethod },
-			{ label: "Rename", action: this.renameMethod },
-			{ label: "Remove", action: this.removeMethod },
-		];
+		const options = [];
+		if (this.props.showNewOption) {
+			options.push({ label: "New", action: this.newMethod });
+		}
+		options.push(
+			...[
+				{ label: "Rename", action: this.renameMethod },
+				{ label: "Remove", action: this.removeMethod },
+			]
+		);
 		const categories = this.categoryOptions();
 		if (categories.length > 0) {
 			options.push({
@@ -165,8 +163,14 @@ class MethodList extends Component {
 				{ label: "Senders", action: this.browseSenders },
 				{ label: "Local senders", action: this.browseLocalSenders },
 				{ label: "Implementors", action: this.browseImplementors },
-				{ label: "Local implementors", action: this.browseLocalImplementors },
-				{ label: "Class references", action: this.browseClassReferences },
+				{
+					label: "Local implementors",
+					action: this.browseLocalImplementors,
+				},
+				{
+					label: "Class references",
+					action: this.browseClassReferences,
+				},
 				null,
 				{ label: "Test", action: this.runTest },
 				null,
@@ -176,21 +180,20 @@ class MethodList extends Component {
 		return options;
 	};
 
-	methodLabel = (method) => {
-		return this.props.showClass === true
-			? method.methodClass + ">>#" + method.selector
-			: method.selector;
-	};
-
 	methodIcon = (method) => {
 		const size = 12;
 		if (method.overriding && method.overriden) {
 			return (
-				<OverridingOverridenIcon color="primary" style={{ fontSize: size }} />
+				<OverridingOverridenIcon
+					color="primary"
+					style={{ fontSize: size }}
+				/>
 			);
 		}
 		if (method.overriding) {
-			return <OverridingIcon color="primary" style={{ fontSize: size }} />;
+			return (
+				<OverridingIcon color="primary" style={{ fontSize: size }} />
+			);
 		}
 		if (method.overriden) {
 			return <OverridenIcon color="primary" style={{ fontSize: size }} />;
@@ -198,19 +201,57 @@ class MethodList extends Component {
 		return null;
 	};
 
+	methodColumns() {
+		return [
+			{ field: "methodClass", label: "Class", align: "left" },
+			{ field: "selector", label: "Selector", align: "left" },
+			{ field: "category", label: "Category", align: "left" },
+			{ field: "package", label: "Pacakge", align: "left" },
+		];
+	}
+
+	newMethod = () => {
+		const selected = this.props.selected;
+		const method = ide.api.methodTemplate();
+		method.methodClass = selected ? selected.methodClass : null;
+		method.category = selected ? selected.category : null;
+		this.props.onSelect(method);
+	};
+
+	methodLabel = (method) => {
+		return this.props.showClass === true
+			? method.methodClass + ">>#" + method.selector
+			: method.selector;
+	};
+
 	render() {
-		const methods = !this.props.methods ? [] : this.props.methods;
-		return (
-			<FastCustomList
-				items={methods}
-				itemLabel={this.methodLabel}
-				itemStyle={this.props.labelStyle}
-				itemIcon={this.methodIcon}
-				selectedItem={this.props.selected}
-				onSelect={this.props.onSelect}
-				menuOptions={this.menuOptions()}
-			/>
-		);
+		const methods = this.props.methods || [];
+		const useTable = this.props.useTable && methods.length < 200;
+		if (useTable) {
+			return (
+				<CustomTable
+					styles={this.props.styles}
+					columns={this.methodColumns()}
+					rows={methods}
+					onSelect={this.props.onSelect}
+					menuOptions={this.menuOptions()}
+					hideRowBorder
+					//noHeaders
+				/>
+			);
+		} else {
+			return (
+				<FastCustomList
+					items={methods}
+					itemLabel={this.methodLabel}
+					itemStyle={this.props.labelStyle}
+					itemIcon={this.methodIcon}
+					selectedItem={this.props.selected}
+					onSelect={this.props.onSelect}
+					menuOptions={this.menuOptions()}
+				/>
+			);
+		}
 	}
 }
 

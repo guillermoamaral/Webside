@@ -131,8 +131,10 @@ class CustomTable extends Component {
 				{actions.map((action) => {
 					const visible =
 						action.visible === undefined ||
-						(typeof action.visible == "boolean" && action.visible) ||
-						(typeof action.visible == "function" && action.visible(row));
+						(typeof action.visible == "boolean" &&
+							action.visible) ||
+						(typeof action.visible == "function" &&
+							action.visible(row));
 					return (
 						<Box style={{ minWidth: 10 }}>
 							{visible && (
@@ -159,6 +161,7 @@ class CustomTable extends Component {
 		const { selectedRow, menuOpen, menuPosition } = this.state;
 		const columns = this.columns();
 		const rows = this.props.rows || [];
+		const border = this.props.hideRowBorder ? "none" : "";
 		return (
 			<Scrollable>
 				<TableContainer className={this.props.styles.container}>
@@ -187,20 +190,34 @@ class CustomTable extends Component {
 										tabIndex={-1}
 										key={index}
 										selected={row === selectedRow}
-										onClick={(event) => this.rowSelected(row)}
+										onClick={(event) =>
+											this.rowSelected(row)
+										}
 										onContextMenu={this.openMenu}
 									>
 										{columns.map((column) => {
-											const color = this.getCellColor(row, column);
+											const color = this.getCellColor(
+												row,
+												column
+											);
 											return (
 												<TableCell
 													key={column.field + index}
 													align={column.align}
-													style={{ color: color }}
+													style={{
+														color: color,
+														borderBottom: border,
+													}}
 												>
 													{column.field === "actions"
-														? this.rowActionButtons(row, index)
-														: this.getCellValue(row, column)}
+														? this.rowActionButtons(
+																row,
+																index
+														  )
+														: this.getCellValue(
+																row,
+																column
+														  )}
 												</TableCell>
 											);
 										})}
