@@ -12,6 +12,8 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import PopupMenu from "./PopupMenu";
 import RSC from "react-scrollbars-custom";
 
+const ITEM_SIZE = 30;
+
 const CustomScrollbars = ({
 	children,
 	forwardedRef,
@@ -327,7 +329,7 @@ class FastCustomList extends Component {
 								ref={listRef}
 								height={height}
 								width={width}
-								itemSize={30}
+								itemSize={ITEM_SIZE}
 								itemCount={count}
 								overscanCount={5}
 								onKeyDown={this.keyDown}

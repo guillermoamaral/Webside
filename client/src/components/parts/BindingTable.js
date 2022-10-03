@@ -43,7 +43,7 @@ class BindingTable extends PureComponent {
 				true,
 				context
 			);
-			ide.inspectObject(object);
+			ide.openInspector(object);
 		} catch (error) {
 			ide.reportError(error);
 		}

@@ -23,7 +23,8 @@ class MethodBrowser extends Component {
 	}
 
 	componentDidMount() {
-		const method = this.props.methods.length > 0 ? this.props.methods[0] : null;
+		const method =
+			this.props.methods.length > 0 ? this.props.methods[0] : null;
 		if (method) {
 			this.methodSelected(method);
 		}
@@ -33,7 +34,8 @@ class MethodBrowser extends Component {
 		const methods = this.props.methods;
 		const index = methods.findIndex(
 			(m) =>
-				m.methodClass === method.methodClass && m.selector === method.selector
+				m.methodClass === method.methodClass &&
+				m.selector === method.selector
 		);
 		if (index > -1) {
 			methods.splice(index, 1);
@@ -126,7 +128,9 @@ class MethodBrowser extends Component {
 										size="small"
 										checked={showTests}
 										color="primary"
-										onChange={(event) => this.showTests(event.target.checked)}
+										onChange={(event) =>
+											this.showTests(event.target.checked)
+										}
 									/>
 								}
 								label="Show tests"
@@ -135,7 +139,11 @@ class MethodBrowser extends Component {
 					</Box>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
-					<Paper className={fixedHeightPaper} variant="outlined">
+					<Paper
+						className={fixedHeightPaper}
+						variant="outlined"
+						style={{ height: 300 }}
+					>
 						<MethodList
 							useTable
 							styles={styles}
@@ -143,6 +151,7 @@ class MethodBrowser extends Component {
 							methods={methods}
 							onSelect={this.methodSelected}
 							onRemove={this.methodRemoved}
+							showClass
 						/>
 					</Paper>
 				</Grid>

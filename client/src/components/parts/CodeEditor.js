@@ -392,7 +392,7 @@ class CodeEditor extends Component {
 				this.props.context
 			);
 			this.setState({ progress: false });
-			ide.inspectObject(object);
+			ide.openInspector(object);
 		} catch (error) {
 			this.setState({ progress: false });
 		}

@@ -8,6 +8,8 @@ import {
 	MenuItem,
 	Drawer,
 	Box,
+	Backdrop,
+	CircularProgress,
 } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
 import { withCookies } from "react-cookie";
@@ -137,11 +139,20 @@ class IDE extends Component {
 
 	initializeSettings = async () => {
 		const options = this.queryOptions();
-		this.updateSettings(options.baseUri, options.dialect, options.developer);
+		this.updateSettings(
+			options.baseUri,
+			options.dialect,
+			options.developer
+		);
 	};
 
 	initializeAPI(baseUri, developer) {
-		this.api = new API(baseUri, developer, this.reportError, this.reportChange);
+		this.api = new API(
+			baseUri,
+			developer,
+			this.reportError,
+			this.reportChange
+		);
 	}
 
 	initializeMessageChannel(url) {
@@ -155,7 +166,11 @@ class IDE extends Component {
 			this.messageReceived,
 			this
 		);
-		this.messageChannel.onEvent("onMessagesSeen", this.messageReceived, this);
+		this.messageChannel.onEvent(
+			"onMessagesSeen",
+			this.messageReceived,
+			this
+		);
 	}
 
 	saveImage = async () => {
@@ -168,7 +183,9 @@ class IDE extends Component {
 
 	messageReceived = (message) => {
 		if (message.type === "text") {
-			this.setState({ unreadMessages: this.messageChannel.unseenMessages() });
+			this.setState({
+				unreadMessages: this.messageChannel.unseenMessages(),
+			});
 		}
 	};
 
@@ -230,7 +247,9 @@ class IDE extends Component {
 
 	newPageId() {
 		const pages = this.state.pages;
-		return pages.length > 0 ? pages.sort((a, b) => a.id > b.id)[0].id + 1 : 1;
+		return pages.length > 0
+			? pages.sort((a, b) => a.id > b.id)[0].id + 1
+			: 1;
 	}
 
 	addPage(label, icon, component, id) {
@@ -253,7 +272,11 @@ class IDE extends Component {
 		const state = { selectedPage: page };
 		if (page.label === "Transcript") {
 			state.unreadErrorsCount = 0;
-			if (page.component && page.component.ref && page.component.current) {
+			if (
+				page.component &&
+				page.component.ref &&
+				page.component.current
+			) {
 				page.component.current.forceUpdate();
 			}
 		}
@@ -348,7 +371,12 @@ class IDE extends Component {
 						onChange={this.transcriptChanged}
 					/>
 				);
-				this.addPage("Transcript", <TranscriptIcon />, transcript, true);
+				this.addPage(
+					"Transcript",
+					<TranscriptIcon />,
+					transcript,
+					true
+				);
 			}
 		}
 	};
@@ -447,7 +475,12 @@ class IDE extends Component {
 		);
 	};
 
-	openMethodBrowser = (methods, title = "Methods", selectedWord, sortedBy) => {
+	openMethodBrowser = (
+		methods,
+		title = "Methods",
+		selectedWord,
+		sortedBy
+	) => {
 		const sorted = sortedBy
 			? methods.sort((a, b) => (a[sortedBy] <= b[sortedBy] ? -1 : 1))
 			: methods;
@@ -475,20 +508,29 @@ class IDE extends Component {
 	};
 
 	openWorkspace = (id) => {
-		const workspace = <Workspace styles={this.props.styles} key={id} id={id} />;
+		const workspace = (
+			<Workspace styles={this.props.styles} key={id} id={id} />
+		);
 		this.addPage("Workspace", <WorkspaceIcon />, workspace);
 	};
 
 	openDebugger = (id, title = "Debugger") => {
 		const tool = (
-			<Debugger styles={this.props.styles} key={id} id={id} title={title} />
+			<Debugger
+				styles={this.props.styles}
+				key={id}
+				id={id}
+				title={title}
+			/>
 		);
 		this.addPage(title, <DebuggerIcon />, tool);
 	};
 
 	closeDebugger = (id) => {
 		const page = this.state.pages.find(
-			(p) => p.component.type.name === "Debugger" && p.component.props.id === id
+			(p) =>
+				p.component.type.name === "Debugger" &&
+				p.component.props.id === id
 		);
 		if (page) {
 			this.removePage(page);
@@ -505,7 +547,11 @@ class IDE extends Component {
 				showWorkspace={true}
 			/>
 		);
-		this.addPage("Inspecting: " + object.class, <InspectorIcon />, inspector);
+		this.addPage(
+			"Inspecting: " + object.class,
+			<InspectorIcon />,
+			inspector
+		);
 	};
 
 	browseChanges = (changes, title = "Changes") => {
@@ -543,7 +589,9 @@ class IDE extends Component {
 	};
 
 	openNativeDebugger = (id, title = "Native Debugger") => {
-		const tool = <NativeDebugger styles={this.props.styles} key={id} id={id} />;
+		const tool = (
+			<NativeDebugger styles={this.props.styles} key={id} id={id} />
+		);
 		this.addPage(title, <DebuggerIcon />, tool);
 	};
 
@@ -599,7 +647,11 @@ class IDE extends Component {
 		}
 	};
 
-	openMethodDifferences = (leftMethod, rightMethod, title = "Differences") => {
+	openMethodDifferences = (
+		leftMethod,
+		rightMethod,
+		title = "Differences"
+	) => {
 		const browser = (
 			<CodeDifferences
 				styles={this.props.styles}
@@ -669,7 +721,10 @@ class IDE extends Component {
 				selector,
 				classname
 			);
-			this.openMethodBrowser(implementors, "Local implementors of " + selector);
+			this.openMethodBrowser(
+				implementors,
+				"Local implementors of " + selector
+			);
 		} catch (error) {
 			this.reportError(error);
 		}
@@ -932,12 +987,18 @@ class IDE extends Component {
 							<main className={styles.content}>
 								<div className={styles.appBarSpacer} />
 								<Container className={styles.container}>
-									<Grid container spacing={1} style={{ height: "100%" }}>
+									<Grid
+										container
+										spacing={1}
+										style={{ height: "100%" }}
+									>
 										<Grid item xs={11} md={11} lg={11}>
 											<TabControl
 												style={{ height: "100%" }}
 												styles={styles}
-												selectedPage={this.state.selectedPage}
+												selectedPage={
+													this.state.selectedPage
+												}
 												pages={this.state.pages}
 												onSelect={this.selectPage}
 												onClose={this.removePage}
@@ -948,21 +1009,35 @@ class IDE extends Component {
 												id="addPageButton"
 												color="primary"
 												onClick={() => {
-													this.setState({ addPageMenuOpen: true });
+													this.setState({
+														addPageMenuOpen: true,
+													});
 												}}
 											>
-												<AddIcon style={{ fontSize: 40 }} />
+												<AddIcon
+													style={{ fontSize: 40 }}
+												/>
 											</IconButton>
 											<Menu
 												id="addPageMenu"
-												anchorEl={document.getElementById("addPageButton")}
+												anchorEl={document.getElementById(
+													"addPageButton"
+												)}
 												keepMounted
-												open={this.state.addPageMenuOpen}
+												open={
+													this.state.addPageMenuOpen
+												}
 												onClose={() => {
-													this.setState({ addPageMenuOpen: false });
+													this.setState({
+														addPageMenuOpen: false,
+													});
 												}}
 											>
-												<MenuItem onClick={this.addWorkspaceClicked}>
+												<MenuItem
+													onClick={
+														this.addWorkspaceClicked
+													}
+												>
 													<Box
 														display="flex"
 														flexWrap="nowrap"
@@ -975,7 +1050,12 @@ class IDE extends Component {
 														<Box>Workspace</Box>
 													</Box>
 												</MenuItem>
-												<MenuItem onClick={this.addClassBrowserClicked}>
+												<MenuItem
+													onClick={
+														this
+															.addClassBrowserClicked
+													}
+												>
 													<Box
 														display="flex"
 														flexWrap="nowrap"
@@ -988,7 +1068,12 @@ class IDE extends Component {
 														<Box>Class Browser</Box>
 													</Box>
 												</MenuItem>
-												<MenuItem onClick={this.addPackageBrowserClicked}>
+												<MenuItem
+													onClick={
+														this
+															.addPackageBrowserClicked
+													}
+												>
 													<Box
 														display="flex"
 														flexWrap="nowrap"
@@ -998,10 +1083,17 @@ class IDE extends Component {
 														<Box pt={1} pr={1}>
 															<PackageBrowserIcon />
 														</Box>
-														<Box>Package Browser</Box>
+														<Box>
+															Package Browser
+														</Box>
 													</Box>
 												</MenuItem>
-												<MenuItem onClick={this.addChangesBrowserClicked}>
+												<MenuItem
+													onClick={
+														this
+															.addChangesBrowserClicked
+													}
+												>
 													<Box
 														display="flex"
 														flexWrap="nowrap"
@@ -1011,7 +1103,9 @@ class IDE extends Component {
 														<Box pt={1} pr={1}>
 															<ChangesBrowserIcon />
 														</Box>
-														<Box>Changes Browser</Box>
+														<Box>
+															Changes Browser
+														</Box>
 													</Box>
 												</MenuItem>
 											</Menu>
@@ -1023,20 +1117,44 @@ class IDE extends Component {
 												open={this.state.transcriptOpen}
 											>
 												<Grid container spacing={0}>
-													<Grid item xs={11} md={11} lg={11}>
-														{this.state.transcriptOpen && (
+													<Grid
+														item
+														xs={11}
+														md={11}
+														lg={11}
+													>
+														{this.state
+															.transcriptOpen && (
 															<Transcript
 																styles={styles}
-																text={this.state.transcriptText}
-																onChange={this.transcriptChanged}
+																text={
+																	this.state
+																		.transcriptText
+																}
+																onChange={
+																	this
+																		.transcriptChanged
+																}
 															/>
 														)}
 													</Grid>
-													<Grid item xs={1} md={1} lg={1}>
-														<Box display="flex" justifyContent="center">
+													<Grid
+														item
+														xs={1}
+														md={1}
+														lg={1}
+													>
+														<Box
+															display="flex"
+															justifyContent="center"
+														>
 															<IconButton
 																onClick={() =>
-																	this.setState({ transcriptOpen: false })
+																	this.setState(
+																		{
+																			transcriptOpen: false,
+																		}
+																	)
 																}
 															>
 																<KeyboardArrowDown />

@@ -203,10 +203,30 @@ class MethodList extends Component {
 
 	methodColumns() {
 		return [
-			{ field: "methodClass", label: "Class", align: "left" },
-			{ field: "selector", label: "Selector", align: "left" },
-			{ field: "category", label: "Category", align: "left" },
-			{ field: "package", label: "Pacakge", align: "left" },
+			{
+				field: "methodClass",
+				label: "Class",
+				align: "left",
+				minWidth: 300,
+			},
+			{
+				field: "selector",
+				label: "Selector",
+				align: "left",
+				minWidth: 300,
+			},
+			{
+				field: "category",
+				label: "Category",
+				align: "left",
+				minWidth: 300,
+			},
+			{
+				field: "package",
+				label: "Pacakge",
+				align: "left",
+				minWidth: 300,
+			},
 		];
 	}
 
@@ -220,13 +240,13 @@ class MethodList extends Component {
 
 	methodLabel = (method) => {
 		return this.props.showClass === true
-			? method.methodClass + ">>#" + method.selector
+			? method.methodClass + " >> #" + method.selector
 			: method.selector;
 	};
 
 	render() {
 		const methods = this.props.methods || [];
-		const useTable = this.props.useTable && methods.length < 200;
+		const useTable = this.props.useTable && methods.length < 350;
 		if (useTable) {
 			return (
 				<CustomTable
@@ -236,6 +256,8 @@ class MethodList extends Component {
 					onSelect={this.props.onSelect}
 					menuOptions={this.menuOptions()}
 					hideRowBorder
+					rowsPerPage={50}
+					usePagination
 					//noHeaders
 				/>
 			);

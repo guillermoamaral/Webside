@@ -101,9 +101,9 @@ class ResourceBrowser extends Component {
 		this.setState({ selectedResource: resource });
 	};
 
-	inspectObject = (object) => {
+	openInspector = (object) => {
 		if (object) {
-			ide.inspectObject(object);
+			ide.openInspector(object);
 		}
 	};
 
@@ -133,7 +133,7 @@ class ResourceBrowser extends Component {
 
 	objectOptions() {
 		return [
-			{ label: "Inspect", action: this.inspectObject },
+			{ label: "Inspect", action: this.openInspector },
 			{ label: "Unpin", action: this.unpinObject },
 		];
 	}
@@ -268,7 +268,7 @@ class ResourceBrowser extends Component {
 			{
 				label: "Inspect",
 				icon: <InspectorIcon fontSize="small" />,
-				handler: this.inspectObject,
+				handler: this.openInspector,
 			},
 			{
 				label: "Unpin",

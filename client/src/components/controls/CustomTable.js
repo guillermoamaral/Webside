@@ -8,6 +8,8 @@ import {
 	TableCell,
 	Box,
 	IconButton,
+	TablePagination,
+	TableSortLabel,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import PopupMenu from "./PopupMenu";
@@ -31,6 +33,13 @@ class CustomTable extends Component {
 			menuOpen: false,
 			menuPosition: { x: null, y: null },
 			selectedRow: null,
+			usePagination: props.usePagination,
+			currentPage: 0,
+			rowsPerPage: props.rowsPerPage || 10,
+			order: {
+				column: null,
+				direction: "asc",
+			},
 		};
 	}
 
@@ -98,7 +107,7 @@ class CustomTable extends Component {
 	};
 
 	moveUp = () => {
-		const rows = this.props.rows;
+		const rows = this.pageRows();
 		const index = rows.indexOf(this.state.selectedRow);
 		if (index > 0) {
 			this.rowSelected(rows[index - 1]);
@@ -106,7 +115,7 @@ class CustomTable extends Component {
 	};
 
 	moveDown = () => {
-		const rows = this.props.rows;
+		const rows = this.pageRows();
 		const index = rows.indexOf(this.state.selectedRow);
 		if (index < rows.length - 1) {
 			this.rowSelected(rows[index + 1]);
@@ -157,85 +166,201 @@ class CustomTable extends Component {
 		);
 	}
 
+	pageRows() {
+		const { currentPage, rowsPerPage } = this.state;
+		const begin = currentPage * rowsPerPage;
+		const end = begin + rowsPerPage;
+		return this.props.rows.slice(begin, end);
+	}
+
+	rowsPerPageChanged(amount) {
+		this.setState({
+			currentPage: 0,
+			rowsPerPage: amount,
+		});
+	}
+
+	pageChanged(page) {
+		this.setState({ currentPage: page });
+	}
+
+	sortComparator(a, b, column, direction) {
+		const av = this.getCellValue(a, column);
+		const bv = this.getCellValue(b, column);
+		if (av < bv) {
+			return direction === "asc" ? 1 : -1;
+		}
+		if (av > bv) {
+			return direction === "asc" ? -1 : 1;
+		}
+		return 0;
+	}
+
+	sortByColumn(column) {
+		const rows = this.props.rows;
+		const order = this.state.order;
+		const direction =
+			order.column === column && order.direction === "asc"
+				? "desc"
+				: "asc";
+		rows.forEach((r, i) => (r._index = i));
+		rows.sort((a, b) => {
+			const o = this.sortComparator(a, b, column, direction);
+			return o !== 0 ? o : a._index - b._index;
+		});
+		this.setState({
+			order: { column: column, direction: direction },
+		});
+	}
+
 	render() {
-		const { selectedRow, menuOpen, menuPosition } = this.state;
+		const {
+			selectedRow,
+			menuOpen,
+			menuPosition,
+			usePagination,
+			currentPage,
+			rowsPerPage,
+			order,
+		} = this.state;
 		const columns = this.columns();
-		const rows = this.props.rows || [];
+		const rows = this.props.rows;
 		const border = this.props.hideRowBorder ? "none" : "";
 		return (
-			<Scrollable>
-				<TableContainer className={this.props.styles.container}>
-					<Table stickyHeader size="small" onKeyDown={this.keyDown}>
-						{!this.props.noHeaders && (
-							<TableHead>
-								<TableRow key="header">
-									{columns.map((column) => (
-										<TableCell
-											key={column.field}
-											align={column.align}
-											style={{ minWidth: column.minWith }}
-										>
-											{column.label}
-										</TableCell>
-									))}
-								</TableRow>
-							</TableHead>
-						)}
-						<TableBody>
-							{rows.map((row, index) => {
-								return (
-									<TableRow
-										hover
-										className={this.props.classes.row}
-										tabIndex={-1}
-										key={index}
-										selected={row === selectedRow}
-										onClick={(event) =>
-											this.rowSelected(row)
-										}
-										onContextMenu={this.openMenu}
-									>
-										{columns.map((column) => {
-											const color = this.getCellColor(
-												row,
-												column
-											);
-											return (
+			<Box
+				p={1}
+				display="flex"
+				flexDirection="column"
+				style={{ height: "100%" }}
+			>
+				<Box flexGrow={1}>
+					<Scrollable>
+						<TableContainer>
+							<Table
+								stickyHeader
+								size="small"
+								onKeyDown={this.keyDown}
+							>
+								{!this.props.noHeaders && (
+									<TableHead>
+										<TableRow key="header">
+											{columns.map((column) => (
 												<TableCell
-													key={column.field + index}
+													key={column.field}
 													align={column.align}
 													style={{
-														color: color,
-														borderBottom: border,
+														minWidth:
+															column.minWidth,
 													}}
 												>
-													{column.field === "actions"
-														? this.rowActionButtons(
-																row,
-																index
-														  )
-														: this.getCellValue(
-																row,
+													<TableSortLabel
+														active={
+															order.column &&
+															order.column
+																.field ===
+																column.field
+														}
+														direction={
+															order.direction
+														}
+														onClick={(event) => {
+															this.sortByColumn(
 																column
-														  )}
+															);
+														}}
+													>
+														{column.label}
+													</TableSortLabel>
 												</TableCell>
-											);
-										})}
-									</TableRow>
+											))}
+										</TableRow>
+									</TableHead>
+								)}
+								<TableBody>
+									{this.pageRows().map((row, index) => {
+										return (
+											<TableRow
+												hover
+												className={
+													this.props.classes.row
+												}
+												tabIndex={-1}
+												key={index}
+												selected={row === selectedRow}
+												onClick={(event) =>
+													this.rowSelected(row)
+												}
+												onContextMenu={this.openMenu}
+											>
+												{columns.map((column) => {
+													const color =
+														this.getCellColor(
+															row,
+															column
+														);
+													return (
+														<TableCell
+															key={
+																column.field +
+																index
+															}
+															align={column.align}
+															style={{
+																color: color,
+																borderBottom:
+																	border,
+															}}
+														>
+															{column.field ===
+															"actions"
+																? this.rowActionButtons(
+																		row,
+																		index
+																  )
+																: this.getCellValue(
+																		row,
+																		column
+																  )}
+														</TableCell>
+													);
+												})}
+											</TableRow>
+										);
+									})}
+								</TableBody>
+							</Table>
+						</TableContainer>
+						<PopupMenu
+							options={this.props.menuOptions}
+							open={menuOpen}
+							position={menuPosition}
+							onOptionClick={this.menuOptionClicked}
+							onOptionEnable={this.getMenuOptionEnabled}
+							onClose={this.closeMenu}
+						/>
+					</Scrollable>
+				</Box>
+				{usePagination && (
+					<Box>
+						<TablePagination
+							component="div"
+							count={rows.length}
+							size="small"
+							page={currentPage}
+							variant="text"
+							onChangePage={(event, page) =>
+								this.pageChanged(page)
+							}
+							rowsPerPage={rowsPerPage}
+							onChangeRowsPerPage={(event) => {
+								this.rowsPerPageChanged(
+									parseInt(event.target.value, 10)
 								);
-							})}
-						</TableBody>
-					</Table>
-				</TableContainer>
-				<PopupMenu
-					options={this.props.menuOptions}
-					open={menuOpen}
-					position={menuPosition}
-					onOptionClick={this.menuOptionClicked}
-					onOptionEnable={this.getMenuOptionEnabled}
-					onClose={this.closeMenu}
-				/>
-			</Scrollable>
+							}}
+						/>
+					</Box>
+				)}
+			</Box>
 		);
 	}
 }

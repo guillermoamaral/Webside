@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Paper } from "@material-ui/core";
 import CustomTable from "../controls/CustomTable";
-import PaginatedTable from "../controls/PaginatedTable";
 import CodeEditor from "../parts/CodeEditor";
 
 class ObjectPresenter extends Component {
@@ -39,11 +38,12 @@ class ObjectPresenter extends Component {
 				{custom &&
 					presentation.type === "table" &&
 					presentation.rows.length > 100 && (
-						<PaginatedTable
+						<CustomTable
 							styles={styles}
 							columns={presentation.columns}
 							rows={presentation.rows}
 							rowsPerPage={20}
+							usePagination
 						/>
 					)}
 				{custom &&
