@@ -33,7 +33,7 @@ All changes should include `author` proprerty and might specify a `package` prop
 |   RenameClassVariable    | Rename a class variable of a given class.                              | <pre>{<br> "type": "RenameClassVariable",<br> "className": "string",<br> "variable": "string",<br> "newName": "string"<br>} </pre>     |
 |      RenameCategory      | Rename a category within a class.                                      | <pre>{<br> "type": "RenameCategory",<br> "className": "string",<br> "category": "string",<br> "newName": "string"<br>} </pre>          |
 |      RemoveCategory      | Remove a category from a class.                                        | <pre>{<br> "type": "RemoveCategory",<br> "className": "string",<br> "category": "string"<br>} </pre>                                   |
-|        AddPackage        | Add a new pacakge with a given name.                                   | <pre>{<br> "type": "AddPackage",<br> "name": "string"<br>} </pre>                                                                      |
+|        AddPackage        | Add a new package with a given name.                                   | <pre>{<br> "type": "AddPackage",<br> "name": "string"<br>} </pre>                                                                      |
 |      RemovePackage       | Remove a given package                                                 | <pre>{<br> "type": "RemovePackage",<br> "name": "string"<br>} </pre>                                                                   |
 |      RenamePackage       | Rename a given package.                                                | <pre>{<br> "type": "RenamePackage",<br> "name": "string",<br> "newName": "string"<br>} </pre>                                          |
 

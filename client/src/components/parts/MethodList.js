@@ -223,7 +223,7 @@ class MethodList extends Component {
 			},
 			{
 				field: "package",
-				label: "Pacakge",
+				label: "Package",
 				align: "left",
 				minWidth: 300,
 			},
