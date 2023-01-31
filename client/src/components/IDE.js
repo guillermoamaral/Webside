@@ -437,6 +437,10 @@ class IDE extends Component {
 		this.addPage("Package Browser", <PackageBrowserIcon />, browser);
 	};
 
+	browsePackage(name) {
+		this.openPackageBrowser(name);
+	}
+
 	browseClass = async (classname) => {
 		try {
 			var name = classname;
