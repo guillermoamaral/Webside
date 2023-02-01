@@ -8,6 +8,7 @@ import {
 	Box,
 	Button,
 	IconButton,
+	Typography,
 } from "@material-ui/core";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
@@ -111,7 +112,9 @@ class ResourceBrowser extends Component {
 		try {
 			await ide.api.unpinObject(object.id);
 			this.setState({
-				resources: this.state.resources.filter((r) => r.id !== object.id),
+				resources: this.state.resources.filter(
+					(r) => r.id !== object.id
+				),
 				selectedResource: null,
 			});
 		} catch (error) {
@@ -142,7 +145,9 @@ class ResourceBrowser extends Component {
 		try {
 			await ide.api.cancelEvaluation(evaluation.id);
 			this.setState({
-				resources: this.state.resources.filter((r) => r.id !== evaluation.id),
+				resources: this.state.resources.filter(
+					(r) => r.id !== evaluation.id
+				),
 			});
 		} catch (error) {
 			ide.reportError(error);
@@ -164,7 +169,9 @@ class ResourceBrowser extends Component {
 			try {
 				await ide.api.deleteWorkspace(w.id);
 				this.setState({
-					resources: this.state.resources.filter((r) => r.id !== w.id),
+					resources: this.state.resources.filter(
+						(r) => r.id !== w.id
+					),
 					selectedResource: null,
 				});
 			} catch (error) {
@@ -191,7 +198,9 @@ class ResourceBrowser extends Component {
 			try {
 				await ide.api.terminateDebugger(d.id);
 				this.setState({
-					resources: this.state.resources.filter((r) => r.id !== d.id),
+					resources: this.state.resources.filter(
+						(r) => r.id !== d.id
+					),
 					selectedResource: null,
 				});
 			} catch (error) {
@@ -415,37 +424,51 @@ class ResourceBrowser extends Component {
 								onClick={(event) => this.typeSelected(type)}
 							>
 								{this.resourceIcon(type)}
-								<ListItemText primary={<Box pl={1}>{type}</Box>} />
+								<ListItemText
+									primary={<Box pl={1}>{type}</Box>}
+								/>
 							</ListItem>
 						))}
 					</List>
 				</Grid>
 				<Grid item xs={10} md={10} lg={10}>
 					<Grid container spacing={1}>
-						<Grid item xs={12} md={12} lg={12}>
-							<Box display="flex" justifyContent="flex-end">
-								{selectedType === "Objects" &&
-									resources &&
-									resources.length > 0 && (
-										<Button
-											variant="text"
-											startIcon={<DeleteIcon />}
-											onClick={this.unpinAllObjects}
-										>
-											Unpin All
-										</Button>
-									)}
-								<IconButton
-									color="inherit"
-									onClick={() => this.typeSelected(selectedType)}
-								>
-									<RefreshIcon fontSize="small" />
-								</IconButton>
-							</Box>
+						<Grid item xs={11} md={11} lg={11}>
+							<Typography variant="h6" align="center">
+								{selectedType}
+							</Typography>
 						</Grid>
-						<Grid item xs={12} md={12} lg={12} style={{ minHeight: 500 }}>
+						<Grid item xs={1} md={1} lg={1}>
+							{selectedType === "Objects" &&
+								resources &&
+								resources.length > 0 && (
+									<Button
+										variant="text"
+										startIcon={<DeleteIcon />}
+										onClick={this.unpinAllObjects}
+									>
+										Unpin All
+									</Button>
+								)}
+							<IconButton
+								color="inherit"
+								onClick={() => this.typeSelected(selectedType)}
+							>
+								<RefreshIcon fontSize="small" />
+							</IconButton>
+						</Grid>
+						<Grid
+							item
+							xs={12}
+							md={12}
+							lg={12}
+							style={{ minHeight: 500 }}
+						>
 							{selectedType && selectedType !== "Memory" && (
-								<Paper variant="outlined" style={{ height: "100%" }}>
+								<Paper
+									variant="outlined"
+									style={{ height: "100%" }}
+								>
 									<CustomTable
 										styles={styles}
 										columns={this.resourceColumns()}
