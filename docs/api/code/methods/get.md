@@ -42,7 +42,7 @@ The `class`, `hierarchy` and `package` options can be used in conjunction with o
 ```json
 {
 	"selector": "string",
-	"class": "string",
+	"methodClass": "string",
 	"category": "string",
 	"source": "string",
 	"author": "string",

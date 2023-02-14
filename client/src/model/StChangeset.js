@@ -1,6 +1,6 @@
-import Change from "./Change";
+import StChange from "./StChange";
 
-class Changeset extends Object {
+class StChangeset extends Object {
 	constructor() {
 		super();
 		this.api = null;
@@ -8,14 +8,14 @@ class Changeset extends Object {
 	}
 
 	static fromJson(json) {
-		var changeset = new Changeset();
+		var changeset = new StChangeset();
 		changeset.fromJson(json);
 		return changeset;
 	}
 
 	fromJson(json) {
 		this.changes = json.map((j) => {
-			const change = Change.fromJson(j);
+			const change = StChange.fromJson(j);
 			change.changeset = this;
 			return change;
 		});
@@ -26,4 +26,4 @@ class Changeset extends Object {
 	}
 }
 
-export default Changeset;
+export default StChangeset;

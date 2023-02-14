@@ -1,4 +1,4 @@
-class Change extends Object {
+class StChange extends Object {
 	constructor() {
 		super();
 		this.label = "";
@@ -48,7 +48,7 @@ class Change extends Object {
 		if (!this.typeMap) {
 			this.initializeTypeMap();
 		}
-		return this.typeMap[type] || Change;
+		return this.typeMap[type] || StChange;
 	}
 
 	fromJson(json) {}
@@ -74,7 +74,7 @@ class Change extends Object {
 	}
 }
 
-class ClassChange extends Change {
+class ClassChange extends StChange {
 	constructor() {
 		super();
 		this.className = null;
@@ -379,7 +379,7 @@ class RenameCategory extends CategoryChange {
 
 class RemoveCategory extends CategoryChange {}
 
-class PackageChange extends Change {
+class PackageChange extends StChange {
 	constructor() {
 		super();
 		this.name = null;
@@ -419,4 +419,4 @@ class RenamePackage extends PackageChange {
 	}
 }
 
-export default Change;
+export default StChange;

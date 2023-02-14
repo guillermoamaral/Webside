@@ -15,15 +15,13 @@ These objects are the result of evaluating expressions. As it is described in [/
 **Content**: `[object]` where `object` is defined as:
 
 ```json
-[
-	{
-		"id": "string",
-		"class": "string",
-		"indexable": "boolean",
-		"size": "number",
-		"printString": "string"
-	}
-]
+{
+	"id": "string",
+	"class": "string",
+	"indexable": "boolean",
+	"size": "number",
+	"printString": "string"
+}
 ```
 
 **Example:**: `GET /objects`
