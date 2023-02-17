@@ -67,7 +67,8 @@ class CodeEditor extends Component {
 		if (
 			/*!state.dirty &&*/
 			props.source !== state.originalSource ||
-			JSON.stringify(props.selectedInterval) !== JSON.stringify(state.selectedInterval) ||
+			JSON.stringify(props.selectedInterval) !==
+				JSON.stringify(state.selectedInterval) ||
 			props.selectedWord !== state.selectedWord
 		) {
 			const source = props.source;
@@ -95,12 +96,20 @@ class CodeEditor extends Component {
 	shouldComponentUpdate(nextProps, nextState) {
 		if (
 			nextProps.source !== this.props.source ||
-			JSON.stringify(nextProps.selectedInterval) !== JSON.stringify(this.props.selectedInterval) ||
+			JSON.stringify(nextProps.selectedInterval) !==
+				JSON.stringify(this.props.selectedInterval) ||
 			nextProps.selectedWord !== this.props.selectedWord
 		) {
 			this.selectsRanges = true;
 			const ranges =
-				nextProps.source && nextProps.selectedInterval ? [rangeFromInterval(nextProps.selectedInterval, nextProps.source)] : [];
+				nextProps.source && nextProps.selectedInterval
+					? [
+							rangeFromInterval(
+								nextProps.selectedInterval,
+								nextProps.source
+							),
+					  ]
+					: [];
 			if (ranges) {
 				//this.selectRanges(ranges);
 			}
@@ -110,8 +119,8 @@ class CodeEditor extends Component {
 
 	componentDidUpdate() {
 		if (this.selectsRanges && this.state.selectedRanges) {
-			this.selectRanges(this.state.selectedRanges)
-		};
+			this.selectRanges(this.state.selectedRanges);
+		}
 	}
 
 	editorDidMount(editor) {
@@ -229,7 +238,10 @@ class CodeEditor extends Component {
 			{ label: "Browse class (Ctrl+b)", action: this.browseClass },
 			{ label: "Senders (Alt+n)", action: this.browseSenders },
 			{ label: "Implementors (Alt+m)", action: this.browseImplementors },
-			{ label: "Class references (Alt+r)", action: this.browseClassReferences },
+			{
+				label: "Class references (Alt+r)",
+				action: this.browseClassReferences,
+			},
 			{ label: "Methods matching", action: this.browseMethodsMatching },
 			{ label: "String references", action: this.browseStringReferences },
 		];
@@ -256,7 +268,10 @@ class CodeEditor extends Component {
 	};
 
 	toggleFullScreen = () => {
-		this.editor.setOption("fullScreen", !this.editor.getOption("fullScreen"));
+		this.editor.setOption(
+			"fullScreen",
+			!this.editor.getOption("fullScreen")
+		);
 	};
 
 	targetWord() {
@@ -279,7 +294,11 @@ class CodeEditor extends Component {
 		if (node && (node.type === "Selector" || node.type === "Literal")) {
 			return node.value;
 		}
-		return this.targetWord();
+		const stretch = this.editor.findWordAt(position);
+		const head = stretch.head;
+		head.ch = head.ch + 1;
+		const word = this.editor.getRange(stretch.anchor, head);
+		return word.endsWith(":") ? word : word.slice(0, word.length - 1);
 	}
 
 	searchInGoogle = () => {
@@ -325,14 +344,14 @@ class CodeEditor extends Component {
 		const expression = this.selectedExpression();
 		try {
 			await ide.debugExpression(expression, this.props.context);
-		} catch (error) { }
+		} catch (error) {}
 	};
 
 	profileExpression = async () => {
 		const expression = this.selectedExpression();
 		try {
 			await ide.profileExpression(expression, this.props.context);
-		} catch (error) { }
+		} catch (error) {}
 	};
 
 	evaluateExpression = async () => {
@@ -374,7 +393,10 @@ class CodeEditor extends Component {
 			}
 			this.editor.replaceRange(" " + object.printString, cursor);
 			const from = { ch: cursor.ch + 1, line: cursor.line };
-			const to = { ch: from.ch + object.printString.length, line: from.line };
+			const to = {
+				ch: from.ch + object.printString.length,
+				line: from.line,
+			};
 			this.editor.setSelection(from, to);
 		} catch (error) {
 			this.setState({ progress: false });
@@ -448,15 +470,17 @@ class CodeEditor extends Component {
 
 	sourceChanged = (source) => {
 		this.selectsRanges = false;
-		this.setState({
-			source: source,
-			dirty: true,
-		}, () => {
-			if (this.props.onChange) {
-				this.props.onChange(source);
+		this.setState(
+			{
+				source: source,
+				dirty: true,
+			},
+			() => {
+				if (this.props.onChange) {
+					this.props.onChange(source);
+				}
 			}
-		});
-
+		);
 	};
 
 	selectionChanged = (selection) => {
@@ -464,7 +488,8 @@ class CodeEditor extends Component {
 	};
 
 	render() {
-		const { source, selectedRanges, evaluating, progress, dirty } = this.state;
+		const { source, selectedRanges, evaluating, progress, dirty } =
+			this.state;
 		const mode = this.props.mode || "smalltalk-method";
 		const showAccept = this.props.showAccept;
 		const acceptIcon = this.props.acceptIcon ? (
@@ -478,7 +503,12 @@ class CodeEditor extends Component {
 		);
 		return (
 			<Grid container spacing={1}>
-				<Grid item xs={11} md={showAccept ? 11 : 12} lg={showAccept ? 11 : 12}>
+				<Grid
+					item
+					xs={11}
+					md={showAccept ? 11 : 12}
+					lg={showAccept ? 11 : 12}
+				>
 					{/* <Scrollable> */}
 					<CodeMirror
 						className={this.props.styles.codeMirror}
@@ -491,7 +521,9 @@ class CodeEditor extends Component {
 							matchBrackets: true,
 							autoCloseBrackets: true,
 							//highlightSelectionMatches: true,
-							highlightSelectionMatches: { annotateScrollbar: true },
+							highlightSelectionMatches: {
+								annotateScrollbar: true,
+							},
 							indentUnit: 10,
 							styleActiveLine: true,
 							matchTags: { bothTags: true },
@@ -534,7 +566,7 @@ class CodeEditor extends Component {
 						onSelection={(editor, selection) => {
 							this.selectionChanged(selection);
 						}}
-						onCursorActivity={(editor, event) => { }}
+						onCursorActivity={(editor, event) => {}}
 					/>
 					{/* </Scrollable> */}
 					{(evaluating || progress) && (
@@ -544,7 +576,10 @@ class CodeEditor extends Component {
 				{showAccept && (
 					<Grid item xs={1} md={1} lg={1}>
 						<Box display="flex" justifyContent="center">
-							<IconButton color="inherit" onClick={this.acceptClicked}>
+							<IconButton
+								color="inherit"
+								onClick={this.acceptClicked}
+							>
 								{acceptIcon}
 							</IconButton>
 						</Box>
