@@ -256,7 +256,7 @@ class Debugger extends PureComponent {
 							</Tooltip>
 						</Grid>
 						<Grid item xs={8} md={8} lg={8}>
-							<Typography variant="h6">{this.props.title || ""}</Typography>
+							<Typography variant="body" color="primary">{this.props.title || ""}</Typography>
 						</Grid>
 					</Grid>
 				</Grid>

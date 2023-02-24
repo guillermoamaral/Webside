@@ -170,7 +170,7 @@ class CustomTable extends Component {
 		const { currentPage, rowsPerPage } = this.state;
 		const begin = currentPage * rowsPerPage;
 		const end = begin + rowsPerPage;
-		return this.props.rows.slice(begin, end);
+		return (this.props.rows || []).slice(begin, end);
 	}
 
 	rowsPerPageChanged(amount) {
