@@ -15,7 +15,7 @@ import { ThemeProvider } from "@material-ui/styles";
 import { withCookies } from "react-cookie";
 import { withRouter } from "react-router-dom";
 import { withDialog } from "./dialogs/index";
-import { amber, blue } from "@material-ui/core/colors";
+import { amber, blue, green } from "@material-ui/core/colors";
 import AddIcon from "@material-ui/icons/AddCircle";
 import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
 import API from "./API";
@@ -212,6 +212,10 @@ class IDE extends Component {
 			case "Python":
 				mainPrimaryColor = "#2b5b84";
 				mainSecondaryColor = "#1e415e";
+				break;
+			case "Powerlang":
+				mainPrimaryColor = green[300];
+				mainSecondaryColor = green[800];
 				break;
 			default:
 				mainPrimaryColor = "#00000";
