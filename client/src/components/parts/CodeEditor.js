@@ -4,7 +4,7 @@ import AcceptIcon from "@material-ui/icons/CheckCircle";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import PopupMenu from "../controls/PopupMenu";
 import { ide } from "../IDE";
-//import Scrollable from "../controls/Scrollable";
+import Scrollable from "../controls/Scrollable";
 import "../../SmalltalkMode.css";
 import "../../SmalltalkMode.js";
 
@@ -502,73 +502,76 @@ class CodeEditor extends Component {
 			/>
 		);
 		return (
-			<Grid container spacing={1}>
+			<Grid container spacing={1} style={{ height: "100%" }}>
 				<Grid
 					item
 					xs={11}
 					md={showAccept ? 11 : 12}
 					lg={showAccept ? 11 : 12}
 				>
-					{/* <Scrollable> */}
-					<CodeMirror
-						className={this.props.styles.codeMirror}
-						options={{
-							readOnly: evaluating || progress,
-							mode: mode,
-							theme: "material",
-							lineSeparator: "\r",
-							lineNumbers: this.props.lineNumbers,
-							matchBrackets: true,
-							autoCloseBrackets: true,
-							//highlightSelectionMatches: true,
-							highlightSelectionMatches: {
-								annotateScrollbar: true,
-							},
-							indentUnit: 10,
-							styleActiveLine: true,
-							matchTags: { bothTags: true },
-							lineWrapping: true,
-							gutters: ["CodeMirror-lint-markers", "breakpoints"],
-							lint: { getAnnotations: this.lintAnnotations },
-							extraKeys: {
-								"Ctrl-D": this.evaluateExpression,
-								"Ctrl-I": this.inspectEvaluation,
-								"Ctrl-P": this.showEvaluation,
-								"Ctrl-U": this.debugExpression,
-								"Ctrl-S": this.acceptClicked,
-								"Ctrl-B": this.browseClass,
-								"Alt-N": this.browseSenders,
-								"Alt-M": this.browseImplementors,
-								"Alt-R": this.browseClassReferences,
-								"Ctrl-Q": this.markOcurrences,
-								"Alt-Z": this.toggleFullScreen,
-								F2: this.renameTarget,
-							},
-						}}
-						value={source}
-						selection={{ ranges: selectedRanges, focus: true }}
-						editorDidMount={(editor) => {
-							this.editorDidMount(editor);
-						}}
-						onGutterClick={(editor, n) => {
-							this.setBreakpoint(n);
-						}}
-						onBeforeChange={(editor, data, value) => {
-							this.sourceChanged(value);
-						}}
-						onChange={(editor, data, value) => {
-							// console.log("onChange fired");
-							// this.setState({ selectRanges: value === this.props.source });
-						}}
-						onContextMenu={(editor, event) => {
-							this.openMenu(event);
-						}}
-						onSelection={(editor, selection) => {
-							this.selectionChanged(selection);
-						}}
-						onCursorActivity={(editor, event) => {}}
-					/>
-					{/* </Scrollable> */}
+					<Scrollable>
+						<CodeMirror
+							className={this.props.styles.codeMirror}
+							options={{
+								readOnly: evaluating || progress,
+								mode: mode,
+								theme: "material",
+								lineSeparator: "\r",
+								lineNumbers: this.props.lineNumbers,
+								matchBrackets: true,
+								autoCloseBrackets: true,
+								//highlightSelectionMatches: true,
+								highlightSelectionMatches: {
+									annotateScrollbar: true,
+								},
+								indentUnit: 10,
+								styleActiveLine: true,
+								matchTags: { bothTags: true },
+								lineWrapping: true,
+								gutters: [
+									"CodeMirror-lint-markers",
+									"breakpoints",
+								],
+								lint: { getAnnotations: this.lintAnnotations },
+								extraKeys: {
+									"Ctrl-D": this.evaluateExpression,
+									"Ctrl-I": this.inspectEvaluation,
+									"Ctrl-P": this.showEvaluation,
+									"Ctrl-U": this.debugExpression,
+									"Ctrl-S": this.acceptClicked,
+									"Ctrl-B": this.browseClass,
+									"Alt-N": this.browseSenders,
+									"Alt-M": this.browseImplementors,
+									"Alt-R": this.browseClassReferences,
+									"Ctrl-Q": this.markOcurrences,
+									"Alt-Z": this.toggleFullScreen,
+									F2: this.renameTarget,
+								},
+							}}
+							value={source}
+							selection={{ ranges: selectedRanges, focus: true }}
+							editorDidMount={(editor) => {
+								this.editorDidMount(editor);
+							}}
+							onGutterClick={(editor, n) => {
+								this.setBreakpoint(n);
+							}}
+							onBeforeChange={(editor, data, value) => {
+								this.sourceChanged(value);
+							}}
+							onChange={(editor, data, value) => {
+								// console.log("onChange fired");
+								// this.setState({ selectRanges: value === this.props.source });
+							}}
+							onContextMenu={(editor, event) => {
+								this.openMenu(event);
+							}}
+							onSelection={(editor, selection) => {
+								this.selectionChanged(selection);
+							}}
+							onCursorActivity={(editor, event) => {}}
+						/>
+					</Scrollable>
 					{(evaluating || progress) && (
 						<LinearProgress variant="indeterminate" />
 					)}

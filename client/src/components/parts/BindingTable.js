@@ -15,7 +15,9 @@ class BindingTable extends PureComponent {
 
 	static getDerivedStateFromProps(props, state) {
 		if (props.frame) {
-			const name = state.selectedBinding ? state.selectedBinding.name : "self";
+			const name = state.selectedBinding
+				? state.selectedBinding.name
+				: "self";
 			const selected = (props.frame.bindings || []).find(
 				(b) => b.name === name
 			);
@@ -118,10 +120,14 @@ class BindingTable extends PureComponent {
 		const { frame, styles } = this.props;
 		const bindings = frame ? frame.bindings : [];
 		const { selectedBinding } = this.state;
-		const percent = selectedBinding ? 70 : 100;
 		return (
-			<Box style={{ height: "100%" }}>
-				<Box pb={1} flexGrow={1} height={percent + "%"}>
+			<Box
+				display="flex"
+				flexDirection="column"
+				justifyContent="center"
+				style={{ height: "100%" }}
+			>
+				<Box pb={1} height={"100%"}>
 					<Paper variant="outlined" style={{ height: "100%" }}>
 						<CustomTable
 							styles={styles}
@@ -132,19 +138,19 @@ class BindingTable extends PureComponent {
 						/>
 					</Paper>
 				</Box>
-				{selectedBinding && (
-					<Box pb={1} height={100 - percent + "%"}>
-						<Paper variant="outlined" style={{ height: "100%" }}>
-							<CodeEditor
-								styles={styles}
-								lineNumbers={false}
-								source={selectedBinding ? selectedBinding.value : ""}
-								//onAccept={this.saveBinding}
-								context={this.evaluationContext()}
-							/>
-						</Paper>
-					</Box>
-				)}
+				<Box height={"100%"}>
+					<Paper variant="outlined" style={{ height: "100%" }}>
+						<CodeEditor
+							styles={styles}
+							lineNumbers={false}
+							source={
+								selectedBinding ? selectedBinding.value : ""
+							}
+							//onAccept={this.saveBinding}
+							context={this.evaluationContext()}
+						/>
+					</Paper>
+				</Box>
 			</Box>
 		);
 	}
