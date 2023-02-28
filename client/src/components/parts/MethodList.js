@@ -246,7 +246,7 @@ class MethodList extends Component {
 
 	render() {
 		const methods = this.props.methods || [];
-		const useTable = this.props.useTable && methods.length < 350;
+		const useTable = this.props.useTable;
 		if (useTable) {
 			return (
 				<CustomTable

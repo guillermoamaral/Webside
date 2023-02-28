@@ -234,8 +234,8 @@ class CustomTable extends Component {
 				style={{ height: "100%" }}
 			>
 				<Box flexGrow={1}>
-					<Scrollable>
-						<TableContainer>
+					<TableContainer style={{ height: "100%" }}>
+						<Scrollable>
 							<Table
 								stickyHeader
 								size="small"
@@ -329,16 +329,16 @@ class CustomTable extends Component {
 									})}
 								</TableBody>
 							</Table>
-						</TableContainer>
-						<PopupMenu
-							options={this.props.menuOptions}
-							open={menuOpen}
-							position={menuPosition}
-							onOptionClick={this.menuOptionClicked}
-							onOptionEnable={this.getMenuOptionEnabled}
-							onClose={this.closeMenu}
-						/>
-					</Scrollable>
+						</Scrollable>
+					</TableContainer>
+					<PopupMenu
+						options={this.props.menuOptions}
+						open={menuOpen}
+						position={menuPosition}
+						onOptionClick={this.menuOptionClicked}
+						onOptionEnable={this.getMenuOptionEnabled}
+						onClose={this.closeMenu}
+					/>
 				</Box>
 				{usePagination && (
 					<Box>
