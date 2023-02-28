@@ -226,6 +226,7 @@ class CustomTable extends Component {
 		const columns = this.columns();
 		const rows = this.props.rows;
 		const border = this.props.hideRowBorder ? "none" : "";
+		//To force a diff
 		return (
 			<Box
 				p={1}
