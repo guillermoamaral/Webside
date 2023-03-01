@@ -31,7 +31,7 @@ class ChangesTable extends Component {
 
 	menuOptions() {
 		return [
-			{ label: "Browse", action: this.browseClass },
+			{ label: "Browse class", action: this.browseClass },
 			{ label: "Apply", action: this.applyChange },
 		];
 	}

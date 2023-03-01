@@ -137,7 +137,7 @@ class AddMethod extends MethodChange {
 	async currentSourceCodeIn(api) {
 		var current;
 		try {
-			const method = await api.getMethod(this.className, this.selector);
+			const method = await api.method(this.className, this.selector);
 			current = method.sourceCode;
 		} catch (error) {
 			current = "";
@@ -208,7 +208,7 @@ class AddClass extends ClassChange {
 	async currentSourceCodeIn(api) {
 		var current;
 		try {
-			const species = await api.getClass(this.className);
+			const species = await api.classNamed(this.className);
 			current = species.definition;
 		} catch (error) {
 			current = "";

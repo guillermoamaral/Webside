@@ -48,7 +48,7 @@ class MemoryStats extends Component {
 
 	async updateStats() {
 		try {
-			const stats = await ide.api.getMemoryStats(100);
+			const stats = await ide.api.memoryStats(100);
 			this.setState({ stats: stats, loading: false });
 			this.setTimer();
 		} catch (error) {

@@ -40,7 +40,7 @@ class Debugger extends PureComponent {
 
 	async updateFrames() {
 		try {
-			const frames = await ide.api.getDebuggerFrames(this.props.id);
+			const frames = await ide.api.debuggerFrames(this.props.id);
 			var frame;
 			if (frames.length > 0) {
 				frame = frames[0];
@@ -63,7 +63,7 @@ class Debugger extends PureComponent {
 	updateFrame = async (frame) => {
 		try {
 			if (!frame.method) {
-				const info = await ide.api.getDebuggerFrame(
+				const info = await ide.api.debuggerFrame(
 					this.props.id,
 					frame.index
 				);
@@ -72,7 +72,7 @@ class Debugger extends PureComponent {
 				frame.interval = info.interval;
 			}
 			if (!frame.bindings || true) {
-				const bindings = await ide.api.getFrameBindings(
+				const bindings = await ide.api.frameBindings(
 					this.props.id,
 					frame.index
 				);

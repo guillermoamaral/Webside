@@ -64,7 +64,7 @@ class CodeMigrator extends Component {
 		const packages = [];
 		await Promise.all(
 			this.state.sources.packages.map(async (name) => {
-				const pack = await ide.api.getPackage(name);
+				const pack = await ide.api.packageNamed(name);
 				packages.push(pack);
 			})
 		);
@@ -77,9 +77,9 @@ class CodeMigrator extends Component {
 			packages.map(async (pack) => {
 				await Promise.all(
 					pack.classes.map(async (classname) => {
-						const species = await ide.api.getClass(classname);
+						const species = await ide.api.classNamed(classname);
 						classes.push(species);
-						const meta = await ide.api.getClass(species.class);
+						const meta = await ide.api.classNamed(species.class);
 						classes.push(meta);
 					})
 				);
@@ -87,9 +87,9 @@ class CodeMigrator extends Component {
 		);
 		await Promise.all(
 			this.state.sources.classes.map(async (name) => {
-				const species = await ide.api.getClass(name);
+				const species = await ide.api.classNamed(name);
 				classes.push(species);
-				const meta = await ide.api.getClass(species.class);
+				const meta = await ide.api.classNamed(species.class);
 				classes.push(meta);
 			})
 		);
@@ -102,7 +102,7 @@ class CodeMigrator extends Component {
 			packages.map(async (pack) => {
 				Object.entries(pack.methods).forEach(async (selectors) => {
 					selectors[1].forEach(async (selector) => {
-						const method = await ide.api.getMethod(
+						const method = await ide.api.method(
 							selectors[0],
 							selector
 						);
@@ -113,7 +113,7 @@ class CodeMigrator extends Component {
 		);
 		await Promise.all(
 			classes.map(async (species) => {
-				const retrieved = await ide.api.getMethods(species.name, true);
+				const retrieved = await ide.api.methods(species.name, true);
 				retrieved.forEach(async (method) => {
 					methods.push(method);
 				});

@@ -11,7 +11,7 @@ class PackageList extends Component {
 				required: true,
 			});
 			await ide.api.createPackage(name);
-			const pack = await ide.api.getPackage(name);
+			const pack = await ide.api.packageNamed(name);
 			if (this.props.onCreate) {
 				this.props.onCreate(pack);
 			}

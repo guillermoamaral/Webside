@@ -78,7 +78,7 @@ class API {
 	}
 
 	// General...
-	async getDialect() {
+	async dialect() {
 		return await this.get("/dialect", "dialect");
 	}
 
@@ -87,22 +87,22 @@ class API {
 	}
 
 	// Code...
-	async getPackageNames() {
+	async packageNames() {
 		return await this.get("/packages?names=true", "package names");
 	}
 
-	async getPackage(packagename) {
+	async packageNamed(packagename) {
 		return await this.get("/packages/" + packagename, "package " + packagename);
 	}
 
-	async getPackageClasses(packagename, extended = false) {
+	async packageClasses(packagename, extended = false) {
 		return await this.get(
 			"/packages/" + packagename + "/classes?tree=true&extended=" + extended,
 			"classes from package " + packagename
 		);
 	}
 
-	async getClassTree(root, depth) {
+	async classTree(root, depth) {
 		const tree = await this.get(
 			"/classes?names=true&root=" + root + "&tree=true&depth=" + depth,
 			"class tree from " + root
@@ -110,57 +110,57 @@ class API {
 		return tree[0];
 	}
 
-	async getClassTree2(root, depth) {
-		const species = typeof root === "string" ? await this.getClass(root) : root;
+	async classTree2(root, depth) {
+		const species = typeof root === "string" ? await this.classNamed(root) : root;
 		if (depth === 0) {
 			return species;
 		}
-		species.subclasses = await this.getSubclasses(species.name);
+		species.subclasses = await this.subclasses(species.name);
 		await Promise.all(
 			species.subclasses.map(async (c) => {
-				await this.getClassTree2(c, depth - 1);
+				await this.classTree2(c, depth - 1);
 			})
 		);
 		return species;
 	}
 
-	async getClassNames() {
+	async classNames() {
 		return await this.get("/classes?names=true", "class names");
 	}
 
-	async getClass(classname) {
+	async classNamed(classname) {
 		return await this.get("/classes/" + classname, "class " + classname);
 	}
 
-	async getSubclasses(classname) {
+	async subclasses(classname) {
 		return await this.get(
 			"/classes/" + classname + "/subclasses",
 			"subclasses of class " + classname
 		);
 	}
 
-	async getInstanceVariables(classname) {
+	async instanceVariables(classname) {
 		return await this.get(
 			"/classes/" + classname + "/instance-variables",
 			"instance variables of class " + classname
 		);
 	}
 
-	async getVariables(classname) {
+	async variables(classname) {
 		return await this.get(
 			"/classes/" + classname + "/variables",
 			"variables of class " + classname
 		);
 	}
 
-	async getCategories(classname) {
+	async categories(classname) {
 		return await this.get(
 			"/classes/" + classname + "/categories",
 			"categories of class " + classname
 		);
 	}
 
-	async getMethods(classname, sorted = false) {
+	async methods(classname, sorted = false) {
 		const methods = await this.get(
 			"/classes/" + classname + "/methods?marks=true",
 			"methods of class " + classname
@@ -171,7 +171,7 @@ class API {
 		return methods;
 	}
 
-	async getMethodsAccessing(classname, variable, type, sorted = false) {
+	async methodsAccessing(classname, variable, type, sorted = false) {
 		const methods = await this.get(
 			"/classes/" + classname + "/methods?" + type + "=" + variable,
 			"methods of class " + classname + " using " + variable
@@ -182,7 +182,7 @@ class API {
 		return methods;
 	}
 
-	async getMethod(classname, selector) {
+	async method(classname, selector) {
 		const encoded = encodeURIComponent(selector);
 		const methods = await this.get(
 			"/classes/" +
@@ -195,49 +195,49 @@ class API {
 		return methods.length === 0 ? null : methods[0];
 	}
 
-	async getSenders(selector) {
+	async senders(selector) {
 		return await this.get(
 			"/methods?sending=" + selector,
 			"senders of " + selector
 		);
 	}
 
-	async getLocalSenders(selector, classname) {
+	async localSenders(selector, classname) {
 		return await this.get(
 			"/methods?sending=" + selector + "&hierarchy=" + classname,
 			"senders of " + selector + " in class " + classname
 		);
 	}
 
-	async getClassReferences(classname) {
+	async classReferences(classname) {
 		return await this.get(
 			"/methods?referencingClass=" + classname,
 			"references to class " + classname
 		);
 	}
 
-	async getStringReferences(string) {
+	async stringReferences(string) {
 		return await this.get(
 			"/methods?referencingString=" + string,
 			"references to string " + string
 		);
 	}
 
-	async getImplementors(selector) {
+	async implementors(selector) {
 		return await this.get(
 			"/methods?selector=" + selector,
 			"implementors of " + selector
 		);
 	}
 
-	async getLocalImplementors(selector, classname) {
+	async localImplementors(selector, classname) {
 		return await this.get(
 			"/methods?selector=" + selector + "&hierarchy=" + classname,
 			"local implementors of " + selector + " in class " + classname
 		);
 	}
 
-	async getMethodsMatching(pattern) {
+	async methodsMatching(pattern) {
 		return await this.get(
 			"/methods?selectorMatching=" + pattern,
 			"methods with selector matching " + pattern
@@ -254,7 +254,7 @@ class API {
 	}
 
 	// Debugging...
-	async getDebuggers() {
+	async debuggers() {
 		return await this.get("/debuggers", "debuggers");
 	}
 
@@ -267,21 +267,21 @@ class API {
 		);
 	}
 
-	async getDebuggerFrames(id) {
+	async debuggerFrames(id) {
 		return await this.get(
 			"/debuggers/" + id + "/frames",
 			"frames of debugger " + id
 		);
 	}
 
-	async getDebuggerFrame(id, index) {
+	async debuggerFrame(id, index) {
 		return await this.get(
 			"/debuggers/" + id + "/frames/" + index,
 			"frame " + index + " in debugger " + id
 		);
 	}
 
-	async getFrameBindings(id, index) {
+	async frameBindings(id, index) {
 		return await this.get(
 			"/debuggers/" + id + "/frames/" + index + "/bindings",
 			"bindings of frame " + index + " in debugger " + id
@@ -341,7 +341,7 @@ class API {
 	}
 
 	// Workspaces...
-	async getWorkspaces() {
+	async workspaces() {
 		return await this.get("/workspaces", "workspaces");
 	}
 
@@ -354,7 +354,7 @@ class API {
 	}
 
 	// Changes...
-	async getChanges() {
+	async lastChanges() {
 		return await this.get("/changes", "changes");
 	}
 
@@ -620,7 +620,7 @@ class API {
 		);
 	}
 
-	async getEvaluations() {
+	async evaluations() {
 		return await this.get("/evaluations", "retrieve evaluations");
 	}
 
@@ -645,11 +645,11 @@ class API {
 	}
 
 	// Objects...
-	async getObjects() {
+	async objects() {
 		return await this.get("/objects", "objects");
 	}
 
-	async getObject(id) {
+	async objectWithId(id) {
 		return await this.get("/objects/" + id, "object with id " + id);
 	}
 
@@ -661,22 +661,22 @@ class API {
 		return await this.delete("/objects", "unpin all objects");
 	}
 
-	async getObjectNamedSlots(id, path) {
-		const response = await this.getObjectSlot(id, path + "/named-slots");
+	async objectNamedSlots(id, path) {
+		const response = await this.objectSlot(id, path + "/named-slots");
 		return response;
 	}
 
-	async getObjectIndexedSlots(id, path) {
-		const response = await this.getObjectSlot(id, path + "/indexed-slots");
+	async objectIndexedSlots(id, path) {
+		const response = await this.objectSlot(id, path + "/indexed-slots");
 		return response;
 	}
 
-	async getObjectInstanceVariables(id, path) {
-		const response = await this.getObjectSlot(id, path + "/instance-variables");
+	async objectInstanceVariables(id, path) {
+		const response = await this.objectSlot(id, path + "/instance-variables");
 		return response;
 	}
 
-	async getObjectSlot(id, path) {
+	async objectSlot(id, path) {
 		return await this.get(
 			"/objects/" + id + path,
 			path + " of object with id " + id
@@ -690,7 +690,7 @@ class API {
 	}
 
 	// Tests...
-	async getTestRuns() {
+	async testRuns() {
 		return await this.get("/test-runs", "test runs");
 	}
 
@@ -719,14 +719,14 @@ class API {
 		return await this.runTestSuite(suite);
 	}
 
-	async getTestRunStatus(id) {
+	async testRunStatus(id) {
 		return await this.get(
 			"/test-runs/" + id + "/status",
 			"status of test run " + id
 		);
 	}
 
-	async getTestRunResults(id) {
+	async testRunResults(id) {
 		return await this.get(
 			"/test-runs/" + id + "/results",
 			"results of test run " + id
@@ -758,14 +758,14 @@ class API {
 	}
 
 	// Profiling...
-	async getProfilerTreeResults(id) {
+	async profilerTreeResults(id) {
 		return await this.get(
 			"/profilers/" + id + "/tree",
 			"tree results of profiler " + id
 		);
 	}
 
-	async getProfilerRankingResults(id) {
+	async profilerRankingResults(id) {
 		return await this.get(
 			"/profilers/" + id + "/ranking",
 			"ranking results of profiler " + id
@@ -773,32 +773,32 @@ class API {
 	}
 
 	//Native debugging...
-	async getNativeDebugger(id) {
+	async nativeDebugger(id) {
 		return await this.get("/native-debuggers/" + id, "native debugger " + id);
 	}
 
-	async getNativeDebuggerFrames(id) {
+	async nativeDebuggerFrames(id) {
 		return await this.get(
 			"/native-debuggers/" + id + "/frames",
 			"frames of native debugger " + id
 		);
 	}
 
-	async getNativeDebuggerRegisters(id) {
+	async nativeDebuggerRegisters(id) {
 		return await this.get(
 			"/native-debuggers/" + id + "/registers",
 			"registers of native debugger " + id
 		);
 	}
 
-	async getNativeDebuggerSpaces(id) {
+	async nativeDebuggerSpaces(id) {
 		return await this.get(
 			"/native-debuggers/" + id + "/spaces",
 			"spaces of native debugger " + id
 		);
 	}
 
-	async getNativeDebuggerFrame(id, index) {
+	async nativeDebuggerFrame(id, index) {
 		return await this.get(
 			"/native-debuggers/" + id + "/frames/" + index,
 			"frame " + index + " in native debugger " + id
@@ -827,7 +827,7 @@ class API {
 	}
 
 	//Memory stats...
-	async getMemoryStats(last) {
+	async memoryStats(last) {
 		const query = last ? "?last=" + last : "";
 		return await this.get("/memory-stats" + query, "memory stats");
 	}

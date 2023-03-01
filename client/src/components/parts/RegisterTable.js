@@ -19,7 +19,7 @@ class RegisterTable extends Component {
 				this.props.debugger,
 				register.name
 			);
-			const object = await ide.api.getObject(register.name);
+			const object = await ide.api.objectWithId(register.name);
 			ide.openInspector(object);
 		} catch (error) {
 			ide.reportError(error);

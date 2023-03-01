@@ -44,7 +44,7 @@ class ClassBrowser extends Component {
 
 	async initializeClassNames() {
 		try {
-			const names = await ide.api.getClassNames();
+			const names = await ide.api.classNames();
 			this.setState({ classNames: names }, () => {
 				this.changeRootClass(this.state.root);
 			});
@@ -58,7 +58,7 @@ class ClassBrowser extends Component {
 			return;
 		}
 		try {
-			const species = await ide.api.getClassTree(classsname, 3);
+			const species = await ide.api.classTree(classsname, 3);
 			this.cache[classsname] = species;
 			this.setState({ root: classsname }, () => {
 				this.classSelected(species);
@@ -197,12 +197,12 @@ class ClassBrowser extends Component {
 	async updateClass(species, force = false) {
 		try {
 			if (force || !species.definition || !species.metaclass) {
-				const definition = await ide.api.getClass(species.name);
+				const definition = await ide.api.classNamed(species.name);
 				Object.assign(species, definition);
-				species.metaclass = await ide.api.getClass(definition.class);
+				species.metaclass = await ide.api.classNamed(definition.class);
 			}
 			if (force || !species.subclasses) {
-				species.subclasses = await ide.api.getSubclasses(species.name);
+				species.subclasses = await ide.api.subclasses(species.name);
 			}
 		} catch (error) {
 			ide.reportError(error);
@@ -215,7 +215,7 @@ class ClassBrowser extends Component {
 				await Promise.all(
 					species.subclasses.map(async (c) => {
 						if (!c.subclasses) {
-							c.subclasses = await ide.api.getSubclasses(c.name);
+							c.subclasses = await ide.api.subclasses(c.name);
 						}
 					})
 				);
@@ -228,7 +228,7 @@ class ClassBrowser extends Component {
 	async updateVariables(species, force = false) {
 		try {
 			if (force || !species.variables) {
-				species.variables = await ide.api.getVariables(species.name);
+				species.variables = await ide.api.variables(species.name);
 			}
 		} catch (error) {
 			ide.reportError(error);
@@ -238,7 +238,7 @@ class ClassBrowser extends Component {
 	async updateCategories(species, force = false) {
 		try {
 			if (force || !species.categories) {
-				species.categories = await ide.api.getCategories(species.name);
+				species.categories = await ide.api.categories(species.name);
 				species.categories.sort();
 			}
 		} catch (error) {
@@ -252,7 +252,7 @@ class ClassBrowser extends Component {
 		}
 		try {
 			if (force || !species.methods) {
-				species.methods = await ide.api.getMethods(species.name, true);
+				species.methods = await ide.api.methods(species.name, true);
 				species.accessors = null;
 			}
 			if (
@@ -263,7 +263,7 @@ class ClassBrowser extends Component {
 					!species.accessors[variable.name] ||
 					!species.accessors[variable.name][access])
 			) {
-				const accessing = await ide.api.getMethodsAccessing(
+				const accessing = await ide.api.methodsAccessing(
 					species.name,
 					variable.name,
 					access,
@@ -280,7 +280,7 @@ class ClassBrowser extends Component {
 
 	async updateMethod(method) {
 		try {
-			const retrieved = await ide.api.getMethod(
+			const retrieved = await ide.api.method(
 				method.methodClass,
 				method.selector
 			);

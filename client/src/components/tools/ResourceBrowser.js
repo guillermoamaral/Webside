@@ -49,19 +49,19 @@ class ResourceBrowser extends Component {
 		try {
 			switch (type) {
 				case "Objects":
-					resources = await ide.api.getObjects();
+					resources = await ide.api.objects();
 					break;
 				case "Evaluations":
-					resources = await ide.api.getEvaluations();
+					resources = await ide.api.evaluations();
 					break;
 				case "Workspaces":
-					resources = await ide.api.getWorkspaces();
+					resources = await ide.api.workspaces();
 					break;
 				case "Debuggers":
-					resources = await ide.api.getDebuggers();
+					resources = await ide.api.debuggers();
 					break;
 				case "Test Runs":
-					resources = await ide.api.getTestRuns();
+					resources = await ide.api.testRuns();
 					break;
 				default:
 			}

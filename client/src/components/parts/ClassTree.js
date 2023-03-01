@@ -16,7 +16,7 @@ class ClassTree extends Component {
 			});
 			const packagename = superclass.package;
 			await ide.api.defineClass(name, superclass.name, packagename);
-			const species = await ide.api.getClass(name);
+			const species = await ide.api.classNamed(name);
 			if (this.props.onDefine) {
 				this.props.onDefine(species);
 			}

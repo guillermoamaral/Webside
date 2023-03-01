@@ -132,7 +132,7 @@ class TestRunner extends Component {
 		}
 		this.setState({ updating: true });
 		try {
-			const status = await ide.api.getTestRunStatus(this.props.id);
+			const status = await ide.api.testRunStatus(this.props.id);
 			if (status.running) {
 				setTimeout(() => {
 					this.updateStatus();
@@ -152,7 +152,7 @@ class TestRunner extends Component {
 			return;
 		}
 		try {
-			const results = await ide.api.getTestRunResults(this.props.id);
+			const results = await ide.api.testRunResults(this.props.id);
 			results.grouped = this.groupByClass(results);
 			results.updated = true;
 			this.setState({ results: results });

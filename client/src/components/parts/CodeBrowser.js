@@ -49,7 +49,7 @@ class CodeBrowser extends Component {
 				packagename,
 				definition
 			);
-			const species = await ide.api.getClass(change.className);
+			const species = await ide.api.classNamed(change.className);
 			if (this.props.onDefineClass) {
 				this.props.onDefineClass(species);
 			}
@@ -87,7 +87,7 @@ class CodeBrowser extends Component {
 		}
 		try {
 			await ide.api.commentClass(this.props.class.name, comment);
-			const species = await ide.api.getClass(this.props.class.name);
+			const species = await ide.api.classNamed(this.props.class.name);
 			if (this.props.onCommentClass) {
 				this.props.onCommentClass(species);
 			}
@@ -123,7 +123,7 @@ class CodeBrowser extends Component {
 				category,
 				source
 			);
-			const compiled = await ide.api.getMethod(classname, change.selector);
+			const compiled = await ide.api.method(classname, change.selector);
 			if (this.props.onCompileMethod) {
 				this.props.onCompileMethod(compiled);
 			}
@@ -154,7 +154,7 @@ class CodeBrowser extends Component {
 					let method;
 					for (const change of suggestion.changes) {
 						const applied = await ide.api.postChange(change);
-						method = await ide.api.getMethod(
+						method = await ide.api.method(
 							this.props.class.name,
 							applied.selector
 						);

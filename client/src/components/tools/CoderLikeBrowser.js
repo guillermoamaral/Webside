@@ -44,7 +44,7 @@ class CoderLikeBrowser extends Component {
 			return;
 		}
 		try {
-			const species = await ide.api.getClassTree(name, 3);
+			const species = await ide.api.classTree(name, 3);
 			this.cache[name] = species;
 			this.setState({ root: name }, () => {
 				this.classSelected(species);
@@ -125,13 +125,13 @@ class CoderLikeBrowser extends Component {
 		const species = selections.species;
 		try {
 			if (force || !species.definition) {
-				const definition = await ide.api.getClass(species.name);
+				const definition = await ide.api.classNamed(species.name);
 				species.definition = definition.definition;
 				species.comment = definition.comment;
 				species.superclass = definition.superclass;
 			}
 			if (force || !species.subclasses) {
-				species.subclasses = await ide.api.getSubclasses(species.name);
+				species.subclasses = await ide.api.subclasses(species.name);
 			}
 		} catch (error) {
 			ide.reportError(error);
@@ -144,7 +144,7 @@ class CoderLikeBrowser extends Component {
 				await Promise.all(
 					species.subclasses.map(async (c) => {
 						if (!c.subclasses) {
-							c.subclasses = await ide.api.getSubclasses(c.name);
+							c.subclasses = await ide.api.subclasses(c.name);
 						}
 					})
 				);
@@ -158,7 +158,7 @@ class CoderLikeBrowser extends Component {
 		const { species, variable } = selections;
 		try {
 			if (force || !species.variables) {
-				species.variables = await ide.api.getVariables(species.name);
+				species.variables = await ide.api.variables(species.name);
 			}
 			if (variable) {
 				const found = species.variables.find((v) => v.name === variable.name);
@@ -173,7 +173,7 @@ class CoderLikeBrowser extends Component {
 		const species = selections.species;
 		try {
 			if (force || !species.categories) {
-				const categories = await ide.api.getCategories(species.name);
+				const categories = await ide.api.categories(species.name);
 				species.categories = categories.sort();
 			}
 			if (!species.categories.includes(selections.category)) {
@@ -191,13 +191,13 @@ class CoderLikeBrowser extends Component {
 		}
 		try {
 			if (force || !species.methods) {
-				species.methods = await ide.api.getMethods(species.name, true);
+				species.methods = await ide.api.methods(species.name, true);
 			}
 			if (
 				variable &&
 				(force || !species[variable.name] || !species[variable.name][access])
 			) {
-				const accessors = await ide.api.getMethodsAccessing(
+				const accessors = await ide.api.methodsAccessing(
 					species.name,
 					variable.name,
 					access,
@@ -223,7 +223,7 @@ class CoderLikeBrowser extends Component {
 		var method;
 		if (force) {
 			try {
-				method = await ide.api.getMethod(species.name, selector);
+				method = await ide.api.method(species.name, selector);
 			} catch (error) {
 				ide.reportError(error);
 			}

@@ -26,7 +26,7 @@ class Titlebar extends Component {
 		const value = this.state.searchValue;
 		if (value && value.length > 0) {
 			try {
-				await ide.api.getClass(value);
+				await ide.api.classNamed(value);
 				ide.browseClass(value);
 			} catch (error) {}
 		}

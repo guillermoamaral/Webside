@@ -453,7 +453,7 @@ class IDE extends Component {
 				name = name.slice(0, name.length - 6);
 				side = "class";
 			}
-			await this.api.getClass(name);
+			await this.api.classNamed(name);
 			this.openClassBrowser(name, side);
 		} catch (error) {
 			this.props.dialog.alert("There is no class named " + name);
@@ -697,7 +697,7 @@ class IDE extends Component {
 
 	browseLocalSenders = async (selector, classname) => {
 		try {
-			const senders = await this.api.getLocalSenders(selector, classname);
+			const senders = await this.api.localSenders(selector, classname);
 			this.openMethodBrowser(
 				senders,
 				"Local senders of " + selector,
@@ -711,7 +711,7 @@ class IDE extends Component {
 
 	browseImplementors = async (selector) => {
 		try {
-			const implementors = await this.api.getImplementors(selector);
+			const implementors = await this.api.implementors(selector);
 			this.openMethodBrowser(
 				implementors,
 				"Implementors of " + selector,
@@ -725,7 +725,7 @@ class IDE extends Component {
 
 	browseLocalImplementors = async (selector, classname) => {
 		try {
-			const implementors = await this.api.getLocalImplementors(
+			const implementors = await this.api.localImplementors(
 				selector,
 				classname
 			);
@@ -740,7 +740,7 @@ class IDE extends Component {
 
 	browseClassReferences = async (classname) => {
 		try {
-			const references = await this.api.getClassReferences(classname);
+			const references = await this.api.classReferences(classname);
 			this.openMethodBrowser(
 				references,
 				"References to " + classname,
@@ -754,7 +754,7 @@ class IDE extends Component {
 
 	browseStringReferences = async (string) => {
 		try {
-			const references = await this.api.getStringReferences(string);
+			const references = await this.api.stringReferences(string);
 			this.openMethodBrowser(
 				references,
 				"References to '" + string + "'",
@@ -768,7 +768,7 @@ class IDE extends Component {
 
 	browseMethodsMatching = async (pattern) => {
 		try {
-			const matching = await this.api.getMethodsMatching(pattern);
+			const matching = await this.api.methodsMatching(pattern);
 			this.openMethodBrowser(
 				matching,
 				"Methods with selector matching " + pattern,
@@ -786,7 +786,7 @@ class IDE extends Component {
 			this.selectPage(page);
 		} else {
 			try {
-				const changes = await this.api.getChanges();
+				const changes = await this.api.lastChanges();
 				this.browseChanges(changes, "Last changes");
 			} catch (error) {
 				this.reportError(error);
@@ -836,7 +836,7 @@ class IDE extends Component {
 			if (sync) {
 				return result;
 			}
-			const object = await this.api.getObject(result.id);
+			const object = await this.api.objectWithId(result.id);
 			if (!pin && !sync) {
 				await this.api.unpinObject(object.id);
 			}
@@ -912,7 +912,7 @@ class IDE extends Component {
 
 	reportChange = async (change) => {
 		//this triggers unnecessary renders!!!
-		// const changes = await this.api.getChanges();
+		// const changes = await this.api.lastChanges();
 		// this.setState({changesCount: changes.length})
 	};
 

@@ -29,16 +29,16 @@ class NativeDebugger extends Component {
 
 	async updateInfo() {
 		try {
-			const native = await ide.api.getNativeDebugger(this.props.id);
+			const native = await ide.api.nativeDebugger(this.props.id);
 			const running = native.state === "running";
-			const frames = await ide.api.getNativeDebuggerFrames(this.props.id);
+			const frames = await ide.api.nativeDebuggerFrames(this.props.id);
 			let selected = null;
 			if (frames.length > 0) {
 				selected = frames[0];
 				await this.updateFrame(selected);
 			}
-			const registers = await ide.api.getNativeDebuggerRegisters(this.props.id);
-			const spaces = await ide.api.getNativeDebuggerSpaces(this.props.id);
+			const registers = await ide.api.nativeDebuggerRegisters(this.props.id);
+			const spaces = await ide.api.nativeDebuggerSpaces(this.props.id);
 			spaces.forEach((s) => (s.color = this.colorForSpace(s)));
 			this.setState({
 				running: running,
@@ -79,7 +79,7 @@ class NativeDebugger extends Component {
 	updateFrame = async (frame) => {
 		if (!frame.method) {
 			try {
-				const info = await ide.api.getNativeDebuggerFrame(
+				const info = await ide.api.nativeDebuggerFrame(
 					this.props.id,
 					frame.index
 				);

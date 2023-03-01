@@ -38,7 +38,7 @@ class PackageBrowser extends Component {
 	initializePackages = async () => {
 		let names;
 		try {
-			names = await ide.api.getPackageNames();
+			names = await ide.api.packageNames();
 		} catch (error) {
 			names = [];
 			ide.reportError(error);
@@ -159,7 +159,7 @@ class PackageBrowser extends Component {
 	async updatePackage(pack, force = false) {
 		try {
 			if (force || !pack.classes || !pack.methods) {
-				const retrieved = await ide.api.getPackage(pack.name);
+				const retrieved = await ide.api.packageNamed(pack.name);
 				Object.assign(pack, retrieved);
 			}
 		} catch (error) {
@@ -170,7 +170,7 @@ class PackageBrowser extends Component {
 	async updateClasses(pack, force = false) {
 		if (force || !pack.classes) {
 			try {
-				pack.classes = await ide.api.getPackageClasses(pack.name, true);
+				pack.classes = await ide.api.packageClasses(pack.name, true);
 			} catch (error) {
 				ide.reportError(error);
 			}
@@ -180,12 +180,12 @@ class PackageBrowser extends Component {
 	async updateClass(species, force = false) {
 		try {
 			if (force || !species.definition || !species.metaclass) {
-				const definition = await ide.api.getClass(species.name);
+				const definition = await ide.api.classNamed(species.name);
 				Object.assign(species, definition);
-				species.metaclass = await ide.api.getClass(definition.class);
+				species.metaclass = await ide.api.classNamed(definition.class);
 			}
 			if (force || !species.subclasses) {
-				species.subclasses = await ide.api.getSubclasses(species.name);
+				species.subclasses = await ide.api.subclasses(species.name);
 			}
 		} catch (error) {
 			ide.reportError(error);
@@ -198,7 +198,7 @@ class PackageBrowser extends Component {
 				await Promise.all(
 					species.subclasses.map(async (c) => {
 						if (!c.subclasses) {
-							c.subclasses = await ide.api.getSubclasses(c.name);
+							c.subclasses = await ide.api.subclasses(c.name);
 						}
 					})
 				);
@@ -211,7 +211,7 @@ class PackageBrowser extends Component {
 	async updateCategories(species, force = false) {
 		try {
 			if (force || !species.categories) {
-				species.categories = await ide.api.getCategories(species.name);
+				species.categories = await ide.api.categories(species.name);
 				species.categories.sort();
 			}
 		} catch (error) {
@@ -225,7 +225,7 @@ class PackageBrowser extends Component {
 		}
 		try {
 			if (force || !species.methods) {
-				species.methods = await ide.api.getMethods(species.name, true);
+				species.methods = await ide.api.methods(species.name, true);
 			}
 		} catch (error) {
 			ide.reportError(error);
@@ -234,7 +234,7 @@ class PackageBrowser extends Component {
 
 	async updateMethod(method) {
 		try {
-			const retrieved = await ide.api.getMethod(
+			const retrieved = await ide.api.method(
 				method.methodClass,
 				method.selector
 			);

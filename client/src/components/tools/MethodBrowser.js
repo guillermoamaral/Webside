@@ -52,8 +52,8 @@ class MethodBrowser extends Component {
 
 	methodSelected = async (method) => {
 		try {
-			const species = await ide.api.getClass(method.methodClass);
-			const retrieved = await ide.api.getMethod(
+			const species = await ide.api.classNamed(method.methodClass);
+			const retrieved = await ide.api.method(
 				method.methodClass,
 				method.selector
 			);
