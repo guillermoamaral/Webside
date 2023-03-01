@@ -70,7 +70,7 @@ class ChangesBrowser extends Component {
 					</Box>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
-					<Paper variant="outlined" style={{ height: 450 }}>
+					<Paper variant="outlined" style={{ height: 350 }}>
 						<ChangesTable
 							styles={styles}
 							changes={this.props.changes}
