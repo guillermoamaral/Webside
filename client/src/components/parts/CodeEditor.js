@@ -297,7 +297,7 @@ class CodeEditor extends Component {
 		const head = stretch.head;
 		head.ch = head.ch + 1;
 		const word = this.editor.getRange(stretch.anchor, head);
-		return word.endsWith(":") ? word : word.slice(0, word.length - 1);
+		return word;
 	}
 
 	searchInGoogle = () => {
