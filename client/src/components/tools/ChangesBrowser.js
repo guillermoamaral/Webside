@@ -81,7 +81,10 @@ class ChangesBrowser extends Component {
 				<Grid item xs={12} md={12} lg={12}>
 					<Grid container spacing={1}>
 						<Grid item xs={6} md={6} lg={6}>
-							<Paper variant="outlined" style={{ minHeight: 300 }}>
+							<Paper
+								variant="outlined"
+								style={{ minHeight: 300, height: "100%" }}
+							>
 								{/* <CodeMerge
 							context={this.evaluationContext()}
 							styles={this.props.styles}
@@ -98,13 +101,10 @@ class ChangesBrowser extends Component {
 							</Paper>
 						</Grid>
 						<Grid item xs={6} md={6} lg={6}>
-							<Paper variant="outlined" style={{ minHeight: 300 }}>
-								{/* <CodeMerge
-									context={this.evaluationContext()}
-									styles={this.props.styles}
-									leftCode={change ? change.sourceCode : ""}
-									rightCode={change ? change.currentSourceCode : ""}
-								/> */}
+							<Paper
+								variant="outlined"
+								style={{ minHeight: 300, height: "100%" }}
+							>
 								<CodeEditor
 									context={this.evaluationContext()}
 									styles={this.props.styles}

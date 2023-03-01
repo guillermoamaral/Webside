@@ -7,7 +7,6 @@ import { ide } from "../IDE";
 import Scrollable from "../controls/Scrollable";
 import "../../SmalltalkMode.css";
 import "../../SmalltalkMode.js";
-
 require("diff-match-patch");
 require("codemirror/lib/codemirror.css");
 require("codemirror/mode/gas/gas.js");

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import CodeMirror from "codemirror";
 import "../../SmalltalkMode.js";
 import "../../SmalltalkMode.css";
-
 require("codemirror/lib/codemirror.css");
 require("codemirror/theme/material.css");
 require("codemirror/mode/smalltalk/smalltalk.js");
