@@ -794,6 +794,28 @@ class IDE extends Component {
 		}
 	};
 
+	browseChangesFromFile = async () => {
+		var input = document.createElement("input");
+		input.type = "file";
+		input.onchange = (e) => {
+			var file = e.target.files[0];
+			if (file) {
+				var reader = new FileReader();
+				reader.onload = async () => {
+					const ch = reader.result;
+					try {
+						const changes = await this.api.uploadChangeset(ch);
+						this.browseChanges(changes);
+					} catch (error) {
+						this.reportError(error);
+					}
+				};
+				reader.readAsText(file, "UTF-8");
+			}
+		};
+		input.click();
+	};
+
 	debugExpression = async (expression, context) => {
 		try {
 			const id = await this.api.debugExpression(expression, context);
@@ -913,25 +935,7 @@ class IDE extends Component {
 	addChangesBrowserClicked = async () => {
 		this.setState({ addPageMenuOpen: false });
 		try {
-			var input = document.createElement("input");
-			input.type = "file";
-			input.onchange = (e) => {
-				var file = e.target.files[0];
-				if (file) {
-					var reader = new FileReader();
-					reader.onload = async () => {
-						const ch = reader.result;
-						try {
-							const changes = await this.api.uploadChangeset(ch);
-							this.browseChanges(changes);
-						} catch (error) {
-							this.reportError(error);
-						}
-					};
-					reader.readAsText(file, "UTF-8");
-				}
-			};
-			input.click();
+			this.browseChangesFromFile();
 		} catch (error) {
 			this.reportError(error);
 		}
