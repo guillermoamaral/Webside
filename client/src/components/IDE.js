@@ -683,7 +683,7 @@ class IDE extends Component {
 
 	browseSenders = async (selector) => {
 		try {
-			const senders = await this.api.getSenders(selector);
+			const senders = await this.api.senders(selector);
 			this.openMethodBrowser(
 				senders,
 				"Senders of " + selector,
