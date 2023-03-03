@@ -6,6 +6,8 @@ class StChange extends Object {
 		this.timestamp = null;
 		this.author = null;
 		this.changeset = null;
+		this.source = null;
+		this.currentSource = null;
 	}
 
 	static type() {
@@ -51,23 +53,38 @@ class StChange extends Object {
 		return this.typeMap[type] || StChange;
 	}
 
-	fromJson(json) {}
+	fromJson(json) {
+		this.label = json.label;
+		this.package = json.package;
+		this.timestamp = json.timestamp;
+		this.author = json.author;
+		this.source = json.sourceCode;
+	}
 
 	asJson() {
-		return {};
+		var json = {};
+		json.type = this.type();
+		json.label = this.label;
+		json.package = this.package;
+		json.timestamp = this.timestamp;
+		json.author = this.author;
+		json.sourceCode = this.source;
+		return json;
 	}
 
 	type() {
-		return this.constructor.type();
+		return this.constructor.name;
 	}
 
 	sourceCode() {
-		return "";
+		return this.source;
 	}
 
-	currentSourceCodeIn(api) {
-		return "";
+	currentSourceCode() {
+		return this.currentSource;
 	}
+
+	updateCurrentSourceCode() {}
 
 	canBeApplied() {
 		return this.sourceCode() !== this.currentSourceCode();
@@ -114,35 +131,29 @@ class AddMethod extends MethodChange {
 	constructor() {
 		super();
 		this.category = null;
-		this.sourceCode = null;
 	}
 
 	fromJson(json) {
 		super.fromJson(json);
 		this.category = json.category;
-		this.sourceCode = json.sourceCode;
 	}
 
 	asJson() {
 		var json = super.asJson();
 		json.category = this.category;
-		json.sourceCode = this.sourceCode;
 		return json;
 	}
 
-	sourceCode() {
-		return this.sourceCode;
-	}
-
-	async currentSourceCodeIn(api) {
-		var current;
+	async updateCurrentSourceCode() {
 		try {
-			const method = await api.method(this.className, this.selector);
-			current = method.sourceCode;
+			const method = await this.changeset.system.method(
+				this.className,
+				this.selector
+			);
+			this.currentSource = method.source;
 		} catch (error) {
-			current = "";
+			this.currentSource = "could not find method";
 		}
-		return current;
 	}
 }
 
@@ -205,15 +216,15 @@ class AddClass extends ClassChange {
 		return this.definition;
 	}
 
-	async currentSourceCodeIn(api) {
-		var current;
+	async updateCurrentSourceCode() {
 		try {
-			const species = await api.classNamed(this.className);
-			current = species.definition;
+			const species = await this.changeset.system.classNamed(
+				this.className
+			);
+			this.currentSource = species.definition;
 		} catch (error) {
-			current = "";
+			this.currentSource = "could not find class";
 		}
-		return current;
 	}
 }
 

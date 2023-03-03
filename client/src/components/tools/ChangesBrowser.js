@@ -5,7 +5,6 @@ import CodeEditor from "../parts/CodeEditor";
 import { ide } from "../IDE";
 import ChangesTable from "../parts/ChangesTable";
 import DownloadIcon from "@material-ui/icons/GetApp";
-import Changeset from "../../model/StChangeset";
 
 class ChangesBrowser extends Component {
 	constructor(props) {
@@ -15,7 +14,8 @@ class ChangesBrowser extends Component {
 		};
 	}
 
-	changeSelected = (change) => {
+	changeSelected = async (change) => {
+		await change.updateCurrentSourceCode();
 		this.setState({ selectedChange: change });
 	};
 
@@ -27,7 +27,11 @@ class ChangesBrowser extends Component {
 	download = async (event) => {
 		event.preventDefault();
 		try {
-			const ch = await ide.api.downloadChangeset(this.props.changes);
+			const ch = await ide.api.downloadChangeset(
+				this.props.changeset.changes.map((ch) => {
+					return ch.asJson();
+				})
+			);
 			const blob = new Blob([ch]);
 			const url = window.URL.createObjectURL(blob);
 			const link = document.createElement("a");
@@ -41,25 +45,9 @@ class ChangesBrowser extends Component {
 		}
 	};
 
-	currentSourceCode(change) {
-		if (!change) {
-			return "";
-		}
-		let source;
-		switch (change.type) {
-			case "AddMethod":
-				source = "...";
-				break;
-			default:
-				source = "";
-		}
-		return source;
-	}
-
 	render() {
 		const styles = this.props.styles;
 		const change = this.state.selectedChange;
-		console.log(Changeset.fromJson(this.props.changes));
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
@@ -73,7 +61,7 @@ class ChangesBrowser extends Component {
 					<Paper variant="outlined" style={{ height: 350 }}>
 						<ChangesTable
 							styles={styles}
-							changes={this.props.changes}
+							changes={this.props.changeset.changes}
 							onSelect={this.changeSelected}
 						/>
 					</Paper>
@@ -95,7 +83,7 @@ class ChangesBrowser extends Component {
 									context={this.evaluationContext()}
 									styles={this.props.styles}
 									lineNumbers
-									source={change ? change.sourceCode : ""}
+									source={change ? change.sourceCode() : ""}
 									showAccept={false}
 								/>
 							</Paper>
@@ -109,7 +97,9 @@ class ChangesBrowser extends Component {
 									context={this.evaluationContext()}
 									styles={this.props.styles}
 									lineNumbers
-									source={this.currentSourceCode(change)}
+									source={
+										change ? change.currentSourceCode() : ""
+									}
 									showAccept={false}
 								/>
 							</Paper>

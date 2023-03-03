@@ -25,7 +25,7 @@ class ChangesTable extends Component {
 
 	applyChange = (change) => {
 		if (change) {
-			ide.api.postChange(change);
+			ide.api.postChange(change.asJson());
 		}
 	};
 
@@ -38,10 +38,27 @@ class ChangesTable extends Component {
 
 	changeColums() {
 		return [
-			{ field: "type", label: "Type", minWidth: 150, align: "left" },
+			{
+				field: (ch) => {
+					return ch.type();
+				},
+				label: "Type",
+				minWidth: 150,
+				align: "left",
+			},
 			{ field: "label", label: "Target", minWidth: 250, align: "left" },
-			{ field: "package", label: "Package", minWidth: 150, align: "left" },
-			{ field: "author", label: "Author", minWidth: 150, align: "center" },
+			{
+				field: "package",
+				label: "Package",
+				minWidth: 150,
+				align: "left",
+			},
+			{
+				field: "author",
+				label: "Author",
+				minWidth: 150,
+				align: "center",
+			},
 			{
 				field: "timestamp",
 				label: "Timestamp",

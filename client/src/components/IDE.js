@@ -57,6 +57,7 @@ import ResourceBrowser from "./tools/ResourceBrowser";
 import CoderLikeBrowser from "./tools/CoderLikeBrowser";
 import CodeMigrator from "./tools/CodeMigrator";
 import Hotkeys from "react-hot-keys";
+import Changeset from "../model/StChangeset";
 
 var ide = null;
 
@@ -562,12 +563,12 @@ class IDE extends Component {
 		);
 	};
 
-	browseChanges = (changes, title = "Changes") => {
+	browseChanges = (changeset, title = "Changes") => {
 		const browser = (
-			<ChangesBrowser styles={this.props.styles} changes={changes} />
+			<ChangesBrowser styles={this.props.styles} changeset={changeset} />
 		);
 		this.addPage(
-			title + " (" + changes.length + ")",
+			title + " (" + changeset.size() + ")",
 			<ChangesBrowserIcon />,
 			browser
 		);
@@ -787,7 +788,9 @@ class IDE extends Component {
 		} else {
 			try {
 				const changes = await this.api.lastChanges();
-				this.browseChanges(changes, "Last changes");
+				const changeset = Changeset.fromJson(changes);
+				changeset.on(this.api);
+				this.browseChanges(changeset, "Last changes");
 			} catch (error) {
 				this.reportError(error);
 			}
@@ -805,7 +808,10 @@ class IDE extends Component {
 					const ch = reader.result;
 					try {
 						const changes = await this.api.uploadChangeset(ch);
-						this.browseChanges(changes);
+						const changeset = Changeset.fromJson(changes);
+						console.log(changeset)
+						changeset.on(this.api);
+						this.browseChanges(changeset);
 					} catch (error) {
 						this.reportError(error);
 					}

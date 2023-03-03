@@ -3,7 +3,7 @@ import StChange from "./StChange";
 class StChangeset extends Object {
 	constructor() {
 		super();
-		this.api = null;
+		this.system = null;
 		this.changes = [];
 	}
 
@@ -21,8 +21,12 @@ class StChangeset extends Object {
 		});
 	}
 
-	api(api) {
-		this.api = api;
+	size() {
+		return this.changes.length;
+	}
+
+	on(system) {
+		this.system = system;
 	}
 }
 
