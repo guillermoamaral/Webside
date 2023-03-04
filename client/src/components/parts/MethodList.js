@@ -105,13 +105,6 @@ class MethodList extends Component {
 		}
 	};
 
-	browseSuperImplementors = (method) => {
-		console.log(method);
-		if (method) {
-			ide.browseLocalImplementors(method.selector, method.methodClass);
-		}
-	};
-
 	browseClassReferences = (method) => {
 		if (method) {
 			ide.browseClassReferences(method.methodClass);
