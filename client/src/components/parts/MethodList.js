@@ -105,6 +105,13 @@ class MethodList extends Component {
 		}
 	};
 
+	browseSuperImplementors = (method) => {
+		console.log(method);
+		if (method) {
+			ide.browseLocalImplementors(method.selector, method.methodClass);
+		}
+	};
+
 	browseClassReferences = (method) => {
 		if (method) {
 			ide.browseClassReferences(method.methodClass);
@@ -187,16 +194,27 @@ class MethodList extends Component {
 				<OverridingOverridenIcon
 					color="primary"
 					style={{ fontSize: size }}
+					onClick={(event) => this.browseLocalImplementors(method)}
 				/>
 			);
 		}
 		if (method.overriding) {
 			return (
-				<OverridingIcon color="primary" style={{ fontSize: size }} />
+				<OverridingIcon
+					color="primary"
+					style={{ fontSize: size }}
+					onClick={(event) => this.browseLocalImplementors(method)}
+				/>
 			);
 		}
 		if (method.overriden) {
-			return <OverridenIcon color="primary" style={{ fontSize: size }} />;
+			return (
+				<OverridenIcon
+					color="primary"
+					style={{ fontSize: size }}
+					onClick={(event) => this.browseLocalImplementors(method)}
+				/>
+			);
 		}
 		return null;
 	};
