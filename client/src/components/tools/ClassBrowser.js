@@ -117,7 +117,9 @@ class ClassBrowser extends Component {
 			);
 		}
 		if (category) {
-			selections.category = species.categories.find((c) => c === category);
+			selections.category = species.categories.find(
+				(c) => c === category
+			);
 		}
 		if (method && !method.template) {
 			selections.method = species.methods.find(
@@ -324,7 +326,8 @@ class ClassBrowser extends Component {
 		selections.species = species;
 		await this.updateClass(species);
 		await this.updateSubclasses(species);
-		const target = selections.side === "instance" ? species : species.metaclass;
+		const target =
+			selections.side === "instance" ? species : species.metaclass;
 		await this.updateVariables(target);
 		await this.updateCategories(target);
 		await this.updateMethods(target);
@@ -574,7 +577,11 @@ class ClassBrowser extends Component {
 							<Grid container direction="row" alignItems="center">
 								<Grid item xs={11} md={11} lg={11}>
 									<SearchList2
-										value={selectedClass ? selectedClass.name : null}
+										value={
+											selectedClass
+												? selectedClass.name
+												: null
+										}
 										options={classNames}
 										onChange={(classname) => {
 											this.changeRootClass(classname);
@@ -583,7 +590,11 @@ class ClassBrowser extends Component {
 								</Grid>
 								<Grid item xs={1} md={1} lg={1}>
 									<Tooltip
-										title={rootclass ? rootclass.superclass : ""}
+										title={
+											rootclass
+												? rootclass.superclass
+												: ""
+										}
 										placement="top"
 									>
 										<IconButton
@@ -600,14 +611,20 @@ class ClassBrowser extends Component {
 						<Grid item xs={3} md={3} lg={3}>
 							<Select
 								value={selectedAccess}
-								input={<OutlinedInput margin="dense" fullWidth />}
+								input={
+									<OutlinedInput margin="dense" fullWidth />
+								}
 								onChange={(event) => {
 									this.accessSelected(event.target.value);
 								}}
 							>
 								<MenuItem value={"using"}>using</MenuItem>
-								<MenuItem value={"assigning"}>assigning</MenuItem>
-								<MenuItem value={"accessing"}>referencing</MenuItem>
+								<MenuItem value={"assigning"}>
+									assigning
+								</MenuItem>
+								<MenuItem value={"accessing"}>
+									referencing
+								</MenuItem>
 							</Select>
 						</Grid>
 						<Grid item xs={3} md={3} lg={3}>
@@ -615,18 +632,30 @@ class ClassBrowser extends Component {
 								<RadioGroup
 									name="side"
 									value={selectedSide}
-									onChange={(event, side) => this.sideChanged(side)}
+									onChange={(event, side) =>
+										this.sideChanged(side)
+									}
 									defaultValue="instance"
 									row
 								>
 									<FormControlLabel
 										value="instance"
-										control={<Radio size="small" color="primary" />}
+										control={
+											<Radio
+												size="small"
+												color="primary"
+											/>
+										}
 										label="Instance"
 									/>
 									<FormControlLabel
 										value="class"
-										control={<Radio size="small" color="primary" />}
+										control={
+											<Radio
+												size="small"
+												color="primary"
+											/>
+										}
 										label="Class"
 									/>
 								</RadioGroup>
@@ -634,7 +663,10 @@ class ClassBrowser extends Component {
 						</Grid>
 						<Grid item xs={3} md={3} lg={3} />
 						<Grid item xs={12} md={3} lg={3}>
-							<Paper className={fixedHeightPaper} variant="outlined">
+							<Paper
+								className={fixedHeightPaper}
+								variant="outlined"
+							>
 								<ClassTree
 									roots={rootclass ? [rootclass] : []}
 									selected={selectedClass}
@@ -647,7 +679,10 @@ class ClassBrowser extends Component {
 							</Paper>
 						</Grid>
 						<Grid item xs={12} md={3} lg={3}>
-							<Paper className={fixedHeightPaper} variant="outlined">
+							<Paper
+								className={fixedHeightPaper}
+								variant="outlined"
+							>
 								<VariableList
 									class={this.currentClass()}
 									variables={this.currentVariables()}
@@ -660,7 +695,10 @@ class ClassBrowser extends Component {
 							</Paper>
 						</Grid>
 						<Grid item xs={12} md={3} lg={3}>
-							<Paper className={fixedHeightPaper} variant="outlined">
+							<Paper
+								className={fixedHeightPaper}
+								variant="outlined"
+							>
 								<CategoryList
 									class={this.currentClass()}
 									categories={this.currentCategories()}
@@ -673,7 +711,10 @@ class ClassBrowser extends Component {
 							</Paper>
 						</Grid>
 						<Grid item xs={12} md={3} lg={3}>
-							<Paper className={fixedHeightPaper} variant="outlined">
+							<Paper
+								className={fixedHeightPaper}
+								variant="outlined"
+							>
 								<MethodList
 									methods={this.currentMethods()}
 									categories={this.currentCategories()}

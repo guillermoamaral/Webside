@@ -2,7 +2,8 @@ import axios from "axios";
 
 class APIError extends Error {
 	constructor(description, url, request, status, reason, data) {
-		const explanation = reason && reason.lenght > 0 ? " due to " + reason : "";
+		const explanation =
+			reason && reason.lenght > 0 ? " due to " + reason : "";
 		const message = '"' + description + " from " + url + explanation + '"';
 		super(message);
 		this.name = "APIError";
@@ -44,7 +45,11 @@ class API {
 			const response = await axios.post(this.baseUri + uri, payload);
 			return response.data;
 		} catch (error) {
-			this.handleError("Cannot " + (description || " post " + uri), uri, error);
+			this.handleError(
+				"Cannot " + (description || " post " + uri),
+				uri,
+				error
+			);
 		}
 	}
 
@@ -53,7 +58,11 @@ class API {
 			const response = await axios.delete(this.baseUri + uri);
 			return response.data;
 		} catch (error) {
-			this.handleError("Cannot delete " + (description || uri), uri, error);
+			this.handleError(
+				"Cannot delete " + (description || uri),
+				uri,
+				error
+			);
 		}
 	}
 
@@ -92,12 +101,18 @@ class API {
 	}
 
 	async packageNamed(packagename) {
-		return await this.get("/packages/" + packagename, "package " + packagename);
+		return await this.get(
+			"/packages/" + encodeURIComponent(packagename),
+			"package "
+		);
 	}
 
 	async packageClasses(packagename, extended = false) {
 		return await this.get(
-			"/packages/" + packagename + "/classes?tree=true&extended=" + extended,
+			"/packages/" +
+				packagename +
+				"/classes?tree=true&extended=" +
+				extended,
 			"classes from package " + packagename
 		);
 	}
@@ -111,7 +126,8 @@ class API {
 	}
 
 	async classTree2(root, depth) {
-		const species = typeof root === "string" ? await this.classNamed(root) : root;
+		const species =
+			typeof root === "string" ? await this.classNamed(root) : root;
 		if (depth === 0) {
 			return species;
 		}
@@ -314,7 +330,12 @@ class API {
 
 	async restartDebugger(id, index, update = false) {
 		return await this.post(
-			"/debuggers/" + id + "/frames/" + index + "/restart?update=" + update,
+			"/debuggers/" +
+				id +
+				"/frames/" +
+				index +
+				"/restart?update=" +
+				update,
 			null,
 			"restart on frame " + index + " of debugger " + id
 		);
@@ -382,7 +403,11 @@ class API {
 	}
 
 	async uploadChangeset(changeset) {
-		return await this.post("/changesets/upload", changeset, "upload changeset");
+		return await this.post(
+			"/changesets/upload",
+			changeset,
+			"upload changeset"
+		);
 	}
 
 	// Change helpers...
@@ -583,7 +608,12 @@ class API {
 		change.category = category;
 		return await this.postChange(
 			change,
-			"classify methodd " + classname + ">>#" + selector + " under " + category
+			"classify methodd " +
+				classname +
+				">>#" +
+				selector +
+				" under " +
+				category
 		);
 	}
 
@@ -631,7 +661,11 @@ class API {
 			debug: true,
 			pin: false,
 		};
-		return await this.post("/evaluations", evaluation, "debug " + expression);
+		return await this.post(
+			"/evaluations",
+			evaluation,
+			"debug " + expression
+		);
 	}
 
 	async profileExpression(expression, context) {
@@ -641,7 +675,11 @@ class API {
 			profile: true,
 			pin: false,
 		};
-		return await this.post("/evaluations", evaluation, "profile " + expression);
+		return await this.post(
+			"/evaluations",
+			evaluation,
+			"profile " + expression
+		);
 	}
 
 	// Objects...
@@ -654,7 +692,10 @@ class API {
 	}
 
 	async unpinObject(id) {
-		return await this.delete("/objects/" + id, "unpin object with id " + id);
+		return await this.delete(
+			"/objects/" + id,
+			"unpin object with id " + id
+		);
 	}
 
 	async unpinAllObjects() {
@@ -672,7 +713,10 @@ class API {
 	}
 
 	async objectInstanceVariables(id, path) {
-		const response = await this.objectSlot(id, path + "/instance-variables");
+		const response = await this.objectSlot(
+			id,
+			path + "/instance-variables"
+		);
 		return response;
 	}
 
@@ -686,7 +730,11 @@ class API {
 	async pinObjectSlot(id, path) {
 		const uri = "/objects/" + id + path;
 		const body = { uri: uri };
-		return await this.post("/objects", body, "pin slot at URI /objects" + uri);
+		return await this.post(
+			"/objects",
+			body,
+			"pin slot at URI /objects" + uri
+		);
 	}
 
 	// Tests...
@@ -734,11 +782,17 @@ class API {
 	}
 
 	async runTestRun(id) {
-		return await this.post("/test-runs/" + id + "/run", "run test run " + id);
+		return await this.post(
+			"/test-runs/" + id + "/run",
+			"run test run " + id
+		);
 	}
 
 	async stopTestRun(id) {
-		return await this.post("/test-runs/" + id + "/stop", "stop test run " + id);
+		return await this.post(
+			"/test-runs/" + id + "/stop",
+			"stop test run " + id
+		);
 	}
 
 	async deleteTestRun(id) {
@@ -774,7 +828,10 @@ class API {
 
 	//Native debugging...
 	async nativeDebugger(id) {
-		return await this.get("/native-debuggers/" + id, "native debugger " + id);
+		return await this.get(
+			"/native-debuggers/" + id,
+			"native debugger " + id
+		);
 	}
 
 	async nativeDebuggerFrames(id) {
@@ -822,7 +879,10 @@ class API {
 	async pinNativeDebuggerRegister(id, register) {
 		return await this.post(
 			"/native-debuggers/" + id + "/registers/" + register + "/pin",
-			"pin object pointed by register " + register + " of native debugger " + id
+			"pin object pointed by register " +
+				register +
+				" of native debugger " +
+				id
 		);
 	}
 

@@ -280,9 +280,9 @@ class IDE extends Component {
 			if (
 				page.component &&
 				page.component.ref &&
-				page.component.current
+				page.component.ref.current
 			) {
-				page.component.current.forceUpdate();
+				page.component.ref.current.forceUpdate();
 			}
 		}
 		this.setState(state);
@@ -376,12 +376,7 @@ class IDE extends Component {
 						onChange={this.transcriptChanged}
 					/>
 				);
-				this.addPage(
-					"Transcript",
-					<TranscriptIcon />,
-					transcript,
-					true
-				);
+				this.addPage("Transcript", <TranscriptIcon />, transcript);
 			}
 		}
 	};
@@ -809,7 +804,7 @@ class IDE extends Component {
 					try {
 						const changes = await this.api.uploadChangeset(ch);
 						const changeset = Changeset.fromJson(changes);
-						console.log(changeset)
+						console.log(changeset);
 						changeset.on(this.api);
 						this.browseChanges(changeset);
 					} catch (error) {
@@ -913,7 +908,7 @@ class IDE extends Component {
 	};
 
 	transcriptChanged = (text) => {
-		this.setState({ transcriptText: text });
+		this.state.transcriptText = text;
 	};
 
 	reportChange = async (change) => {
