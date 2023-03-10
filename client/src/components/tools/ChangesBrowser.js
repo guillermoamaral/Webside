@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { Grid, Paper, Box, IconButton } from "@material-ui/core";
 import CodeMerge from "../parts/CodeMerge";
-import CodeEditor from "../parts/CodeEditor";
+//import CodeEditor from "../parts/CodeEditor";
 import { ide } from "../IDE";
 import ChangesTable from "../parts/ChangesTable";
 import DownloadIcon from "@material-ui/icons/GetApp";
+import Scrollable from "../controls/Scrollable";
 
 class ChangesBrowser extends Component {
 	constructor(props) {
@@ -68,13 +69,18 @@ class ChangesBrowser extends Component {
 					</Paper>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
-					<CodeMerge
-						context={this.evaluationContext()}
-						styles={this.props.styles}
-						leftCode={change ? change.sourceCode() : ""}
-						rightCode={change ? change.currentSourceCode() : ""}
-					/>
-					{/* <Grid container spacing={1}>
+					<Paper
+						variant="outlined"
+						style={{ height: "100%", minHeight: 400 }}
+					>
+						<CodeMerge
+							style={{ height: "100%" }}
+							context={this.evaluationContext()}
+							styles={this.props.styles}
+							leftCode={change ? change.sourceCode() : ""}
+							rightCode={change ? change.currentSourceCode() : ""}
+						/>
+						{/* <Grid container spacing={1}>
 						<Grid item xs={6} md={6} lg={6}>
 							<Paper
 								variant="outlined"
@@ -106,6 +112,7 @@ class ChangesBrowser extends Component {
 							</Paper>
 						</Grid>
 					</Grid> */}
+					</Paper>
 				</Grid>
 			</Grid>
 		);

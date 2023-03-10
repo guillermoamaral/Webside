@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import CodeMirror from "codemirror";
 import "../../SmalltalkMode.js";
 import "../../SmalltalkMode.css";
+import Scrollable from "../controls/Scrollable.js";
 require("codemirror/lib/codemirror.css");
 require("codemirror/theme/material.css");
 require("codemirror/mode/smalltalk/smalltalk.js");
@@ -63,7 +64,7 @@ class CodeMerge extends Component {
 			matchTags: { bothTags: true },
 			smartIndent: true,
 			matchBrackets: true,
-			foldGutter: true,
+			//foldGutter: true,
 			lineWrapping: true,
 			gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 		});
@@ -72,12 +73,21 @@ class CodeMerge extends Component {
 	render() {
 		const { leftCode, rightCode } = this.state;
 		if (this.editor) {
+			this.editor.editor().setSize("100%", "100%");
 			this.editor.editor().setValue(leftCode);
+			console.log(this.editor);
+			this.editor.rightOriginal().setSize("100%", "100%");
 			this.editor.rightOriginal().setValue(rightCode);
 			//this.editor.right.forceUpdate();
 		}
 		return (
-			<div ref={this.ref} className={this.props.styles.codeMirror}></div>
+			<Scrollable>
+				<div
+					ref={this.ref}
+					style={{ height: "100%" }}
+					className={this.props.styles.codeMirror}
+				></div>
+			</Scrollable>
 		);
 	}
 }
