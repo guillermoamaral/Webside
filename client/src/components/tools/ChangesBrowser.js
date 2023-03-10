@@ -11,7 +11,7 @@ class ChangesBrowser extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			selectedChange: null,
+			selectedChange: props.selectedChange,
 		};
 	}
 

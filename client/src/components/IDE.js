@@ -559,8 +559,13 @@ class IDE extends Component {
 	};
 
 	browseChanges = (changeset, title = "Changes") => {
+		const selected = changeset.size() > 0 ? changeset.changes[0] : null;
 		const browser = (
-			<ChangesBrowser styles={this.props.styles} changeset={changeset} />
+			<ChangesBrowser
+				styles={this.props.styles}
+				changeset={changeset}
+				selectedChange={selected}
+			/>
 		);
 		this.addPage(
 			title + " (" + changeset.size() + ")",

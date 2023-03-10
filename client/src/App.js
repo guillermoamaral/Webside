@@ -27,7 +27,7 @@ const theme = createMuiTheme({
 			secondary: "#00000",
 		},
 		background: {
-			//paper: "#303030",
+			paper: "#303030",
 		},
 	},
 });
@@ -45,27 +45,39 @@ class App extends Component {
 									<Route
 										path="/"
 										exact
-										component={() => <Login styles={this.props.classes} />}
+										component={() => (
+											<Login
+												styles={this.props.classes}
+											/>
+										)}
 									/>
 									<Route
 										path="/ide/"
 										exact
-										component={() => <IDE styles={this.props.classes} />}
+										component={() => (
+											<IDE styles={this.props.classes} />
+										)}
 									/>
 									<Route
 										path="/ide?baseUri=:baseUri"
 										exact
-										component={() => <IDE styles={this.props.classes} />}
+										component={() => (
+											<IDE styles={this.props.classes} />
+										)}
 									/>
 									<Route
 										path="/ide/classes/:classname"
 										exact
-										component={() => <IDE styles={this.props.classes} />}
+										component={() => (
+											<IDE styles={this.props.classes} />
+										)}
 									/>
 									<Route
 										path="/ide/debuggers/:debuggerid"
 										exact
-										component={() => <IDE styles={this.props.classes} />}
+										component={() => (
+											<IDE styles={this.props.classes} />
+										)}
 									/>
 								</Switch>
 							</Router>

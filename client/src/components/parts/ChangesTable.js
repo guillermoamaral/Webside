@@ -3,15 +3,7 @@ import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
 
 class ChangesTable extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			selectedChange: null,
-		};
-	}
-
 	changeSelected = (change) => {
-		this.setState({ selectedChange: change });
 		if (this.props.onSelect) {
 			this.props.onSelect(change);
 		}

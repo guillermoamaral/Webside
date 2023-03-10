@@ -59,6 +59,7 @@ class StChange extends Object {
 		this.timestamp = json.timestamp;
 		this.author = json.author;
 		this.source = json.sourceCode;
+		this.currentSource = json.currentSourceCode;
 	}
 
 	asJson() {
