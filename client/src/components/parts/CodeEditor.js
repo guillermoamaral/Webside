@@ -235,8 +235,8 @@ class CodeEditor extends Component {
 			{ label: "Google it", action: this.searchInGoogle },
 			null,
 			{ label: "Browse class (Ctrl+b)", action: this.browseClass },
-			{ label: "Senders (Alt+n)", action: this.browseSenders },
-			{ label: "Implementors (Alt+m)", action: this.browseImplementors },
+			{ label: "Browse senders (Alt+n)", action: this.browseSenders },
+			{ label: "Browse implementors (Alt+m)", action: this.browseImplementors },
 			{
 				label: "Class references (Alt+r)",
 				action: this.browseClassReferences,

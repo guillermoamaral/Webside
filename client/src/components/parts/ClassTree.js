@@ -106,7 +106,7 @@ class ClassTree extends Component {
 			{ label: "Browse package", action: this.browsePackage },
 			{ label: "References", action: this.browseClassReferences },
 			null,
-			{ label: "Test", action: this.runTests },
+			{ label: "Run tests", action: this.runTests },
 			null,
 			{ label: "Migrate", action: this.migrateClass },
 		];

@@ -23,15 +23,28 @@ class ChangesTable extends Component {
 		}
 	};
 
-	applyChange = (change) => {
+	browseImplementors = (change) => {
+		if (change && change.isMethodChange()) {
+			ide.browseImplementors(change.selector);
+		}
+	};
+
+	applyChange = async (change) => {
 		if (change) {
-			ide.api.postChange(change.asJson());
+			try {
+				await ide.api.postChange(change.asJson());
+				await change.updateCurrentSourceCode();
+				change.color = this.colorFor(change);
+			} catch (error) {
+				this.reportError(error);
+			}
 		}
 	};
 
 	menuOptions() {
 		return [
 			{ label: "Browse class", action: this.browseClass },
+			{ label: "Browse implementors", action: this.browseImplementors },
 			{ label: "Apply", action: this.applyChange },
 		];
 	}
@@ -71,9 +84,14 @@ class ChangesTable extends Component {
 		];
 	}
 
+	colorFor(change) {
+		return change.isUpToDate() ? "green" : "default";
+	}
+
 	render() {
 		const styles = this.props.styles;
 		const rows = this.props.changes;
+		rows.forEach((ch) => (ch.color = this.colorFor(ch)));
 		return (
 			<CustomTable
 				style={{ height: "100%" }}

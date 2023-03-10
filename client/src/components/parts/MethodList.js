@@ -160,19 +160,19 @@ class MethodList extends Component {
 			...[
 				null,
 				{ label: "Browse class", action: this.browseClass },
-				{ label: "Senders", action: this.browseSenders },
-				{ label: "Local senders", action: this.browseLocalSenders },
-				{ label: "Implementors", action: this.browseImplementors },
+				{ label: "Browse senders", action: this.browseSenders },
+				{ label: "Browse local senders", action: this.browseLocalSenders },
+				{ label: "Browse implementors", action: this.browseImplementors },
 				{
-					label: "Local implementors",
+					label: "Browse local implementors",
 					action: this.browseLocalImplementors,
 				},
 				{
-					label: "Class references",
+					label: "Browse class references",
 					action: this.browseClassReferences,
 				},
 				null,
-				{ label: "Test", action: this.runTest },
+				{ label: "Run test", action: this.runTest },
 				null,
 				{ label: "Migrate", action: this.migrateMethod },
 			]

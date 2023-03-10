@@ -79,7 +79,7 @@ class PackageList extends Component {
 			{ label: "Rename", action: this.renamePackage },
 			{ label: "Remove", action: this.removePackage },
 			null,
-			{ label: "Test", action: this.runTests },
+			{ label: "Run tests", action: this.runTests },
 			null,
 			{ label: "Migrate", action: this.migratePackage },
 		];

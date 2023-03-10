@@ -20,7 +20,7 @@ Guille Amaral
 .CodeMirror-selection-highlight-scrollbar {background-color: darkblue}
 
 .CodeMirror-merge-r-chunk {
-  background: rgba(255, 142, 97, 0.2);
+  background: rgba(255, 34, 0, 0.401);
   border: none;
 }
 
@@ -31,7 +31,7 @@ Guille Amaral
 }
 
 .CodeMirror-merge-r-connect {
-  fill: rgba(255, 142, 97, 0.2);
+  fill: rgba(255, 34, 0, 0.401);
   stroke: none;
 }
 

@@ -86,8 +86,12 @@ class StChange extends Object {
 
 	updateCurrentSourceCode() {}
 
-	canBeApplied() {
-		return this.sourceCode() !== this.currentSourceCode();
+	isUpToDate() {
+		return this.sourceCode() == this.currentSourceCode();
+	}
+
+	isMethodChange() {
+		return false;
 	}
 }
 
@@ -124,6 +128,10 @@ class MethodChange extends ClassChange {
 		var json = super.asJson();
 		json.selector = this.selector;
 		return json;
+	}
+
+	isMethodChange() {
+		return true;
 	}
 }
 

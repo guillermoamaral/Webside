@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Grid, Paper, Box, IconButton } from "@material-ui/core";
-//import CodeMerge from "../parts/CodeMerge";
+import CodeMerge from "../parts/CodeMerge";
 import CodeEditor from "../parts/CodeEditor";
 import { ide } from "../IDE";
 import ChangesTable from "../parts/ChangesTable";
@@ -47,6 +47,7 @@ class ChangesBrowser extends Component {
 
 	render() {
 		const styles = this.props.styles;
+		const changes = this.props.changeset.changes;
 		const change = this.state.selectedChange;
 		return (
 			<Grid container spacing={1}>
@@ -61,24 +62,24 @@ class ChangesBrowser extends Component {
 					<Paper variant="outlined" style={{ height: 350 }}>
 						<ChangesTable
 							styles={styles}
-							changes={this.props.changeset.changes}
+							changes={changes}
 							onSelect={this.changeSelected}
 						/>
 					</Paper>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
-					<Grid container spacing={1}>
+					<CodeMerge
+						context={this.evaluationContext()}
+						styles={this.props.styles}
+						leftCode={change ? change.sourceCode() : ""}
+						rightCode={change ? change.currentSourceCode() : ""}
+					/>
+					{/* <Grid container spacing={1}>
 						<Grid item xs={6} md={6} lg={6}>
 							<Paper
 								variant="outlined"
 								style={{ minHeight: 300, height: "100%" }}
 							>
-								{/* <CodeMerge
-							context={this.evaluationContext()}
-							styles={this.props.styles}
-							leftCode={change ? change.sourceCode : ""}
-							rightCode={change ? change.currentSourceCode : ""}
-						/> */}
 								<CodeEditor
 									context={this.evaluationContext()}
 									styles={this.props.styles}
@@ -104,7 +105,7 @@ class ChangesBrowser extends Component {
 								/>
 							</Paper>
 						</Grid>
-					</Grid>
+					</Grid> */}
 				</Grid>
 			</Grid>
 		);

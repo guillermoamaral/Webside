@@ -203,7 +203,7 @@ class TestRunner extends Component {
 	menuOptions() {
 		return [
 			{ label: "Debug", action: this.debugTest, enabled: this.canDebugTest },
-			{ label: "Implementors", action: this.browseImplementors },
+			{ label: "Browse implementors", action: this.browseImplementors },
 			{ label: "Browse class", action: this.browseClass },
 		];
 	}

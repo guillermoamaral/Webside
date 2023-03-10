@@ -48,11 +48,11 @@ class FrameList extends Component {
 	menuOptions() {
 		return [
 			{ label: "Browse class", action: this.browseClass },
-			{ label: "Senders", action: this.browseSenders },
-			{ label: "Local senders", action: this.browseLocalSenders },
-			{ label: "Implementors", action: this.browseImplementors },
-			{ label: "Local implementors", action: this.browseLocalImplementors },
-			{ label: "Class references", action: this.browseClassReferences },
+			{ label: "Browse senders", action: this.browseSenders },
+			{ label: "Browse local senders", action: this.browseLocalSenders },
+			{ label: "Browse implementors", action: this.browseImplementors },
+			{ label: "Browse local implementors", action: this.browseLocalImplementors },
+			{ label: "Browse class references", action: this.browseClassReferences },
 		];
 	}
 

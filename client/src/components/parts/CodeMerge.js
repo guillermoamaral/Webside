@@ -29,45 +29,56 @@ class CodeMerge extends Component {
 	constructor(props) {
 		super(props);
 		this.ref = React.createRef();
+		this.state = {
+			leftCode: "",
+			rightCode: "",
+		};
+	}
+
+	static getDerivedStateFromProps(props, state) {
+		return {
+			leftCode: props.leftCode || "",
+			rightCode: props.rightCode || "",
+		};
 	}
 
 	componentDidMount() {
 		this.ref.current.innerHTML = "";
-		this.editor = CodeMirror.MergeView(
-			this.ref.current,
-			Object.assign(
-				{},
-				{
-					lineNumbers: true,
-					theme: "material",
-					lineSeparator: "\r",
-					value: this.props.leftCode || "no left source",
-					orig: this.props.rightCode || "no right source",
-					mode: "smalltalk-method",
-					highlightDifferences: "highlight",
-					connect: null,
-					indentUnit: 10,
-					revertButtons: false,
-					styleActiveLine: true,
-					lineWrap: true,
-					matchTags: { bothTags: true },
-					smartIndent: true,
-					matchBrackets: true,
-					foldGutter: true,
-					lineWrapping: true,
-					gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-				},
-				this.props.options || {}
-			)
-		);
+		const { leftCode, rightCode } = this.state;
+		this.editor = CodeMirror.MergeView(this.ref.current, {
+			lineNumbers: true,
+			theme: "material",
+			//lineSeparator: "\r",
+			value: leftCode,
+			orig: rightCode,
+			mode: "smalltalk-method",
+			highlightDifferences: "align",
+			//allowEditingOriginals: true,
+			//connect,
+			//collapseIdentical: "align",
+			indentUnit: 10,
+			revertButtons: true,
+			//styleActiveLine: true,
+			lineWrap: true,
+			matchTags: { bothTags: true },
+			smartIndent: true,
+			matchBrackets: true,
+			foldGutter: true,
+			lineWrapping: true,
+			gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+		});
 	}
 
 	render() {
+		const { leftCode, rightCode } = this.state;
 		if (this.editor) {
-			this.editor.editor().setValue(this.props.leftCode);
-			this.editor.rightOriginal().setValue(this.props.rightCode);
+			this.editor.editor().setValue(leftCode);
+			this.editor.rightOriginal().setValue(rightCode);
+			//this.editor.right.forceUpdate();
 		}
-		return <div ref={this.ref} className={this.props.styles.codeMirror}></div>;
+		return (
+			<div ref={this.ref} className={this.props.styles.codeMirror}></div>
+		);
 	}
 }
 
