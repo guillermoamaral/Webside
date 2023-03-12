@@ -75,7 +75,6 @@ class CodeMerge extends Component {
 		if (this.editor) {
 			this.editor.editor().setSize("100%", "100%");
 			this.editor.editor().setValue(leftCode);
-			console.log(this.editor);
 			this.editor.rightOriginal().setSize("100%", "100%");
 			this.editor.rightOriginal().setValue(rightCode);
 			//this.editor.right.forceUpdate();

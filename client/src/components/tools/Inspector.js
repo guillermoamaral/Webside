@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { Grid, Box, Paper, Breadcrumbs, Link } from "@material-ui/core";
+import {
+	Grid,
+	Box,
+	Paper,
+	Breadcrumbs,
+	Link,
+	Typography,
+} from "@material-ui/core";
 import { ide } from "../IDE";
 import ObjectTree from "../parts/ObjectTree";
 import ObjectPresenter from "../parts/ObjectPresenter";
@@ -40,8 +47,8 @@ class Inspector extends Component {
 	}
 
 	updateObject = async (object) => {
-		if (object && object.dummy) {
-			return;
+		if (object && object.self) {
+			return this.updateObject(object.self);
 		}
 		try {
 			const id = this.props.root.id;
@@ -54,8 +61,18 @@ class Inspector extends Component {
 		}
 	};
 
+	selfSlot(object) {
+		return {
+			...object,
+			self: object,
+			slot: "self",
+			slots: [],
+			path: [...object.path, "yourself"],
+		};
+	}
+
 	updateSlots = async (object) => {
-		if (!object || object.dummy) {
+		if (!object) {
 			return;
 		}
 		const id = this.props.root.id;
@@ -69,22 +86,28 @@ class Inspector extends Component {
 			slots = [];
 			ide.reportError(error);
 		}
-		slots = slots.map((retrieved) => {
-			retrieved.path = [...object.path, retrieved.slot];
-			// const dummy = {
-			// 	...retrieved,
-			// 	dummy: true,
-			// 	slot: "self",
-			// 	path: [],
-			// };
-			// retrieved.slots = [dummy];
-			const existing = (object.slots || []).find(
-				(s) => s.slot === retrieved.slot
-			);
-			return existing ? Object.assign(existing, retrieved) : retrieved;
-		});
 		if (slots.length > 0) {
-			object.slots = slots;
+			object.slots = slots.map((s) => {
+				s.path = [...object.path, s.slot];
+				const existing = (object.slots || []).find(
+					(e) => e.slot === s.slot
+				);
+				const slot = existing ? Object.assign(existing, s) : s;
+				if (!slot.slots || slot.slots.length == 0) {
+					s.slots = [this.selfSlot(s)];
+				}
+				return slot;
+			});
+		} else {
+			const self = this.selfSlot(object);
+			const existing = (object.slots || []).find(
+				(e) => e.slot === "self"
+			);
+			if (existing) {
+				Object.assign(existing, self);
+			} else {
+				object.slots = [self];
+			}
 		}
 		this.setState({ objectTree: this.state.objectTree });
 	};
@@ -114,7 +137,14 @@ class Inspector extends Component {
 
 	subpaths(path) {
 		const subpaths = [[]];
-		for (let l = 1; l <= path.length; l++) {
+		if (path.length == 0) {
+			return subpaths;
+		}
+		const length =
+			path[path.length - 1] === "yourself"
+				? path.length - 1
+				: path.length;
+		for (let l = 1; l <= length; l++) {
 			subpaths.push(path.slice(0, l));
 		}
 		return subpaths;
@@ -143,9 +173,13 @@ class Inspector extends Component {
 						<Breadcrumbs>
 							{subpaths.map((subpath) => {
 								const label =
-									subpath.length === 0 ? "self" : subpath[subpath.length - 1];
+									subpath.length === 0
+										? "self"
+										: subpath[subpath.length - 1];
 								const color =
-									label === path[path.length - 1] ? "primary" : "inherit";
+									label === path[path.length - 1]
+										? "primary"
+										: "inherit";
 								return (
 									<Link
 										style={{
@@ -175,6 +209,13 @@ class Inspector extends Component {
 								>
 									{"(" + selectedObject.class + ")"}
 								</Link>
+							)}
+						</Box>
+						<Box pl={1}>
+							{selectedObject && selectedObject.indexable && (
+								<Typography>
+									{"[" + selectedObject.size + " elements]"}
+								</Typography>
 							)}
 						</Box>
 					</Box>

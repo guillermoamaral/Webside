@@ -433,23 +433,25 @@ class ResourceBrowser extends Component {
 				</Grid>
 				<Grid item xs={10} md={10} lg={10}>
 					<Grid container spacing={1}>
-						<Grid item xs={11} md={11} lg={11}>
+						<Grid item xs={12} md={12} lg={12}>
 							<Typography variant="h6" align="center">
 								{selectedType}
 							</Typography>
 						</Grid>
+						<Grid item xs={10} md={10} lg={10}></Grid>
 						<Grid item xs={1} md={1} lg={1}>
 							{selectedType === "Objects" &&
 								resources &&
 								resources.length > 0 && (
-									<Button
-										variant="text"
-										startIcon={<DeleteIcon />}
-										onClick={this.unpinAllObjects}
+									<IconButton
+										color="inherit"
+										onClick={() => this.unpinAllObjects()}
 									>
-										Unpin All
-									</Button>
+										<DeleteIcon fontSize="small" />
+									</IconButton>
 								)}
+						</Grid>
+						<Grid item xs={1} md={1} lg={1}>
 							<IconButton
 								color="inherit"
 								onClick={() => this.typeSelected(selectedType)}

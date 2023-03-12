@@ -294,7 +294,6 @@ class IDE extends Component {
 		var index = pages.indexOf(page);
 		if (index >= 0) {
 			index = index + offset;
-			console.log(index);
 			if (index < 0) {
 				index = pages.length;
 			} else if (index >= pages.length) {
@@ -809,7 +808,6 @@ class IDE extends Component {
 					try {
 						const changes = await this.api.uploadChangeset(ch);
 						const changeset = Changeset.fromJson(changes);
-						console.log(changeset);
 						changeset.on(this.api);
 						this.browseChanges(changeset);
 					} catch (error) {

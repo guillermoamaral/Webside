@@ -67,13 +67,13 @@ class Workspace extends Component {
 				true,
 				{ workspace: this.props.id }
 			);
-			console.log(object);
 			if (this.state.opensInspector) {
 				this.setState({ evaluating: false });
 				this.openInspector(object);
 			} else {
 				this.setState({
-					expression: this.state.expression + " -> " + object.printString,
+					expression:
+						this.state.expression + " -> " + object.printString,
 					evaluating: false,
 				});
 			}
@@ -126,7 +126,10 @@ class Workspace extends Component {
 									<Box>
 										<IconButton
 											onClick={(event) => {
-												this.closeInspector(event, inspector.key);
+												this.closeInspector(
+													event,
+													inspector.key
+												);
 											}}
 											size="small"
 										>
@@ -138,7 +141,8 @@ class Workspace extends Component {
 									</Box>
 									<Box>
 										<Typography>
-											{"Inspecting: " + inspector.props.root.class}
+											{"Inspecting: " +
+												inspector.props.root.class}
 										</Typography>
 									</Box>
 								</AccordionSummary>

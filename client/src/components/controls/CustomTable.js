@@ -10,6 +10,7 @@ import {
 	IconButton,
 	TablePagination,
 	TableSortLabel,
+	Link,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import PopupMenu from "./PopupMenu";
@@ -79,8 +80,21 @@ class CustomTable extends Component {
 
 	getCellValue = (row, column) => {
 		const field = column.field;
-		const value = typeof field == "string" ? row[field] : field(row);
-		return column.formatter ? column.formatter(value) : value;
+		var value = typeof field == "string" ? row[field] : field(row);
+		value = column.formatter ? column.formatter(value) : value;
+		if (!column.link) {
+			return value;
+		}
+		const color = this.getCellColor(row, column);
+		return (
+			<Link
+				href="#"
+				onClick={() => column.link(row)}
+				style={{ color: color }}
+			>
+				{value}
+			</Link>
+		);
 	};
 
 	getCellColor = (row, column) => {

@@ -88,6 +88,9 @@ class BindingTable extends PureComponent {
 				field: "name",
 				label: "Name",
 				align: "left",
+				link: (b) => {
+					this.inspectBinding(b);
+				},
 				color: (b) => {
 					return this.bindingColor(b);
 				},

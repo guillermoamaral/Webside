@@ -63,7 +63,9 @@ class CustomTree extends Component {
 					onIconClick={(event) => this.itemToggled(event, item)}
 					onContextMenu={this.openMenu}
 				>
-					{Array.isArray(children) ? this.createItems(children) : null}
+					{Array.isArray(children)
+						? this.createItems(children)
+						: null}
 				</TreeItem>
 			);
 		});
