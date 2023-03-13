@@ -236,13 +236,22 @@ class CodeEditor extends Component {
 			null,
 			{ label: "Browse class (Ctrl+b)", action: this.browseClass },
 			{ label: "Browse senders (Alt+n)", action: this.browseSenders },
-			{ label: "Browse implementors (Alt+m)", action: this.browseImplementors },
 			{
-				label: "Class references (Alt+r)",
+				label: "Browse implementors (Alt+m)",
+				action: this.browseImplementors,
+			},
+			{
+				label: "Browse class references (Alt+r)",
 				action: this.browseClassReferences,
 			},
-			{ label: "Methods matching", action: this.browseMethodsMatching },
-			{ label: "String references", action: this.browseStringReferences },
+			{
+				label: "Search methods matching",
+				action: this.browseMethodsMatching,
+			},
+			{
+				label: "Search string references",
+				action: this.browseStringReferences,
+			},
 		];
 	}
 

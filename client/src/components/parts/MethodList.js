@@ -138,6 +138,10 @@ class MethodList extends Component {
 		return options;
 	}
 
+	isTest(method) {
+		return method && method.selector.startsWith("test");
+	}
+
 	menuOptions = () => {
 		const options = [];
 		if (this.props.showNewOption) {
@@ -161,8 +165,14 @@ class MethodList extends Component {
 				null,
 				{ label: "Browse class", action: this.browseClass },
 				{ label: "Browse senders", action: this.browseSenders },
-				{ label: "Browse local senders", action: this.browseLocalSenders },
-				{ label: "Browse implementors", action: this.browseImplementors },
+				{
+					label: "Browse local senders",
+					action: this.browseLocalSenders,
+				},
+				{
+					label: "Browse implementors",
+					action: this.browseImplementors,
+				},
 				{
 					label: "Browse local implementors",
 					action: this.browseLocalImplementors,
@@ -172,7 +182,11 @@ class MethodList extends Component {
 					action: this.browseClassReferences,
 				},
 				null,
-				{ label: "Run test", action: this.runTest },
+				{
+					label: "Run test",
+					action: this.runTest,
+					enabled: this.isTest,
+				},
 				null,
 				{ label: "Migrate", action: this.migrateMethod },
 			]
