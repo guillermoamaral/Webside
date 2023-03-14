@@ -130,9 +130,10 @@ class BindingTable extends PureComponent {
 				justifyContent="center"
 				style={{ height: "100%" }}
 			>
-				<Box pb={1} height={"100%"}>
+				<Box pb={1} height={"80%"}>
 					<Paper variant="outlined" style={{ height: "100%" }}>
 						<CustomTable
+							noHeaders
 							styles={styles}
 							columns={this.bindingColumns()}
 							rows={bindings}
@@ -141,7 +142,7 @@ class BindingTable extends PureComponent {
 						/>
 					</Paper>
 				</Box>
-				<Box height={"100%"}>
+				<Box height={"20%"}>
 					<Paper variant="outlined" style={{ height: "100%" }}>
 						<CodeEditor
 							styles={styles}
