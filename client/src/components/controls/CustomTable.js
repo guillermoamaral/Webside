@@ -78,21 +78,28 @@ class CustomTable extends Component {
 		return true;
 	};
 
-	getCellValue = (row, column) => {
+	getCellText = (row, column) => {
 		const field = column.field;
-		var value = typeof field == "string" ? row[field] : field(row);
-		value = column.formatter ? column.formatter(value) : value;
+		var text = typeof field == "string" ? row[field] : field(row);
+		text = column.formatter ? column.formatter(text) : text;
+		return text;
+	};
+
+	getCellValue = (row, column) => {
+		const text = this.getCellText(row, column);
 		if (!column.link) {
-			return value;
+			return text;
 		}
 		const color = this.getCellColor(row, column);
+		console.log(this.props);
 		return (
 			<Link
 				href="#"
 				onClick={() => column.link(row)}
+				color="textPrimary"
 				style={{ color: color }}
 			>
-				{value}
+				{text}
 			</Link>
 		);
 	};
@@ -203,8 +210,8 @@ class CustomTable extends Component {
 	}
 
 	sortComparator(a, b, column, direction) {
-		const av = this.getCellValue(a, column);
-		const bv = this.getCellValue(b, column);
+		const av = this.getCellText(a, column);
+		const bv = this.getCellText(b, column);
 		if (av < bv) {
 			return direction === "asc" ? 1 : -1;
 		}
@@ -244,7 +251,6 @@ class CustomTable extends Component {
 		const columns = this.columns();
 		const rows = this.props.rows;
 		const border = this.props.hideRowBorder ? "none" : "";
-		//To force a diff
 		return (
 			<Box
 				p={1}

@@ -151,7 +151,6 @@ class MethodBrowser extends Component {
 							methods={methods}
 							onSelect={this.methodSelected}
 							onRemove={this.methodRemoved}
-							showClass
 						/>
 					</Paper>
 				</Grid>

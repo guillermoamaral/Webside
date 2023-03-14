@@ -81,6 +81,12 @@ class MethodList extends Component {
 		}
 	};
 
+	browsePackage = (method) => {
+		if (method) {
+			ide.browsePackage(method.package);
+		}
+	};
+
 	browseSenders = (method) => {
 		if (method) {
 			ide.browseSenders(method.selector);
@@ -181,6 +187,10 @@ class MethodList extends Component {
 					label: "Browse class references",
 					action: this.browseClassReferences,
 				},
+				{
+					label: "Browse package",
+					action: this.browsePackage,
+				},
 				null,
 				{
 					label: "Run test",
@@ -231,12 +241,18 @@ class MethodList extends Component {
 			{
 				field: "methodClass",
 				label: "Class",
+				link: (m) => {
+					this.browseClass(m);
+				},
 				align: "left",
 				minWidth: 300,
 			},
 			{
 				field: "selector",
 				label: "Selector",
+				link: (m) => {
+					this.browseImplementors(m);
+				},
 				align: "left",
 				minWidth: 300,
 			},
@@ -249,6 +265,9 @@ class MethodList extends Component {
 			{
 				field: "package",
 				label: "Package",
+				link: (m) => {
+					this.browsePackage(m);
+				},
 				align: "left",
 				minWidth: 300,
 			},
