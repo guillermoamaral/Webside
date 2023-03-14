@@ -809,7 +809,7 @@ class IDE extends Component {
 						const changes = await this.api.uploadChangeset(ch);
 						const changeset = Changeset.fromJson(changes);
 						changeset.on(this.api);
-						this.browseChanges(changeset);
+						this.browseChanges(changeset, file.name);
 					} catch (error) {
 						this.reportError(error);
 					}

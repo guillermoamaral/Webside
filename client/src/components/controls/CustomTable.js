@@ -91,7 +91,6 @@ class CustomTable extends Component {
 			return text;
 		}
 		const color = this.getCellColor(row, column);
-		console.log(this.props);
 		return (
 			<Link
 				href="#"
