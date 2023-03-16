@@ -966,6 +966,17 @@ class IDE extends Component {
 	render() {
 		console.log("rendering IDE");
 		const styles = this.props.styles;
+		const {
+			sidebarExpanded,
+			unreadErrorsCount,
+			unreadMessages,
+			selectedPage,
+			pages,
+			addPageMenuOpen,
+			transcriptOpen,
+			transcriptText,
+			lastError,
+		} = this.state;
 		return (
 			<Hotkeys
 				keyName="ctrl+b, ctrl+alt+w, ctrl+alt+left, ctrl+alt+right"
@@ -982,16 +993,16 @@ class IDE extends Component {
 								developer={this.developer}
 								dialect={this.dialect}
 								styles={styles}
-								sidebarExpanded={this.state.sidebarExpanded}
+								sidebarExpanded={sidebarExpanded}
 								expandSidebar={this.expandSidebar}
 								searchOptions={[]}
 								onAvatarClicked={this.openSettings}
 							/>
 							<Sidebar
 								styles={styles}
-								expanded={this.state.sidebarExpanded}
-								unreadErrorsCount={this.state.unreadErrorsCount}
-								unreadMessages={this.state.unreadMessages}
+								expanded={sidebarExpanded}
+								unreadErrorsCount={unreadErrorsCount}
+								unreadMessages={unreadMessages}
 								onSaveImageClicked={this.saveImage}
 								onTranscriptClicked={this.openTranscript}
 								onSearchClicked={this.openSearch}
@@ -1012,10 +1023,8 @@ class IDE extends Component {
 											<TabControl
 												style={{ height: "100%" }}
 												styles={styles}
-												selectedPage={
-													this.state.selectedPage
-												}
-												pages={this.state.pages}
+												selectedPage={selectedPage}
+												pages={pages}
 												onSelect={this.selectPage}
 												onClose={this.removePage}
 											/>
@@ -1040,9 +1049,7 @@ class IDE extends Component {
 													"addPageButton"
 												)}
 												keepMounted
-												open={
-													this.state.addPageMenuOpen
-												}
+												open={addPageMenuOpen}
 												onClose={() => {
 													this.setState({
 														addPageMenuOpen: false,
@@ -1130,7 +1137,7 @@ class IDE extends Component {
 											<Drawer
 												anchor="bottom"
 												variant="persistent"
-												open={this.state.transcriptOpen}
+												open={transcriptOpen}
 											>
 												<Grid container spacing={0}>
 													<Grid
@@ -1139,13 +1146,11 @@ class IDE extends Component {
 														md={11}
 														lg={11}
 													>
-														{this.state
-															.transcriptOpen && (
+														{transcriptOpen && (
 															<Transcript
 																styles={styles}
 																text={
-																	this.state
-																		.transcriptText
+																	transcriptText
 																}
 																onChange={
 																	this
@@ -1185,9 +1190,9 @@ class IDE extends Component {
 							</main>
 						</div>
 						<CustomSnacks
-							open={this.state.lastError !== null}
+							open={lastError !== null}
 							onClose={() => this.setState({ lastError: null })}
-							text={this.state.lastError}
+							text={lastError}
 							severity="error"
 						/>
 					</DialogProvider>

@@ -20,51 +20,61 @@ class TabControl extends PureComponent {
 	};
 
 	render() {
-		const { pages, selectedPage } = this.props;
+		const { pages, selectedPage, noClose } = this.props;
 		const selectedIndex = pages.indexOf(selectedPage);
 		const styles = this.props.styles;
 		return (
-			<Box flexGrow={1} width="100%" height="100%">
-				<Tabs
-					value={Math.max(selectedIndex, 0)}
-					onChange={this.tabChanged}
-					indicatorColor="primary"
-					textColor="primary"
-					variant="scrollable"
-					scrollButtons="auto"
-				>
+			<Box
+				display="flex"
+				flexDirection="column"
+				width="100%"
+				height="100%"
+			>
+				<Box pt={0}>
+					<Tabs
+						value={Math.max(selectedIndex, 0)}
+						onChange={this.tabChanged}
+						indicatorColor="primary"
+						textColor="primary"
+						variant="scrollable"
+						scrollButtons="auto"
+					>
+						{pages.map((page, index) => {
+							return (
+								<Tab
+									component="div"
+									key={index.toString()}
+									label={
+										<TabLabel
+											index={index}
+											icon={page.icon}
+											label={page.label}
+											onClose={this.closeTab}
+											noClose={noClose}
+										/>
+									}
+									id={`tab-${index}`}
+								/>
+							);
+						})}
+					</Tabs>
+				</Box>
+				<Box pb={0} flexGrow={1}>
 					{pages.map((page, index) => {
 						return (
-							<Tab
-								component="div"
+							<TabPanel
+								id={`tabpanel-${index}`}
+								style={{ height: "100%" }}
 								key={index.toString()}
-								label={
-									<TabLabel
-										index={index}
-										icon={page.icon}
-										label={page.label}
-										onClose={this.closeTab}
-									/>
-								}
-								id={`tab-${index}`}
-							/>
+								index={index}
+								styles={styles}
+								visible={page === selectedPage}
+							>
+								{page.component}
+							</TabPanel>
 						);
 					})}
-				</Tabs>
-				{pages.map((page, index) => {
-					return (
-						<TabPanel
-							id={`tabpanel-${index}`}
-							style={{ height: "100%" }}
-							key={index.toString()}
-							index={index}
-							styles={styles}
-							visible={page === selectedPage}
-						>
-							{page.component}
-						</TabPanel>
-					);
-				})}
+				</Box>
 			</Box>
 		);
 	}

@@ -137,7 +137,6 @@ class CodeMerge extends Component {
 					style={{ height: "100%" }}
 					className={this.props.styles.codeMirror}
 					onContextMenu={(event) => {
-						console.log(event.target);
 						this.openMenu(event);
 					}}
 				></div>
