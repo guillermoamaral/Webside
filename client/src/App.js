@@ -73,7 +73,7 @@ class App extends Component {
 										)}
 									/>
 									<Route
-										path="/ide/debuggers/:debuggerid"
+										path="/ide/debuggers/:debugger"
 										exact
 										component={() => (
 											<IDE styles={this.props.classes} />

@@ -81,14 +81,13 @@ class IDE extends Component {
 	}
 
 	componentDidMount() {
-		//this.openTranscript();
-		const classname = this.props.match.params.classname;
-		if (classname) {
-			this.openClassBrowser(classname);
+		this.openTranscript();
+		const options = this.queryOptions();
+		if (options.classname) {
+			this.openClassBrowser(options.classname);
 		}
-		const id = this.props.match.params.debuggerid;
-		if (id) {
-			this.openDebugger(id);
+		if (options.debugger) {
+			this.openDebugger(options.debugger);
 		}
 		//this.openNativeDebugger('{B3AE5087-3EBC-43E2-B4A5-95DD37D802FE}')
 	}
