@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import FastCustomList from "../controls/FastCustomList";
+import CustomList from "../controls/CustomList";
 import { ide } from "../IDE";
 
 class FrameList extends Component {
@@ -28,14 +28,17 @@ class FrameList extends Component {
 	};
 
 	browseImplementors = (frame) => {
-		if (frame) {
+		if (frame && frame.method && frame.method.selector) {
 			ide.browseImplementors(frame.method.selector);
 		}
 	};
 
 	browseLocalImplementors = (frame) => {
 		if (frame) {
-			ide.browseLocalImplementors(frame.method.selector, frame.class.name);
+			ide.browseLocalImplementors(
+				frame.method.selector,
+				frame.class.name
+			);
 		}
 	};
 
@@ -51,15 +54,22 @@ class FrameList extends Component {
 			{ label: "Browse senders", action: this.browseSenders },
 			{ label: "Browse local senders", action: this.browseLocalSenders },
 			{ label: "Browse implementors", action: this.browseImplementors },
-			{ label: "Browse local implementors", action: this.browseLocalImplementors },
-			{ label: "Browse class references", action: this.browseClassReferences },
+			{
+				label: "Browse local implementors",
+				action: this.browseLocalImplementors,
+			},
+			{
+				label: "Browse class references",
+				action: this.browseClassReferences,
+			},
 		];
 	}
 
 	render() {
 		return (
-			<FastCustomList
+			<CustomList
 				itemLabel="label"
+				itemLink={this.browseImplementors}
 				items={this.props.frames}
 				selectedItem={this.props.selected}
 				onSelect={this.frameSelected}

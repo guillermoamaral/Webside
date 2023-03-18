@@ -1,15 +1,65 @@
 import React, { Component } from "react";
 import {
-	List,
 	ListItem,
 	ListItemText,
 	ListItemIcon,
 	Box,
 	TextField,
 	Typography,
+	Link,
 } from "@material-ui/core";
+import { FixedSizeList as List } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
 import PopupMenu from "./PopupMenu";
-import Scrollable from "./Scrollable";
+import RSC from "react-scrollbars-custom";
+
+const ITEM_SIZE = 30;
+
+const CustomScrollbars = ({
+	children,
+	forwardedRef,
+	onScroll,
+	style,
+	className,
+}) => {
+	return (
+		<RSC
+			className={className}
+			style={style}
+			scrollerProps={{
+				renderer: (props) => {
+					const {
+						elementRef,
+						onScroll: rscOnScroll,
+						...restProps
+					} = props;
+					return (
+						<span
+							{...restProps}
+							onScroll={(e) => {
+								onScroll(e);
+								rscOnScroll(e);
+							}}
+							ref={(ref) => {
+								forwardedRef(ref);
+								elementRef(ref);
+							}}
+						/>
+					);
+				},
+			}}
+		>
+			{children}
+		</RSC>
+	);
+};
+
+const CustomScrollbarsVirtualList = React.forwardRef((props, ref) => (
+	<CustomScrollbars {...props} forwardedRef={ref} />
+));
+
+const listRef = React.createRef();
+const outerRef = React.createRef();
 
 class CustomList extends Component {
 	constructor(props) {
@@ -17,9 +67,24 @@ class CustomList extends Component {
 		this.state = {
 			menuOpen: false,
 			menuPosition: { x: null, y: null },
+			items: this.props.items,
 			filterEnabled: false,
 			filterText: "",
+			filteredItems: this.props.items,
 		};
+	}
+
+	static getDerivedStateFromProps(props, state) {
+		if (state.items !== props.items) {
+			return {
+				menuOpen: false,
+				items: props.items,
+				filterEnabled: false,
+				filterText: "",
+				filteredItems: props.items,
+			};
+		}
+		return null;
 	}
 
 	itemDoubleClicked = (item) => {
@@ -54,6 +119,35 @@ class CustomList extends Component {
 			return item[getter];
 		}
 		return getter(item);
+	};
+
+	getItemColor = (item) => {
+		const color = item.color;
+		if (typeof color == "function") {
+			return color(item);
+		}
+		if (typeof color == "string") {
+			return color;
+		}
+		return item.color ? item.color : "default";
+	};
+
+	getItemValue = (item) => {
+		const label = this.getItemLabel(item);
+		if (!this.props.itemLink) {
+			return label;
+		}
+		const color = this.getItemColor(item);
+		return (
+			<Link
+				href="#"
+				onClick={() => this.props.itemLink(item)}
+				color="textPrimary"
+				style={{ color: color }}
+			>
+				{label}
+			</Link>
+		);
 	};
 
 	getItemIcon = (item) => {
@@ -128,7 +222,7 @@ class CustomList extends Component {
 	};
 
 	moveUp = () => {
-		const items = this.props.items;
+		const items = this.state.filteredItems;
 		const index = items.indexOf(this.props.selectedItem);
 		if (index > 0) {
 			this.itemSelected(items[index - 1]);
@@ -136,7 +230,7 @@ class CustomList extends Component {
 	};
 
 	moveDown = () => {
-		const items = this.props.items;
+		const items = this.state.filteredItems;
 		const index = items.indexOf(this.props.selectedItem);
 		if (index < items.length - 1) {
 			this.itemSelected(items[index + 1]);
@@ -144,7 +238,11 @@ class CustomList extends Component {
 	};
 
 	clearFilter() {
-		this.setState({ filterEnabled: false, filterText: "" });
+		this.setState({
+			filterEnabled: false,
+			filterText: "",
+			filteredItems: this.state.items,
+		});
 	}
 
 	keyDown = (event) => {
@@ -162,107 +260,163 @@ class CustomList extends Component {
 			this.clearFilter();
 		}
 		if (key.length === 1 && /[a-zA-Z0-9-_ ]/.test(key)) {
-			this.setState({ filterEnabled: true, filterText: key });
+			this.filterItems(key);
 		} else {
 			return true;
 		}
 	};
 
-	render() {
-		const filterText = this.state.filterText;
-		const prefix = filterText.toLowerCase();
-		const items = (this.props.items || []).filter((i) => {
-			const label = this.getItemLabel(i);
-			return label && label.toLowerCase().startsWith(prefix);
+	filterItems(text) {
+		const enabled = text !== "";
+		const all = this.props.items;
+		const target = text.toLowerCase();
+		const filtered = enabled
+			? all.filter((i) => {
+					return this.getItemLabel(i).toLowerCase().includes(target);
+			  })
+			: all;
+		this.setState({
+			filterEnabled: enabled,
+			filterText: text,
+			filteredItems: filtered,
 		});
+	}
+
+	renderItem = ({ index, style }) => {
+		const item = this.state.filteredItems[index];
+		const value = this.getItemValue(item);
+		const icon = this.getItemIcon(item);
+		const divider = this.getItemDivider(item);
+		const fontStyle = this.getItemStyle(item);
+		const alignment = this.getItemAlignment(item);
+		const size = this.getItemSize(item);
+		const selected = this.props.selectedItem === item;
+		const weight = selected ? "fontWeightBold" : "fontWeightRegular";
 		return (
-			<Scrollable>
-				{this.state.filterEnabled && (
-					<TextField
-						id="filter"
-						variant="standard"
-						size="small"
-						type="text"
-						placeholder="Enter text to filter items"
-						margin="dense"
-						fullWidth
-						autoFocus
-						name="filter"
-						value={this.state.filterText}
-						onKeyDown={(event) => {
-							if (event.key === "Escape") {
-								this.clearFilter();
-							}
-						}}
-						onChange={(event) =>
-							this.setState({
-								filterEnabled: event.target.value !== "",
-								filterText: event.target.value,
-							})
+			<div style={style}>
+				<ListItem
+					disableGutters={divider}
+					//autoFocus={selected}
+					style={{
+						paddingTop: 0,
+						paddingBottom: 0,
+						paddingLeft: 0,
+						paddingRight: 0,
+					}}
+					button
+					divider={divider}
+					key={"item" + index}
+					selected={selected}
+					onClick={(event) => this.itemSelected(item)}
+					onDoubleClick={(event) => this.itemDoubleClicked(item)}
+					onContextMenu={this.openMenu}
+					onKeyDown={this.keyDown}
+				>
+					<Box p={0} style={{ minWidth: 10 }}>
+						<ListItemIcon style={{ minWidth: 0 }}>
+							{icon}
+						</ListItemIcon>
+					</Box>
+					<ListItemText
+						primary={
+							<Typography noWrap component="div">
+								<Box
+									fontWeight={weight}
+									fontStyle={fontStyle}
+									fontSize={size}
+									align={alignment}
+								>
+									{value}
+								</Box>
+							</Typography>
 						}
 					/>
-				)}
-				<List
-					onKeyDown={this.keyDown}
-					style={{ paddingTop: 0, paddingBottom: 0 }}
-				>
-					{items.map((item, index) => {
-						const label = this.getItemLabel(item);
-						const icon = this.getItemIcon(item);
-						const divider = this.getItemDivider(item);
-						const style = this.getItemStyle(item);
-						const alignment = this.getItemAlignment(item);
-						const size = this.getItemSize(item);
-						const selected = this.props.selectedItem === item;
-						const weight = selected ? "fontWeightBold" : "fontWeightRegular";
-						return (
-							<ListItem
-								disableGutters={divider}
-								//autoFocus={selected}
-								style={{
-									paddingTop: 0,
-									paddingBottom: 0,
-									paddingLeft: 0,
-									paddingRight: 0,
-								}}
-								button
-								divider={divider}
-								key={"item" + index}
-								selected={selected}
-								onClick={(event) => this.itemSelected(item)}
-								onDoubleClick={(event) => this.itemDoubleClicked(item)}
-								onContextMenu={this.openMenu}
-							>
-								<Box p={0} style={{ minWidth: 10 }}>
-									<ListItemIcon style={{ minWidth: 0 }}>{icon}</ListItemIcon>
-								</Box>
-								<ListItemText
-									primary={
-										<Typography component="div">
-											<Box
-												fontWeight={weight}
-												fontStyle={style}
-												fontSize={size}
-												align={alignment}
-											>
-												{label}
-											</Box>
-										</Typography>
+				</ListItem>
+			</div>
+		);
+	};
+
+	render() {
+		const {
+			filterEnabled,
+			filterText,
+			filteredItems,
+			menuOpen,
+			menuPosition,
+		} = this.state;
+		const count = filteredItems ? filteredItems.length : 0;
+		const enableFilter =
+			typeof this.props.enableFilter == "boolean"
+				? this.props.enableFilter
+				: true;
+		const showFilter = enableFilter && filterEnabled;
+		return (
+			<Box style={{ height: showFilter ? "90%" : "100%" }}>
+				<Box style={{ height: showFilter ? "90%" : "100%" }}>
+					<AutoSizer>
+						{({ height, width }) => (
+							<List
+								ref={listRef}
+								height={height}
+								width={width}
+								itemSize={ITEM_SIZE}
+								itemCount={count}
+								overscanCount={5}
+								onKeyDown={this.keyDown}
+								style={{ paddingTop: 0, paddingBottom: 0 }}
+								outerElementType={CustomScrollbarsVirtualList}
+								outerRef={outerRef}
+								onScroll={({
+									scrollOffset,
+									scrollUpdateWasRequested,
+								}) => {
+									if (scrollUpdateWasRequested) {
+										console.log(
+											"TODO: check scroll position",
+											scrollOffset,
+											outerRef.current.scrollHeight
+										);
 									}
-								/>
-							</ListItem>
-						);
-					})}
-				</List>
+								}}
+							>
+								{this.renderItem}
+							</List>
+						)}
+					</AutoSizer>
+				</Box>
+				{showFilter && (
+					<Box style={{ height: "10%" }}>
+						<TextField
+							id="filter"
+							variant="standard"
+							size="small"
+							type="text"
+							placeholder="Filter..."
+							margin="dense"
+							fullWidth
+							autoFocus
+							name="filter"
+							value={filterText}
+							onKeyDown={(event) => {
+								if (event.key === "Escape") {
+									this.clearFilter();
+								}
+							}}
+							onChange={(event) =>
+								this.filterItems(event.target.value)
+							}
+						/>
+					</Box>
+				)}
 				<PopupMenu
 					options={this.props.menuOptions}
-					open={this.state.menuOpen}
-					position={this.state.menuPosition}
+					open={menuOpen}
+					position={menuPosition}
 					onOptionClick={this.menuOptionClicked}
 					onOptionEnable={this.getMenuOptionEnabled}
 					onClose={this.closeMenu}
 				/>
-			</Scrollable>
+			</Box>
 		);
 	}
 }

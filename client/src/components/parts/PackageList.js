@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import FastCustomList from "../controls/FastCustomList";
+import CustomList from "../controls/CustomList";
 import { ide } from "../IDE";
 import { withDialog } from "../dialogs/index";
 
@@ -87,7 +87,7 @@ class PackageList extends Component {
 
 	render() {
 		return (
-			<FastCustomList
+			<CustomList
 				enableFilter={false}
 				items={this.props.packages}
 				itemLabel="name"

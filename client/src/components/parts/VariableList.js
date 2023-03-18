@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import FastCustomList from "../controls/FastCustomList";
+import CustomList from "../controls/CustomList";
 import { ide } from "../IDE";
 import { withDialog } from "../dialogs/index";
 
@@ -159,7 +159,7 @@ class VariableList extends Component {
 	render() {
 		const variables = this.extendedVariables(this.props.variables);
 		return (
-			<FastCustomList
+			<CustomList
 				itemLabel="name"
 				itemDivider={(item) => item.type === "separator"}
 				labelStyle={(item) => (item.type === "separator" ? "italic" : "normal")}

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import OverridenIcon from "@material-ui/icons/ExpandMore";
 import OverridingIcon from "@material-ui/icons/ExpandLess";
 import OverridingOverridenIcon from "@material-ui/icons/UnfoldMore";
-import FastCustomList from "../controls/FastCustomList";
+import CustomList from "../controls/CustomList";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
 import { withDialog } from "../dialogs/index";
@@ -307,7 +307,7 @@ class MethodList extends Component {
 			);
 		} else {
 			return (
-				<FastCustomList
+				<CustomList
 					items={methods}
 					itemLabel={this.methodLabel}
 					itemStyle={this.props.labelStyle}

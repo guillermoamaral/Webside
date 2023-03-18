@@ -73,7 +73,10 @@ class Chat extends Component {
 				<Grid item xs={8} md={8} lg={8}>
 					<Grid container spacing={1}>
 						<Grid item xs={12} md={12} lg={12}>
-							<Paper className={fixedHeightPaper} variant="outlined">
+							<Paper
+								className={fixedHeightPaper}
+								variant="outlined"
+							>
 								<CustomList
 									itemLabel={(m) =>
 										m.from.username +

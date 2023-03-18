@@ -133,13 +133,6 @@ class ResourceBrowser extends Component {
 		}
 	};
 
-	objectOptions() {
-		return [
-			{ label: "Inspect", action: this.openInspector },
-			{ label: "Unpin", action: this.unpinObject },
-		];
-	}
-
 	cancelEvaluation = async (evaluation) => {
 		try {
 			await ide.api.cancelEvaluation(evaluation.id);
@@ -152,10 +145,6 @@ class ResourceBrowser extends Component {
 			ide.reportError(error);
 		}
 	};
-
-	evaluationOptions() {
-		return [{ label: "Stop", action: this.cancelEvaluation }];
-	}
 
 	openWorkspace = (workspace) => {
 		if (workspace) {
@@ -178,13 +167,6 @@ class ResourceBrowser extends Component {
 			}
 		}
 	};
-
-	workspaceOptions() {
-		return [
-			{ label: "Open", action: this.openWorkspace },
-			{ label: "Delete", action: this.deleteWorkspace },
-		];
-	}
 
 	openDebugger = (d) => {
 		if (d) {
@@ -214,6 +196,24 @@ class ResourceBrowser extends Component {
 		}
 	};
 
+	debuggerColumns() {
+		return [
+			{
+				field: "id",
+				link: this.openDebugger,
+				label: "ID",
+				align: "left",
+			},
+			{
+				field: "description",
+				label: "Description",
+				align: "left",
+				minWidth: 200,
+			},
+			{ field: "creator", label: "Creator", align: "center" },
+		];
+	}
+
 	debuggerOptions() {
 		return [
 			{ label: "Open", action: this.openDebugger },
@@ -221,8 +221,160 @@ class ResourceBrowser extends Component {
 		];
 	}
 
+	debuggerActions() {
+		return [
+			{
+				label: "Terminate",
+				icon: <StopIcon fontSize="small" />,
+				handler: this.terminateDebugger,
+			},
+		];
+	}
+
+	objectColumns() {
+		return [
+			{
+				field: "id",
+				link: this.openInspector,
+				label: "ID",
+				align: "left",
+			},
+			{ field: "class", label: "Class", align: "left", minWidth: 200 },
+			{
+				field: "printString",
+				label: "Print String",
+				minWidth: 200,
+				align: "left",
+			},
+		];
+	}
+
+	objectOptions() {
+		return [
+			{ label: "Inspect", action: this.openInspector },
+			{ label: "Unpin", action: this.unpinObject },
+		];
+	}
+
+	objectActions() {
+		return [
+			{
+				label: "Inspect",
+				icon: <InspectorIcon fontSize="small" />,
+				handler: this.openInspector,
+			},
+			{
+				label: "Unpin",
+				icon: <DeleteIcon fontSize="small" />,
+				handler: this.unpinObject,
+			},
+		];
+	}
+
+	evaluationColumns() {
+		return [
+			{ field: "id", label: "ID", align: "left" },
+			{
+				field: "expression",
+				label: "Expression",
+				align: "left",
+				minWidth: 200,
+			},
+			{
+				field: "state",
+				label: "State",
+				minWidth: 200,
+				align: "left",
+			},
+		];
+	}
+
+	evaluationOptions() {
+		return [{ label: "Stop", action: this.cancelEvaluation }];
+	}
+
+	evaluationActions() {
+		return [
+			{
+				label: "Stop",
+				icon: <StopIcon fontSize="small" />,
+				handler: this.cancelEvaluation,
+			},
+		];
+	}
+
+	workspaceColumns() {
+		return [
+			{
+				field: "id",
+				link: this.openWorkspace,
+				label: "ID",
+				align: "left",
+			},
+			{ field: "owner", label: "Owner", align: "center" },
+		];
+	}
+
+	workspaceOptions() {
+		return [
+			{ label: "Open", action: this.openWorkspace },
+			{ label: "Delete", action: this.deleteWorkspace },
+		];
+	}
+
+	workspaceActions() {
+		return [
+			{
+				label: "Open",
+				icon: <InspectorIcon fontSize="small" />,
+				handler: this.openWorkspace,
+			},
+			{
+				label: "Delete",
+				icon: <DeleteIcon fontSize="small" />,
+				handler: this.deleteWorkspace,
+			},
+		];
+	}
+
+	testRunColumns() {
+		return [
+			{ field: "id", label: "ID", align: "left" },
+			{ field: "name", label: "Name", align: "left" },
+			{ field: "total", label: "Tests", align: "right" },
+			{ field: "running", label: "Running", align: "center" },
+		];
+	}
+
 	testRunOptions() {
 		return [{ label: "Open", action: this.openTestRun }];
+	}
+
+	testRunActions() {
+		return [];
+	}
+
+	resourceColumns() {
+		var columns;
+		switch (this.state.selectedType) {
+			case "Objects":
+				columns = this.objectColumns();
+				break;
+			case "Evaluations":
+				columns = this.evaluationColumns();
+				break;
+			case "Workspaces":
+				columns = this.workspaceColumns();
+				break;
+			case "Debuggers":
+				columns = this.debuggerColumns();
+				break;
+			case "Test Runs":
+				columns = this.testRunColumns();
+				break;
+			default:
+		}
+		return columns;
 	}
 
 	menuOptions() {
@@ -248,7 +400,7 @@ class ResourceBrowser extends Component {
 		return options;
 	}
 
-	rowActions() {
+	resourceActions() {
 		var options;
 		switch (this.state.selectedType) {
 			case "Objects":
@@ -269,143 +421,6 @@ class ResourceBrowser extends Component {
 			default:
 		}
 		return options;
-	}
-
-	objectActions() {
-		return [
-			{
-				label: "Inspect",
-				icon: <InspectorIcon fontSize="small" />,
-				handler: this.openInspector,
-			},
-			{
-				label: "Unpin",
-				icon: <DeleteIcon fontSize="small" />,
-				handler: this.unpinObject,
-			},
-		];
-	}
-
-	evaluationActions() {
-		return [
-			{
-				label: "Stop",
-				icon: <StopIcon fontSize="small" />,
-				handler: this.cancelEvaluation,
-			},
-		];
-	}
-
-	workspaceActions() {
-		return [
-			{
-				label: "Open",
-				icon: <InspectorIcon fontSize="small" />,
-				handler: this.openWorkspace,
-			},
-			{
-				label: "Delete",
-				icon: <DeleteIcon fontSize="small" />,
-				handler: this.deleteWorkspace,
-			},
-		];
-	}
-
-	debuggerActions() {
-		return [
-			{
-				label: "Terminate",
-				icon: <StopIcon fontSize="small" />,
-				handler: this.terminateDebugger,
-			},
-		];
-	}
-
-	testRunActions() {
-		return [];
-	}
-
-	objectColumns() {
-		return [
-			{ field: "id", label: "ID", align: "left" },
-			{ field: "class", label: "Class", align: "left", minWidth: 200 },
-			{
-				field: "printString",
-				label: "Print String",
-				minWidth: 200,
-				align: "left",
-			},
-		];
-	}
-
-	evaluationColumns() {
-		return [
-			{ field: "id", label: "ID", align: "left" },
-			{
-				field: "expression",
-				label: "Expression",
-				align: "left",
-				minWidth: 200,
-			},
-			{
-				field: "state",
-				label: "State",
-				minWidth: 200,
-				align: "left",
-			},
-		];
-	}
-
-	workspaceColumns() {
-		return [
-			{ field: "id", label: "ID", align: "left" },
-			{ field: "owner", label: "Owner", align: "center" },
-		];
-	}
-
-	debuggerColumns() {
-		return [
-			{ field: "id", label: "ID", align: "left" },
-			{ field: "creator", label: "Creator", align: "center" },
-			{
-				field: "description",
-				label: "Description",
-				align: "left",
-				minWidth: 200,
-			},
-		];
-	}
-
-	testRunColumns() {
-		return [
-			{ field: "id", label: "ID", align: "left" },
-			{ field: "name", label: "Name", align: "left" },
-			{ field: "total", label: "Tests", align: "right" },
-			{ field: "running", label: "Running", align: "center" },
-		];
-	}
-
-	resourceColumns() {
-		var columns;
-		switch (this.state.selectedType) {
-			case "Objects":
-				columns = this.objectColumns();
-				break;
-			case "Evaluations":
-				columns = this.evaluationColumns();
-				break;
-			case "Workspaces":
-				columns = this.workspaceColumns();
-				break;
-			case "Debuggers":
-				columns = this.debuggerColumns();
-				break;
-			case "Test Runs":
-				columns = this.testRunColumns();
-				break;
-			default:
-		}
-		return columns;
 	}
 
 	render() {
@@ -476,7 +491,7 @@ class ResourceBrowser extends Component {
 										rows={resources}
 										onSelect={this.resourceSelected}
 										menuOptions={this.menuOptions()}
-										rowActions={this.rowActions()}
+										rowActions={this.resourceActions()}
 									/>
 								</Paper>
 							)}
