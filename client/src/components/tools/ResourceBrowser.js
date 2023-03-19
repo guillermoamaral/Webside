@@ -339,7 +339,7 @@ class ResourceBrowser extends Component {
 
 	testRunColumns() {
 		return [
-			{ field: "id", label: "ID", align: "left" },
+			{ field: "id", link: this.openTestRun, label: "ID", align: "left" },
 			{ field: "name", label: "Name", align: "left" },
 			{ field: "total", label: "Tests", align: "right" },
 			{ field: "running", label: "Running", align: "center" },

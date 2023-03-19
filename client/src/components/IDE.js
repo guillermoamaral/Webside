@@ -311,17 +311,22 @@ class IDE extends Component {
 
 	preRemovePage = async (page) => {
 		try {
-			if (page.component.type.name === "Inspector") {
-				await this.api.unpinObject(page.component.props.id);
+			const type = page.component.type;
+			const id = page.component.props.id;
+			const count = this.state.pages.filter(
+				(p) => p.component.type == type && p.component.props.id == id
+			).length;
+			if (type === Inspector && count == 1) {
+				await this.api.unpinObject(id);
 			}
-			if (page.component.type.name === "Debugger") {
-				await this.api.deleteDebugger(page.component.props.id);
+			if (type === Debugger && count == 1) {
+				await this.api.deleteDebugger(id);
 			}
-			if (page.component.type.name === "TestRunner") {
-				await this.api.deleteTestRun(page.component.props.id);
+			if (type === TestRunner && count == 1) {
+				await this.api.deleteTestRun(id);
 			}
-			if (page.component.type.name === "Workspace") {
-				await this.api.deleteWorkspace(page.component.props.id);
+			if (type === Workspace && count == 1) {
+				await this.api.deleteWorkspace(id);
 			}
 		} catch (error) {
 			this.reportError(error);
@@ -510,6 +515,13 @@ class IDE extends Component {
 	};
 
 	openWorkspace = (id) => {
+		const existing = this.state.pages.find((p) => {
+			return p.component.type == Workspace && p.component.props.id === id;
+		});
+		if (existing) {
+			this.selectPage(existing);
+			return;
+		}
 		const workspace = (
 			<Workspace styles={this.props.styles} key={id} id={id} />
 		);
@@ -517,6 +529,13 @@ class IDE extends Component {
 	};
 
 	openDebugger = (id, title = "Debugger") => {
+		const existing = this.state.pages.find((p) => {
+			return p.component.type == Debugger && p.component.props.id === id;
+		});
+		if (existing) {
+			this.selectPage(existing);
+			return;
+		}
 		const tool = (
 			<Debugger
 				styles={this.props.styles}
@@ -540,6 +559,16 @@ class IDE extends Component {
 	};
 
 	openInspector = (object) => {
+		const existing = this.state.pages.find((p) => {
+			return (
+				p.component.type == Inspector &&
+				p.component.props.id === object.id
+			);
+		});
+		if (existing) {
+			this.selectPage(existing);
+			return;
+		}
 		const inspector = (
 			<Inspector
 				styles={this.props.styles}
@@ -578,6 +607,13 @@ class IDE extends Component {
 	};
 
 	openTestRunner = (id, title = "Test Runner") => {
+		const existing = this.state.pages.find((p) => {
+			return p.component.type == TestRunner && p.component.props.id === id;
+		});
+		if (existing) {
+			this.selectPage(existing);
+			return;
+		}
 		const tool = <TestRunner styles={this.props.styles} key={id} id={id} />;
 		this.addPage(
 			title,
