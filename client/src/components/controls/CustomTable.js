@@ -32,6 +32,7 @@ const styles = () => ({
 class CustomTable extends Component {
 	constructor(props) {
 		super(props);
+		const rows = props.rows || [];
 		this.state = {
 			menuOpen: false,
 			menuPosition: { x: null, y: null },
@@ -40,12 +41,25 @@ class CustomTable extends Component {
 			currentPage: 0,
 			rowsPerPage: props.rowsPerPage || 10,
 			filterText: "",
-			filteredRows: props.rows || [],
+			rows: rows,
+			filteredRows: rows,
 			order: {
 				column: null,
 				direction: "asc",
 			},
 		};
+	}
+
+	static getDerivedStateFromProps(props, state) {
+		if (state.rows !== props.rows) {
+			return {
+				menuOpen: false,
+				rows: props.rows,
+				filterText: "",
+				filteredRows: props.rows,
+			};
+		}
+		return null;
 	}
 
 	rowSelected = (row) => {
@@ -191,7 +205,7 @@ class CustomTable extends Component {
 	}
 
 	filterRows(text) {
-		var filtered = this.props.rows || [];
+		var filtered = this.state.rows;
 		if (text !== "") {
 			const target = text.toLowerCase();
 			const columns = this.props.columns;
@@ -288,11 +302,10 @@ class CustomTable extends Component {
 				flexDirection="column"
 				style={{ height: "100%" }}
 			>
-				<Box flexGrow={1}>
+				<Box display="flex" flexGrow={1}>
 					<TableContainer style={{ height: "100%" }}>
 						<Scrollable>
 							<Table
-								style={{ height: "100%" }}
 								stickyHeader
 								size="small"
 								onKeyDown={this.keyDown}
