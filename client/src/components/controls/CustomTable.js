@@ -292,6 +292,7 @@ class CustomTable extends Component {
 					<TableContainer style={{ height: "100%" }}>
 						<Scrollable>
 							<Table
+								style={{ height: "100%" }}
 								stickyHeader
 								size="small"
 								onKeyDown={this.keyDown}
