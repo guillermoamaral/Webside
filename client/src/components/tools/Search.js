@@ -57,11 +57,11 @@ class Search extends Component {
 		try {
 			const names = await ide.api.classNames();
 			return names
-				.filter((n) => {
-					return n.toLowerCase().includes(text);
+				.filter((name) => {
+					return name.toLowerCase().includes(text);
 				})
-				.map((n) => {
-					return { title: n, type: "class", text: n };
+				.map((name) => {
+					return { title: name, type: "class", text: name };
 				});
 		} catch (error) {
 			ide.reportError(error);
@@ -72,7 +72,12 @@ class Search extends Component {
 		try {
 			const methods = await ide.api.methodsMatching(text);
 			return methods.map((m) => {
-				return { title: m.methodClass, type: "method", text: m.selector };
+				return {
+					title: m.methodClass,
+					type: "method",
+					text: m.selector,
+					subtext: "...",
+				};
 			});
 		} catch (error) {
 			ide.reportError(error);
@@ -83,7 +88,11 @@ class Search extends Component {
 		try {
 			const methods = await ide.api.stringReferences(text);
 			return methods.map((m) => {
-				return { title: m.methodClass, type: "method", text: m.selector };
+				return {
+					title: m.methodClass,
+					type: "method",
+					text: m.selector,
+				};
 			});
 		} catch (error) {
 			ide.reportError(error);
@@ -100,7 +109,8 @@ class Search extends Component {
 	};
 
 	render() {
-		const { text, selectedType, results, searching, currentPage } = this.state;
+		const { text, selectedType, results, searching, currentPage } =
+			this.state;
 		const pages = Math.ceil(results.length / this.itemsPerPage);
 		const begin = (currentPage - 1) * this.itemsPerPage;
 		const end = begin + this.itemsPerPage;
@@ -108,12 +118,15 @@ class Search extends Component {
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
-					(Warning: this component is under construction and might not work)
+					(Warning: this component is under construction and might not
+					work properly)
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<TextField
 						value={text}
-						onChange={(event) => this.setState({ text: event.target.value })}
+						onChange={(event) =>
+							this.setState({ text: event.target.value })
+						}
 						placeholder="Search ..."
 						name="text"
 						variant="outlined"
@@ -134,7 +147,9 @@ class Search extends Component {
 						<RadioGroup
 							name="side"
 							value={selectedType}
-							onChange={(event, type) => this.setState({ selectedType: type })}
+							onChange={(event, type) =>
+								this.setState({ selectedType: type })
+							}
 							defaultValue="classes"
 							row
 						>
@@ -148,7 +163,12 @@ class Search extends Component {
 								return (
 									<FormControlLabel
 										value={s.toLowerCase()}
-										control={<Radio size="small" color="primary" />}
+										control={
+											<Radio
+												size="small"
+												color="primary"
+											/>
+										}
 										label={s}
 										key={s}
 										disabled={searching}
@@ -180,7 +200,17 @@ class Search extends Component {
 												>
 													{r.type}
 												</Typography>
-												{": " + r.text + "..."}
+												{": "}
+												<Box
+													sx={{ display: "inline" }}
+													component="span"
+													fontWeight="fontWeightBold"
+												>
+													{r.text}
+												</Box>
+												<Typography>
+													{r.subtext || ""}
+												</Typography>
 											</React.Fragment>
 										}
 									/>
@@ -194,7 +224,9 @@ class Search extends Component {
 							size="medium"
 							page={currentPage}
 							variant="text"
-							onChange={(event, page) => this.setState({ currentPage: page })}
+							onChange={(event, page) =>
+								this.setState({ currentPage: page })
+							}
 						/>
 					)}
 					{!searching && results.length === 0 && (

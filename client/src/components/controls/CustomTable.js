@@ -11,10 +11,12 @@ import {
 	TablePagination,
 	TableSortLabel,
 	Link,
+	InputBase,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import PopupMenu from "./PopupMenu";
 import Scrollable from "./Scrollable";
+import SearchIcon from "@material-ui/icons/Search";
 
 const styles = () => ({
 	row: {
@@ -37,6 +39,8 @@ class CustomTable extends Component {
 			usePagination: props.usePagination,
 			currentPage: 0,
 			rowsPerPage: props.rowsPerPage || 10,
+			filterText: "",
+			filteredRows: props.rows || [],
 			order: {
 				column: null,
 				direction: "asc",
@@ -186,15 +190,42 @@ class CustomTable extends Component {
 		);
 	}
 
+	filterRows(text) {
+		var filtered = this.props.rows || [];
+		if (text !== "") {
+			const target = text.toLowerCase();
+			const columns = this.props.columns;
+			filtered = filtered.filter((row) => {
+				return (
+					columns.find((column) => {
+						return this.getCellText(row, column)
+							.toLowerCase()
+							.includes(target);
+					}) != undefined
+				);
+			});
+		}
+		const { currentPage, rowsPerPage } = this.state;
+		const page =
+			currentPage * rowsPerPage > filtered.length
+				? Math.floor(filtered.length / rowsPerPage)
+				: currentPage;
+		this.setState({
+			filteredRows: filtered,
+			filteredText: text,
+			currentPage: page,
+		});
+	}
+
 	pageRows() {
-		const { usePagination, currentPage, rowsPerPage } = this.state;
-		const rows = this.props.rows || [];
+		const { usePagination, currentPage, rowsPerPage, filteredRows } =
+			this.state;
 		if (!usePagination) {
-			return rows;
+			return filteredRows;
 		}
 		const begin = currentPage * rowsPerPage;
 		const end = begin + rowsPerPage;
-		return rows.slice(begin, end);
+		return filteredRows.slice(begin, end);
 	}
 
 	rowsPerPageChanged(amount) {
@@ -221,14 +252,13 @@ class CustomTable extends Component {
 	}
 
 	sortByColumn(column) {
-		const rows = this.props.rows;
-		const order = this.state.order;
+		const { filteredRows, order } = this.state;
 		const direction =
 			order.column === column && order.direction === "asc"
 				? "desc"
 				: "asc";
-		rows.forEach((r, i) => (r._index = i));
-		rows.sort((a, b) => {
+		filteredRows.forEach((r, i) => (r._index = i));
+		filteredRows.sort((a, b) => {
 			const o = this.sortComparator(a, b, column, direction);
 			return o !== 0 ? o : a._index - b._index;
 		});
@@ -246,13 +276,14 @@ class CustomTable extends Component {
 			currentPage,
 			rowsPerPage,
 			order,
+			filteredRows,
 		} = this.state;
 		const columns = this.columns();
-		const rows = this.props.rows;
 		const border = this.props.hideRowBorder ? "none" : "";
 		return (
 			<Box
-				p={1}
+				p={0}
+				m={0}
 				display="flex"
 				flexDirection="column"
 				style={{ height: "100%" }}
@@ -365,23 +396,48 @@ class CustomTable extends Component {
 					/>
 				</Box>
 				{usePagination && (
-					<Box>
-						<TablePagination
-							component="div"
-							count={rows.length}
-							size="small"
-							page={currentPage}
-							variant="text"
-							onChangePage={(event, page) =>
-								this.pageChanged(page)
-							}
-							rowsPerPage={rowsPerPage}
-							onChangeRowsPerPage={(event) => {
-								this.rowsPerPageChanged(
-									parseInt(event.target.value, 10)
-								);
-							}}
-						/>
+					<Box display="flex" flexDirection="row">
+						<Box
+							display="flex"
+							flexDirection="row"
+							alignItems="center"
+						>
+							<Box ml={2} mr={1}>
+								<SearchIcon size="small" />
+							</Box>
+							<Box>
+								<InputBase
+									placeholder="Search…"
+									inputProps={{ "aria-label": "search" }}
+									onKeyDown={(event) => {
+										if (event.key === "Escape") {
+											this.filterRows("");
+										}
+									}}
+									onChange={(event) =>
+										this.filterRows(event.target.value)
+									}
+								/>
+							</Box>
+						</Box>
+						<Box flexGrow={1}>
+							<TablePagination
+								component="div"
+								count={filteredRows.length}
+								size="small"
+								page={currentPage}
+								variant="text"
+								onChangePage={(event, page) =>
+									this.pageChanged(page)
+								}
+								rowsPerPage={rowsPerPage}
+								onChangeRowsPerPage={(event) => {
+									this.rowsPerPageChanged(
+										parseInt(event.target.value, 10)
+									);
+								}}
+							/>
+						</Box>
 					</Box>
 				)}
 			</Box>
