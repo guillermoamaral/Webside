@@ -165,7 +165,8 @@ class CodeBrowser extends Component {
 				} catch (inner) {
 					this.handleCompilationError(
 						inner,
-						suggestion.changes[suggestion.changes.length - 1].sourceCode
+						suggestion.changes[suggestion.changes.length - 1]
+							.sourceCode
 					);
 				}
 			}
@@ -343,7 +344,10 @@ class CodeBrowser extends Component {
 					</ToggleButtonGroup>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
-					<Paper variant="outlined" style={{ height: "100%", minHeight: 300 }}>
+					<Paper
+						variant="outlined"
+						style={{ height: "100%", minHeight: 300 }}
+					>
 						<CodeEditor
 							context={this.props.context}
 							styles={this.props.styles}
@@ -371,7 +375,10 @@ class CodeBrowser extends Component {
 					)}
 					{timestamp || author ? " - " : ""}
 					{packagename && (
-						<Link href="#" onClick={() => ide.browsePackage(packagename)}>
+						<Link
+							href="#"
+							onClick={() => ide.browsePackage(packagename)}
+						>
 							{packagename}
 						</Link>
 					)}

@@ -26,8 +26,10 @@ class Inspector extends Component {
 		};
 	}
 
-	componentDidMount() {
-		this.updateSlots(this.props.root);
+	async componentDidMount() {
+		const root = this.props.root;
+		await this.updateSlots(root);
+		this.setState({ objectTree: [root], selectedObject: root });
 	}
 
 	async componentDidUpdate(prevProps) {
@@ -42,7 +44,11 @@ class Inspector extends Component {
 
 	objectURIPath(object) {
 		let path = "";
-		object.path.forEach((s) => (path = path + "/" + s));
+		object.path.forEach((s) => {
+			if (s !== "yourself") {
+				path = path + "/" + s;
+			}
+		});
 		return path;
 	}
 
@@ -109,7 +115,6 @@ class Inspector extends Component {
 				object.slots = [self];
 			}
 		}
-		this.setState({ objectTree: this.state.objectTree });
 	};
 
 	selectSlot = (path) => {
@@ -157,7 +162,9 @@ class Inspector extends Component {
 	};
 
 	evaluationContext() {
-		return { object: this.props.root.id };
+		const selectedObject = this.state.selectedObject;
+		const path = selectedObject ? this.objectURIPath(selectedObject) : "";
+		return { object: this.props.root.id + path };
 	}
 
 	render() {
@@ -167,7 +174,7 @@ class Inspector extends Component {
 		const path = selectedObject ? selectedObject.path : [];
 		const subpaths = this.subpaths(path);
 		return (
-			<Grid container spacing={1}>
+			<Grid container>
 				<Grid item xs={12} md={12} lg={12}>
 					<Box ml={2} display="flex" alignItems="center">
 						<Breadcrumbs>
@@ -234,27 +241,36 @@ class Inspector extends Component {
 					</Paper>
 				</Grid>
 				<Grid item xs={12} md={8} lg={8}>
-					<ObjectPresenter
-						styles={styles}
-						root={root}
-						object={selectedObject}
-					/>
-				</Grid>
-				{showWorkspace && (
-					<Grid item xs={12} md={12} lg={12}>
-						<Paper
-							variant="outlined"
-							style={{ minHeight: 100, height: "100%" }}
-						>
-							<CodeEditor
-								context={this.evaluationContext()}
+					<Box
+						display="flex"
+						flexDirection="column"
+						justifyContent="center"
+						style={{ height: "100%" }}
+					>
+						<Box flexGrow={1}>
+							<ObjectPresenter
 								styles={styles}
-								lineNumbers={false}
-								onEvaluate={this.expressionEvaluated}
+								root={root}
+								object={selectedObject}
 							/>
-						</Paper>
-					</Grid>
-				)}
+						</Box>
+						<Box ml={1} mr={1}>
+							{showWorkspace && (
+								<Paper
+									variant="outlined"
+									style={{ minHeight: 100, height: "100%" }}
+								>
+									<CodeEditor
+										context={this.evaluationContext()}
+										styles={styles}
+										lineNumbers={false}
+										onEvaluate={this.expressionEvaluated}
+									/>
+								</Paper>
+							)}
+						</Box>
+					</Box>
+				</Grid>
 			</Grid>
 		);
 	}

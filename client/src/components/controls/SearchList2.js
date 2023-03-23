@@ -6,10 +6,11 @@ import {
 	TextField,
 	MenuItem,
 	Box,
-	Typography
+	Typography,
+	InputAdornment,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
-//import SearchIcon from "@material-ui/icons/SearchRounded";
+import SearchIcon from "@material-ui/icons/SearchRounded";
 
 const styles = (theme) => ({
 	container: {
@@ -46,8 +47,10 @@ class SearchList2 extends React.Component {
 			? []
 			: this.props.options.filter((option) => {
 					const keep =
-						count < suggestionLimit && option &&
-						option.toLowerCase().slice(0, inputLength) === inputValue;
+						count < suggestionLimit &&
+						option &&
+						option.toLowerCase().slice(0, inputLength) ===
+							inputValue;
 					if (keep) {
 						count += 1;
 					}
@@ -82,8 +85,12 @@ class SearchList2 extends React.Component {
 				size="small"
 				variant="outlined"
 				InputProps={{ inputRef: ref, ...other }}
+				autoFocus
 				onKeyPress={(event) => {
-					if (event.key === "Enter" && this.state.suggestions.length > 0) {
+					if (
+						event.key === "Enter" &&
+						this.state.suggestions.length > 0
+					) {
 						event.preventDefault();
 						this.valueChanged(this.state.suggestions[0]);
 					}
@@ -150,12 +157,17 @@ class SearchList2 extends React.Component {
 					placeholder: "Search...",
 					value: this.state.value,
 					onChange: this.inputChanged,
-					// startAdornment: (
-					// 	<InputAdornment position="start">
-					// 		<SearchIcon />
-					// 	</InputAdornment>
-					// ),
+					startAdornment: (
+						<InputAdornment position="start">
+							<SearchIcon />
+						</InputAdornment>
+					),
 				}}
+				// ref={(autosuggest) => {
+				// 	if (autosuggest) {
+				// 		autosuggest.input.focus();
+				// 	}
+				// }}
 			/>
 		);
 	}
