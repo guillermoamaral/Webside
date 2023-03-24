@@ -93,21 +93,22 @@ class Workspace extends Component {
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={8} lg={8}>
-					<Grid item xs={12} md={12} lg={12}>
-						<Paper variant="outlined" style={{ minHeight: 200 }}>
-							<CodeEditor
-								context={this.evaluationContext()}
-								styles={this.props.styles}
-								lineNumbers={false}
-								source={expression}
-								showAccept
-								acceptIcon={<PlayIcon />}
-								onAccept={this.evaluateClicked}
-								onChange={this.expressionChanged}
-								evaluating={evaluating}
-							/>
-						</Paper>
-					</Grid>
+					<Paper
+						variant="outlined"
+						style={{ minHeight: 300, height: "100%" }}
+					>
+						<CodeEditor
+							context={this.evaluationContext()}
+							styles={this.props.styles}
+							lineNumbers={false}
+							source={expression}
+							showAccept
+							acceptIcon={<PlayIcon />}
+							onAccept={this.evaluateClicked}
+							onChange={this.expressionChanged}
+							evaluating={evaluating}
+						/>
+					</Paper>
 				</Grid>
 				<Grid item xs={12} md={4} lg={4}>
 					{inspectors.map((inspector, index) => {
