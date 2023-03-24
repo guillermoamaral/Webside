@@ -5,6 +5,7 @@ import {
 	IconButton,
 	Tooltip,
 	Typography,
+	LinearProgress,
 } from "@material-ui/core";
 import { Icon } from "@iconify/react";
 import RestartIcon from "@iconify/icons-mdi/replay";
@@ -17,6 +18,7 @@ import { ide } from "../IDE";
 import FrameList from "../parts/FrameList";
 import BindingTable from "../parts/BindingTable";
 import CodeBrowser from "../parts/CodeBrowser";
+import DebuggerControls from "../parts/DebuggerControls";
 
 class Debugger extends PureComponent {
 	constructor(props) {
@@ -24,6 +26,7 @@ class Debugger extends PureComponent {
 		this.state = {
 			frames: [],
 			selectedFrame: null,
+			stepping: false,
 		};
 	}
 
@@ -49,6 +52,7 @@ class Debugger extends PureComponent {
 			this.setState({
 				frames: frames,
 				selectedFrame: frame,
+				stepping: false,
 			});
 		} catch (error) {
 			ide.reportError(error);
@@ -97,6 +101,7 @@ class Debugger extends PureComponent {
 	};
 
 	stepOverClicked = async () => {
+		this.setState({ stepping: true });
 		try {
 			await ide.api.stepOverDebugger(
 				this.props.id,
@@ -187,7 +192,7 @@ class Debugger extends PureComponent {
 	}
 
 	render() {
-		const { frames, selectedFrame } = this.state;
+		const { frames, selectedFrame, stepping } = this.state;
 		const styles = this.props.styles;
 		return (
 			<Grid container spacing={1}>
@@ -200,63 +205,20 @@ class Debugger extends PureComponent {
 						justify="center"
 					>
 						<Grid item xs={4} md={4} lg={4}>
-							<Tooltip title="Step into" placement="top">
-								<IconButton
-									style={{ color: "#2ba5de" }}
-									onClick={this.stepIntoClicked}
-									size="medium"
-								>
-									<Icon icon={StepIntoIcon} />
-								</IconButton>
-							</Tooltip>
-							<Tooltip title="Step over" placement="top">
-								<IconButton
-									style={{ color: "#2ba5de" }}
-									onClick={this.stepOverClicked}
-									size="medium"
-								>
-									<Icon icon={StepOverIcon} />
-								</IconButton>
-							</Tooltip>
-							<Tooltip title="Step through" placement="top">
-								<IconButton
-									style={{ color: "#2ba5de" }}
-									onClick={this.stepThroughClicked}
-									size="medium"
-								>
-									<StepThroughIcon />
-								</IconButton>
-							</Tooltip>
-							<Tooltip title="Restart" placement="top">
-								<IconButton
-									style={{ color: "#2ba5de" }}
-									onClick={this.restartClicked}
-									size="medium"
-								>
-									<Icon icon={RestartIcon} />
-								</IconButton>
-							</Tooltip>
-							<Tooltip title="Resume" placement="top">
-								<IconButton
-									style={{ color: "#3bba5d" }}
-									onClick={this.resumeClicked}
-									size="medium"
-								>
-									<Icon icon={ResumeIcon} />
-								</IconButton>
-							</Tooltip>
-							<Tooltip title="Terminate" placement="top">
-								<IconButton
-									style={{ color: "#ba4343" }}
-									onClick={this.terminateClicked}
-									size="medium"
-								>
-									<Icon icon={TerminateIcon} />
-								</IconButton>
-							</Tooltip>
+							<DebuggerControls
+								disabled={stepping}
+								onStepIntoClicked={this.stepIntoClicked}
+								onStepOverClicked={this.stepOverClicked}
+								onStepThroughClicked={this.stepThroughClicked}
+								onRestartClicked={this.restartClicked}
+								onResumeClicked={this.resumeClicked}
+								onTerminateClicked={this.terminateClicked}
+							/>
 						</Grid>
 						<Grid item xs={8} md={8} lg={8}>
-							<Typography variant="body1" color="primary">{this.props.title || ""}</Typography>
+							<Typography variant="body1" color="primary">
+								{this.props.title || ""}
+							</Typography>
 						</Grid>
 					</Grid>
 				</Grid>
@@ -287,11 +249,16 @@ class Debugger extends PureComponent {
 						styles={styles}
 						class={selectedFrame ? selectedFrame.class : null}
 						method={selectedFrame ? selectedFrame.method : null}
-						selectedInterval={selectedFrame ? selectedFrame.interval : null}
+						selectedInterval={
+							selectedFrame ? selectedFrame.interval : null
+						}
 						onCompileMethod={this.methodCompiled}
 						onDefineClass={this.classDefined}
 						onCommentClass={this.classCommented}
 					/>
+				</Grid>
+				<Grid item xs={12} md={12} lg={12}>
+					{stepping && <LinearProgress variant="indeterminate" />}
 				</Grid>
 			</Grid>
 		);
