@@ -1,19 +1,5 @@
 import React, { PureComponent } from "react";
-import {
-	Grid,
-	Paper,
-	IconButton,
-	Tooltip,
-	Typography,
-	LinearProgress,
-} from "@material-ui/core";
-import { Icon } from "@iconify/react";
-import RestartIcon from "@iconify/icons-mdi/replay";
-import StepIntoIcon from "@iconify/icons-mdi/debug-step-into";
-import StepOverIcon from "@iconify/icons-mdi/debug-step-over";
-import StepThroughIcon from "../icons/StepThroughIcon";
-import ResumeIcon from "@iconify/icons-mdi/play";
-import TerminateIcon from "@iconify/icons-mdi/stop";
+import { Grid, Paper, Typography, LinearProgress } from "@material-ui/core";
 import { ide } from "../IDE";
 import FrameList from "../parts/FrameList";
 import BindingTable from "../parts/BindingTable";
