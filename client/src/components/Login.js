@@ -1,17 +1,17 @@
 import React, { Component } from "react";
 import { Grid } from "@material-ui/core";
-import Settings from "./Settings";
+import ConnectionSettings from "./ConnectionSettings";
 import { withRouter } from "react-router-dom";
 
 class Login extends Component {
-	connectClicked = (baseUri, dialect, developer) => {
+	connectClicked = (settings) => {
 		this.props.history.push(
 			"/ide?baseUri=" +
-				baseUri +
+				settings.baseUri +
 				"&dialect=" +
-				dialect +
+				settings.dialect +
 				"&developer=" +
-				developer
+				settings.developer
 		);
 	};
 
@@ -35,7 +35,7 @@ class Login extends Component {
 						/>
 					</Grid>
 					<Grid item>
-						<Settings
+						<ConnectionSettings
 							styles={this.props.styles}
 							acceptLabel="Connect"
 							onAccept={this.connectClicked}

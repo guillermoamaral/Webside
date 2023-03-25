@@ -57,7 +57,8 @@ class Titlebar extends Component {
 						onClick={this.props.expandSidebar.bind(this)}
 						className={clsx(
 							styles.menuButton,
-							this.props.sidebarExpanded && styles.menuButtonHidden
+							this.props.sidebarExpanded &&
+								styles.menuButtonHidden
 						)}
 					>
 						<MenuIcon />
@@ -65,11 +66,21 @@ class Titlebar extends Component {
 					<Box p={1}>
 						{logo && (
 							<Link to={baseUri}>
-								<img src={logo} width={28} height={28} alt={dialect} />
+								<img
+									src={logo}
+									width={28}
+									height={28}
+									alt={dialect}
+								/>
 							</Link>
 						)}
 					</Box>
-					<Typography variant="h6" color="inherit" display="inline" noWrap>
+					<Typography
+						variant="h6"
+						color="inherit"
+						display="inline"
+						noWrap
+					>
 						{dialect + " Web IDE "}
 					</Typography>
 					<Box p={1}>
@@ -94,7 +105,9 @@ class Titlebar extends Component {
 							}}
 							inputProps={{ "aria-label": "search" }}
 							onChange={(event) => {
-								this.setState({ searchValue: event.target.value });
+								this.setState({
+									searchValue: event.target.value,
+								});
 							}}
 							onKeyPress={(event) => {
 								if (event.key === "Enter") {
@@ -112,7 +125,12 @@ class Titlebar extends Component {
 						<Avatar alt={developer} />
 					</IconButton>
 					<Box p={1}>
-						<Typography variant="subtitle1" gutterBottom color="inherit" noWrap>
+						<Typography
+							variant="subtitle1"
+							gutterBottom
+							color="inherit"
+							noWrap
+						>
 							{developer}
 						</Typography>
 					</Box>

@@ -64,10 +64,10 @@ var ide = null;
 class IDE extends Component {
 	constructor(props) {
 		super(props);
+		this.settings = { baseUri: "", developer: "", dialect: "" };
 		ide = this;
 		this.initializeSettings();
 		this.state = {
-			dialect: null,
 			sidebarExpanded: false,
 			addPageMenuOpen: false,
 			selectedPage: null,
@@ -105,30 +105,28 @@ class IDE extends Component {
 		return options;
 	}
 
-	async updateSettings(baseUri, dialect, developer, messageChannelUrl) {
-		this.baseUri = baseUri;
-		this.developer = developer;
-		this.dialect = dialect;
-		document.title = dialect;
-		this.initializeAPI(baseUri, developer);
-		this.updateTheme(dialect);
-		this.initializeMessageChannel(messageChannelUrl);
+	async updateSettings(settings) {
+		this.settings = settings;
+		document.title = settings.dialect;
+		this.initializeAPI();
+		this.updateTheme(settings.dialect);
+		this.initializeMessageChannel(settings.messageChannelUrl);
 	}
 
 	welcomeMessage() {
 		const backend =
 			this.dialect !== "undefined"
-				? this.dialect
+				? this.settings.dialect
 				: "It looks like the Smalltalk system could not be determined";
 		return (
 			'"Welcome to Webside ' +
-			this.developer +
+			this.settings.developer +
 			"!\rA Smalltalk IDE for the web.\r\r" +
 			"Backend: " +
 			backend +
 			"\r" +
 			"URL: " +
-			this.baseUri +
+			this.settings.baseUri +
 			'"'
 		);
 	}
@@ -138,18 +136,14 @@ class IDE extends Component {
 	}
 
 	initializeSettings = async () => {
-		const options = this.queryOptions();
-		this.updateSettings(
-			options.baseUri,
-			options.dialect,
-			options.developer
-		);
+		const settings = this.queryOptions();
+		this.updateSettings(settings);
 	};
 
-	initializeAPI(baseUri, developer) {
+	initializeAPI() {
 		this.api = new API(
-			baseUri,
-			developer,
+			this.settings.baseUri,
+			this.settings.developer,
 			this.reportError,
 			this.reportChange
 		);
@@ -189,10 +183,10 @@ class IDE extends Component {
 		}
 	};
 
-	updateTheme(dialect) {
+	updateTheme() {
 		var mainPrimaryColor;
 		var mainSecondaryColor;
-		switch (dialect) {
+		switch (this.settings.dialect) {
 			case "Bee":
 				mainPrimaryColor = amber[300];
 				mainSecondaryColor = amber[800];
@@ -608,7 +602,9 @@ class IDE extends Component {
 
 	openTestRunner = (id, title = "Test Runner") => {
 		const existing = this.state.pages.find((p) => {
-			return p.component.type == TestRunner && p.component.props.id === id;
+			return (
+				p.component.type == TestRunner && p.component.props.id === id
+			);
 		});
 		if (existing) {
 			this.selectPage(existing);
@@ -666,27 +662,25 @@ class IDE extends Component {
 		if (page) {
 			this.selectPage(page);
 		} else {
-			const settings = (
+			const page = (
 				<Settings
+					settings={{ ...this.settings }}
 					styles={this.props.styles}
-					baseUri={this.baseUri}
-					developer={this.developer}
-					acceptLabel="Save"
-					onAccept={(baseUri, dialect, developer) => {
+					onApplyConnectionSettings={(settings) => {
 						this.removeAllPages();
 						this.props.history.push(
 							"/ide?baseUri=" +
-								baseUri +
+								settings.baseUri +
 								"&dialect=" +
-								dialect +
+								settings.dialect +
 								"&developer=" +
-								developer
+								settings.developer
 						);
-						this.updateSettings(baseUri, dialect, developer);
+						this.updateSettings(settings);
 					}}
 				/>
 			);
-			this.addPage("Settings", <SettingsIcon />, settings);
+			this.addPage("Settings", <SettingsIcon />, page);
 		}
 	};
 
@@ -1025,8 +1019,8 @@ class IDE extends Component {
 					<DialogProvider>
 						<div className={styles.root}>
 							<Titlebar
-								developer={this.developer}
-								dialect={this.dialect}
+								developer={this.settings.developer}
+								dialect={this.settings.dialect}
 								styles={styles}
 								sidebarExpanded={sidebarExpanded}
 								expandSidebar={this.expandSidebar}
