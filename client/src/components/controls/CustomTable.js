@@ -111,6 +111,7 @@ class CustomTable extends Component {
 		const color = this.getCellColor(row, column);
 		return (
 			<Link
+				key={{ text }}
 				href="#"
 				onClick={() => column.link(row)}
 				color="textPrimary"
@@ -174,8 +175,8 @@ class CustomTable extends Component {
 	rowActionButtons(row, index) {
 		const actions = this.props.rowActions || [];
 		return (
-			<Box display="flex" alignItems="center">
-				{actions.map((action) => {
+			<Box display="flex" alignItems="center" key={"box" + index}>
+				{actions.map((action, j) => {
 					const visible =
 						action.visible === undefined ||
 						(typeof action.visible == "boolean" &&
@@ -183,11 +184,14 @@ class CustomTable extends Component {
 						(typeof action.visible == "function" &&
 							action.visible(row));
 					return (
-						<Box style={{ minWidth: 10 }}>
+						<Box
+							style={{ minWidth: 10 }}
+							key={"box" + index + "action" + j}
+						>
 							{visible && (
 								<IconButton
 									className="button"
-									key={action.label + index}
+									key={"button" + index + "action" + j}
 									color="inherit"
 									size="small"
 									onClick={(event) => {
@@ -312,10 +316,10 @@ class CustomTable extends Component {
 							>
 								{!this.props.noHeaders && (
 									<TableHead>
-										<TableRow key="header">
-											{columns.map((column) => (
+										<TableRow key="headers">
+											{columns.map((column, index) => (
 												<TableCell
-													key={column.field}
+													key={"header" + index}
 													align={column.align}
 													style={{
 														minWidth:
@@ -323,6 +327,7 @@ class CustomTable extends Component {
 													}}
 												>
 													<TableSortLabel
+														key={"label" + index}
 														active={
 															order.column &&
 															order.column
@@ -346,7 +351,7 @@ class CustomTable extends Component {
 									</TableHead>
 								)}
 								<TableBody>
-									{this.pageRows().map((row, index) => {
+									{this.pageRows().map((row, i) => {
 										return (
 											<TableRow
 												hover
@@ -354,14 +359,14 @@ class CustomTable extends Component {
 													this.props.classes.row
 												}
 												tabIndex={-1}
-												key={index}
+												key={"row" + i}
 												selected={row === selectedRow}
 												onClick={(event) =>
 													this.rowSelected(row)
 												}
 												onContextMenu={this.openMenu}
 											>
-												{columns.map((column) => {
+												{columns.map((column, j) => {
 													const color =
 														this.getCellColor(
 															row,
@@ -370,8 +375,10 @@ class CustomTable extends Component {
 													return (
 														<TableCell
 															key={
-																column.field +
-																index
+																"cell" +
+																i +
+																"-" +
+																j
 															}
 															align={column.align}
 															style={{
@@ -384,7 +391,7 @@ class CustomTable extends Component {
 															"actions"
 																? this.rowActionButtons(
 																		row,
-																		index
+																		i
 																  )
 																: this.getCellValue(
 																		row,
