@@ -109,8 +109,8 @@ class IDE extends Component {
 		this.settings = settings;
 		document.title = settings.dialect;
 		this.initializeAPI();
-		this.updateTheme(settings.dialect);
-		this.initializeMessageChannel(settings.messageChannelUrl);
+		this.updateTheme();
+		this.initializeMessageChannel();
 	}
 
 	welcomeMessage() {
@@ -149,7 +149,8 @@ class IDE extends Component {
 		);
 	}
 
-	initializeMessageChannel(url) {
+	initializeMessageChannel() {
+		const url = this.settings.messageChannelUrl;
 		if (!url) {
 			return;
 		}
