@@ -19,12 +19,12 @@ _Note: URL path does not include the base URI. The base URI targeting a particul
 
 ## [General](general)
 
-These are the endpoints used to retrieve system code: packages, classes and methods.
+These are general endpoints that apply to the system as a whole.
 
 | Method | Path                       | Description                    | Parameters | Payload |
 | :----: | -------------------------- | ------------------------------ | :--------: | ------- |
 |  GET   | [/dialect](dialect/get.md) | Retrieve the Smalltalk dialect |     -      | -       |
-|  POST  | [/general](save/post.md)   | Save the image                 |     -      | -       |
+|  POST  | [/save](save/post.md)      | Save the image                 |     -      | -       |
 
 ## [Code](code)
 
