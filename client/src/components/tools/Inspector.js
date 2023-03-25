@@ -92,12 +92,11 @@ class Inspector extends Component {
 			slots = [];
 			ide.reportError(error);
 		}
+		const current = object.slots || [];
 		if (slots.length > 0) {
 			object.slots = slots.map((s) => {
 				s.path = [...object.path, s.slot];
-				const existing = (object.slots || []).find(
-					(e) => e.slot === s.slot
-				);
+				const existing = current.find((e) => e.slot === s.slot);
 				const slot = existing ? Object.assign(existing, s) : s;
 				if (!slot.slots || slot.slots.length == 0) {
 					s.slots = [this.selfSlot(s)];
@@ -106,9 +105,7 @@ class Inspector extends Component {
 			});
 		} else {
 			const self = this.selfSlot(object);
-			const existing = (object.slots || []).find(
-				(e) => e.slot === "self"
-			);
+			const existing = current.find((e) => e.slot === "self");
 			if (existing) {
 				Object.assign(existing, self);
 			} else {

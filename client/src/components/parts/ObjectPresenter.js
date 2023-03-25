@@ -75,7 +75,7 @@ class ObjectPresenter extends Component {
 									styles={styles}
 									columns={presentation.columns}
 									rows={presentation.rows}
-									rowsPerPage={20}
+									rowsPerPage={50}
 									usePagination
 								/>
 							)}

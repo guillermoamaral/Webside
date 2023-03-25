@@ -98,7 +98,9 @@ class PackageBrowser extends Component {
 			selections.method = null;
 		} else {
 			if (category) {
-				selections.category = species.categories.find((c) => c === category);
+				selections.category = species.categories.find(
+					(c) => c === category
+				);
 			}
 			if (method) {
 				selections.method = species.methods.find(
@@ -254,7 +256,9 @@ class PackageBrowser extends Component {
 		const selections = this.currentSelections();
 		selections.side = side;
 		const species =
-			side === "instance" ? selections.species : selections.species.metaclass;
+			side === "instance"
+				? selections.species
+				: selections.species.metaclass;
 		await this.updateCategories(species);
 		await this.updateMethods(species);
 		this.applySelections(selections);
@@ -317,7 +321,8 @@ class PackageBrowser extends Component {
 		selections.species = species;
 		await this.updateClass(species);
 		await this.updateSubclasses(species);
-		const target = selections.side === "instance" ? species : species.metaclass;
+		const target =
+			selections.side === "instance" ? species : species.metaclass;
 		await this.updateCategories(target);
 		await this.updateMethods(target);
 		this.applySelections(selections);
@@ -331,7 +336,8 @@ class PackageBrowser extends Component {
 		const pack = this.state.selectedPackage;
 		return pack &&
 			pack.methods &&
-			(pack.methods[species.name] || pack.methods[species.name + " class"])
+			(pack.methods[species.name] ||
+				pack.methods[species.name + " class"])
 			? "italic"
 			: "normal";
 	};
@@ -525,7 +531,9 @@ class PackageBrowser extends Component {
 							<TextField
 								value={packageFilter}
 								onChange={(event) =>
-									this.setState({ packageFilter: event.target.value })
+									this.setState({
+										packageFilter: event.target.value,
+									})
 								}
 								placeholder="Filter ..."
 								name="text"
@@ -542,18 +550,30 @@ class PackageBrowser extends Component {
 								<RadioGroup
 									name="side"
 									value={selectedSide}
-									onChange={(event, side) => this.sideChanged(side)}
+									onChange={(event, side) =>
+										this.sideChanged(side)
+									}
 									defaultValue="instance"
 									row
 								>
 									<FormControlLabel
 										value="instance"
-										control={<Radio size="small" color="primary" />}
+										control={
+											<Radio
+												size="small"
+												color="primary"
+											/>
+										}
 										label="Instance"
 									/>
 									<FormControlLabel
 										value="class"
-										control={<Radio size="small" color="primary" />}
+										control={
+											<Radio
+												size="small"
+												color="primary"
+											/>
+										}
 										label="Class"
 									/>
 								</RadioGroup>
@@ -561,7 +581,10 @@ class PackageBrowser extends Component {
 						</Grid>
 						<Grid item xs={3} md={3} lg={3} />
 						<Grid item xs={12} md={3} lg={3}>
-							<Paper className={fixedHeightPaper} variant="outlined">
+							<Paper
+								className={fixedHeightPaper}
+								variant="outlined"
+							>
 								<PackageList
 									packages={filtered}
 									selected={selectedPackage}
@@ -573,9 +596,16 @@ class PackageBrowser extends Component {
 							</Paper>
 						</Grid>
 						<Grid item xs={12} md={3} lg={3}>
-							<Paper className={fixedHeightPaper} variant="outlined">
+							<Paper
+								className={fixedHeightPaper}
+								variant="outlined"
+							>
 								<ClassTree
-									roots={selectedPackage ? selectedPackage.classes : []}
+									roots={
+										selectedPackage
+											? selectedPackage.classes
+											: []
+									}
 									selected={selectedClass}
 									labelStyle={this.classLabelStyle}
 									onExpand={this.classExpanded}
@@ -587,7 +617,10 @@ class PackageBrowser extends Component {
 							</Paper>
 						</Grid>
 						<Grid item xs={12} md={3} lg={3}>
-							<Paper className={fixedHeightPaper} variant="outlined">
+							<Paper
+								className={fixedHeightPaper}
+								variant="outlined"
+							>
 								<CategoryList
 									class={selectedClass}
 									categories={this.currentCategories()}
@@ -600,7 +633,10 @@ class PackageBrowser extends Component {
 							</Paper>
 						</Grid>
 						<Grid item xs={12} md={3} lg={3}>
-							<Paper className={fixedHeightPaper} variant="outlined">
+							<Paper
+								className={fixedHeightPaper}
+								variant="outlined"
+							>
 								<MethodList
 									methods={this.currentMethods()}
 									selected={selectedMethod}
