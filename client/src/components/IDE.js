@@ -859,13 +859,14 @@ class IDE extends Component {
 		}
 	};
 
-	evaluateExpression = async (expression, sync, pin, context) => {
+	evaluateExpression = async (expression, sync, pin, context, assignee) => {
 		try {
 			const result = await this.api.evaluateExpression(
 				expression,
 				sync,
 				pin,
-				context
+				context,
+				assignee
 			);
 			if (sync) {
 				return result;

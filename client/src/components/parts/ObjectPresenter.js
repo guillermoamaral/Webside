@@ -45,21 +45,18 @@ class ObjectPresenter extends Component {
 		return null;
 	}
 
-	evaluationContext() {
-		return { object: this.props.root.id };
-	}
-
 	render() {
-		const { object, styles } = this.props;
+		const { object, context, onAccept, styles } = this.props;
 		const { selectedId, pages } = this.state;
 		const selectedPage = pages.find((p) => p.id === selectedId);
 		pages[0].component = (
 			<Paper variant="outlined" style={{ height: "100%" }}>
 				<CodeEditor
-					context={this.evaluationContext()}
+					context={context}
 					styles={styles}
 					lineNumbers={false}
 					source={!object ? "" : object.printString}
+					onAccept={onAccept}
 				/>
 			</Paper>
 		);

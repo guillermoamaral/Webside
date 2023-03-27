@@ -629,12 +629,19 @@ class API {
 	}
 
 	// Evaluations...
-	async evaluateExpression(expression, sync = false, pin = false, context) {
+	async evaluateExpression(
+		expression,
+		sync = false,
+		pin = false,
+		context,
+		assignee
+	) {
 		const evaluation = {
 			expression: expression,
 			context: context,
 			sync: sync,
 			pin: pin,
+			assignee: assignee,
 		};
 		return await this.post(
 			"/evaluations",

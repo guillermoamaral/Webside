@@ -164,6 +164,25 @@ class Inspector extends Component {
 		return { object: this.props.root.id + path };
 	}
 
+	assignEvaluation = async (expression) => {
+		const selectedObject = this.state.selectedObject;
+		if (!selectedObject || selectedObject === this.props.root) {
+			return;
+		}
+		const path = this.objectURIPath(selectedObject);
+		try {
+			await ide.evaluateExpression(
+				expression,
+				false,
+				false,
+				path,
+				this.props.root.id + path
+			);
+		} catch (error) {
+			this.setState({ selectedObject: selectedObject });
+		}
+	};
+
 	render() {
 		const { objectTree, selectedObject } = this.state;
 		const { root, styles, showWorkspace } = this.props;
@@ -247,8 +266,9 @@ class Inspector extends Component {
 						<Box flexGrow={1}>
 							<ObjectPresenter
 								styles={styles}
-								root={root}
+								context={this.evaluationContext()}
 								object={selectedObject}
+								onAccept={this.assignEvaluation}
 							/>
 						</Box>
 						<Box ml={1} mr={1}>
@@ -262,6 +282,7 @@ class Inspector extends Component {
 										styles={styles}
 										lineNumbers={false}
 										onEvaluate={this.expressionEvaluated}
+										onAccept={this.assignEvaluation}
 									/>
 								</Paper>
 							)}
