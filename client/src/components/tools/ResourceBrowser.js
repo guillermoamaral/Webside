@@ -70,29 +70,29 @@ class ResourceBrowser extends Component {
 		this.setState({ selectedType: type, resources: resources });
 	};
 
-	resourceIcon(type) {
+	resourceIcon(type, color) {
 		var icon;
 		switch (type) {
 			case "Objects":
-				icon = <InspectorIcon />;
+				icon = <InspectorIcon color={color} />;
 				break;
 			case "Evaluations":
-				icon = <InspectorIcon />;
+				icon = <InspectorIcon color={color} />;
 				break;
 			case "Workspaces":
-				icon = <WorkspaceIcon />;
+				icon = <WorkspaceIcon color={color} />;
 				break;
 			case "Debuggers":
-				icon = <DebuggerIcon />;
+				icon = <DebuggerIcon color={color} />;
 				break;
 			case "Test Runs":
-				icon = <TestRunnerIcon />;
+				icon = <TestRunnerIcon color={color} />;
 				break;
 			case "Memory":
-				icon = <MemoryIcon />;
+				icon = <MemoryIcon color={color} />;
 				break;
 			default:
-				icon = <InspectorIcon />;
+				icon = <InspectorIcon color={color} />;
 		}
 		return icon;
 	}
@@ -430,28 +430,32 @@ class ResourceBrowser extends Component {
 			<Grid container spacing={1} style={{ height: "100%" }}>
 				<Grid item xs={2} md={2} lg={2}>
 					<List>
-						{this.types.map((type) => (
-							<ListItem
-								button
-								key={type}
-								selected={type === selectedType}
-								onClick={(event) => this.typeSelected(type)}
-							>
-								{this.resourceIcon(type)}
-								<ListItemText
-									primary={<Box pl={1}>{type}</Box>}
-								/>
-							</ListItem>
-						))}
+						{this.types.map((type) => {
+							const color =
+								type == selectedType ? "primary" : "default";
+							return (
+								<ListItem
+									button
+									key={type}
+									selected={type === selectedType}
+									onClick={(event) => this.typeSelected(type)}
+								>
+									<Box pt={0.5}>
+										{this.resourceIcon(type, color)}
+									</Box>
+									<ListItemText
+										primaryTypographyProps={{
+											color: color,
+										}}
+										primary={<Box pl={1}>{type}</Box>}
+									/>
+								</ListItem>
+							);
+						})}
 					</List>
 				</Grid>
 				<Grid item xs={10} md={10} lg={10}>
 					<Grid container spacing={1}>
-						<Grid item xs={12} md={12} lg={12}>
-							<Typography variant="h6" align="center">
-								{selectedType}
-							</Typography>
-						</Grid>
 						<Grid item xs={10} md={10} lg={10}></Grid>
 						<Grid item xs={1} md={1} lg={1}>
 							{selectedType === "Objects" &&
