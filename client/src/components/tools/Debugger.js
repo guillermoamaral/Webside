@@ -1,8 +1,17 @@
 import React, { PureComponent } from "react";
-import { Grid, Paper, Typography, LinearProgress } from "@material-ui/core";
+import {
+	Grid,
+	Paper,
+	Typography,
+	LinearProgress,
+	Tabs,
+	Tab,
+	Box,
+} from "@material-ui/core";
 import { ide } from "../IDE";
 import FrameList from "../parts/FrameList";
 import BindingTable from "../parts/BindingTable";
+import ExpressionTable from "../parts/ExpressionTable";
 import CodeBrowser from "../parts/CodeBrowser";
 import DebuggerControls from "../parts/DebuggerControls";
 
@@ -13,6 +22,7 @@ class Debugger extends PureComponent {
 			frames: [],
 			selectedFrame: null,
 			stepping: false,
+			showBindings: true,
 		};
 	}
 
@@ -178,7 +188,7 @@ class Debugger extends PureComponent {
 	}
 
 	render() {
-		const { frames, selectedFrame, stepping } = this.state;
+		const { frames, selectedFrame, stepping, showBindings } = this.state;
 		const styles = this.props.styles;
 		return (
 			<Grid container spacing={1}>
@@ -201,10 +211,31 @@ class Debugger extends PureComponent {
 								onTerminateClicked={this.terminateClicked}
 							/>
 						</Grid>
-						<Grid item xs={8} md={8} lg={8}>
-							<Typography variant="body1" color="primary">
-								{this.props.title || ""}
-							</Typography>
+						<Grid item xs={4} md={4} lg={4}>
+							<Box
+								display="flex"
+								alignItems="center"
+								justifyContent="center"
+							>
+								<Typography variant="body1">
+									{this.props.title || ""}
+								</Typography>
+							</Box>
+						</Grid>
+						<Grid item>
+							<Tabs
+								value={showBindings ? 0 : 1}
+								onChange={(event, value) => {
+									this.setState({
+										showBindings: value == 0,
+									});
+								}}
+								indicatorColor="primary"
+								textColor="primary"
+							>
+								<Tab label="Bindings" />
+								<Tab label="Expressions" />
+							</Tabs>
 						</Grid>
 					</Grid>
 				</Grid>
@@ -220,12 +251,22 @@ class Debugger extends PureComponent {
 							</Paper>
 						</Grid>
 						<Grid item xs={12} md={4} lg={4}>
-							<BindingTable
-								style={{ height: 300 }}
-								styles={styles}
-								id={this.props.id}
-								frame={selectedFrame}
-							/>
+							{showBindings && (
+								<BindingTable
+									style={{ height: 300 }}
+									styles={styles}
+									id={this.props.id}
+									frame={selectedFrame}
+								/>
+							)}
+							{!showBindings && (
+								<ExpressionTable
+									style={{ height: 300 }}
+									styles={styles}
+									id={this.props.id}
+									frame={selectedFrame}
+								/>
+							)}
 						</Grid>
 					</Grid>
 				</Grid>

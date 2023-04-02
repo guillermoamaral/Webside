@@ -7,7 +7,6 @@ import {
 	ListItemText,
 	Box,
 	IconButton,
-	Typography,
 } from "@material-ui/core";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";

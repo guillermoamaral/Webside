@@ -3,7 +3,6 @@ import { Box, Paper } from "@material-ui/core";
 import { ide } from "../IDE";
 import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";
-//import Scrollable from "../controls/Scrollable";
 
 class BindingTable extends PureComponent {
 	constructor(props) {
@@ -35,15 +34,11 @@ class BindingTable extends PureComponent {
 
 	inspectBinding = async (binding) => {
 		try {
-			const context = {
-				debugger: this.props.id,
-				frame: this.props.frame ? this.props.frame.index : null,
-			};
 			const object = await ide.evaluateExpression(
 				binding.name,
 				false,
 				true,
-				context
+				this.evaluationContext()
 			);
 			ide.openInspector(object);
 		} catch (error) {

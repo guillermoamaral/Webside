@@ -12,6 +12,7 @@ import {
 	TableSortLabel,
 	Link,
 	InputBase,
+	TextField,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 import PopupMenu from "./PopupMenu";
@@ -47,6 +48,7 @@ class CustomTable extends Component {
 				column: null,
 				direction: "asc",
 			},
+			editingCell: null,
 		};
 	}
 
@@ -103,23 +105,59 @@ class CustomTable extends Component {
 		return text;
 	};
 
-	getCellValue = (row, column) => {
-		const text = this.getCellText(row, column);
-		if (!column.link) {
-			return text;
+	setCellText = (row, column, value) => {
+		console.log(row, column, value);
+	};
+
+	renderCell = (row, i, column, j) => {
+		if (column.field === "actions") {
+			return this.renderActionButtons(row, i);
 		}
-		const color = this.getCellColor(row, column);
-		return (
-			<Link
-				key={{ text }}
-				href="#"
-				onClick={() => column.link(row)}
-				color="textPrimary"
-				style={{ color: color }}
-			>
-				{text}
-			</Link>
-		);
+		const text = this.getCellText(row, column);
+		if (column.link) {
+			const color = this.getCellColor(row, column);
+			return (
+				<Link
+					key={{ text }}
+					href="#"
+					onClick={() => column.link(row)}
+					color="textPrimary"
+					style={{ color: color }}
+				>
+					{text}
+				</Link>
+			);
+		}
+		if (
+			column.editable &&
+			this.state.editingCell &&
+			this.state.editingCell[0] == i &&
+			this.state.editingCell[1] == j
+		) {
+			return (
+				<InputBase
+					size="small"
+					disabled={false}
+					readOnly={false}
+					//Review this fix size. It was fixed to avoid dynamic resizing
+					style={{ height: 20 }}
+					placeholder={text}
+					value={text}
+					inputProps={{ "aria-label": "expression", size: "small" }}
+					onChange={(event) => {
+						this.setCellText(row, column, event.target.value);
+					}}
+					onBlur={(event) => {
+						console.log("blur");
+						this.setState({ editingCell: null });
+					}}
+					// onKeyDown={(event) => {
+					// 	console.log(event.key);
+					// }}
+				/>
+			);
+		}
+		return text;
 	};
 
 	getCellColor = (row, column) => {
@@ -172,7 +210,7 @@ class CustomTable extends Component {
 		return columns;
 	}
 
-	rowActionButtons(row, index) {
+	renderActionButtons(row, index) {
 		const actions = this.props.rowActions || [];
 		return (
 			<Box display="flex" alignItems="center" key={"box" + index}>
@@ -185,7 +223,8 @@ class CustomTable extends Component {
 							action.visible(row));
 					return (
 						<Box
-							style={{ minWidth: 10 }}
+							//Review these fixed sizes. They were fixed to avoid dynamic resizing when hovering
+							style={{ width: 24, height: 22 }}
 							key={"box" + index + "action" + j}
 						>
 							{visible && (
@@ -386,17 +425,30 @@ class CustomTable extends Component {
 																borderBottom:
 																	border,
 															}}
+															onDoubleClick={(
+																event
+															) => {
+																if (
+																	column.editable
+																) {
+																	this.setState(
+																		{
+																			editingCell:
+																				[
+																					i,
+																					j,
+																				],
+																		}
+																	);
+																}
+															}}
 														>
-															{column.field ===
-															"actions"
-																? this.rowActionButtons(
-																		row,
-																		i
-																  )
-																: this.getCellValue(
-																		row,
-																		column
-																  )}
+															{this.renderCell(
+																row,
+																i,
+																column,
+																j
+															)}
 														</TableCell>
 													);
 												})}
