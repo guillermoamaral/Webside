@@ -11,8 +11,8 @@ import {
 	ListItemText,
 	Typography,
 	LinearProgress,
-} from "@material-ui/core";
-import { Pagination } from "@material-ui/lab";
+} from "@mui/material";
+import { Pagination } from "@mui/lab";
 import { ide } from "../IDE";
 
 class Search extends Component {

@@ -6,7 +6,7 @@ import {
 	Breadcrumbs,
 	Link,
 	Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { ide } from "../IDE";
 import ObjectTree from "../parts/ObjectTree";
 import ObjectPresenter from "../parts/ObjectPresenter";

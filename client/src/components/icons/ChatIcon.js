@@ -1,5 +1,5 @@
 import React from "react";
-import Icon from "@material-ui/icons/ChatBubbleOutlined";
+import Icon from "@mui/icons-material/ChatBubbleOutlined";
 
 export default function ChatIcon() {
 	return <Icon fontSize="small" />;

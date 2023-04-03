@@ -7,10 +7,10 @@ import {
 	Typography,
 	IconButton,
 	Box,
-} from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-import PlayIcon from "@material-ui/icons/PlayArrow";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import PlayIcon from "@mui/icons-material/PlayArrow";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InspectorIcon from "../icons/InspectorIcon";
 import CodeEditor from "../parts/CodeEditor";
 import Inspector from "./Inspector";

@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Box, IconButton, Tooltip } from "@material-ui/core";
+import { Box, IconButton, Tooltip } from "@mui/material";
 import { Icon } from "@iconify/react";
 import RestartIcon from "@iconify/icons-mdi/replay";
 import StepIntoIcon from "@iconify/icons-mdi/debug-step-into";

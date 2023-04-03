@@ -7,7 +7,7 @@ import {
 	DialogContentText,
 	DialogTitle,
 	Button,
-} from "@material-ui/core";
+} from "@mui/material";
 
 function ConfirmDialog(props, context) {
 	const { open, onClose, onExited, title, message, ok, cancel } = props;

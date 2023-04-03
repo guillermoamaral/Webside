@@ -9,15 +9,15 @@ import {
 	IconButton,
 	Badge,
 	Tooltip,
-} from "@material-ui/core";
+} from "@mui/material";
 import clsx from "clsx";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import TranscriptIcon from "../icons/TranscriptIcon";
-import SearchIcon from "@material-ui/icons/Search";
-import ResourcesIcon from "@material-ui/icons/PinDropRounded";
+import SearchIcon from "@mui/icons-material/Search";
+import ResourcesIcon from "@mui/icons-material/PinDropRounded";
 import ChangesBrowserIcon from "../icons/ChangesBrowserIcon";
-import PeopleIcon from "@material-ui/icons/People";
-import SaveImageIcon from "@material-ui/icons/CameraAlt";
+import PeopleIcon from "@mui/icons-material/People";
+import SaveImageIcon from "@mui/icons-material/CameraAlt";
 import { withDialog } from "../dialogs/index";
 
 class Sidebar extends Component {

@@ -7,7 +7,7 @@ import {
 	TextField,
 	Typography,
 	LinearProgress,
-} from "@material-ui/core";
+} from "@mui/material";
 import { ide } from "../IDE";
 import ChangesTable from "../parts/ChangesTable";
 import API from "../API";

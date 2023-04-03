@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { ide } from "../IDE";
-import { Grid } from "@material-ui/core";
+import { Grid } from "@mui/material";
 import {
 	Chart as ChartJS,
 	CategoryScale,

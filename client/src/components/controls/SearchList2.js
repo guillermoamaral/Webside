@@ -8,9 +8,9 @@ import {
 	Box,
 	Typography,
 	InputAdornment,
-} from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
-import SearchIcon from "@material-ui/icons/SearchRounded";
+} from "@mui/material";
+import { withStyles } from "@mui/styles";
+import SearchIcon from "@mui/icons-material/SearchRounded";
 
 const styles = (theme) => ({
 	container: {

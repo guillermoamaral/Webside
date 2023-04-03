@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Grid, Paper, Link } from "@material-ui/core";
-import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
+import { Grid, Paper, Link } from "@mui/material";
+import { ToggleButton, ToggleButtonGroup } from "@mui/lab";
 import { ide } from "../IDE";
 import CodeEditor from "./CodeEditor";
 import { withDialog } from "../dialogs/index";

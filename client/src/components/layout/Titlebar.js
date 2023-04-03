@@ -8,10 +8,10 @@ import {
 	Link,
 	InputBase,
 	Box,
-} from "@material-ui/core";
+} from "@mui/material";
 import clsx from "clsx";
-import MenuIcon from "@material-ui/icons/Menu";
-import SearchIcon from "@material-ui/icons/Search";
+import MenuIcon from "@mui/icons-material/Menu";
+import SearchIcon from "@mui/icons-material/Search";
 import { ide } from "../IDE";
 
 class Titlebar extends Component {

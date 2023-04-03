@@ -1,5 +1,5 @@
 import React from "react";
-import Icon from "@material-ui/icons/AccountTreeRounded";
+import Icon from "@mui/icons-material/AccountTreeRounded";
 
 export default function ClassBrowserIcon() {
 	return <Icon fontSize="small" />;

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid, Divider, Typography } from "@material-ui/core";
+import { Grid, Divider, Typography } from "@mui/material";
 import ConnectionSettings from "./ConnectionSettings";
 import { withRouter } from "react-router-dom";
 

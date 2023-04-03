@@ -1,5 +1,5 @@
 import React from "react";
-import Icon from "@material-ui/icons/ReorderRounded";
+import Icon from "@mui/icons-material/ReorderRounded";
 
 export default function ChangesBrowserIcon() {
 	return <Icon fontSize="small" />;

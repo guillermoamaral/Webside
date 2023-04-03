@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, TextField, Grid } from "@material-ui/core";
+import { Button, TextField, Grid } from "@mui/material";
 import axios from "axios";
 
 class ConnectionSettings extends Component {

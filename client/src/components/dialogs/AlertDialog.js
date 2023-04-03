@@ -7,7 +7,7 @@ import {
 	DialogContentText,
 	DialogTitle,
 	Button,
-} from "@material-ui/core";
+} from "@mui/material";
 
 function AlertDialog(props, context) {
 	const { open, onClose, onExited, title, message, ok } = props;

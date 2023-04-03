@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Tabs, Tab, Box } from "@material-ui/core";
+import { Tabs, Tab, Box } from "@mui/material";
 import TabPanel from "./TabPanel";
 import TabLabel from "./TabLabel";
 

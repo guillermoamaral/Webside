@@ -11,7 +11,7 @@ import {
 	OutlinedInput,
 	IconButton,
 	Tooltip,
-} from "@material-ui/core";
+} from "@mui/material";
 import clsx from "clsx";
 import { ide } from "../IDE";
 import SearchList2 from "../controls/SearchList2";
@@ -20,7 +20,7 @@ import VariableList from "../parts/VariableList";
 import CategoryList from "../parts/CategoryList";
 import MethodList from "../parts/MethodList";
 import CodeBrowser from "../parts/CodeBrowser";
-import UpIcon from "@material-ui/icons/ArrowDropUp";
+import UpIcon from "@mui/icons-material/ArrowDropUp";
 
 class ClassBrowser extends Component {
 	constructor(props) {

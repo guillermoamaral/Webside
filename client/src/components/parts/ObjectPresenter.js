@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Paper } from "@material-ui/core";
+import { Paper } from "@mui/material";
 import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";
 import TabControl from "../controls/TabControl";

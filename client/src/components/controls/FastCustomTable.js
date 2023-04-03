@@ -8,7 +8,7 @@ import {
 	TableRow,
 	TableCell,
 	Box,
-} from "@material-ui/core";
+} from "@mui/material";
 
 const ROW_HEIGHT = 30;
 

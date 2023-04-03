@@ -6,7 +6,7 @@ import {
 	FormGroup,
 	FormControlLabel,
 	Checkbox,
-} from "@material-ui/core";
+} from "@mui/material";
 import clsx from "clsx";
 import { ide } from "../IDE";
 import MethodList from "../parts/MethodList";

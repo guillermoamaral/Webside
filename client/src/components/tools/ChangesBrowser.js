@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { Grid, Paper, Box, IconButton } from "@material-ui/core";
+import { Grid, Paper, Box, IconButton } from "@mui/material";
 import CodeMerge from "../parts/CodeMerge";
 //import CodeEditor from "../parts/CodeEditor";
 import { ide } from "../IDE";
 import ChangesTable from "../parts/ChangesTable";
-import DownloadIcon from "@material-ui/icons/GetApp";
+import DownloadIcon from "@mui/icons-material/GetApp";
 import Scrollable from "../controls/Scrollable";
 
 class ChangesBrowser extends Component {

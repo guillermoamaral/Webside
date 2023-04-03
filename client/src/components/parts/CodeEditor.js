@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Grid, Box, IconButton, LinearProgress } from "@material-ui/core";
-import AcceptIcon from "@material-ui/icons/CheckCircle";
+import { Grid, Box, IconButton, LinearProgress } from "@mui/material";
+import AcceptIcon from "@mui/icons-material/CheckCircle";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import PopupMenu from "../controls/PopupMenu";
 import { ide } from "../IDE";

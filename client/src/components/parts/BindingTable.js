@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Box, Paper } from "@material-ui/core";
+import { Box, Paper } from "@mui/material";
 import { ide } from "../IDE";
 import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";

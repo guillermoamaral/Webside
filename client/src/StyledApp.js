@@ -1,8 +1,15 @@
+import React, { Component } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { withStyles, makeStyles } from "@mui/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { DialogProvider } from "./components/dialogs/index";
+import { CookiesProvider } from "react-cookie";
+import Login from "./components/Login";
+import IDE from "./components/IDE";
 import { alpha } from "@mui/material/styles";
-import { createStyles, makeStyles } from '@mui/styles';
 
 const drawerWidth = 240;
-const styles = (theme) => ({
+const styles = makeStyles((theme) => ({
 	root: {
 		display: "flex",
 	},
@@ -136,6 +143,61 @@ const styles = (theme) => ({
 			},
 		},
 	},
-});
+}));
 
-export default styles;
+class StyledApp extends Component {
+	render() {
+		return (
+			<div className={this.props.classes.root}>
+				<CssBaseline />
+				<DialogProvider>
+					<CookiesProvider>
+						<div className={this.props.classes.root}>
+							<Router>
+								<Switch>
+									<Route
+										path="/"
+										exact
+										component={() => (
+											<Login styles={this.props.classes} />
+										)}
+									/>
+									<Route
+										path="/ide/"
+										exact
+										component={() => (
+											<IDE styles={this.props.classes} />
+										)}
+									/>
+									<Route
+										path="/ide?baseUri=:baseUri"
+										exact
+										component={() => (
+											<IDE styles={this.props.classes} />
+										)}
+									/>
+									<Route
+										path="/ide/classes/:classname"
+										exact
+										component={() => (
+											<IDE styles={this.props.classes} />
+										)}
+									/>
+									<Route
+										path="/ide/debuggers/:debugger"
+										exact
+										component={() => (
+											<IDE styles={this.props.classes} />
+										)}
+									/>
+								</Switch>
+							</Router>
+						</div>
+					</CookiesProvider>
+				</DialogProvider>
+			</div>
+		);
+	}
+}
+
+export default withStyles(styles)(StyledApp);

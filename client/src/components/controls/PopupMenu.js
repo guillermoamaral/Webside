@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Menu, MenuItem, Divider } from "@material-ui/core";
+import { Menu, MenuItem, Divider } from "@mui/material";
 import NestedMenuItem from "material-ui-nested-menu-item";
 
 class PopupMenu extends Component {

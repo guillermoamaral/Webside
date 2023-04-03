@@ -9,7 +9,7 @@ import {
 	DialogTitle,
 	Button,
 	Paper,
-} from "@material-ui/core";
+} from "@mui/material";
 import CustomList from "../controls/CustomList";
 
 function ListDialog(props, context) {

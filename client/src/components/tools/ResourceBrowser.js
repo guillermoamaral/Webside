@@ -7,7 +7,7 @@ import {
 	ListItemText,
 	Box,
 	IconButton,
-} from "@material-ui/core";
+} from "@mui/material";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
 import InspectorIcon from "../icons/InspectorIcon";
@@ -16,9 +16,9 @@ import DebuggerIcon from "../icons/DebuggerIcon";
 import TestRunnerIcon from "../icons/TestRunnerIcon";
 import MemoryIcon from "../icons/MemoryIcon";
 import MemoryStats from "./MemoryStats";
-import RefreshIcon from "@material-ui/icons/Refresh";
-import DeleteIcon from "@material-ui/icons/Delete";
-import StopIcon from "@material-ui/icons/Stop";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import DeleteIcon from "@mui/icons-material/Delete";
+import StopIcon from "@mui/icons-material/Stop";
 
 class ResourceBrowser extends Component {
 	constructor(props) {

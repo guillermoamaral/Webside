@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import {
 	Container,
-	createMuiTheme,
+	createTheme,
 	Grid,
 	IconButton,
 	Menu,
@@ -10,20 +10,20 @@ import {
 	Box,
 	Backdrop,
 	CircularProgress,
-} from "@material-ui/core";
-import { ThemeProvider } from "@material-ui/styles";
+} from "@mui/material";
+import { ThemeProvider } from "@mui/styles";
 import { withCookies } from "react-cookie";
 import { withRouter } from "react-router-dom";
 import { withDialog } from "./dialogs/index";
-import { amber, blue, green } from "@material-ui/core/colors";
-import AddIcon from "@material-ui/icons/AddCircle";
-import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
+import { amber, blue, green } from "@mui/material/colors";
+import AddIcon from "@mui/icons-material/AddCircle";
+import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import API from "./API";
 import { DialogProvider } from "./dialogs/index";
 import CustomSnacks from "./controls/CustomSnacks";
 import TranscriptIcon from "./icons/TranscriptIcon";
-import SearchIcon from "@material-ui/icons/Search";
-import MigratorIcon from "@material-ui/icons/Send";
+import SearchIcon from "@mui/icons-material/Search";
+import MigratorIcon from "@mui/icons-material/Send";
 import PackageBrowserIcon from "./icons/PackageBrowserIcon";
 import ClassBrowserIcon from "./icons/ClassBrowserIcon";
 import MethodBrowserIcon from "./icons/MethodBrowserIcon";
@@ -33,7 +33,7 @@ import ChangesBrowserIcon from "./icons/ChangesBrowserIcon";
 import DebuggerIcon from "./icons/DebuggerIcon";
 import TestRunnerIcon from "./icons/TestRunnerIcon";
 import ChatIcon from "./icons/ChatIcon";
-import SettingsIcon from "@material-ui/icons/Settings";
+import SettingsIcon from "@mui/icons-material/Settings";
 import Titlebar from "./layout/Titlebar";
 import Sidebar from "./layout/Sidebar";
 import TabControl from "./controls/TabControl";
@@ -216,7 +216,7 @@ class IDE extends Component {
 				mainPrimaryColor = "#00000";
 				mainSecondaryColor = "#00000";
 		}
-		this.theme = createMuiTheme({
+		this.theme = createTheme({
 			typography: {
 				//fontFamily: '"Segoe UI"',
 				fontSize: 13,
@@ -225,7 +225,7 @@ class IDE extends Component {
 				},
 			},
 			palette: {
-				type: "dark",
+				mode: "dark",
 				primary: {
 					main: mainPrimaryColor,
 				},

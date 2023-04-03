@@ -1,11 +1,11 @@
 import React, { PureComponent } from "react";
-import { Box, Paper, IconButton } from "@material-ui/core";
+import { Box, Paper, IconButton } from "@mui/material";
 import { ide } from "../IDE";
 import CustomTable from "../controls/CustomTable";
 //import { DataGrid } from "@mui/x-data-grid";
 import CodeEditor from "../parts/CodeEditor";
-import AddIcon from "@material-ui/icons/AddCircle";
-import DeleteIcon from "@material-ui/icons/Delete";
+import AddIcon from "@mui/icons-material/AddCircle";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { withDialog } from "../dialogs/index";
 
 class ExpressionTable extends PureComponent {

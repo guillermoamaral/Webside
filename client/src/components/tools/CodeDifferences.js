@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid, Paper } from "@material-ui/core";
+import { Grid, Paper } from "@mui/material";
 import CodeMerge from "../parts/CodeMerge";
 
 class CodeDifferences extends Component {

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid, Paper, IconButton, Tooltip } from "@material-ui/core";
+import { Grid, Paper, IconButton, Tooltip } from "@mui/material";
 import clsx from "clsx";
 import { Icon } from "@iconify/react";
 import SuspendIcon from "@iconify/icons-mdi/pause";

@@ -7,7 +7,7 @@ import {
 	FormControlLabel,
 	Radio,
 	TextField,
-} from "@material-ui/core";
+} from "@mui/material";
 import clsx from "clsx";
 import { ide } from "../IDE";
 import PackageList from "../parts/PackageList";

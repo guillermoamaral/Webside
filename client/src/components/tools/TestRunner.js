@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { ide } from "../IDE";
-import LinearProgress from "@material-ui/core/LinearProgress";
+import LinearProgress from "@mui/material/LinearProgress";
 import {
 	Accordion,
 	AccordionSummary,
@@ -10,8 +10,8 @@ import {
 	Card,
 	CardContent,
 	CardActionArea,
-} from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CustomTable from "../controls/CustomTable";
 import {
 	Chart as ChartJS,

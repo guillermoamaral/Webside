@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid } from "@material-ui/core";
+import { Grid } from "@mui/material";
 import ConnectionSettings from "./ConnectionSettings";
 import { withRouter } from "react-router-dom";
 
@@ -16,6 +16,7 @@ class Login extends Component {
 	};
 
 	render() {
+		console.log(this.props)
 		return (
 			<div className={this.props.styles.root}>
 				<Grid

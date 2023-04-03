@@ -13,11 +13,11 @@ import {
 	Link,
 	InputBase,
 	TextField,
-} from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import { withStyles } from "@mui/styles";
 import PopupMenu from "./PopupMenu";
 import Scrollable from "./Scrollable";
-import SearchIcon from "@material-ui/icons/Search";
+import SearchIcon from "@mui/icons-material/Search";
 
 const styles = () => ({
 	row: {

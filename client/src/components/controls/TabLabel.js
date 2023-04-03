@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { IconButton, Box } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
+import { IconButton, Box } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 class TabLabel extends Component {
 	render() {

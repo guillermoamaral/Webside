@@ -9,11 +9,11 @@ import {
 	Accordion,
 	AccordionSummary,
 	Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { ide } from "../IDE";
 import SearchList2 from "../controls/SearchList2";
 import ClassTree from "../parts/ClassTree";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CodeEditor from "../parts/CodeEditor";
 
 class CoderLikeBrowser extends Component {

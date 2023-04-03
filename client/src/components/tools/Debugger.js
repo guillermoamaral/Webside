@@ -7,7 +7,7 @@ import {
 	Tabs,
 	Tab,
 	Box,
-} from "@material-ui/core";
+} from "@mui/material";
 import { ide } from "../IDE";
 import FrameList from "../parts/FrameList";
 import BindingTable from "../parts/BindingTable";

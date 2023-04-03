@@ -1,5 +1,5 @@
 import React from "react";
-import Icon from "@material-ui/icons/PlaylistPlayRounded";
+import Icon from "@mui/icons-material/PlaylistPlayRounded";
 
 export default function TranscriptIcon(props) {
 	return <Icon color={props.color} />;

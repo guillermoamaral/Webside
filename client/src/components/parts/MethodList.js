@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import OverridenIcon from "@material-ui/icons/ExpandMore";
-import OverridingIcon from "@material-ui/icons/ExpandLess";
-import OverridingOverridenIcon from "@material-ui/icons/UnfoldMore";
+import OverridenIcon from "@mui/icons-material/ExpandMore";
+import OverridingIcon from "@mui/icons-material/ExpandLess";
+import OverridingOverridenIcon from "@mui/icons-material/UnfoldMore";
 import CustomList from "../controls/CustomList";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";

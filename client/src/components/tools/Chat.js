@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { Grid, Paper, Box, TextField, IconButton } from "@material-ui/core";
+import { Grid, Paper, Box, TextField, IconButton } from "@mui/material";
 import clsx from "clsx";
 import CustomList from "../controls/CustomList";
-import SendIcon from "@material-ui/icons/Send";
+import SendIcon from "@mui/icons-material/Send";
 
 class Chat extends Component {
 	constructor(props) {

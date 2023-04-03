@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import CodeEditor from "../parts/CodeEditor";
-//import { Paper } from "@material-ui/core";
+//import { Paper } from "@mui/material";
 import { ide } from "../IDE";
 
 class Transcript extends Component {

@@ -7,7 +7,7 @@ import {
 	TextField,
 	Typography,
 	Link,
-} from "@material-ui/core";
+} from "@mui/material";
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import PopupMenu from "./PopupMenu";

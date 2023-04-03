@@ -1,15 +1,10 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { withStyles } from "@material-ui/core/styles";
-import { createMuiTheme, CssBaseline } from "@material-ui/core";
-import styles from "./styles";
-import { ThemeProvider } from "@material-ui/styles";
-import { DialogProvider } from "./components/dialogs/index";
-import { CookiesProvider } from "react-cookie";
-import Login from "./components/Login";
-import IDE from "./components/IDE";
+import { withStyles } from "@mui/styles";
+import { createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/styles";
+import StyledApp from "./StyledApp";
 
-const theme = createMuiTheme({
+const theme = createTheme({
 	typography: {
 		//fontFamily: '"Segoe UI"',
 		fontSize: 13,
@@ -18,7 +13,7 @@ const theme = createMuiTheme({
 		},
 	},
 	palette: {
-		type: "dark",
+		mode: "dark",
 		primary: {
 			main: "#00000",
 		},
@@ -36,57 +31,10 @@ class App extends Component {
 	render() {
 		return (
 			<ThemeProvider theme={theme}>
-				<CssBaseline />
-				<DialogProvider>
-					<CookiesProvider>
-						<div className={styles.root}>
-							<Router>
-								<Switch>
-									<Route
-										path="/"
-										exact
-										component={() => (
-											<Login
-												styles={this.props.classes}
-											/>
-										)}
-									/>
-									<Route
-										path="/ide/"
-										exact
-										component={() => (
-											<IDE styles={this.props.classes} />
-										)}
-									/>
-									<Route
-										path="/ide?baseUri=:baseUri"
-										exact
-										component={() => (
-											<IDE styles={this.props.classes} />
-										)}
-									/>
-									<Route
-										path="/ide/classes/:classname"
-										exact
-										component={() => (
-											<IDE styles={this.props.classes} />
-										)}
-									/>
-									<Route
-										path="/ide/debuggers/:debugger"
-										exact
-										component={() => (
-											<IDE styles={this.props.classes} />
-										)}
-									/>
-								</Switch>
-							</Router>
-						</div>
-					</CookiesProvider>
-				</DialogProvider>
+				<StyledApp />
 			</ThemeProvider>
 		);
 	}
 }
 
-export default withStyles(styles)(App);
+export default App;

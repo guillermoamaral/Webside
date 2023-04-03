@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { ide } from "../IDE";
-import { Grid, Paper, LinearProgress } from "@material-ui/core";
-import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
+import { Grid, Paper, LinearProgress } from "@mui/material";
+import { ToggleButton, ToggleButtonGroup } from "@mui/lab";
 import CodeEditor from "../parts/CodeEditor";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { FlameGraph } from "react-flame-graph";

@@ -9,7 +9,7 @@ import {
 	DialogTitle,
 	Button,
 	TextField,
-} from "@material-ui/core";
+} from "@mui/material";
 
 function PromptDialog(props, context) {
 	const {

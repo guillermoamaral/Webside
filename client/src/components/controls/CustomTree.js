@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import TreeView from "@material-ui/lab/TreeView";
-import TreeItem from "@material-ui/lab/TreeItem";
-import { Box, Typography } from "@material-ui/core";
-import ArrowRightIcon from "@material-ui/icons/ArrowRight";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import TreeView from "@mui/lab/TreeView";
+import TreeItem from "@mui/lab/TreeItem";
+import { Box, Typography } from "@mui/material";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import PopupMenu from "./PopupMenu";
 import Scrollable from "./Scrollable";
 
