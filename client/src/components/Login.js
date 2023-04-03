@@ -21,7 +21,7 @@ class Login extends Component {
 				<Grid
 					container
 					direction="column"
-					justify="center"
+					justifyContent="center"
 					alignItems="center"
 					spacing={0}
 					style={{ minHeight: "80vh" }}

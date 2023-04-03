@@ -187,30 +187,40 @@ class ExpressionTable extends PureComponent {
 			>
 				<Box pb={1} height={"80%"}>
 					<Paper variant="outlined" style={{ height: "100%" }}>
-						<IconButton
-							id="addExpression"
-							color="primary"
-							size="small"
-							onClick={this.addExpression}
+						<Box
+							display="flex"
+							flexDirection="column"
+							height={"100%"}
 						>
-							<AddIcon />
-						</IconButton>
-						<CustomTable
-							noHeaders
-							styles={styles}
-							columns={this.expressionColumns()}
-							rows={expressions}
-							onSelect={this.expressionSelected}
-							menuOptions={this.expressionOptions()}
-							rowActions={this.expressionActions()}
-						/>
-						{/* <DataGrid
+							<Box flexGrow={1}>
+								<CustomTable
+									//noHeaders
+									styles={styles}
+									columns={this.expressionColumns()}
+									rows={expressions}
+									onSelect={this.expressionSelected}
+									menuOptions={this.expressionOptions()}
+									rowActions={this.expressionActions()}
+								/>
+								{/* <DataGrid
 							rows={expressions}
 							columns={this.expressionColumns()}
 							disableSelectionOnClick
 							density="compact"
 							disableColumnMenu
 						/> */}
+							</Box>
+							<Box>
+								<IconButton
+									id="addExpression"
+									color="primary"
+									size="small"
+									onClick={this.addExpression}
+								>
+									<AddIcon />
+								</IconButton>
+							</Box>
+						</Box>
 					</Paper>
 				</Box>
 				<Box height={"20%"}>

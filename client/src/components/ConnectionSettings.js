@@ -46,12 +46,17 @@ class ConnectionSettings extends Component {
 		const settings = this.state.settings;
 		return (
 			<div className={this.props.styles.root}>
-				<Grid container direction="column" justify="center" spacing={1}>
+				<Grid
+					container
+					direction="column"
+					justifyContent="center"
+					spacing={1}
+				>
 					<Grid item>
 						<Grid
 							container
 							direction="row"
-							justify="center"
+							justifyContent="center"
 							spacing={1}
 						>
 							<Grid item>

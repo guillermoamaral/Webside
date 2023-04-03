@@ -1044,7 +1044,10 @@ class IDE extends Component {
 							/>
 							<main className={styles.content}>
 								<div className={styles.appBarSpacer} />
-								<Container className={styles.container}>
+								<Container
+									className={styles.container}
+									//maxWidth={false}
+								>
 									<Grid
 										container
 										spacing={1}

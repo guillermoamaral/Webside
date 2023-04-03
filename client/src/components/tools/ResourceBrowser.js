@@ -431,7 +431,7 @@ class ResourceBrowser extends Component {
 					<List>
 						{this.types.map((type) => {
 							const color =
-								type == selectedType ? "primary" : "default";
+								type == selectedType ? "primary" : "inherit";
 							return (
 								<ListItem
 									button

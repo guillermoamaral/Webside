@@ -163,23 +163,25 @@ class TestRunner extends Component {
 
 	groupByClass(results) {
 		const grouped = {};
-		["passed", "failed", "errors", "skipped", "knownIssues"].forEach((k) => {
-			const tests = results[k] || [];
-			tests.forEach((t) => {
-				const c = t.class;
-				t.type = k;
-				if (!grouped[c]) {
-					grouped[c] = { summary: this.newSummary(), all: [] };
-				}
-				if (!grouped[c][k]) {
-					grouped[c][k] = [];
-				}
-				grouped[c][k].push(t);
-				grouped[c].all.push(t);
-				grouped[c].summary[k] += 1;
-				grouped[c].summary.run += 1;
-			});
-		});
+		["passed", "failed", "errors", "skipped", "knownIssues"].forEach(
+			(k) => {
+				const tests = results[k] || [];
+				tests.forEach((t) => {
+					const c = t.class;
+					t.type = k;
+					if (!grouped[c]) {
+						grouped[c] = { summary: this.newSummary(), all: [] };
+					}
+					if (!grouped[c][k]) {
+						grouped[c][k] = [];
+					}
+					grouped[c][k].push(t);
+					grouped[c].all.push(t);
+					grouped[c].summary[k] += 1;
+					grouped[c].summary.run += 1;
+				});
+			}
+		);
 		return grouped;
 	}
 
@@ -202,7 +204,11 @@ class TestRunner extends Component {
 
 	menuOptions() {
 		return [
-			{ label: "Debug", action: this.debugTest, enabled: this.canDebugTest },
+			{
+				label: "Debug",
+				action: this.debugTest,
+				enabled: this.canDebugTest,
+			},
 			{ label: "Browse implementors", action: this.browseImplementors },
 			{ label: "Browse class", action: this.browseClass },
 		];
@@ -230,8 +236,18 @@ class TestRunner extends Component {
 
 	testColumns() {
 		return [
-			{ field: "selector", label: "Selector", minWidth: 100, align: "left" },
-			{ field: "time", label: "Time (ms)", minWidth: 100, align: "right" },
+			{
+				field: "selector",
+				label: "Selector",
+				minWidth: 100,
+				align: "left",
+			},
+			{
+				field: "time",
+				label: "Time (ms)",
+				minWidth: 100,
+				align: "right",
+			},
 		];
 	}
 
@@ -255,9 +271,13 @@ class TestRunner extends Component {
 		const grouped = results.grouped;
 		const ranking = Object.keys(grouped).sort((c1, c2) => {
 			const n1 =
-				grouped[c1].summary.failed || 0 + grouped[c1].summary.error || 0;
+				grouped[c1].summary.failed ||
+				0 + grouped[c1].summary.error ||
+				0;
 			const n2 =
-				grouped[c2].summary.failed || 0 + grouped[c2].summary.error || 0;
+				grouped[c2].summary.failed ||
+				0 + grouped[c2].summary.error ||
+				0;
 			return n1 > n2 ? -1 : n1 < n2 ? 1 : 0;
 		});
 		return (
@@ -267,7 +287,7 @@ class TestRunner extends Component {
 					spacing={1}
 					display="flex"
 					alignItems="center"
-					justify="center"
+					justifyContent="center"
 				>
 					<Grid item xs={12} md={12} lg={12}>
 						<Typography variant="h6" color="primary">
@@ -276,12 +296,18 @@ class TestRunner extends Component {
 					</Grid>
 					<Grid item xs={10} md={10} lg={10}>
 						{running && (
-							<LinearProgress variant="determinate" value={percent} />
+							<LinearProgress
+								variant="determinate"
+								value={percent}
+							/>
 						)}
 					</Grid>
 					<Grid item xs={1} md={1} lg={1}>
 						{running && (
-							<Typography variant="subtitle1" color="textSecondary">
+							<Typography
+								variant="subtitle1"
+								color="textSecondary"
+							>
 								{summary.run} / {total}
 							</Typography>
 						)}
@@ -290,16 +316,23 @@ class TestRunner extends Component {
 						<Button
 							variant="outlined"
 							color={running ? "secondary" : "primary"}
-							onClick={() => (running ? this.stopClicked() : this.runClicked())}
+							onClick={() =>
+								running ? this.stopClicked() : this.runClicked()
+							}
 						>
 							{running ? "Stop" : "Run"}
 						</Button>
 					</Grid>
 					<Grid item xs={12} md={12} lg={12}>
 						{running && (
-							<Typography variant="subtitle1" color="textSecondary">
+							<Typography
+								variant="subtitle1"
+								color="textSecondary"
+							>
 								Running:{" "}
-								{current ? current.class + ": " + current.selector : ""}
+								{current
+									? current.class + ": " + current.selector
+									: ""}
 							</Typography>
 						)}
 					</Grid>
@@ -307,29 +340,50 @@ class TestRunner extends Component {
 						<Grid
 							container
 							spacing={1}
-							justify="space-around"
+							justifyContent="space-around"
 							alignItems="flex-end"
 						>
 							{Object.keys(summary).map((type) => {
 								return (
-									<Grid item xs={2} md={2} lg={2} key={"grid-" + type}>
+									<Grid
+										item
+										xs={2}
+										md={2}
+										lg={2}
+										key={"grid-" + type}
+									>
 										<Card
 											id={"card-" + type}
-											style={{ backgroundColor: this.typeColor(type) }}
+											style={{
+												backgroundColor:
+													this.typeColor(type),
+											}}
 										>
 											<CardActionArea
-												onClick={(event) => this.filterTests(type)}
+												onClick={(event) =>
+													this.filterTests(type)
+												}
 											>
-												<CardContent key={"card-content-" + type}>
+												<CardContent
+													key={"card-content-" + type}
+												>
 													<Typography
-														variant={type === "run" ? "h2" : "h3"}
-														style={{ color: "white" }}
+														variant={
+															type === "run"
+																? "h2"
+																: "h3"
+														}
+														style={{
+															color: "white",
+														}}
 													>
 														{summary[type] || 0}
 													</Typography>
 													<Typography
 														variant={"button"}
-														style={{ color: "white" }}
+														style={{
+															color: "white",
+														}}
 														align="right"
 													>
 														{type}
@@ -345,7 +399,10 @@ class TestRunner extends Component {
 					<Grid item xs={12} md={12} lg={12}>
 						{ranking
 							.filter((c) => {
-								return !filterType || grouped[c].summary[filterType] > 0;
+								return (
+									!filterType ||
+									grouped[c].summary[filterType] > 0
+								);
 							})
 							.map((c) => {
 								const classSummary = grouped[c].summary;
@@ -359,12 +416,16 @@ class TestRunner extends Component {
 									labels: [c],
 									datasets: Object.keys(classSummary)
 										.filter((type) => {
-											return type !== "run" && classSummary[type] > 0;
+											return (
+												type !== "run" &&
+												classSummary[type] > 0
+											);
 										})
 										.map((type) => {
 											return {
 												label: type,
-												backgroundColor: this.typeColor(type),
+												backgroundColor:
+													this.typeColor(type),
 												borderWidth: 0,
 												data: [classSummary[type] || 0],
 											};
@@ -402,7 +463,11 @@ class TestRunner extends Component {
 											expandIcon={<ExpandMoreIcon />}
 											id={c}
 										>
-											<Bar height={15} data={data} options={options} />
+											<Bar
+												height={15}
+												data={data}
+												options={options}
+											/>
 										</AccordionSummary>
 										<Grid container>
 											<Grid item xs={1} md={1} lg={1} />

@@ -198,7 +198,7 @@ class Debugger extends PureComponent {
 						spacing={1}
 						direction="row"
 						alignItems="center"
-						justify="center"
+						justifyContent="center"
 					>
 						<Grid item xs={4} md={4} lg={4}>
 							<DebuggerControls
@@ -234,7 +234,7 @@ class Debugger extends PureComponent {
 								textColor="primary"
 							>
 								<Tab label="Bindings" />
-								<Tab label="Expressions" />
+								<Tab label="Watch expressions" />
 							</Tabs>
 						</Grid>
 					</Grid>

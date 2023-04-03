@@ -103,7 +103,9 @@ class Workspace extends Component {
 							lineNumbers={false}
 							source={expression}
 							showAccept
-							acceptIcon={<PlayIcon />}
+							acceptIcon={
+								<PlayIcon style={{ color: "#3bba5d" }} />
+							}
 							onAccept={this.evaluateClicked}
 							onChange={this.expressionChanged}
 							evaluating={evaluating}
@@ -137,9 +139,9 @@ class Workspace extends Component {
 											<CloseIcon fontSize="small" />
 										</IconButton>
 									</Box>
-									<Box pt={0.5} pr={1}>
+									{/* <Box pt={0.5} pr={1}>
 										<InspectorIcon />
-									</Box>
+									</Box> */}
 									<Box>
 										<Typography>
 											{"Inspecting: " +
