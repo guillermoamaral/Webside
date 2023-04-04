@@ -51,62 +51,62 @@ class ExpressionTable extends PureComponent {
 		return value.length > max ? value.substr(0, 99) + "…" : value;
 	}
 
-	// expressionColumns() {
-	// 	return [
-	// 		{
-	// 			field: "sourceCode",
-	// 			label: "Expression",
-	// 			align: "left",
-	// 			color: "#268bd2",
-	// 			editable: true,
-	// 		},
-	// 		{
-	// 			field: (e) => {
-	// 				return this.expressionValue(e);
-	// 			},
-	// 			link: (e) => {
-	// 				this.inspectExpression(e);
-	// 			},
-	// 			label: "Value",
-	// 			align: "left",
-	// 		},
-	// 	];
-	// }
-
 	expressionColumns() {
 		return [
 			{
-				field: "expression",
-				headerName: "Expression",
+				field: "sourceCode",
+				label: "Expression",
+				align: "left",
+				color: "#268bd2",
 				editable: true,
 			},
 			{
-				field: "value",
-				headerName: "Value",
-				editable: false,
-			},
-			{
-				field: "delete",
-				headerName: "delete",
-				editable: false,
-				sortable: false,
-				renderCell: (params) => {
-					return (
-						<IconButton
-							size="small"
-							onClick={(event) => {
-								event.stopPropagation();
-								const expression = this.state.expressions.find(
-									(e) => e.id == params.id
-								);
-								this.removeExpression(expression);
-							}}
-						></IconButton>
-					);
+				field: (e) => {
+					return this.expressionValue(e);
 				},
+				link: (e) => {
+					this.inspectExpression(e);
+				},
+				label: "Value",
+				align: "left",
 			},
 		];
 	}
+
+	// expressionColumns() {
+	// 	return [
+	// 		{
+	// 			field: "expression",
+	// 			headerName: "Expression",
+	// 			editable: true,
+	// 		},
+	// 		{
+	// 			field: "value",
+	// 			headerName: "Value",
+	// 			editable: false,
+	// 		},
+	// 		{
+	// 			field: "delete",
+	// 			headerName: "delete",
+	// 			editable: false,
+	// 			sortable: false,
+	// 			renderCell: (params) => {
+	// 				return (
+	// 					<IconButton
+	// 						size="small"
+	// 						onClick={(event) => {
+	// 							event.stopPropagation();
+	// 							const expression = this.state.expressions.find(
+	// 								(e) => e.id == params.id
+	// 							);
+	// 							this.removeExpression(expression);
+	// 						}}
+	// 					></IconButton>
+	// 				);
+	// 			},
+	// 		},
+	// 	];
+	// }
 
 	expressionOptions() {
 		return [
