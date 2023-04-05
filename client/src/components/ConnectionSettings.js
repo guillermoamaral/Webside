@@ -49,14 +49,14 @@ class ConnectionSettings extends Component {
 				<Grid
 					container
 					direction="column"
-					justifyContent="center"
+					justify="center"
 					spacing={1}
 				>
 					<Grid item>
 						<Grid
 							container
 							direction="row"
-							justifyContent="center"
+							justify="center"
 							spacing={1}
 						>
 							<Grid item>

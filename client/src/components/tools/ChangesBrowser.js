@@ -65,6 +65,7 @@ class ChangesBrowser extends Component {
 							styles={styles}
 							changes={changes}
 							onSelect={this.changeSelected}
+							onChangeApplied={this.changeSelected}
 						/>
 					</Paper>
 				</Grid>

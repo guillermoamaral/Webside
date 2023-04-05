@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
+import ApplyIcon from "@material-ui/icons/CheckCircle";
 
 class ChangesTable extends Component {
 	changeSelected = (change) => {
@@ -25,8 +26,14 @@ class ChangesTable extends Component {
 		if (change) {
 			try {
 				await ide.api.postChange(change.asJson());
+				const handler = this.props.changeApplied;
 				await change.updateCurrentSourceCode();
-				change.color = this.colorFor(change);
+				if (handler) {
+					handler(change);
+				} else {
+					change.color = this.colorFor(change);
+					this.setState({});
+				}
 			} catch (error) {
 				this.reportError(error);
 			}
@@ -38,6 +45,17 @@ class ChangesTable extends Component {
 			{ label: "Browse class", action: this.browseClass },
 			{ label: "Browse implementors", action: this.browseImplementors },
 			{ label: "Apply", action: this.applyChange },
+		];
+	}
+
+	changeActions() {
+		return [
+			{
+				label: "Apply",
+				icon: <ApplyIcon fontSize="small" />,
+				handler: this.applyChange,
+				//visible: this.canApplyChange,
+			},
 		];
 	}
 
@@ -67,7 +85,7 @@ class ChangesTable extends Component {
 			{
 				field: "timestamp",
 				label: "Timestamp",
-				minWidth: 200,
+				minWidth: 300,
 				align: "left",
 				formatter: (ts) => {
 					return ts ? ts.toLocaleString("en-US") : "";
@@ -92,6 +110,7 @@ class ChangesTable extends Component {
 				rows={rows}
 				onSelect={this.changeSelected}
 				menuOptions={this.menuOptions()}
+				rowActions={this.changeActions()}
 			/>
 		);
 	}
