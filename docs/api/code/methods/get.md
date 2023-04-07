@@ -27,11 +27,12 @@ The `class`, `hierarchy` and `package` options can be used in conjunction with o
 
 **Decoration Query Options**
 
-|   Option    |  Type   | Description                     |
-| :---------: | :-----: | ------------------------------- |
-|     ast     | boolean | to get methods' AST (see below) |
-|  bytecodes  | boolean | to get methods' bytecodes       |
-| disassembly | boolean | to get methods' disassembly     |
+|   Option    |  Type   | Description                                                    |
+| :---------: | :-----: | -------------------------------------------------------------- |
+|     ast     | boolean | to get methods' AST ([see below](#method-ast))                 |
+| annotations | boolean | to get methods' annotations ([see below](#method-annotations)) |
+|  bytecodes  | boolean | to get methods' bytecodes                                      |
+| disassembly | boolean | to get methods' disassembly                                    |
 
 ## Success Responses
 
@@ -52,11 +53,12 @@ The `class`, `hierarchy` and `package` options can be used in conjunction with o
 	"overriden": "boolean",
 	"bytecodes": "string",
 	"disassembly": "string",
-	"ast": "node"
+	"ast": "node",
+	"annotations" ["annotation"]
 }
 ```
 
-_Note: optional properties such as `bytecodes` or `disassembly` should not be included if they are not requested in the query._
+_Note: optional properties such as `bytecodes`, `disassembly` or `annotations` should not be included if they are not requested in the query._
 
 **Example:**: `Fraction` methods under `arithmetic` category and sending `reciprocal` `GET /classes/Fraction/methods?category=arithmetic&sending=reciprocal`.
 
@@ -101,3 +103,43 @@ The following table lists possible types properties whenever it applies.
 |  Literal   | value (string)        |
 
 Note that this structure corresponds to a rather simplified AST, which might be richer in some implementations. This is due to the _unification_ spirit of Webside, conceived to support different Smmaltalk dialects.
+
+## Method Annotations
+
+Annotations could be obtained by means of the option `annotations=true`. Webside will take advantage of them to decorate the code editor with annotations in a gutter specially for that.
+The structure of an `annotation` should be like this:
+
+```json
+{
+	"type": "string",
+	"start": "number",
+	"end": "number",
+	"description": "string"
+}
+```
+
+`type` could be either `"warning"` or `"error"`.
+`start` and `end` represent the span within the source code over which the annotation applies.
+Finally, `description` is the actual annotation.
+Here is an example of a method sending a message that does not have any implementor.
+
+```json
+[
+	{
+		"selector": "m",
+		"methodClass": "Number",
+		"category": "private",
+		"source": "m\r\t^self messageThatHasNoImplementors",
+		"author": "Guille",
+		"package": "Blah",
+		"annotations": [
+			{
+				"from": 10,
+				"to": 38,
+				"type": "warning",
+				"description": "messageThatHasNoImplementors has no implementors"
+			}
+		]
+	}
+]
+```

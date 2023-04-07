@@ -428,15 +428,15 @@ class CodeEditor extends Component {
 		}
 	};
 
-	lintAnnotations = () => {
-		if (!this.props.lintAnnotations) {
+	annotations = () => {
+		if (!this.props.annotations) {
 			return [];
 		}
-		return this.props.lintAnnotations.map((a) => {
+		return this.props.annotations.map((a) => {
 			return {
 				from: this.positionFromOffset(a.from - 1),
 				to: this.positionFromOffset(a.to - 1),
-				severity: a.severity,
+				severity: a.type,
 				message: a.description,
 			};
 		});
@@ -540,7 +540,7 @@ class CodeEditor extends Component {
 									"CodeMirror-lint-markers",
 									"breakpoints",
 								],
-								lint: { getAnnotations: this.lintAnnotations },
+								lint: { getAnnotations: this.annotations },
 								extraKeys: {
 									"Ctrl-D": this.evaluateExpression,
 									"Ctrl-I": this.inspectEvaluation,

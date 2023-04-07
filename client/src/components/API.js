@@ -205,7 +205,7 @@ class API {
 				classname +
 				"/methods?selector=" +
 				encoded +
-				"&bytecodes=true&disassembly=true&ast=true",
+				"&bytecodes=true&disassembly=true&ast=true&annotations=true",
 			"method " + classname + ">>#" + selector
 		);
 		return methods.length === 0 ? null : methods[0];

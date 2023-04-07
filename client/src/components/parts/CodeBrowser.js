@@ -172,11 +172,11 @@ class CodeBrowser extends Component {
 			}
 		} else {
 			if (data && data.interval) {
-				method.lintAnnotations = [
+				method.annotations = [
 					{
 						from: data.interval.start,
 						to: data.interval.end,
-						severity: "error",
+						type: "error",
 						description: data.description,
 					},
 				];
@@ -287,10 +287,10 @@ class CodeBrowser extends Component {
 		return "";
 	};
 
-	currentLintAnnotations = () => {
+	currentAnnotations = () => {
 		if (this.state.selectedMode === "source") {
 			const method = this.props.method;
-			return method ? method.lintAnnotations : [];
+			return method ? method.annotations : [];
 		}
 		return "";
 	};
@@ -355,7 +355,7 @@ class CodeBrowser extends Component {
 							source={this.currentSource()}
 							ast={this.currentAst()}
 							mode={this.currentCodeMode()}
-							lintAnnotations={this.currentLintAnnotations()}
+							annotations={this.currentAnnotations()}
 							selectedInterval={selectedInterval}
 							selectedWord={selectedWord}
 							showAccept
