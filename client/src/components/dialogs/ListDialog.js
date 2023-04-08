@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import withStateHandlers from "recompose/withStateHandlers";
 import {
 	Dialog,
 	DialogActions,
@@ -23,9 +22,9 @@ function ListDialog(props, context) {
 		ok,
 		cancel,
 		required,
-		value,
-		handleChange,
+		defaultValue,
 	} = props;
+	const [value, setValue] = useState(defaultValue);
 	return (
 		<Dialog
 			fullWidth
@@ -49,7 +48,10 @@ function ListDialog(props, context) {
 						autoFocus
 						items={items}
 						selectedItem={value}
-						onSelect={handleChange}
+						onSelect={(event) => {
+							console.log(even.target.value)
+							setValue(event.target.value);
+						}}
 					/>
 				</Paper>
 			</DialogContent>
@@ -102,8 +104,6 @@ ListDialog.propTypes = {
 	}),
 	required: PropTypes.bool,
 	defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-	value: PropTypes.string,
-	handleChange: PropTypes.func.isRequired,
 };
 
 ListDialog.defaultProps = {
@@ -122,7 +122,4 @@ ListDialog.defaultProps = {
 	required: false,
 };
 
-export default withStateHandlers(
-	({ defaultValue }) => ({ value: defaultValue }),
-	{ handleChange: (state) => (value) => ({ value: value }) }
-)(ListDialog);
+export default ListDialog;

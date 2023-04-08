@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import withStateHandlers from "recompose/withStateHandlers";
 import {
 	Dialog,
 	DialogActions,
@@ -23,9 +22,8 @@ function PromptDialog(props, context) {
 		cancel,
 		required,
 		defaultValue,
-		value,
-		handleChange,
 	} = props;
+	const [value, setValue] = useState(defaultValue);
 	return (
 		<Dialog
 			fullWidth
@@ -46,7 +44,10 @@ function PromptDialog(props, context) {
 				)}
 				<TextField
 					id="prompt-dialog-text-field"
-					onChange={handleChange}
+					onChange={(event) => {
+						console.log(event.target.value);
+						setValue(event.target.value);
+					}}
 					defaultValue={defaultValue}
 					required
 					placeholder={placeholder}
@@ -111,7 +112,6 @@ PromptDialog.propTypes = {
 	required: PropTypes.bool,
 	defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	value: PropTypes.string,
-	handleChange: PropTypes.func.isRequired,
 };
 
 PromptDialog.defaultProps = {
@@ -131,7 +131,4 @@ PromptDialog.defaultProps = {
 	required: false,
 };
 
-export default withStateHandlers(
-	({ defaultValue }) => ({ value: defaultValue }),
-	{ handleChange: (state) => (event) => ({ value: event.target.value }) }
-)(PromptDialog);
+export default PromptDialog;
