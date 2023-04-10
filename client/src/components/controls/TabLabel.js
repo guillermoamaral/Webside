@@ -12,10 +12,10 @@ class TabLabel extends Component {
 				alignItems="center"
 				justifyContent="center"
 			>
-				<Box pt={1} pr={1}>
-					{icon}
+				<Box pt={1}>{icon}</Box>
+				<Box pl={1} pr={1}>
+					{label}
 				</Box>
-				<Box pr={1}>{label}</Box>
 				<Box>
 					{!noClose && (
 						<IconButton
