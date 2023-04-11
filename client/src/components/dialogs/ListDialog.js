@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import {
 	Dialog,
@@ -25,6 +25,9 @@ function ListDialog(props, context) {
 		defaultValue,
 	} = props;
 	const [value, setValue] = useState(defaultValue);
+	useEffect(() => {
+		setValue(defaultValue);
+	}, [defaultValue]);
 	return (
 		<Dialog
 			fullWidth
@@ -48,10 +51,7 @@ function ListDialog(props, context) {
 						autoFocus
 						items={items}
 						selectedItem={value}
-						onSelect={(event) => {
-							console.log(even.target.value)
-							setValue(event.target.value);
-						}}
+						onSelect={setValue}
 					/>
 				</Paper>
 			</DialogContent>
