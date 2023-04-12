@@ -439,4 +439,4 @@ class RenamePackage extends PackageChange {
 	}
 }
 
-export default StChange;
+export { StChange, AddClass, AddMethod };

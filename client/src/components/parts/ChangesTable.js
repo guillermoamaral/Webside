@@ -95,6 +95,9 @@ class ChangesTable extends Component {
 	}
 
 	colorFor(change) {
+		if (change.color) {
+			return change.color;
+		}
 		return change.isUpToDate() ? "green" : "default";
 	}
 

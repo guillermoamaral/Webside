@@ -11,6 +11,7 @@ import {
 import { ide } from "../IDE";
 import ChangesTable from "../parts/ChangesTable";
 import API from "../API";
+import { StChange, AddClass, AddMethod } from "../../model/StChange";
 
 class CodeMigrator extends Component {
 	constructor(props) {
@@ -37,7 +38,10 @@ class CodeMigrator extends Component {
 		}
 		if (this.props.method) {
 			return (
-				"Method " + this.props.method.methodClass + ">>" + this.props.method.selector
+				"Method " +
+				this.props.method.methodClass +
+				">>" +
+				this.props.method.selector
 			);
 		}
 		return "Mixed source";
@@ -124,25 +128,23 @@ class CodeMigrator extends Component {
 	}
 
 	classDefinition(species) {
-		return {
-			type: "AddClass",
-			author: ide.api.author,
-			class: species.name,
-			label: species.name,
-			package: species.package,
-			definition: species.definition,
-		};
+		const change = new AddClass();
+		change.author = ide.api.author;
+		change.className = species.name;
+		change.label = species.name;
+		change.package = species.package;
+		change.definition = species.definition;
+		return change;
 	}
 
 	methodDefinition(method) {
-		return {
-			type: "AddMethod",
-			author: ide.api.author,
-			class: method.methodClass,
-			label: method.methodClass + ">>" + method.selector,
-			package: method.package,
-			sourceCode: method.source,
-		};
+		const change = new AddMethod();
+		change.author = ide.api.author;
+		change.className = method.methodClass;
+		change.label = method.methodClass + ">>" + method.selector;
+		change.package = method.package;
+		change.source = method.source;
+		return change;
 	}
 
 	applyChanges = async () => {
@@ -155,7 +157,7 @@ class CodeMigrator extends Component {
 		await Promise.all(
 			this.state.changes.map(async (change) => {
 				try {
-					await api.postChange(change);
+					await api.postChange(change.asJson());
 					change.color = "#28a745";
 				} catch (error) {
 					change.error = error.data;
@@ -176,7 +178,9 @@ class CodeMigrator extends Component {
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
-					<Typography variant="h6">Source: {this.sourceLabel()}</Typography>
+					<Typography variant="h6">
+						Source: {this.sourceLabel()}
+					</Typography>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					{(generating || migrating) && (
@@ -205,7 +209,9 @@ class CodeMigrator extends Component {
 							styles={this.props.styles}
 							style={{ height: "100%" }}
 							changes={changes}
-							onSelect={(change) => this.setState({ selectedChange: change })}
+							onSelect={(change) =>
+								this.setState({ selectedChange: change })
+							}
 						/>
 					</Paper>
 				</Grid>
@@ -226,7 +232,10 @@ class CodeMigrator extends Component {
 						<Button
 							variant="outlined"
 							disabled={
-								generating || migrating || changes.length === 0 || !targetURL
+								generating ||
+								migrating ||
+								changes.length === 0 ||
+								!targetURL
 							}
 							onClick={this.applyChanges}
 						>

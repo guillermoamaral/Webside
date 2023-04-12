@@ -1,4 +1,4 @@
-import StChange from "./StChange";
+import { StChange } from "./StChange";
 
 class StChangeset extends Object {
 	constructor() {
