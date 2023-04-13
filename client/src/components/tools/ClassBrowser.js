@@ -324,6 +324,7 @@ class ClassBrowser extends Component {
 		ide.updatePageLabel(this.props.id, species.name);
 		const selections = this.currentSelections();
 		selections.species = species;
+		selections.category = null;
 		await this.updateClass(species);
 		await this.updateSubclasses(species);
 		const target =

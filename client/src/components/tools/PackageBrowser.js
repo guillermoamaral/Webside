@@ -316,9 +316,10 @@ class PackageBrowser extends Component {
 	};
 
 	classSelected = async (species) => {
-		// ide.updatePageLabel(this.props.id, species.name);
+		ide.updatePageLabel(this.props.id, species.name);
 		const selections = this.currentSelections();
 		selections.species = species;
+		selections.category = null;
 		await this.updateClass(species);
 		await this.updateSubclasses(species);
 		const target =
