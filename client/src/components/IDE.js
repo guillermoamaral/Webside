@@ -251,8 +251,9 @@ class IDE extends Component {
 			: 1;
 	}
 
-	addPage(label, icon, component, id, labelRef) {
+	addPage(label, icon, component, id) {
 		const pages = this.state.pages;
+		const labelRef = React.createRef();
 		const page = {
 			id: id || this.newPageId(),
 			label: label,
@@ -300,8 +301,9 @@ class IDE extends Component {
 
 	updatePageLabel = (id, label) => {
 		const page = this.state.pages.find((p) => p.id === id);
-		if (page) {
+		if (page && page.labelRef && page.labelRef.current) {
 			page.label = label;
+			page.labelRef.current.changeLabel(label);
 		}
 	};
 
@@ -461,7 +463,6 @@ class IDE extends Component {
 
 	openClassBrowser = (classname, side, selector) => {
 		const id = this.newPageId();
-		const labelRef = React.createRef();
 		const browser = (
 			<ClassBrowser
 				styles={this.props.styles}
@@ -469,15 +470,13 @@ class IDE extends Component {
 				side={side}
 				selectedSelector={selector}
 				id={id}
-				labelRef={labelRef}
 			/>
 		);
 		this.addPage(
 			classname || "Class Browser",
 			<ClassBrowserIcon />,
 			browser,
-			id,
-			labelRef
+			id
 		);
 	};
 
