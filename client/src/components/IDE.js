@@ -246,14 +246,22 @@ class IDE extends Component {
 
 	newPageId() {
 		const pages = this.state.pages;
-		return pages.length > 0
-			? pages.sort((a, b) => a.id > b.id)[0].id + 1
-			: 1;
+		if (pages.length == 0) {
+			return 1;
+		}
+		const ids = pages.map((p) => p.id).sort((a, b) => a <= b);
+		for (var i = 0; i < ids.length - 1; i++) {
+			if (ids[i] + 1 < ids[i + 1]) {
+				return ids[i] + 1;
+			}
+		}
+		return ids[ids.length - 1] + 1;
 	}
 
 	addPage(label, icon, component, id) {
 		const pages = this.state.pages;
 		const labelRef = React.createRef();
+		console.log(id || this.newPageId())
 		const page = {
 			id: id || this.newPageId(),
 			label: label,
