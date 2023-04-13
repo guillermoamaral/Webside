@@ -16,15 +16,18 @@ class CodeBrowser extends Component {
 	}
 
 	static getDerivedStateFromProps(props, state) {
+		const selected = state.selectedMode;
+		// console.log(props.method)
+		// console.log(state.method)
+		// console.log(props.method == state.method)
 		const mode =
-			!props.method && state.selectedMode === "source"
+			!props.method && selected === "source"
 				? "definition"
-				: (state.selectedMode === "definition" ||
-						state.selectedMode === "comment") &&
+				: (selected === "definition" || selected === "comment") &&
 				  props.method !== state.method
 				? "source"
-				: state.selectedMode;
-		if (props.method === state.method && mode === state.selectedMode) {
+				: selected;
+		if (props.method === state.method && mode === selected) {
 			return null;
 		}
 		return {

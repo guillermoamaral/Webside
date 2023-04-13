@@ -321,6 +321,9 @@ class ClassBrowser extends Component {
 	};
 
 	classSelected = async (species) => {
+		if (this.props.labelRef && this.props.labelRef.current) {
+			this.props.labelRef.current.changeLabel(species.name);
+		}
 		// ide.updatePageLabel(this.props.id, species.name);
 		const selections = this.currentSelections();
 		selections.species = species;

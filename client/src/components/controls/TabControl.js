@@ -49,6 +49,7 @@ class TabControl extends PureComponent {
 											index={index}
 											icon={page.icon}
 											label={page.label}
+											ref={page.labelRef}
 											onClose={this.closeTab}
 											noClose={noClose}
 										/>

@@ -3,8 +3,18 @@ import { IconButton, Box } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
 class TabLabel extends Component {
+	constructor(props) {
+		super(props);
+		this.state = { label: props.label };
+	}
+
+	changeLabel(label) {
+		this.setState({ label: label });
+	}
+
 	render() {
-		const { index, icon, label, noClose, onClose } = this.props;
+		const { index, icon, noClose, onClose } = this.props;
+		const { label } = this.state;
 		return (
 			<Box
 				display="flex"
