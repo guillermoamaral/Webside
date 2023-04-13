@@ -121,14 +121,14 @@ The structure of an `annotation` should be like this:
 `type` could be either `"warning"` or `"error"`.
 `start` and `end` represent the span within the source code over which the annotation applies.
 Finally, `description` is the actual annotation.
-Here is an example of a method sending a message that does not have any implementor.
+Here are a couple of examples of methods with annotations, one sending a message that does not have any implementor, and another with a temporary variable used but not assigned (prior its ussage).
 
 ```json
 [
 	{
 		"selector": "m",
 		"methodClass": "Number",
-		"category": "private",
+		"category": "blah",
 		"source": "m\r\t^self messageThatHasNoImplementors",
 		"author": "Guille",
 		"package": "Blah",
@@ -138,6 +138,27 @@ Here is an example of a method sending a message that does not have any implemen
 				"to": 38,
 				"type": "warning",
 				"description": "messageThatHasNoImplementors has no implementors"
+			}
+		]
+	}
+]
+```
+
+```json
+[
+	{
+		"selector": "m",
+		"methodClass": "Point",
+		"category": "blah",
+		"source": "m\r\t| t |\r\t^t m",
+		"author": "guille",
+		"package": "Blah",
+		"annotations": [
+			{
+				"from": 12,
+				"to": 13,
+				"type": "warning",
+				"description": "t is not assigned"
 			}
 		]
 	}
