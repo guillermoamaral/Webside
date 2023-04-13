@@ -930,13 +930,16 @@ class IDE extends Component {
 		this.setState({ sidebarExpanded: false });
 	};
 
-	reportError = (text) => {
-		if (!text) {
+	reportError = (error) => {
+		if (!error) {
 			return;
 		}
+		const description =
+			(error.data ? error.data.description : null) || error.toString();
 		this.setState({
-			lastError: text.toString(),
-			transcriptText: this.state.transcriptText + "\r" + text,
+			lastError: description,
+			transcriptText:
+				this.state.transcriptText + "\r" + '"' + description + '"',
 			unreadErrorsCount: this.state.unreadErrorsCount + 1,
 		});
 	};
