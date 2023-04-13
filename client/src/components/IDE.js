@@ -261,7 +261,6 @@ class IDE extends Component {
 	addPage(label, icon, component, id) {
 		const pages = this.state.pages;
 		const labelRef = React.createRef();
-		console.log(id || this.newPageId())
 		const page = {
 			id: id || this.newPageId(),
 			label: label,

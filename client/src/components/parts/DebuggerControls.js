@@ -53,7 +53,6 @@ class DebuggerControls extends PureComponent {
 	};
 
 	hotkeyPressed = async (hotkey) => {
-		console.log(hotkey);
 		const map = this.hotkeyMap();
 		const command = Object.keys(map).find((k) => map[k] == hotkey);
 		this.handlerFor(command)();

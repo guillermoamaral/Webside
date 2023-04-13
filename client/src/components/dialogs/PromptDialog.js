@@ -45,7 +45,6 @@ function PromptDialog(props, context) {
 				<TextField
 					id="prompt-dialog-text-field"
 					onChange={(event) => {
-						console.log(event.target.value);
 						setValue(event.target.value);
 					}}
 					defaultValue={defaultValue}
