@@ -141,7 +141,7 @@ class Debugger extends PureComponent {
 			await ide.api.resumeDebugger(this.props.id);
 			ide.closeDebugger(this.props.id);
 		} catch (error) {
-			ide.reportError(error);
+			this.updateFrames();
 		}
 	};
 

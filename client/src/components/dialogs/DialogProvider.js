@@ -7,42 +7,20 @@ import ListDialog from "./ListDialog";
 
 class DialogProvider extends React.PureComponent {
 	state = {
-		alertDialog: null,
-		confirmDialog: null,
-		promptDialog: null,
-		listDialog: null,
+		dialog: { type: null },
 	};
 
-	handleAlertDialogClose = (value) => {
-		const { alertDialog } = this.state;
-		this.setState({ alertDialog: { ...alertDialog, open: false } });
-		return alertDialog.resolve(value);
-	};
-
-	handleConfirmDialogClose = (value) => {
-		const { confirmDialog } = this.state;
-		this.setState({ confirmDialog: { ...confirmDialog, open: false } });
-		return value ? confirmDialog.resolve(value) : confirmDialog.reject();
-	};
-
-	handlePromptDialogClose = (value) => {
-		const { promptDialog } = this.state;
-		this.setState({ promptDialog: { ...promptDialog, open: false } });
-		return value ? promptDialog.resolve(value) : promptDialog.reject();
-	};
-
-	handleListDialogClose = (value) => {
-		const { listDialog } = this.state;
-		this.setState({ listDialog: { ...listDialog, open: false } });
-		return value ? listDialog.resolve(value) : listDialog.reject();
+	handleClose = (value) => {
+		const { dialog } = this.state;
+		this.setState({ dialog: { ...dialog, open: false } });
+		return dialog.type == "alert" || value
+			? dialog.resolve(value)
+			: dialog.reject();
 	};
 
 	handleExited = () => {
 		this.setState({
-			alertDialog: null,
-			confirmDialog: null,
-			promptDialog: null,
-			listDialog: null,
+			dialog: { type: null },
 		});
 	};
 
@@ -50,12 +28,24 @@ class DialogProvider extends React.PureComponent {
 		return typeof options === "string"
 			? new Promise((resolve, reject) => {
 					this.setState({
-						alertDialog: { message: options, resolve, reject, open: true },
+						dialog: {
+							message: options,
+							type: "alert",
+							resolve,
+							reject,
+							open: true,
+						},
 					});
 			  })
 			: new Promise((resolve, reject) => {
 					this.setState({
-						alertDialog: { ...options, resolve, reject, open: true },
+						dialog: {
+							...options,
+							type: "alert",
+							resolve,
+							reject,
+							open: true,
+						},
 					});
 			  });
 	};
@@ -64,12 +54,24 @@ class DialogProvider extends React.PureComponent {
 		return typeof options === "string"
 			? new Promise((resolve, reject) => {
 					this.setState({
-						confirmDialog: { message: options, resolve, reject, open: true },
+						dialog: {
+							message: options,
+							type: "confirm",
+							resolve,
+							reject,
+							open: true,
+						},
 					});
 			  })
 			: new Promise((resolve, reject) => {
 					this.setState({
-						confirmDialog: { ...options, resolve, reject, open: true },
+						dialog: {
+							...options,
+							type: "confirm",
+							resolve,
+							reject,
+							open: true,
+						},
 					});
 			  });
 	};
@@ -78,12 +80,24 @@ class DialogProvider extends React.PureComponent {
 		return typeof options === "string"
 			? new Promise((resolve, reject) => {
 					this.setState({
-						promptDialog: { message: options, resolve, reject, open: true },
+						dialog: {
+							message: options,
+							type: "prompt",
+							resolve,
+							reject,
+							open: true,
+						},
 					});
 			  })
 			: new Promise((resolve, reject) => {
 					this.setState({
-						promptDialog: { ...options, resolve, reject, open: true },
+						dialog: {
+							...options,
+							type: "prompt",
+							resolve,
+							reject,
+							open: true,
+						},
 					});
 			  });
 	};
@@ -92,12 +106,24 @@ class DialogProvider extends React.PureComponent {
 		return Array.isArray(options)
 			? new Promise((resolve, reject) => {
 					this.setState({
-						listDialog: { items: options, resolve, reject, open: true },
+						dialog: {
+							items: options,
+							type: "list",
+							resolve,
+							reject,
+							open: true,
+						},
 					});
 			  })
 			: new Promise((resolve, reject) => {
 					this.setState({
-						listDialog: { ...options, resolve, reject, open: true },
+						dialog: {
+							...options,
+							type: "list",
+							resolve,
+							reject,
+							open: true,
+						},
 					});
 			  });
 	};
@@ -111,39 +137,39 @@ class DialogProvider extends React.PureComponent {
 
 	render() {
 		const { children } = this.props;
-		const { alertDialog, confirmDialog, promptDialog, listDialog } = this.state;
+		const { dialog } = this.state;
 		return (
 			<DialogContext.Provider value={{ dialog: this.dialog }}>
 				{children}
-				{alertDialog && (
+				{dialog.type == "alert" && (
 					<AlertDialog
-						{...alertDialog}
-						open={alertDialog.open}
-						onClose={this.handleAlertDialogClose}
+						{...dialog}
+						open={dialog.open}
+						onClose={this.handleClose}
 						onExited={this.handleExited}
 					/>
 				)}
-				{confirmDialog && (
+				{dialog.type == "confirm" && (
 					<ConfirmDialog
-						{...confirmDialog}
-						open={confirmDialog.open}
-						onClose={this.handleConfirmDialogClose}
+						{...dialog}
+						open={dialog.open}
+						onClose={this.handleClose}
 						onExited={this.handleExited}
 					/>
 				)}
-				{promptDialog && (
+				{dialog.type == "prompt" && (
 					<PromptDialog
-						{...promptDialog}
-						open={promptDialog.open}
-						onClose={this.handlePromptDialogClose}
+						{...dialog}
+						open={dialog.open}
+						onClose={this.handleClose}
 						onExited={this.handleExited}
 					/>
 				)}
-				{listDialog && (
+				{dialog.type == "list" && (
 					<ListDialog
-						{...listDialog}
-						open={listDialog.open}
-						onClose={this.handleListDialogClose}
+						{...dialog}
+						open={dialog.open}
+						onClose={this.handleClose}
 						onExited={this.handleExited}
 					/>
 				)}
