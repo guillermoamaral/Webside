@@ -533,7 +533,7 @@ class IDE extends Component {
 		this.addPage("Workspace", <WorkspaceIcon />, workspace);
 	};
 
-	openDebugger = (id, title = "Debugger") => {
+	openDebugger = (id, title = "Debugger", onResume, onTerminate) => {
 		const existing = this.state.pages.find((p) => {
 			return p.component.type == Debugger && p.component.props.id === id;
 		});
@@ -547,6 +547,8 @@ class IDE extends Component {
 				key={id}
 				id={id}
 				title={title}
+				onResume={onResume}
+				onTerminate={onTerminate}
 			/>
 		);
 		this.addPage(title, <DebuggerIcon />, tool);
@@ -881,20 +883,67 @@ class IDE extends Component {
 			if (sync) {
 				return result;
 			}
-			const object = await this.api.objectWithId(result.id);
+			const object = await this.protectedObjectWithId(result.id);
 			if (!pin && !sync) {
 				await this.api.unpinObject(object.id);
 			}
 			return object;
 		} catch (error) {
-			if (error.data && error.data.evaluation) {
-				// const debug = await this.confirm(error.description, 'Stack tracke:\r' + error.stack + '\r\rDo you want to debug it?');
-				// (debug)? this.openDebugger(error.debugger) : this.reportError(error.description);
-				const d = await this.api.createDebugger(error.data.evaluation);
-				this.openDebugger(d.id, d.description);
+			if (await this.canDebugError(error)) {
+				await this.debugError(error);
+			} else {
+				this.reportError(error.description);
 			}
 		}
 	};
+
+	async canDebugError(error) {
+		if (!error.data || !error.data.evaluation) {
+			return false;
+		}
+		// Don't ask for confirmation by the moment
+		const confirms = false;
+		if (!confirms) {
+			return true;
+		}
+		return await this.props.dialog.confirm({
+			title: error.data.description,
+			message:
+				"Stack trace:\r" +
+				error.data.stack +
+				"\r\rDo you want to debug it?",
+			ok: { text: "Debug", variant: "outlined" },
+		});
+	}
+
+	async debugError(error) {
+		const d = await this.api.createDebugger(error.data.evaluation);
+		return new Promise((resolve, reject) => {
+			this.openDebugger(d.id, d.description, resolve, reject);
+		});
+	}
+
+	async protectedObjectWithId(id) {
+		var object;
+		try {
+			object = await this.api.objectWithId(id);
+		} catch (error) {
+			if (await this.canDebugError(error)) {
+				await this.debugError(error).then(
+					async () => {
+						object = await this.protectedObjectWithId(id);
+					},
+					() => {
+						object = null;
+						console.log("nothing should happen from here");
+					}
+				);
+			} else {
+				this.reportError(error.description);
+			}
+		}
+		return object;
+	}
 
 	runTest = async (classname, selector) => {
 		try {

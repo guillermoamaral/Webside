@@ -140,8 +140,11 @@ class Debugger extends PureComponent {
 		try {
 			await ide.api.resumeDebugger(this.props.id);
 			ide.closeDebugger(this.props.id);
+			if (this.props.onResume) {
+				this.props.onResume();
+			}
 		} catch (error) {
-			this.updateFrames();
+			ide.reportError(error);
 		}
 	};
 
@@ -149,6 +152,9 @@ class Debugger extends PureComponent {
 		try {
 			await ide.api.terminateDebugger(this.props.id);
 			ide.closeDebugger(this.props.id);
+			if (this.props.onTerminate) {
+				this.props.onTerminate();
+			}
 		} catch (error) {
 			ide.reportError(error);
 		}

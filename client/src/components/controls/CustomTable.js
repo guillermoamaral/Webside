@@ -148,7 +148,6 @@ class CustomTable extends Component {
 						this.setCellText(row, column, event.target.value);
 					}}
 					onBlur={(event) => {
-						console.log("blur");
 						this.setState({ editingCell: null });
 					}}
 					// onKeyDown={(event) => {
