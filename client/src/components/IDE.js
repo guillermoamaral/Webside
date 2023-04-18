@@ -72,7 +72,7 @@ class IDE extends Component {
 			addPageMenuOpen: false,
 			selectedPage: null,
 			transcriptOpen: false,
-			lastError: null,
+			lastMessage: null,
 			unreadErrorsCount: 0,
 			unreadMessages: 0,
 			transcriptText: this.welcomeMessage(),
@@ -945,32 +945,96 @@ class IDE extends Component {
 		return object;
 	}
 
-	runTest = async (classname, selector) => {
+	runTest = async (classname, selector, silently) => {
 		try {
 			const status = await this.api.runTest(classname, selector);
-			this.openTestRunner(status.id, "Test " + selector);
+			silently
+				? this.followTestRun(status.id, true)
+				: this.openTestRunner(status.id, "Test " + selector);
 		} catch (error) {
 			this.reportError(error);
 		}
 	};
 
-	runTestClass = async (classname) => {
+	runTestClass = async (classname, silently) => {
 		try {
 			const status = await this.api.runTestClass(classname);
-			this.openTestRunner(status.id, "Test " + classname);
+			silently
+				? this.followTestRun(status.id)
+				: this.openTestRunner(status.id, "Test " + classname);
 		} catch (error) {
 			this.reportError(error);
 		}
 	};
 
-	runTestPackage = async (packagename) => {
+	runTestPackage = async (packagename, silently) => {
 		try {
 			const status = await this.api.runTestPackage(packagename);
-			this.openTestRunner(status.id, "Test " + packagename);
+			silently
+				? this.followTestRun(status.id)
+				: this.openTestRunner(status.id, "Test " + packagename);
 		} catch (error) {
 			this.reportError(error);
 		}
 	};
+
+	async followTestRun(id, debug) {
+		try {
+			const status = await this.api.testRunStatus(id);
+			if (status.running) {
+				setTimeout(async () => {
+					await this.followTestRun(id);
+				}, 1000);
+			}
+			if (!status.running) {
+				const results = await this.api.testRunResults(id);
+				const passed = results.passed.length;
+				const failed = results.failed.length;
+				const errors = results.errors.length;
+				if (debug && (failed > 0 || errors > 0)) {
+					const test =
+						failed > 0 ? results.failed[0] : results.errors[0];
+					const d = await this.api.debugTest(
+						id,
+						test.class,
+						test.selector
+					);
+					this.openDebugger(
+						d.id,
+						d.description || "Debugging test " + test.selector
+					);
+				} else {
+					await this.api.deleteTestRun(id);
+				}
+				var text = "";
+				var first = true;
+				[
+					"passed",
+					"failed",
+					"errors",
+					"skipped",
+					"knownIssues",
+				].forEach((type) => {
+					text +=
+						(first ? "" : ", ") + results[type].length + " " + type;
+					first = false;
+				});
+				const type =
+					passed > 0 && failed == 0 && errors == 0
+						? "success"
+						: failed > 0 && errors == 0
+						? "warning"
+						: errors > 0
+						? "error"
+						: "info";
+				this.setState({
+					lastMessage: { type: type, text: text },
+				});
+			}
+		} catch (error) {
+			this.reportError(error);
+		}
+	}
 
 	profileExpression = async (expression, context) => {
 		try {
@@ -996,7 +1060,7 @@ class IDE extends Component {
 		const description =
 			(error.data ? error.data.description : null) || error.toString();
 		this.setState({
-			lastError: description,
+			lastMessage: { type: "error", text: description },
 			transcriptText:
 				this.state.transcriptText + "\r" + '"' + description + '"',
 			unreadErrorsCount: this.state.unreadErrorsCount + 1,
@@ -1068,7 +1132,7 @@ class IDE extends Component {
 			addPageMenuOpen,
 			transcriptOpen,
 			transcriptText,
-			lastError,
+			lastMessage,
 		} = this.state;
 		return (
 			<Hotkeys
@@ -1286,10 +1350,10 @@ class IDE extends Component {
 							</main>
 						</div>
 						<CustomSnacks
-							open={lastError !== null}
-							onClose={() => this.setState({ lastError: null })}
-							text={lastError}
-							severity="error"
+							open={lastMessage !== null}
+							onClose={() => this.setState({ lastMessage: null })}
+							text={lastMessage ? lastMessage.text : ""}
+							severity={lastMessage ? lastMessage.type : ""}
 						/>
 					</DialogProvider>
 				</ThemeProvider>

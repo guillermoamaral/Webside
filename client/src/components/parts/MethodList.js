@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import OverridenIcon from "@material-ui/icons/ExpandMore";
 import OverridingIcon from "@material-ui/icons/ExpandLess";
 import OverridingOverridenIcon from "@material-ui/icons/UnfoldMore";
+import TestIcon from "@material-ui/icons/PlayArrow";
 import CustomList from "../controls/CustomList";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
@@ -117,9 +118,9 @@ class MethodList extends Component {
 		}
 	};
 
-	runTest = (method) => {
+	runTest = (method, silently) => {
 		if (method) {
-			ide.runTest(method.methodClass, method.selector);
+			ide.runTest(method.methodClass, method.selector, silently);
 		}
 	};
 
@@ -206,6 +207,14 @@ class MethodList extends Component {
 
 	methodIcon = (method) => {
 		const size = 12;
+		if (this.isTest(method)) {
+			return (
+				<TestIcon
+					style={{ fontSize: 16, color: "#3bba5d" }}
+					onClick={(event) => this.runTest(method, true)}
+				/>
+			);
+		}
 		if (method.overriding && method.overriden) {
 			return (
 				<OverridingOverridenIcon
