@@ -887,7 +887,7 @@ class IDE extends Component {
 			return object;
 		} catch (error) {
 			if (await this.canDebugError(error)) {
-				await this.debugError(error);
+				await this.debugEvaluationError(error);
 			} else {
 				this.reportError(error.description);
 			}
@@ -913,7 +913,7 @@ class IDE extends Component {
 		});
 	}
 
-	async debugError(error) {
+	async debugEvaluationError(error) {
 		const d = await this.api.createDebugger(error.data.evaluation);
 		return new Promise((resolve, reject) => {
 			this.openDebugger(d.id, d.description, resolve, reject);
@@ -926,7 +926,7 @@ class IDE extends Component {
 			object = await this.api.objectWithId(id);
 		} catch (error) {
 			if (await this.canDebugError(error)) {
-				await this.debugError(error).then(
+				await this.debugEvaluationError(error).then(
 					async () => {
 						object = await this.protectedObjectWithId(id);
 					},
