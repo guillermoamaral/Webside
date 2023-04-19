@@ -247,15 +247,14 @@ class IDE extends Component {
 	newPageId() {
 		const pages = this.state.pages;
 		if (pages.length == 0) {
-			return 1;
+			return 0;
 		}
-		const ids = pages.map((p) => p.id).sort((a, b) => a <= b);
-		for (var i = 0; i < ids.length - 1; i++) {
-			if (ids[i] + 1 < ids[i + 1]) {
-				return ids[i] + 1;
-			}
-		}
-		return ids[ids.length - 1] + 1;
+		const used = pages.map((p) => p.id).sort((a, b) => a <= b);
+		const max = used[used.length - 1];
+		const ids = new Array(max);
+		used.forEach(id => ids[id] = true);
+		const unused = ids.findIndex(id => id == null);
+		return unused == -1? max + 1 : unused;
 	}
 
 	addPage(label, icon, component, id) {
@@ -339,6 +338,7 @@ class IDE extends Component {
 	};
 
 	removePage = async (page) => {
+		console.log(page)
 		await this.preRemovePage(page);
 		const { pages, selectedPage } = this.state;
 		let i = pages.indexOf(page);
