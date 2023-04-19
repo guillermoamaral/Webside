@@ -266,6 +266,7 @@ class IDE extends Component {
 			icon: icon,
 			component: component,
 			labelRef: labelRef,
+			onClose: onClose,
 		};
 		pages.push(page);
 		const state = { pages: pages, selectedPage: page };
@@ -313,39 +314,14 @@ class IDE extends Component {
 		}
 	};
 
-	preRemovePage = async (page) => {
-		try {
-			const type = page.component.type;
-			const id = page.component.props.id;
-			const count = this.state.pages.filter(
-				(p) => p.component.type == type && p.component.props.id == id
-			).length;
-			if (type === Inspector && count == 1) {
-				await this.api.unpinObject(id);
-			}
-			if (type === Debugger && count == 1) {
-				await this.api.deleteDebugger(id);
-			}
-			if (type === TestRunner && count == 1) {
-				await this.api.deleteTestRun(id);
-			}
-			if (type === Workspace && count == 1) {
-				await this.api.deleteWorkspace(id);
-			}
-		} catch (error) {
-			this.reportError(error);
-		}
-	};
-
 	removePageWithId(id) {
-		const page = this.state.pages.find((p) => p.component.props.id === id);
+		const page = this.state.pages.find((p) => p.id === id);
 		if (page) {
 			this.removePage(page);
 		}
 	}
 
-	removePage = async (page) => {
-		await this.preRemovePage(page);
+	removePage = (page) => {
 		const { pages, selectedPage } = this.state;
 		let i = pages.indexOf(page);
 		const selected =
@@ -362,11 +338,15 @@ class IDE extends Component {
 		});
 	};
 
-	removeAllPages = async () => {
-		await Promise.all(
-			this.state.pages.map(async (p) => await this.preRemovePage(p))
-		);
+	removeAllPages = () => {
 		this.setState({ pages: [] });
+	};
+
+	closePage = (page) => {
+		if (page.onClose) {
+			page.onClose();
+		}
+		this.removePage(page);
 	};
 
 	pageLabeled(label) {
@@ -536,7 +516,9 @@ class IDE extends Component {
 		const workspace = (
 			<Workspace styles={this.props.styles} key={id} id={id} />
 		);
-		this.addPage("Workspace", <WorkspaceIcon />, workspace);
+		this.addPage("Workspace", <WorkspaceIcon />, workspace, null, () =>
+			this.api.deleteWorkspace(id)
+		);
 	};
 
 	openDebugger = (id, title = "Debugger", onResume, onTerminate) => {
@@ -547,17 +529,33 @@ class IDE extends Component {
 			this.selectPage(existing);
 			return;
 		}
+		const pageId = this.newPageId();
 		const tool = (
 			<Debugger
 				styles={this.props.styles}
 				key={id}
 				id={id}
 				title={title}
-				onResume={onResume}
-				onTerminate={onTerminate}
+				onResume={() => {
+					this.removePageWithId(pageId);
+					if (onResume) {
+						onResume();
+					}
+				}}
+				onTerminate={() => {
+					this.removePageWithId(pageId);
+					if (onTerminate) {
+						onTerminate();
+					}
+				}}
 			/>
 		);
-		this.addPage(title, <DebuggerIcon />, tool);
+		this.addPage(title, <DebuggerIcon />, tool, pageId, () => {
+			this.api.deleteDebugger(id);
+			if (onTerminate) {
+				onTerminate();
+			}
+		});
 	};
 
 	openInspector = (object) => {
@@ -583,7 +581,9 @@ class IDE extends Component {
 		this.addPage(
 			"Inspecting: " + object.class,
 			<InspectorIcon />,
-			inspector
+			inspector,
+			null,
+			() => this.api.unpinObject(object.id)
 		);
 	};
 
@@ -622,7 +622,9 @@ class IDE extends Component {
 		this.addPage(
 			title,
 			<TestRunnerIcon className={this.props.styles.testRunnerIcon} />,
-			tool
+			tool,
+			null,
+			() => this.api.deleteTestRun(id)
 		);
 	};
 
@@ -1181,7 +1183,7 @@ class IDE extends Component {
 												selectedPage={selectedPage}
 												pages={pages}
 												onSelect={this.selectPage}
-												onClose={this.removePage}
+												onClose={this.closePage}
 											/>
 										</Grid>
 										<Grid item xs={1} md={1} lg={1}>
