@@ -252,12 +252,12 @@ class IDE extends Component {
 		const used = pages.map((p) => p.id).sort((a, b) => a <= b);
 		const max = used[used.length - 1];
 		const ids = new Array(max);
-		used.forEach(id => ids[id] = true);
-		const unused = ids.findIndex(id => id == null);
-		return unused == -1? max + 1 : unused;
+		used.forEach((id) => (ids[id] = true));
+		const unused = ids.findIndex((id) => id == null);
+		return unused == -1 ? max + 1 : unused;
 	}
 
-	addPage(label, icon, component, id) {
+	addPage(label, icon, component, id, onClose) {
 		const pages = this.state.pages;
 		const labelRef = React.createRef();
 		const page = {
@@ -337,8 +337,14 @@ class IDE extends Component {
 		}
 	};
 
+	removePageWithId(id) {
+		const page = this.state.pages.find((p) => p.component.props.id === id);
+		if (page) {
+			this.removePage(page);
+		}
+	}
+
 	removePage = async (page) => {
-		console.log(page)
 		await this.preRemovePage(page);
 		const { pages, selectedPage } = this.state;
 		let i = pages.indexOf(page);
@@ -552,17 +558,6 @@ class IDE extends Component {
 			/>
 		);
 		this.addPage(title, <DebuggerIcon />, tool);
-	};
-
-	closeDebugger = (id) => {
-		const page = this.state.pages.find(
-			(p) =>
-				p.component.type.name === "Debugger" &&
-				p.component.props.id === id
-		);
-		if (page) {
-			this.removePage(page);
-		}
 	};
 
 	openInspector = (object) => {

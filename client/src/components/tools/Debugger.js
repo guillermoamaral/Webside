@@ -139,7 +139,7 @@ class Debugger extends PureComponent {
 	resumeClicked = async () => {
 		try {
 			await ide.api.resumeDebugger(this.props.id);
-			ide.closeDebugger(this.props.id);
+			ide.removePageWithId(this.props.id);
 			if (this.props.onResume) {
 				this.props.onResume();
 			}
@@ -151,7 +151,7 @@ class Debugger extends PureComponent {
 	terminateClicked = async () => {
 		try {
 			await ide.api.terminateDebugger(this.props.id);
-			ide.closeDebugger(this.props.id);
+			ide.removePageWithId(this.props.id);
 			if (this.props.onTerminate) {
 				this.props.onTerminate();
 			}
