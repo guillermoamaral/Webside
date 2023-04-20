@@ -1,9 +1,9 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { Tabs, Tab, Box } from "@material-ui/core";
 import TabPanel from "./TabPanel";
 import TabLabel from "./TabLabel";
 
-class TabControl extends PureComponent {
+class TabControl extends Component {
 	tabChanged = (event, index) => {
 		event.preventDefault();
 		if (this.props.onSelect) {
@@ -13,6 +13,7 @@ class TabControl extends PureComponent {
 
 	closeTab = (event, index) => {
 		event.stopPropagation();
+		//event.preventDefault();
 		const page = this.props.pages[index];
 		if (this.props.onClose) {
 			this.props.onClose(page);
@@ -21,7 +22,7 @@ class TabControl extends PureComponent {
 
 	render() {
 		const { pages, selectedPage, noClose } = this.props;
-		const selectedIndex = pages.indexOf(selectedPage);
+		const selectedIndex = pages.findIndex((p) => p.id == selectedPage.id);
 		const styles = this.props.styles;
 		return (
 			<Box
@@ -38,12 +39,23 @@ class TabControl extends PureComponent {
 						textColor="primary"
 						variant="scrollable"
 						scrollButtons="auto"
+						style={{
+							paddingTop: 1,
+							paddingBotton: 0,
+							minHeight: 20,
+						}}
 					>
 						{pages.map((page, index) => {
 							return (
 								<Tab
 									component="div"
 									key={index.toString()}
+									id={`tab-${index}`}
+									style={{
+										paddingTop: 1,
+										paddingBotton: 0,
+										minHeight: 20,
+									}}
 									label={
 										<TabLabel
 											index={index}
@@ -54,7 +66,6 @@ class TabControl extends PureComponent {
 											noClose={noClose}
 										/>
 									}
-									id={`tab-${index}`}
 								/>
 							);
 						})}
@@ -69,7 +80,7 @@ class TabControl extends PureComponent {
 								key={index.toString()}
 								index={index}
 								styles={styles}
-								visible={page === selectedPage}
+								visible={page.id == selectedPage.id}
 							>
 								{page.component}
 							</TabPanel>

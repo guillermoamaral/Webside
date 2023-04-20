@@ -70,7 +70,7 @@ class IDE extends Component {
 		this.state = {
 			sidebarExpanded: false,
 			addPageMenuOpen: false,
-			selectedPage: null,
+			selectedPageId: null,
 			transcriptOpen: false,
 			lastMessage: null,
 			unreadErrorsCount: 0,
@@ -269,7 +269,7 @@ class IDE extends Component {
 			onClose: onClose,
 		};
 		pages.push(page);
-		const state = { pages: pages, selectedPage: page };
+		const state = { pages: pages, selectedPageId: page.id };
 		if (page.label === "Transcript") {
 			state.unreadErrorsCount = 0;
 		}
@@ -277,7 +277,7 @@ class IDE extends Component {
 	}
 
 	selectPage = (page) => {
-		const state = { selectedPage: page };
+		const state = { selectedPageId: page.id };
 		if (page.label === "Transcript") {
 			state.unreadErrorsCount = 0;
 			if (
@@ -293,7 +293,7 @@ class IDE extends Component {
 
 	selectPageAtOffset(offset) {
 		const pages = this.state.pages;
-		var page = this.state.selectedPage;
+		var page = this.pageWithId(state.selectedPageId);
 		var index = pages.indexOf(page);
 		if (index >= 0) {
 			index = index + offset;
@@ -307,35 +307,39 @@ class IDE extends Component {
 	}
 
 	updatePageLabel = (id, label) => {
-		const page = this.state.pages.find((p) => p.id === id);
+		const page = this.pageWithId(id);
 		if (page && page.labelRef && page.labelRef.current) {
-			page.label = label;
-			page.labelRef.current.changeLabel(label);
+			page.label = label || page.label;
+			page.labelRef.current.changeLabel(page.label);
 		}
 	};
 
 	removePageWithId(id) {
-		const page = this.state.pages.find((p) => p.id === id);
+		const page = this.pageWithId(id);
 		if (page) {
 			this.removePage(page);
 		}
 	}
 
 	removePage = (page) => {
-		const { pages, selectedPage } = this.state;
-		let i = pages.indexOf(page);
-		const selected =
-			pages.length === 1
+		const { pages, selectedPageId } = this.state;
+		var index = pages.indexOf(page);
+		const selectedId =
+			pages.length == 1
 				? null
-				: page !== selectedPage
-				? selectedPage
-				: i > 0
-				? pages[i - 1]
-				: pages[i + 1];
-		this.setState({
-			pages: pages.filter((p) => p !== page),
-			selectedPage: selected,
-		});
+				: page.id !== selectedPageId
+				? selectedPageId
+				: index > 0
+				? pages[index - 1].id
+				: pages[index + 1].id;
+		const filtered = pages.filter((p) => p.id !== page.id);
+		this.setState(
+			{
+				selectedPageId: selectedId,
+				pages: filtered,
+			},
+			this.updatePageLabel(selectedId)
+		);
 	};
 
 	removeAllPages = () => {
@@ -349,8 +353,12 @@ class IDE extends Component {
 		this.removePage(page);
 	};
 
+	pageWithId(id) {
+		return this.state.pages.find((p) => p.id == id);
+	}
+
 	pageLabeled(label) {
-		return this.state.pages.find((p) => p.label === label);
+		return this.state.pages.find((p) => p.label == label);
 	}
 
 	openTranscript = () => {
@@ -1124,13 +1132,14 @@ class IDE extends Component {
 			sidebarExpanded,
 			unreadErrorsCount,
 			unreadMessages,
-			selectedPage,
+			selectedPageId,
 			pages,
 			addPageMenuOpen,
 			transcriptOpen,
 			transcriptText,
 			lastMessage,
 		} = this.state;
+		const selectedPage = this.pageWithId(selectedPageId);
 		return (
 			<Hotkeys
 				keyName="ctrl+b, ctrl+alt+w, ctrl+alt+left, ctrl+alt+right"

@@ -202,7 +202,7 @@ class Debugger extends PureComponent {
 						spacing={1}
 						direction="row"
 						alignItems="center"
-						justifyContent="center"
+						justify="center"
 					>
 						<Grid item xs={4} md={4} lg={4}>
 							<DebuggerControls

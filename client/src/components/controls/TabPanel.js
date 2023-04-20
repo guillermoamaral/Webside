@@ -1,8 +1,8 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { Box } from "@material-ui/core";
 import PropTypes from "prop-types";
 
-class TabPanel extends PureComponent {
+class TabPanel extends Component {
 	render() {
 		const { id, children, visible, ...other } = this.props;
 		return (
