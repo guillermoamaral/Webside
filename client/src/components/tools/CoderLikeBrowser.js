@@ -121,16 +121,16 @@ class CoderLikeBrowser extends Component {
 	};
 
 	// Updating...
-	async updateClass(selections, force = false) {
+	async updateClass(selections, forced = false) {
 		const species = selections.species;
 		try {
-			if (force || !species.definition) {
+			if (forced || !species.definition) {
 				const definition = await ide.api.classNamed(species.name);
 				species.definition = definition.definition;
 				species.comment = definition.comment;
 				species.superclass = definition.superclass;
 			}
-			if (force || !species.subclasses) {
+			if (forced || !species.subclasses) {
 				species.subclasses = await ide.api.subclasses(species.name);
 			}
 		} catch (error) {
@@ -154,10 +154,10 @@ class CoderLikeBrowser extends Component {
 		}
 	}
 
-	async updateVariables(selections, force = false) {
+	async updateVariables(selections, forced = false) {
 		const { species, variable } = selections;
 		try {
-			if (force || !species.variables) {
+			if (forced || !species.variables) {
 				species.variables = await ide.api.variables(species.name);
 			}
 			if (variable) {
@@ -169,10 +169,10 @@ class CoderLikeBrowser extends Component {
 		}
 	}
 
-	async updateCategories(selections, force = false) {
+	async updateCategories(selections, forced = false) {
 		const species = selections.species;
 		try {
-			if (force || !species.categories) {
+			if (forced || !species.categories) {
 				const categories = await ide.api.categories(species.name);
 				species.categories = categories.sort();
 			}
@@ -184,18 +184,18 @@ class CoderLikeBrowser extends Component {
 		}
 	}
 
-	async updateMethods(selections, force = false) {
+	async updateMethods(selections, forced = false) {
 		const { species, variable, access, method } = selections;
 		if (!species) {
 			return;
 		}
 		try {
-			if (force || !species.methods) {
+			if (forced || !species.methods) {
 				species.methods = await ide.api.methods(species.name, true);
 			}
 			if (
 				variable &&
-				(force || !species[variable.name] || !species[variable.name][access])
+				(forced || !species[variable.name] || !species[variable.name][access])
 			) {
 				const accessors = await ide.api.methodsAccessing(
 					species.name,
@@ -217,11 +217,11 @@ class CoderLikeBrowser extends Component {
 		}
 	}
 
-	async updateMethod(selections, force = true) {
+	async updateMethod(selections, forced = true) {
 		const species = selections.species;
 		const selector = selections.method.selector;
 		var method;
-		if (force) {
+		if (forced) {
 			try {
 				method = await ide.api.method(species.name, selector);
 			} catch (error) {

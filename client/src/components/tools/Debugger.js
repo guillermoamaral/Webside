@@ -56,13 +56,13 @@ class Debugger extends PureComponent {
 	}
 
 	frameSelected = async (frame) => {
-		await this.updateFrame(frame);
+		await this.updateFrame(frame, true);
 		this.setState({ selectedFrame: frame });
 	};
 
-	updateFrame = async (frame) => {
+	updateFrame = async (frame, forced) => {
 		try {
-			if (!frame.method) {
+			if (forced ||!frame.method) {
 				const info = await ide.api.debuggerFrame(
 					this.props.id,
 					frame.index

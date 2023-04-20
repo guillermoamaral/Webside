@@ -196,14 +196,14 @@ class ClassBrowser extends Component {
 	};
 
 	// Updating...
-	async updateClass(species, force = false) {
+	async updateClass(species, forced = false) {
 		try {
-			if (force || !species.definition || !species.metaclass) {
+			if (forced || !species.definition || !species.metaclass) {
 				const definition = await ide.api.classNamed(species.name);
 				Object.assign(species, definition);
 				species.metaclass = await ide.api.classNamed(definition.class);
 			}
-			if (force || !species.subclasses) {
+			if (forced || !species.subclasses) {
 				species.subclasses = await ide.api.subclasses(species.name);
 			}
 		} catch (error) {
@@ -227,9 +227,9 @@ class ClassBrowser extends Component {
 		}
 	}
 
-	async updateVariables(species, force = false) {
+	async updateVariables(species, forced = false) {
 		try {
-			if (force || !species.variables) {
+			if (forced || !species.variables) {
 				species.variables = await ide.api.variables(species.name);
 			}
 		} catch (error) {
@@ -237,9 +237,9 @@ class ClassBrowser extends Component {
 		}
 	}
 
-	async updateCategories(species, force = false) {
+	async updateCategories(species, forced = false) {
 		try {
-			if (force || !species.categories) {
+			if (forced || !species.categories) {
 				species.categories = await ide.api.categories(species.name);
 				species.categories.sort();
 			}
@@ -248,19 +248,19 @@ class ClassBrowser extends Component {
 		}
 	}
 
-	async updateMethods(species, variable, access, force = false) {
+	async updateMethods(species, variable, access, forced = false) {
 		if (!species) {
 			return;
 		}
 		try {
-			if (force || !species.methods) {
+			if (forced || !species.methods) {
 				species.methods = await ide.api.methods(species.name, true);
 				species.accessors = null;
 			}
 			if (
 				variable &&
 				access &&
-				(force ||
+				(forced ||
 					!species.accessors ||
 					!species.accessors[variable.name] ||
 					!species.accessors[variable.name][access])

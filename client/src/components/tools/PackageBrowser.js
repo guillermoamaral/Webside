@@ -158,9 +158,9 @@ class PackageBrowser extends Component {
 	};
 
 	// Updating...
-	async updatePackage(pack, force = false) {
+	async updatePackage(pack, forced = false) {
 		try {
-			if (force || !pack.classes || !pack.methods) {
+			if (forced || !pack.classes || !pack.methods) {
 				const retrieved = await ide.api.packageNamed(pack.name);
 				Object.assign(pack, retrieved);
 			}
@@ -169,8 +169,8 @@ class PackageBrowser extends Component {
 		}
 	}
 
-	async updateClasses(pack, force = false) {
-		if (force || !pack.classes) {
+	async updateClasses(pack, forced = false) {
+		if (forced || !pack.classes) {
 			try {
 				pack.classes = await ide.api.packageClasses(pack.name, true);
 			} catch (error) {
@@ -179,14 +179,14 @@ class PackageBrowser extends Component {
 		}
 	}
 
-	async updateClass(species, force = false) {
+	async updateClass(species, forced = false) {
 		try {
-			if (force || !species.definition || !species.metaclass) {
+			if (forced || !species.definition || !species.metaclass) {
 				const definition = await ide.api.classNamed(species.name);
 				Object.assign(species, definition);
 				species.metaclass = await ide.api.classNamed(definition.class);
 			}
-			if (force || !species.subclasses) {
+			if (forced || !species.subclasses) {
 				species.subclasses = await ide.api.subclasses(species.name);
 			}
 		} catch (error) {
@@ -210,9 +210,9 @@ class PackageBrowser extends Component {
 		}
 	}
 
-	async updateCategories(species, force = false) {
+	async updateCategories(species, forced = false) {
 		try {
-			if (force || !species.categories) {
+			if (forced || !species.categories) {
 				species.categories = await ide.api.categories(species.name);
 				species.categories.sort();
 			}
@@ -221,12 +221,12 @@ class PackageBrowser extends Component {
 		}
 	}
 
-	async updateMethods(species, force = false) {
+	async updateMethods(species, forced = false) {
 		if (!species) {
 			return;
 		}
 		try {
-			if (force || !species.methods) {
+			if (forced || !species.methods) {
 				species.methods = await ide.api.methods(species.name, true);
 			}
 		} catch (error) {
