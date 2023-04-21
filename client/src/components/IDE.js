@@ -524,8 +524,18 @@ class IDE extends Component {
 		const workspace = (
 			<Workspace styles={this.props.styles} key={id} id={id} />
 		);
-		this.addPage("Workspace", <WorkspaceIcon />, workspace, null, () =>
-			this.api.deleteWorkspace(id)
+		this.addPage(
+			"Workspace",
+			<WorkspaceIcon />,
+			workspace,
+			null,
+			async () => {
+				try {
+					await this.api.deleteWorkspace(id);
+				} catch (error) {
+					this.reportError(error);
+				}
+			}
 		);
 	};
 
@@ -559,7 +569,11 @@ class IDE extends Component {
 			/>
 		);
 		this.addPage(title, <DebuggerIcon />, tool, pageId, () => {
-			this.api.deleteDebugger(id);
+			try {
+				this.api.deleteDebugger(id);
+			} catch (error) {
+				this.reportError(error);
+			}
 			if (onTerminate) {
 				onTerminate();
 			}
@@ -591,7 +605,13 @@ class IDE extends Component {
 			<InspectorIcon />,
 			inspector,
 			null,
-			() => this.api.unpinObject(object.id)
+			() => {
+				try {
+					this.api.unpinObject(object.id);
+				} catch (error) {
+					this.reportError(error);
+				}
+			}
 		);
 	};
 
@@ -632,7 +652,13 @@ class IDE extends Component {
 			<TestRunnerIcon className={this.props.styles.testRunnerIcon} />,
 			tool,
 			null,
-			() => this.api.deleteTestRun(id)
+			() => {
+				try {
+					this.api.deleteTestRun(id);
+				} catch (error) {
+					this.reportError(error);
+				}
+			}
 		);
 	};
 
@@ -1066,8 +1092,7 @@ class IDE extends Component {
 			(error.data ? error.data.description : null) || error.toString();
 		this.setState({
 			lastMessage: { type: "error", text: description },
-			transcriptText:
-				this.state.transcriptText + "\r" + '"' + description + '"',
+			transcriptText: this.state.transcriptText + "\r" + description,
 			unreadErrorsCount: this.state.unreadErrorsCount + 1,
 		});
 	};
