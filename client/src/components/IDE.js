@@ -1,144 +1,81 @@
 import React, { Component } from "react";
 import {
-	Container,
 	createMuiTheme,
+	Container,
 	Grid,
 	IconButton,
-	Menu,
-	MenuItem,
 	Drawer,
 	Box,
-	Backdrop,
-	CircularProgress,
+	Fab,
 } from "@material-ui/core";
+import ToolsContainer from "./ToolsContainer";
 import { ThemeProvider } from "@material-ui/styles";
 import { withCookies } from "react-cookie";
 import { withRouter } from "react-router-dom";
 import { withDialog } from "./dialogs/index";
 import { amber, blue, green } from "@material-ui/core/colors";
-import AddIcon from "@material-ui/icons/AddCircle";
 import KeyboardArrowDown from "@material-ui/icons/KeyboardArrowDown";
 import API from "./API";
 import { DialogProvider } from "./dialogs/index";
 import CustomSnacks from "./controls/CustomSnacks";
-import TranscriptIcon from "./icons/TranscriptIcon";
-import SearchIcon from "@material-ui/icons/Search";
-import MigratorIcon from "@material-ui/icons/Send";
-import PackageBrowserIcon from "./icons/PackageBrowserIcon";
-import ClassBrowserIcon from "./icons/ClassBrowserIcon";
-import MethodBrowserIcon from "./icons/MethodBrowserIcon";
-import WorkspaceIcon from "./icons/WorkspaceIcon";
-import InspectorIcon from "./icons/InspectorIcon";
-import ChangesBrowserIcon from "./icons/ChangesBrowserIcon";
-import DebuggerIcon from "./icons/DebuggerIcon";
-import TestRunnerIcon from "./icons/TestRunnerIcon";
-import ChatIcon from "./icons/ChatIcon";
-import SettingsIcon from "@material-ui/icons/Settings";
 import Titlebar from "./layout/Titlebar";
 import Sidebar from "./layout/Sidebar";
-import TabControl from "./controls/TabControl";
 import Transcript from "./tools/Transcript";
-import Search from "./tools/Search";
-import PackageBrowser from "./tools/PackageBrowser";
-import ClassBrowser from "./tools/ClassBrowser";
-import MethodBrowser from "./tools/MethodBrowser";
-import Inspector from "./tools/Inspector";
-import Workspace from "./tools/Workspace";
-import ChangesBrowser from "./tools/ChangesBrowser";
-import Debugger from "./tools/Debugger";
-import TestRunner from "./tools/TestRunner";
-import Profiler from "./tools/Profiler";
-import NativeDebugger from "./tools/NativeDebugger";
 import MessageChannel from "./MessageChannel";
-import Chat from "./tools/Chat";
-import CodeDifferences from "./tools/CodeDifferences";
-import Settings from "./Settings";
-import ResourceBrowser from "./tools/ResourceBrowser";
-import CoderLikeBrowser from "./tools/CoderLikeBrowser";
-import CodeMigrator from "./tools/CodeMigrator";
 import Hotkeys from "react-hot-keys";
-import Changeset from "../model/StChangeset";
+import SplitIcon from "@material-ui/icons/VerticalSplit";
 
 var ide = null;
 
 class IDE extends Component {
 	constructor(props) {
 		super(props);
-		this.settings = { baseUri: "", developer: "", dialect: "" };
 		ide = this;
+		this.settings = { baseUri: "", developer: "", dialect: "" };
 		this.initializeSettings();
+		this.mainContainerRef = React.createRef();
 		this.state = {
 			sidebarExpanded: false,
-			addPageMenuOpen: false,
-			selectedPageId: null,
 			transcriptOpen: false,
 			lastMessage: null,
 			unreadErrorsCount: 0,
 			unreadMessages: 0,
 			transcriptText: this.welcomeMessage(),
-			pages: [],
+			extraContainers: [],
 		};
 	}
 
 	componentDidMount() {
-		this.openTranscript();
+		const container = this.mainContainer();
+		container.openTranscript();
 		const options = this.queryOptions();
 		if (options.classname) {
-			this.openClassBrowser(options.classname);
+			container.openClassBrowser(options.classname);
 		}
 		if (options.debugger) {
-			this.openDebugger(options.debugger);
+			container.openDebugger(options.debugger);
 		}
-		//this.openNativeDebugger('{B3AE5087-3EBC-43E2-B4A5-95DD37D802FE}')
 	}
 
-	usesEmergentTranscript() {
-		return false;
-	}
-
-	queryOptions() {
-		const query = new URLSearchParams(this.props.location.search);
-		const options = {};
-		for (let option of query.entries()) {
-			options[option[0]] = option[1];
-		}
-		return options;
-	}
-
-	async updateSettings(settings) {
-		this.settings = settings;
-		document.title = settings.dialect;
-		this.initializeAPI();
-		this.updateTheme();
-		this.initializeMessageChannel();
-	}
-
-	welcomeMessage() {
-		const backend =
-			this.dialect !== "undefined"
-				? this.settings.dialect
-				: "It looks like the Smalltalk system could not be determined";
-		return (
-			'"Welcome to Webside ' +
-			this.settings.developer +
-			"!\rA Smalltalk IDE for the web.\r\r" +
-			"Backend: " +
-			backend +
-			"\r" +
-			"URL: " +
-			this.settings.baseUri +
-			'"'
-		);
-	}
-
-	transcriptText() {
-		return this.state.transcriptText;
-	}
-
-	initializeSettings = async () => {
+	initializeSettings = () => {
 		const settings = this.queryOptions();
+		settings.shortcuts = this.defaultShortcuts();
 		this.updateSettings(settings);
 	};
+
+	defaultShortcuts() {
+		return {
+			evaluateExpression: "Ctrl+d",
+			inspectEvaluation: "Ctrl+i",
+			showEvaluation: "Ctrl+p",
+			debugExpression: "Ctrl+u",
+			acceptCode: "Ctrl+s",
+			browseClass: "Ctrl+b",
+			browseSenders: "Alt+n",
+			browseImplementors: "Alt+m",
+			browseClassReferences: "Alt+r",
+		};
+	}
 
 	initializeAPI() {
 		this.api = new API(
@@ -166,6 +103,123 @@ class IDE extends Component {
 			this.messageReceived,
 			this
 		);
+	}
+
+	usesEmergentTranscript() {
+		return false;
+	}
+
+	queryOptions() {
+		const query = new URLSearchParams(this.props.location.search);
+		const options = {};
+		for (let option of query.entries()) {
+			options[option[0]] = option[1];
+		}
+		return options;
+	}
+
+	applySettings(settings) {
+		this.mainContainer().removeAllPages();
+		this.props.history.push(
+			"/ide?baseUri=" +
+				settings.baseUri +
+				"&dialect=" +
+				settings.dialect +
+				"&developer=" +
+				settings.developer
+		);
+		this.updateSettings(settings);
+		this.removeExtraContainers();
+	}
+
+	async updateSettings(settings) {
+		this.settings = settings;
+		document.title = settings.dialect;
+		this.initializeAPI();
+		this.updateTheme();
+		this.initializeMessageChannel();
+	}
+
+	welcomeMessage() {
+		const backend =
+			this.settings.dialect !== "undefined"
+				? this.settings.dialect
+				: "It looks like the Smalltalk system could not be determined";
+		return (
+			'"Welcome to Webside ' +
+			this.settings.developer +
+			"!\rA Smalltalk IDE for the web.\r\r" +
+			"Backend: " +
+			backend +
+			"\r" +
+			"URL: " +
+			this.settings.baseUri +
+			'"'
+		);
+	}
+
+	transcriptText() {
+		return this.state.transcriptText;
+	}
+
+	mainContainer() {
+		return this.mainContainerRef.current;
+	}
+
+	newContainerId() {
+		const containers = this.state.extraContainers;
+		if (containers.length == 0) {
+			return 0;
+		}
+		const sorted = containers.map((p) => p.id).sort();
+		console.log(sorted);
+		const maxId = sorted[sorted.length - 1];
+		if (1 == 1) {
+			("We don't recycle ids for the moment");
+			return maxId + 1;
+		}
+		const used = new Array(maxId);
+		sorted.forEach((id) => (used[id] = true));
+		const unused = used.findIndex((id) => id !== true);
+		return unused == -1 ? maxId + 1 : unused;
+	}
+
+	addContainer = () => {
+		const containers = this.state.extraContainers;
+		const id = this.newContainerId();
+		const container = {
+			id: id,
+			component: (
+				<ToolsContainer
+					id={id}
+					styles={this.props.styles}
+					onPageRemove={(c) => {
+						if (c.pages().length == 0) {
+							this.removeContainer(c);
+						}
+					}}
+				/>
+			),
+		};
+		containers.push(container);
+		this.setState({
+			extraContainers: containers,
+		});
+	};
+
+	removeContainer(container) {
+		const containers = this.state.extraContainers.filter((c) => {
+			return c.id !== container.props.id;
+		});
+		this.setState({
+			extraContainers: containers,
+		});
+	}
+
+	removeExtraContainers() {
+		this.setState({
+			extralContainers: [],
+		});
 	}
 
 	saveImage = async () => {
@@ -244,175 +298,6 @@ class IDE extends Component {
 		});
 	}
 
-	newPageId() {
-		const pages = this.state.pages;
-		if (pages.length == 0) {
-			return 0;
-		}
-		const used = pages.map((p) => p.id).sort((a, b) => a <= b);
-		const max = used[used.length - 1];
-		const ids = new Array(max);
-		used.forEach((id) => (ids[id] = true));
-		const unused = ids.findIndex((id) => id == null);
-		return unused == -1 ? max + 1 : unused;
-	}
-
-	addPage(label, icon, component, id, onClose) {
-		const pages = this.state.pages;
-		const labelRef = React.createRef();
-		const page = {
-			id: id || this.newPageId(),
-			label: label,
-			icon: icon,
-			component: component,
-			labelRef: labelRef,
-			onClose: onClose,
-		};
-		pages.push(page);
-		const state = { pages: pages, selectedPageId: page.id };
-		if (page.label === "Transcript") {
-			state.unreadErrorsCount = 0;
-		}
-		this.setState(state);
-	}
-
-	selectPage = (page) => {
-		const state = { selectedPageId: page.id };
-		if (page.label === "Transcript") {
-			state.unreadErrorsCount = 0;
-			if (
-				page.component &&
-				page.component.ref &&
-				page.component.ref.current
-			) {
-				page.component.ref.current.forceUpdate();
-			}
-		}
-		this.setState(state);
-	};
-
-	selectPageAtOffset(offset) {
-		const pages = this.state.pages;
-		var page = this.pageWithId(state.selectedPageId);
-		var index = pages.indexOf(page);
-		if (index >= 0) {
-			index = index + offset;
-			if (index < 0) {
-				index = pages.length;
-			} else if (index >= pages.length) {
-				index = 0;
-			}
-			this.selectPage(pages[index]);
-		}
-	}
-
-	updatePageLabel = (id, label) => {
-		const page = this.pageWithId(id);
-		if (page && page.labelRef && page.labelRef.current) {
-			page.label = label || page.label;
-			page.labelRef.current.changeLabel(page.label);
-		}
-	};
-
-	removePageWithId(id) {
-		const page = this.pageWithId(id);
-		if (page) {
-			this.removePage(page);
-		}
-	}
-
-	removePage = (page) => {
-		const { pages, selectedPageId } = this.state;
-		var index = pages.indexOf(page);
-		const selectedId =
-			pages.length == 1
-				? null
-				: page.id !== selectedPageId
-				? selectedPageId
-				: index > 0
-				? pages[index - 1].id
-				: pages[index + 1].id;
-		const filtered = pages.filter((p) => p.id !== page.id);
-		this.setState(
-			{
-				selectedPageId: selectedId,
-				pages: filtered,
-			},
-			this.updatePageLabel(selectedId)
-		);
-	};
-
-	removeAllPages = () => {
-		this.setState({ pages: [] });
-	};
-
-	closePage = (page) => {
-		if (page.onClose) {
-			page.onClose();
-		}
-		this.removePage(page);
-	};
-
-	pageWithId(id) {
-		return this.state.pages.find((p) => p.id == id);
-	}
-
-	pageLabeled(label) {
-		return this.state.pages.find((p) => p.label == label);
-	}
-
-	openTranscript = () => {
-		if (this.usesEmergentTranscript()) {
-			this.toggleShowTranscript();
-		} else {
-			const page = this.pageLabeled("Transcript");
-			if (page) {
-				this.selectPage(page);
-			} else {
-				const ref = React.createRef();
-				const transcript = (
-					<Transcript
-						ref={ref}
-						styles={this.props.styles}
-						text={this.state.transcriptText}
-						onChange={this.transcriptChanged}
-					/>
-				);
-				this.addPage("Transcript", <TranscriptIcon />, transcript);
-			}
-		}
-	};
-
-	openSearch = () => {
-		const search = <Search styles={this.props.styles} />;
-		this.addPage("Search", <SearchIcon />, search);
-	};
-
-	migratePackage = (packagename) => {
-		const migrator = (
-			<CodeMigrator styles={this.props.styles} package={packagename} />
-		);
-		this.addPage("Migrate: " + packagename, <MigratorIcon />, migrator);
-	};
-
-	migrateClass = (classname) => {
-		const migrator = (
-			<CodeMigrator styles={this.props.styles} class={classname} />
-		);
-		this.addPage("Migrate: " + classname, <MigratorIcon />, migrator);
-	};
-
-	migrateMethod = (method) => {
-		const migrator = (
-			<CodeMigrator styles={this.props.styles} method={method} />
-		);
-		this.addPage(
-			"Migrate: " + method.methodClass + ">>" + method.selector,
-			<MigratorIcon />,
-			migrator
-		);
-	};
-
 	toggleShowTranscript = () => {
 		this.setState({
 			transcriptOpen: !this.state.transcriptOpen,
@@ -420,593 +305,36 @@ class IDE extends Component {
 		});
 	};
 
-	openResources = async () => {
-		const page = this.pageLabeled("Resources");
-		if (page) {
-			this.selectPage(page);
-		} else {
-			this.openResourceBrowser("Resources");
-		}
-	};
-
-	openPackageBrowser = (packagename) => {
-		const browser = (
-			<PackageBrowser
-				styles={this.props.styles}
-				selectedPackage={packagename}
-			/>
-		);
-		this.addPage("Package Browser", <PackageBrowserIcon />, browser);
-	};
-
-	browsePackage(name) {
-		this.openPackageBrowser(name);
-	}
-
-	browseClass = async (classname) => {
-		try {
-			var name = classname;
-			var side = "instance";
-			if (name.endsWith(" class")) {
-				name = name.slice(0, name.length - 6);
-				side = "class";
-			}
-			await this.api.classNamed(name);
-			this.openClassBrowser(name, side);
-		} catch (error) {
-			this.props.dialog.alert("There is no class named " + name);
-		}
-	};
-
-	browseMethod = (method) => {
-		this.openMethodBrowser([method]);
-	};
-
-	openClassBrowser = (classname, side, selector) => {
-		const id = this.newPageId();
-		const browser = (
-			<ClassBrowser
-				styles={this.props.styles}
-				root={classname}
-				side={side}
-				selectedSelector={selector}
-				id={id}
-			/>
-		);
-		this.addPage(
-			classname || "Class Browser",
-			<ClassBrowserIcon />,
-			browser,
-			id
-		);
-	};
-
-	openMethodBrowser = (
-		methods,
-		title = "Methods",
-		selectedWord,
-		sortedBy
-	) => {
-		const sorted = sortedBy
-			? methods.sort((a, b) => (a[sortedBy] <= b[sortedBy] ? -1 : 1))
-			: methods;
-		const browser = (
-			<MethodBrowser
-				styles={this.props.styles}
-				methods={sorted}
-				selectedWord={selectedWord}
-			/>
-		);
-		this.addPage(
-			title + " (" + methods.length + ")",
-			<MethodBrowserIcon />,
-			browser
-		);
-	};
-
-	newWorkspace = async () => {
-		try {
-			const id = await this.api.createWorkspace();
-			this.openWorkspace(id);
-		} catch (error) {
-			this.reportError(error);
-		}
-	};
-
-	openWorkspace = (id) => {
-		const existing = this.state.pages.find((p) => {
-			return p.component.type == Workspace && p.component.props.id === id;
-		});
-		if (existing) {
-			this.selectPage(existing);
-			return;
-		}
-		const workspace = (
-			<Workspace styles={this.props.styles} key={id} id={id} />
-		);
-		this.addPage(
-			"Workspace",
-			<WorkspaceIcon />,
-			workspace,
-			null,
-			async () => {
-				try {
-					await this.api.deleteWorkspace(id);
-				} catch (error) {
-					this.reportError(error);
-				}
-			}
-		);
-	};
-
-	openDebugger = (id, title = "Debugger", onResume, onTerminate) => {
-		const existing = this.state.pages.find((p) => {
-			return p.component.type == Debugger && p.component.props.id === id;
-		});
-		if (existing) {
-			this.selectPage(existing);
-			return;
-		}
-		const pageId = this.newPageId();
-		const tool = (
-			<Debugger
-				styles={this.props.styles}
-				key={id}
-				id={id}
-				title={title}
-				onResume={() => {
-					this.removePageWithId(pageId);
-					if (onResume) {
-						onResume();
-					}
-				}}
-				onTerminate={() => {
-					this.removePageWithId(pageId);
-					if (onTerminate) {
-						onTerminate();
-					}
-				}}
-			/>
-		);
-		this.addPage(title, <DebuggerIcon />, tool, pageId, () => {
-			try {
-				this.api.deleteDebugger(id);
-			} catch (error) {
-				this.reportError(error);
-			}
-			if (onTerminate) {
-				onTerminate();
-			}
-		});
-	};
-
-	openInspector = (object) => {
-		const existing = this.state.pages.find((p) => {
-			return (
-				p.component.type == Inspector &&
-				p.component.props.id === object.id
-			);
-		});
-		if (existing) {
-			this.selectPage(existing);
-			return;
-		}
-		const inspector = (
-			<Inspector
-				styles={this.props.styles}
-				key={object.id}
-				id={object.id}
-				root={object}
-				showWorkspace={true}
-			/>
-		);
-		this.addPage(
-			"Inspecting: " + object.class,
-			<InspectorIcon />,
-			inspector,
-			null,
-			() => {
-				try {
-					this.api.unpinObject(object.id);
-				} catch (error) {
-					this.reportError(error);
-				}
-			}
-		);
-	};
-
-	browseChanges = (changeset, title = "Changes") => {
-		const selected = changeset.size() > 0 ? changeset.changes[0] : null;
-		const browser = (
-			<ChangesBrowser
-				styles={this.props.styles}
-				changeset={changeset}
-				selectedChange={selected}
-			/>
-		);
-		this.addPage(
-			title + " (" + changeset.size() + ")",
-			<ChangesBrowserIcon />,
-			browser
-		);
-	};
-
-	openResourceBrowser = (title = "Objects") => {
-		const browser = <ResourceBrowser styles={this.props.styles} />;
-		this.addPage(title, <InspectorIcon />, browser);
-	};
-
-	openTestRunner = (id, title = "Test Runner") => {
-		const existing = this.state.pages.find((p) => {
-			return (
-				p.component.type == TestRunner && p.component.props.id === id
-			);
-		});
-		if (existing) {
-			this.selectPage(existing);
-			return;
-		}
-		const tool = <TestRunner styles={this.props.styles} key={id} id={id} />;
-		this.addPage(
-			title,
-			<TestRunnerIcon className={this.props.styles.testRunnerIcon} />,
-			tool,
-			null,
-			() => {
-				try {
-					this.api.deleteTestRun(id);
-				} catch (error) {
-					this.reportError(error);
-				}
-			}
-		);
-	};
-
-	openProfiler = (id, title = "Profiler") => {
-		const tool = <Profiler styles={this.props.styles} key={id} id={id} />;
-		this.addPage(
-			title,
-			<TestRunnerIcon className={this.props.styles.testRunnerIcon} />,
-			tool
-		);
-	};
-
-	openNativeDebugger = (id, title = "Native Debugger") => {
-		const tool = (
-			<NativeDebugger styles={this.props.styles} key={id} id={id} />
-		);
-		this.addPage(title, <DebuggerIcon />, tool);
-	};
-
-	openChat = (peername) => {
-		if (!this.messageChannel) {
-			this.props.dialog.alert("There is no channel for chatting");
-			return;
-		}
-		if (peername === this.developer) return;
-		const peer = this.messageChannel.peerNamed(peername);
-		if (peername && !peer) return;
-		const page = this.pageLabeled("Chat");
-		if (page) {
-			this.selectPage(page);
-		} else {
-			const tool = (
-				<Chat
-					styles={this.props.styles}
-					channel={this.messageChannel}
-					initialPeer={peer}
-				/>
-			);
-			this.addPage("Chat", <ChatIcon />, tool);
-		}
-	};
-
 	openSettings = () => {
-		const page = this.pageLabeled("Settings");
-		if (page) {
-			this.selectPage(page);
+		this.mainContainer().openSettings();
+	};
+
+	openTranscript = () => {
+		if (this.usesEmergentTranscript()) {
+			this.toggleShowTranscript();
 		} else {
-			const page = (
-				<Settings
-					settings={{ ...this.settings }}
-					styles={this.props.styles}
-					onApplyConnectionSettings={(settings) => {
-						this.removeAllPages();
-						this.props.history.push(
-							"/ide?baseUri=" +
-								settings.baseUri +
-								"&dialect=" +
-								settings.dialect +
-								"&developer=" +
-								settings.developer
-						);
-						this.updateSettings(settings);
-					}}
-				/>
-			);
-			this.addPage("Settings", <SettingsIcon />, page);
+			this.mainContainer().openTranscript();
 		}
 	};
 
-	openMethodDifferences = (
-		leftMethod,
-		rightMethod,
-		title = "Differences"
-	) => {
-		const browser = (
-			<CodeDifferences
-				styles={this.props.styles}
-				leftMethod={leftMethod.source}
-				rightMethod={rightMethod.source}
-			/>
-		);
-		this.addPage(title, <MethodBrowserIcon />, browser);
+	openSearch = () => {
+		this.mainContainer().openSearch();
 	};
 
-	openCoderLikeBrowser = (classname) => {
-		const browser = (
-			<CoderLikeBrowser styles={this.props.styles} root={classname} />
-		);
-		this.addPage(
-			browser.props.root || "Class Browser",
-			<ClassBrowserIcon />,
-			browser
-		);
+	browseLastChanges = () => {
+		this.mainContainer().browseLastChanges();
 	};
 
-	browseSenders = async (selector) => {
-		try {
-			const senders = await this.api.senders(selector);
-			this.openMethodBrowser(
-				senders,
-				"Senders of " + selector,
-				selector,
-				"methodClass"
-			);
-		} catch (error) {
-			this.reportError(error);
-		}
+	browseClass = (classname) => {
+		this.mainContainer().browseClass(classname);
 	};
 
-	browseLocalSenders = async (selector, classname) => {
-		try {
-			const senders = await this.api.localSenders(selector, classname);
-			this.openMethodBrowser(
-				senders,
-				"Local senders of " + selector,
-				selector,
-				"selector"
-			);
-		} catch (error) {
-			this.reportError(error);
-		}
+	openResources = () => {
+		this.mainContainer().openResources();
 	};
 
-	browseImplementors = async (selector) => {
-		try {
-			const implementors = await this.api.implementors(selector);
-			this.openMethodBrowser(
-				implementors,
-				"Implementors of " + selector,
-				null,
-				"methodClass"
-			);
-		} catch (error) {
-			this.reportError(error);
-		}
-	};
-
-	browseLocalImplementors = async (selector, classname) => {
-		try {
-			const implementors = await this.api.localImplementors(
-				selector,
-				classname
-			);
-			this.openMethodBrowser(
-				implementors,
-				"Local implementors of " + selector
-			);
-		} catch (error) {
-			this.reportError(error);
-		}
-	};
-
-	browseClassReferences = async (classname) => {
-		try {
-			const references = await this.api.classReferences(classname);
-			this.openMethodBrowser(
-				references,
-				"References to " + classname,
-				classname,
-				"methodClass"
-			);
-		} catch (error) {
-			this.reportError(error);
-		}
-	};
-
-	browseStringReferences = async (string) => {
-		try {
-			const references = await this.api.stringReferences(string);
-			this.openMethodBrowser(
-				references,
-				"References to '" + string + "'",
-				string,
-				"methodClass"
-			);
-		} catch (error) {
-			this.reportError(error);
-		}
-	};
-
-	browseMethodsMatching = async (pattern) => {
-		try {
-			const matching = await this.api.methodsMatching(pattern);
-			this.openMethodBrowser(
-				matching,
-				"Methods with selector matching " + pattern,
-				null,
-				"methocClass"
-			);
-		} catch (error) {
-			this.reportError(error);
-		}
-	};
-
-	browseLastChanges = async () => {
-		const page = this.pageLabeled("Last changes");
-		if (page) {
-			this.selectPage(page);
-		} else {
-			try {
-				const changes = await this.api.lastChanges();
-				const changeset = Changeset.fromJson(changes);
-				changeset.on(this.api);
-				this.browseChanges(changeset, "Last changes");
-			} catch (error) {
-				this.reportError(error);
-			}
-		}
-	};
-
-	browseChangesFromFile = async () => {
-		var input = document.createElement("input");
-		input.type = "file";
-		input.onchange = (e) => {
-			var file = e.target.files[0];
-			if (file) {
-				var reader = new FileReader();
-				reader.onload = async () => {
-					const ch = reader.result;
-					try {
-						const changes = await this.api.uploadChangeset(ch);
-						const changeset = Changeset.fromJson(changes);
-						changeset.on(this.api);
-						this.browseChanges(changeset, file.name);
-					} catch (error) {
-						this.reportError(error);
-					}
-				};
-				reader.readAsText(file, "UTF-8");
-			}
-		};
-		input.click();
-	};
-
-	debugExpression = async (expression, context) => {
-		try {
-			const id = await this.api.debugExpression(expression, context);
-			this.openDebugger(id, "Debugging expression");
-		} catch (error) {
-			this.reportError(error);
-		}
-	};
-
-	evaluateExpression = async (expression, sync, pin, context, assignee) => {
-		try {
-			const result = await this.api.evaluateExpression(
-				expression,
-				sync,
-				pin,
-				context,
-				assignee
-			);
-			if (sync) {
-				return result;
-			}
-			const object = await this.protectedObjectWithId(result.id);
-			if (!pin && !sync) {
-				await this.api.unpinObject(object.id);
-			}
-			return object;
-		} catch (error) {
-			if (await this.canDebugError(error)) {
-				await this.debugEvaluationError(error);
-			} else {
-				this.reportError(error.description);
-			}
-		}
-	};
-
-	async canDebugError(error) {
-		if (!error.data || !error.data.evaluation) {
-			return false;
-		}
-		// Don't ask for confirmation by the moment
-		const confirms = false;
-		if (!confirms) {
-			return true;
-		}
-		return await this.props.dialog.confirm({
-			title: error.data.description,
-			message:
-				"Stack trace:\r" +
-				error.data.stack +
-				"\r\rDo you want to debug it?",
-			ok: { text: "Debug", variant: "outlined" },
-		});
-	}
-
-	async debugEvaluationError(error) {
-		const d = await this.api.createDebugger(error.data.evaluation);
-		return new Promise((resolve, reject) => {
-			this.openDebugger(d.id, d.description, resolve, reject);
-		});
-	}
-
-	async protectedObjectWithId(id) {
-		var object;
-		try {
-			object = await this.api.objectWithId(id);
-		} catch (error) {
-			if (await this.canDebugError(error)) {
-				await this.debugEvaluationError(error).then(
-					async () => {
-						object = await this.protectedObjectWithId(id);
-					},
-					() => {
-						object = null;
-						console.log("nothing should happen from here");
-					}
-				);
-			} else {
-				this.reportError(error.description);
-			}
-		}
-		return object;
-	}
-
-	runTest = async (classname, selector, silently) => {
-		try {
-			const status = await this.api.runTest(classname, selector);
-			silently
-				? this.followTestRun(status.id, true)
-				: this.openTestRunner(status.id, "Test " + selector);
-		} catch (error) {
-			this.reportError(error);
-		}
-	};
-
-	runTestClass = async (classname, silently) => {
-		try {
-			const status = await this.api.runTestClass(classname);
-			silently
-				? this.followTestRun(status.id)
-				: this.openTestRunner(status.id, "Test " + classname);
-		} catch (error) {
-			this.reportError(error);
-		}
-	};
-
-	runTestPackage = async (packagename, silently) => {
-		try {
-			const status = await this.api.runTestPackage(packagename);
-			silently
-				? this.followTestRun(status.id)
-				: this.openTestRunner(status.id, "Test " + packagename);
-		} catch (error) {
-			this.reportError(error);
-		}
+	openChat = () => {
+		this.mainContainer().openChat();
 	};
 
 	async followTestRun(id, debug) {
@@ -1067,15 +395,6 @@ class IDE extends Component {
 		}
 	}
 
-	profileExpression = async (expression, context) => {
-		try {
-			const id = await this.api.profileExpression(expression, context);
-			this.openProfiler(id);
-		} catch (error) {
-			this.reportError(error);
-		}
-	};
-
 	expandSidebar = () => {
 		this.setState({ sidebarExpanded: true });
 	};
@@ -1097,6 +416,18 @@ class IDE extends Component {
 		});
 	};
 
+	warn(text) {
+		this.setState({
+			lastMessage: { type: "warning", text: text },
+		});
+	}
+
+	inform(text) {
+		this.setState({
+			lastMessage: { type: "info", text: text },
+		});
+	}
+
 	transcriptChanged = (text) => {
 		this.state.transcriptText = text;
 	};
@@ -1107,48 +438,24 @@ class IDE extends Component {
 		// this.setState({changesCount: changes.length})
 	};
 
-	addPackageBrowserClicked = () => {
-		this.setState({ addPageMenuOpen: false });
-		this.openPackageBrowser();
-	};
-
-	addClassBrowserClicked = () => {
-		this.setState({ addPageMenuOpen: false });
-		this.openClassBrowser();
-		//this.openCoderLikeBrowser();
-	};
-
-	addWorkspaceClicked = async () => {
-		this.setState({ addPageMenuOpen: false });
-		this.newWorkspace();
-	};
-
-	addChangesBrowserClicked = async () => {
-		this.setState({ addPageMenuOpen: false });
-		try {
-			this.browseChangesFromFile();
-		} catch (error) {
-			this.reportError(error);
-		}
-	};
-
 	hotkeyPressed = async (hotkey) => {
 		switch (hotkey) {
-			case "ctrl+b":
-				this.openClassBrowser();
+			case "Ctrl+Alt+W":
+				this.mainContainer().newWorkspace();
 				break;
-			case "ctrl+alt+w":
-				this.newWorkspace();
+			case "Ctrl+Alt+Left":
+				this.mainContainer().selectPageAtOffset(-1);
 				break;
-			case "ctrl+alt+left":
-				this.selectPageAtOffset(-1);
-				break;
-			case "ctrl+alt+right":
-				this.selectPageAtOffset(1);
+			case "Ctrl+Alt+Right":
+				this.mainContainer().selectPageAtOffset(1);
 				break;
 			default:
 		}
 	};
+
+	resetUnredErrorCount() {
+		this.setState({ unreadErrorsCount: 0 });
+	}
 
 	render() {
 		console.log("rendering IDE");
@@ -1157,17 +464,16 @@ class IDE extends Component {
 			sidebarExpanded,
 			unreadErrorsCount,
 			unreadMessages,
-			selectedPageId,
-			pages,
-			addPageMenuOpen,
 			transcriptOpen,
 			transcriptText,
 			lastMessage,
+			extraContainers,
 		} = this.state;
-		const selectedPage = this.pageWithId(selectedPageId);
+		const totalWidth = extraContainers.length > 0 ? false : "lg";
+		const containerWidth = Math.max(12 / (1 + extraContainers.length), 1);
 		return (
 			<Hotkeys
-				keyName="ctrl+b, ctrl+alt+w, ctrl+alt+left, ctrl+alt+right"
+				keyName="Ctrl+Alt+W, Ctrl+Alt+Left, Ctrl+Alt+Right"
 				filter={(event) => {
 					return true;
 				}}
@@ -1199,186 +505,102 @@ class IDE extends Component {
 								onPeersClicked={this.openChat}
 								onClose={this.collapseSidebar}
 							/>
+
 							<main className={styles.content}>
 								<div className={styles.appBarSpacer} />
 								<Container
 									className={styles.container}
-									//maxWidth={false}
+									maxWidth={totalWidth}
+									disableGutters
 								>
-									<Grid
-										container
-										spacing={1}
-										style={{ height: "100%" }}
-									>
-										<Grid item xs={11} md={11} lg={11}>
-											<TabControl
-												style={{ height: "100%" }}
-												styles={styles}
-												selectedPage={selectedPage}
-												pages={pages}
-												onSelect={this.selectPage}
-												onClose={this.closePage}
-											/>
-										</Grid>
-										<Grid item xs={1} md={1} lg={1}>
-											<IconButton
-												id="addPageButton"
-												color="primary"
-												onClick={() => {
-													this.setState({
-														addPageMenuOpen: true,
-													});
-												}}
-											>
-												<AddIcon
-													style={{ fontSize: 40 }}
-												/>
-											</IconButton>
-											<Menu
-												id="addPageMenu"
-												anchorEl={document.getElementById(
-													"addPageButton"
-												)}
-												keepMounted
-												open={addPageMenuOpen}
-												onClose={() => {
-													this.setState({
-														addPageMenuOpen: false,
-													});
-												}}
-											>
-												<MenuItem
-													onClick={
-														this.addWorkspaceClicked
-													}
+									<Box display="flex" flexDirection="row">
+										<Box flexGrow={1}>
+											<Grid container spacing={0}>
+												<Grid
+													item
+													xs={containerWidth}
+													md={containerWidth}
+													lg={containerWidth}
 												>
-													<Box
-														display="flex"
-														flexWrap="nowrap"
-														alignItems="center"
-														justifyContent="center"
-													>
-														<Box pt={1} pr={1}>
-															<WorkspaceIcon />
-														</Box>
-														<Box>Workspace</Box>
-													</Box>
-												</MenuItem>
-												<MenuItem
-													onClick={
-														this
-															.addClassBrowserClicked
-													}
-												>
-													<Box
-														display="flex"
-														flexWrap="nowrap"
-														alignItems="center"
-														justifyContent="center"
-													>
-														<Box pt={1} pr={1}>
-															<ClassBrowserIcon />
-														</Box>
-														<Box>Class Browser</Box>
-													</Box>
-												</MenuItem>
-												<MenuItem
-													onClick={
-														this
-															.addPackageBrowserClicked
-													}
-												>
-													<Box
-														display="flex"
-														flexWrap="nowrap"
-														alignItems="center"
-														justifyContent="center"
-													>
-														<Box pt={1} pr={1}>
-															<PackageBrowserIcon />
-														</Box>
-														<Box>
-															Package Browser
-														</Box>
-													</Box>
-												</MenuItem>
-												<MenuItem
-													onClick={
-														this
-															.addChangesBrowserClicked
-													}
-												>
-													<Box
-														display="flex"
-														flexWrap="nowrap"
-														alignItems="center"
-														justifyContent="center"
-													>
-														<Box pt={1} pr={1}>
-															<ChangesBrowserIcon />
-														</Box>
-														<Box>
-															Changes Browser
-														</Box>
-													</Box>
-												</MenuItem>
-											</Menu>
-										</Grid>
-										<React.Fragment key="bottom">
-											<Drawer
-												anchor="bottom"
-												variant="persistent"
-												open={transcriptOpen}
-											>
-												<Grid container spacing={0}>
-													<Grid
-														item
-														xs={11}
-														md={11}
-														lg={11}
-													>
-														{transcriptOpen && (
-															<Transcript
-																styles={styles}
-																text={
-																	transcriptText
-																}
-																onChange={
-																	this
-																		.transcriptChanged
-																}
-															/>
-														)}
-													</Grid>
-													<Grid
-														item
-														xs={1}
-														md={1}
-														lg={1}
-													>
-														<Box
-															display="flex"
-															justifyContent="center"
-														>
-															<IconButton
-																onClick={() =>
-																	this.setState(
-																		{
-																			transcriptOpen: false,
-																		}
-																	)
-																}
-															>
-																<KeyboardArrowDown />
-															</IconButton>
-														</Box>
-													</Grid>
+													<ToolsContainer
+														key="mainContainer"
+														ref={
+															this
+																.mainContainerRef
+														}
+														styles={styles}
+													/>
 												</Grid>
-											</Drawer>
-										</React.Fragment>
-									</Grid>
+												{extraContainers.map(
+													(container) => (
+														<Grid
+															item
+															xs={containerWidth}
+															md={containerWidth}
+															lg={containerWidth}
+															key={
+																"container" +
+																container.id
+															}
+														>
+															{
+																container.component
+															}
+														</Grid>
+													)
+												)}
+											</Grid>
+										</Box>
+										<Box>
+											<Fab
+												color="primary"
+												variant="round"
+												onClick={this.addContainer}
+												size="medium"
+											>
+												<SplitIcon />
+											</Fab>
+										</Box>
+									</Box>
 								</Container>
 							</main>
+							<React.Fragment key="bottom">
+								<Drawer
+									anchor="bottom"
+									variant="persistent"
+									open={transcriptOpen}
+								>
+									<Grid container spacing={0}>
+										<Grid item xs={11} md={11} lg={11}>
+											{transcriptOpen && (
+												<Transcript
+													styles={styles}
+													text={transcriptText}
+													onChange={
+														this.transcriptChanged
+													}
+												/>
+											)}
+										</Grid>
+										<Grid item xs={1} md={1} lg={1}>
+											<Box
+												display="flex"
+												justifyContent="center"
+											>
+												<IconButton
+													onClick={() =>
+														this.setState({
+															transcriptOpen: false,
+														})
+													}
+												>
+													<KeyboardArrowDown />
+												</IconButton>
+											</Box>
+										</Grid>
+									</Grid>
+								</Drawer>
+							</React.Fragment>
 						</div>
 						<CustomSnacks
 							open={lastMessage !== null}

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import CustomList from "../controls/CustomList";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 import { withDialog } from "../dialogs/index";
 
 class PackageList extends Component {
@@ -63,13 +64,13 @@ class PackageList extends Component {
 
 	runTests = (pack) => {
 		if (pack) {
-			ide.runTestPackage(pack.name);
+			container.runTestPackage(pack.name);
 		}
 	};
 
 	migratePackage = (pack) => {
 		if (pack) {
-			ide.migratePackage(pack.name);
+			container.migratePackage(pack.name);
 		}
 	};
 

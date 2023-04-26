@@ -11,10 +11,10 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import PlayIcon from "@material-ui/icons/PlayArrow";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import InspectorIcon from "../icons/InspectorIcon";
 import CodeEditor from "../parts/CodeEditor";
 import Inspector from "./Inspector";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 
 class Workspace extends Component {
 	constructor(props) {
@@ -61,7 +61,7 @@ class Workspace extends Component {
 	evaluateClicked = async () => {
 		try {
 			this.setState({ evaluating: true });
-			const object = await ide.evaluateExpression(
+			const object = await container.evaluateExpression(
 				this.state.expression,
 				false,
 				true,
@@ -90,9 +90,10 @@ class Workspace extends Component {
 
 	render() {
 		const { expression, inspectors, evaluating } = this.state;
+		const editorWidth = inspectors.length > 0 ? 8 : 12;
 		return (
 			<Grid container spacing={1}>
-				<Grid item xs={12} md={8} lg={8}>
+				<Grid item xs={12} md={editorWidth} lg={editorWidth}>
 					<Paper
 						variant="outlined"
 						style={{ minHeight: 300, height: "100%" }}
@@ -112,48 +113,51 @@ class Workspace extends Component {
 						/>
 					</Paper>
 				</Grid>
-				<Grid item xs={12} md={4} lg={4}>
-					{inspectors.map((inspector, index) => {
-						return (
-							<Accordion key={inspector.key} defaultExpanded>
-								<AccordionSummary
-									expandIcon={<ExpandMoreIcon />}
-									style={{ maxHeight: 15 }}
-								>
-									<Box
-										display="flex"
-										flexWrap="nowrap"
-										alignItems="center"
-										justifyContent="center"
-									></Box>
-									<Box>
-										<IconButton
-											onClick={(event) => {
-												this.closeInspector(
-													event,
-													inspector.key
-												);
-											}}
-											size="small"
-										>
-											<CloseIcon fontSize="small" />
-										</IconButton>
-									</Box>
-									{/* <Box pt={0.5} pr={1}>
+				{inspectors.length > 0 && (
+					<Grid item xs={12} md={4} lg={4}>
+						{inspectors.map((inspector, index) => {
+							return (
+								<Accordion key={inspector.key} defaultExpanded>
+									<AccordionSummary
+										expandIcon={<ExpandMoreIcon />}
+										IconButtonProps={{ size: "small" }}
+									>
+										<Box
+											display="flex"
+											flexWrap="nowrap"
+											alignItems="center"
+											justifyContent="center"
+											mt={0}
+										></Box>
+										<Box>
+											<IconButton
+												onClick={(event) => {
+													this.closeInspector(
+														event,
+														inspector.key
+													);
+												}}
+												size="small"
+											>
+												<CloseIcon fontSize="small" />
+											</IconButton>
+										</Box>
+										{/* <Box pt={0.5} pr={1}>
 										<InspectorIcon />
 									</Box> */}
-									<Box>
-										<Typography>
-											{"Inspecting: " +
-												inspector.props.root.class}
-										</Typography>
-									</Box>
-								</AccordionSummary>
-								{inspector}
-							</Accordion>
-						);
-					})}
-				</Grid>
+										<Box>
+											<Typography>
+												{"Inspecting: " +
+													inspector.props.root.class}
+											</Typography>
+										</Box>
+									</AccordionSummary>
+									{inspector}
+								</Accordion>
+							);
+						})}
+					</Grid>
+				)}
 			</Grid>
 		);
 	}

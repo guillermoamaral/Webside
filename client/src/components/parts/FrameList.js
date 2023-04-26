@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import CustomList from "../controls/CustomList";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 
 class FrameList extends Component {
 	frameSelected = (frame) => {
@@ -11,31 +12,31 @@ class FrameList extends Component {
 
 	browseClass = (frame) => {
 		if (frame) {
-			ide.browseClass(frame.class.name);
+			container.browseClass(frame.class.name);
 		}
 	};
 
 	browseSenders = (frame) => {
 		if (frame) {
-			ide.browseSenders(frame.method.selector);
+			container.browseSenders(frame.method.selector);
 		}
 	};
 
 	browseLocalSenders = (frame) => {
 		if (frame) {
-			ide.browseLocalSenders(frame.method.selector, frame.class.name);
+			container.browseLocalSenders(frame.method.selector, frame.class.name);
 		}
 	};
 
 	browseImplementors = (frame) => {
 		if (frame && frame.method && frame.method.selector) {
-			ide.browseImplementors(frame.method.selector);
+			container.browseImplementors(frame.method.selector);
 		}
 	};
 
 	browseLocalImplementors = (frame) => {
 		if (frame) {
-			ide.browseLocalImplementors(
+			container.browseLocalImplementors(
 				frame.method.selector,
 				frame.class.name
 			);
@@ -44,7 +45,7 @@ class FrameList extends Component {
 
 	browseClassReferences = (frame) => {
 		if (frame) {
-			ide.browseClassReferences(frame.class.name);
+			container.browseClassReferences(frame.class.name);
 		}
 	};
 

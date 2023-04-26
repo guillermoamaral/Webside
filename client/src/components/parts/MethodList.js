@@ -6,6 +6,7 @@ import TestIcon from "@material-ui/icons/PlayArrow";
 import CustomList from "../controls/CustomList";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 import { withDialog } from "../dialogs/index";
 
 class MethodList extends Component {
@@ -78,55 +79,55 @@ class MethodList extends Component {
 
 	browseClass = (method) => {
 		if (method) {
-			ide.browseClass(method.methodClass);
+			container.browseClass(method.methodClass);
 		}
 	};
 
 	browsePackage = (method) => {
 		if (method) {
-			ide.browsePackage(method.package);
+			container.browsePackage(method.package);
 		}
 	};
 
 	browseSenders = (method) => {
 		if (method) {
-			ide.browseSenders(method.selector);
+			container.browseSenders(method.selector);
 		}
 	};
 
 	browseLocalSenders = (method) => {
 		if (method) {
-			ide.browseLocalSenders(method.selector, method.methodClass);
+			container.browseLocalSenders(method.selector, method.methodClass);
 		}
 	};
 
 	browseImplementors = (method) => {
 		if (method) {
-			ide.browseImplementors(method.selector);
+			container.browseImplementors(method.selector);
 		}
 	};
 
 	browseLocalImplementors = (method) => {
 		if (method) {
-			ide.browseLocalImplementors(method.selector, method.methodClass);
+			container.browseLocalImplementors(method.selector, method.methodClass);
 		}
 	};
 
 	browseClassReferences = (method) => {
 		if (method) {
-			ide.browseClassReferences(method.methodClass);
+			container.browseClassReferences(method.methodClass);
 		}
 	};
 
 	runTest = (method, silently) => {
 		if (method) {
-			ide.runTest(method.methodClass, method.selector, silently);
+			container.runTest(method.methodClass, method.selector, silently);
 		}
 	};
 
 	migrateMethod = (method) => {
 		if (method) {
-			ide.migrateMethod(method);
+			container.migrateMethod(method);
 		}
 	};
 

@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 import InspectorIcon from "../icons/InspectorIcon";
 import WorkspaceIcon from "../icons/WorkspaceIcon";
 import DebuggerIcon from "../icons/DebuggerIcon";
@@ -102,7 +103,7 @@ class ResourceBrowser extends Component {
 
 	openInspector = (object) => {
 		if (object) {
-			ide.openInspector(object);
+			container.openInspector(object);
 		}
 	};
 
@@ -147,7 +148,7 @@ class ResourceBrowser extends Component {
 
 	openWorkspace = (workspace) => {
 		if (workspace) {
-			ide.openWorkspace(workspace.id);
+			container.openWorkspace(workspace.id);
 		}
 	};
 
@@ -169,7 +170,7 @@ class ResourceBrowser extends Component {
 
 	openDebugger = (d) => {
 		if (d) {
-			ide.openDebugger(d.id, d.description);
+			container.openDebugger(d.id, d.description);
 		}
 	};
 
@@ -189,9 +190,9 @@ class ResourceBrowser extends Component {
 		}
 	};
 
-	openTestRun = (t) => {
-		if (t) {
-			ide.openTestRunner(t.id, t.name);
+	openTestRun = (run) => {
+		if (run) {
+			container.openTestRunner(run.id, run.name);
 		}
 	};
 

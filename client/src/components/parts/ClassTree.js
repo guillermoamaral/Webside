@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import CustomTree from "../controls/CustomTree";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 import { withDialog } from "../dialogs/index";
 //import Scrollable from "../controls/Scrollable";
 
@@ -68,31 +69,31 @@ class ClassTree extends Component {
 
 	browseClass = (species) => {
 		if (species) {
-			ide.browseClass(species.name);
+			container.browseClass(species.name);
 		}
 	};
 
 	browsePackage = (species) => {
 		if (species) {
-			ide.browsePackage(species.package);
+			container.browsePackage(species.package);
 		}
 	};
 
 	browseClassReferences = (species) => {
 		if (species) {
-			ide.browseClassReferences(species.name);
+			container.browseClassReferences(species.name);
 		}
 	};
 
 	runTests = (species) => {
 		if (species) {
-			ide.runTestClass(species.name);
+			container.runTestClass(species.name);
 		}
 	};
 
 	migrateClass = (species) => {
 		if (species) {
-			ide.migrateClass(species.name);
+			container.migrateClass(species.name);
 		}
 	};
 

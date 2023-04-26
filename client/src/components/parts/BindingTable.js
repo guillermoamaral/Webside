@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import { Box, Paper } from "@material-ui/core";
-import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";
 
@@ -34,15 +34,15 @@ class BindingTable extends PureComponent {
 
 	inspectBinding = async (binding) => {
 		try {
-			const object = await ide.evaluateExpression(
+			const object = await container.evaluateExpression(
 				binding.name,
 				false,
 				true,
 				this.evaluationContext()
 			);
-			ide.openInspector(object);
+			container.openInspector(object);
 		} catch (error) {
-			ide.reportError(error);
+			container.reportError(error);
 		}
 	};
 

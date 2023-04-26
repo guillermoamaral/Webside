@@ -14,6 +14,7 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 import SearchList2 from "../controls/SearchList2";
 import ClassTree from "../parts/ClassTree";
 import VariableList from "../parts/VariableList";
@@ -25,9 +26,9 @@ import UpIcon from "@material-ui/icons/ArrowDropUp";
 class ClassBrowser extends Component {
 	constructor(props) {
 		super(props);
+		this.classnames = [];
 		this.cache = {};
 		this.state = {
-			classNames: [],
 			root: this.props.root,
 			selectedClass: null,
 			selectedAccess: "accessing",
@@ -44,10 +45,12 @@ class ClassBrowser extends Component {
 
 	async initializeClassNames() {
 		try {
-			const names = await ide.api.classNames();
-			this.setState({ classNames: names }, () => {
+			this.classnames = await ide.api.classNames();
+			if (this.state.root) {
 				this.changeRootClass(this.state.root);
-			});
+			} else {
+				this.setState({});
+			}
 		} catch (error) {
 			ide.reportError(error);
 		}
@@ -321,7 +324,7 @@ class ClassBrowser extends Component {
 	};
 
 	classSelected = async (species) => {
-		ide.updatePageLabel(this.props.id, species.name);
+		container.updatePageLabel(this.props.id, species.name);
 		const selections = this.currentSelections();
 		selections.species = species;
 		selections.category = null;
@@ -345,6 +348,9 @@ class ClassBrowser extends Component {
 		if (name.endsWith(" class")) {
 			name = name.slice(0, name.length - 6);
 			side = "class";
+		}
+		if (!this.classnames.includes(name)) {
+			this.classnames.push(name);
 		}
 		const instance = { name: name };
 		await this.updateClass(instance, true);
@@ -558,7 +564,6 @@ class ClassBrowser extends Component {
 	render() {
 		console.log("rendering browser");
 		const {
-			classNames,
 			root,
 			selectedSide,
 			selectedClass,
@@ -583,7 +588,7 @@ class ClassBrowser extends Component {
 												? selectedClass.name
 												: null
 										}
-										options={classNames}
+										options={this.classnames}
 										onChange={(classname) => {
 											this.changeRootClass(classname);
 										}}

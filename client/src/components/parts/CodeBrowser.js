@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Grid, Paper, Link } from "@material-ui/core";
 import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 import CodeEditor from "./CodeEditor";
 import { withDialog } from "../dialogs/index";
 //import clsx from "clsx";
@@ -252,7 +253,10 @@ class CodeBrowser extends Component {
 				mode = "gas";
 				break;
 			default:
-				mode = ide.dialect === "Python" ? "python" : "smalltalk-method";
+				mode =
+					ide.settings.dialect === "Python"
+						? "python"
+						: "smalltalk-method";
 		}
 		return mode;
 	};
@@ -323,8 +327,6 @@ class CodeBrowser extends Component {
 		const timestamp = this.currentTimestamp();
 		const packagename = this.currentPackage();
 		const { selectedInterval, selectedWord } = this.props;
-		//const styles = this.props.styles;
-		//const fixedHeightPaper = clsx(styles.paper, styles.fixedHeight);
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
@@ -372,7 +374,10 @@ class CodeBrowser extends Component {
 					{timestamp}
 					{author ? " by " : ""}
 					{author && (
-						<Link href="#" onClick={() => ide.openChat(author)}>
+						<Link
+							href="#"
+							onClick={() => container.openChat(author)}
+						>
 							{author}
 						</Link>
 					)}
@@ -380,7 +385,7 @@ class CodeBrowser extends Component {
 					{packagename && (
 						<Link
 							href="#"
-							onClick={() => ide.browsePackage(packagename)}
+							onClick={() => container.browsePackage(packagename)}
 						>
 							{packagename}
 						</Link>

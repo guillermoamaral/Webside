@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import CustomTree from "../controls/CustomTree";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 
 class ObjectTree extends Component {
 	browseClass = (object) => {
 		if (object) {
-			ide.browseClass(object.class);
+			container.browseClass(object.class);
 		}
 	};
 
@@ -14,7 +15,7 @@ class ObjectTree extends Component {
 			const id = this.props.roots[0].id;
 			const path = this.objectURIPath(object);
 			const pinned = await ide.api.pinObjectSlot(id, path);
-			ide.openInspector(pinned);
+			container.openInspector(pinned);
 		} catch (error) {
 			ide.reportError(error);
 		}

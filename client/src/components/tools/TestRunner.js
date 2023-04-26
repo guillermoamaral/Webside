@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import {
 	Accordion,
@@ -192,13 +193,13 @@ class TestRunner extends Component {
 
 	browseImplementors = (test) => {
 		if (test) {
-			ide.browseImplementors(test.selector);
+			container.browseImplementors(test.selector);
 		}
 	};
 
 	browseClass = (test) => {
 		if (test) {
-			ide.browseClass(test.class);
+			container.browseClass(test.class);
 		}
 	};
 
@@ -221,7 +222,7 @@ class TestRunner extends Component {
 				test.class,
 				test.selector
 			);
-			ide.openDebugger(
+			container.openDebugger(
 				d.id,
 				d.description || "Debugging test " + test.selector
 			);

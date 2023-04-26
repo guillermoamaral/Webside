@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
 import { Box, Paper, IconButton } from "@material-ui/core";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 import CustomTable from "../controls/CustomTable";
 //import { DataGrid } from "@mui/x-data-grid";
 import CodeEditor from "../parts/CodeEditor";
@@ -23,13 +24,13 @@ class ExpressionTable extends PureComponent {
 
 	inspectExpression = async (expression) => {
 		try {
-			const object = await ide.evaluateExpression(
+			const object = await container.evaluateExpression(
 				expression.sourceCode,
 				false,
 				true,
 				this.evaluationContext()
 			);
-			ide.openInspector(object);
+			container.openInspector(object);
 		} catch (error) {
 			ide.reportError(error);
 		}

@@ -4,6 +4,7 @@ import "../../SmalltalkMode.js";
 import "../../SmalltalkMode.css";
 import Scrollable from "../controls/Scrollable.js";
 import PopupMenu from "../controls/PopupMenu";
+import { ide } from "../IDE.js";
 //import CodeEditor from "./CodeEditor";
 require("codemirror/lib/codemirror.css");
 require("codemirror/theme/material.css");
@@ -87,25 +88,50 @@ class CodeMerge extends Component {
 	};
 
 	menuOptions() {
+		const shortcuts = ide.settings.shortcuts;
 		return [
 			{ label: "Copy (Ctrl+c)", action: this.copyToClipboard },
 			{ label: "Paste (Ctrl+v)", action: this.pasteFromClipboard },
 			null,
-			{ label: "Do it (Ctrl+d)", action: this.evaluateExpression },
-			{ label: "Print it (Ctrl+p)", action: this.showEvaluation },
-			{ label: "Inspect it (Ctrl+i)", action: this.inspectEvaluation },
-			{ label: "Debug it (Ctrl+u)", action: this.debugExpression },
+			{
+				label: "Do it (" + shortcuts.evaluateExpression + ")",
+				action: this.evaluateExpression,
+			},
+			{
+				label: "Print it (" + shortcuts.showEvaluation + ")",
+				action: this.showEvaluation,
+			},
+			{
+				label: "Inspect it (" + shortcuts.inspectEvaluation + ")",
+				action: this.inspectEvaluation,
+			},
+			{
+				label: "Debug it (" + shortcuts.debugExpression + ")",
+				action: this.debugExpression,
+			},
 			{ label: "Profile it", action: this.profileExpression },
 			{ label: "Google it", action: this.searchInGoogle },
 			null,
-			{ label: "Browse class (Ctrl+b)", action: this.browseClass },
-			{ label: "Browse senders (Alt+n)", action: this.browseSenders },
 			{
-				label: "Browse implementors (Alt+m)",
+				label: "Browse class (" + shortcuts.browseClass + ")",
+				action: this.browseClass,
+			},
+			{
+				label: "Browse senders (" + shortcuts.browseSenders + ")",
+				action: this.browseSenders,
+			},
+			{
+				label:
+					"Browse implementors (" +
+					shortcuts.browseImplementors +
+					")",
 				action: this.browseImplementors,
 			},
 			{
-				label: "Browse class references (Alt+r)",
+				label:
+					"Browse class references (" +
+					shortcuts.browseClassReferences +
+					")",
 				action: this.browseClassReferences,
 			},
 			{

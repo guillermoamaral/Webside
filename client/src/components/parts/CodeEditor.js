@@ -4,6 +4,7 @@ import AcceptIcon from "@material-ui/icons/CheckCircle";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import PopupMenu from "../controls/PopupMenu";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 import Scrollable from "../controls/Scrollable";
 import "../../SmalltalkMode.css";
 import "../../SmalltalkMode.js";
@@ -223,25 +224,50 @@ class CodeEditor extends Component {
 	};
 
 	menuOptions() {
+		const shortcuts = ide.settings.shortcuts;
 		return [
 			{ label: "Copy (Ctrl+c)", action: this.copyToClipboard },
 			{ label: "Paste (Ctrl+v)", action: this.pasteFromClipboard },
 			null,
-			{ label: "Do it (Ctrl+d)", action: this.evaluateExpression },
-			{ label: "Print it (Ctrl+p)", action: this.showEvaluation },
-			{ label: "Inspect it (Ctrl+i)", action: this.inspectEvaluation },
-			{ label: "Debug it (Ctrl+u)", action: this.debugExpression },
+			{
+				label: "Do it (" + shortcuts.evaluateExpression + ")",
+				action: this.evaluateExpression,
+			},
+			{
+				label: "Print it (" + shortcuts.showEvaluation + ")",
+				action: this.showEvaluation,
+			},
+			{
+				label: "Inspect it (" + shortcuts.inspectEvaluation + ")",
+				action: this.inspectEvaluation,
+			},
+			{
+				label: "Debug it (" + shortcuts.debugExpression + ")",
+				action: this.debugExpression,
+			},
 			{ label: "Profile it", action: this.profileExpression },
 			{ label: "Google it", action: this.searchInGoogle },
 			null,
-			{ label: "Browse class (Ctrl+b)", action: this.browseClass },
-			{ label: "Browse senders (Alt+n)", action: this.browseSenders },
 			{
-				label: "Browse implementors (Alt+m)",
+				label: "Browse class (" + shortcuts.browseClass + ")",
+				action: this.browseClass,
+			},
+			{
+				label: "Browse senders (" + shortcuts.browseSenders + ")",
+				action: this.browseSenders,
+			},
+			{
+				label:
+					"Browse implementors (" +
+					shortcuts.browseImplementors +
+					")",
 				action: this.browseImplementors,
 			},
 			{
-				label: "Browse class references (Alt+r)",
+				label:
+					"Browse class references (" +
+					shortcuts.browseClassReferences +
+					")",
 				action: this.browseClassReferences,
 			},
 			{
@@ -315,28 +341,28 @@ class CodeEditor extends Component {
 	};
 
 	browseSenders = () => {
-		ide.browseSenders(this.targetSelector());
-		return false;
+		container.browseSenders(this.targetSelector());
 	};
 
 	browseImplementors = () => {
-		ide.browseImplementors(this.targetSelector());
+		container.browseImplementors(this.targetSelector());
 	};
 
-	browseClass = () => {
-		ide.browseClass(this.targetWord());
+	browseClass = (e, f) => {
+		console.log(e, f);
+		container.browseClass(this.targetWord());
 	};
 
 	browseClassReferences = () => {
-		ide.browseClassReferences(this.targetWord());
+		container.browseClassReferences(this.targetWord());
 	};
 
 	browseMethodsMatching = () => {
-		ide.browseMethodsMatching(this.targetWord());
+		container.browseMethodsMatching(this.targetWord());
 	};
 
 	browseStringReferences = () => {
-		ide.browseStringReferences(this.targetWord());
+		container.browseStringReferences(this.targetWord());
 	};
 
 	selectedExpression() {
@@ -351,14 +377,14 @@ class CodeEditor extends Component {
 	debugExpression = async () => {
 		const expression = this.selectedExpression();
 		try {
-			await ide.debugExpression(expression, this.props.context);
+			await container.debugExpression(expression, this.props.context);
 		} catch (error) {}
 	};
 
 	profileExpression = async () => {
 		const expression = this.selectedExpression();
 		try {
-			await ide.profileExpression(expression, this.props.context);
+			await container.profileExpression(expression, this.props.context);
 		} catch (error) {}
 	};
 
@@ -366,7 +392,7 @@ class CodeEditor extends Component {
 		const expression = this.selectedExpression();
 		try {
 			this.setState({ progress: true });
-			await ide.evaluateExpression(
+			await container.evaluateExpression(
 				expression,
 				false,
 				false,
@@ -388,7 +414,7 @@ class CodeEditor extends Component {
 		const expression = this.selectedExpression();
 		try {
 			this.setState({ progress: true });
-			const object = await ide.evaluateExpression(
+			const object = await container.evaluateExpression(
 				expression,
 				false,
 				false,
@@ -415,14 +441,14 @@ class CodeEditor extends Component {
 		const expression = this.selectedExpression();
 		try {
 			this.setState({ progress: true });
-			const object = await ide.evaluateExpression(
+			const object = await container.evaluateExpression(
 				expression,
 				false,
 				true,
 				this.props.context
 			);
 			this.setState({ progress: false });
-			ide.openInspector(object);
+			container.openInspector(object);
 		} catch (error) {
 			this.setState({ progress: false });
 		}
@@ -495,6 +521,33 @@ class CodeEditor extends Component {
 		//this.selectsRanges = false;
 	};
 
+	adaptShortcut(shortcut) {
+		const parts = shortcut.split("+");
+		return parts[0] + "-" + parts[1].toUpperCase();
+	}
+
+	extraKeys() {
+		const shortcuts = ide.settings.shortcuts;
+		const extraKeys = {};
+		extraKeys[this.adaptShortcut(shortcuts.evaluateExpression)] =
+			this.evaluateExpression;
+		extraKeys[this.adaptShortcut(shortcuts.inspectEvaluation)] =
+			this.inspectEvaluation;
+		extraKeys[this.adaptShortcut(shortcuts.showEvaluation)] =
+			this.showEvaluation;
+		extraKeys[this.adaptShortcut(shortcuts.acceptCode)] =
+			this.acceptClicked;
+		extraKeys[this.adaptShortcut(shortcuts.browseClass)] = this.browseClass;
+		extraKeys[this.adaptShortcut(shortcuts.browseSenders)] =
+			this.browseSenders;
+		extraKeys[this.adaptShortcut(shortcuts.browseImplementors)] =
+			this.browseImplementors;
+		extraKeys[this.adaptShortcut(shortcuts.browseClassReferences)] =
+			this.browseClassReferences;
+		extraKeys.F2 = this.renameTarget;
+		return extraKeys;
+	}
+
 	render() {
 		const { source, selectedRanges, evaluating, progress, dirty } =
 			this.state;
@@ -541,20 +594,7 @@ class CodeEditor extends Component {
 									"breakpoints",
 								],
 								lint: { getAnnotations: this.annotations },
-								extraKeys: {
-									"Ctrl-D": this.evaluateExpression,
-									"Ctrl-I": this.inspectEvaluation,
-									"Ctrl-P": this.showEvaluation,
-									"Ctrl-U": this.debugExpression,
-									"Ctrl-S": this.acceptClicked,
-									"Ctrl-B": this.browseClass,
-									"Alt-N": this.browseSenders,
-									"Alt-M": this.browseImplementors,
-									"Alt-R": this.browseClassReferences,
-									"Ctrl-Q": this.markOcurrences,
-									"Alt-Z": this.toggleFullScreen,
-									F2: this.renameTarget,
-								},
+								extraKeys: this.extraKeys(),
 							}}
 							value={source}
 							selection={{ ranges: selectedRanges, focus: true }}

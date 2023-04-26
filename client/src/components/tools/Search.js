@@ -14,6 +14,7 @@ import {
 } from "@material-ui/core";
 import { Pagination } from "@material-ui/lab";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 
 class Search extends Component {
 	constructor(props) {
@@ -101,10 +102,10 @@ class Search extends Component {
 
 	goToResult = (r) => {
 		if (r.type === "class") {
-			ide.browseClass(r.text);
+			container.browseClass(r.text);
 		}
 		if (r.type === "method") {
-			ide.browseMethod({ methodClass: r.title, selector: r.text });
+			container.browseMethod({ methodClass: r.title, selector: r.text });
 		}
 	};
 

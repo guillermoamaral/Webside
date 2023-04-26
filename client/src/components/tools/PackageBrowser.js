@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 import PackageList from "../parts/PackageList";
 import ClassTree from "../parts/ClassTree";
 import CategoryList from "../parts/CategoryList";
@@ -316,7 +317,7 @@ class PackageBrowser extends Component {
 	};
 
 	classSelected = async (species) => {
-		ide.updatePageLabel(this.props.id, species.name);
+		container.updatePageLabel(this.props.id, species.name);
 		const selections = this.currentSelections();
 		selections.species = species;
 		selections.category = null;

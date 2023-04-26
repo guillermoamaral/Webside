@@ -8,6 +8,7 @@ import {
 	Typography,
 } from "@material-ui/core";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 import ObjectTree from "../parts/ObjectTree";
 import ObjectPresenter from "../parts/ObjectPresenter";
 import CodeEditor from "../parts/CodeEditor";
@@ -134,7 +135,7 @@ class Inspector extends Component {
 	};
 
 	browseClass = (classname) => {
-		ide.browseClass(classname);
+		container.browseClass(classname);
 	};
 
 	subpaths(path) {
@@ -171,7 +172,7 @@ class Inspector extends Component {
 		}
 		const path = this.objectURIPath(selectedObject);
 		try {
-			await ide.evaluateExpression(
+			await container.evaluateExpression(
 				expression,
 				false,
 				false,

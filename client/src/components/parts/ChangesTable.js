@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 import ApplyIcon from "@material-ui/icons/CheckCircle";
 
 class ChangesTable extends Component {
@@ -12,13 +13,13 @@ class ChangesTable extends Component {
 
 	browseClass = (change) => {
 		if (change) {
-			ide.browseClass(change.className);
+			container.browseClass(change.className);
 		}
 	};
 
 	browseImplementors = (change) => {
 		if (change && change.isMethodChange()) {
-			ide.browseImplementors(change.selector);
+			container.browseImplementors(change.selector);
 		}
 	};
 
