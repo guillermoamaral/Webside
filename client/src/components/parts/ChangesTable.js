@@ -27,8 +27,11 @@ class ChangesTable extends Component {
 		if (change) {
 			try {
 				await ide.api.postChange(change.asJson());
-				const handler = this.props.changeApplied;
 				await change.updateCurrentSourceCode();
+				if (change.isUpToDate()) {
+					change.color = "green";
+				}
+				const handler = this.props.changeApplied;
 				if (handler) {
 					handler(change);
 				} else {

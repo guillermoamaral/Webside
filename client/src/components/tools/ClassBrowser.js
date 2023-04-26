@@ -323,7 +323,7 @@ class ClassBrowser extends Component {
 		this.applySelections(selections);
 	};
 
-	classSelected = async (species) => {
+	classSelected = async (species, keepSelections = true) => {
 		container.updatePageLabel(this.props.id, species.name);
 		const selections = this.currentSelections();
 		selections.species = species;
@@ -335,6 +335,12 @@ class ClassBrowser extends Component {
 		await this.updateVariables(target);
 		await this.updateCategories(target);
 		await this.updateMethods(target);
+		if (!keepSelections) {
+			selections.variable = null;
+			selections.category = null;
+			selections.method = null;
+		}
+		console.log(selections);
 		this.applySelections(selections);
 	};
 
@@ -362,14 +368,18 @@ class ClassBrowser extends Component {
 		}
 		const target = side === "instance" ? instance : instance.metaclass;
 		await this.updateVariables(target, true);
-		if (this.isInSubclasses(this.state.root, instance.superclass)) {
-			this.classSelected(instance);
+		if (
+			this.state.root == instance.name ||
+			this.isInSubclasses(this.state.root, instance.superclass)
+		) {
+			this.classSelected(instance, false);
 		} else {
 			this.changeRootClass(instance.name);
 		}
 	};
 
 	isInSubclasses(rootname, classname) {
+		console.log(rootname, classname);
 		if (rootname === classname) {
 			return true;
 		}
