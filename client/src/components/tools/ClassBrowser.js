@@ -340,7 +340,6 @@ class ClassBrowser extends Component {
 			selections.category = null;
 			selections.method = null;
 		}
-		console.log(selections);
 		this.applySelections(selections);
 	};
 
@@ -379,7 +378,6 @@ class ClassBrowser extends Component {
 	};
 
 	isInSubclasses(rootname, classname) {
-		console.log(rootname, classname);
 		if (rootname === classname) {
 			return true;
 		}

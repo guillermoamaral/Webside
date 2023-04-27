@@ -21,7 +21,7 @@ class TabControl extends Component {
 
 	closeTab = (event, index) => {
 		event.stopPropagation();
-		//event.preventDefault();
+		event.preventDefault();
 		const page = this.props.pages[index];
 		if (this.props.onClose) {
 			this.props.onClose(page);
@@ -60,8 +60,8 @@ class TabControl extends Component {
 								return (
 									<Tab
 										component="div"
-										key={index.toString()}
-										id={`tab-${index}`}
+										key={page.id}
+										id={page.id}
 										style={{
 											paddingTop: 1,
 											paddingBotton: 0,
@@ -70,6 +70,7 @@ class TabControl extends Component {
 										label={
 											<TabLabel
 												index={index}
+												//id={"label" + page.id}
 												icon={page.icon}
 												label={page.label}
 												ref={page.labelRef}

@@ -349,7 +349,6 @@ class CodeEditor extends Component {
 	};
 
 	browseClass = (e, f) => {
-		console.log(e, f);
 		container.browseClass(this.targetWord());
 	};
 

@@ -172,7 +172,6 @@ class IDE extends Component {
 			return 0;
 		}
 		const sorted = containers.map((p) => p.id).sort();
-		console.log(sorted);
 		const maxId = sorted[sorted.length - 1];
 		if (1 == 1) {
 			("We don't recycle ids for the moment");
