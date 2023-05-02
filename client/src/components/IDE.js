@@ -456,6 +456,23 @@ class IDE extends Component {
 		this.setState({ unreadErrorsCount: 0 });
 	}
 
+	async choose(list) {
+		return await this.props.dialog.list(list);
+	}
+
+	async confirm(question) {
+		return await this.props.dialog.confirm(question);
+	}
+
+	async prompt(data) {
+		console.log("w")
+		return await this.props.dialog.prompt(data);
+	}
+
+	async confirm(question) {
+		return await this.props.dialog.confirm(question);
+	}
+
 	render() {
 		console.log("rendering IDE");
 		const styles = this.props.styles;

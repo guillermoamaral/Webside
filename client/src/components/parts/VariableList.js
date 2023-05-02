@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import CustomList from "../controls/CustomList";
 import { ide } from "../IDE";
-import { withDialog } from "../dialogs/index";
 
 class VariableList extends Component {
 	extendedVariables(variables) {
@@ -31,7 +30,7 @@ class VariableList extends Component {
 
 	addVariable = async () => {
 		try {
-			const name = await this.props.dialog.prompt({
+			const name = await ide.prompt({
 				title: "New variable",
 				required: true,
 			});
@@ -49,7 +48,7 @@ class VariableList extends Component {
 			return;
 		}
 		try {
-			const newName = await this.props.dialog.prompt({
+			const newName = await ide.prompt({
 				title: "Rename variable",
 				defaultValue: variable.name,
 				required: true,
@@ -173,4 +172,4 @@ class VariableList extends Component {
 	}
 }
 
-export default withDialog()(VariableList);
+export default VariableList;

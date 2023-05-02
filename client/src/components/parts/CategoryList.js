@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import CustomList from "../controls/CustomList";
 import { ide } from "../IDE";
-import { withDialog } from "../dialogs/index";
 
 class CategoryList extends Component {
 	constructor(props) {
@@ -18,7 +17,7 @@ class CategoryList extends Component {
 
 	addCategory = async () => {
 		try {
-			const category = await this.props.dialog.prompt({
+			const category = await ide.prompt({
 				title: "New category",
 			});
 			if (category && this.props.onAdd) {
@@ -32,7 +31,7 @@ class CategoryList extends Component {
 			return;
 		}
 		try {
-			const newName = await this.props.dialog.prompt({
+			const newName = await ide.prompt({
 				title: "Rename category",
 				defaultValue: category,
 			});
@@ -91,4 +90,4 @@ class CategoryList extends Component {
 	}
 }
 
-export default withDialog()(CategoryList);
+export default CategoryList;

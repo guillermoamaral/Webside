@@ -2,12 +2,11 @@ import React, { Component } from "react";
 import CustomList from "../controls/CustomList";
 import { ide } from "../IDE";
 import { container } from "../ToolsContainer";
-import { withDialog } from "../dialogs/index";
 
 class PackageList extends Component {
 	createPackage = async () => {
 		try {
-			const name = await this.props.dialog.prompt({
+			const name = await ide.prompt({
 				title: "New package",
 				required: true,
 			});
@@ -25,7 +24,7 @@ class PackageList extends Component {
 		if (!pack) {
 			return;
 		}
-		const confirm = await this.props.dialog.confirm({
+		const confirm = await ide.confirm({
 			title: "Delete " + pack.name + " package?",
 			ok: { text: "Delete", color: "secondary", variant: "outlined" },
 		});
@@ -47,7 +46,7 @@ class PackageList extends Component {
 			return;
 		}
 		try {
-			const newName = await this.props.dialog.prompt({
+			const newName = await ide.prompt({
 				title: "Rename package",
 				defaultValue: pack.name,
 				required: true,
@@ -99,4 +98,4 @@ class PackageList extends Component {
 		);
 	}
 }
-export default withDialog()(PackageList);
+export default PackageList;

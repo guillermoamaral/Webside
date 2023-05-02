@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import CustomTree from "../controls/CustomTree";
 import { ide } from "../IDE";
 import { container } from "../ToolsContainer";
-import { withDialog } from "../dialogs/index";
 //import Scrollable from "../controls/Scrollable";
 
 class ClassTree extends Component {
@@ -11,7 +10,7 @@ class ClassTree extends Component {
 			return;
 		}
 		try {
-			const name = await this.props.dialog.prompt({
+			const name = await ide.prompt({
 				title: "New " + superclass.name + " subclass",
 				required: true,
 			});
@@ -31,7 +30,7 @@ class ClassTree extends Component {
 			return;
 		}
 		try {
-			const confirm = await this.props.dialog.confirm({
+			const confirm = await ide.confirm({
 				title: "Delete " + species.name + " class?",
 				ok: { text: "Delete", color: "secondary", variant: "outlined" },
 			});
@@ -52,7 +51,7 @@ class ClassTree extends Component {
 			return;
 		}
 		try {
-			const newName = await this.props.dialog.prompt({
+			const newName = await ide.prompt({
 				title: "Rename class",
 				defaultValue: species.name,
 				required: true,
@@ -128,4 +127,4 @@ class ClassTree extends Component {
 		);
 	}
 }
-export default withDialog()(ClassTree);
+export default ClassTree;

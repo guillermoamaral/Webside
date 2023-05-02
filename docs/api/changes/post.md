@@ -86,7 +86,7 @@ For example, the following error is returned after trying to compile (via a `Add
 }
 ```
 
-Another common example where there are suggestions that Webside provides to the user in the form of questions.
+Another example with suggestions that Webside provides to the user in the form of questions.
 Let's say we try to compile a method with a single line assigning `t := 1` in a class where `t` is not defined (it is not an instance variable nor a global).
 The error returned should look like:
 
@@ -119,7 +119,7 @@ The error returned should look like:
 
 Note that `changes` contains a list with another `AddMethod` with a modified source, which corresponds to accepting the suggestion.
 
-Note also that in the case that the original source had more than one compilation error with potential suggestions, they are handled one by one, asking the user to choose what to do for each one: Webside sends a first attempt and after receiving an error with a list of suggestions, it asks the user; should the user accept any suggestion, Webside retries with the suggested changes, and if the server finds a new error, the process repeats.
+Note also that in the case that the original source had more than one compilation error with potential suggestions, they will be handled one at a time, asking the user to choose what to do for each one. After a first attempt, and having received an error with a list of suggestions, Webside will ask the user; should the user accept one of the proposed suggestions, it will retry with the suggested changes, and if the server finds a new error, the process will repeat.
 
 **Example:**: compile method `phi` in `Float`
 `POST /changes`

@@ -643,10 +643,14 @@ class API {
 			pin: pin,
 			assignee: assignee,
 		};
+		return await this.issueEvaluation(evaluation);
+	}
+
+	async issueEvaluation(evaluation) {
 		return await this.post(
 			"/evaluations",
 			evaluation,
-			"evaluate " + expression
+			"evaluate " + evaluation.expression
 		);
 	}
 

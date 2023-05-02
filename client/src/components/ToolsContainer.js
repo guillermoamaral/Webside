@@ -727,32 +727,6 @@ class ToolsContainer extends Component {
 		}
 	};
 
-	evaluateExpression = async (expression, sync, pin, context, assignee) => {
-		try {
-			const result = await ide.api.evaluateExpression(
-				expression,
-				sync,
-				pin,
-				context,
-				assignee
-			);
-			if (sync) {
-				return result;
-			}
-			const object = await this.protectedObjectWithId(result.id);
-			if (!pin && !sync) {
-				await ide.api.unpinObject(object.id);
-			}
-			return object;
-		} catch (error) {
-			if (await this.canDebugError(error)) {
-				await this.debugEvaluationError(error);
-			} else {
-				this.reportError(error.description);
-			}
-		}
-	};
-
 	async canDebugError(error) {
 		if (!error.data || !error.data.evaluation) {
 			return false;
@@ -762,7 +736,7 @@ class ToolsContainer extends Component {
 		if (!confirms) {
 			return true;
 		}
-		return await this.props.dialog.confirm({
+		return await ide.confirm({
 			title: error.data.description,
 			message:
 				"Stack trace:\r" +
@@ -772,33 +746,94 @@ class ToolsContainer extends Component {
 		});
 	}
 
-	async debugEvaluationError(error) {
-		const d = await ide.api.createDebugger(error.data.evaluation);
-		return new Promise((resolve, reject) => {
-			this.openDebugger(d.id, d.description, resolve, reject);
-		});
-	}
+	evaluateExpression = async (expression, sync, pin, context, assignee) => {
+		const evaluation = {
+			expression: expression,
+			context: context,
+			sync: sync,
+			pin: pin,
+			assignee: assignee,
+		};
+		var result;
+		try {
+			result = await ide.api.issueEvaluation(evaluation);
+			if (sync) {
+				return result;
+			}
+		} catch (error) {
+			evaluation.id = error.evaluation;
+			return this.handleEvaluationError(error, evaluation);
+		}
+		evaluation.id = result.id;
+		const object = await this.getEvaluationResult(evaluation);
+		if (!pin && !sync) {
+			try {
+				await ide.api.unpinObject(object.id);
+			} catch (ignored) {}
+		}
+		return object;
+	};
 
-	async protectedObjectWithId(id) {
+	async getEvaluationResult(evaluation) {
 		var object;
 		try {
-			object = await ide.api.objectWithId(id);
+			object = await ide.api.objectWithId(evaluation.id);
 		} catch (error) {
+			return await this.handleEvaluationError(error, evaluation);
+		}
+		return object;
+	}
+
+	handleEvaluationError = async (error, evaluation) => {
+		const data = error.data;
+		if (data && data.suggestions && data.suggestions.length > 0) {
+			const chosen = await ide.choose({
+				title: data.description,
+				message: "What do you want to do?",
+				items: data.suggestions.map((s) => s.description),
+				defaultValue: data.suggestions[0].description,
+			});
+			const suggestion = chosen
+				? data.suggestions.find((s) => s.description === chosen)
+				: null;
+			if (chosen) {
+				try {
+					await ide.api.cancelEvaluation(evaluation.id);
+				} catch (inner) {
+					this.reportError(inner.description);
+				}
+				return await this.evaluateExpression(
+					suggestion.expression,
+					evaluation.sync,
+					evaluation.pin,
+					evaluation.context,
+					evaluation.assignee
+				);
+			}
+		} else {
 			if (await this.canDebugError(error)) {
-				await this.debugEvaluationError(error).then(
+				var object;
+				await this.debugEvaluationError(error, evaluation).then(
 					async () => {
-						object = await this.protectedObjectWithId(id);
+						object = await this.getEvaluationResult(evaluation);
 					},
 					() => {
 						object = null;
 						console.log("nothing should happen from here");
 					}
 				);
+				return object;
 			} else {
 				this.reportError(error.description);
 			}
 		}
-		return object;
+	};
+
+	async debugEvaluationError(error, evaluation) {
+		const d = await ide.api.createDebugger(evaluation.id);
+		return new Promise((resolve, reject) => {
+			this.openDebugger(d.id, d.description, resolve, reject);
+		});
 	}
 
 	runTest = async (classname, selector, silently) => {

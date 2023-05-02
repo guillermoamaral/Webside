@@ -7,7 +7,6 @@ import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";
 import AddIcon from "@material-ui/icons/AddCircle";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { withDialog } from "../dialogs/index";
 
 class ExpressionTable extends PureComponent {
 	constructor(props) {
@@ -138,7 +137,7 @@ class ExpressionTable extends PureComponent {
 
 	addExpression = async () => {
 		try {
-			const source = await this.props.dialog.prompt({
+			const source = await ide.prompt({
 				title: "Expression",
 			});
 			if (source) {
@@ -244,4 +243,4 @@ class ExpressionTable extends PureComponent {
 	}
 }
 
-export default withDialog()(ExpressionTable);
+export default ExpressionTable;

@@ -7,7 +7,6 @@ import CustomList from "../controls/CustomList";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
 import { container } from "../ToolsContainer";
-import { withDialog } from "../dialogs/index";
 
 class MethodList extends Component {
 	renameMethod = async (method) => {
@@ -15,7 +14,7 @@ class MethodList extends Component {
 			return;
 		}
 		try {
-			const newSelector = await this.props.dialog.prompt({
+			const newSelector = await ide.prompt({
 				title: "Rename selector",
 				defaultValue: method.selector,
 				required: true,
@@ -47,7 +46,7 @@ class MethodList extends Component {
 
 	newCategory = async () => {
 		try {
-			const category = await this.props.dialog.prompt({
+			const category = await ide.prompt({
 				title: "New category",
 			});
 			if (category && this.props.onCategoryAdd) {
@@ -331,4 +330,4 @@ class MethodList extends Component {
 	}
 }
 
-export default withDialog()(MethodList);
+export default MethodList;
