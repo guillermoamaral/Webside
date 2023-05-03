@@ -134,8 +134,7 @@ For example, the following error is returned after trying to evaluate `1 + `:
 ```
 
 #### Suggestions
-
-There might be other special cases where the backend could suggest ways to overcome a given evaluation error. For instance, suppose
+There might be other special cases where the backend could suggest some ways to overcome a given evaluation error. For instance, suppose
 the following evaluation request:
 
 ```json
@@ -143,12 +142,12 @@ the following evaluation request:
 	"expression": "NonExistingGlobal := 1",
 }
 ```
-Assuming that `NonExistingGlobal` does not actually exist in the system, the backend can return suggestions in the followin way:
+Assuming that `NonExistingGlobal` does not actually exist in the system, the backend could return suggestions in the followin way:
 
 ```json
 {
     "description": "undeclared NonExistingGlobal",
-    "evaluation": "{3D71356D-FB5F-4195-8043-B0FAF6574379}",
+    "evaluation": "2",
     "stack": "SmalltalkCompiler>>undeclared...",
     "suggestions": [
         {
@@ -177,5 +176,5 @@ Assuming that `NonExistingGlobal` does not actually exist in the system, the bac
 ```
 
 Note that there is a list of `suggestions`, where each of them might contain some `changes` to be executed prior the expression evaluation, and this `expression` can be potentially different from the original one.
-For instance, the first suggestion is to define a new global variable and so there is one change to accomplish that (the `EvaluationExpression`), with the same `expression` as the original.
-The second suggestion is to use a different global, taken from a list of globals similar to the original one (`ExistingGlobal1` and `ExistingGlobal2` already existed in the example).
+For instance, the first suggestion is to define a new global variable and so it contains a change to accomplish that (the `EvaluationExpression`), and the same `expression` as the original.
+The second and third suggestions are to use different globals, taken from a list of existing globals, similar to the original one (`ExistingGlobal1` and `ExistingGlobal2`).
