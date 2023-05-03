@@ -798,6 +798,9 @@ class ToolsContainer extends Component {
 				: null;
 			if (chosen) {
 				try {
+					for (const change of suggestion.changes) {
+						await ide.api.postChange(change);
+					}
 					await ide.api.cancelEvaluation(evaluation.id);
 				} catch (inner) {
 					this.reportError(inner.description);
@@ -818,7 +821,6 @@ class ToolsContainer extends Component {
 						object = await this.getEvaluationResult(evaluation);
 					},
 					() => {
-						object = null;
 						console.log("nothing should happen from here");
 					}
 				);
