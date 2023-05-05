@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 
 class RegisterTable extends Component {
 	registerSelected = (frame) => {

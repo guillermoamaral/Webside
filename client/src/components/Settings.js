@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Grid, Divider, Typography } from "@material-ui/core";
 import ConnectionSettings from "./ConnectionSettings";
-import { withRouter } from "react-router-dom";
 
 class Settings extends Component {
 	applyConnectionSettings = (settings) => {
@@ -33,4 +32,4 @@ class Settings extends Component {
 	}
 }
 
-export default withRouter(Settings);
+export default Settings;
