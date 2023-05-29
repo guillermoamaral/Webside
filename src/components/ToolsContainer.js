@@ -561,13 +561,10 @@ class ToolsContainer extends Component {
 	};
 
 	browseSenders = async (selector) => {
-		try {
-			const senders = await ide.waitFor(() => {
-				return ide.api.senders(selector);
-			});
-			if (senders.length === 0) {
-				return ide.inform("There is no senders of " + selector);
-			}
+		const senders = await ide.searchMethods(() => {
+			return ide.api.senders(selector);
+		}, "senders of " + selector);
+		if (senders.length > 0) {
 			this.openMethodBrowser(
 				senders,
 				"Senders of " + selector,
@@ -575,17 +572,14 @@ class ToolsContainer extends Component {
 				null,
 				"methodClass"
 			);
-		} catch (error) {
-			this.reportError(error);
 		}
 	};
 
 	browseLocalSenders = async (selector, classname) => {
-		try {
-			const senders = await ide.api.localSenders(selector, classname);
-			if (senders.length === 0) {
-				return ide.inform("There is no local senders of " + selector);
-			}
+		const senders = await ide.searchMethods(() => {
+			return ide.api.localSenders(selector, classname);
+		}, "local senders of " + selector);
+		if (senders.length > 0) {
 			this.openMethodBrowser(
 				senders,
 				"Local senders of " + selector,
@@ -593,17 +587,14 @@ class ToolsContainer extends Component {
 				null,
 				"selector"
 			);
-		} catch (error) {
-			this.reportError(error);
 		}
 	};
 
 	browseImplementors = async (selector) => {
-		try {
-			const implementors = await ide.api.implementors(selector);
-			if (implementors.length === 0) {
-				return ide.inform("There is no implementors of " + selector);
-			}
+		const implementors = await ide.searchMethods(() => {
+			return ide.api.implementors(selector);
+		}, "implementors of " + selector);
+		if (implementors.length > 0) {
 			this.openMethodBrowser(
 				implementors,
 				"Implementors of " + selector,
@@ -611,37 +602,26 @@ class ToolsContainer extends Component {
 				null,
 				"methodClass"
 			);
-		} catch (error) {
-			this.reportError(error);
 		}
 	};
 
 	browseLocalImplementors = async (selector, classname) => {
-		try {
-			const implementors = await ide.api.localImplementors(
-				selector,
-				classname
-			);
-			if (implementors.length === 0) {
-				return ide.inform(
-					"There is no local implementors of " + selector
-				);
-			}
+		const implementors = await ide.searchMethods(() => {
+			return ide.api.localImplementors(selector, classname);
+		}, "local implementors of " + selector);
+		if (implementors.length > 0) {
 			this.openMethodBrowser(
 				implementors,
 				"Local implementors of " + selector
 			);
-		} catch (error) {
-			this.reportError(error);
 		}
 	};
 
 	browseClassReferences = async (classname) => {
-		try {
-			const references = await ide.api.classReferences(classname);
-			if (references.length === 0) {
-				return ide.inform("There is no references of " + classname);
-			}
+		const references = await ide.searchMethods(() => {
+			return ide.api.classReferences(classname);
+		}, "references to " + classname);
+		if (references.length > 0) {
 			this.openMethodBrowser(
 				references,
 				"References to " + classname,
@@ -649,17 +629,14 @@ class ToolsContainer extends Component {
 				classname,
 				"methodClass"
 			);
-		} catch (error) {
-			this.reportError(error);
 		}
 	};
 
 	browseStringReferences = async (string) => {
-		try {
-			const references = await ide.api.stringReferences(string);
-			if (references.length === 0) {
-				return ide.inform("There is no refernces of " + string);
-			}
+		const references = await ide.searchMethods(() => {
+			return ide.api.stringReferences(string);
+		}, "references to " + string);
+		if (references.length > 0) {
 			this.openMethodBrowser(
 				references,
 				"References to '" + string + "'",
@@ -667,17 +644,14 @@ class ToolsContainer extends Component {
 				string,
 				"methodClass"
 			);
-		} catch (error) {
-			this.reportError(error);
 		}
 	};
 
 	browseMethodsMatching = async (pattern) => {
-		try {
-			const matching = await ide.api.methodsMatching(pattern);
-			if (matching.length === 0) {
-				return ide.inform("There is no method matching " + pattern);
-			}
+		const matching = await ide.searchMethods(() => {
+			return ide.api.methodsMatching(pattern);
+		}, "methods with selector matching " + pattern);
+		if (matching.length > 0) {
 			this.openMethodBrowser(
 				matching,
 				"Methods with selector matching " + pattern,
@@ -685,8 +659,6 @@ class ToolsContainer extends Component {
 				null,
 				"methocClass"
 			);
-		} catch (error) {
-			this.reportError(error);
 		}
 	};
 

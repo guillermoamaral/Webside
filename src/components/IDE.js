@@ -287,6 +287,8 @@ class IDE extends Component {
 		return this.mainContainerRef.current;
 	}
 
+	// Containers...
+
 	newContainerId() {
 		const containers = this.state.extraContainers;
 		if (containers.length === 0) {
@@ -463,6 +465,8 @@ class IDE extends Component {
 		this.setState({ sidebarExpanded: false });
 	};
 
+	//Services...
+
 	reportError = (error) => {
 		if (!error) {
 			return;
@@ -533,11 +537,26 @@ class IDE extends Component {
 		return await this.props.dialog.alert(info);
 	}
 
-	waitFor = async (something) => {
+	waitFor = async (evaluation) => {
 		this.setState({ waiting: true });
-		const result = await something();
+		const result = await evaluation();
 		this.setState({ waiting: false });
 		return result;
+	};
+
+	searchMethods = async (search, description) => {
+		try {
+			const methods = await this.waitFor(() => {
+				return search();
+			});
+			if (methods.length === 0) {
+				this.inform("There are no " + description);
+				return [];
+			}
+			return methods;
+		} catch (error) {
+			this.reportError(error);
+		}
 	};
 
 	render() {

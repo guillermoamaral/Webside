@@ -12,7 +12,6 @@ class Transcript extends Component {
 					source={ide.transcriptText()}
 					onChange={this.props.onChange}
 					showAccept={false}
-					selectedInterval={{ start: 1, end: 10 }}
 				/>
 			</Box>
 		);
