@@ -402,7 +402,8 @@ class CodeEditor extends Component {
 		);
 	};
 
-	acceptClicked = () => {
+	acceptClicked = (editor, event) => {
+		event.preventDefault();
 		if (this.props.onAccept) {
 			this.props.onAccept(this.state.source);
 		}
