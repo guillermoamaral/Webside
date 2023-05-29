@@ -358,7 +358,6 @@ class CodeBrowser extends Component {
 					>
 						<CodeEditor
 							context={this.props.context}
-							styles={this.props.styles}
 							lineNumbers={true}
 							source={this.currentSource()}
 							ast={this.currentAst()}

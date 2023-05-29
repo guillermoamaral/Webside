@@ -1,12 +1,5 @@
 import React, { Component } from "react";
-import {
-	Grid,
-	Box,
-	Paper,
-	Breadcrumbs,
-	Link,
-	Typography,
-} from "@mui/material";
+import { Grid, Box, Paper, Breadcrumbs, Link, Typography } from "@mui/material";
 import { ide } from "../IDE";
 import { container } from "../ToolsContainer";
 import ObjectTree from "../parts/ObjectTree";
@@ -186,7 +179,7 @@ class Inspector extends Component {
 
 	render() {
 		const { objectTree, selectedObject } = this.state;
-		const { styles, showWorkspace } = this.props;
+		const { showWorkspace } = this.props;
 		const minHeight = this.props.embedded ? 200 : 400;
 		const path = selectedObject ? selectedObject.path : [];
 		const subpaths = this.subpaths(path);
@@ -266,7 +259,6 @@ class Inspector extends Component {
 					>
 						<Box flexGrow={1}>
 							<ObjectPresenter
-								styles={styles}
 								context={this.evaluationContext()}
 								object={selectedObject}
 								onAccept={this.assignEvaluation}
@@ -280,7 +272,6 @@ class Inspector extends Component {
 								>
 									<CodeEditor
 										context={this.evaluationContext()}
-										styles={styles}
 										lineNumbers={false}
 										onEvaluate={this.expressionEvaluated}
 										onAccept={this.assignEvaluation}

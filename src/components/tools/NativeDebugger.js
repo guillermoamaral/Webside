@@ -144,7 +144,6 @@ class NativeDebugger extends Component {
 	}
 
 	render() {
-		const styles = this.props.styles;
 		const { running, frames, selectedFrame, registers, spaces } =
 			this.state;
 		registers.forEach((r) => {
@@ -240,7 +239,6 @@ class NativeDebugger extends Component {
 				<Grid item xs={7} md={7} lg={7}>
 					<CodeBrowser
 						context={this.evaluationContext()}
-						styles={styles}
 						class={selectedFrame ? selectedFrame.class : null}
 						method={selectedFrame ? selectedFrame.method : null}
 						selectedInterval={
@@ -254,7 +252,6 @@ class NativeDebugger extends Component {
 							<CustomPaper>
 								<RegisterTable
 									debugger={this.props.id}
-									styles={styles}
 									registers={registers}
 								/>
 							</CustomPaper>

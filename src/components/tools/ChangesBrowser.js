@@ -47,7 +47,6 @@ class ChangesBrowser extends Component {
 	};
 
 	render() {
-		const styles = this.props.styles;
 		const changes = this.props.changeset.changes;
 		const change = this.state.selectedChange;
 		return (
@@ -62,7 +61,6 @@ class ChangesBrowser extends Component {
 				<Grid item xs={12} md={12} lg={12}>
 					<Paper variant="outlined" style={{ height: 350 }}>
 						<ChangesTable
-							styles={styles}
 							changes={changes}
 							onChangeSelect={this.changeSelected}
 							onChangeApplied={this.changeSelected}
@@ -77,7 +75,6 @@ class ChangesBrowser extends Component {
 						<CodeMerge
 							style={{ height: "100%" }}
 							context={this.evaluationContext()}
-							styles={this.props.styles}
 							leftCode={change ? change.sourceCode() : ""}
 							rightCode={change ? change.currentSourceCode() : ""}
 						/>
@@ -89,7 +86,6 @@ class ChangesBrowser extends Component {
 							>
 								<CodeEditor
 									context={this.evaluationContext()}
-									styles={this.props.styles}
 									lineNumbers
 									source={change ? change.sourceCode() : ""}
 									showAccept={false}
@@ -103,7 +99,6 @@ class ChangesBrowser extends Component {
 							>
 								<CodeEditor
 									context={this.evaluationContext()}
-									styles={this.props.styles}
 									lineNumbers
 									source={
 										change ? change.currentSourceCode() : ""

@@ -170,7 +170,6 @@ class ExpressionTable extends PureComponent {
 	}
 
 	render() {
-		const { styles } = this.props;
 		const { expressions, selectedExpression } = this.state;
 		return (
 			<Box
@@ -220,7 +219,6 @@ class ExpressionTable extends PureComponent {
 				<Box height={"20%"}>
 					<Paper variant="outlined" style={{ height: "100%" }}>
 						<CodeEditor
-							styles={styles}
 							lineNumbers={false}
 							source={
 								selectedExpression

@@ -33,7 +33,6 @@ class TabControl extends Component {
 		const { pages, selectedPage, noClose } = this.props;
 		const addOptions = this.props.addOptions || [];
 		const selectedIndex = pages.findIndex((p) => p.id === selectedPage.id);
-		const styles = this.props.styles;
 		return (
 			<Box
 				display="flex"
@@ -144,7 +143,6 @@ class TabControl extends Component {
 								style={{ height: "100%" }}
 								key={index.toString()}
 								index={index}
-								styles={styles}
 								visible={page.id === selectedPage.id}
 							>
 								{page.component}

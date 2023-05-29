@@ -579,7 +579,6 @@ class ClassBrowser extends Component {
 			selectedCategory,
 			selectedMethod,
 		} = this.state;
-		const styles = this.props.styles;
 		const rootclass = this.cache[root];
 		return (
 			<Grid container spacing={1}>
@@ -734,7 +733,6 @@ class ClassBrowser extends Component {
 				<Grid item xs={12} md={12} lg={12}>
 					<CodeBrowser
 						context={this.evaluationContext()}
-						styles={styles}
 						class={this.currentClass()}
 						method={selectedMethod}
 						onCompileMethod={this.methodCompiled}

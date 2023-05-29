@@ -42,10 +42,8 @@ class RegisterTable extends Component {
 	}
 
 	render() {
-		const styles = this.props.styles;
 		return (
 			<CustomTable
-				styles={styles}
 				columns={this.registerColumns()}
 				rows={this.props.registers}
 				onRowSelect={this.registerSelected}

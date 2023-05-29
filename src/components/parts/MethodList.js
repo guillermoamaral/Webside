@@ -108,7 +108,10 @@ class MethodList extends Component {
 
 	browseLocalImplementors = (method) => {
 		if (method) {
-			container.browseLocalImplementors(method.selector, method.methodClass);
+			container.browseLocalImplementors(
+				method.selector,
+				method.methodClass
+			);
 		}
 	};
 
@@ -303,7 +306,6 @@ class MethodList extends Component {
 		if (useTable) {
 			return (
 				<CustomTable
-					styles={this.props.styles}
 					columns={this.methodColumns()}
 					rows={methods}
 					onRowSelect={this.props.onMethodSelect}

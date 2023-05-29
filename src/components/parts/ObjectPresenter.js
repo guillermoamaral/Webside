@@ -50,14 +50,13 @@ class ObjectPresenter extends Component {
 	}
 
 	render() {
-		const { object, context, onAccept, styles } = this.props;
+		const { object, context, onAccept } = this.props;
 		const { selectedId, pages } = this.state;
 		const selectedPage = pages.find((p) => p.id === selectedId);
 		pages[0].component = (
 			<Paper variant="outlined" style={{ height: "100%" }}>
 				<CodeEditor
 					context={context}
-					styles={styles}
 					lineNumbers={false}
 					source={!object ? "" : object.printString}
 					onAccept={onAccept}
@@ -73,7 +72,6 @@ class ObjectPresenter extends Component {
 						{presentation.type === "table" &&
 							presentation.rows.length > 100 && (
 								<CustomTable
-									styles={styles}
 									columns={presentation.columns}
 									rows={presentation.rows}
 									rowsPerPage={50}
@@ -83,7 +81,6 @@ class ObjectPresenter extends Component {
 						{presentation.type === "table" &&
 							presentation.rows.length <= 100 && (
 								<CustomTable
-									styles={styles}
 									columns={presentation.columns}
 									rows={presentation.rows}
 								/>
@@ -91,7 +88,6 @@ class ObjectPresenter extends Component {
 						{presentation.type === "html" && (
 							<iframe
 								title={presentation.title}
-								styles={styles}
 								srcdoc={presentation.code}
 								height="100%"
 								width="100%"
@@ -104,7 +100,6 @@ class ObjectPresenter extends Component {
 		return (
 			<TabControl
 				style={{ height: "100%" }}
-				styles={styles}
 				selectedPage={selectedPage}
 				pages={pages}
 				onTabSelect={(p) => this.setState({ selectedId: p.id })}

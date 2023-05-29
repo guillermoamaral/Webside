@@ -425,7 +425,6 @@ class ResourceBrowser extends Component {
 
 	render() {
 		const { selectedType, resources } = this.state;
-		const styles = this.props.styles;
 		return (
 			<Grid container spacing={1} style={{ height: "100%" }}>
 				<Grid item xs={2} md={2} lg={2}>
@@ -490,7 +489,6 @@ class ResourceBrowser extends Component {
 									style={{ height: "100%" }}
 								>
 									<CustomTable
-										styles={styles}
 										columns={this.resourceColumns()}
 										rows={resources}
 										onRowSelect={this.resourceSelected}

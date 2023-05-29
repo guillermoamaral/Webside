@@ -106,13 +106,11 @@ class ChangesTable extends Component {
 	}
 
 	render() {
-		const styles = this.props.styles;
 		const rows = this.props.changes;
 		rows.forEach((ch) => (ch.color = this.colorFor(ch)));
 		return (
 			<CustomTable
 				style={{ height: "100%" }}
-				styles={styles}
 				columns={this.changeColums()}
 				rows={rows}
 				onRowSelect={this.changeSelected}

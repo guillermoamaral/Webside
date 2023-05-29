@@ -206,7 +206,6 @@ class CodeMigrator extends Component {
 				<Grid item xs={12} md={12} lg={12}>
 					<Paper variant="outlined" style={{ height: 400 }}>
 						<ChangesTable
-							styles={this.props.styles}
 							style={{ height: "100%" }}
 							changes={changes}
 							onChangeSelect={(change) =>

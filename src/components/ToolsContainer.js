@@ -191,7 +191,6 @@ class ToolsContainer extends Component {
 			const transcript = (
 				<Transcript
 					ref={ref}
-					styles={this.props.styles}
 					text={ide.transcriptText()}
 					onChange={this.transcriptChanged}
 				/>
@@ -201,28 +200,22 @@ class ToolsContainer extends Component {
 	};
 
 	openSearch = () => {
-		const search = <Search styles={this.props.styles} />;
+		const search = <Search />;
 		this.addPage("Search", <SearchIcon />, search);
 	};
 
 	migratePackage = (packagename) => {
-		const migrator = (
-			<CodeMigrator styles={this.props.styles} package={packagename} />
-		);
+		const migrator = <CodeMigrator package={packagename} />;
 		this.addPage("Migrate: " + packagename, <MigratorIcon />, migrator);
 	};
 
 	migrateClass = (classname) => {
-		const migrator = (
-			<CodeMigrator styles={this.props.styles} class={classname} />
-		);
+		const migrator = <CodeMigrator class={classname} />;
 		this.addPage("Migrate: " + classname, <MigratorIcon />, migrator);
 	};
 
 	migrateMethod = (method) => {
-		const migrator = (
-			<CodeMigrator styles={this.props.styles} method={method} />
-		);
+		const migrator = <CodeMigrator method={method} />;
 		this.addPage(
 			"Migrate: " + method.methodClass + ">>" + method.selector,
 			<MigratorIcon />,
@@ -240,12 +233,7 @@ class ToolsContainer extends Component {
 	};
 
 	openPackageBrowser = (packagename) => {
-		const browser = (
-			<PackageBrowser
-				styles={this.props.styles}
-				selectedPackage={packagename}
-			/>
-		);
+		const browser = <PackageBrowser selectedPackage={packagename} />;
 		this.addPage("Package Browser", <PackageBrowserIcon />, browser);
 	};
 
@@ -276,7 +264,6 @@ class ToolsContainer extends Component {
 		const id = this.newPageId();
 		const browser = (
 			<ClassBrowser
-				styles={this.props.styles}
 				root={classname}
 				side={side}
 				selectedSelector={selector}
@@ -303,7 +290,6 @@ class ToolsContainer extends Component {
 			: methods;
 		const browser = (
 			<MethodBrowser
-				styles={this.props.styles}
 				methods={sorted}
 				selectedSelector={selectedSelector}
 				selectedIdentifier={selectedIdentifier}
@@ -335,9 +321,7 @@ class ToolsContainer extends Component {
 			this.selectPage(existing);
 			return;
 		}
-		const workspace = (
-			<Workspace styles={this.props.styles} key={id} id={id} />
-		);
+		const workspace = <Workspace key={id} id={id} />;
 		this.addPage(
 			"Workspace",
 			<WorkspaceIcon />,
@@ -364,7 +348,6 @@ class ToolsContainer extends Component {
 		const pageId = this.newPageId();
 		const tool = (
 			<Debugger
-				styles={this.props.styles}
 				key={id}
 				id={id}
 				title={title}
@@ -407,7 +390,6 @@ class ToolsContainer extends Component {
 		}
 		const inspector = (
 			<Inspector
-				styles={this.props.styles}
 				key={object.id}
 				id={object.id}
 				root={object}
@@ -432,11 +414,7 @@ class ToolsContainer extends Component {
 	browseChanges = (changeset, title = "Changes") => {
 		const selected = changeset.size() > 0 ? changeset.changes[0] : null;
 		const browser = (
-			<ChangesBrowser
-				styles={this.props.styles}
-				changeset={changeset}
-				selectedChange={selected}
-			/>
+			<ChangesBrowser changeset={changeset} selectedChange={selected} />
 		);
 		this.addPage(
 			title + " (" + changeset.size() + ")",
@@ -446,7 +424,7 @@ class ToolsContainer extends Component {
 	};
 
 	openResourceBrowser = (title = "Objects") => {
-		const browser = <ResourceBrowser styles={this.props.styles} />;
+		const browser = <ResourceBrowser />;
 		this.addPage(title, <InspectorIcon />, browser);
 	};
 
@@ -460,35 +438,23 @@ class ToolsContainer extends Component {
 			this.selectPage(existing);
 			return;
 		}
-		const tool = <TestRunner styles={this.props.styles} key={id} id={id} />;
-		this.addPage(
-			title,
-			<TestRunnerIcon className={this.props.styles.testRunnerIcon} />,
-			tool,
-			null,
-			() => {
-				try {
-					ide.api.deleteTestRun(id);
-				} catch (error) {
-					this.reportError(error);
-				}
+		const tool = <TestRunner key={id} id={id} />;
+		this.addPage(title, <TestRunnerIcon />, tool, null, () => {
+			try {
+				ide.api.deleteTestRun(id);
+			} catch (error) {
+				this.reportError(error);
 			}
-		);
+		});
 	};
 
 	openProfiler = (id, title = "Profiler") => {
-		const tool = <Profiler styles={this.props.styles} key={id} id={id} />;
-		this.addPage(
-			title,
-			<TestRunnerIcon className={this.props.styles.testRunnerIcon} />,
-			tool
-		);
+		const tool = <Profiler key={id} id={id} />;
+		this.addPage(title, <TestRunnerIcon />, tool);
 	};
 
 	openNativeDebugger = (id, title = "Native Debugger") => {
-		const tool = (
-			<NativeDebugger styles={this.props.styles} key={id} id={id} />
-		);
+		const tool = <NativeDebugger key={id} id={id} />;
 		this.addPage(title, <DebuggerIcon />, tool);
 	};
 
@@ -505,13 +471,7 @@ class ToolsContainer extends Component {
 		if (page) {
 			this.selectPage(page);
 		} else {
-			const tool = (
-				<Chat
-					styles={this.props.styles}
-					channel={channel}
-					initialPeer={peer}
-				/>
-			);
+			const tool = <Chat channel={channel} initialPeer={peer} />;
 			this.addPage("Chat", <ChatIcon />, tool);
 		}
 	};
@@ -541,7 +501,6 @@ class ToolsContainer extends Component {
 	) => {
 		const browser = (
 			<CodeDifferences
-				styles={this.props.styles}
 				leftMethod={leftMethod.source}
 				rightMethod={rightMethod.source}
 			/>
@@ -550,9 +509,7 @@ class ToolsContainer extends Component {
 	};
 
 	openCoderLikeBrowser = (classname) => {
-		const browser = (
-			<CoderLikeBrowser styles={this.props.styles} root={classname} />
-		);
+		const browser = <CoderLikeBrowser root={classname} />;
 		this.addPage(
 			browser.props.root || "Class Browser",
 			<ClassBrowserIcon />,
@@ -914,14 +871,12 @@ class ToolsContainer extends Component {
 	}
 
 	render() {
-		const styles = this.props.styles;
 		const { selectedPageId, pages } = this.state;
 		const selectedPage = this.pageWithId(selectedPageId);
 		return (
 			<TabControl
 				id={this.props.id}
 				style={{ height: "100%" }}
-				styles={styles}
 				selectedPage={selectedPage}
 				pages={pages}
 				onTabSelect={this.selectPage}

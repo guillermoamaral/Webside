@@ -79,42 +79,26 @@ class App extends Component {
 						>
 							<Router>
 								<Routes>
-									<Route
-										path="/"
-										exact
-										element={
-											<Login
-												styles={this.props.classes}
-											/>
-										}
-									/>
+									<Route path="/" exact element={<Login />} />
 									<Route
 										path="/ide/"
 										exact
-										element={
-											<IDE styles={this.props.classes} />
-										}
+										element={<IDE />}
 									/>
 									<Route
 										path="/ide?baseUri=:baseUri"
 										exact
-										element={
-											<IDE styles={this.props.classes} />
-										}
+										element={<IDE />}
 									/>
 									<Route
 										path="/ide/classes/:classname"
 										exact
-										element={
-											<IDE styles={this.props.classes} />
-										}
+										element={<IDE />}
 									/>
 									<Route
 										path="/ide/debuggers/:debugger"
 										exact
-										element={
-											<IDE styles={this.props.classes} />
-										}
+										element={<IDE />}
 									/>
 								</Routes>
 							</Router>

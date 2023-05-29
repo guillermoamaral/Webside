@@ -9,7 +9,6 @@ class CodeDifferences extends Component {
 				<Grid item xs={12} md={12} lg={12}>
 					<Paper variant="outlined">
 						<CodeMerge
-							styles={this.props.styles}
 							leftCode={this.props.leftSource}
 							rightCode={this.props.rightSource}
 						/>

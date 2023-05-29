@@ -105,7 +105,7 @@ class BindingTable extends PureComponent {
 	}
 
 	render() {
-		const { frame, styles } = this.props;
+		const { frame } = this.props;
 		const bindings = frame ? frame.bindings : [];
 		const { selectedBinding } = this.state;
 		return (
@@ -119,7 +119,6 @@ class BindingTable extends PureComponent {
 					<Paper variant="outlined" style={{ height: "100%" }}>
 						<CustomTable
 							noHeaders
-							styles={styles}
 							columns={this.bindingColumns()}
 							rows={bindings}
 							onRowSelect={this.bindingSelected}
@@ -130,7 +129,6 @@ class BindingTable extends PureComponent {
 				<Box height={"20%"}>
 					<Paper variant="outlined" style={{ height: "100%" }}>
 						<CodeEditor
-							styles={styles}
 							lineNumbers={false}
 							source={
 								selectedBinding ? selectedBinding.value : ""

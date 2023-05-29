@@ -31,7 +31,6 @@ class Workspace extends Component {
 		const inspector = (
 			<Inspector
 				key={object.id}
-				styles={this.props.styles}
 				root={object}
 				showWorkspace={false}
 				embedded={true}
@@ -100,7 +99,6 @@ class Workspace extends Component {
 					>
 						<CodeEditor
 							context={this.evaluationContext()}
-							styles={this.props.styles}
 							lineNumbers={false}
 							source={expression}
 							showAccept

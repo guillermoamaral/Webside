@@ -264,7 +264,6 @@ class TestRunner extends Component {
 	}
 
 	render() {
-		const styles = this.props.styles;
 		const { status, results, filterType } = this.state;
 		const { total, running, current } = status;
 		const summary = status.summary || this.newSummary();
@@ -480,7 +479,6 @@ class TestRunner extends Component {
 												style={{ minHeight: 300 }}
 											>
 												<CustomTable
-													styles={styles}
 													columns={this.testColumns()}
 													rows={classTests}
 													menuOptions={this.menuOptions()}

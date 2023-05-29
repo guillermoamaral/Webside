@@ -314,7 +314,6 @@ class IDE extends Component {
 			component: (
 				<ToolsContainer
 					id={id}
-					styles={this.props.styles}
 					onPageRemove={(c) => {
 						if (c.pages().length === 0) {
 							this.removeContainer(c);
@@ -561,7 +560,6 @@ class IDE extends Component {
 
 	render() {
 		console.log("rendering IDE");
-		const styles = this.props.styles;
 		const {
 			sidebarExpanded,
 			unreadErrorsCount,
@@ -596,7 +594,6 @@ class IDE extends Component {
 							dialect={this.settings
 								.section("connection")
 								.get("dialect")}
-							styles={styles}
 							sidebarExpanded={sidebarExpanded}
 							onSidebarExpand={this.expandSidebar}
 							searchOptions={[]}
@@ -607,7 +604,6 @@ class IDE extends Component {
 							onColorModeToggle={this.toggleColorMode}
 						/>
 						<Sidebar
-							styles={styles}
 							expanded={sidebarExpanded}
 							unreadErrorsCount={unreadErrorsCount}
 							unreadMessages={unreadMessages}
@@ -634,7 +630,6 @@ class IDE extends Component {
 												<ToolsContainer
 													key="mainContainer"
 													ref={this.mainContainerRef}
-													styles={styles}
 												/>
 											</Grid>
 											{extraContainers.map(
@@ -678,7 +673,6 @@ class IDE extends Component {
 									<Grid item xs={11} md={11} lg={11}>
 										{transcriptOpen && (
 											<Transcript
-												styles={styles}
 												text={transcriptText}
 												onChange={
 													this.transcriptChanged

@@ -8,7 +8,6 @@ class Transcript extends Component {
 		return (
 			<Box style={{ minHeight: 100, height: 300 }}>
 				<CodeEditor
-					styles={this.props.styles}
 					source={ide.transcriptText()}
 					onChange={this.props.onChange}
 					showAccept={false}

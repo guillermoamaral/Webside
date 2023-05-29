@@ -515,7 +515,6 @@ class PackageBrowser extends Component {
 			selectedCategory,
 			selectedMethod,
 		} = this.state;
-		const styles = this.props.styles;
 		const prefix = packageFilter.toLowerCase();
 		const filtered =
 			prefix !== ""
@@ -642,7 +641,6 @@ class PackageBrowser extends Component {
 				<Grid item xs={12} md={12} lg={12}>
 					<CodeBrowser
 						context={this.evalulationContext()}
-						styles={styles}
 						package={selectedPackage}
 						class={selectedClass}
 						method={selectedMethod}

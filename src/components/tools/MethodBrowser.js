@@ -113,7 +113,7 @@ class MethodBrowser extends Component {
 
 	render() {
 		const { selectedMethod, selectedClass, showTests } = this.state;
-		const { selectedSelector, selectedIdentifier, styles } = this.props;
+		const { selectedSelector, selectedIdentifier } = this.props;
 		const methods = this.currentMethods();
 		return (
 			<Grid container spacing={1}>
@@ -140,7 +140,6 @@ class MethodBrowser extends Component {
 					<CustomPaper height={300}>
 						<MethodList
 							useTable
-							styles={styles}
 							selected={selectedMethod}
 							methods={methods}
 							onMethodSelect={this.methodSelected}
@@ -150,7 +149,6 @@ class MethodBrowser extends Component {
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<CodeBrowser
-						styles={styles}
 						class={selectedClass}
 						method={selectedMethod}
 						selectedSelector={selectedSelector}

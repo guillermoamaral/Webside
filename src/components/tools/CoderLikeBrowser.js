@@ -161,7 +161,9 @@ class CoderLikeBrowser extends Component {
 				species.variables = await ide.api.variables(species.name);
 			}
 			if (variable) {
-				const found = species.variables.find((v) => v.name === variable.name);
+				const found = species.variables.find(
+					(v) => v.name === variable.name
+				);
 				selections.variable = !found ? null : found;
 			}
 		} catch (error) {
@@ -195,7 +197,9 @@ class CoderLikeBrowser extends Component {
 			}
 			if (
 				variable &&
-				(forced || !species[variable.name] || !species[variable.name][access])
+				(forced ||
+					!species[variable.name] ||
+					!species[variable.name][access])
 			) {
 				const accessors = await ide.api.methodsAccessing(
 					species.name,
@@ -276,7 +280,9 @@ class CoderLikeBrowser extends Component {
 			const superclass = this.cache[species.superclass];
 			if (superclass) {
 				superclass.subclasses.push(species);
-				superclass.subclasses.sort((a, b) => (a.name <= b.name ? -1 : 1));
+				superclass.subclasses.sort((a, b) =>
+					a.name <= b.name ? -1 : 1
+				);
 			}
 		}
 		const selections = this.currentSelections();
@@ -399,9 +405,9 @@ class CoderLikeBrowser extends Component {
 	};
 
 	methodRemoved = (method) => {
-		this.cache[method.methodClass].methods = this.cache[method.methodClass].methods.filter(
-			(m) => m.selector !== method.selector
-		);
+		this.cache[method.methodClass].methods = this.cache[
+			method.methodClass
+		].methods.filter((m) => m.selector !== method.selector);
 		this.setState({ selectedMethod: null });
 	};
 
@@ -415,7 +421,9 @@ class CoderLikeBrowser extends Component {
 		if (!species.categories.includes(method.category)) {
 			await this.updateCategories(selections, true);
 		}
-		selections.category = species.categories.find((c) => c === method.category);
+		selections.category = species.categories.find(
+			(c) => c === method.category
+		);
 		const methods = species.methods;
 		const index = methods
 			? methods.findIndex((m) => m.selector === method.selector)
@@ -439,7 +447,8 @@ class CoderLikeBrowser extends Component {
 	};
 
 	render() {
-		const { root, selectedSide, selectedClass, visibleMethods } = this.state;
+		const { root, selectedSide, selectedClass, visibleMethods } =
+			this.state;
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={3} md={3} lg={3}>
@@ -475,7 +484,13 @@ class CoderLikeBrowser extends Component {
 				<Grid item xs={3} md={3} lg={3}>
 					<Paper style={{ height: "100%" }} variant="outlined">
 						<ClassTree
-							roots={root ? (this.cache[root] ? [this.cache[root]] : []) : []}
+							roots={
+								root
+									? this.cache[root]
+										? [this.cache[root]]
+										: []
+									: []
+							}
 							selected={selectedClass}
 							onClassExpand={this.classExpanded}
 							onClassSelect={this.classSelected}
@@ -502,18 +517,21 @@ class CoderLikeBrowser extends Component {
 											justifyContent="center"
 										></Box>
 										<Box>
-											<Typography>{m.selector}</Typography>
+											<Typography>
+												{m.selector}
+											</Typography>
 										</Box>
 									</AccordionSummary>
 									{visible && (
 										<CodeEditor
-											styles={this.props.styles}
 											lineNumbers={true}
 											source={m.source}
 											mode="smalltalk-method"
 											showAccept
 											onAccept={this.acceptClicked}
-											onRename={(target) => this.renameClass(target)}
+											onRename={(target) =>
+												this.renameClass(target)
+											}
 										/>
 									)}
 								</Accordion>

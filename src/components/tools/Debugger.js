@@ -62,7 +62,7 @@ class Debugger extends PureComponent {
 
 	updateFrame = async (frame, forced) => {
 		try {
-			if (forced ||!frame.method) {
+			if (forced || !frame.method) {
 				const info = await ide.api.debuggerFrame(
 					this.props.id,
 					frame.index
@@ -193,7 +193,6 @@ class Debugger extends PureComponent {
 
 	render() {
 		const { frames, selectedFrame, stepping, showBindings } = this.state;
-		const styles = this.props.styles;
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
@@ -258,7 +257,6 @@ class Debugger extends PureComponent {
 							{showBindings && (
 								<BindingTable
 									style={{ height: 300 }}
-									styles={styles}
 									id={this.props.id}
 									frame={selectedFrame}
 								/>
@@ -266,7 +264,6 @@ class Debugger extends PureComponent {
 							{!showBindings && (
 								<ExpressionTable
 									style={{ height: 300 }}
-									styles={styles}
 									id={this.props.id}
 									frame={selectedFrame}
 								/>
@@ -277,7 +274,6 @@ class Debugger extends PureComponent {
 				<Grid item xs={12} md={12} lg={12}>
 					<CodeBrowser
 						context={this.evaluationContext()}
-						styles={styles}
 						class={selectedFrame ? selectedFrame.class : null}
 						method={selectedFrame ? selectedFrame.method : null}
 						selectedInterval={
