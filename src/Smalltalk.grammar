@@ -1,0 +1,39 @@
+@top method { selector (temporaries statements | statements?) }
+
+selector { keywordSelector | binarySelector | unarySelector }
+unarySelector { identifier }
+binarySelector { specialCharacter specialCharacter? }
+keywordSelector { (keyword Argument (keyword Argument)*) }
+Argument { identifier }
+temporaries { "|" Temporary* "|" }
+Temporary { identifier }
+statements { returnOperator expression '.'? | expression ('.' expression)* ('.')? }
+expression { (Variable assignmentOperator)* (primary | messageExpression | cascadedExpression) }
+assignmentOperator { ":= " }
+messageExpression { unaryExpression | binaryExpression | keywordExpression }
+unaryExpression { unaryObject binaryExpression }
+binaryExpression { binaryObject binarySelector unaryObject }
+keywordExpression { unaryObject ((keyword binaryObject)+) }
+unaryObject { primary | binaryExpression }
+binaryObject { unaryObject | binaryExpression }
+cascadedExpression { messageExpression (";" (unarySelector  | binarySelector unaryObject | (keyword binaryObject)+))+ }
+keyword { (identifier ":") }
+primary { Variable | literal | block | "(" expression ")" }
+Variable { identifier }
+literal { Number | Symbol | Character | String | array }
+Symbol { "#" (identifier | binarySelector | (keyword+)) }
+array { "(" (Number | Symbol | String | Character | array)* ")" }
+block { "[" ((":" Variable)+ "|" statements)? | statements "]" } 
+
+@tokens {
+    identifier { (@asciiLetter | "_") (@digit | @asciiLetter | "_")* }
+    globalIdentifier { @asciiUppercase (@digit | @asciiLetter | "_")* }
+    specialCharacter { $[~!@%&*-+=|\<>,?/] }
+    returnOperator { "^" }
+    String { "'" (!['] | "''")* "'" }
+    Character { "$" ![\ ] }
+    Comment { '"' ![\"] '"' }
+    Number { (((@digit+) "r")? ("-")? (@digit+) ("." (@digit+))? ("e" ("-")? (@digit+))?) }
+}
+
+@detectDelim
