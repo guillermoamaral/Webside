@@ -45,6 +45,7 @@ function PromptDialog(props, context) {
 					onChange={(event) => {
 						setValue(event.target.value);
 					}}
+					size="small"
 					defaultValue={defaultValue}
 					required
 					placeholder={placeholder}

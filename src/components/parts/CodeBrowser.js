@@ -252,13 +252,10 @@ class CodeBrowser extends Component {
 				mode = "text";
 				break;
 			case "disassembly":
-				mode = "gas";
+				mode = "assembler";
 				break;
 			default:
-				mode =
-					ide.settings.dialect === "Python"
-						? "python"
-						: "smalltalk-method";
+				mode = "smalltalk";
 		}
 		return mode;
 	};
@@ -360,8 +357,8 @@ class CodeBrowser extends Component {
 							context={this.props.context}
 							lineNumbers={true}
 							source={this.currentSource()}
-							ast={this.currentAst()}
 							mode={this.currentCodeMode()}
+							ast={this.currentAst()}
 							annotations={this.currentAnnotations()}
 							selectedInterval={selectedInterval}
 							selectedSelector={selectedSelector}

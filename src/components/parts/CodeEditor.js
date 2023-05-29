@@ -16,6 +16,7 @@ import { Tag } from "@lezer/highlight";
 import { createTheme } from "@uiw/codemirror-themes";
 import { StreamLanguage } from "@codemirror/language";
 import { EditorSelection, Prec } from "@codemirror/state";
+import { throwStatement } from "@babel/types";
 
 // This code is intended to be used when defining a parser from a Lezer grammar.
 // const parser = SmalltalkParser.configure({
@@ -226,6 +227,31 @@ class CodeEditor extends Component {
 		);
 	}
 
+	renameIdentifier = async (identifier) => {
+		var replacement;
+		try {
+			replacement = await ide.prompt({
+				title: "Replacement",
+			});
+		} catch (error) {}
+		if (!replacement) {
+			return;
+		}
+		const changes = this.rangesContainingIdentifier(identifier).map(
+			(range) => {
+				return {
+					from: range.anchor,
+					to: range.head,
+					insert: replacement,
+				};
+			}
+		);
+		console.log(changes);
+		this.editorView.dispatch({
+			changes: changes,
+		});
+	};
+
 	rangesContainingIdentifier(identifier) {
 		const ranges = [];
 		const ast = this.props.ast;
@@ -280,62 +306,85 @@ class CodeEditor extends Component {
 
 	menuOptions() {
 		const shortcuts = ide.settings.section("shortcuts");
-		return [
+		const options = [
 			{ label: "Copy (Ctrl+c)", action: this.copyToClipboard },
 			{ label: "Paste (Ctrl+v)", action: this.pasteFromClipboard },
 			null,
-			{
-				label: "Do it (" + shortcuts.get("evaluateExpression") + ")",
-				action: this.evaluateExpression,
-			},
-			{
-				label: "Print it (" + shortcuts.get("showEvaluation") + ")",
-				action: this.showEvaluation,
-			},
-			{
-				label:
-					"Inspect it (" + shortcuts.get("inspectEvaluation") + ")",
-				action: this.inspectEvaluation,
-			},
-			{
-				label: "Debug it (" + shortcuts.get("debugExpression") + ")",
-				action: this.debugExpression,
-			},
-			{ label: "Profile it", action: this.profileExpression },
-			{ label: "Google it", action: this.searchInGoogle },
-			null,
-			{
-				label: "Browse class (" + shortcuts.get("browseClass") + ")",
-				action: this.browseClass,
-			},
-			{
-				label:
-					"Browse senders (" + shortcuts.get("browseSenders") + ")",
-				action: this.browseSenders,
-			},
-			{
-				label:
-					"Browse implementors (" +
-					shortcuts.get("browseImplementors") +
-					")",
-				action: this.browseImplementors,
-			},
-			{
-				label:
-					"Browse class references (" +
-					shortcuts.get("browseClassReferences") +
-					")",
-				action: this.browseClassReferences,
-			},
-			{
-				label: "Search methods matching",
-				action: this.browseMethodsMatching,
-			},
-			{
-				label: "Search string references",
-				action: this.browseStringReferences,
-			},
 		];
+		if (this.state.source === this.state.originalSource) {
+			const node = this.targetAstNode();
+			if (node && node.type === "Identifier") {
+				options.push({
+					label: "Rename " + node.value + "",
+					action: () => {
+						this.renameIdentifier(node.value);
+					},
+				});
+			}
+		}
+		options.push(
+			...[
+				{
+					label:
+						"Do it (" + shortcuts.get("evaluateExpression") + ")",
+					action: this.evaluateExpression,
+				},
+				{
+					label: "Print it (" + shortcuts.get("showEvaluation") + ")",
+					action: this.showEvaluation,
+				},
+				{
+					label:
+						"Inspect it (" +
+						shortcuts.get("inspectEvaluation") +
+						")",
+					action: this.inspectEvaluation,
+				},
+				{
+					label:
+						"Debug it (" + shortcuts.get("debugExpression") + ")",
+					action: this.debugExpression,
+				},
+				{ label: "Profile it", action: this.profileExpression },
+				{ label: "Google it", action: this.searchInGoogle },
+				null,
+				{
+					label:
+						"Browse class (" + shortcuts.get("browseClass") + ")",
+					action: this.browseClass,
+				},
+				{
+					label:
+						"Browse senders (" +
+						shortcuts.get("browseSenders") +
+						")",
+					action: this.browseSenders,
+				},
+				{
+					label:
+						"Browse implementors (" +
+						shortcuts.get("browseImplementors") +
+						")",
+					action: this.browseImplementors,
+				},
+				{
+					label:
+						"Browse class references (" +
+						shortcuts.get("browseClassReferences") +
+						")",
+					action: this.browseClassReferences,
+				},
+				{
+					label: "Search methods matching",
+					action: this.browseMethodsMatching,
+				},
+				{
+					label: "Search string references",
+					action: this.browseStringReferences,
+				},
+			]
+		);
+		return options;
 	}
 
 	copyToClipboard = () => {
@@ -383,12 +432,18 @@ class CodeEditor extends Component {
 		if (selected.length > 0) {
 			return selected.trim();
 		}
-		const position = this.currentPosition();
-		const node = this.astNodeAtOffset(position);
+		const node = this.targetAstNode();
 		if (node && (node.type === "Selector" || node.type === "Literal")) {
 			return node.value;
 		}
 		return this.targetWord();
+	}
+
+	targetAstNode() {
+		const position = this.currentPosition();
+		if (position) {
+			return this.astNodeAtOffset(position);
+		}
 	}
 
 	searchInGoogle = () => {
