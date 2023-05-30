@@ -13,22 +13,19 @@ import {
 	Link,
 	InputBase,
 } from "@mui/material";
-// Must get rid of withStyles
-import { withStyles } from "@mui/styles";
+import { styled } from "@mui/material/styles";
 import PopupMenu from "./PopupMenu";
 import Scrollable from "./Scrollable";
 import SearchIcon from "@mui/icons-material/Search";
 
-const styles = () => ({
-	row: {
-		"& .button": {
-			display: "none",
-		},
-		"&:hover .button": {
-			display: "block",
-		},
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+	"& .button": {
+		display: "none",
 	},
-});
+	"&:hover .button": {
+		display: "block",
+	},
+}));
 
 class CustomTable extends Component {
 	constructor(props) {
@@ -140,7 +137,7 @@ class CustomTable extends Component {
 					disabled={false}
 					readOnly={false}
 					//Review this fix size. It was fixed to avoid dynamic resizing
-					style={{ height: 20 }}
+					style={{ height: 22 }}
 					placeholder={text}
 					value={text}
 					inputProps={{ "aria-label": "expression", size: "small" }}
@@ -223,7 +220,7 @@ class CustomTable extends Component {
 					return (
 						<Box
 							//Review these fixed sizes. They were fixed to avoid dynamic resizing when hovering
-							style={{ width: 24, height: 22 }}
+							style={{ width: 24, height: 24 }}
 							key={"box" + index + "action" + j}
 						>
 							{visible && (
@@ -391,11 +388,8 @@ class CustomTable extends Component {
 								<TableBody>
 									{this.pageRows().map((row, i) => {
 										return (
-											<TableRow
+											<StyledTableRow
 												hover
-												className={
-													this.props.classes.row
-												}
 												tabIndex={-1}
 												key={"row" + i}
 												selected={row === selectedRow}
@@ -451,7 +445,7 @@ class CustomTable extends Component {
 														</TableCell>
 													);
 												})}
-											</TableRow>
+											</StyledTableRow>
 										);
 									})}
 								</TableBody>
@@ -517,4 +511,4 @@ class CustomTable extends Component {
 	}
 }
 
-export default withStyles(styles)(CustomTable);
+export default CustomTable;
