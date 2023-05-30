@@ -71,7 +71,9 @@ The URL (port and base URI) will correspond to the one chosen by the web server 
 ## Demo
 There is an online version available [here](https://websideserver.azurewebsites.net). As mentioned above, it will prompt the URL where a Smalltalk system is listening. You can setup and launch Webside in Pharo as described in [Pharo-Webside](https://github.com/guillermoamaral/Pharo-Webside).
 
-Also, there is a talk I gave for FAST available [here](https://www.youtube.com/watch?v=tM4mcTtajGQ).
+Also, here are a couple of talks I gave about this project:
+- [FAST 2021](https://www.youtube.com/live/tM4mcTtajGQ?feature=share)
+- [ESUG 2022](https://youtu.be/Q4gmWTTFoww) 
 
 ## License
 Distributed under the MIT License. See `LICENSE` for more information.
