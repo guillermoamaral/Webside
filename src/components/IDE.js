@@ -75,59 +75,78 @@ class IDE extends Component {
 	defaultSettings() {
 		const settings = new Settings("settings");
 		const connection = new Settings("connection");
-		connection.add(Setting.url("baseUri"));
-		connection.add(Setting.text("developer"));
-		const dialect = Setting.text("dialect");
+		connection.addUrl("baseUri");
+		connection.addText("developer");
+		const dialect = connection.addText("dialect");
 		dialect.readOnly = true;
-		connection.add(dialect);
 		settings.add(connection);
 
 		const appearance = new Settings("appearance");
-		appearance.add(Setting.options("mode", ["dark", "light"]));
+		appearance.addOptions("mode", ["dark", "light"]);
 		settings.add(appearance);
 
 		const light = new Settings("light");
-		light.add(Setting.color("primaryColor", "#cccccc"));
-		light.add(Setting.color("secondaryColor", "#cccccc"));
-		light.add(Setting.color("background", "#ffffff"));
-		light.add(Setting.color("primaryText", "#000000"));
-		light.add(Setting.color("secondaryText", "#808080"));
+		light.addColor("primaryColor", "#cccccc");
+		light.addColor("secondaryColor", "#cccccc");
+		light.addColor("background", "#ffffff");
+		light.addColor("primaryText", "#000000");
+		light.addColor("secondaryText", "#808080");
+		const lightCode = new Settings("code");
+		lightCode.addColor("selector", "black");
+		lightCode.addColor("symbol", "#3cd2dd");
+		lightCode.addColor("argument", "#f06520");
+		lightCode.addColor("temporary", "#81c9f3");
+		lightCode.addColor("assignment", "#ffffff");
+		lightCode.addColor("string", "#C3E88D");
+		lightCode.addColor("variable", "#268bd2");
+		lightCode.addColor("var", "#268bd2");
+		lightCode.addColor("meta", "#FFCB6B");
+		lightCode.addColor("bracket", "#9b9b9b");
+		lightCode.addColor("reserved", "#C792EA");
+		lightCode.addColor("return", "#72bb19");
+		lightCode.addColor("global", "#bb73b5");
+		lightCode.addColor("number", "#65a14e");
+		lightCode.addColor("comment", "#586e75");
+		lightCode.addColor("separator", "#b3bab6");
+		light.add(lightCode);
 		appearance.add(light);
 
 		const dark = new Settings("dark");
-		dark.add(Setting.color("primaryColor", "#ffffff"));
-		dark.add(Setting.color("secondaryColor", "#cccccc"));
-		dark.add(Setting.color("background", "#303030"));
-		dark.add(Setting.color("primaryText", "#aaaaaa"));
-		dark.add(Setting.color("secondaryText", "#00000"));
+		dark.addColor("primaryColor", "#ffffff");
+		dark.addColor("secondaryColor", "#cccccc");
+		dark.addColor("background", "#303030");
+		dark.addColor("primaryText", "#aaaaaa");
+		dark.addColor("secondaryText", "#00000");
+		const darkCode = new Settings("code");
+		darkCode.addColor("selector", "#d3dddd");
+		darkCode.addColor("symbol", "#3cd2dd");
+		darkCode.addColor("argument", "#f06520");
+		darkCode.addColor("temporary", "#81c9f3");
+		darkCode.addColor("assignment", "#ffffff");
+		darkCode.addColor("string", "#C3E88D");
+		darkCode.addColor("variable", "#268bd2");
+		darkCode.addColor("var", "#268bd2");
+		darkCode.addColor("meta", "#FFCB6B");
+		darkCode.addColor("bracket", "#9b9b9b");
+		darkCode.addColor("reserved", "#C792EA");
+		darkCode.addColor("return", "#72bb19");
+		darkCode.addColor("global", "#bb73b5");
+		darkCode.addColor("number", "#65a14e");
+		darkCode.addColor("comment", "#586e75");
+		darkCode.addColor("separator", "#b3bab6");
+		dark.add(darkCode);
 		appearance.add(dark);
 
 		const shortcuts = new Settings("shortcuts");
-		shortcuts.add(
-			Setting.text("evaluateExpression", "Ctrl+d", "Evaluate expression")
-		);
-		shortcuts.add(
-			Setting.text("inspectEvaluation", "Ctrl+i", "Inspect evaluation")
-		);
-		shortcuts.add(
-			Setting.text("showEvaluation", "Ctrl+p", "Show evaluation")
-		);
-		shortcuts.add(
-			Setting.text("debugExpression", "Ctrl+u", "Debug expression")
-		);
-		shortcuts.add(Setting.text("acceptCode", "Ctrl+s", "Accept code"));
-		shortcuts.add(Setting.text("browseClass", "Ctrl+b", "Browse class"));
-		shortcuts.add(Setting.text("browseSenders", "Alt+n", "Browse senders"));
-		shortcuts.add(
-			Setting.text("browseImplementors", "Alt+m", "Browse implementors")
-		);
-		shortcuts.add(
-			Setting.text(
-				"browseClassReferences",
-				"Alt+r",
-				"Browse class references"
-			)
-		);
+		shortcuts.addText("evaluateExpression", "Ctrl+d");
+		shortcuts.addText("inspectEvaluation", "Ctrl+i");
+		shortcuts.addText("showEvaluation", "Ctrl+p");
+		shortcuts.addText("debugExpression", "Ctrl+u");
+		shortcuts.addText("acceptCode", "Ctrl+s");
+		shortcuts.addText("browseClass", "Ctrl+b");
+		shortcuts.addText("browseSenders", "Alt+n");
+		shortcuts.addText("browseImplementors", "Alt+m");
+		shortcuts.addText("browseClassReferences", "Alt+r");
 		shortcuts.readOnly();
 		settings.add(shortcuts);
 

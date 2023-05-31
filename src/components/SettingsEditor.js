@@ -44,8 +44,7 @@ class SettingsEditor extends Component {
 									expandIcon={<ExpandMoreIcon />}
 								>
 									<Typography variant="body1">
-										{section.name.charAt(0).toUpperCase() +
-											section.name.slice(1)}
+										{section.label}
 									</Typography>
 								</AccordionSummary>
 								<Box ml={10} mb={2}>
@@ -64,7 +63,7 @@ class SettingsEditor extends Component {
 												expandIcon={<ExpandMoreIcon />}
 											>
 												<Typography variant="body2">
-													{subsection.name}
+													{subsection.label}
 												</Typography>
 											</AccordionSummary>
 											<Box ml={10} mb={2}>

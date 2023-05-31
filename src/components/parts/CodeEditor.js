@@ -676,37 +676,43 @@ class CodeEditor extends Component {
 
 	theme() {
 		const appearance = ide.settings.section("appearance");
-		const mode = appearance.get("mode");
+		const mode = appearance.section(appearance.get("mode"));
+		const code = mode.section("code");
 		return createTheme({
 			theme: mode,
 			settings: {
 				//fontFamily: appearance.get("codeFont.family,
-				background: appearance.section(mode).get("background"),
+				background: mode.get("background"),
 				foreground: "#75baff",
 				caret: "#FFCC00",
 				selection: "#80cbc433",
 				selectionMatch: "#80cbc433",
 				lineHighlight: "#8a91991a",
-				gutterBackground: appearance.section(mode).get("background"),
+				gutterBackground: mode.get("background"),
+				gutterBorder: mode.get("background"),
 				gutterForeground: "#8a919966",
 			},
 			styles: [
-				{ tag: newTags.selector, color: "#d3dddd" },
-				{ tag: newTags.symbol, color: "#3cd2dd" },
-				{ tag: newTags.argument, color: "#f06520" },
-				{ tag: newTags.temporary, color: "#81c9f3" },
-				{ tag: newTags.assignment, color: "#ffffff" },
-				{ tag: newTags.string, color: "#C3E88D" },
-				{ tag: newTags.variable, color: "#268bd2" },
-				{ tag: newTags.var, color: "#268bd2" },
-				{ tag: newTags.meta, color: "#FFCB6B" },
-				{ tag: newTags.bracket, color: "#9b9b9b" },
-				{ tag: newTags.reserved, color: "#C792EA" },
-				{ tag: newTags.return, color: "#72bb19" },
-				{ tag: newTags.global, color: "#bb73b5" },
-				{ tag: newTags.number, color: "#65a14e" },
-				{ tag: newTags.comment, color: "#586e75", fontStyle: "italic" },
-				{ tag: newTags.separator, color: "#b3bab6" },
+				{ tag: newTags.selector, color: code.get("selector") },
+				{ tag: newTags.symbol, color: code.get("symbol") },
+				{ tag: newTags.argument, color: code.get("argument") },
+				{ tag: newTags.temporary, color: code.get("temporary") },
+				{ tag: newTags.assignment, color: code.get("assignment") },
+				{ tag: newTags.string, color: code.get("string") },
+				{ tag: newTags.variable, color: code.get("variable") },
+				{ tag: newTags.var, color: code.get("var") },
+				{ tag: newTags.meta, color: code.get("meta") },
+				{ tag: newTags.bracket, color: code.get("bracket") },
+				{ tag: newTags.reserved, color: code.get("reserved") },
+				{ tag: newTags.return, color: code.get("return") },
+				{ tag: newTags.global, color: code.get("global") },
+				{ tag: newTags.number, color: code.get("number") },
+				{
+					tag: newTags.comment,
+					color: code.get("comment"),
+					fontStyle: "italic",
+				},
+				{ tag: newTags.separator, color: code.get("separator") },
 			],
 		});
 	}

@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 // Must get rid of withStyles
 import { withStyles } from "@mui/styles";
+import { styled } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/SearchRounded";
 
 const styles = (theme) => ({
@@ -30,6 +31,22 @@ const styles = (theme) => ({
 });
 
 const suggestionLimit = 5;
+
+// const StyledAutosuggest = styled(Autosuggest)(({ theme }) => ({
+// 	".SearchList-container-1": {
+// 		flexGrow: 1,
+// 		position: "relative",
+// 		height: 250,
+// 	},
+// 	".SearchList-suggestion-1": {
+// 		display: "block",
+// 	},
+// 	".SearchList-suggestionsList-1": {
+// 		margin: 0,
+// 		padding: 0,
+// 		listStyleType: "none",
+// 	},
+// }));
 
 class SearchList2 extends React.Component {
 	constructor(props) {
@@ -113,11 +130,7 @@ class SearchList2 extends React.Component {
 		const matches = match(suggestion, query);
 		const parts = parse(suggestion, matches);
 		return (
-			<MenuItem
-				selected={isHighlighted}
-				component="div"
-				style={{ listStyleType: "none" }}
-			>
+			<MenuItem selected={isHighlighted} component="div">
 				<Typography component="div">
 					{parts.map((part, index) => {
 						return part.highlight ? (
@@ -139,10 +152,15 @@ class SearchList2 extends React.Component {
 		const { classes } = this.props;
 		return (
 			<Autosuggest
+				// theme={{
+				// 	container: "SearchList-container-1",
+				// 	suggestionsList: "SearchList-suggestionsList-1",
+				// 	suggestion: "SearchList-suggestion-1",
+				// }}
 				theme={{
 					container: classes.container,
 					suggestionsList: classes.suggestionsList,
-					//suggestion: classes.suggestion,
+					suggestion: classes.suggestion,
 				}}
 				renderInputComponent={this.renderInput}
 				suggestions={this.state.suggestions}
@@ -154,6 +172,7 @@ class SearchList2 extends React.Component {
 				onSuggestionSelected={(event, suggestion) =>
 					this.valueChanged(suggestion.suggestion)
 				}
+				itemProps={{ style: { listStyleType: "none" } }}
 				inputProps={{
 					placeholder: "Search...",
 					value: this.state.value,
@@ -175,3 +194,5 @@ class SearchList2 extends React.Component {
 }
 
 export default withStyles(styles)(SearchList2);
+
+//export default SearchList2;

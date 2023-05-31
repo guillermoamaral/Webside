@@ -1,25 +1,45 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import TextField from "@mui/material/TextField";
+import Autocomplete, { autocompleteClasses } from "@mui/material/Autocomplete";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import ListSubheader from "@mui/material/ListSubheader";
-import { useTheme } from "@mui/material/styles";
+import Popper from "@mui/material/Popper";
+import { useTheme, styled } from "@mui/material/styles";
 import { VariableSizeList } from "react-window";
-import { Autocomplete, Typography, TextField } from "@mui/material";
-//import Scrollbar from "react-scrollbars-custom";
+import Typography from "@mui/material/Typography";
 
-const LISTBOX_PADDING = 0; // px
+const LISTBOX_PADDING = 8; // px
 
 function renderRow(props) {
 	const { data, index, style } = props;
-	return React.cloneElement(data[index], {
-		style: {
-			...style,
-			top: style.top + LISTBOX_PADDING,
-		},
-	});
+	const dataSet = data[index];
+	const inlineStyle = {
+		...style,
+		top: style.top + LISTBOX_PADDING,
+	};
+
+	if (dataSet.hasOwnProperty("group")) {
+		return (
+			<ListSubheader
+				key={dataSet.key}
+				component="div"
+				style={inlineStyle}
+			>
+				{dataSet.group}
+			</ListSubheader>
+		);
+	}
+
+	return (
+		<Typography component="li" {...dataSet[0]} noWrap style={inlineStyle}>
+			{dataSet[1]}
+		</Typography>
+	);
 }
 
 const OuterElementContext = React.createContext({});
+
 const OuterElementType = React.forwardRef((props, ref) => {
 	const outerProps = React.useContext(OuterElementContext);
 	return <div ref={ref} {...props} {...outerProps} />;
@@ -41,16 +61,24 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(
 	ref
 ) {
 	const { children, ...other } = props;
-	const itemData = React.Children.toArray(children);
+	const itemData = [];
+	children.forEach((item) => {
+		itemData.push(item);
+		itemData.push(...(item.children || []));
+	});
+
 	const theme = useTheme();
-	const smUp = useMediaQuery(theme.breakpoints.up("sm"), { noSsr: true });
+	const smUp = useMediaQuery(theme.breakpoints.up("sm"), {
+		noSsr: true,
+	});
 	const itemCount = itemData.length;
 	const itemSize = smUp ? 36 : 48;
 
 	const getChildSize = (child) => {
-		if (React.isValidElement(child) && child.type === ListSubheader) {
+		if (child.hasOwnProperty("group")) {
 			return 48;
 		}
+
 		return itemSize;
 	};
 
@@ -62,6 +90,7 @@ const ListboxComponent = React.forwardRef(function ListboxComponent(
 	};
 
 	const gridRef = useResetCache(itemCount);
+
 	return (
 		<div ref={ref}>
 			<OuterElementContext.Provider value={other}>
@@ -87,46 +116,49 @@ ListboxComponent.propTypes = {
 	children: PropTypes.node,
 };
 
-class SearchList extends Component {
-	valueChanged(value) {
-		if (this.props.onChange) {
-			this.props.onChange(value);
-		}
-	}
+const StyledPopper = styled(Popper)({
+	[`& .${autocompleteClasses.listbox}`]: {
+		boxSizing: "border-box",
+		"& ul": {
+			padding: 0,
+			margin: 0,
+		},
+	},
+});
 
+class SearchList3 extends Component {
 	render() {
 		return (
 			<Autocomplete
-				popupIcon={null}
-				autoHighlight
-				clearOnEscape
-				id="autocomplete"
+				id="SearchList"
+				size="small"
+				//sx={{ width: 300 }}
+				disableListWrap
+				PopperComponent={StyledPopper}
 				ListboxComponent={ListboxComponent}
-				renderGroup={(params) => [
-					<ListSubheader key={params.key} component="div">
-						{params.group}
-					</ListSubheader>,
-					params.children,
-				]}
-				vallue="pirulo"
-				onChange={(event, value) => {
-					this.valueChanged(value);
-				}}
-				options={this.props.options}
+				options={this.props.options || []}
+				//groupBy={(option) => option[0].toUpperCase()}
 				renderInput={(params) => (
 					<TextField
 						{...params}
-						size="small"
-						variant="outlined"
-						label="Search..."
+						label={this.props.label || "Search..."}
 					/>
 				)}
-				renderOption={(option) => (
-					<Typography noWrap>{option}</Typography>
-				)}
+				onChange={(event, value) => {
+					if (this.props.onChange) {
+						this.props.onChange(value);
+					}
+				}}
+				renderOption={(props, option, state) => [
+					props,
+					option,
+					state.index,
+				]}
+				// TODO: Post React 18 update - validate this conversion, look like a hidden bug
+				//renderGroup={(params) => params}
 			/>
 		);
 	}
 }
 
-export default SearchList;
+export default SearchList3;

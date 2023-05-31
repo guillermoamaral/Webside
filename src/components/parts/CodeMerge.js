@@ -57,7 +57,8 @@ class CodeMerge extends Component {
 				action: this.showEvaluation,
 			},
 			{
-				label: "Inspect it (" + shortcuts.get("inspectEvaluation") + ")",
+				label:
+					"Inspect it (" + shortcuts.get("inspectEvaluation") + ")",
 				action: this.inspectEvaluation,
 			},
 			{
@@ -72,7 +73,8 @@ class CodeMerge extends Component {
 				action: this.browseClass,
 			},
 			{
-				label: "Browse senders (" + shortcuts.get("browseSenders") + ")",
+				label:
+					"Browse senders (" + shortcuts.get("browseSenders") + ")",
 				action: this.browseSenders,
 			},
 			{
@@ -101,7 +103,7 @@ class CodeMerge extends Component {
 	}
 
 	render() {
-		const { leftCode, rightCode } = this.state;
+		const { leftCode, rightCode, menuOpen, menuPosition } = this.state;
 		return (
 			<Scrollable>
 				<CodeMirrorMerge
@@ -130,8 +132,8 @@ class CodeMerge extends Component {
 				</CodeMirrorMerge>
 				<PopupMenu
 					options={this.menuOptions()}
-					open={this.state.menuOpen}
-					position={this.state.menuPosition}
+					open={menuOpen}
+					position={menuPosition}
 					onClose={this.closeMenu}
 				/>
 			</Scrollable>

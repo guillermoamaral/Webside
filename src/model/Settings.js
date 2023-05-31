@@ -4,8 +4,14 @@ class Setting extends Object {
 		this.name = name;
 		this.type = type;
 		this.default = defaultValue;
-		this.label = label || name;
-		this.description = description || name;
+		this.label = label;
+		if (!this.label) {
+			var raw = name || "";
+			raw = raw.length > 0 ? raw[0].toUpperCase() + raw.slice(1) : raw;
+			const words = raw.match(/[A-Z][a-z]+|[0-9]+/g);
+			this.label = words ? words.join(" ") : raw;
+		}
+		this.description = description || this.label;
 		this.readOnly = false;
 	}
 
@@ -59,9 +65,16 @@ class Setting extends Object {
 }
 
 class Settings extends Object {
-	constructor(name) {
+	constructor(name, label) {
 		super();
 		this.name = name;
+		this.label = label;
+		if (!this.label) {
+			var raw = name || "";
+			raw = raw.length > 0 ? raw[0].toUpperCase() + raw.slice(1) : raw;
+			const words = raw.match(/[A-Z][a-z]+|[0-9]+/g);
+			this.label = words ? words.join(" ") : raw;
+		}
 		this.settings = [];
 	}
 
@@ -97,6 +110,31 @@ class Settings extends Object {
 
 	add(setting) {
 		this.settings.push(setting);
+		return setting;
+	}
+
+	addText(name, defaultValue, label) {
+		return this.add(Setting.text(name, defaultValue, label));
+	}
+
+	addUrl(name) {
+		return this.add(Setting.url(name));
+	}
+
+	addBoolean(name) {
+		return this.add(Setting.boolean(name));
+	}
+
+	addNumber(name) {
+		return this.add(Setting.number(name));
+	}
+
+	addColor(name, defaultValue) {
+		return this.add(Setting.color(name, defaultValue));
+	}
+
+	addOptions(name, options, defaultValue) {
+		return this.add(Setting.options(name, options, defaultValue));
 	}
 
 	toJson() {
