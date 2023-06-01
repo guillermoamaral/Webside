@@ -86,7 +86,7 @@ class App extends Component {
 										element={<IDE />}
 									/>
 									<Route
-										path="/ide?baseUri=:baseUri"
+										path="/ide?backend=:backend"
 										exact
 										element={<IDE />}
 									/>

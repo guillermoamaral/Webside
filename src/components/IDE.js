@@ -65,9 +65,8 @@ class IDE extends Component {
 		const settings = this.defaultSettings();
 		const options = this.queryOptions();
 		const connection = settings.section("connection");
-		connection.set("baseUri", options.baseUri);
+		connection.set("backend", options.backend);
 		connection.set("developer", options.developer);
-		connection.set("dialect", options.dialect);
 		this.updateSettings(settings);
 		new Settings().fromJson(settings.toJson());
 	};
@@ -75,7 +74,7 @@ class IDE extends Component {
 	defaultSettings() {
 		const settings = new Settings("settings");
 		const connection = new Settings("connection");
-		connection.addUrl("baseUri");
+		connection.addUrl("backend");
 		connection.addText("developer");
 		const dialect = connection.addText("dialect");
 		dialect.readOnly = true;
@@ -157,10 +156,8 @@ class IDE extends Component {
 		this.mainContainer().removeAllPages();
 		const connection = this.settings.section("connection");
 		this.props.navigate(
-			"/ide?baseUri=" +
-				connection.get("baseUri") +
-				"&dialect=" +
-				connection.get("dialect") +
+			"/ide?backend=" +
+				connection.get("backend") +
 				"&developer=" +
 				connection.get("developer")
 		);
@@ -238,7 +235,7 @@ class IDE extends Component {
 	initializeAPI() {
 		const connection = this.settings.section("connection");
 		this.api = new API(
-			connection.get("baseUri"),
+			connection.get("backend"),
 			connection.get("developer"),
 			this.reportError,
 			this.reportChange
@@ -282,7 +279,7 @@ class IDE extends Component {
 	welcomeMessage() {
 		const connection = this.settings.section("connection");
 		const backend =
-			connection.dialect !== "undefined"
+			connection.get("dialect") !== "undefined"
 				? connection.get("dialect")
 				: "It looks like the Smalltalk system could not be determined";
 		return (
@@ -293,7 +290,7 @@ class IDE extends Component {
 			backend +
 			"\r" +
 			"URL: " +
-			connection.get("baseUri") +
+			connection.get("backend") +
 			'"'
 		);
 	}

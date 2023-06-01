@@ -17,14 +17,14 @@ class APIError extends Error {
 
 class API {
 	constructor(uri, author, reportError, reportChange) {
-		this.baseUri = uri;
+		this.backend = uri;
 		this.reportError = reportError ? reportError.bind() : null;
 		this.reportChange = reportChange ? reportChange.bind() : null;
 		this.author = author;
 	}
 
-	baseUri(uri) {
-		this.baseUri = uri;
+	backend(uri) {
+		this.backend = uri;
 	}
 
 	author(author) {
@@ -33,7 +33,7 @@ class API {
 
 	async get(uri, description) {
 		try {
-			const response = await axios.get(this.baseUri + uri);
+			const response = await axios.get(this.backend + uri);
 			return response.data;
 		} catch (error) {
 			this.handleError("Cannot get " + (description || uri), uri, error);
@@ -42,7 +42,7 @@ class API {
 
 	async post(uri, payload, description) {
 		try {
-			const response = await axios.post(this.baseUri + uri, payload);
+			const response = await axios.post(this.backend + uri, payload);
 			return response.data;
 		} catch (error) {
 			this.handleError(
@@ -55,7 +55,7 @@ class API {
 
 	async delete(uri, description) {
 		try {
-			const response = await axios.delete(this.baseUri + uri);
+			const response = await axios.delete(this.backend + uri);
 			return response.data;
 		} catch (error) {
 			this.handleError(
@@ -77,7 +77,7 @@ class API {
 		}
 		const exception = new APIError(
 			description,
-			this.baseUri + uri,
+			this.backend + uri,
 			error.request,
 			status,
 			reason,

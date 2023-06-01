@@ -28,6 +28,7 @@ class SettingsEditor extends Component {
 
 	render() {
 		const settings = this.props.settings;
+		console.log(settings.toJson())
 		const error = this.state.error;
 		return (
 			<Grid container direction="column" justify="center" spacing={1}>

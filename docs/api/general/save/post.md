@@ -1,4 +1,4 @@
-# Dialect
+# Save Image
 
 This a simple endpoint to save the image.
 

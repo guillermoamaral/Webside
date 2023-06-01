@@ -7,16 +7,15 @@ class Login extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			baseUri: "",
+			backend: "",
 			developer: "",
-			dialect: "",
 			connecting: false,
 			error: null,
 		};
 	}
 
-	baseUriChanged(uri) {
-		this.setState({ baseUri: uri, error: null });
+	backendChanged(uri) {
+		this.setState({ backend: uri, error: null });
 	}
 
 	developerChanged(developer) {
@@ -25,18 +24,15 @@ class Login extends Component {
 
 	connectClicked = async (event) => {
 		event.preventDefault();
-		const { baseUri, developer } = this.state;
-		if (baseUri && baseUri !== "" && developer && developer !== "") {
+		const { backend, developer } = this.state;
+		if (backend && backend !== "" && developer && developer !== "") {
 			try {
 				this.setState({ connecting: true });
-				const response = await axios.get(baseUri + "/dialect");
-				const dialect = response.data;
-				this.setState({ dialect: dialect, connecting: false });
+				const response = await axios.get(backend + "/dialect");
+				this.setState({ connecting: false });
 				this.props.navigate(
-					"/ide?baseUri=" +
-						baseUri +
-						"&dialect=" +
-						dialect +
+					"/ide?backend=" +
+						backend +
 						"&developer=" +
 						developer
 				);
@@ -55,7 +51,7 @@ class Login extends Component {
 	};
 
 	render() {
-		const { baseUri, developer, error, connecting } = this.state;
+		const { backend, developer, error, connecting } = this.state;
 		const buttonLabel = connecting ? "Connecting" : "Connect";
 		return (
 			<div
@@ -91,17 +87,17 @@ class Login extends Component {
 								<Grid item>
 									<TextField
 										size="small"
-										id="baseUri"
+										id="backend"
 										label="Target Smalltalk URL"
 										type="url"
 										placeholder="URL"
 										margin="dense"
 										fullWidth
-										name="baseUri"
+										name="backend"
 										variant="outlined"
-										value={baseUri || ""}
+										value={backend || ""}
 										onChange={(event) =>
-											this.baseUriChanged(
+											this.backendChanged(
 												event.target.value
 											)
 										}

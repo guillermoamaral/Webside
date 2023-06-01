@@ -27,7 +27,7 @@ class Titlebar extends Component {
 	render() {
 		const {
 			dialect,
-			baseUri,
+			backend,
 			developer,
 			sidebarExpanded,
 			onSidebarExpand,
@@ -62,7 +62,7 @@ class Titlebar extends Component {
 					</IconButton>
 					<Box p={1}>
 						{logo && (
-							<Link to={baseUri}>
+							<Link to={backend}>
 								<img
 									src={logo}
 									width={28}
