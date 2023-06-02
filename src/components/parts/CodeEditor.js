@@ -679,19 +679,20 @@ class CodeEditor extends Component {
 	theme() {
 		const appearance = ide.settings.section("appearance");
 		const mode = appearance.section(appearance.get("mode"));
+		const colors = mode.section("colors");
 		const code = mode.section("code");
 		return createTheme({
 			theme: mode,
 			settings: {
 				//fontFamily: appearance.get("fontfamily"),
-				background: mode.get("background"),
+				background: colors.get("background"),
 				foreground: "#75baff",
 				caret: "#FFCC00",
 				selection: "#80cbc433",
 				selectionMatch: "#80cbc433",
 				lineHighlight: "#8a91991a",
-				gutterBackground: mode.get("background"),
-				gutterBorder: mode.get("background"),
+				gutterBackground: colors.get("background"),
+				gutterBorder: colors.get("background"),
 				gutterForeground: "#8a919966",
 			},
 			styles: [

@@ -73,24 +73,23 @@ class IDE extends Component {
 
 	defaultSettings() {
 		const settings = new Settings("settings");
-		const connection = new Settings("connection");
+		const connection = settings.addSection("connection");
 		connection.addUrl("backend");
 		connection.addText("developer");
 		connection.addText("dialect").readOnly();
-		settings.add(connection);
 
-		const appearance = new Settings("appearance");
+		const appearance = settings.addSection("appearance");
 		appearance.addOptions("fontSize", [8, 10, 12, 14, 16, 18, 20, 24], 14);
 		appearance.addOptions("mode", ["dark", "light"]);
-		settings.add(appearance);
 
-		const light = new Settings("light", "Light Settings");
-		light.addColor("primaryColor", "#cccccc").readOnly();
-		light.addColor("secondaryColor", "#cccccc").readOnly();
-		light.addColor("background", "#ffffff").readOnly();
-		light.addColor("primaryText", "#000000").readOnly();
-		light.addColor("secondaryText", "#808080").readOnly();
-		const lightCode = new Settings("code");
+		const light = appearance.addSection("light", "Light Settings");
+		const lightColors = light.addSection("colors", "Dialect Colors");
+		lightColors.addColor("primaryColor", "#cccccc").readOnly();
+		lightColors.addColor("secondaryColor", "#cccccc").readOnly();
+		lightColors.addColor("background", "#ffffff").readOnly();
+		lightColors.addColor("primaryText", "#000000").readOnly();
+		lightColors.addColor("secondaryText", "#808080").readOnly();
+		const lightCode = light.addSection("code", "Code Colors");
 		lightCode.addColor("selector", "black");
 		lightCode.addColor("symbol", "#3cd2dd");
 		lightCode.addColor("argument", "#f06520");
@@ -107,16 +106,15 @@ class IDE extends Component {
 		lightCode.addColor("number", "#65a14e");
 		lightCode.addColor("comment", "#586e75");
 		lightCode.addColor("separator", "#b3bab6");
-		light.add(lightCode);
-		appearance.add(light);
 
-		const dark = new Settings("dark", "Dark Settings");
-		dark.addColor("primaryColor", "#ffffff").readOnly();
-		dark.addColor("secondaryColor", "#cccccc").readOnly();
-		dark.addColor("background", "#303030").readOnly();
-		dark.addColor("primaryText", "#aaaaaa").readOnly();
-		dark.addColor("secondaryText", "#00000").readOnly();
-		const darkCode = new Settings("code");
+		const dark = appearance.addSection("dark", "Dark Settings");
+		const darkColors = dark.addSection("colors", "Dialect Colors");
+		darkColors.addColor("primaryColor", "#ffffff").readOnly();
+		darkColors.addColor("secondaryColor", "#cccccc").readOnly();
+		darkColors.addColor("background", "#303030").readOnly();
+		darkColors.addColor("primaryText", "#aaaaaa").readOnly();
+		darkColors.addColor("secondaryText", "#00000").readOnly();
+		const darkCode = dark.addSection("code", "Code Colors");
 		darkCode.addColor("selector", "#d3dddd");
 		darkCode.addColor("symbol", "#3cd2dd");
 		darkCode.addColor("argument", "#f06520");
@@ -133,10 +131,8 @@ class IDE extends Component {
 		darkCode.addColor("number", "#65a14e");
 		darkCode.addColor("comment", "#586e75");
 		darkCode.addColor("separator", "#b3bab6");
-		dark.add(darkCode);
-		appearance.add(dark);
 
-		const shortcuts = new Settings("shortcuts");
+		const shortcuts = settings.addSection("shortcuts");
 		shortcuts.addText("evaluateExpression", "Ctrl+d");
 		shortcuts.addText("inspectEvaluation", "Ctrl+i");
 		shortcuts.addText("showEvaluation", "Ctrl+p");
@@ -147,7 +143,6 @@ class IDE extends Component {
 		shortcuts.addText("browseImplementors", "Alt+m");
 		shortcuts.addText("browseClassReferences", "Alt+r");
 		shortcuts.readOnly();
-		settings.add(shortcuts);
 
 		return settings;
 	}
@@ -246,10 +241,10 @@ class IDE extends Component {
 				secondary = "#00000";
 		}
 		const appearance = this.settings.section("appearance");
-		const dark = appearance.section("dark");
+		const dark = appearance.section("dark").section("colors");
 		dark.set("primaryColor", primary);
 		dark.set("secondaryColor", secondary);
-		const light = appearance.section("light");
+		const light = appearance.section("light").section("colors");
 		light.set("primaryColor", primary);
 		light.set("secondaryColor", secondary);
 	}

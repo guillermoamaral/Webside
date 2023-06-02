@@ -34,7 +34,7 @@ class App extends Component {
 	updateTheme(settings) {
 		const appearance = settings.section("appearance");
 		const mode = appearance.get("mode");
-		const colors = appearance.section(mode);
+		const colors = appearance.section(mode).section("colors");
 		const background = colors.get("background");
 		this.theme = createTheme({
 			typography: {

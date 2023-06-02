@@ -98,6 +98,12 @@ class Settings extends Object {
 		return setting;
 	}
 
+	addSection(name, label) {
+		const section = new Settings(name, label);
+		this.add(section);
+		return section;
+	}
+
 	addText(name, defaultValue, label) {
 		return this.add(Setting.text(name, defaultValue, label));
 	}

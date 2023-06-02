@@ -55,10 +55,7 @@ class SettingsEditor extends Component {
 										/>
 									))}
 									{section.sections().map((subsection) => (
-										<Accordion
-											key={subsection.name}
-											defaultExpanded
-										>
+										<Accordion key={subsection.name}>
 											<AccordionSummary
 												expandIcon={<ExpandMoreIcon />}
 											>
@@ -76,6 +73,45 @@ class SettingsEditor extends Component {
 																subsetting.name
 															}
 														/>
+													))}
+												{subsection
+													.sections()
+													.map((subsubsection) => (
+														<Accordion
+															key={
+																subsubsection.name
+															}
+														>
+															<AccordionSummary
+																expandIcon={
+																	<ExpandMoreIcon />
+																}
+															>
+																<Typography variant="body2">
+																	{
+																		subsubsection.label
+																	}
+																</Typography>
+															</AccordionSummary>
+															<Box ml={10} mb={2}>
+																{subsubsection
+																	.plainSettings()
+																	.map(
+																		(
+																			subsubsetting
+																		) => (
+																			<SettingEditor
+																				setting={
+																					subsubsetting
+																				}
+																				key={
+																					subsubsetting.name
+																				}
+																			/>
+																		)
+																	)}
+															</Box>
+														</Accordion>
 													))}
 											</Box>
 										</Accordion>
