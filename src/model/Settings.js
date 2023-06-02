@@ -4,6 +4,7 @@ class Setting extends Object {
 		this.name = name;
 		this.type = type;
 		this.default = defaultValue;
+		this.value = defaultValue;
 		this.label = label;
 		if (!this.label) {
 			var raw = name || "";
@@ -12,27 +13,7 @@ class Setting extends Object {
 			this.label = words ? words.join(" ") : raw;
 		}
 		this.description = description || this.label;
-		this.readOnly = false;
-	}
-
-	toJson() {
-		var json = {};
-		json.name = this.name;
-		json.type = this.type;
-		json.default = this.default;
-		json.label = this.label;
-		json.description = this.description;
-		json.readOnly = this.readOnly;
-		return json;
-	}
-
-	fromJson(json) {
-		this.name = json.name;
-		this.type = json.type;
-		this.default = json.default;
-		this.label = json.label;
-		this.description = json.description;
-		this.readOnly = json.readOnly;
+		this.editable = true;
 	}
 
 	static text(name, defaultValue = "", label) {
@@ -56,11 +37,15 @@ class Setting extends Object {
 	}
 
 	static options(name, options, defaultValue) {
-		var setting = new Setting(name, "options");
+		const setting = new Setting(name, "options");
 		setting.options = options;
 		setting.default =
 			defaultValue || (options.length > 0 ? options[0] : null);
 		return setting;
+	}
+
+	readOnly() {
+		this.editable = false;
 	}
 }
 
@@ -139,22 +124,31 @@ class Settings extends Object {
 
 	toJson() {
 		var json = {};
-		json.name = this.name;
-		json.settings = this.settings.map((s) => s.toJson());
+		this.settings.forEach((s) => {
+			if (s.constructor.name === "Settings") {
+				json[s.name] = s.toJson();
+			} else {
+				if (s.editable) {
+					json[s.name] = s.value;
+				}
+			}
+		});
 		return json;
 	}
 
 	fromJson(json) {
-		this.name = json.name;
-		this.settings = json.settings.map((j) => {
-			var s = j.settings ? new Settings() : new Setting();
-			s.fromJson(j);
-			return s;
+		Object.entries(json).forEach((e) => {
+			const section = this.section(e[0]);
+			if (section) {
+				section.fromJson(e[1]);
+			} else {
+				this.set(e[0], e[1]);
+			}
 		});
 	}
 
 	readOnly() {
-		this.settings.forEach((s) => (s.readOnly = true));
+		this.settings.forEach((s) => s.readOnly());
 	}
 }
 

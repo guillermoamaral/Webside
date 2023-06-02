@@ -25,7 +25,7 @@ import MessageChannel from "./MessageChannel";
 import Hotkeys from "react-hot-keys";
 import SplitIcon from "@mui/icons-material/VerticalSplit";
 import DrawerHeader from "./layout/DrawerHeader";
-import { Setting, Settings } from "../model/Settings";
+import { Settings } from "../model/Settings";
 import { app as mainApp } from "../App";
 
 var ide = null;
@@ -62,13 +62,13 @@ class IDE extends Component {
 
 	// Settings
 	initializeSettings = () => {
-		const settings = this.defaultSettings();
+		this.settings = this.defaultSettings();
+		this.loadSettingsFromCookie();
 		const options = this.queryOptions();
-		const connection = settings.section("connection");
+		const connection = this.settings.section("connection");
 		connection.set("backend", options.backend);
 		connection.set("developer", options.developer);
-		this.updateSettings(settings);
-		new Settings().fromJson(settings.toJson());
+		this.updateSettings();
 	};
 
 	defaultSettings() {
@@ -76,20 +76,20 @@ class IDE extends Component {
 		const connection = new Settings("connection");
 		connection.addUrl("backend");
 		connection.addText("developer");
-		const dialect = connection.addText("dialect");
-		dialect.readOnly = true;
+		connection.addText("dialect").readOnly();
 		settings.add(connection);
 
 		const appearance = new Settings("appearance");
+		appearance.addOptions("fontSize", [8, 10, 12, 14, 16, 18, 20, 24], 14);
 		appearance.addOptions("mode", ["dark", "light"]);
 		settings.add(appearance);
 
-		const light = new Settings("light");
-		light.addColor("primaryColor", "#cccccc");
-		light.addColor("secondaryColor", "#cccccc");
-		light.addColor("background", "#ffffff");
-		light.addColor("primaryText", "#000000");
-		light.addColor("secondaryText", "#808080");
+		const light = new Settings("light", "Light Settings");
+		light.addColor("primaryColor", "#cccccc").readOnly();
+		light.addColor("secondaryColor", "#cccccc").readOnly();
+		light.addColor("background", "#ffffff").readOnly();
+		light.addColor("primaryText", "#000000").readOnly();
+		light.addColor("secondaryText", "#808080").readOnly();
 		const lightCode = new Settings("code");
 		lightCode.addColor("selector", "black");
 		lightCode.addColor("symbol", "#3cd2dd");
@@ -110,12 +110,12 @@ class IDE extends Component {
 		light.add(lightCode);
 		appearance.add(light);
 
-		const dark = new Settings("dark");
-		dark.addColor("primaryColor", "#ffffff");
-		dark.addColor("secondaryColor", "#cccccc");
-		dark.addColor("background", "#303030");
-		dark.addColor("primaryText", "#aaaaaa");
-		dark.addColor("secondaryText", "#00000");
+		const dark = new Settings("dark", "Dark Settings");
+		dark.addColor("primaryColor", "#ffffff").readOnly();
+		dark.addColor("secondaryColor", "#cccccc").readOnly();
+		dark.addColor("background", "#303030").readOnly();
+		dark.addColor("primaryText", "#aaaaaa").readOnly();
+		dark.addColor("secondaryText", "#00000").readOnly();
 		const darkCode = new Settings("code");
 		darkCode.addColor("selector", "#d3dddd");
 		darkCode.addColor("symbol", "#3cd2dd");
@@ -154,6 +154,8 @@ class IDE extends Component {
 
 	applySettings(settings) {
 		this.mainContainer().removeAllPages();
+		this.settings = settings;
+		this.storeSettingsIntoCookie();
 		const connection = this.settings.section("connection");
 		this.props.navigate(
 			"/ide?backend=" +
@@ -161,7 +163,7 @@ class IDE extends Component {
 				"&developer=" +
 				connection.get("developer")
 		);
-		this.updateSettings(settings);
+		this.updateSettings();
 		this.removeExtraContainers();
 	}
 
@@ -171,16 +173,40 @@ class IDE extends Component {
 			"mode",
 			appearance.get("mode") === "dark" ? "light" : "dark"
 		);
+		this.storeSettingsIntoCookie();
 		this.updateTheme();
 		this.forceUpdate();
 	};
 
-	async updateSettings(settings) {
-		this.settings = settings;
+	settingsCookieName() {
+		const options = this.queryOptions();
+		return (
+			"webside-settings-for-backend-" +
+			options.backend +
+			"-developer-" +
+			options.developer
+		);
+	}
+
+	loadSettingsFromCookie() {
+		const raw = this.props.cookies.get(this.settingsCookieName());
+		if (raw) {
+			this.settings.fromJson(JSON.parse(raw));
+		}
+	}
+
+	storeSettingsIntoCookie() {
+		this.props.cookies.set(
+			this.settingsCookieName(),
+			JSON.stringify(JSON.stringify(this.settings.toJson()))
+		);
+	}
+
+	async updateSettings() {
 		this.initializeAPI();
 		const dialect = await this.api.dialect();
 		document.title = dialect;
-		settings.section("connection").set("dialect", dialect);
+		this.settings.section("connection").set("dialect", dialect);
 		this.updateDialectColors();
 		this.updateTheme();
 		this.initializeMessageChannel();
@@ -623,12 +649,13 @@ class IDE extends Component {
 							expanded={sidebarExpanded}
 							unreadErrorsCount={unreadErrorsCount}
 							unreadMessages={unreadMessages}
-							onSaveImageClicked={this.saveImage}
-							onTranscriptClicked={this.openTranscript}
-							onSearchClicked={this.openSearch}
-							onChangesClicked={this.browseLastChanges}
-							onResourcesClicked={this.openResources}
-							onPeersClicked={this.openChat}
+							onSaveImageClick={this.saveImage}
+							onTranscriptClick={this.openTranscript}
+							onSearchClick={this.openSearch}
+							onChangesClick={this.browseLastChanges}
+							onResourcesClick={this.openResources}
+							onPeersClick={this.openChat}
+							onSettingsClick={this.openSettings}
 							onCollapse={this.collapseSidebar}
 						/>
 						<Box component="main" sx={{ flexGrow: 1, p: 3 }}>

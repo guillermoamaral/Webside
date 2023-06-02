@@ -39,7 +39,7 @@ class App extends Component {
 		this.theme = createTheme({
 			typography: {
 				//fontFamily: appearance.section("font").get("family"),
-				//fontSize: appearance.section("font").get("size"),
+				fontSize: appearance.get("fontSize"),
 				button: {
 					textTransform: "none",
 				},

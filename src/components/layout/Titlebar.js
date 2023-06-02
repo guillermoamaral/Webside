@@ -11,8 +11,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { ide } from "../IDE";
 import StyledAppBar from "./StyledAppBar";
 import SearchField from "../controls/SearchField";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
+import LightModeIcon from "@mui/icons-material/LightModeRounded";
+import DarkModeIcon from "@mui/icons-material/DarkModeRounded";
 
 class Titlebar extends Component {
 	search = async (text) => {
@@ -94,9 +94,9 @@ class Titlebar extends Component {
 					<Box flexGrow={1} />
 					<IconButton color="inherit" onClick={onColorModeToggle}>
 						{colorMode === "dark" ? (
-							<Brightness7Icon />
+							<LightModeIcon />
 						) : (
-							<Brightness4Icon />
+							<DarkModeIcon />
 						)}
 					</IconButton>
 					<IconButton color="primary" onClick={onUserClick}>

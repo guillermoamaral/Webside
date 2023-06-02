@@ -19,20 +19,22 @@ import SaveImageIcon from "@mui/icons-material/CameraAlt";
 import { withDialog } from "../dialogs/index";
 import DrawerHeader from "./DrawerHeader";
 import StyledDrawer from "./StyledDrawer";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 class Sidebar extends Component {
 	render() {
 		const {
 			expanded,
 			onCollapse,
-			onSaveImageClicked,
-			onTranscriptClicked,
+			onSaveImageClick,
+			onTranscriptClick,
 			unreadErrorsCount,
-			onSearchClicked,
+			onSearchClick,
 			changesCount,
-			onResourcesClicked,
-			onChangesClicked,
-			onPeersClicked,
+			onResourcesClick,
+			onChangesClick,
+			onPeersClick,
+			onSettingsClick,
 			unreadMessages,
 		} = this.props;
 		return (
@@ -44,7 +46,7 @@ class Sidebar extends Component {
 				</DrawerHeader>
 				<Divider />
 				<List>
-					<ListItemButton onClick={onSaveImageClicked}>
+					<ListItemButton onClick={onSaveImageClick}>
 						<ListItemIcon>
 							<Tooltip title="Save image" placement="top">
 								<SaveImageIcon />
@@ -52,7 +54,7 @@ class Sidebar extends Component {
 						</ListItemIcon>
 						<ListItemText primary="Save image" />
 					</ListItemButton>
-					<ListItemButton onClick={onTranscriptClicked}>
+					<ListItemButton onClick={onTranscriptClick}>
 						<ListItemIcon>
 							<Tooltip title="Transcript" placement="top">
 								<Badge
@@ -65,7 +67,7 @@ class Sidebar extends Component {
 						</ListItemIcon>
 						<ListItemText primary="Transcript" />
 					</ListItemButton>
-					<ListItemButton onClick={onSearchClicked}>
+					<ListItemButton onClick={onSearchClick}>
 						<ListItemIcon>
 							<Tooltip title="Search" placement="top">
 								<SearchIcon />
@@ -73,7 +75,7 @@ class Sidebar extends Component {
 						</ListItemIcon>
 						<ListItemText primary="Search" />
 					</ListItemButton>
-					<ListItemButton onClick={onChangesClicked}>
+					<ListItemButton onClick={onChangesClick}>
 						<ListItemIcon>
 							<Tooltip title="Last Changes" placement="top">
 								<Badge
@@ -86,7 +88,7 @@ class Sidebar extends Component {
 						</ListItemIcon>
 						<ListItemText primary="Changes" />
 					</ListItemButton>
-					<ListItemButton onClick={onResourcesClicked}>
+					<ListItemButton onClick={onResourcesClick}>
 						<Tooltip title="Resources" placement="top">
 							<ListItemIcon>
 								<ResourcesIcon />
@@ -94,7 +96,7 @@ class Sidebar extends Component {
 						</Tooltip>
 						<ListItemText primary="Resources" />
 					</ListItemButton>
-					<ListItemButton onClick={onPeersClicked}>
+					<ListItemButton onClick={onPeersClick}>
 						<ListItemIcon>
 							<Tooltip title="Chat" placement="top">
 								<Badge
@@ -106,6 +108,14 @@ class Sidebar extends Component {
 							</Tooltip>
 						</ListItemIcon>
 						<ListItemText primary="Peers" />
+					</ListItemButton>
+					<ListItemButton onClick={onSettingsClick}>
+						<Tooltip title="Settings" placement="top">
+							<ListItemIcon>
+								<SettingsIcon />
+							</ListItemIcon>
+						</Tooltip>
+						<ListItemText primary="Settings" />
 					</ListItemButton>
 				</List>
 				<Divider />

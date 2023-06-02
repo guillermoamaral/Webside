@@ -29,7 +29,7 @@ class SettingEditor extends Component {
 		const setting = this.props.setting;
 		const type = setting.type === "boolean" ? "checkbox" : setting.type;
 		return (
-			<Box display="flex" flexDirection="row" alignItems="center">
+			<Box mt={1} display="flex" flexDirection="row" alignItems="center">
 				<Typography mr={2}>{setting.label}</Typography>
 				{(setting.type === "text" ||
 					setting.type === "number" ||
@@ -49,7 +49,7 @@ class SettingEditor extends Component {
 							this.valueChanged(event.target.value);
 						}}
 						required
-						disabled={setting.readOnly}
+						disabled={!setting.editable}
 					/>
 				)}
 				{setting.type === "boolean" && (
@@ -60,6 +60,7 @@ class SettingEditor extends Component {
 									onChange={(event) =>
 										this.valueChanged(event.target.value)
 									}
+									disabled={!setting.editable}
 								/>
 							}
 							label={setting.label}
@@ -75,6 +76,7 @@ class SettingEditor extends Component {
 						onChange={(event) => {
 							this.valueChanged(event.target.value);
 						}}
+						disabled={!setting.editable}
 					>
 						{setting.options.map((option) => (
 							<MenuItem value={option} key={option}>
