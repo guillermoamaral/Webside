@@ -1,17 +1,17 @@
-import React, { Component } from "react";
+import React from "react";
 import Scrollable from "../controls/Scrollable.js";
 import PopupMenu from "../controls/PopupMenu";
-import { ide } from "../IDE.js";
+//import { ide } from "../IDE.js";
 import CodeMirrorMerge from "react-codemirror-merge";
-import { StreamLanguage } from "@codemirror/language";
-import { smalltalk } from "@codemirror/legacy-modes/mode/smalltalk";
-import { material } from "@uiw/codemirror-theme-material";
 import { EditorView } from "@codemirror/view";
+import CodeEditor from "./CodeEditor.js";
+import { smalltalk } from "./CodeEditor.js";
+import { lintGutter } from "@codemirror/lint";
 
 const Original = CodeMirrorMerge.Original;
 const Modified = CodeMirrorMerge.Modified;
 
-class CodeMerge extends Component {
+class CodeMerge extends CodeEditor {
 	constructor(props) {
 		super(props);
 		this.ref = React.createRef();
@@ -24,10 +24,23 @@ class CodeMerge extends Component {
 	}
 
 	static getDerivedStateFromProps(props, state) {
-		return {
-			leftCode: props.leftCode || "",
-			rightCode: props.rightCode || "",
-		};
+		if (
+			props.leftCode !== state.leftCode ||
+			props.rightCode !== state.rightCode
+		) {
+			return {
+				leftCode: props.leftCode || "",
+				rightCode: props.rightCode || "",
+			};
+		}
+		return null;
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		return (
+			nextProps.leftCode !== this.props.leftCode ||
+			nextProps.rightCode !== this.props.rightCode
+		);
 	}
 
 	openMenu = (event) => {
@@ -42,92 +55,41 @@ class CodeMerge extends Component {
 		this.setState({ menuOpen: false });
 	};
 
-	menuOptions() {
-		const shortcuts = ide.settings.section("shortcuts");
-		return [
-			{ label: "Copy (Ctrl+c)", action: this.copyToClipboard },
-			{ label: "Paste (Ctrl+v)", action: this.pasteFromClipboard },
-			null,
-			{
-				label: "Do it (" + shortcuts.get("evaluateExpression") + ")",
-				action: this.evaluateExpression,
-			},
-			{
-				label: "Print it (" + shortcuts.get("showEvaluation") + ")",
-				action: this.showEvaluation,
-			},
-			{
-				label:
-					"Inspect it (" + shortcuts.get("inspectEvaluation") + ")",
-				action: this.inspectEvaluation,
-			},
-			{
-				label: "Debug it (" + shortcuts.get("debugExpression") + ")",
-				action: this.debugExpression,
-			},
-			{ label: "Profile it", action: this.profileExpression },
-			{ label: "Google it", action: this.searchInGoogle },
-			null,
-			{
-				label: "Browse class (" + shortcuts.get("browseClass") + ")",
-				action: this.browseClass,
-			},
-			{
-				label:
-					"Browse senders (" + shortcuts.get("browseSenders") + ")",
-				action: this.browseSenders,
-			},
-			{
-				label:
-					"Browse implementors (" +
-					shortcuts.get("browseImplementors") +
-					")",
-				action: this.browseImplementors,
-			},
-			{
-				label:
-					"Browse class references (" +
-					shortcuts.get("browseClassReferences") +
-					")",
-				action: this.browseClassReferences,
-			},
-			{
-				label: "Search methods matching",
-				action: this.browseMethodsMatching,
-			},
-			{
-				label: "Search string references",
-				action: this.browseStringReferences,
-			},
-		];
-	}
-
 	render() {
 		const { leftCode, rightCode, menuOpen, menuPosition } = this.state;
+		const theme = this.theme();
 		return (
 			<Scrollable>
 				<CodeMirrorMerge
 					width="100%"
 					height="100%"
-					onContextMenu={(event) => {
-						this.openMenu(event);
-					}}
+					orientation="a-b"
+					gutter={false}
 				>
 					<Original
 						value={leftCode}
 						extensions={[
-							StreamLanguage.define(smalltalk),
+							smalltalk,
 							EditorView.lineWrapping,
-							material,
+							lintGutter(),
+							theme,
 						]}
+						onContextMenu={(event) => {
+							console.log("mmm")
+							this.openMenu(event);
+						}}
 					/>
 					<Modified
 						value={rightCode}
 						extensions={[
-							StreamLanguage.define(smalltalk),
+							smalltalk,
 							EditorView.lineWrapping,
-							material,
+							lintGutter(),
+							theme,
 						]}
+						onContextMenu={(event) => {
+							this.openMenu(event);
+						}}
 					/>
 				</CodeMirrorMerge>
 				<PopupMenu

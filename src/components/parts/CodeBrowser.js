@@ -146,7 +146,7 @@ class CodeBrowser extends Component {
 		method.source = source;
 		const data = error.data;
 		if (data && data.suggestions && data.suggestions.length > 0) {
-			const chosen = await ide.list({
+			const chosen = await ide.choose({
 				title: data.description,
 				message: "What do you want to do?",
 				items: data.suggestions.map((s) => s.description),

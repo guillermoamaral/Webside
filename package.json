@@ -27,7 +27,7 @@
     "react": "^18.2.0",
     "react-autosuggest": "^10.1.0",
     "react-chartjs-2": "^5.2.0",
-    "react-codemirror-merge": "^4.19.16",
+    "react-codemirror-merge": "^4.21.2",
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
     "react-hot-keys": "^2.7.2",

@@ -134,6 +134,18 @@ class MethodChange extends ClassChange {
 	isMethodChange() {
 		return true;
 	}
+
+	async updateCurrentSourceCode() {
+		try {
+			const method = await this.changeset.system.method(
+				this.className,
+				this.selector
+			);
+			this.currentSource = method.source;
+		} catch (error) {
+			this.currentSource = "could not find method";
+		}
+	}
 }
 
 class AddMethod extends MethodChange {
@@ -151,18 +163,6 @@ class AddMethod extends MethodChange {
 		var json = super.asJson();
 		json.category = this.category;
 		return json;
-	}
-
-	async updateCurrentSourceCode() {
-		try {
-			const method = await this.changeset.system.method(
-				this.className,
-				this.selector
-			);
-			this.currentSource = method.source;
-		} catch (error) {
-			this.currentSource = "could not find method";
-		}
 	}
 }
 

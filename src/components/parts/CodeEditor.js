@@ -15,7 +15,7 @@ import { SmalltalkParser } from "../../SmalltalkParser";
 import { Tag } from "@lezer/highlight";
 import { createTheme } from "@uiw/codemirror-themes";
 import { StreamLanguage } from "@codemirror/language";
-import { EditorSelection, Prec } from "@codemirror/state";
+import { EditorSelection, EditorState, Prec } from "@codemirror/state";
 import { throwStatement } from "@babel/types";
 
 // This code is intended to be used when defining a parser from a Lezer grammar.
@@ -246,7 +246,6 @@ class CodeEditor extends Component {
 				};
 			}
 		);
-		console.log(changes);
 		this.editorView.dispatch({
 			changes: changes,
 		});
@@ -761,6 +760,7 @@ class CodeEditor extends Component {
 							}}
 							onCreateEditor={(view, state) => {
 								this.editorView = view;
+								console.log(this.editorRef);
 							}}
 							readOnly={evaluating || progress}
 							basicSetup={{
@@ -770,7 +770,7 @@ class CodeEditor extends Component {
 								highlightActiveLine: false,
 								//allowMultipleSelections: true,
 								drawSelection: true,
-								//keymap: this.extraKeys(),
+								//keymap: this.extraKeys()
 							}}
 						/>
 					</Scrollable>
@@ -802,3 +802,5 @@ class CodeEditor extends Component {
 }
 
 export default CodeEditor;
+
+export { smalltalk };
