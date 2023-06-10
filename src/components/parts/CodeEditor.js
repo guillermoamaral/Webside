@@ -17,6 +17,7 @@ import { createTheme } from "@uiw/codemirror-themes";
 import { StreamLanguage } from "@codemirror/language";
 import { EditorSelection, EditorState, Prec } from "@codemirror/state";
 import { throwStatement } from "@babel/types";
+import { Tooltip, hoverTooltip } from "@codemirror/view";
 
 // This code is intended to be used when defining a parser from a Lezer grammar.
 // const parser = SmalltalkParser.configure({
@@ -760,7 +761,6 @@ class CodeEditor extends Component {
 							}}
 							onCreateEditor={(view, state) => {
 								this.editorView = view;
-								console.log(this.editorRef);
 							}}
 							readOnly={evaluating || progress}
 							basicSetup={{

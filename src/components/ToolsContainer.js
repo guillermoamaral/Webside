@@ -132,19 +132,24 @@ class ToolsContainer extends Component {
 	}
 
 	removePage = (page) => {
-		const { pages, selectedPageId } = this.state;
-		var index = pages.indexOf(page);
+		this.removePages([page]);
+	};
+
+	removePages = (pages) => {
+		console.log(pages);
+		const selectedPageId = this.state.selectedPageId;
+		const currentPages = this.state.pages;
+		const ids = pages.map((p) => p.id);
 		const selectedId =
-			pages.length === 1
+			currentPages.length === pages.length
 				? null
-				: page.id !== selectedPageId
+				: !ids.includes(selectedPageId)
 				? selectedPageId
-				: index > 0
-				? pages[index - 1].id
-				: pages[index + 1].id;
-		const filtered = pages.filter((p) => p.id !== page.id);
-		if (this.props.onPageRemove) {
-			this.props.onPageRemove(this);
+				: currentPages.findIndex((p) => !ids.includes(p.id));
+		const filtered = currentPages.filter((p) => !ids.includes(p.id));
+		console.log("filtered", filtered);
+		if (this.props.onPagesRemove) {
+			this.props.onPagesRemove(this);
 		}
 		this.setState(
 			{
@@ -152,8 +157,8 @@ class ToolsContainer extends Component {
 				pages: filtered,
 			},
 			() => {
-				if (this.props.onPageRemove) {
-					this.props.onPageRemove(this);
+				if (this.props.onPagesRemove) {
+					this.props.onPagesRemove(this);
 				}
 			}
 		);
@@ -164,10 +169,11 @@ class ToolsContainer extends Component {
 	};
 
 	closePage = (page) => {
-		if (page.onClose) {
-			page.onClose();
-		}
 		this.removePage(page);
+	};
+
+	closePages = (pages) => {
+		this.removePages(pages);
 	};
 
 	pageWithId(id) {
@@ -880,7 +886,7 @@ class ToolsContainer extends Component {
 				selectedPage={selectedPage}
 				pages={pages}
 				onTabSelect={this.selectPage}
-				onClose={this.closePage}
+				onTabsClose={this.closePages}
 				addOptions={this.addPageOptions()}
 			/>
 		);

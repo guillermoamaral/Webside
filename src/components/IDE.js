@@ -94,7 +94,7 @@ class IDE extends Component {
 		lightCode.addColor("symbol", "#3cd2dd");
 		lightCode.addColor("argument", "#f06520");
 		lightCode.addColor("temporary", "#81c9f3");
-		lightCode.addColor("assignment", "#ffffff");
+		lightCode.addColor("assignment", "#000000");
 		lightCode.addColor("string", "#C3E88D");
 		lightCode.addColor("variable", "#268bd2");
 		lightCode.addColor("var", "#268bd2");
@@ -351,7 +351,7 @@ class IDE extends Component {
 			component: (
 				<ToolsContainer
 					id={id}
-					onPageRemove={(c) => {
+					onPagesRemove={(c) => {
 						if (c.pages().length === 0) {
 							this.removeContainer(c);
 						}

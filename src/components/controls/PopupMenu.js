@@ -53,10 +53,14 @@ class PopupMenu extends Component {
 	itemClicked = (event, option) => {
 		event.stopPropagation();
 		this.close();
-		if (this.props.onOptionClick) {
-			this.props.onOptionClick(option);
-		} else {
-			option.action();
+		try {
+			if (this.props.onOptionClick) {
+				this.props.onOptionClick(option);
+			} else {
+				option.action();
+			}
+		} catch (error) {
+			console.log(error);
 		}
 	};
 

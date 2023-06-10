@@ -20,11 +20,26 @@ class TabControl extends Component {
 	};
 
 	closeTab = (event, index) => {
-		event.stopPropagation();
-		event.preventDefault();
+		if (event) {
+			event.stopPropagation();
+			event.preventDefault();
+		}
 		const page = this.props.pages[index];
-		if (this.props.onClose) {
-			this.props.onClose(page);
+		if (this.props.onTabsClose) {
+			this.props.onTabsClose([page]);
+		}
+	};
+
+	closeAllTabs = () => {
+		if (this.props.onTabsClose) {
+			this.props.onTabsClose(this.props.pages);
+		}
+	};
+
+	closeOtherTabs = (index) => {
+		if (this.props.onTabsClose) {
+			const others = this.props.pages.filter((p, i) => i !== index);
+			this.props.onTabsClose(others);
 		}
 	};
 
@@ -74,6 +89,10 @@ class TabControl extends Component {
 												label={page.label}
 												ref={page.labelRef}
 												onClose={this.closeTab}
+												onCloseAll={this.closeAllTabs}
+												onCloseOthers={
+													this.closeOtherTabs
+												}
 												noClose={noClose}
 											/>
 										}
