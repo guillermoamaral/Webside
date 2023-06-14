@@ -63,7 +63,7 @@ class CodeMerge extends CodeEditor {
 				<CodeMirrorMerge
 					width="100%"
 					height="100%"
-					orientation="b-a"
+					orientation="a-b"
 					gutter={false}
 				>
 					<Original
