@@ -63,7 +63,7 @@ class CodeMerge extends CodeEditor {
 				<CodeMirrorMerge
 					width="100%"
 					height="100%"
-					orientation="a-b"
+					orientation="b-a"
 					gutter={false}
 				>
 					<Original
@@ -75,7 +75,7 @@ class CodeMerge extends CodeEditor {
 							theme,
 						]}
 						onContextMenu={(event) => {
-							console.log("mmm")
+							console.log("mmm");
 							this.openMenu(event);
 						}}
 					/>
