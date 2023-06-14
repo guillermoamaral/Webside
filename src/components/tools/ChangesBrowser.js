@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { Grid, Paper, Box, IconButton, Tooltip } from "@mui/material";
+import {
+	Grid,
+	Paper,
+	Box,
+	IconButton,
+	Tooltip,
+	Typography,
+} from "@mui/material";
 import CodeMerge from "../parts/CodeMerge";
 import { ide } from "../IDE";
 import ChangesTable from "../parts/ChangesTable";
@@ -191,6 +198,24 @@ class ChangesBrowser extends Component {
 							onFiltersChange={this.filtersChanged}
 						/>
 					</Paper>
+				</Grid>
+				<Grid item xs={6} md={6} lg={6}>
+					<Box
+						display="flex"
+						alignContent="center"
+						justifyContent="center"
+					>
+						<Typography variant="body2">New source</Typography>
+					</Box>
+				</Grid>
+				<Grid item xs={6} md={6} lg={6}>
+					<Box
+						display="flex"
+						alignContent="center"
+						justifyContent="center"
+					>
+						<Typography variant="body2">Current source</Typography>
+					</Box>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<Paper
