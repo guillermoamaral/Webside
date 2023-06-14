@@ -287,7 +287,7 @@ class MethodList extends Component {
 	}
 
 	newMethod = () => {
-		const selected = this.props.selected;
+		const selected = this.props.selectedMethod;
 		const method = ide.api.methodTemplate();
 		method.methodClass = selected ? selected.methodClass : null;
 		method.category = selected ? selected.category : null;
@@ -323,7 +323,7 @@ class MethodList extends Component {
 					itemLabel={this.methodLabel}
 					itemStyle={this.props.labelStyle}
 					itemIcon={this.methodIcon}
-					selectedItem={this.props.selected}
+					selectedItem={this.props.selectedMethod}
 					onItemSelect={this.props.onMethodSelect}
 					menuOptions={this.menuOptions()}
 				/>

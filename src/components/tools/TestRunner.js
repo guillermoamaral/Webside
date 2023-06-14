@@ -235,7 +235,7 @@ class TestRunner extends Component {
 		return test && (test.type === "failed" || test.type === "errors");
 	};
 
-	testColumns() {
+	columns() {
 		return [
 			{
 				field: "selector",
@@ -252,7 +252,7 @@ class TestRunner extends Component {
 		];
 	}
 
-	testActions() {
+	rowActions() {
 		return [
 			{
 				label: "Debug",
@@ -479,10 +479,10 @@ class TestRunner extends Component {
 												style={{ minHeight: 300 }}
 											>
 												<CustomTable
-													columns={this.testColumns()}
+													columns={this.columns()}
 													rows={classTests}
 													menuOptions={this.menuOptions()}
-													rowActions={this.testActions()}
+													rowActions={this.rowActions()}
 												></CustomTable>
 											</Grid>
 										</Grid>

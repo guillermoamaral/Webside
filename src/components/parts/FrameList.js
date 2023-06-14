@@ -23,7 +23,10 @@ class FrameList extends Component {
 
 	browseLocalSenders = (frame) => {
 		if (frame) {
-			container.browseLocalSenders(frame.method.selector, frame.class.name);
+			container.browseLocalSenders(
+				frame.method.selector,
+				frame.class.name
+			);
 		}
 	};
 
@@ -71,7 +74,7 @@ class FrameList extends Component {
 				itemLabel="label"
 				itemLink={this.browseImplementors}
 				items={this.props.frames}
-				selectedItem={this.props.selected}
+				selectedItem={this.props.selectedFrame}
 				onItemSelect={this.frameSelected}
 				menuOptions={this.menuOptions()}
 			/>

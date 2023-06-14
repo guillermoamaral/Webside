@@ -491,7 +491,7 @@ class CoderLikeBrowser extends Component {
 										: []
 									: []
 							}
-							selected={selectedClass}
+							selectedClass={selectedClass}
 							onClassExpand={this.classExpanded}
 							onClassSelect={this.classSelected}
 							onClassRemove={this.classRemoved}

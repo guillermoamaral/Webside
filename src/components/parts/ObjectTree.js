@@ -48,7 +48,7 @@ class ObjectTree extends Component {
 				children={"slots"}
 				onItemExpand={this.props.onSlotExpand}
 				onItemSelect={this.props.onSlotSelect}
-				selectedItem={this.props.selected}
+				selectedItem={this.props.selectedObject}
 				menuOptions={this.menuOptions()}
 			/>
 		);

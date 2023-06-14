@@ -161,10 +161,14 @@ class VariableList extends Component {
 			<CustomList
 				itemLabel="name"
 				itemDivider={(item) => item.type === "separator"}
-				labelStyle={(item) => (item.type === "separator" ? "italic" : "normal")}
-				labelSize={(item) => (item.type === "separator" ? "small" : "normal")}
+				labelStyle={(item) =>
+					item.type === "separator" ? "italic" : "normal"
+				}
+				labelSize={(item) =>
+					item.type === "separator" ? "small" : "normal"
+				}
 				items={variables}
-				selectedItem={this.props.selected}
+				selectedItem={this.props.selectedVariable}
 				onItemSelect={this.variableSelected}
 				menuOptions={this.menuOptions()}
 			/>

@@ -136,7 +136,6 @@ class ToolsContainer extends Component {
 	};
 
 	removePages = (pages) => {
-		console.log(pages);
 		const selectedPageId = this.state.selectedPageId;
 		const currentPages = this.state.pages;
 		const ids = pages.map((p) => p.id);
@@ -145,9 +144,9 @@ class ToolsContainer extends Component {
 				? null
 				: !ids.includes(selectedPageId)
 				? selectedPageId
-				: currentPages.findIndex((p) => !ids.includes(p.id));
+				: [...currentPages].reverse().find((p) => !ids.includes(p.id))
+						.id;
 		const filtered = currentPages.filter((p) => !ids.includes(p.id));
-		console.log("filtered", filtered);
 		if (this.props.onPagesRemove) {
 			this.props.onPagesRemove(this);
 		}

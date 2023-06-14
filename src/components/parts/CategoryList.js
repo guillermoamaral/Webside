@@ -82,7 +82,7 @@ class CategoryList extends Component {
 				itemDivider={(item) => item === this.all}
 				labelStyle={(item) => (item === this.all ? "italic" : "normal")}
 				labelSize={(item) => (item === this.all ? "small" : "normal")}
-				selectedItem={this.props.selected}
+				selectedItem={this.props.selectedCategory}
 				onItemSelect={this.categorySelected}
 				menuOptions={this.menuOptions()}
 			/>

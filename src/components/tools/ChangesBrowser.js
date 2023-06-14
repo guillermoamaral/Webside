@@ -1,16 +1,20 @@
 import React, { Component } from "react";
-import { Grid, Paper, Box, IconButton } from "@mui/material";
+import { Grid, Paper, Box, IconButton, Tooltip } from "@mui/material";
 import CodeMerge from "../parts/CodeMerge";
-//import CodeEditor from "../parts/CodeEditor";
 import { ide } from "../IDE";
 import ChangesTable from "../parts/ChangesTable";
 import DownloadIcon from "@mui/icons-material/GetApp";
-//import Scrollable from "../controls/Scrollable";
+import RejectOlderIcon from "@mui/icons-material/Compress";
+import RejectUpToDateIcon from "@mui/icons-material/RemoveDone";
+import ApplyIcon from "@mui/icons-material/Done";
+import ApplyAllIcon from "@mui/icons-material/DoneAll";
+import ShowOriginalIcon from "@mui/icons-material/Refresh";
 
 class ChangesBrowser extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			changes: this.props.changeset.changes,
 			selectedChange: props.selectedChange,
 		};
 	}
@@ -46,24 +50,143 @@ class ChangesBrowser extends Component {
 		}
 	};
 
-	render() {
+	rejectOlderChanges = () => {
+		const changeset = this.props.changeset;
+		changeset.compress();
+		this.setState({ changes: changeset.changes });
+	};
+
+	rejectChangesUpToDate = async () => {
+		const changeset = this.props.changeset;
+		await changeset.rejectUpToDate();
+		this.setState({ changes: changeset.changes });
+	};
+
+	applySelectedChange = async () => {
+		const selectedChange = this.state.selectedChange;
+		if (!selectedChange) {
+			return;
+		}
 		const changes = this.props.changeset.changes;
-		const change = this.state.selectedChange;
+		await this.applyChanges([selectedChange]);
+		const index = changes.indexOf(selectedChange);
+		const selected =
+			index >= 0 && index < changes.length - 1
+				? changes[index + 1]
+				: null;
+		this.setState({ changes: changes, selectedChange: selected });
+	};
+
+	applyAllChanges = async () => {
+		const changes = this.props.changeset.changes;
+		if (changes.length === 0) {
+			return;
+		}
+		await this.applyChanges(changes);
+		this.setState({ selectedChange: changes[changes.length - 1] });
+	};
+
+	applyChanges = async (changes) => {
+		ide.waitFor(
+			async () =>
+				await Promise.all(
+					changes.map(async (ch) => {
+						try {
+							await ide.api.postChange(ch.asJson());
+							await ch.updateCurrentSourceCode();
+							if (ch.isUpToDate()) {
+								ch.color = "green";
+							}
+						} catch (error) {
+							ide.reportError(error);
+						}
+					})
+				)
+		);
+	};
+
+	filtersChanged = (filters) => {
+		const changeset = this.props.changeset;
+		changeset.filterChanges(filters);
+		this.setState({ changes: changeset.changes });
+	};
+
+	showOriginalChanges = async () => {
+		const changeset = this.props.changeset;
+		changeset.changes = changeset.originalChanges || changeset.changes;
+		changeset.changes.forEach((ch) => (ch.color = null));
+		ide.waitFor(async () => await changeset.updateCurrentSourceCode());
+		this.setState({ changes: changeset.changes });
+	};
+
+	render() {
+		const { changes, selectedChange } = this.state;
+		console.log("rendering changes browser");
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
 					<Box display="flex" justifyContent="flex-end">
-						<IconButton color="inherit" onClick={this.download}>
-							<DownloadIcon fontSize="small" />
-						</IconButton>
+						<Tooltip title="Apply change" placement="top">
+							<span>
+								<IconButton
+									color="inherit"
+									onClick={this.applySelectedChange}
+									disabled={!selectedChange}
+								>
+									<ApplyIcon fontSize="small" />
+								</IconButton>
+							</span>
+						</Tooltip>
+						<Tooltip title="Apply all changes" placement="top">
+							<IconButton
+								color="inherit"
+								onClick={this.applyAllChanges}
+							>
+								<ApplyAllIcon fontSize="small" />
+							</IconButton>
+						</Tooltip>
+						<Tooltip title="Reject older changes" placement="top">
+							<IconButton
+								color="inherit"
+								onClick={this.rejectOlderChanges}
+							>
+								<RejectOlderIcon fontSize="small" />
+							</IconButton>
+						</Tooltip>
+						<Tooltip
+							title="Reject changes up to date"
+							placement="top"
+						>
+							<IconButton
+								color="inherit"
+								onClick={this.rejectChangesUpToDate}
+							>
+								<RejectUpToDateIcon fontSize="small" />
+							</IconButton>
+						</Tooltip>
+						<Tooltip title="Show original changes" placement="top">
+							<IconButton
+								color="inherit"
+								onClick={this.showOriginalChanges}
+							>
+								<ShowOriginalIcon fontSize="small" />
+							</IconButton>
+						</Tooltip>
+						<Tooltip title="Download" placement="top">
+							<IconButton color="inherit" onClick={this.download}>
+								<DownloadIcon fontSize="small" />
+							</IconButton>
+						</Tooltip>
 					</Box>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<Paper variant="outlined" style={{ height: 350 }}>
 						<ChangesTable
 							changes={changes}
+							selectedChange={selectedChange}
 							onChangeSelect={this.changeSelected}
 							onChangeApplied={this.changeSelected}
+							onFiltersChange={this.filtersChanged}
 						/>
 					</Paper>
 				</Grid>
@@ -75,39 +198,17 @@ class ChangesBrowser extends Component {
 						<CodeMerge
 							style={{ height: "100%" }}
 							context={this.evaluationContext()}
-							leftCode={change ? change.sourceCode() : ""}
-							rightCode={change ? change.currentSourceCode() : ""}
+							leftCode={
+								selectedChange
+									? selectedChange.sourceCode()
+									: ""
+							}
+							rightCode={
+								selectedChange
+									? selectedChange.currentSourceCode()
+									: ""
+							}
 						/>
-						{/* <Grid container spacing={1}>
-						<Grid item xs={6} md={6} lg={6}>
-							<Paper
-								variant="outlined"
-								style={{ minHeight: 300, height: "100%" }}
-							>
-								<CodeEditor
-									context={this.evaluationContext()}
-									lineNumbers
-									source={change ? change.sourceCode() : ""}
-									showAccept={false}
-								/>
-							</Paper>
-						</Grid>
-						<Grid item xs={6} md={6} lg={6}>
-							<Paper
-								variant="outlined"
-								style={{ minHeight: 300, height: "100%" }}
-							>
-								<CodeEditor
-									context={this.evaluationContext()}
-									lineNumbers
-									source={
-										change ? change.currentSourceCode() : ""
-									}
-									showAccept={false}
-								/>
-							</Paper>
-						</Grid>
-					</Grid> */}
 					</Paper>
 				</Grid>
 			</Grid>

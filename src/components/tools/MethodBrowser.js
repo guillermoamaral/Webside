@@ -140,7 +140,7 @@ class MethodBrowser extends Component {
 					<CustomPaper height={300}>
 						<MethodList
 							useTable
-							selected={selectedMethod}
+							selectedMethod={selectedMethod}
 							methods={methods}
 							onMethodSelect={this.methodSelected}
 							onMethodRemove={this.methodRemoved}

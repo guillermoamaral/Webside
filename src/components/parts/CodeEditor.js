@@ -703,7 +703,7 @@ class CodeEditor extends Component {
 				{ tag: newTags.assignment, color: code.get("assignment") },
 				{ tag: newTags.string, color: code.get("string") },
 				{ tag: newTags.variable, color: code.get("variable") },
-				{ tag: newTags.var, color: code.get("var") },
+				{ tag: newTags.var, color: code.get("variable") },
 				{ tag: newTags.meta, color: code.get("meta") },
 				{ tag: newTags.bracket, color: code.get("bracket") },
 				{ tag: newTags.reserved, color: code.get("reserved") },

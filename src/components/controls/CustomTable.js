@@ -12,6 +12,7 @@ import {
 	TableSortLabel,
 	Link,
 	InputBase,
+	Tooltip,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import PopupMenu from "./PopupMenu";
@@ -19,10 +20,10 @@ import Scrollable from "./Scrollable";
 import SearchIcon from "@mui/icons-material/Search";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-	"& .button": {
+	"& .actionButton": {
 		display: "none",
 	},
-	"&:hover .button": {
+	"&:hover .actionButton": {
 		display: "block",
 	},
 }));
@@ -54,6 +55,15 @@ class CustomTable extends Component {
 			return {
 				menuOpen: false,
 				rows: props.rows,
+				selectedRow: props.selectedRow,
+				filterText: "",
+				filteredRows: props.rows,
+			};
+		}
+		if (state.selectedRow !== props.selectedRow) {
+			return {
+				menuOpen: false,
+				selectedRow: props.selectedRow,
 				filterText: "",
 				filteredRows: props.rows,
 			};
@@ -220,21 +230,24 @@ class CustomTable extends Component {
 					return (
 						<Box
 							//Review these fixed sizes. They were fixed to avoid dynamic resizing when hovering
-							style={{ width: 24, height: 24 }}
+							style={{ width: 28, height: 28 }}
 							key={"box" + index + "action" + j}
 						>
 							{visible && (
-								<IconButton
-									className="button"
-									key={"button" + index + "action" + j}
-									color="inherit"
-									size="small"
-									onClick={(event) => {
-										action.handler(row);
-									}}
-								>
-									{action.icon}
-								</IconButton>
+								<Tooltip title={action.label} placement="top">
+									<IconButton
+										//className="actionButton"
+										style={{ width: 28, height: 28 }}
+										key={"button" + index + "action" + j}
+										color="inherit"
+										size="small"
+										onClick={(event) => {
+											action.handler(row);
+										}}
+									>
+										{action.icon}
+									</IconButton>
+								</Tooltip>
 							)}
 						</Box>
 					);
@@ -331,6 +344,7 @@ class CustomTable extends Component {
 			order,
 			filteredRows,
 		} = this.state;
+		const useFilter = this.props.useFilter;
 		const columns = this.columns();
 		const border = this.props.hideRowBorder ? "none" : "";
 		return (
@@ -461,49 +475,53 @@ class CustomTable extends Component {
 						onClose={this.closeMenu}
 					/>
 				</Box>
-				{usePagination && (
+				{(usePagination || useFilter) && (
 					<Box display="flex" flexDirection="row">
-						<Box
-							display="flex"
-							flexDirection="row"
-							alignItems="center"
-						>
-							<Box ml={2} mr={1}>
-								<SearchIcon size="small" />
-							</Box>
-							<Box>
-								<InputBase
-									placeholder="Search…"
-									inputProps={{ "aria-label": "search" }}
-									onKeyDown={(event) => {
-										if (event.key === "Escape") {
-											this.filterRows("");
+						{(usePagination || useFilter) && (
+							<Box
+								display="flex"
+								flexDirection="row"
+								alignItems="center"
+							>
+								<Box ml={2} mr={1}>
+									<SearchIcon size="small" />
+								</Box>
+								<Box>
+									<InputBase
+										placeholder="Search…"
+										inputProps={{ "aria-label": "search" }}
+										onKeyDown={(event) => {
+											if (event.key === "Escape") {
+												this.filterRows("");
+											}
+										}}
+										onChange={(event) =>
+											this.filterRows(event.target.value)
 										}
-									}}
-									onChange={(event) =>
-										this.filterRows(event.target.value)
+									/>
+								</Box>
+							</Box>
+						)}
+						{usePagination && (
+							<Box flexGrow={1}>
+								<TablePagination
+									component="div"
+									count={filteredRows.length}
+									size="small"
+									page={currentPage}
+									variant="text"
+									onPageChange={(event, page) =>
+										this.pageChanged(page)
 									}
+									rowsPerPage={rowsPerPage}
+									onRowsPerPageChange={(event) => {
+										this.rowsPerPageChanged(
+											parseInt(event.target.value, 10)
+										);
+									}}
 								/>
 							</Box>
-						</Box>
-						<Box flexGrow={1}>
-							<TablePagination
-								component="div"
-								count={filteredRows.length}
-								size="small"
-								page={currentPage}
-								variant="text"
-								onPageChange={(event, page) =>
-									this.pageChanged(page)
-								}
-								rowsPerPage={rowsPerPage}
-								onRowsPerPageChange={(event) => {
-									this.rowsPerPageChanged(
-										parseInt(event.target.value, 10)
-									);
-								}}
-							/>
-						</Box>
+						)}
 					</Box>
 				)}
 			</Box>

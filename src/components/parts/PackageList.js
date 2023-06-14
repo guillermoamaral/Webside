@@ -91,7 +91,7 @@ class PackageList extends Component {
 				enableFilter={false}
 				items={this.props.packages}
 				itemLabel="name"
-				selectedItem={this.props.selected}
+				selectedItem={this.props.selectedPackage}
 				onItemSelect={this.props.onPackageSelect}
 				menuOptions={this.menuOptions()}
 			/>

@@ -91,42 +91,31 @@ class StChange extends Object {
 		return this.sourceCode() === this.currentSourceCode();
 	}
 
+	isClassChange() {
+		return false;
+	}
+
 	isMethodChange() {
 		return false;
 	}
 }
 
-class ClassChange extends StChange {
+class MethodChange extends StChange {
 	constructor() {
 		super();
 		this.className = null;
-	}
-
-	fromJson(json) {
-		super.fromJson(json);
-		this.className = json.className;
-	}
-
-	asJson() {
-		var json = super.asJson();
-		json.className = this.className;
-		return json;
-	}
-}
-
-class MethodChange extends ClassChange {
-	constructor() {
-		super();
 		this.selector = null;
 	}
 
 	fromJson(json) {
 		super.fromJson(json);
+		this.className = json.className;
 		this.selector = json.selector;
 	}
 
 	asJson() {
 		var json = super.asJson();
+		json.className = this.className;
 		json.selector = this.selector;
 		return json;
 	}
@@ -146,6 +135,10 @@ class MethodChange extends ClassChange {
 			this.currentSource = "could not find method";
 		}
 	}
+
+	canOverride(change) {
+		return change.isMethodChange() && this.selector === change.selector;
+	}
 }
 
 class AddMethod extends MethodChange {
@@ -163,6 +156,10 @@ class AddMethod extends MethodChange {
 		var json = super.asJson();
 		json.category = this.category;
 		return json;
+	}
+
+	canOverride(change) {
+		return super.canOverride(change) && this.package === change.package;
 	}
 }
 
@@ -201,6 +198,32 @@ class RenameMethod extends MethodChange {
 		var json = super.asJson();
 		json.newSelector = this.newSelector;
 		return json;
+	}
+}
+
+class ClassChange extends StChange {
+	constructor() {
+		super();
+		this.className = null;
+	}
+
+	fromJson(json) {
+		super.fromJson(json);
+		this.className = json.className;
+	}
+
+	asJson() {
+		var json = super.asJson();
+		json.className = this.className;
+		return json;
+	}
+
+	isClassChange() {
+		return true;
+	}
+
+	canOverride(change) {
+		return change.isClassChange() && this.className === change.className;
 	}
 }
 

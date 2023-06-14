@@ -260,7 +260,7 @@ class NativeDebugger extends Component {
 							<CustomPaper>
 								<FrameList
 									frames={frames}
-									selected={selectedFrame}
+									selectedFrame={selectedFrame}
 									onFrameSelect={this.frameSelected}
 								/>
 							</CustomPaper>

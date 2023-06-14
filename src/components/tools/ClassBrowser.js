@@ -678,7 +678,7 @@ class ClassBrowser extends Component {
 							<CustomPaper>
 								<ClassTree
 									roots={rootclass ? [rootclass] : []}
-									selected={selectedClass}
+									selectedClass={selectedClass}
 									onClassExpand={this.classExpanded}
 									onClassSelect={this.classSelected}
 									onClassRemove={this.classRemoved}
@@ -692,7 +692,7 @@ class ClassBrowser extends Component {
 								<VariableList
 									class={this.currentClass()}
 									variables={this.currentVariables()}
-									selected={selectedVariable}
+									selectedVariable={selectedVariable}
 									onVariableAdd={this.variableAdded}
 									onVariableRename={this.variableRenamed}
 									onVariableSelect={this.variableSelected}
@@ -705,7 +705,7 @@ class ClassBrowser extends Component {
 								<CategoryList
 									class={this.currentClass()}
 									categories={this.currentCategories()}
-									selected={selectedCategory}
+									selectedCategory={selectedCategory}
 									onCategoryAdd={this.categoryAdded}
 									onCategoryRename={this.categoryRenamed}
 									onCategorySelect={this.categorySelected}
@@ -718,7 +718,7 @@ class ClassBrowser extends Component {
 								<MethodList
 									methods={this.currentMethods()}
 									categories={this.currentCategories()}
-									selected={selectedMethod}
+									selectedMethod={selectedMethod}
 									onMethodSelect={this.methodSelected}
 									onMethodRename={this.methodRenamed}
 									onMethodRemove={this.methodRemoved}

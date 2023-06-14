@@ -97,7 +97,6 @@ class IDE extends Component {
 		lightCode.addColor("assignment", "#000000");
 		lightCode.addColor("string", "#C3E88D");
 		lightCode.addColor("variable", "#268bd2");
-		lightCode.addColor("var", "#268bd2");
 		lightCode.addColor("meta", "#FFCB6B");
 		lightCode.addColor("bracket", "#9b9b9b");
 		lightCode.addColor("reserved", "#C792EA");
@@ -122,7 +121,6 @@ class IDE extends Component {
 		darkCode.addColor("assignment", "#ffffff");
 		darkCode.addColor("string", "#C3E88D");
 		darkCode.addColor("variable", "#268bd2");
-		darkCode.addColor("var", "#268bd2");
 		darkCode.addColor("meta", "#FFCB6B");
 		darkCode.addColor("bracket", "#9b9b9b");
 		darkCode.addColor("reserved", "#C792EA");

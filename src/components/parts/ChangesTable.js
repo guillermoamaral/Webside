@@ -3,8 +3,16 @@ import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
 import { container } from "../ToolsContainer";
 import ApplyIcon from "@mui/icons-material/CheckCircle";
+import { Box, Stack, Chip } from "@mui/material";
 
 class ChangesTable extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			filters: [],
+		};
+	}
+
 	changeSelected = (change) => {
 		if (this.props.onChangeSelect) {
 			this.props.onChangeSelect(change);
@@ -44,15 +52,142 @@ class ChangesTable extends Component {
 		}
 	};
 
+	addFilter(label, fx) {
+		const filters = this.state.filters;
+		const filter = { label: label, function: fx };
+		filters.push(filter);
+		this.filtersChanged(filters);
+		this.setState({ filters: filters });
+	}
+
+	removeFilter(filter) {
+		const filters = this.state.filters.filter((f) => {
+			return f !== filter;
+		});
+		this.filtersChanged(filters);
+		this.setState({
+			filters: filters,
+		});
+	}
+
+	filtersChanged(filters) {
+		if (this.props.onFiltersChange) {
+			this.props.onFiltersChange(filters);
+		}
+	}
+
+	selectChangesWithTheSame(change, property) {
+		const target = property === "type" ? change.type() : change[property];
+		this.addFilter(property + " = " + target, (ch) => {
+			const source = property === "type" ? ch.type() : ch[property];
+			return source === target;
+		});
+	}
+
+	selectChangesWith = async (change, property) => {
+		const target = await ide.prompt({
+			title: "Enter " + property,
+		});
+		this.addFilter(property + " = " + target, (ch) => {
+			const source = property === "type" ? ch.type() : ch[property];
+			return source === target;
+		});
+	};
+
+	rejectChangesWithTheSame(change, property) {
+		const target = property === "type" ? change.type() : change[property];
+		this.addFilter(property + " != " + target, (ch) => {
+			const source = property === "type" ? ch.type() : ch[property];
+			return source !== target;
+		});
+	}
+
+	rejectChangesWith = async (change, property) => {
+		const target = await ide.prompt({
+			title: "Enter " + property,
+		});
+		this.addFilter(property + " != " + target, (ch) => {
+			const source = property === "type" ? ch.type() : ch[property];
+			return source !== target;
+		});
+	};
+
 	menuOptions() {
+		const properties = [
+			"type",
+			"className",
+			"selector",
+			"package",
+			"author",
+			"timestamp",
+		];
+		const selectWithTheSameOptions = properties.map((p) => {
+			return {
+				label: p,
+				action: (ch) => {
+					this.selectChangesWithTheSame(ch, p);
+				},
+			};
+		});
+		const selectWithOptions = properties.map((p) => {
+			return {
+				label: p,
+				action: (ch) => {
+					this.selectChangesWith(ch, p);
+				},
+			};
+		});
+		const rejectWithTheSameOptions = properties.map((p) => {
+			return {
+				label: p,
+				action: (ch) => {
+					this.rejectChangesWithTheSame(ch, p);
+				},
+			};
+		});
+		const rejectWithOptions = properties.map((p) => {
+			return {
+				label: p,
+				action: (ch) => {
+					this.rejectChangesWith(ch, p);
+				},
+			};
+		});
 		return [
 			{ label: "Browse class", action: this.browseClass },
 			{ label: "Browse implementors", action: this.browseImplementors },
 			{ label: "Apply", action: this.applyChange },
+			null,
+			{
+				label: "Select...",
+				suboptions: [
+					{
+						label: "With the same...",
+						suboptions: selectWithTheSameOptions,
+					},
+					{
+						label: "With...",
+						suboptions: selectWithOptions,
+					},
+				],
+			},
+			{
+				label: "Reject...",
+				suboptions: [
+					{
+						label: "With the same...",
+						suboptions: rejectWithTheSameOptions,
+					},
+					{
+						label: "With...",
+						suboptions: rejectWithOptions,
+					},
+				],
+			},
 		];
 	}
 
-	changeActions() {
+	rowActions() {
 		return [
 			{
 				label: "Apply",
@@ -63,7 +198,7 @@ class ChangesTable extends Component {
 		];
 	}
 
-	changeColums() {
+	colums() {
 		return [
 			{
 				field: (ch) => {
@@ -102,21 +237,46 @@ class ChangesTable extends Component {
 		if (change.color) {
 			return change.color;
 		}
-		return change.isUpToDate() ? "green" : "default";
+		return change.isUpToDate() ? "green" : "#bbbbbb";
 	}
 
 	render() {
-		const rows = this.props.changes;
-		rows.forEach((ch) => (ch.color = this.colorFor(ch)));
+		console.log("rendering changes table");
+		const filters = this.state.filters;
+		const { changes, selectedChange } = this.props;
+		changes.forEach((ch) => (ch.color = this.colorFor(ch)));
 		return (
-			<CustomTable
+			<Box
+				display="flex"
+				flexDirection="column"
 				style={{ height: "100%" }}
-				columns={this.changeColums()}
-				rows={rows}
-				onRowSelect={this.changeSelected}
-				menuOptions={this.menuOptions()}
-				rowActions={this.changeActions()}
-			/>
+			>
+				<Box flexGrow={1} style={{ height: "100%" }}>
+					<CustomTable
+						style={{ height: "100%" }}
+						columns={this.colums()}
+						rows={changes}
+						selectedRow={selectedChange}
+						onRowSelect={this.changeSelected}
+						menuOptions={this.menuOptions()}
+						rowActions={this.rowActions()}
+						useFilter
+					/>
+				</Box>
+				<Box ml={1} mt={1} mb={1}>
+					<Stack direction="row" spacing={1}>
+						{filters.map((f, i) => (
+							<Chip
+								label={f.label}
+								onDelete={(e) => {
+									this.removeFilter(f);
+								}}
+								key={"chip" + i}
+							/>
+						))}
+					</Stack>
+				</Box>
+			</Box>
 		);
 	}
 }

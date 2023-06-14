@@ -583,7 +583,7 @@ class PackageBrowser extends Component {
 							<CustomPaper>
 								<PackageList
 									packages={filtered}
-									selected={selectedPackage}
+									selectedPackage={selectedPackage}
 									onPackageSelect={this.packageSelected}
 									onPackageRemove={this.packageRemoved}
 									onPackageRename={this.packageRenamed}
@@ -599,7 +599,7 @@ class PackageBrowser extends Component {
 											? selectedPackage.classes
 											: []
 									}
-									selected={selectedClass}
+									selectedClass={selectedClass}
 									labelStyle={this.classLabelStyle}
 									onClassExpand={this.classExpanded}
 									onClassSelect={this.classSelected}
@@ -614,7 +614,7 @@ class PackageBrowser extends Component {
 								<CategoryList
 									class={selectedClass}
 									categories={this.currentCategories()}
-									selected={selectedCategory}
+									selectedCategory={selectedCategory}
 									onCategoryAdd={this.categoryAdded}
 									onCategoryRename={this.categoryRenamed}
 									onCategorySelect={this.categorySelected}
@@ -626,7 +626,7 @@ class PackageBrowser extends Component {
 							<CustomPaper>
 								<MethodList
 									methods={this.currentMethods()}
-									selected={selectedMethod}
+									selectedMethod={selectedMethod}
 									labelStyle={this.methodLabelStyle}
 									onMethodSelect={this.methodSelected}
 									onMethodRename={this.methodRenamed}

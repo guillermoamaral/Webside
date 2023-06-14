@@ -354,7 +354,7 @@ class ResourceBrowser extends Component {
 		return [];
 	}
 
-	resourceColumns() {
+	columns() {
 		var columns;
 		switch (this.state.selectedType) {
 			case "Objects":
@@ -400,7 +400,7 @@ class ResourceBrowser extends Component {
 		return options;
 	}
 
-	resourceActions() {
+	rowActions() {
 		var options;
 		switch (this.state.selectedType) {
 			case "Objects":
@@ -489,11 +489,11 @@ class ResourceBrowser extends Component {
 									style={{ height: "100%" }}
 								>
 									<CustomTable
-										columns={this.resourceColumns()}
+										columns={this.columns()}
 										rows={resources}
 										onRowSelect={this.resourceSelected}
 										menuOptions={this.menuOptions()}
-										rowActions={this.resourceActions()}
+										rowActions={this.rowActions()}
 									/>
 								</Paper>
 							)}

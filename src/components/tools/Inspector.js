@@ -244,7 +244,7 @@ class Inspector extends Component {
 					>
 						<ObjectTree
 							roots={objectTree}
-							selected={selectedObject}
+							selectedObject={selectedObject}
 							onSlotExpand={this.slotExpanded}
 							onSlotSelect={this.slotSelected}
 						/>

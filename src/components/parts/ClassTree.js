@@ -121,7 +121,7 @@ class ClassTree extends Component {
 				children={"subclasses"}
 				onItemExpand={this.props.onClassExpand}
 				onItemSelect={this.props.onClassSelect}
-				selectedItem={this.props.selected}
+				selectedItem={this.props.selectedClass}
 				menuOptions={this.menuOptions()}
 			/>
 		);
