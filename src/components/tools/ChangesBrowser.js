@@ -71,8 +71,10 @@ class ChangesBrowser extends Component {
 		await this.applyChanges([selectedChange]);
 		const index = changes.indexOf(selectedChange);
 		const selected =
-			index >= 0 && index < changes.length - 1
-				? changes[index + 1]
+			index >= 0
+				? index < changes.length - 1
+					? changes[index + 1]
+					: selectedChange
 				: null;
 		this.setState({ changes: changes, selectedChange: selected });
 	};
