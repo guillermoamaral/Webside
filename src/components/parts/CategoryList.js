@@ -15,15 +15,21 @@ class CategoryList extends Component {
 		}
 	};
 
-	addCategory = async () => {
+	addNewCategory = async () => {
 		try {
 			const category = await ide.prompt({
 				title: "New category",
 			});
-			if (category && this.props.onCategoryAdd) {
-				this.props.onCategoryAdd(category);
+			if (category) {
+				this.addCate(category);
 			}
 		} catch (error) {}
+	};
+
+	addCategory = (category) => {
+		if (this.props.onCategoryAdd) {
+			this.props.onCategoryAdd(category);
+		}
 	};
 
 	renameCategory = async (category) => {
@@ -63,8 +69,31 @@ class CategoryList extends Component {
 	};
 
 	menuOptions() {
+		const options = [];
+		const usual = (this.props.usualCategories || []).map((c) => {
+			return { label: c, action: () => this.addCategory(c) };
+		});
+		if (usual.length > 0) {
+			options.push({
+				label: "Usual",
+				suboptions: usual,
+			});
+		}
+		const used = (this.props.usedCategories || []).map((c) => {
+			return { label: c, action: () => this.addCategory(c) };
+		});
+		if (used.length > 0) {
+			options.push({
+				label: "Used",
+				suboptions: used,
+			});
+		}
+		options.push({
+			label: "New...",
+			action: this.addNewCategory,
+		});
 		return [
-			{ label: "Add", action: this.addCategory },
+			{ label: "Add", suboptions: options },
 			{ label: "Rename", action: this.renameCategory },
 			{ label: "Remove", action: this.removeCategory },
 		];
@@ -72,6 +101,7 @@ class CategoryList extends Component {
 
 	render() {
 		let categories = this.props.categories;
+		const { selectedCategory, highlightedCategory } = this.props;
 		if (categories) {
 			categories = [...categories];
 			categories.unshift(this.all);
@@ -82,7 +112,8 @@ class CategoryList extends Component {
 				itemDivider={(item) => item === this.all}
 				labelStyle={(item) => (item === this.all ? "italic" : "normal")}
 				labelSize={(item) => (item === this.all ? "small" : "normal")}
-				selectedItem={this.props.selectedCategory}
+				selectedItem={selectedCategory}
+				highlightedItem={highlightedCategory}
 				onItemSelect={this.categorySelected}
 				menuOptions={this.menuOptions()}
 			/>

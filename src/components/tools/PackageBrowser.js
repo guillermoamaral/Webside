@@ -7,6 +7,7 @@ import {
 	Radio,
 	TextField,
 } from "@mui/material";
+import RefactoringBrowser from "./RefactoringBrowser";
 import { ide } from "../IDE";
 import { container } from "../ToolsContainer";
 import PackageList from "../parts/PackageList";
@@ -16,7 +17,7 @@ import MethodList from "../parts/MethodList";
 import CodeBrowser from "../parts/CodeBrowser";
 import CustomPaper from "../controls/CustomPaper";
 
-class PackageBrowser extends Component {
+class PackageBrowser extends RefactoringBrowser {
 	constructor(props) {
 		super(props);
 		this.cache = { packages: {}, classes: {} };
@@ -32,6 +33,7 @@ class PackageBrowser extends Component {
 	}
 
 	async componentDidMount() {
+		await super.componentDidMount();
 		await this.initializePackages();
 	}
 
@@ -124,19 +126,6 @@ class PackageBrowser extends Component {
 		return !pack ? [] : pack.classes;
 	}
 
-	currentClass() {
-		const { selectedClass, selectedSide } = this.state;
-		if (!selectedClass) return null;
-		return selectedSide === "instance"
-			? selectedClass
-			: selectedClass.metaclass;
-	}
-
-	currentCategories = () => {
-		const species = this.currentClass();
-		return species ? species.categories || [] : [];
-	};
-
 	currentMethods = () => {
 		const pack = this.state.selectedPackage;
 		const species = this.currentClass();
@@ -179,48 +168,6 @@ class PackageBrowser extends Component {
 		}
 	}
 
-	async updateClass(species, forced = false) {
-		try {
-			if (forced || !species.definition || !species.metaclass) {
-				const definition = await ide.api.classNamed(species.name);
-				Object.assign(species, definition);
-				species.metaclass = await ide.api.classNamed(definition.class);
-			}
-			if (forced || !species.subclasses) {
-				species.subclasses = await ide.api.subclasses(species.name);
-			}
-		} catch (error) {
-			ide.reportError(error);
-		}
-	}
-
-	async updateSubclasses(species) {
-		try {
-			if (species.subclasses) {
-				await Promise.all(
-					species.subclasses.map(async (c) => {
-						if (!c.subclasses) {
-							c.subclasses = await ide.api.subclasses(c.name);
-						}
-					})
-				);
-			}
-		} catch (error) {
-			ide.reportError(error);
-		}
-	}
-
-	async updateCategories(species, forced = false) {
-		try {
-			if (forced || !species.categories) {
-				species.categories = await ide.api.categories(species.name);
-				species.categories.sort();
-			}
-		} catch (error) {
-			ide.reportError(error);
-		}
-	}
-
 	async updateMethods(species, forced = false) {
 		if (!species) {
 			return;
@@ -228,23 +175,6 @@ class PackageBrowser extends Component {
 		try {
 			if (forced || !species.methods) {
 				species.methods = await ide.api.methods(species.name, true);
-			}
-		} catch (error) {
-			ide.reportError(error);
-		}
-	}
-
-	async updateMethod(method) {
-		try {
-			const retrieved = await ide.api.method(
-				method.methodClass,
-				method.selector
-			);
-			Object.assign(method, retrieved);
-			if (!retrieved) {
-				method.source = "method cannot be found";
-				method.ast = null;
-				method.bytecodes = null;
 			}
 		} catch (error) {
 			ide.reportError(error);
@@ -329,10 +259,6 @@ class PackageBrowser extends Component {
 		this.applySelections(selections);
 	};
 
-	classExpanded = async (species) => {
-		await this.updateSubclasses(species);
-	};
-
 	classLabelStyle = (species) => {
 		const pack = this.state.selectedPackage;
 		return pack &&
@@ -397,114 +323,6 @@ class PackageBrowser extends Component {
 		this.applySelections(selections);
 	};
 
-	classRenamed = (species) => {
-		this.classSelected(species);
-	};
-
-	categorySelected = async (category) => {
-		const selections = this.currentSelections();
-		selections.category = category;
-		const { species, side } = selections;
-		await this.updateMethods(species, side);
-		this.applySelections(selections);
-	};
-
-	categoryAdded = async (category) => {
-		const selections = this.currentSelections();
-		selections.category = category;
-		const species = this.currentClass();
-		species.categories.push(category);
-		species.categories.sort();
-		this.applySelections(selections);
-	};
-
-	categoryRenamed = async (category, renamed) => {
-		const selections = this.currentSelections();
-		const species = this.currentClass();
-		await this.updateCategories(species, true);
-		await this.updateMethods(species, null, null, true);
-		selections.category = species.categories.find((c) => c === renamed);
-		this.applySelections(selections);
-	};
-
-	categoryRemoved = async (category) => {
-		const selections = this.currentSelections();
-		selections.category = null;
-		const species = this.currentClass();
-		await this.updateCategories(species, true);
-		await this.updateMethods(species, null, null, true);
-		this.applySelections(selections);
-	};
-
-	methodSelected = async (method) => {
-		const selections = this.currentSelections();
-		if (!method.template) {
-			await this.updateMethod(method);
-		}
-		selections.method = method;
-		this.applySelections(selections);
-	};
-
-	methodRenamed = async (method) => {
-		const selections = this.currentSelections();
-		const species = this.currentClass();
-		await this.updateMethods(species, null, null, true);
-		selections.method = species.methods.find(
-			(m) => m.selector === method.selector
-		);
-		this.applySelections(selections);
-	};
-
-	methodRemoved = (method) => {
-		const selections = this.currentSelections();
-		const species = this.currentClass();
-		species.methods = species.methods.filter(
-			(m) => m.selector !== method.selector
-		);
-		selections.method = null;
-		this.applySelections(selections);
-	};
-
-	methodClassified = (method) => {
-		const selections = this.currentSelections();
-		if (selections.category) {
-			selections.category = method.category;
-		}
-		selections.method = method;
-		this.applySelections(selections);
-	};
-
-	methodCompiled = async (method) => {
-		if (!method) {
-			return;
-		}
-		const selections = this.currentSelections();
-		const target = this.currentClass();
-		if (!target.categories.includes(method.category)) {
-			await this.updateCategories(target, true);
-		}
-		selections.category = method.category;
-		const methods = target.methods;
-		const index = methods
-			? methods.findIndex((m) => m.selector === method.selector)
-			: -1;
-		if (index === -1) {
-			await this.updateMethods(target, null, null, true);
-			selections.method = target.methods.find(
-				(m) => m.selector === method.selector
-			);
-		} else {
-			methods.splice(index, 1, method);
-			selections.method = method;
-		}
-		this.applySelections(selections);
-	};
-
-	evalulationContext() {
-		const species = this.state.selectedClass;
-		return species ? { class: species.name } : {};
-	}
-
 	render() {
 		const {
 			packageFilter,
@@ -541,6 +359,7 @@ class PackageBrowser extends Component {
 								margin="dense"
 								autoFocus
 								type="text"
+								size="small"
 							/>
 						</Grid>
 						<Grid item xs={3} md={3} lg={3} />
@@ -614,7 +433,14 @@ class PackageBrowser extends Component {
 								<CategoryList
 									class={selectedClass}
 									categories={this.currentCategories()}
+									usualCategories={this.usualCategories}
+									usedCategories={this.currentUsedCategories()}
 									selectedCategory={selectedCategory}
+									highlightedCategory={
+										selectedMethod
+											? selectedMethod.category
+											: null
+									}
 									onCategoryAdd={this.categoryAdded}
 									onCategoryRename={this.categoryRenamed}
 									onCategorySelect={this.categorySelected}
@@ -627,6 +453,9 @@ class PackageBrowser extends Component {
 								<MethodList
 									methods={this.currentMethods()}
 									selectedMethod={selectedMethod}
+									categories={this.currentCategories()}
+									usualCategories={this.usualCategories}
+									usedCategories={this.currentUsedCategories()}
 									labelStyle={this.methodLabelStyle}
 									onMethodSelect={this.methodSelected}
 									onMethodRename={this.methodRenamed}
@@ -640,7 +469,7 @@ class PackageBrowser extends Component {
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<CodeBrowser
-						context={this.evalulationContext()}
+						context={this.evaluationContext()}
 						package={selectedPackage}
 						class={selectedClass}
 						method={selectedMethod}

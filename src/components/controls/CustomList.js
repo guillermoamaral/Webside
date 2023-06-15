@@ -291,7 +291,9 @@ class CustomList extends Component {
 		const alignment = this.getItemAlignment(item);
 		const size = this.getItemSize(item);
 		const selected = this.props.selectedItem === item;
-		const weight = selected ? "fontWeightBold" : "fontWeightRegular";
+		const highlighted = this.props.highlightedItem == item;
+		const weight =
+			selected || highlighted ? "fontWeightBold" : "fontWeightRegular";
 		return (
 			<div style={style}>
 				<ListItem

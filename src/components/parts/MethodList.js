@@ -133,17 +133,12 @@ class MethodList extends Component {
 		}
 	};
 
-	categoryOptions() {
-		const categories = this.props.categories || [];
-		const options = categories.map((c) => {
+	categoryOptions(categories) {
+		const options = (categories || []).map((c) => {
 			return {
 				label: c,
 				action: (m) => this.classifyMethod(m, c),
 			};
-		});
-		options.push({
-			label: "New..",
-			action: (m) => this.classifyMethod(m),
 		});
 		return options;
 	}
@@ -163,15 +158,32 @@ class MethodList extends Component {
 				{ label: "Remove", action: this.removeMethod },
 			]
 		);
-		const categories = this.categoryOptions();
-		if (categories.length > 0) {
-			options.push({
-				label: "Classify under...",
-				suboptions: categories,
-			});
-		}
+		const current = this.categoryOptions(this.props.categories);
+		const usual = this.categoryOptions(this.props.usualCategories);
+		const used = this.categoryOptions(this.props.usedCategories);
 		options.push(
 			...[
+				{
+					label: "Classify under...",
+					suboptions: [
+						{
+							label: "Current",
+							suboptions: current,
+						},
+						{
+							label: "Used",
+							suboptions: used,
+						},
+						{
+							label: "Usual",
+							suboptions: usual,
+						},
+						{
+							label: "New..",
+							action: (m) => this.classifyMethod(m),
+						},
+					],
+				},
 				null,
 				{ label: "Browse class", action: this.browseClass },
 				{ label: "Browse senders", action: this.browseSenders },
@@ -302,17 +314,18 @@ class MethodList extends Component {
 
 	render() {
 		const methods = this.props.methods || [];
-		const useTable = this.props.useTable;
+		const { useTable, selectedMethod, onMethodSelect } = this.props;
 		if (useTable) {
 			return (
 				<CustomTable
 					columns={this.methodColumns()}
 					rows={methods}
-					onRowSelect={this.props.onMethodSelect}
+					onRowSelect={onMethodSelect}
 					menuOptions={this.menuOptions()}
 					hideRowBorder
 					rowsPerPage={50}
 					usePagination
+					selectedRow={selectedMethod}
 					//noHeaders
 				/>
 			);
@@ -323,8 +336,8 @@ class MethodList extends Component {
 					itemLabel={this.methodLabel}
 					itemStyle={this.props.labelStyle}
 					itemIcon={this.methodIcon}
-					selectedItem={this.props.selectedMethod}
-					onItemSelect={this.props.onMethodSelect}
+					selectedItem={selectedMethod}
+					onItemSelect={onMethodSelect}
 					menuOptions={this.menuOptions()}
 				/>
 			);

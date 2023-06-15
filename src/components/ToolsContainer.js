@@ -136,16 +136,23 @@ class ToolsContainer extends Component {
 	};
 
 	removePages = (pages) => {
+		if (pages.length === 0) return;
 		const selectedPageId = this.state.selectedPageId;
 		const currentPages = this.state.pages;
 		const ids = pages.map((p) => p.id);
+		const indexes = pages.map((p) => currentPages.indexOf(p)).sort();
+		const i0 = indexes[0];
+		const ik = indexes[indexes.length - 1];
 		const selectedId =
 			currentPages.length === pages.length
 				? null
 				: !ids.includes(selectedPageId)
 				? selectedPageId
-				: [...currentPages].reverse().find((p) => !ids.includes(p.id))
-						.id;
+				: i0 > 0
+				? currentPages[i0 - 1].id
+				: ik < currentPages.length - 1
+				? currentPages[ik + 1].id
+				: null;
 		const filtered = currentPages.filter((p) => !ids.includes(p.id));
 		if (this.props.onPagesRemove) {
 			this.props.onPagesRemove(this);
@@ -881,7 +888,7 @@ class ToolsContainer extends Component {
 		return (
 			<TabControl
 				id={this.props.id}
-				style={{ height: "100%" }}
+				style={{ width: "100%", height: "100%" }}
 				selectedPage={selectedPage}
 				pages={pages}
 				onTabSelect={this.selectPage}

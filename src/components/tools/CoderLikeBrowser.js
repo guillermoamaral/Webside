@@ -258,10 +258,10 @@ class CoderLikeBrowser extends Component {
 	classSelected = async (species) => {
 		const selections = this.currentSelections();
 		selections.species = species;
-		await this.updateClass(selections);
+		await this.updateClass(selections, true);
 		await this.updateSubclasses(species);
-		await this.updateVariables(selections);
-		await this.updateCategories(selections);
+		await this.updateVariables(selections, true);
+		await this.updateCategories(selections, true);
 		await this.updateMethods(selections);
 		this.applySelections(selections);
 	};

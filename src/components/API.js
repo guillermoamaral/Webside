@@ -176,6 +176,17 @@ class API {
 		);
 	}
 
+	async usualCategories() {
+		return await this.get("/usual-categories", "usual categories ");
+	}
+
+	async usedCategories(classname) {
+		return await this.get(
+			"/classes/" + classname + "/used-categories",
+			"categories used in " + classname + " hierarchy"
+		);
+	}
+
 	async methods(classname, sorted = false) {
 		const methods = await this.get(
 			"/classes/" + classname + "/methods?marks=true",
