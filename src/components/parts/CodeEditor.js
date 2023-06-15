@@ -611,6 +611,7 @@ class CodeEditor extends Component {
 
 	sourceChanged = (source) => {
 		this.selectsRanges = false;
+		const changed = !this.state.dirty;
 		this.setState(
 			{
 				source: source,
@@ -622,6 +623,9 @@ class CodeEditor extends Component {
 				}
 			}
 		);
+		if (changed) {
+			this.forceUpdate();
+		} // Check this according to the default response in shouldComponentUpdate()
 	};
 
 	selectionChanged = (selection) => {

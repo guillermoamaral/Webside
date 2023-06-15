@@ -70,15 +70,6 @@ class CategoryList extends Component {
 
 	menuOptions() {
 		const options = [];
-		const usual = (this.props.usualCategories || []).map((c) => {
-			return { label: c, action: () => this.addCategory(c) };
-		});
-		if (usual.length > 0) {
-			options.push({
-				label: "Usual",
-				suboptions: usual,
-			});
-		}
 		const used = (this.props.usedCategories || []).map((c) => {
 			return { label: c, action: () => this.addCategory(c) };
 		});
@@ -86,6 +77,15 @@ class CategoryList extends Component {
 			options.push({
 				label: "Used",
 				suboptions: used,
+			});
+		}
+		const usual = (this.props.usualCategories || []).map((c) => {
+			return { label: c, action: () => this.addCategory(c) };
+		});
+		if (usual.length > 0) {
+			options.push({
+				label: "Usual",
+				suboptions: usual,
 			});
 		}
 		options.push({

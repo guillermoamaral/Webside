@@ -159,30 +159,36 @@ class MethodList extends Component {
 			]
 		);
 		const current = this.categoryOptions(this.props.categories);
-		const usual = this.categoryOptions(this.props.usualCategories);
 		const used = this.categoryOptions(this.props.usedCategories);
+		const usual = this.categoryOptions(this.props.usualCategories);
+		const suboptions = [];
+		if (current.length > 0) {
+			suboptions.push({
+				label: "Current",
+				suboptions: current,
+			});
+		}
+		if (used.length > 0) {
+			suboptions.push({
+				label: "Used",
+				suboptions: used,
+			});
+		}
+		if (usual.length > 0) {
+			suboptions.push({
+				label: "Usual",
+				suboptions: usual,
+			});
+		}
+		suboptions.push({
+			label: "New..",
+			action: (m) => this.classifyMethod(m),
+		});
 		options.push(
 			...[
 				{
 					label: "Classify under...",
-					suboptions: [
-						{
-							label: "Current",
-							suboptions: current,
-						},
-						{
-							label: "Used",
-							suboptions: used,
-						},
-						{
-							label: "Usual",
-							suboptions: usual,
-						},
-						{
-							label: "New..",
-							action: (m) => this.classifyMethod(m),
-						},
-					],
+					suboptions: suboptions,
 				},
 				null,
 				{ label: "Browse class", action: this.browseClass },
