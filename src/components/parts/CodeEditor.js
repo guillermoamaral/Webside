@@ -418,7 +418,7 @@ class CodeEditor extends Component {
 	wordAt(position) {
 		if (this.editorView) {
 			const range = this.currentState().wordAt(position);
-			return this.textInRange(range);
+			if (range) return this.textInRange(range);
 		}
 	}
 
@@ -618,21 +618,22 @@ class CodeEditor extends Component {
 	};
 
 	sourceChanged = (source) => {
+		const adapted = source.replace(/(?<!\r)\n|\r(?!\n)/g, "\r");
 		this.selectsRanges = false;
 		const changed = !this.state.dirty;
 		this.setState(
 			{
-				source: source,
+				source: adapted,
 				dirty: true,
 			},
 			() => {
 				if (this.props.onChange) {
-					this.props.onChange(source);
+					this.props.onChange(adapted);
 				}
 			}
 		);
 		if (changed) {
-			this.forceUpdate();
+			//this.forceUpdate();
 		} // Check this according to the default response in shouldComponentUpdate()
 	};
 
@@ -782,6 +783,7 @@ class CodeEditor extends Component {
 							extensions={[
 								smalltalk,
 								EditorView.lineWrapping,
+								//EditorState.lineSeparator.of("\r"),
 								lintGutter(),
 								linter(this.annotations),
 								Prec.highest(keymap.of(this.extraKeys())),
