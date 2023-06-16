@@ -500,6 +500,9 @@ class ToolsContainer extends Component {
 					onApply={(settings) => {
 						ide.applySettings(settings);
 					}}
+					onResetSection={(name) => {
+						ide.resetSettingsSection(name);
+					}}
 				/>
 			);
 			this.addPage("Settings", <SettingsIcon />, page);

@@ -36,14 +36,12 @@ class ChangesTable extends Component {
 			try {
 				await ide.api.postChange(change.asJson());
 				await change.updateCurrentSourceCode();
-				if (change.isUpToDate()) {
-					change.color = "green";
-				}
+				change.color = null;
+				change.color = this.colorFor(change);
 				const handler = this.props.changeApplied;
 				if (handler) {
 					handler(change);
 				} else {
-					change.color = this.colorFor(change);
 					this.setState({});
 				}
 			} catch (error) {
@@ -237,7 +235,12 @@ class ChangesTable extends Component {
 		if (change.color) {
 			return change.color;
 		}
-		return change.isUpToDate() ? "green" : "#bbbbbb";
+		const appearance = ide.settings.section("appearance");
+		const mode = appearance.section(appearance.get("mode"));
+		const colors = mode.section("colors");
+		return change.isUpToDate()
+			? colors.get("appliedChange")
+			: colors.get("unappliedChange");
 	}
 
 	render() {

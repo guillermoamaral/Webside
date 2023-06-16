@@ -16,6 +16,23 @@ class Setting extends Object {
 		this.editable = true;
 	}
 
+	static adjustColor(color, amount) {
+		return (
+			"#" +
+			color
+				.replace(/^#/, "")
+				.replace(/../g, (color) =>
+					(
+						"0" +
+						Math.min(
+							255,
+							Math.max(0, parseInt(color, 16) + amount)
+						).toString(16)
+					).substr(-2)
+				)
+		);
+	}
+
 	static text(name, defaultValue = "", label) {
 		return new Setting(name, "text", defaultValue, label);
 	}
@@ -102,6 +119,13 @@ class Settings extends Object {
 		const section = new Settings(name, label);
 		this.add(section);
 		return section;
+	}
+
+	setSection(name, section) {
+		const index = this.settings.findIndex((s) => s.name === name);
+		if (index) {
+			this.settings[index] = section;
+		}
 	}
 
 	addText(name, defaultValue, label) {

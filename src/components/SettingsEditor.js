@@ -26,6 +26,13 @@ class SettingsEditor extends Component {
 		}
 	};
 
+	resetSection = (name) => {
+		const handler = this.props.onResetSection;
+		if (handler) {
+			handler(name);
+		}
+	};
+
 	render() {
 		const settings = this.props.settings;
 		const error = this.state.error;
@@ -116,6 +123,25 @@ class SettingsEditor extends Component {
 											</Box>
 										</Accordion>
 									))}
+									<Box
+										mt={1}
+										mr={2}
+										display="flex"
+										direction="row"
+										justifyContent="flex-end"
+										alignItems="center"
+									>
+										<Button
+											variant="outlined"
+											type="submit"
+											size="small"
+											onClick={() =>
+												this.resetSection(section.name)
+											}
+										>
+											Reset
+										</Button>
+									</Box>
 								</Box>
 							</Accordion>
 						))}

@@ -27,6 +27,7 @@ import SplitIcon from "@mui/icons-material/VerticalSplit";
 import DrawerHeader from "./layout/DrawerHeader";
 import { Settings } from "../model/Settings";
 import { app as mainApp } from "../App";
+import { Setting } from "../model/Settings";
 
 var ide = null;
 
@@ -64,12 +65,16 @@ class IDE extends Component {
 	initializeSettings = () => {
 		this.settings = this.defaultSettings();
 		this.loadSettingsFromCookie();
+		this.updateConnectionSettings();
+		this.updateSettings();
+	};
+
+	updateConnectionSettings() {
 		const options = this.queryOptions();
 		const connection = this.settings.section("connection");
 		connection.set("backend", options.backend);
 		connection.set("developer", options.developer);
-		this.updateSettings();
-	};
+	}
 
 	defaultSettings() {
 		const settings = new Settings("settings");
@@ -89,6 +94,8 @@ class IDE extends Component {
 		lightColors.addColor("background", "#ffffff").readOnly();
 		lightColors.addColor("primaryText", "#000000").readOnly();
 		lightColors.addColor("secondaryText", "#808080").readOnly();
+		lightColors.addColor("appliedChange", "green");
+		lightColors.addColor("unappliedChange", "black");
 		const lightCode = light.addSection("code", "Code Colors");
 		lightCode.addColor("selector", "black");
 		lightCode.addColor("symbol", "#3cd2dd");
@@ -113,6 +120,8 @@ class IDE extends Component {
 		darkColors.addColor("background", "#303030").readOnly();
 		darkColors.addColor("primaryText", "#aaaaaa").readOnly();
 		darkColors.addColor("secondaryText", "#00000").readOnly();
+		darkColors.addColor("appliedChange", "#c0ff61");
+		darkColors.addColor("unappliedChange", "#ffffff");
 		const darkCode = dark.addSection("code", "Code Colors");
 		darkCode.addColor("selector", "#d3dddd");
 		darkCode.addColor("symbol", "#3cd2dd");
@@ -160,6 +169,11 @@ class IDE extends Component {
 		this.removeExtraContainers();
 	}
 
+	resetSettingsSection(name) {
+		this.settings.setSection(name, this.defaultSettings().section(name));
+		this.applySettings(this.settings);
+	}
+
 	toggleColorMode = () => {
 		const appearance = this.settings.section("appearance");
 		appearance.set(
@@ -200,12 +214,12 @@ class IDE extends Component {
 		const dialect = await this.api.dialect();
 		document.title = dialect;
 		this.settings.section("connection").set("dialect", dialect);
-		this.updateDialectColors();
+		this.updateDialectColorsSettings();
 		this.updateTheme();
 		this.initializeMessageChannel();
 	}
 
-	updateDialectColors() {
+	updateDialectColorsSettings() {
 		var primary;
 		var secondary;
 		const dialect = this.settings.section("connection").get("dialect");
@@ -242,9 +256,11 @@ class IDE extends Component {
 		const dark = appearance.section("dark").section("colors");
 		dark.set("primaryColor", primary);
 		dark.set("secondaryColor", secondary);
+		dark.set("appliedChange", Setting.adjustColor(primary, 80));
 		const light = appearance.section("light").section("colors");
 		light.set("primaryColor", primary);
 		light.set("secondaryColor", secondary);
+		light.set("appliedChange", Setting.adjustColor(primary, -80));
 	}
 
 	updateTheme() {
