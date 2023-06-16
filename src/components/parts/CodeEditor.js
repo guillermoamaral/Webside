@@ -411,15 +411,23 @@ class CodeEditor extends Component {
 		}
 	};
 
+	wordUnderCursor() {
+		return this.wordAt(this.currentPosition());
+	}
+
+	wordAt(position) {
+		if (this.editorView) {
+			const range = this.currentState().wordAt(position);
+			return this.textInRange(range);
+		}
+	}
+
 	targetWord() {
 		const selected = this.selectedText();
 		if (selected.length > 0) {
 			return selected;
 		}
-		if (this.editorView) {
-			const range = this.currentState().wordAt(this.currentPosition());
-			return this.textInRange(range);
-		}
+		return this.wordUnderCursor();
 	}
 
 	currentPosition() {
@@ -724,6 +732,27 @@ class CodeEditor extends Component {
 		});
 	}
 
+	tooltip() {
+		return hoverTooltip((view, pos, side) => {
+			const word = this.wordAt(pos);
+			if (!word) return null;
+			const handler = this.props.onTooltipShow;
+			if (!handler) return null;
+			const tip = handler(word);
+			if (!tip) return null;
+			return {
+				pos: pos,
+				pos,
+				above: true,
+				create(view) {
+					let dom = document.createElement("div");
+					dom.textContent = tip;
+					return { dom };
+				},
+			};
+		});
+	}
+
 	render() {
 		const { source, evaluating, progress, dirty, menuOpen, menuPosition } =
 			this.state;
@@ -756,6 +785,7 @@ class CodeEditor extends Component {
 								lintGutter(),
 								linter(this.annotations),
 								Prec.highest(keymap.of(this.extraKeys())),
+								this.tooltip(),
 							]}
 							theme={this.theme()}
 							value={source}

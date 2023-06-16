@@ -191,6 +191,16 @@ class Debugger extends PureComponent {
 			: {};
 	}
 
+	tooltipFor = (word) => {
+		const frame = this.state.selectedFrame;
+		if (!frame) return;
+		const binding = frame.bindings.find((b) => b.name === word);
+		if (!binding) return;
+		const max = 100;
+		const value = binding.value;
+		return value.length > max ? value.substr(0, 99) + "…" : value;
+	};
+
 	render() {
 		const { frames, selectedFrame, stepping, showBindings } = this.state;
 		return (
@@ -282,6 +292,7 @@ class Debugger extends PureComponent {
 						onCompileMethod={this.methodCompiled}
 						onDefineClass={this.classDefined}
 						onCommentClass={this.classCommented}
+						onTooltipShow={this.tooltipFor}
 					/>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>

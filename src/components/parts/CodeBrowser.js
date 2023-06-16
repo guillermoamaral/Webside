@@ -325,8 +325,12 @@ class CodeBrowser extends Component {
 		const author = this.currentAuthor();
 		const timestamp = this.currentTimestamp();
 		const packagename = this.currentPackage();
-		const { selectedInterval, selectedSelector, selectedIdentifier } =
-			this.props;
+		const {
+			selectedInterval,
+			selectedSelector,
+			selectedIdentifier,
+			onTooltipShow,
+		} = this.props;
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
@@ -366,6 +370,7 @@ class CodeBrowser extends Component {
 							showAccept
 							onAccept={this.acceptClicked}
 							onRename={(target) => this.renameClass(target)}
+							onTooltipShow={onTooltipShow}
 						/>
 					</Paper>
 				</Grid>

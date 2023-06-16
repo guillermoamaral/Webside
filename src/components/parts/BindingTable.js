@@ -3,6 +3,7 @@ import { Box, Paper } from "@mui/material";
 import { container } from "../ToolsContainer";
 import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";
+import { ide } from "../IDE";
 
 class BindingTable extends PureComponent {
 	constructor(props) {
@@ -57,18 +58,11 @@ class BindingTable extends PureComponent {
 	}
 
 	bindingColor(binding) {
-		let color;
-		switch (binding.type) {
-			case "argument":
-				color = "#f06520";
-				break;
-			case "temporary":
-				color = "#81c9f3";
-				break;
-			default:
-				color = "#268bd2";
-		}
-		return color;
+		const appearance = ide.settings.section("appearance");
+		const mode = appearance.section(appearance.get("mode"));
+		const colors = mode.section("colors");
+		const code = mode.section("code");
+		return code.get(binding.type) || "#268bd2";
 	}
 
 	bindingValue(binding) {
