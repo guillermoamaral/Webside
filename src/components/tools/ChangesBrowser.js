@@ -28,6 +28,7 @@ class ChangesBrowser extends Component {
 
 	changeSelected = async (change) => {
 		await change.updateCurrentSourceCode();
+		change.color = null;
 		this.setState({ selectedChange: change });
 	};
 

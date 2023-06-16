@@ -181,6 +181,22 @@ class ClassifyMethod extends MethodChange {
 		json.category = this.category;
 		return json;
 	}
+
+	async updateCurrentSourceCode() {
+		try {
+			const method = await this.changeset.system.method(
+				this.className,
+				this.selector
+			);
+			this.currentSource = method.category;
+		} catch (error) {
+			this.currentSource = "could not find method";
+		}
+	}
+
+	isUpToDate() {
+		return this.category === this.currentSource;
+	}
 }
 
 class RenameMethod extends MethodChange {
