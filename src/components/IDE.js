@@ -654,8 +654,8 @@ class IDE extends Component {
 						<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
 							<DrawerHeader />
 							<Container maxWidth={totalWidth} disableGutters>
-								<Box display="flex" flexDirection="row">
-									<Box flexGrow={1}>
+								<Grid container spacing={0}>
+									<Grid item xs={11} md={11} lg={11}>
 										<Grid container spacing={0}>
 											<Grid
 												item
@@ -685,8 +685,8 @@ class IDE extends Component {
 												)
 											)}
 										</Grid>
-									</Box>
-									<Box>
+									</Grid>
+									<Grid item xs={1} md={1} lg={1}>
 										<Fab
 											color="primary"
 											variant="round"
@@ -695,8 +695,8 @@ class IDE extends Component {
 										>
 											<SplitIcon />
 										</Fab>
-									</Box>
-								</Box>
+									</Grid>
+								</Grid>
 							</Container>
 						</Box>
 						<React.Fragment key="bottom">

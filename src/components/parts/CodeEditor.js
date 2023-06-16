@@ -739,12 +739,14 @@ class CodeEditor extends Component {
 			if (!word) return null;
 			const handler = this.props.onTooltipShow;
 			if (!handler) return null;
-			const tip = handler(word);
+			let tip = handler(word);
 			if (!tip) return null;
+			tip = "   " + tip + "   ";
 			return {
 				pos: pos,
 				pos,
 				above: true,
+				arrow: true,
 				create(view) {
 					let dom = document.createElement("div");
 					dom.textContent = tip;
