@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import CustomTree from "../controls/CustomTree";
 import { ide } from "../IDE";
 import { container } from "../ToolsContainer";
-//import Scrollable from "../controls/Scrollable";
 
 class ClassTree extends Component {
 	newClass = async (superclass) => {

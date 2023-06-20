@@ -179,6 +179,11 @@ class ToolsContainer extends Component {
 	};
 
 	closePages = (pages) => {
+		pages.forEach((p) => {
+			if (p.onClose) {
+				p.onClose();
+			}
+		});
 		this.removePages(pages);
 	};
 
@@ -340,6 +345,7 @@ class ToolsContainer extends Component {
 			workspace,
 			null,
 			async () => {
+				console.log("closing workspace");
 				try {
 					await ide.api.deleteWorkspace(id);
 				} catch (error) {
@@ -782,7 +788,7 @@ class ToolsContainer extends Component {
 				);
 				return object;
 			} else {
-				this.reportError(error.description);
+				this.reportError(error.description || error.toString());
 			}
 		}
 	};
