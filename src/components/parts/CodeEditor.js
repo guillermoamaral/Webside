@@ -15,9 +15,11 @@ import { SmalltalkParser } from "../../SmalltalkParser";
 import { Tag } from "@lezer/highlight";
 import { createTheme } from "@uiw/codemirror-themes";
 import { StreamLanguage } from "@codemirror/language";
-import { EditorSelection, EditorState, Prec } from "@codemirror/state";
-import { throwStatement } from "@babel/types";
-import { Tooltip, hoverTooltip } from "@codemirror/view";
+//import { EditorSelection, EditorState, Prec } from "@codemirror/state";
+import { Prec } from "@codemirror/state";
+//import { throwStatement } from "@babel/types";
+import { hoverTooltip } from "@codemirror/view";
+import { hyperLink } from "@uiw/codemirror-extensions-hyper-link";
 
 // This code is intended to be used when defining a parser from a Lezer grammar.
 // const parser = SmalltalkParser.configure({
@@ -744,7 +746,6 @@ class CodeEditor extends Component {
 			tip = "   " + tip + "   ";
 			return {
 				pos: pos,
-				pos,
 				above: true,
 				arrow: true,
 				create(view) {
@@ -790,6 +791,7 @@ class CodeEditor extends Component {
 								linter(this.annotations),
 								Prec.highest(keymap.of(this.extraKeys())),
 								this.tooltip(),
+								//hyperLink,
 							]}
 							theme={this.theme()}
 							value={source}

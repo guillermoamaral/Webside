@@ -87,6 +87,16 @@ class CustomList extends Component {
 		return null;
 	}
 
+	componentDidUpdate() {
+		const selected = this.props.selectedItem;
+		if (!selected) return;
+		const index = this.state.filteredItems.indexOf(selected);
+		if (index < 0) return;
+		if (listRef && listRef.current) {
+			listRef.current.scrollToItem(index);
+		}
+	}
+
 	itemDoubleClicked = (item) => {
 		if (this.props.onDoubleClick) {
 			this.props.onDoubleClick(item);
@@ -238,6 +248,7 @@ class CustomList extends Component {
 	};
 
 	clearFilter() {
+		console.log("clearing filter");
 		this.setState({
 			filterEnabled: false,
 			filterText: "",
@@ -246,6 +257,7 @@ class CustomList extends Component {
 	}
 
 	keyDown = (event) => {
+		console.log("key down");
 		event.preventDefault();
 		const key = event.key;
 		if (key === "ArrowUp") {
@@ -267,6 +279,7 @@ class CustomList extends Component {
 	};
 
 	filterItems(text) {
+		console.log("filtering by", text);
 		const enabled = text !== "";
 		const all = this.props.items;
 		const target = text.toLowerCase();
@@ -291,14 +304,14 @@ class CustomList extends Component {
 		const alignment = this.getItemAlignment(item);
 		const size = this.getItemSize(item);
 		const selected = this.props.selectedItem === item;
-		const highlighted = this.props.highlightedItem == item;
+		const highlighted = this.props.highlightedItem === item;
 		const weight =
 			selected || highlighted ? "fontWeightBold" : "fontWeightRegular";
 		return (
 			<div style={style}>
 				<ListItem
 					disableGutters={divider}
-					//autoFocus={selected}
+					autoFocus={selected}
 					style={{
 						paddingTop: 0,
 						paddingBottom: 0,
