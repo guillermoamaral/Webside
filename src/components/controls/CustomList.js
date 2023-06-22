@@ -132,7 +132,7 @@ class CustomList extends Component {
 	};
 
 	getItemColor = (item) => {
-		const color = item.color;
+		const color = this.props.itemColor;
 		if (typeof color == "function") {
 			return color(item);
 		}
@@ -302,6 +302,7 @@ class CustomList extends Component {
 		const divider = this.getItemDivider(item);
 		const fontStyle = this.getItemStyle(item);
 		const alignment = this.getItemAlignment(item);
+		const color = this.getItemColor(item);
 		const size = this.getItemSize(item);
 		const selected = this.props.selectedItem === item;
 		const highlighted = this.props.highlightedItem === item;
@@ -334,7 +335,11 @@ class CustomList extends Component {
 					</Box>
 					<ListItemText
 						primary={
-							<Typography noWrap component="div">
+							<Typography
+								noWrap
+								component="div"
+								style={{ color: color }}
+							>
 								<Box
 									fontWeight={weight}
 									fontStyle={fontStyle}

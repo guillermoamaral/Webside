@@ -104,9 +104,7 @@ class ChangesBrowser extends Component {
 						try {
 							await ide.api.postChange(ch.asJson());
 							await ch.updateCurrentSourceCode();
-							if (ch.isUpToDate()) {
-								ch.color = "green";
-							}
+							ch.color = null;
 						} catch (error) {
 							ide.reportError(error);
 						}

@@ -318,6 +318,10 @@ class MethodList extends Component {
 			: method.selector;
 	};
 
+	methodColor = (method) => {
+		if (method && method.needsRecompilation) return "red";
+	};
+
 	render() {
 		const methods = this.props.methods || [];
 		const { useTable, selectedMethod, onMethodSelect } = this.props;
@@ -342,6 +346,7 @@ class MethodList extends Component {
 					itemLabel={this.methodLabel}
 					itemStyle={this.props.labelStyle}
 					itemIcon={this.methodIcon}
+					itemColor={this.methodColor}
 					selectedItem={selectedMethod}
 					onItemSelect={onMethodSelect}
 					menuOptions={this.menuOptions()}
