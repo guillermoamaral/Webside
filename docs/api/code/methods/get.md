@@ -49,14 +49,21 @@ The `class`, `hierarchy` and `package` options can be used in conjunction with o
 	"author": "string",
 	"timestamp": "string",
 	"package": "string",
+	"needsRecompilation": "boolean",
 	"overriding": "boolean",
 	"overriden": "boolean",
 	"bytecodes": "string",
 	"disassembly": "string",
 	"ast": "node",
-	"annotations" ["annotation"]
+	"annotations": ["annotation"]
 }
 ```
+
+Where:
+
+-   `needsRecompilation` specifies whether the last compilation of method has any issue, for instance, when a instance variable was removed from the class definition and a method accessing it should be revised and recompiled. This mark is used to color the method differently to bring developers attention.
+-   `ast` is a simplified version of the method's abstract syntax tree used for some functionalities (see [Method AST](#method-ast) below)
+-   `annotations` is list of annotations helpful to code linting (see [Method Annotations](#method-annotations) below)
 
 _Note: optional properties such as `bytecodes`, `disassembly` or `annotations` should not be included if they are not requested in the query._
 

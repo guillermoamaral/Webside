@@ -43,8 +43,16 @@ class TabLabel extends Component {
 				label: "Close others",
 				action: this.closeOtherTabs,
 			},
+			{
+				label: "Split",
+				action: this.splitTab,
+			},
 		];
 	}
+
+	splitTab = () => {
+		this.props.onSplit(this.props.index);
+	};
 
 	closeTab = () => {
 		this.props.onClose(null, this.props.index);

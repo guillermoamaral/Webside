@@ -30,6 +30,13 @@ class TabControl extends Component {
 		}
 	};
 
+	splitTab = (index) => {
+		const page = this.props.pages[index];
+		if (this.props.onTabSplit) {
+			this.props.onTabSplit(page);
+		}
+	};
+
 	closeAllTabs = () => {
 		if (this.props.onTabsClose) {
 			this.props.onTabsClose(this.props.pages);
@@ -45,7 +52,7 @@ class TabControl extends Component {
 
 	render() {
 		const { addMenuOpen } = this.state;
-		const { pages, selectedPage, noClose } = this.props;
+		const { id, pages, selectedPage, noClose } = this.props;
 		const addOptions = this.props.addOptions || [];
 		const selectedIndex = pages.findIndex((p) => p.id === selectedPage.id);
 		return (
@@ -93,6 +100,7 @@ class TabControl extends Component {
 												onCloseOthers={
 													this.closeOtherTabs
 												}
+												onSplit={this.splitTab}
 												noClose={noClose}
 											/>
 										}
@@ -103,7 +111,7 @@ class TabControl extends Component {
 					</Box>
 					<Box flexShrink={0}>
 						<IconButton
-							id={"addTab" + this.props.id}
+							id={"addTab" + id}
 							onClick={() => {
 								this.setState({
 									addMenuOpen: true,
@@ -114,10 +122,8 @@ class TabControl extends Component {
 							<AddIcon />
 						</IconButton>
 						<Menu
-							//id={"addTab" + this.props.id}
-							anchorEl={document.getElementById(
-								"addTab" + this.props.id
-							)}
+							//id={"addTab" + id}
+							anchorEl={document.getElementById("addTab" + id)}
 							keepMounted
 							open={addMenuOpen}
 							onClose={() => {
@@ -130,10 +136,13 @@ class TabControl extends Component {
 								return (
 									<MenuItem
 										key={"addOption" + index}
-										onClick={() => {
+										onClick={(event) => {
 											this.setState(
 												{ addMenuOpen: false },
-												option.handler
+												() =>
+													option.handler(
+														event.ctrlKey
+													)
 											);
 										}}
 									>
@@ -158,9 +167,9 @@ class TabControl extends Component {
 					{pages.map((page, index) => {
 						return (
 							<TabPanel
-								id={`tabpanel-${index}`}
+								id={id + index}
 								style={{ height: "100%" }}
-								key={index.toString()}
+								key={id + index}
 								index={index}
 								visible={page.id === selectedPage.id}
 							>

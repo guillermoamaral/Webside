@@ -19,7 +19,10 @@ import { StreamLanguage } from "@codemirror/language";
 import { Prec } from "@codemirror/state";
 //import { throwStatement } from "@babel/types";
 import { hoverTooltip } from "@codemirror/view";
-//import { hyperLink } from "@uiw/codemirror-extensions-hyper-link";
+import {
+	hyperLinkExtension,
+	hyperLinkStyle,
+} from "@uiw/codemirror-extensions-hyper-link";
 
 // This code is intended to be used when defining a parser from a Lezer grammar.
 // const parser = SmalltalkParser.configure({
@@ -62,6 +65,7 @@ class CodeEditor extends Component {
 		this.editorRef = React.createRef();
 		this.editorView = null;
 		this.selectsRanges = true;
+		this.typingTimer = null;
 		this.state = {
 			originalSource: props.source,
 			source: props.source,
@@ -329,7 +333,7 @@ class CodeEditor extends Component {
 				{
 					label:
 						"Do it (" + shortcuts.get("evaluateExpression") + ")",
-					action: this.evaluateExpression,
+					action: this.evaluateSelection,
 				},
 				{
 					label: "Print it (" + shortcuts.get("showEvaluation") + ")",
@@ -473,7 +477,8 @@ class CodeEditor extends Component {
 	};
 
 	browseClass = (e, f) => {
-		container.browseClass(this.targetWord());
+		const target = this.targetWord();
+		target ? container.browseClass(target) : container.openClassBrowser();
 	};
 
 	browseClassReferences = () => {
@@ -517,20 +522,28 @@ class CodeEditor extends Component {
 		} catch (error) {}
 	};
 
-	evaluateExpression = async () => {
-		const expression = this.selectedExpression();
+	evaluateExpression = async (expression, sync, pin) => {
+		var object;
 		try {
 			this.setState({ progress: true });
-			await container.evaluateExpression(
+			object = await container.evaluateExpression(
 				expression,
-				false,
-				false,
+				sync,
+				pin,
 				this.props.context
 			);
 			this.setState({ progress: false }, this.triggerOnEvaluate());
 		} catch (error) {
+			object = null;
 			this.setState({ progress: false });
 		}
+		return object;
+	};
+
+	evaluateSelection = async () => {
+		const expression = this.selectedExpression();
+		await this.evaluateExpression(expression, false, false);
+		this.triggerOnEvaluate();
 	};
 
 	triggerOnEvaluate() {
@@ -541,39 +554,35 @@ class CodeEditor extends Component {
 
 	showEvaluation = async () => {
 		const expression = this.selectedExpression();
-		try {
-			this.setState({ progress: true });
-			const object = await container.evaluateExpression(
-				expression,
-				false,
-				false,
-				this.props.context
-			);
-			this.setState({ progress: false });
+		const object = await this.evaluateExpression(expression, false, false);
+		if (object) {
 			const selection = this.currentState().selection.main;
 			this.inserText(
 				" " + object.printString,
 				Math.max(selection.head, selection.anchor)
 			);
-		} catch (error) {
-			this.setState({ progress: false });
 		}
 	};
 
 	inspectEvaluation = async () => {
 		const expression = this.selectedExpression();
-		try {
-			this.setState({ progress: true });
-			const object = await container.evaluateExpression(
-				expression,
-				false,
-				true,
-				this.props.context
-			);
-			this.setState({ progress: false });
+		const object = await this.evaluateExpression(expression, false, true);
+		if (object) {
 			container.openInspector(object);
-		} catch (error) {
-			this.setState({ progress: false });
+		}
+	};
+
+	browseGlobal = async (name) => {
+		let species;
+		try {
+			species = await ide.api.classNamed(name);
+		} catch (error) {}
+		if (species) {
+			return container.browseClass(species.name);
+		}
+		const object = await this.evaluateExpression(name, false, true);
+		if (object) {
+			container.openInspector(object);
 		}
 	};
 
@@ -623,17 +632,17 @@ class CodeEditor extends Component {
 		const adapted = source.replace(/(?<!\r)\n|\r(?!\n)/g, "\r");
 		this.selectsRanges = false;
 		const changed = !this.state.dirty;
-		this.setState(
-			{
-				source: adapted,
-				dirty: true,
-			},
-			() => {
-				if (this.props.onChange) {
-					this.props.onChange(adapted);
-				}
-			}
-		);
+		this.setState({
+			source: adapted,
+			dirty: true,
+		});
+		if (this.props.onChange) {
+			clearTimeout(this.typingTimer);
+			this.typingTimer = setTimeout(() => {
+				console.log("source changed");
+				this.props.onChange(this.state.source);
+			}, 3000);
+		}
 		if (changed) {
 			//this.forceUpdate();
 		} // Check this according to the default response in shouldComponentUpdate()
@@ -653,7 +662,7 @@ class CodeEditor extends Component {
 		return [
 			{
 				key: this.adaptShortcut(shortcuts.get("evaluateExpression")),
-				run: this.evaluateExpression,
+				run: this.evaluateSelection,
 			},
 			{
 				key: this.adaptShortcut(shortcuts.get("inspectEvaluation")),
@@ -791,7 +800,27 @@ class CodeEditor extends Component {
 								linter(this.annotations),
 								Prec.highest(keymap.of(this.extraKeys())),
 								this.tooltip(),
-								//hyperLink,
+								// hyperLinkExtension({
+								// 	regexp: /\b[A-Z].*?\b/g,
+								// 	// match: { Dale: "https://google1.com" },
+								// 	handle: (value) => {
+								// 		return value;
+								// 	},
+								// 	anchor: ($dom) => {
+								// 		$dom.onclick = (e) => {
+								// 			console.log($dom);
+								// 			const url = new URL($dom.href);
+								// 			const global =
+								// 				url.pathname.slice(1);
+								// 			this.browseGlobal(global);
+								// 			return false;
+								// 		};
+								// 		//$dom.className = "cm-hyper-link-icon";
+								// 		//$dom.removeChild($dom.childNodes[0])
+								// 		return $dom;
+								// 	},
+								// }),
+								// hyperLinkStyle,
 							]}
 							theme={this.theme()}
 							value={source}

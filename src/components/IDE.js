@@ -5,7 +5,6 @@ import {
 	IconButton,
 	Drawer,
 	Box,
-	Fab,
 	Backdrop,
 	CircularProgress,
 } from "@mui/material";
@@ -23,7 +22,7 @@ import Sidebar from "./layout/Sidebar";
 import Transcript from "./tools/Transcript";
 import MessageChannel from "./MessageChannel";
 import Hotkeys from "react-hot-keys";
-import SplitIcon from "@mui/icons-material/VerticalSplit";
+//import SplitIcon from "@mui/icons-material/VerticalSplit";
 import DrawerHeader from "./layout/DrawerHeader";
 import { Settings } from "../model/Settings";
 import { app as mainApp } from "../App";
@@ -155,7 +154,12 @@ class IDE extends Component {
 	}
 
 	applySettings(settings) {
-		this.mainContainer().removeAllPages();
+		if (
+			this.settings.section("connection").get("backend") !==
+			settings.section("connection").get("backend")
+		) {
+			this.mainContainer().removeAllPages();
+		}
 		this.settings = settings;
 		this.storeSettingsIntoCookie();
 		const connection = this.settings.section("connection");
@@ -225,11 +229,11 @@ class IDE extends Component {
 		const dialect = this.settings.section("connection").get("dialect");
 		switch (dialect) {
 			case "Bee":
-				primary = amber[300];
+				primary = "#eebd00";
 				secondary = amber[800];
 				break;
 			case "Pharo":
-				primary = blue[300];
+				primary = "#3297d4";
 				secondary = blue[800];
 				break;
 			case "Dolphin":
@@ -256,11 +260,11 @@ class IDE extends Component {
 		const dark = appearance.section("dark").section("colors");
 		dark.set("primaryColor", primary);
 		dark.set("secondaryColor", secondary);
-		dark.set("appliedChange", Setting.adjustColor(primary, 80));
+		dark.set("appliedChange", Setting.adjustColor(primary, 60));
 		const light = appearance.section("light").section("colors");
-		light.set("primaryColor", primary);
+		light.set("primaryColor", Setting.adjustColor(primary, -40));
 		light.set("secondaryColor", secondary);
-		light.set("appliedChange", Setting.adjustColor(primary, -80));
+		light.set("appliedChange", Setting.adjustColor(primary, -60));
 	}
 
 	updateTheme() {
@@ -357,19 +361,23 @@ class IDE extends Component {
 		return unused === -1 ? maxId + 1 : unused;
 	}
 
-	addContainer = () => {
+	addContainer = (pages) => {
 		const containers = this.state.extraContainers;
 		const id = this.newContainerId();
+		const ref = React.createRef();
 		const container = {
 			id: id,
 			component: (
 				<ToolsContainer
 					id={id}
+					ref={ref}
 					onPagesRemove={(c) => {
 						if (c.pages().length === 0) {
 							this.removeContainer(c);
 						}
 					}}
+					onPageSplit={this.splitPage}
+					pages={pages}
 				/>
 			),
 		};
@@ -513,6 +521,21 @@ class IDE extends Component {
 
 	collapseSidebar = () => {
 		this.setState({ sidebarExpanded: false });
+	};
+
+	splitPage = (container, page) => {
+		console.log(page);
+		const containers = this.state.extraContainers;
+		const index =
+			containers.findIndex((c) => c.component.ref.current === container) +
+			1;
+		if (index > containers.length - 1) {
+			this.addContainer([page]);
+		} else {
+			const target = containers[index];
+			target.component.ref.current.addPage(page);
+		}
+		container.removePage(page);
 	};
 
 	//Services...
@@ -671,47 +694,30 @@ class IDE extends Component {
 							<DrawerHeader />
 							<Container maxWidth={totalWidth} disableGutters>
 								<Grid container spacing={0}>
-									<Grid item xs={11} md={11} lg={11}>
-										<Grid container spacing={0}>
-											<Grid
-												item
-												xs={containerWidth}
-												md={containerWidth}
-												lg={containerWidth}
-											>
-												<ToolsContainer
-													key="mainContainer"
-													ref={this.mainContainerRef}
-												/>
-											</Grid>
-											{extraContainers.map(
-												(container) => (
-													<Grid
-														item
-														xs={containerWidth}
-														md={containerWidth}
-														lg={containerWidth}
-														key={
-															"container" +
-															container.id
-														}
-													>
-														{container.component}
-													</Grid>
-												)
-											)}
-										</Grid>
+									<Grid
+										item
+										xs={containerWidth}
+										md={containerWidth}
+										lg={containerWidth}
+									>
+										<ToolsContainer
+											id={99999}
+											key="mainContainer"
+											ref={this.mainContainerRef}
+											onPageSplit={this.splitPage}
+										/>
 									</Grid>
-									<Grid item xs={1} md={1} lg={1}>
-										<Fab
-											color="primary"
-											variant="round"
-											onClick={this.addContainer}
-											size="medium"
+									{extraContainers.map((container) => (
+										<Grid
+											item
+											xs={containerWidth}
+											md={containerWidth}
+											lg={containerWidth}
+											key={"container" + container.id}
 										>
-											<SplitIcon />
-										</Fab>
-									</Grid>
+											{container.component}
+										</Grid>
+									))}
 								</Grid>
 							</Container>
 						</Box>

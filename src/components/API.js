@@ -23,7 +23,7 @@ class API {
 		this.author = author;
 	}
 
-	backend(uri) {
+	setBackend(uri) {
 		this.backend = uri;
 	}
 
@@ -47,6 +47,19 @@ class API {
 		} catch (error) {
 			this.handleError(
 				"Cannot " + (description || " post " + uri),
+				uri,
+				error
+			);
+		}
+	}
+
+	async put(uri, payload, description) {
+		try {
+			const response = await axios.put(this.backend + uri, payload);
+			return response.data;
+		} catch (error) {
+			this.handleError(
+				"Cannot " + (description || " put " + uri),
 				uri,
 				error
 			);
@@ -378,7 +391,15 @@ class API {
 	}
 
 	async createWorkspace() {
-		return await this.post("/workspaces", "create workspace");
+		return await this.post("/workspaces", null, "create workspace");
+	}
+
+	async workspace(id) {
+		return await this.get("/workspaces/" + id, "workspace " + id);
+	}
+
+	async saveWorkspace(workspace) {
+		return await this.put("/workspaces/" + workspace.id, workspace);
 	}
 
 	async deleteWorkspace(id) {
@@ -806,6 +827,7 @@ class API {
 	async runTestRun(id) {
 		return await this.post(
 			"/test-runs/" + id + "/run",
+			null,
 			"run test run " + id
 		);
 	}
@@ -813,6 +835,7 @@ class API {
 	async stopTestRun(id) {
 		return await this.post(
 			"/test-runs/" + id + "/stop",
+			null,
 			"stop test run " + id
 		);
 	}
@@ -887,6 +910,7 @@ class API {
 	async resumeNativeDebugger(id) {
 		return await this.post(
 			"/native-debuggers/" + id + "/resume",
+			null,
 			"resume native debugger " + id
 		);
 	}
@@ -894,6 +918,7 @@ class API {
 	async suspendNativeDebugger(id) {
 		return await this.post(
 			"/native-debuggers/" + id + "/suspend",
+			null,
 			"suspend native debugger " + id
 		);
 	}
@@ -901,6 +926,7 @@ class API {
 	async pinNativeDebuggerRegister(id, register) {
 		return await this.post(
 			"/native-debuggers/" + id + "/registers/" + register + "/pin",
+			null,
 			"pin object pointed by register " +
 				register +
 				" of native debugger " +

@@ -311,6 +311,16 @@ class ResourceBrowser extends Component {
 				label: "ID",
 				align: "left",
 			},
+			{
+				field: (w) => {
+					const source = w.source.trim();
+					return source.length > 100
+						? source.substr(0, 99) + "…"
+						: source;
+				},
+				label: "Contents",
+				align: "left",
+			},
 			{ field: "owner", label: "Owner", align: "center" },
 		];
 	}

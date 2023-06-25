@@ -41,8 +41,8 @@ class ToolsContainer extends Component {
 		super(props);
 		container = this;
 		this.state = {
-			selectedPageId: null,
-			pages: [],
+			selectedPageId: props.pages ? props.pages[0].id : null,
+			pages: props.pages || [],
 		};
 	}
 
@@ -63,7 +63,7 @@ class ToolsContainer extends Component {
 		return unused === -1 ? maxId + 1 : unused;
 	}
 
-	addPage(label, icon, component, id, onClose) {
+	createPage(label, icon, component, id, onClose) {
 		const pages = this.state.pages;
 		const labelRef = React.createRef();
 		const page = {
@@ -80,6 +80,13 @@ class ToolsContainer extends Component {
 			ide.resetUnredErrorCount();
 		}
 		this.setState(state);
+	}
+
+	addPage(page) {
+		const pages = this.state.pages;
+		page.id = this.newPageId();
+		pages.push(page);
+		this.setState({ pages: pages, selectedPageId: page.id });
 	}
 
 	pages() {
@@ -187,6 +194,10 @@ class ToolsContainer extends Component {
 		this.removePages(pages);
 	};
 
+	splitPage = (page) => {
+		this.props.onPageSplit(this, page);
+	};
+
 	pageWithId(id) {
 		return this.state.pages.find((p) => p.id === id);
 	}
@@ -212,28 +223,28 @@ class ToolsContainer extends Component {
 					onChange={this.transcriptChanged}
 				/>
 			);
-			this.addPage("Transcript", <TranscriptIcon />, transcript);
+			this.createPage("Transcript", <TranscriptIcon />, transcript);
 		}
 	};
 
 	openSearch = () => {
 		const search = <Search />;
-		this.addPage("Search", <SearchIcon />, search);
+		this.createPage("Search", <SearchIcon />, search);
 	};
 
 	migratePackage = (packagename) => {
 		const migrator = <CodeMigrator package={packagename} />;
-		this.addPage("Migrate: " + packagename, <MigratorIcon />, migrator);
+		this.createPage("Migrate: " + packagename, <MigratorIcon />, migrator);
 	};
 
 	migrateClass = (classname) => {
 		const migrator = <CodeMigrator class={classname} />;
-		this.addPage("Migrate: " + classname, <MigratorIcon />, migrator);
+		this.createPage("Migrate: " + classname, <MigratorIcon />, migrator);
 	};
 
 	migrateMethod = (method) => {
 		const migrator = <CodeMigrator method={method} />;
-		this.addPage(
+		this.createPage(
 			"Migrate: " + method.methodClass + ">>" + method.selector,
 			<MigratorIcon />,
 			migrator
@@ -251,7 +262,7 @@ class ToolsContainer extends Component {
 
 	openPackageBrowser = (packagename) => {
 		const browser = <PackageBrowser selectedPackage={packagename} />;
-		this.addPage("Package Browser", <PackageBrowserIcon />, browser);
+		this.createPage("Package Browser", <PackageBrowserIcon />, browser);
 	};
 
 	browsePackage(name) {
@@ -287,7 +298,7 @@ class ToolsContainer extends Component {
 				id={id}
 			/>
 		);
-		this.addPage(
+		this.createPage(
 			classname || "Class Browser",
 			<ClassBrowserIcon />,
 			browser,
@@ -312,7 +323,7 @@ class ToolsContainer extends Component {
 				selectedIdentifier={selectedIdentifier}
 			/>
 		);
-		this.addPage(
+		this.createPage(
 			title + " (" + methods.length + ")",
 			<MethodBrowserIcon />,
 			browser
@@ -321,14 +332,14 @@ class ToolsContainer extends Component {
 
 	newWorkspace = async () => {
 		try {
-			const id = await ide.api.createWorkspace();
-			this.openWorkspace(id);
+			const workspace = await ide.api.createWorkspace();
+			this.openWorkspace(workspace.id);
 		} catch (error) {
 			this.reportError(error);
 		}
 	};
 
-	openWorkspace = (id) => {
+	openWorkspace = async (id) => {
 		const existing = this.state.pages.find((p) => {
 			return (
 				p.component.type === Workspace && p.component.props.id === id
@@ -338,14 +349,18 @@ class ToolsContainer extends Component {
 			this.selectPage(existing);
 			return;
 		}
-		const workspace = <Workspace key={id} id={id} />;
-		this.addPage(
+		var source = "";
+		if (id) {
+			const workspace = await ide.api.workspace(id);
+			source = workspace.source;
+		}
+		const component = <Workspace key={id} id={id} source={source} />;
+		this.createPage(
 			"Workspace",
 			<WorkspaceIcon />,
-			workspace,
+			component,
 			null,
 			async () => {
-				console.log("closing workspace");
 				try {
 					await ide.api.deleteWorkspace(id);
 				} catch (error) {
@@ -383,7 +398,7 @@ class ToolsContainer extends Component {
 				}}
 			/>
 		);
-		this.addPage(title, <DebuggerIcon />, tool, pageId, () => {
+		this.createPage(title, <DebuggerIcon />, tool, pageId, () => {
 			try {
 				ide.api.deleteDebugger(id);
 			} catch (error) {
@@ -414,7 +429,7 @@ class ToolsContainer extends Component {
 				showWorkspace={true}
 			/>
 		);
-		this.addPage(
+		this.createPage(
 			"Inspecting: " + object.class,
 			<InspectorIcon />,
 			inspector,
@@ -434,7 +449,7 @@ class ToolsContainer extends Component {
 		const browser = (
 			<ChangesBrowser changeset={changeset} selectedChange={selected} />
 		);
-		this.addPage(
+		this.createPage(
 			title + " (" + changeset.size() + ")",
 			<ChangesBrowserIcon />,
 			browser
@@ -443,7 +458,7 @@ class ToolsContainer extends Component {
 
 	openResourceBrowser = (title = "Objects") => {
 		const browser = <ResourceBrowser />;
-		this.addPage(title, <InspectorIcon />, browser);
+		this.createPage(title, <InspectorIcon />, browser);
 	};
 
 	openTestRunner = (id, title = "Test Runner") => {
@@ -457,7 +472,7 @@ class ToolsContainer extends Component {
 			return;
 		}
 		const tool = <TestRunner key={id} id={id} />;
-		this.addPage(title, <TestRunnerIcon />, tool, null, () => {
+		this.createPage(title, <TestRunnerIcon />, tool, null, () => {
 			try {
 				ide.api.deleteTestRun(id);
 			} catch (error) {
@@ -468,12 +483,12 @@ class ToolsContainer extends Component {
 
 	openProfiler = (id, title = "Profiler") => {
 		const tool = <Profiler key={id} id={id} />;
-		this.addPage(title, <TestRunnerIcon />, tool);
+		this.createPage(title, <TestRunnerIcon />, tool);
 	};
 
 	openNativeDebugger = (id, title = "Native Debugger") => {
 		const tool = <NativeDebugger key={id} id={id} />;
-		this.addPage(title, <DebuggerIcon />, tool);
+		this.createPage(title, <DebuggerIcon />, tool);
 	};
 
 	openChat = (peername) => {
@@ -490,7 +505,7 @@ class ToolsContainer extends Component {
 			this.selectPage(page);
 		} else {
 			const tool = <Chat channel={channel} initialPeer={peer} />;
-			this.addPage("Chat", <ChatIcon />, tool);
+			this.createPage("Chat", <ChatIcon />, tool);
 		}
 	};
 
@@ -511,7 +526,7 @@ class ToolsContainer extends Component {
 					}}
 				/>
 			);
-			this.addPage("Settings", <SettingsIcon />, page);
+			this.createPage("Settings", <SettingsIcon />, page);
 		}
 	};
 
@@ -526,12 +541,12 @@ class ToolsContainer extends Component {
 				rightMethod={rightMethod.source}
 			/>
 		);
-		this.addPage(title, <MethodBrowserIcon />, browser);
+		this.createPage(title, <MethodBrowserIcon />, browser);
 	};
 
 	openCoderLikeBrowser = (classname) => {
 		const browser = <CoderLikeBrowser root={classname} />;
-		this.addPage(
+		this.createPage(
 			browser.props.root || "Class Browser",
 			<ClassBrowserIcon />,
 			browser
@@ -903,6 +918,7 @@ class ToolsContainer extends Component {
 				onTabSelect={this.selectPage}
 				onTabsClose={this.closePages}
 				addOptions={this.addPageOptions()}
+				onTabSplit={this.splitPage}
 			/>
 		);
 	}

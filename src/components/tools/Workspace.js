@@ -20,7 +20,7 @@ class Workspace extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			expression: "",
+			source: this.props.source || "",
 			opensInspector: true,
 			inspectors: [],
 			evaluating: false,
@@ -53,15 +53,16 @@ class Workspace extends Component {
 		}
 	};
 
-	expressionChanged = (text) => {
-		this.setState({ expression: text });
+	sourceChanged = async (source) => {
+		await ide.api.saveWorkspace({ id: this.props.id, source: source });
+		this.setState({ source: source });
 	};
 
 	evaluateClicked = async () => {
 		try {
 			this.setState({ evaluating: true });
 			const object = await container.evaluateExpression(
-				this.state.expression,
+				this.state.source,
 				false,
 				true,
 				{ workspace: this.props.id }
@@ -71,8 +72,7 @@ class Workspace extends Component {
 				this.openInspector(object);
 			} else {
 				this.setState({
-					expression:
-						this.state.expression + " -> " + object.printString,
+					source: this.state.source + " -> " + object.printString,
 					evaluating: false,
 				});
 			}
@@ -88,7 +88,7 @@ class Workspace extends Component {
 	}
 
 	render() {
-		const { expression, inspectors, evaluating } = this.state;
+		const { source, inspectors, evaluating } = this.state;
 		const editorWidth = inspectors.length > 0 ? 8 : 12;
 		return (
 			<Grid container spacing={1}>
@@ -100,13 +100,13 @@ class Workspace extends Component {
 						<CodeEditor
 							context={this.evaluationContext()}
 							lineNumbers={false}
-							source={expression}
+							source={source}
 							showAccept
 							acceptIcon={
 								<PlayIcon style={{ color: "#3bba5d" }} />
 							}
 							onAccept={this.evaluateClicked}
-							onChange={this.expressionChanged}
+							onChange={this.sourceChanged}
 							evaluating={evaluating}
 						/>
 					</Paper>
