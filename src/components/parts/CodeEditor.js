@@ -639,17 +639,19 @@ class CodeEditor extends Component {
 		if (this.props.onChange) {
 			clearTimeout(this.typingTimer);
 			this.typingTimer = setTimeout(() => {
-				console.log("source changed");
 				this.props.onChange(this.state.source);
 			}, 3000);
 		}
 		if (changed) {
 			//this.forceUpdate();
-		} // Check this according to the default response in shouldComponentUpdate()
+			// Check this according to the default response in shouldComponentUpdate()
+		}
 	};
 
-	selectionChanged = (selection) => {
-		this.selectsRanges = false;
+	editorUpdated = (update) => {
+		if (update.transactions.find((t) => t.selection)) {
+			this.selectsRanges = false;
+		}
 	};
 
 	adaptShortcut(shortcut) {
@@ -831,6 +833,7 @@ class CodeEditor extends Component {
 							onCreateEditor={(view, state) => {
 								this.editorView = view;
 							}}
+							onUpdate={(update) => this.editorUpdated(update)}
 							readOnly={evaluating || progress}
 							basicSetup={{
 								lineNumbers: lineNumbers,
