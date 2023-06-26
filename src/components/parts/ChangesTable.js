@@ -3,6 +3,7 @@ import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
 import { container } from "../ToolsContainer";
 import ApplyIcon from "@mui/icons-material/CheckCircle";
+import RejectIcon from "@mui/icons-material/Delete";
 import { Box, Stack, Chip } from "@mui/material";
 
 class ChangesTable extends Component {
@@ -38,7 +39,7 @@ class ChangesTable extends Component {
 				await change.updateCurrentSourceCode();
 				change.color = null;
 				change.color = this.colorFor(change);
-				const handler = this.props.changeApplied;
+				const handler = this.props.onChangeApply;
 				if (handler) {
 					handler(change);
 				} else {
@@ -74,6 +75,12 @@ class ChangesTable extends Component {
 		}
 	}
 
+	rejectChange = (change) => {
+		if (this.props.onChangeReject) {
+			this.props.onChangeReject(change);
+		}
+	};
+
 	selectChangesWithTheSame(change, property) {
 		const target = property === "type" ? change.type() : change[property];
 		this.addFilter(property + " = " + target, (ch) => {
@@ -100,7 +107,7 @@ class ChangesTable extends Component {
 		});
 	}
 
-	rejectChangesWith = async (change, property) => {
+	rejectChangesWith = async (property) => {
 		const target = await ide.prompt({
 			title: "Enter " + property,
 		});
@@ -139,7 +146,7 @@ class ChangesTable extends Component {
 			return {
 				label: p,
 				action: (ch) => {
-					this.rejectChangesWithTheSame(ch, p);
+					this.rejectChangesWithTheSame(p);
 				},
 			};
 		});
@@ -155,6 +162,7 @@ class ChangesTable extends Component {
 			{ label: "Browse class", action: this.browseClass },
 			{ label: "Browse implementors", action: this.browseImplementors },
 			{ label: "Apply", action: this.applyChange },
+			{ label: "Reject", action: this.rejectChange },
 			null,
 			{
 				label: "Select...",
@@ -192,6 +200,11 @@ class ChangesTable extends Component {
 				icon: <ApplyIcon fontSize="small" />,
 				handler: this.applyChange,
 				//visible: this.canApplyChange,
+			},
+			{
+				label: "Reject",
+				icon: <RejectIcon fontSize="small" />,
+				handler: this.rejectChange,
 			},
 		];
 	}

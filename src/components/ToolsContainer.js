@@ -289,20 +289,20 @@ class ToolsContainer extends Component {
 	};
 
 	openClassBrowser = (classname, side, selector) => {
-		const id = this.newPageId();
+		const pageId = this.newPageId();
 		const browser = (
 			<ClassBrowser
 				root={classname}
 				side={side}
 				selectedSelector={selector}
-				id={id}
+				id={pageId}
 			/>
 		);
 		this.createPage(
 			classname || "Class Browser",
 			<ClassBrowserIcon />,
 			browser,
-			id
+			pageId
 		);
 	};
 
@@ -446,8 +446,14 @@ class ToolsContainer extends Component {
 
 	browseChanges = (changeset, title = "Changes") => {
 		const selected = changeset.size() > 0 ? changeset.changes[0] : null;
+		const pageId = this.newPageId();
 		const browser = (
-			<ChangesBrowser changeset={changeset} selectedChange={selected} />
+			<ChangesBrowser
+				changeset={changeset}
+				title={title}
+				selectedChange={selected}
+				id={pageId}
+			/>
 		);
 		this.createPage(
 			title + " (" + changeset.size() + ")",

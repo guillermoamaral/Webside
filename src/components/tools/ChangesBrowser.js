@@ -16,6 +16,7 @@ import RejectUpToDateIcon from "@mui/icons-material/RemoveDone";
 import ApplyIcon from "@mui/icons-material/Done";
 import ApplyAllIcon from "@mui/icons-material/DoneAll";
 import ShowOriginalIcon from "@mui/icons-material/Refresh";
+import { container } from "../ToolsContainer";
 
 class ChangesBrowser extends Component {
 	constructor(props) {
@@ -35,6 +36,19 @@ class ChangesBrowser extends Component {
 	evaluationContext() {
 		const change = this.state.selectedChange;
 		return change && change.className ? { class: change.className } : {};
+	}
+
+	updateChanges(changes) {
+		this.setState({ changes: changes }, () => this.updateLabel());
+	}
+
+	updateLabel() {
+		const label =
+			(this.props.title || "Changes") +
+			" (" +
+			this.props.changeset.size() +
+			")";
+		container.updatePageLabel(this.props.id, label);
 	}
 
 	download = async (event) => {
@@ -58,16 +72,22 @@ class ChangesBrowser extends Component {
 		}
 	};
 
+	rejectChange = (change) => {
+		const changeset = this.props.changeset;
+		changeset.rejectChange(change);
+		this.updateChanges(changeset.changes);
+	};
+
 	rejectOlderChanges = () => {
 		const changeset = this.props.changeset;
 		changeset.compress();
-		this.setState({ changes: changeset.changes });
+		this.updateChanges(changeset.changes);
 	};
 
 	rejectChangesUpToDate = async () => {
 		const changeset = this.props.changeset;
 		await changeset.rejectUpToDate();
-		this.setState({ changes: changeset.changes });
+		this.updateChanges(changeset.changes);
 	};
 
 	applySelectedChange = async () => {
@@ -116,7 +136,7 @@ class ChangesBrowser extends Component {
 	filtersChanged = (filters) => {
 		const changeset = this.props.changeset;
 		changeset.filterChanges(filters);
-		this.setState({ changes: changeset.changes });
+		this.updateChanges(changeset.changes);
 	};
 
 	showOriginalChanges = async () => {
@@ -124,7 +144,7 @@ class ChangesBrowser extends Component {
 		changeset.changes = changeset.originalChanges || changeset.changes;
 		changeset.changes.forEach((ch) => (ch.color = null));
 		ide.waitFor(async () => await changeset.updateCurrentSourceCode());
-		this.setState({ changes: changeset.changes });
+		this.updateChanges(changeset.changes);
 	};
 
 	render() {
@@ -193,7 +213,8 @@ class ChangesBrowser extends Component {
 							changes={changes}
 							selectedChange={selectedChange}
 							onChangeSelect={this.changeSelected}
-							onChangeApplied={this.changeSelected}
+							onChangeApply={this.changeSelected}
+							onChangeReject={this.rejectChange}
 							onFiltersChange={this.filtersChanged}
 						/>
 					</Paper>

@@ -29,6 +29,13 @@ class StChangeset extends Object {
 		this.system = system;
 	}
 
+	rejectChange(change) {
+		if (!this.originalChanges) {
+			this.originalChanges = this.changes;
+		}
+		this.changes = this.changes.filter((ch) => ch !== change);
+	}
+
 	compress() {
 		if (!this.originalChanges) {
 			this.originalChanges = this.changes;
