@@ -19,10 +19,10 @@ import { StreamLanguage } from "@codemirror/language";
 import { Prec } from "@codemirror/state";
 //import { throwStatement } from "@babel/types";
 import { hoverTooltip } from "@codemirror/view";
-import {
-	hyperLinkExtension,
-	hyperLinkStyle,
-} from "@uiw/codemirror-extensions-hyper-link";
+// import {
+// 	hyperLinkExtension,
+// 	hyperLinkStyle,
+// } from "@uiw/codemirror-extensions-hyper-link";
 
 // This code is intended to be used when defining a parser from a Lezer grammar.
 // const parser = SmalltalkParser.configure({
