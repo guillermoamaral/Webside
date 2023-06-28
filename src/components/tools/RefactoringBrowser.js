@@ -160,20 +160,19 @@ class RefactoringBrowser extends Component {
 		if (!target.categories.includes(method.category)) {
 			await this.updateCategories(target, true);
 		}
-		//selections.category = method.category;
-		const methods = target.methods;
-		const index = methods
+		var methods = target.methods;
+		var index = methods
 			? methods.findIndex((m) => m.selector === method.selector)
 			: -1;
 		if (index === -1) {
 			await this.updateMethods(target, null, null, true);
-			selections.method = target.methods.find(
+			var methods = target.methods;
+			var index = methods.findIndex(
 				(m) => m.selector === method.selector
 			);
-		} else {
-			methods.splice(index, 1, method);
-			selections.method = method;
 		}
+		methods.splice(index, 1, method);
+		selections.method = method;
 		this.applySelections(selections);
 	};
 

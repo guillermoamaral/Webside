@@ -242,6 +242,7 @@ class CustomTable extends Component {
 										color="inherit"
 										size="small"
 										onClick={(event) => {
+											event.stopPropagation();
 											action.handler(row);
 										}}
 									>

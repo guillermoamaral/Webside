@@ -32,22 +32,9 @@ class ChangesTable extends Component {
 		}
 	};
 
-	applyChange = async (change) => {
-		if (change) {
-			try {
-				await ide.api.postChange(change.asJson());
-				await change.updateCurrentSourceCode();
-				change.color = null;
-				change.color = this.colorFor(change);
-				const handler = this.props.onChangeApply;
-				if (handler) {
-					handler(change);
-				} else {
-					this.setState({});
-				}
-			} catch (error) {
-				this.reportError(error);
-			}
+	applyChange = (change) => {
+		if (this.props.onChangeApply) {
+			this.props.onChangeApply(change);
 		}
 	};
 

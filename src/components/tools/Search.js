@@ -128,6 +128,7 @@ class Search extends Component {
 						onChange={(event) =>
 							this.setState({ text: event.target.value })
 						}
+						size="small"
 						placeholder="Search ..."
 						name="text"
 						variant="outlined"

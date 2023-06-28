@@ -248,7 +248,6 @@ class CustomList extends Component {
 	};
 
 	clearFilter() {
-		console.log("clearing filter");
 		this.setState({
 			filterEnabled: false,
 			filterText: "",
@@ -257,7 +256,6 @@ class CustomList extends Component {
 	}
 
 	keyDown = (event) => {
-		console.log("key down");
 		event.preventDefault();
 		const key = event.key;
 		if (key === "ArrowUp") {
@@ -279,7 +277,6 @@ class CustomList extends Component {
 	};
 
 	filterItems(text) {
-		console.log("filtering by", text);
 		const enabled = text !== "";
 		const all = this.props.items;
 		const target = text.toLowerCase();

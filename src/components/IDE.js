@@ -260,7 +260,7 @@ class IDE extends Component {
 		const dark = appearance.section("dark").section("colors");
 		dark.set("primaryColor", primary);
 		dark.set("secondaryColor", secondary);
-		dark.set("appliedChange", Setting.adjustColor(primary, 60));
+		dark.set("appliedChange", primary);
 		const light = appearance.section("light").section("colors");
 		light.set("primaryColor", Setting.adjustColor(primary, -40));
 		light.set("secondaryColor", secondary);
@@ -524,7 +524,6 @@ class IDE extends Component {
 	};
 
 	splitPage = (container, page) => {
-		console.log(page);
 		const containers = this.state.extraContainers;
 		const index =
 			containers.findIndex((c) => c.component.ref.current === container) +

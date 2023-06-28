@@ -22,7 +22,7 @@ class ChangesBrowser extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			changes: this.props.changeset.changes,
+			changes: props.changeset.changes,
 			selectedChange: props.selectedChange,
 		};
 	}
@@ -38,9 +38,13 @@ class ChangesBrowser extends Component {
 		return change && change.className ? { class: change.className } : {};
 	}
 
-	updateChanges(changes) {
-		this.setState({ changes: changes }, () => this.updateLabel());
-	}
+	updateChanges = (changes, selecting) => {
+		var selected = selecting || this.state.selectedChange;
+		selected = changes.includes(selected) ? selected : null;
+		this.setState({ changes: changes, selectedChange: selected }, () =>
+			this.updateLabel()
+		);
+	};
 
 	updateLabel() {
 		const label =
@@ -72,10 +76,21 @@ class ChangesBrowser extends Component {
 		}
 	};
 
+	nextChange(change) {
+		const changes = this.props.changeset.changes;
+		const index = changes.indexOf(change);
+		return index >= 0
+			? index < changes.length - 1
+				? changes[index + 1]
+				: null
+			: null;
+	}
+
 	rejectChange = (change) => {
 		const changeset = this.props.changeset;
+		const next = this.nextChange(change);
 		changeset.rejectChange(change);
-		this.updateChanges(changeset.changes);
+		this.updateChanges(changeset.changes, next);
 	};
 
 	rejectOlderChanges = () => {
@@ -90,21 +105,19 @@ class ChangesBrowser extends Component {
 		this.updateChanges(changeset.changes);
 	};
 
-	applySelectedChange = async () => {
+	applySelectedChange = () => {
 		const selectedChange = this.state.selectedChange;
-		if (!selectedChange) {
-			return;
+		if (selectedChange) {
+			this.applyChange(selectedChange);
 		}
-		const changes = this.props.changeset.changes;
-		await this.applyChanges([selectedChange]);
-		const index = changes.indexOf(selectedChange);
-		const selected =
-			index >= 0
-				? index < changes.length - 1
-					? changes[index + 1]
-					: selectedChange
-				: null;
-		this.setState({ changes: changes, selectedChange: selected });
+	};
+
+	applyChange = async (change) => {
+		await this.applyChanges([change]);
+		this.updateChanges(
+			this.props.changeset.changes,
+			this.nextChange(change)
+		);
 	};
 
 	applyAllChanges = async () => {
@@ -113,7 +126,10 @@ class ChangesBrowser extends Component {
 			return;
 		}
 		await this.applyChanges(changes);
-		this.setState({ selectedChange: changes[changes.length - 1] });
+		this.updateChanges(
+			this.props.changeset.changes,
+			changes[changes.length - 1]
+		);
 	};
 
 	applyChanges = async (changes) => {
@@ -213,7 +229,7 @@ class ChangesBrowser extends Component {
 							changes={changes}
 							selectedChange={selectedChange}
 							onChangeSelect={this.changeSelected}
-							onChangeApply={this.changeSelected}
+							onChangeApply={this.applyChange}
 							onChangeReject={this.rejectChange}
 							onFiltersChange={this.filtersChanged}
 						/>

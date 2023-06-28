@@ -573,6 +573,7 @@ class CodeEditor extends Component {
 	};
 
 	browseGlobal = async (name) => {
+		if (!name) return;
 		let species;
 		try {
 			species = await ide.api.classNamed(name);
@@ -805,20 +806,24 @@ class CodeEditor extends Component {
 								// hyperLinkExtension({
 								// 	regexp: /\b[A-Z].*?\b/g,
 								// 	// match: { Dale: "https://google1.com" },
-								// 	handle: (value) => {
-								// 		return value;
+								// 	handle: (value, input, from, to) => {
+								// 		const globals = ["Well"];
+								// 		if (globals.includes(value))
+								// 			return value;
 								// 	},
 								// 	anchor: ($dom) => {
+								// 		const url = new URL($dom.href);
+								// 		const global = url.pathname.slice(1);
 								// 		$dom.onclick = (e) => {
-								// 			console.log($dom);
-								// 			const url = new URL($dom.href);
-								// 			const global =
-								// 				url.pathname.slice(1);
 								// 			this.browseGlobal(global);
 								// 			return false;
 								// 		};
+								// 		if (global === "undefined") {
+								// 			$dom.removeChild(
+								// 				$dom.childNodes[0]
+								// 			);
+								// 		}
 								// 		//$dom.className = "cm-hyper-link-icon";
-								// 		//$dom.removeChild($dom.childNodes[0])
 								// 		return $dom;
 								// 	},
 								// }),
