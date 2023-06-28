@@ -195,6 +195,7 @@ class PackageBrowser extends RefactoringBrowser {
 	};
 
 	packageSelected = async (pack) => {
+		container.updatePageLabel(this.props.id, pack.name);
 		const selections = this.currentSelections();
 		selections.package = pack;
 		await this.updatePackage(pack, true);

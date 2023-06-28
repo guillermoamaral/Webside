@@ -261,7 +261,10 @@ class ToolsContainer extends Component {
 	};
 
 	openPackageBrowser = (packagename) => {
-		const browser = <PackageBrowser selectedPackage={packagename} />;
+		const pageId = this.newPageId();
+		const browser = (
+			<PackageBrowser selectedPackage={packagename} id={pageId} />
+		);
 		this.createPage("Package Browser", <PackageBrowserIcon />, browser);
 	};
 

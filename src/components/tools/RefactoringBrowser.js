@@ -1,5 +1,6 @@
 import { Component } from "react";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 
 class RefactoringBrowser extends Component {
 	async componentDidMount() {
@@ -143,6 +144,12 @@ class RefactoringBrowser extends Component {
 	};
 
 	methodSelected = async (method) => {
+		if (method) {
+			container.updatePageLabel(
+				this.props.id,
+				method.methodClass + ">>" + method.selector
+			);
+		}
 		const selections = this.currentSelections();
 		if (!method.template) {
 			await this.updateMethod(method);

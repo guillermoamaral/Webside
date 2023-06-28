@@ -3,12 +3,14 @@ import { Tabs, Tab, Box, IconButton, Menu, MenuItem } from "@mui/material";
 import TabPanel from "./TabPanel";
 import TabLabel from "./TabLabel";
 import AddIcon from "@mui/icons-material/Add";
+import SelectIcon from "@mui/icons-material/ExpandMore";
 
 class TabControl extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			addMenuOpen: false,
+			selectMenuOpen: false,
 		};
 	}
 
@@ -51,7 +53,7 @@ class TabControl extends Component {
 	};
 
 	render() {
-		const { addMenuOpen } = this.state;
+		const { addMenuOpen, selectMenuOpen } = this.state;
 		const { id, pages, selectedPage, noClose } = this.props;
 		const addOptions = this.props.addOptions || [];
 		const selectedIndex = pages.findIndex((p) => p.id === selectedPage.id);
@@ -139,10 +141,7 @@ class TabControl extends Component {
 										onClick={(event) => {
 											this.setState(
 												{ addMenuOpen: false },
-												() =>
-													option.handler(
-														event.ctrlKey
-													)
+												() => option.handler()
 											);
 										}}
 									>
@@ -156,6 +155,60 @@ class TabControl extends Component {
 												{option.icon}
 											</Box>
 											<Box>{option.label}</Box>
+										</Box>
+									</MenuItem>
+								);
+							})}
+						</Menu>
+					</Box>
+					<Box flexShrink={0}>
+						<IconButton
+							id={"selectTab" + id}
+							onClick={() => {
+								this.setState({
+									selectMenuOpen: true,
+								});
+							}}
+							size="medium"
+						>
+							<SelectIcon />
+						</IconButton>
+						<Menu
+							//id={"addTab" + id}
+							anchorEl={document.getElementById("selectTab" + id)}
+							keepMounted
+							open={selectMenuOpen}
+							onClose={() => {
+								this.setState({
+									selectMenuOpen: false,
+								});
+							}}
+						>
+							{pages.map((page, index) => {
+								return (
+									<MenuItem
+										key={"selectTab" + index}
+										onClick={(event) => {
+											this.setState(
+												{ selectMenuOpen: false },
+												() =>
+													this.tabChanged(
+														event,
+														index
+													)
+											);
+										}}
+									>
+										<Box
+											display="flex"
+											flexWrap="nowrap"
+											alignItems="center"
+											justifyContent="center"
+										>
+											<Box pt={1} pr={1}>
+												{page.icon}
+											</Box>
+											<Box>{page.label}</Box>
 										</Box>
 									</MenuItem>
 								);
