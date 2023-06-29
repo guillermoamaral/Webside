@@ -99,6 +99,7 @@ class ObjectPresenter extends Component {
 		}
 		return (
 			<TabControl
+				id={object.id}
 				style={{ height: "100%" }}
 				selectedPage={selectedPage}
 				pages={pages}

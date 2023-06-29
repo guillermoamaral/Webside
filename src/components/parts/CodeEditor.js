@@ -1,5 +1,17 @@
 import React, { Component } from "react";
-import { Grid, Box, IconButton, LinearProgress } from "@mui/material";
+import ReactDOM from "react-dom/client";
+import {
+	Grid,
+	Box,
+	IconButton,
+	LinearProgress,
+	Link,
+	Card,
+	CardContent,
+	CardActions,
+	Button,
+	Typography,
+} from "@mui/material";
 import AcceptIcon from "@mui/icons-material/CheckCircle";
 import PopupMenu from "../controls/PopupMenu";
 import { ide } from "../IDE";
@@ -748,21 +760,44 @@ class CodeEditor extends Component {
 	}
 
 	tooltip() {
-		return hoverTooltip((view, pos, side) => {
+		return hoverTooltip(async (view, pos, side) => {
 			const word = this.wordAt(pos);
 			if (!word) return null;
-			const handler = this.props.onTooltipShow;
+			var handler = this.props.onTooltipShow;
 			if (!handler) return null;
-			let tip = handler(word);
+			var tip = await handler(word);
 			if (!tip) return null;
-			tip = "   " + tip + "   ";
+			const max = 400;
+			tip = tip.length <= max ? tip : tip.substr(0, max - 1) + "…";
+			handler = this.props.onTooltipClick;
 			return {
 				pos: pos,
 				above: true,
 				arrow: true,
 				create(view) {
 					let dom = document.createElement("div");
-					dom.textContent = tip;
+					const root = ReactDOM.createRoot(dom);
+					root.render(
+						<Card sx={{ minWidth: 200, maxWidth: 500 }}>
+							<CardContent>
+								<Link
+									component="button"
+									variant="body1"
+									onClick={(event) => {
+										if (handler) {
+											handler(word);
+										}
+									}}
+								>
+									{word}
+								</Link>
+								<Typography variant="body2">{tip}</Typography>
+							</CardContent>
+							{/* <CardActions>
+								<Button size="small">See</Button>
+							</CardActions> */}
+						</Card>
+					);
 					return { dom };
 				},
 			};

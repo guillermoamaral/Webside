@@ -9,6 +9,7 @@ import {
 	Box,
 } from "@mui/material";
 import { ide } from "../IDE";
+import { container } from "../ToolsContainer";
 import FrameList from "../parts/FrameList";
 import BindingTable from "../parts/BindingTable";
 import ExpressionTable from "../parts/ExpressionTable";
@@ -191,14 +192,26 @@ class Debugger extends PureComponent {
 			: {};
 	}
 
-	tooltipFor = (word) => {
+	tooltipForBinding = (name) => {
 		const frame = this.state.selectedFrame;
 		if (!frame) return;
-		const binding = frame.bindings.find((b) => b.name === word);
+		const binding = frame.bindings.find((b) => b.name === name);
 		if (!binding) return;
-		const max = 100;
-		const value = binding.value;
-		return value.length > max ? value.substr(0, 99) + "…" : value;
+		return binding.value;
+	};
+
+	inspectBinding = async (name) => {
+		try {
+			const object = await container.evaluateExpression(
+				name,
+				false,
+				true,
+				this.evaluationContext()
+			);
+			container.openInspector(object);
+		} catch (error) {
+			container.reportError(error);
+		}
 	};
 
 	render() {
@@ -292,7 +305,8 @@ class Debugger extends PureComponent {
 						onCompileMethod={this.methodCompiled}
 						onDefineClass={this.classDefined}
 						onCommentClass={this.classCommented}
-						onTooltipShow={this.tooltipFor}
+						onTooltipText={this.tooltipForBinding}
+						onTooltipClick={this.inspectBinding}
 					/>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>

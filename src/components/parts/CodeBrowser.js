@@ -320,17 +320,23 @@ class CodeBrowser extends Component {
 		}
 	};
 
+	onTooltipShow = (word) => {
+		const handler = this.props.onTooltipShow;
+		if (handler) return handler(word);
+	};
+
+	onTooltipClick = (word) => {
+		const handler = this.props.onTooltipClick;
+		if (handler) return handler(word);
+	};
+
 	render() {
 		const mode = this.state.selectedMode;
 		const author = this.currentAuthor();
 		const timestamp = this.currentTimestamp();
 		const packagename = this.currentPackage();
-		const {
-			selectedInterval,
-			selectedSelector,
-			selectedIdentifier,
-			onTooltipShow,
-		} = this.props;
+		const { selectedInterval, selectedSelector, selectedIdentifier } =
+			this.props;
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
@@ -370,7 +376,8 @@ class CodeBrowser extends Component {
 							showAccept
 							onAccept={this.acceptClicked}
 							onRename={(target) => this.renameClass(target)}
-							onTooltipShow={onTooltipShow}
+							onTooltipShow={this.onTooltipShow}
+							onTooltipClick={this.onTooltipClick}
 						/>
 					</Paper>
 				</Grid>
