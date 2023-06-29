@@ -382,19 +382,6 @@ class ClassBrowser extends RefactoringBrowser {
 		this.applySelections(selections);
 	};
 
-	tooltipForClass = async (name) => {
-		console.log(name);
-		const species = await ide.api.classNamed(name);
-		if (species) {
-			const comment = species.comment;
-			return comment.length > 0 ? comment : "No comment";
-		}
-	};
-
-	browseClass = (classname) => {
-		container.browseClass(classname);
-	};
-
 	render() {
 		console.log("rendering browser");
 		const {
@@ -574,8 +561,6 @@ class ClassBrowser extends RefactoringBrowser {
 						onCompileMethod={this.methodCompiled}
 						onDefineClass={this.classDefined}
 						onCommentClass={this.classCommented}
-						onTooltipShow={this.tooltipForClass}
-						onTooltipClick={this.browseClass}
 					/>
 				</Grid>
 			</Grid>

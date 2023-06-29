@@ -305,7 +305,7 @@ class Debugger extends PureComponent {
 						onCompileMethod={this.methodCompiled}
 						onDefineClass={this.classDefined}
 						onCommentClass={this.classCommented}
-						onTooltipText={this.tooltipForBinding}
+						onTooltipShow={this.tooltipForBinding}
 						onTooltipClick={this.inspectBinding}
 					/>
 				</Grid>

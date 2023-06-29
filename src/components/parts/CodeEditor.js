@@ -31,6 +31,7 @@ import { StreamLanguage } from "@codemirror/language";
 import { Prec } from "@codemirror/state";
 //import { throwStatement } from "@babel/types";
 import { hoverTooltip } from "@codemirror/view";
+import { async } from "q";
 // import {
 // 	hyperLinkExtension,
 // 	hyperLinkStyle,
@@ -759,17 +760,72 @@ class CodeEditor extends Component {
 		});
 	}
 
+	defaultTooltipSpecFor = async (word, position) => {
+		const node = this.astNodeAtOffset(position);
+		if (node && node.type === "Selector") {
+			return {
+				title: node.value,
+				description: "",
+				actions: [
+					{
+						label: "Implementors",
+						handler: (s) => container.browseImplementors(s),
+					},
+					{
+						label: "Senders",
+						handler: (s) => container.browseSenders(s),
+					},
+				],
+			};
+		}
+		var species;
+		try {
+			species = await ide.api.classNamed(word);
+		} catch (error) {}
+		if (species) {
+			const comment = species.comment;
+			return {
+				title: species.name,
+				description: comment.length > 0 ? comment : "No comment",
+				titleAction: (c) => container.browseClass(c),
+			};
+		}
+	};
+
+	tooltipSpecAt = async (position) => {
+		const word = this.wordAt(position);
+		if (!word) return;
+		var handler = this.props.onTooltipShow;
+		var tip;
+		if (handler) {
+			tip = await handler(word);
+		}
+		if (!tip) {
+			tip = await this.defaultTooltipSpecFor(word, position);
+		}
+		if (!tip) return;
+		if (typeof tip == "string") {
+			tip = {
+				title: word,
+				description: tip,
+				titleAction: this.props.onTooltipClick,
+			};
+		}
+		const max = 400;
+		if (tip.description.length > max) {
+			tip.description = tip.description.substr(0, max - 1) + "…";
+		}
+		return tip;
+	};
+
 	tooltip() {
 		return hoverTooltip(async (view, pos, side) => {
-			const word = this.wordAt(pos);
-			if (!word) return null;
-			var handler = this.props.onTooltipShow;
-			if (!handler) return null;
-			var tip = await handler(word);
-			if (!tip) return null;
-			const max = 400;
-			tip = tip.length <= max ? tip : tip.substr(0, max - 1) + "…";
-			handler = this.props.onTooltipClick;
+			const spec = await this.tooltipSpecAt(pos);
+			if (!spec) return null;
+			const appearance = ide.settings.section("appearance");
+			const mode = appearance.section(appearance.get("mode"));
+			const color = mode.section("colors").get("primaryText");
+			const background = mode.section("colors").get("background");
 			return {
 				pos: pos,
 				above: true,
@@ -778,24 +834,48 @@ class CodeEditor extends Component {
 					let dom = document.createElement("div");
 					const root = ReactDOM.createRoot(dom);
 					root.render(
-						<Card sx={{ minWidth: 200, maxWidth: 500 }}>
+						<Card
+							sx={{
+								minWidth: 200,
+								maxWidth: 500,
+								background: background,
+							}}
+						>
 							<CardContent>
 								<Link
 									component="button"
 									variant="body1"
-									onClick={(event) => {
-										if (handler) {
-											handler(word);
-										}
+									onClick={(e) => {
+										if (spec.titleAction)
+											spec.titleAction(spec.title);
 									}}
 								>
-									{word}
+									{spec.title}
 								</Link>
-								<Typography variant="body2">{tip}</Typography>
+								<Typography
+									variant="body2"
+									sx={{ color: color }}
+								>
+									{spec.description || ""}
+								</Typography>
 							</CardContent>
-							{/* <CardActions>
-								<Button size="small">See</Button>
-							</CardActions> */}
+							{spec.actions && (
+								<CardActions>
+									{spec.actions.map((a, i) => {
+										return (
+											<Button
+												size="small"
+												key={"tipAction" + i}
+												onClick={() =>
+													a.handler(spec.title)
+												}
+											>
+												{a.label}
+											</Button>
+										);
+									})}
+								</CardActions>
+							)}
 						</Card>
 					);
 					return { dom };
