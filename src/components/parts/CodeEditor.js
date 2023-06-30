@@ -149,9 +149,10 @@ class CodeEditor extends Component {
 			nextProps.selectedIdentifier !== this.props.selectedIdentifier ||
 			nextProps.evaluating !== this.props.evaluating ||
 			nextState.evaluating !== this.state.evaluating ||
-			nextProps.progress !== this.state.progress
+			nextState.progress !== this.state.progress
 		) {
 			this.selectsRanges = true;
+			console.log("holly crap!");
 			return true;
 		}
 		// Review this as responding false none of local setState() calls trigger a re-rendering
