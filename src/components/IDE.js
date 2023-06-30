@@ -351,14 +351,12 @@ class IDE extends Component {
 		}
 		const sorted = containers.map((p) => p.id).sort();
 		const maxId = sorted[sorted.length - 1];
-		if (1 == 1) {
-			//We don't recycle ids for the moment"
-			return maxId + 1;
-		}
-		const used = new Array(maxId);
-		sorted.forEach((id) => (used[id] = true));
-		const unused = used.findIndex((id) => id !== true);
-		return unused === -1 ? maxId + 1 : unused;
+		return maxId + 1;
+		//We don't recycle ids for the moment"
+		// const used = new Array(maxId);
+		// sorted.forEach((id) => (used[id] = true));
+		// const unused = used.findIndex((id) => id !== true);
+		// return unused === -1 ? maxId + 1 : unused;
 	}
 
 	addContainer = (pages) => {
@@ -689,7 +687,10 @@ class IDE extends Component {
 							onSettingsClick={this.openSettings}
 							onCollapse={this.collapseSidebar}
 						/>
-						<Box component="main" sx={{ flexGrow: 1, ml: 6, mr: 2, p: 3 }}>
+						<Box
+							component="main"
+							sx={{ flexGrow: 1, ml: 6, mr: 2, p: 3 }}
+						>
 							<DrawerHeader />
 							<Container maxWidth={totalWidth} disableGutters>
 								<Grid container spacing={0}>

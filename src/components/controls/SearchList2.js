@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 // Must get rid of withStyles
 import { withStyles } from "@mui/styles";
-import { styled } from "@mui/material/styles";
+//import { styled } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/SearchRounded";
 
 const styles = (theme) => ({

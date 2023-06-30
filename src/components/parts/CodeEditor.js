@@ -31,7 +31,7 @@ import { StreamLanguage } from "@codemirror/language";
 import { Prec } from "@codemirror/state";
 //import { throwStatement } from "@babel/types";
 import { hoverTooltip } from "@codemirror/view";
-import { async } from "q";
+
 // import {
 // 	hyperLinkExtension,
 // 	hyperLinkStyle,
@@ -152,7 +152,6 @@ class CodeEditor extends Component {
 			nextState.progress !== this.state.progress
 		) {
 			this.selectsRanges = true;
-			console.log("holly crap!");
 			return true;
 		}
 		// Review this as responding false none of local setState() calls trigger a re-rendering

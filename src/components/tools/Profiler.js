@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { ide } from "../IDE";
 import {
 	Grid,
@@ -8,7 +8,7 @@ import {
 	ToggleButtonGroup,
 } from "@mui/material";
 import CodeEditor from "../parts/CodeEditor";
-import AutoSizer from "react-virtualized-auto-sizer";
+//import AutoSizer from "react-virtualized-auto-sizer";
 //import { FlameGraph } from "react-flame-graph";
 import { Bar } from "react-chartjs-2";
 
@@ -64,8 +64,7 @@ class Profiler extends Component {
 	}
 
 	render() {
-		const { loading, tree, ranking, selectedMode, selectedMethod } =
-			this.state;
+		const { loading, ranking, selectedMode, selectedMethod } = this.state;
 		var rankingData = {
 			labels: ranking ? ranking.map((m) => m.name) : [],
 			datasets: [

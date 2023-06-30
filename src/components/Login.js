@@ -28,13 +28,9 @@ class Login extends Component {
 		if (backend && backend !== "" && developer && developer !== "") {
 			try {
 				this.setState({ connecting: true });
-				const response = await axios.get(backend + "/dialect");
-				this.setState({ connecting: false });
+				await axios.get(backend + "/dialect");
 				this.props.navigate(
-					"/ide?backend=" +
-						backend +
-						"&developer=" +
-						developer
+					"/ide?backend=" + backend + "&developer=" + developer
 				);
 			} catch (error) {
 				this.setState({

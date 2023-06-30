@@ -35,12 +35,9 @@ import Changeset from "../model/StChangeset";
 import { ide } from "./IDE";
 import ToolContainerContext from "./ToolContainerContext";
 
-var container = null;
-
 class ToolContainer extends Component {
 	constructor(props) {
 		super(props);
-		container = this;
 		this.state = {
 			selectedPageId: props.pages ? props.pages[0].id : null,
 			pages: props.pages || [],
@@ -54,14 +51,12 @@ class ToolContainer extends Component {
 		}
 		const sorted = pages.map((p) => p.id).sort();
 		const maxId = sorted[sorted.length - 1];
-		if (1 == 1) {
-			//We don't recycle ids for the moment;
-			return maxId + 1;
-		}
-		const used = new Array(maxId);
-		sorted.forEach((id) => (used[id] = true));
-		const unused = used.findIndex((id) => id !== true);
-		return unused === -1 ? maxId + 1 : unused;
+		return maxId + 1;
+		//We don't recycle ids for the moment;
+		// const used = new Array(maxId);
+		// sorted.forEach((id) => (used[id] = true));
+		// const unused = used.findIndex((id) => id !== true);
+		// return unused === -1 ? maxId + 1 : unused;
 	}
 
 	createPage(label, icon, component, id, onClose) {
@@ -937,5 +932,3 @@ class ToolContainer extends Component {
 }
 
 export default ToolContainer;
-
-export { container };
