@@ -689,7 +689,7 @@ class IDE extends Component {
 							onSettingsClick={this.openSettings}
 							onCollapse={this.collapseSidebar}
 						/>
-						<Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+						<Box component="main" sx={{ flexGrow: 1, ml: 6, mr: 2, p: 3 }}>
 							<DrawerHeader />
 							<Container maxWidth={totalWidth} disableGutters>
 								<Grid container spacing={0}>
