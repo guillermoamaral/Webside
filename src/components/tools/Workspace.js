@@ -14,9 +14,11 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CodeEditor from "../parts/CodeEditor";
 import Inspector from "./Inspector";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 
 class Workspace extends Component {
+	static contextType = ToolContainerContext;
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -61,7 +63,7 @@ class Workspace extends Component {
 	evaluateClicked = async () => {
 		try {
 			this.setState({ evaluating: true });
-			const object = await container.evaluateExpression(
+			const object = await this.context.evaluateExpression(
 				this.state.source,
 				false,
 				true,
@@ -118,7 +120,7 @@ class Workspace extends Component {
 								<Accordion key={inspector.key} defaultExpanded>
 									<AccordionSummary
 										expandIcon={<ExpandMoreIcon />}
-										IconButtonProps={{ size: "small" }}
+										iconbuttonprops={{ size: "small" }}
 									>
 										<Box
 											display="flex"

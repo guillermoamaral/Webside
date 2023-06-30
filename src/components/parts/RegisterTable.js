@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 
 class RegisterTable extends Component {
+	static contextType = ToolContainerContext;
+
 	registerSelected = (frame) => {
 		if (this.props.onRegisterSelect) {
 			this.props.onRegisterSelect(frame);
@@ -21,7 +23,7 @@ class RegisterTable extends Component {
 				register.name
 			);
 			const object = await ide.api.objectWithId(register.name);
-			container.openInspector(object);
+			this.context.openInspector(object);
 		} catch (error) {
 			ide.reportError(error);
 		}

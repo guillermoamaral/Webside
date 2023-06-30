@@ -7,11 +7,13 @@ import {
 	ToggleButtonGroup,
 } from "@mui/material";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 import CodeEditor from "./CodeEditor";
 //import clsx from "clsx";
 
 class CodeBrowser extends Component {
+	static contextType = ToolContainerContext;
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -383,7 +385,7 @@ class CodeBrowser extends Component {
 					{author && (
 						<Link
 							href="#"
-							onClick={() => container.openChat(author)}
+							onClick={() => this.context.openChat(author)}
 						>
 							{author}
 						</Link>
@@ -392,7 +394,7 @@ class CodeBrowser extends Component {
 					{packagename && (
 						<Link
 							href="#"
-							onClick={() => container.browsePackage(packagename)}
+							onClick={() => this.context.browsePackage(packagename)}
 						>
 							{packagename}
 						</Link>

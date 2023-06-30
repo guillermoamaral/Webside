@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import {
 	Grid,
 	Box,
@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import RefactoringBrowser from "./RefactoringBrowser";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 import PackageList from "../parts/PackageList";
 import ClassTree from "../parts/ClassTree";
 import CategoryList from "../parts/CategoryList";
@@ -18,6 +18,8 @@ import CodeBrowser from "../parts/CodeBrowser";
 import CustomPaper from "../controls/CustomPaper";
 
 class PackageBrowser extends RefactoringBrowser {
+	static contextType = ToolContainerContext;
+
 	constructor(props) {
 		super(props);
 		this.cache = { packages: {}, classes: {} };
@@ -195,7 +197,7 @@ class PackageBrowser extends RefactoringBrowser {
 	};
 
 	packageSelected = async (pack) => {
-		container.updatePageLabel(this.props.id, pack.name);
+		this.context.updatePageLabel(this.props.id, pack.name);
 		const selections = this.currentSelections();
 		selections.package = pack;
 		await this.updatePackage(pack, true);
@@ -247,7 +249,7 @@ class PackageBrowser extends RefactoringBrowser {
 	};
 
 	classSelected = async (species) => {
-		container.updatePageLabel(this.props.id, species.name);
+		this.context.updatePageLabel(this.props.id, species.name);
 		const selections = this.currentSelections();
 		selections.species = species;
 		selections.category = null;

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import {
 	Grid,
 	Paper,
@@ -16,9 +16,11 @@ import RejectUpToDateIcon from "@mui/icons-material/RemoveDone";
 import ApplyIcon from "@mui/icons-material/Done";
 import ApplyAllIcon from "@mui/icons-material/DoneAll";
 import ShowOriginalIcon from "@mui/icons-material/Refresh";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 
 class ChangesBrowser extends Component {
+	static contextType = ToolContainerContext;
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -52,7 +54,7 @@ class ChangesBrowser extends Component {
 			" (" +
 			this.props.changeset.size() +
 			")";
-		container.updatePageLabel(this.props.id, label);
+		this.context.updatePageLabel(this.props.id, label);
 	}
 
 	download = async (event) => {

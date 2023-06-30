@@ -165,7 +165,7 @@ class AddMethod extends MethodChange {
 
 class RemoveMethod extends MethodChange {
 	isUpToDate() {
-		return this.currentSource == "could not find method";
+		return this.currentSource === "could not find method";
 	}
 }
 

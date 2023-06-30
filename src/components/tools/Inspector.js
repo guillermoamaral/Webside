@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import { Grid, Box, Paper, Breadcrumbs, Link, Typography } from "@mui/material";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 import ObjectTree from "../parts/ObjectTree";
 import ObjectPresenter from "../parts/ObjectPresenter";
 import CodeEditor from "../parts/CodeEditor";
 
 class Inspector extends Component {
+	static contextType = ToolContainerContext;
+
 	constructor(props) {
 		super(props);
 		const root = props.root;
@@ -128,7 +130,7 @@ class Inspector extends Component {
 	};
 
 	browseClass = (classname) => {
-		container.browseClass(classname);
+		this.context.browseClass(classname);
 	};
 
 	subpaths(path) {
@@ -165,7 +167,7 @@ class Inspector extends Component {
 		}
 		const path = this.objectURIPath(selectedObject);
 		try {
-			await container.evaluateExpression(
+			await this.context.evaluateExpression(
 				expression,
 				false,
 				false,

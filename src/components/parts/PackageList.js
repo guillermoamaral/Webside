@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import CustomList from "../controls/CustomList";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 
 class PackageList extends Component {
+	static contextType = ToolContainerContext;
+
 	createPackage = async () => {
 		try {
 			const name = await ide.prompt({
@@ -63,13 +65,13 @@ class PackageList extends Component {
 
 	runTests = (pack) => {
 		if (pack) {
-			container.runTestPackage(pack.name);
+			this.context.runTestPackage(pack.name);
 		}
 	};
 
 	migratePackage = (pack) => {
 		if (pack) {
-			container.migratePackage(pack.name);
+			this.context.migratePackage(pack.name);
 		}
 	};
 

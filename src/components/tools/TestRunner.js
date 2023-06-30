@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 import LinearProgress from "@mui/material/LinearProgress";
 import {
 	Accordion,
@@ -34,6 +34,8 @@ ChartJS.register(
 );
 
 class TestRunner extends Component {
+	static contextType = ToolContainerContext;
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -193,13 +195,13 @@ class TestRunner extends Component {
 
 	browseImplementors = (test) => {
 		if (test) {
-			container.browseImplementors(test.selector);
+			this.context.browseImplementors(test.selector);
 		}
 	};
 
 	browseClass = (test) => {
 		if (test) {
-			container.browseClass(test.class);
+			this.context.browseClass(test.class);
 		}
 	};
 
@@ -222,7 +224,7 @@ class TestRunner extends Component {
 				test.class,
 				test.selector
 			);
-			container.openDebugger(
+			this.context.openDebugger(
 				d.id,
 				d.description || "Debugging test " + test.selector
 			);

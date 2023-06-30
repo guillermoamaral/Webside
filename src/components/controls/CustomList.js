@@ -309,7 +309,7 @@ class CustomList extends Component {
 			<div style={style}>
 				<ListItem
 					disableGutters={divider}
-					autoFocus={selected}
+					//autoFocus={selected}
 					style={{
 						paddingTop: 0,
 						paddingBottom: 0,

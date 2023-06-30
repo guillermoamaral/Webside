@@ -15,7 +15,7 @@ import {
 import AcceptIcon from "@mui/icons-material/CheckCircle";
 import PopupMenu from "../controls/PopupMenu";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 import Scrollable from "../controls/Scrollable";
 import CodeMirror from "@uiw/react-codemirror";
 import { EditorView, keymap } from "@codemirror/view";
@@ -73,6 +73,8 @@ SmalltalkParser.tokenTable = newTags;
 const smalltalk = StreamLanguage.define(SmalltalkParser);
 
 class CodeEditor extends Component {
+	static contextType = ToolContainerContext;
+
 	constructor(props) {
 		super(props);
 		this.editorRef = React.createRef();
@@ -130,7 +132,7 @@ class CodeEditor extends Component {
 				dirty: false,
 			};
 		}
-		if (evaluating !== state.evaluating) {
+		if (evaluating !== undefined && evaluating !== state.evaluating) {
 			return {
 				evaluating: evaluating,
 			};
@@ -139,18 +141,23 @@ class CodeEditor extends Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
+		console.log("should update?")
 		if (
 			nextProps.source !== this.props.source ||
 			JSON.stringify(nextProps.selectedInterval) !==
 				JSON.stringify(this.props.selectedInterval) ||
 			nextProps.selectedSelector !== this.props.selectedSelector ||
-			nextProps.selectedIdentifier !== this.props.selectedIdentifier
+			nextProps.selectedIdentifier !== this.props.selectedIdentifier ||
+			nextProps.evaluating !== this.props.evaluating ||
+			nextState.evaluating !== this.state.evaluating ||
+			nextProps.progress !== this.state.progress
 		) {
 			this.selectsRanges = true;
 			return true;
 		}
 		// Review this as responding false none of local setState() calls trigger a re-rendering
 		// For instance, openMenu(), which is intended to open the popup menu, never gets a rerendering (and so the menu open)
+		console.log("not updating")
 		return false;
 	}
 
@@ -482,28 +489,30 @@ class CodeEditor extends Component {
 	};
 
 	browseSenders = () => {
-		container.browseSenders(this.targetSelector());
+		this.context.browseSenders(this.targetSelector());
 	};
 
 	browseImplementors = () => {
-		container.browseImplementors(this.targetSelector());
+		this.context.browseImplementors(this.targetSelector());
 	};
 
 	browseClass = (e, f) => {
 		const target = this.targetWord();
-		target ? container.browseClass(target) : container.openClassBrowser();
+		target
+			? this.context.browseClass(target)
+			: this.context.openClassBrowser();
 	};
 
 	browseClassReferences = () => {
-		container.browseClassReferences(this.targetWord());
+		this.context.browseClassReferences(this.targetWord());
 	};
 
 	browseMethodsMatching = () => {
-		container.browseMethodsMatching(this.targetWord());
+		this.context.browseMethodsMatching(this.targetWord());
 	};
 
 	browseStringReferences = () => {
-		container.browseStringReferences(this.targetWord());
+		this.context.browseStringReferences(this.targetWord());
 	};
 
 	selectedExpression() {
@@ -524,14 +533,17 @@ class CodeEditor extends Component {
 	debugExpression = async () => {
 		const expression = this.selectedExpression();
 		try {
-			await container.debugExpression(expression, this.props.context);
+			await this.context.debugExpression(expression, this.props.context);
 		} catch (error) {}
 	};
 
 	profileExpression = async () => {
 		const expression = this.selectedExpression();
 		try {
-			await container.profileExpression(expression, this.props.context);
+			await this.context.profileExpression(
+				expression,
+				this.props.context
+			);
 		} catch (error) {}
 	};
 
@@ -539,7 +551,8 @@ class CodeEditor extends Component {
 		var object;
 		try {
 			this.setState({ progress: true });
-			object = await container.evaluateExpression(
+			console.log("progressing mama")
+			object = await this.context.evaluateExpression(
 				expression,
 				sync,
 				pin,
@@ -581,7 +594,7 @@ class CodeEditor extends Component {
 		const expression = this.selectedExpression();
 		const object = await this.evaluateExpression(expression, false, true);
 		if (object) {
-			container.openInspector(object);
+			this.context.openInspector(object);
 		}
 	};
 
@@ -592,11 +605,11 @@ class CodeEditor extends Component {
 			species = await ide.api.classNamed(name);
 		} catch (error) {}
 		if (species) {
-			return container.browseClass(species.name);
+			return this.context.browseClass(species.name);
 		}
 		const object = await this.evaluateExpression(name, false, true);
 		if (object) {
-			container.openInspector(object);
+			this.context.openInspector(object);
 		}
 	};
 
@@ -654,7 +667,7 @@ class CodeEditor extends Component {
 			clearTimeout(this.typingTimer);
 			this.typingTimer = setTimeout(() => {
 				this.props.onChange(this.state.source);
-			}, 3000);
+			}, 2000);
 		}
 		if (changed) {
 			//this.forceUpdate();
@@ -769,11 +782,11 @@ class CodeEditor extends Component {
 				actions: [
 					{
 						label: "Implementors",
-						handler: (s) => container.browseImplementors(s),
+						handler: (s) => this.context.browseImplementors(s),
 					},
 					{
 						label: "Senders",
-						handler: (s) => container.browseSenders(s),
+						handler: (s) => this.context.browseSenders(s),
 					},
 				],
 			};
@@ -787,7 +800,7 @@ class CodeEditor extends Component {
 			return {
 				title: species.name,
 				description: comment.length > 0 ? comment : "No comment",
-				titleAction: (c) => container.browseClass(c),
+				titleAction: (c) => this.context.browseClass(c),
 			};
 		}
 	};

@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import CustomTree from "../controls/CustomTree";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 
 class ObjectTree extends Component {
+	static contextType = ToolContainerContext;
+
 	browseClass = (object) => {
 		if (object) {
-			container.browseClass(object.class);
+			this.context.browseClass(object.class);
 		}
 	};
 
@@ -15,7 +17,7 @@ class ObjectTree extends Component {
 			const id = this.props.roots[0].id;
 			const path = this.objectURIPath(object);
 			const pinned = await ide.api.pinObjectSlot(id, path);
-			container.openInspector(pinned);
+			this.context.openInspector(pinned);
 		} catch (error) {
 			ide.reportError(error);
 		}

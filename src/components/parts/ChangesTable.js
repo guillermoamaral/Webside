@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 import ApplyIcon from "@mui/icons-material/CheckCircle";
 import RejectIcon from "@mui/icons-material/Delete";
 import { Box, Stack, Chip } from "@mui/material";
 
 class ChangesTable extends Component {
+	static contextType = ToolContainerContext;
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -22,13 +24,13 @@ class ChangesTable extends Component {
 
 	browseClass = (change) => {
 		if (change) {
-			container.browseClass(change.className);
+			this.context.browseClass(change.className);
 		}
 	};
 
 	browseImplementors = (change) => {
 		if (change && change.isMethodChange()) {
-			container.browseImplementors(change.selector);
+			this.context.browseImplementors(change.selector);
 		}
 	};
 

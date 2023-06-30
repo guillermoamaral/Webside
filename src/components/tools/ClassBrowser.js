@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import RefactoringBrowser from "./RefactoringBrowser";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 import SearchList2 from "../controls/SearchList2";
 import ClassTree from "../parts/ClassTree";
 import VariableList from "../parts/VariableList";
@@ -24,6 +24,8 @@ import UpIcon from "@mui/icons-material/ArrowDropUp";
 import CustomPaper from "../controls/CustomPaper";
 
 class ClassBrowser extends RefactoringBrowser {
+	static contextType = ToolContainerContext;
+
 	constructor(props) {
 		super(props);
 		this.classnames = [];
@@ -253,7 +255,7 @@ class ClassBrowser extends RefactoringBrowser {
 	};
 
 	classSelected = async (species, keepSelections = true) => {
-		container.updatePageLabel(this.props.id, species.name);
+		this.context.updatePageLabel(this.props.id, species.name);
 		const selections = this.currentSelections();
 		selections.species = species;
 		selections.category = null;

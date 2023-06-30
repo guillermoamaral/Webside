@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import CustomList from "../controls/CustomList";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 
 class FrameList extends Component {
+	static contextType = ToolContainerContext;
+
 	frameSelected = (frame) => {
 		if (this.props.onFrameSelect) {
 			this.props.onFrameSelect(frame);
@@ -11,19 +13,19 @@ class FrameList extends Component {
 
 	browseClass = (frame) => {
 		if (frame) {
-			container.browseClass(frame.class.name);
+			this.context.browseClass(frame.class.name);
 		}
 	};
 
 	browseSenders = (frame) => {
 		if (frame) {
-			container.browseSenders(frame.method.selector);
+			this.context.browseSenders(frame.method.selector);
 		}
 	};
 
 	browseLocalSenders = (frame) => {
 		if (frame) {
-			container.browseLocalSenders(
+			this.context.browseLocalSenders(
 				frame.method.selector,
 				frame.class.name
 			);
@@ -32,13 +34,13 @@ class FrameList extends Component {
 
 	browseImplementors = (frame) => {
 		if (frame && frame.method && frame.method.selector) {
-			container.browseImplementors(frame.method.selector);
+			this.context.browseImplementors(frame.method.selector);
 		}
 	};
 
 	browseLocalImplementors = (frame) => {
 		if (frame) {
-			container.browseLocalImplementors(
+			this.context.browseLocalImplementors(
 				frame.method.selector,
 				frame.class.name
 			);
@@ -47,7 +49,7 @@ class FrameList extends Component {
 
 	browseClassReferences = (frame) => {
 		if (frame) {
-			container.browseClassReferences(frame.class.name);
+			this.context.browseClassReferences(frame.class.name);
 		}
 	};
 
@@ -72,7 +74,7 @@ class FrameList extends Component {
 		return (
 			<CustomList
 				itemLabel="label"
-				itemLink={this.browseImplementors}
+				//itemLink={this.browseImplementors}
 				items={this.props.frames}
 				selectedItem={this.props.selectedFrame}
 				onItemSelect={this.frameSelected}

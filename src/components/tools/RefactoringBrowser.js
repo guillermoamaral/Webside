@@ -1,8 +1,10 @@
 import { Component } from "react";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 
 class RefactoringBrowser extends Component {
+	static contextType = ToolContainerContext;
+
 	async componentDidMount() {
 		await this.initializeUsualCategories();
 	}
@@ -145,7 +147,7 @@ class RefactoringBrowser extends Component {
 
 	methodSelected = async (method) => {
 		if (method) {
-			container.updatePageLabel(
+			this.context.updatePageLabel(
 				this.props.id,
 				method.methodClass + ">>" + method.selector
 			);
@@ -173,10 +175,8 @@ class RefactoringBrowser extends Component {
 			: -1;
 		if (index === -1) {
 			await this.updateMethods(target, null, null, true);
-			var methods = target.methods;
-			var index = methods.findIndex(
-				(m) => m.selector === method.selector
-			);
+			methods = target.methods;
+			index = methods.findIndex((m) => m.selector === method.selector);
 		}
 		methods.splice(index, 1, method);
 		selections.method = method;

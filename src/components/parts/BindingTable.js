@@ -1,11 +1,13 @@
 import React, { PureComponent } from "react";
 import { Box, Paper } from "@mui/material";
-import { container } from "../ToolsContainer";
 import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";
 import { ide } from "../IDE";
+import ToolContainerContext from "../ToolContainerContext";
 
 class BindingTable extends PureComponent {
+	static contextType = ToolContainerContext;
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -35,15 +37,15 @@ class BindingTable extends PureComponent {
 
 	inspectBinding = async (binding) => {
 		try {
-			const object = await container.evaluateExpression(
+			const object = await this.context.evaluateExpression(
 				binding.name,
 				false,
 				true,
 				this.evaluationContext()
 			);
-			container.openInspector(object);
+			this.context.openInspector(object);
 		} catch (error) {
-			container.reportError(error);
+			this.context.reportError(error);
 		}
 	};
 

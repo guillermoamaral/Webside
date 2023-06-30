@@ -8,7 +8,7 @@ import {
 	Backdrop,
 	CircularProgress,
 } from "@mui/material";
-import ToolsContainer from "./ToolsContainer";
+import ToolContainer from "./ToolContainer";
 import { withCookies } from "react-cookie";
 import { withNavigation } from "./withNavigation";
 import { withDialog } from "./dialogs/index";
@@ -368,7 +368,7 @@ class IDE extends Component {
 		const container = {
 			id: id,
 			component: (
-				<ToolsContainer
+				<ToolContainer
 					id={id}
 					ref={ref}
 					onPagesRemove={(c) => {
@@ -699,7 +699,7 @@ class IDE extends Component {
 										md={containerWidth}
 										lg={containerWidth}
 									>
-										<ToolsContainer
+										<ToolContainer
 											id={99999}
 											key="mainContainer"
 											ref={this.mainContainerRef}

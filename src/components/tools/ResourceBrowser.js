@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 import InspectorIcon from "../icons/InspectorIcon";
 import WorkspaceIcon from "../icons/WorkspaceIcon";
 import DebuggerIcon from "../icons/DebuggerIcon";
@@ -22,6 +22,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import StopIcon from "@mui/icons-material/Stop";
 
 class ResourceBrowser extends Component {
+	static contextType = ToolContainerContext;
+
 	constructor(props) {
 		super(props);
 		this.types = [
@@ -103,7 +105,7 @@ class ResourceBrowser extends Component {
 
 	openInspector = (object) => {
 		if (object) {
-			container.openInspector(object);
+			this.context.openInspector(object);
 		}
 	};
 
@@ -148,7 +150,7 @@ class ResourceBrowser extends Component {
 
 	openWorkspace = (workspace) => {
 		if (workspace) {
-			container.openWorkspace(workspace.id);
+			this.context.openWorkspace(workspace.id);
 		}
 	};
 
@@ -170,7 +172,7 @@ class ResourceBrowser extends Component {
 
 	openDebugger = (d) => {
 		if (d) {
-			container.openDebugger(d.id, d.description);
+			this.context.openDebugger(d.id, d.description);
 		}
 	};
 
@@ -192,7 +194,7 @@ class ResourceBrowser extends Component {
 
 	openTestRun = (run) => {
 		if (run) {
-			container.openTestRunner(run.id, run.name);
+			this.context.openTestRunner(run.id, run.name);
 		}
 	};
 

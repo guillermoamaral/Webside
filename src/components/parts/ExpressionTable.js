@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Box, Paper, IconButton } from "@mui/material";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 import { DataGrid } from "@mui/x-data-grid";
 import CodeEditor from "../parts/CodeEditor";
 import {
@@ -11,6 +11,8 @@ import {
 } from "@mui/icons-material";
 
 class ExpressionTable extends PureComponent {
+	static contextType = ToolContainerContext;
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -64,7 +66,7 @@ class ExpressionTable extends PureComponent {
 
 	evaluateExpression = async (expression) => {
 		try {
-			const result = await ide.api.evaluateExpression(
+			const result = await this.context.evaluateExpression(
 				expression.sourceCode,
 				true,
 				false,
@@ -89,13 +91,13 @@ class ExpressionTable extends PureComponent {
 
 	inspectExpression = async (expression) => {
 		try {
-			const object = await container.evaluateExpression(
+			const object = await this.context.evaluateExpression(
 				expression.sourceCode,
 				false,
 				true,
 				this.evaluationContext()
 			);
-			container.openInspector(object);
+			this.context.openInspector(object);
 		} catch (error) {
 			ide.reportError(error);
 		}

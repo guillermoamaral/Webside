@@ -9,7 +9,7 @@ import {
 	Box,
 } from "@mui/material";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 import FrameList from "../parts/FrameList";
 import BindingTable from "../parts/BindingTable";
 import ExpressionTable from "../parts/ExpressionTable";
@@ -17,6 +17,8 @@ import CodeBrowser from "../parts/CodeBrowser";
 import DebuggerControls from "../parts/DebuggerControls";
 
 class Debugger extends PureComponent {
+	static contextType = ToolContainerContext;
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -202,15 +204,15 @@ class Debugger extends PureComponent {
 
 	inspectBinding = async (name) => {
 		try {
-			const object = await container.evaluateExpression(
+			const object = await this.context.evaluateExpression(
 				name,
 				false,
 				true,
 				this.evaluationContext()
 			);
-			container.openInspector(object);
+			this.context.openInspector(object);
 		} catch (error) {
-			container.reportError(error);
+			this.context.reportError(error);
 		}
 	};
 

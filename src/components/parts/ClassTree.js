@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import CustomTree from "../controls/CustomTree";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 
 class ClassTree extends Component {
+	static contextType = ToolContainerContext;
+
 	newClass = async (superclass) => {
 		if (!superclass) {
 			return;
@@ -67,31 +69,31 @@ class ClassTree extends Component {
 
 	browseClass = (species) => {
 		if (species) {
-			container.browseClass(species.name);
+			this.context.browseClass(species.name);
 		}
 	};
 
 	browsePackage = (species) => {
 		if (species) {
-			container.browsePackage(species.package);
+			this.context.browsePackage(species.package);
 		}
 	};
 
 	browseClassReferences = (species) => {
 		if (species) {
-			container.browseClassReferences(species.name);
+			this.context.browseClassReferences(species.name);
 		}
 	};
 
 	runTests = (species) => {
 		if (species) {
-			container.runTestClass(species.name);
+			this.context.runTestClass(species.name);
 		}
 	};
 
 	migrateClass = (species) => {
 		if (species) {
-			container.migrateClass(species.name);
+			this.context.migrateClass(species.name);
 		}
 	};
 

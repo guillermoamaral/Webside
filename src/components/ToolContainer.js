@@ -33,10 +33,11 @@ import CoderLikeBrowser from "./tools/CoderLikeBrowser";
 import CodeMigrator from "./tools/CodeMigrator";
 import Changeset from "../model/StChangeset";
 import { ide } from "./IDE";
+import ToolContainerContext from "./ToolContainerContext";
 
 var container = null;
 
-class ToolsContainer extends Component {
+class ToolContainer extends Component {
 	constructor(props) {
 		super(props);
 		container = this;
@@ -919,20 +920,22 @@ class ToolsContainer extends Component {
 		const { selectedPageId, pages } = this.state;
 		const selectedPage = this.pageWithId(selectedPageId);
 		return (
-			<TabControl
-				id={this.props.id}
-				style={{ width: "100%", height: "100%" }}
-				selectedPage={selectedPage}
-				pages={pages}
-				onTabSelect={this.selectPage}
-				onTabsClose={this.closePages}
-				addOptions={this.addPageOptions()}
-				onTabSplit={this.splitPage}
-			/>
+			<ToolContainerContext.Provider value={this}>
+				<TabControl
+					id={this.props.id}
+					style={{ width: "100%", height: "100%" }}
+					selectedPage={selectedPage}
+					pages={pages}
+					onTabSelect={this.selectPage}
+					onTabsClose={this.closePages}
+					addOptions={this.addPageOptions()}
+					onTabSplit={this.splitPage}
+				/>
+			</ToolContainerContext.Provider>
 		);
 	}
 }
 
-export default ToolsContainer;
+export default ToolContainer;
 
 export { container };

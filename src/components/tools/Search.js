@@ -14,9 +14,11 @@ import {
 } from "@mui/material";
 import { Pagination } from "@mui/lab";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 
 class Search extends Component {
+	static contextType = ToolContainerContext;
+
 	constructor(props) {
 		super(props);
 		this.itemsPerPage = 10;
@@ -102,10 +104,10 @@ class Search extends Component {
 
 	goToResult = (r) => {
 		if (r.type === "class") {
-			container.browseClass(r.text);
+			this.context.browseClass(r.text);
 		}
 		if (r.type === "method") {
-			container.browseMethod({ methodClass: r.title, selector: r.text });
+			this.context.browseMethod({ methodClass: r.title, selector: r.text });
 		}
 	};
 

@@ -6,9 +6,11 @@ import TestIcon from "@mui/icons-material/PlayArrow";
 import CustomList from "../controls/CustomList";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
-import { container } from "../ToolsContainer";
+import ToolContainerContext from "../ToolContainerContext";
 
 class MethodList extends Component {
+	static contextType = ToolContainerContext;
+
 	renameMethod = async (method) => {
 		if (!method) {
 			return;
@@ -78,37 +80,37 @@ class MethodList extends Component {
 
 	browseClass = (method) => {
 		if (method) {
-			container.browseClass(method.methodClass);
+			this.context.browseClass(method.methodClass);
 		}
 	};
 
 	browsePackage = (method) => {
 		if (method) {
-			container.browsePackage(method.package);
+			this.context.browsePackage(method.package);
 		}
 	};
 
 	browseSenders = (method) => {
 		if (method) {
-			container.browseSenders(method.selector);
+			this.context.browseSenders(method.selector);
 		}
 	};
 
 	browseLocalSenders = (method) => {
 		if (method) {
-			container.browseLocalSenders(method.selector, method.methodClass);
+			this.context.browseLocalSenders(method.selector, method.methodClass);
 		}
 	};
 
 	browseImplementors = (method) => {
 		if (method) {
-			container.browseImplementors(method.selector);
+			this.context.browseImplementors(method.selector);
 		}
 	};
 
 	browseLocalImplementors = (method) => {
 		if (method) {
-			container.browseLocalImplementors(
+			this.context.browseLocalImplementors(
 				method.selector,
 				method.methodClass
 			);
@@ -117,19 +119,19 @@ class MethodList extends Component {
 
 	browseClassReferences = (method) => {
 		if (method) {
-			container.browseClassReferences(method.methodClass);
+			this.context.browseClassReferences(method.methodClass);
 		}
 	};
 
 	runTest = (method, silently) => {
 		if (method) {
-			container.runTest(method.methodClass, method.selector, silently);
+			this.context.runTest(method.methodClass, method.selector, silently);
 		}
 	};
 
 	migrateMethod = (method) => {
 		if (method) {
-			container.migrateMethod(method);
+			this.context.migrateMethod(method);
 		}
 	};
 
@@ -271,18 +273,18 @@ class MethodList extends Component {
 			{
 				field: "methodClass",
 				label: "Class",
-				link: (m) => {
-					this.browseClass(m);
-				},
+				// link: (m) => {
+				// 	this.browseClass(m);
+				// },
 				align: "left",
 				minWidth: 300,
 			},
 			{
 				field: "selector",
 				label: "Selector",
-				link: (m) => {
-					this.browseImplementors(m);
-				},
+				// link: (m) => {
+				// 	this.browseImplementors(m);
+				// },
 				align: "left",
 				minWidth: 300,
 			},
@@ -295,9 +297,9 @@ class MethodList extends Component {
 			{
 				field: "package",
 				label: "Package",
-				link: (m) => {
-					this.browsePackage(m);
-				},
+				// link: (m) => {
+				// 	this.browsePackage(m);
+				// },
 				align: "left",
 				minWidth: 300,
 			},
