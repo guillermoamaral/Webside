@@ -141,7 +141,6 @@ class CodeEditor extends Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-		console.log("should update?")
 		if (
 			nextProps.source !== this.props.source ||
 			JSON.stringify(nextProps.selectedInterval) !==
@@ -157,7 +156,6 @@ class CodeEditor extends Component {
 		}
 		// Review this as responding false none of local setState() calls trigger a re-rendering
 		// For instance, openMenu(), which is intended to open the popup menu, never gets a rerendering (and so the menu open)
-		console.log("not updating")
 		return false;
 	}
 
@@ -551,7 +549,6 @@ class CodeEditor extends Component {
 		var object;
 		try {
 			this.setState({ progress: true });
-			console.log("progressing mama")
 			object = await this.context.evaluateExpression(
 				expression,
 				sync,
