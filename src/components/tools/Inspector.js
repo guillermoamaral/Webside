@@ -182,7 +182,7 @@ class Inspector extends Component {
 	render() {
 		const { objectTree, selectedObject } = this.state;
 		const { showWorkspace } = this.props;
-		const minHeight = this.props.embedded ? 200 : 400;
+		const minHeight = this.props.embedded ? 200 : 600;
 		const path = selectedObject ? selectedObject.path : [];
 		const subpaths = this.subpaths(path);
 		return (

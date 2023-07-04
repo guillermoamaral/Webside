@@ -103,7 +103,7 @@ class CodeEditor extends Component {
 			evaluating,
 		} = props;
 		if (
-			/*!state.dirty &&*/
+			//!state.dirty &&
 			source !== state.originalSource ||
 			JSON.stringify(selectedInterval) !==
 				JSON.stringify(state.selectedInterval) ||
@@ -141,6 +141,9 @@ class CodeEditor extends Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
+		// if (this.state.dirty) {
+		// 	return false;
+		// }
 		if (
 			nextProps.source !== this.props.source ||
 			JSON.stringify(nextProps.selectedInterval) !==
@@ -257,6 +260,7 @@ class CodeEditor extends Component {
 		try {
 			replacement = await ide.prompt({
 				title: "Replacement",
+				defaultValue: identifier,
 			});
 		} catch (error) {}
 		if (!replacement) {
@@ -652,20 +656,26 @@ class CodeEditor extends Component {
 		}
 	};
 
-	sourceChanged = (source) => {
-		const adapted = source.replace(/(?<!\r)\n|\r(?!\n)/g, "\r");
-		this.selectsRanges = false;
-		const changed = !this.state.dirty;
-		this.setState({
-			source: adapted,
-			dirty: true,
-		});
+	triggerOnChange = () => {
 		if (this.props.onChange) {
 			clearTimeout(this.typingTimer);
 			this.typingTimer = setTimeout(() => {
 				this.props.onChange(this.state.source);
 			}, 2000);
 		}
+	};
+
+	sourceChanged = (source) => {
+		const adapted = source.replace(/(?<!\r)\n|\r(?!\n)/g, "\r");
+		this.selectsRanges = false;
+		const changed = !this.state.dirty;
+		this.setState(
+			{
+				source: adapted,
+				dirty: true,
+			},
+			this.triggerOnChange
+		);
 		if (changed) {
 			//this.forceUpdate();
 			// Check this according to the default response in shouldComponentUpdate()
@@ -732,12 +742,12 @@ class CodeEditor extends Component {
 		const colors = mode.section("colors");
 		const code = mode.section("code");
 		return createTheme({
-			theme: mode,
+			theme: appearance.get("mode"),
 			settings: {
 				//fontFamily: appearance.get("fontfamily"),
 				background: colors.get("background"),
 				foreground: "#75baff",
-				caret: "#FFCC00",
+				caret: mode === "light" ? "black" : colors.get("primaryColor"),
 				selection: "#80cbc433",
 				selectionMatch: "#80cbc433",
 				lineHighlight: "#8a91991a",
@@ -772,9 +782,10 @@ class CodeEditor extends Component {
 
 	defaultTooltipSpecFor = async (word, position) => {
 		const node = this.astNodeAtOffset(position);
-		if (node && node.type === "Selector") {
+		if (node && node.type === "Selector" && node.value.includes(word)) {
 			return {
 				title: node.value,
+				titleAction: (s) => this.context.browseImplementors(s),
 				description: "",
 				actions: [
 					{
@@ -796,8 +807,18 @@ class CodeEditor extends Component {
 			const comment = species.comment;
 			return {
 				title: species.name,
-				description: comment.length > 0 ? comment : "No comment",
 				titleAction: (c) => this.context.browseClass(c),
+				description: comment.length > 0 ? comment : "No comment",
+				actions: [
+					{
+						label: "Browse",
+						handler: (c) => this.context.browseClass(c),
+					},
+					{
+						label: "References",
+						handler: (c) => this.context.browseClassReferences(c),
+					},
+				],
 			};
 		}
 	};
@@ -875,6 +896,7 @@ class CodeEditor extends Component {
 										return (
 											<Button
 												size="small"
+												sx={{ textTransform: "none" }}
 												key={"tipAction" + i}
 												onClick={() =>
 													a.handler(spec.title)
@@ -895,6 +917,7 @@ class CodeEditor extends Component {
 	}
 
 	render() {
+		console.log("rendering code editor");
 		const { source, evaluating, progress, dirty, menuOpen, menuPosition } =
 			this.state;
 		const { showAccept, lineNumbers } = this.props;

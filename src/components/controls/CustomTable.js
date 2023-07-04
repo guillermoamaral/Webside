@@ -347,6 +347,7 @@ class CustomTable extends Component {
 		} = this.state;
 		const useFilter = this.props.useFilter;
 		const columns = this.columns();
+		const rows = this.pageRows() || [];
 		const border = this.props.hideRowBorder ? "none" : "";
 		return (
 			<Box
@@ -401,7 +402,7 @@ class CustomTable extends Component {
 									</TableHead>
 								)}
 								<TableBody>
-									{this.pageRows().map((row, i) => {
+									{rows.map((row, i) => {
 										return (
 											<StyledTableRow
 												hover

@@ -126,6 +126,7 @@ class Login extends Component {
 								<Grid item>
 									<Button
 										variant="outlined"
+										sx={{ textTransform: "none" }}
 										type="submit"
 										disabled={connecting}
 									>

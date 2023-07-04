@@ -39,7 +39,8 @@ class CodeMerge extends CodeEditor {
 	shouldComponentUpdate(nextProps, nextState) {
 		return (
 			nextProps.leftCode !== this.props.leftCode ||
-			nextProps.rightCode !== this.props.rightCode
+			nextProps.rightCode !== this.props.rightCode ||
+			nextProps.highlightChanges !== this.state.highlightChanges
 		);
 	}
 
@@ -56,7 +57,9 @@ class CodeMerge extends CodeEditor {
 	};
 
 	render() {
+		console.log("rendering code merge");
 		const { leftCode, rightCode, menuOpen, menuPosition } = this.state;
+		const highlightChanges = this.props.highlightChanges;
 		const theme = this.theme();
 		return (
 			<Scrollable>
@@ -65,6 +68,7 @@ class CodeMerge extends CodeEditor {
 					height="100%"
 					orientation="a-b"
 					gutter={false}
+					highlightChanges={highlightChanges}
 				>
 					<Original
 						value={leftCode}
@@ -78,6 +82,9 @@ class CodeMerge extends CodeEditor {
 							console.log("mmm");
 							this.openMenu(event);
 						}}
+						basicSetup={{
+							lineNumbers: false,
+						}}
 					/>
 					<Modified
 						value={rightCode}
@@ -89,6 +96,9 @@ class CodeMerge extends CodeEditor {
 						]}
 						onContextMenu={(event) => {
 							this.openMenu(event);
+						}}
+						basicSetup={{
+							lineNumbers: false,
 						}}
 					/>
 				</CodeMirrorMerge>

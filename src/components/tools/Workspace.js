@@ -55,9 +55,8 @@ class Workspace extends Component {
 		}
 	};
 
-	sourceChanged = async (source) => {
-		await ide.api.saveWorkspace({ id: this.props.id, source: source });
-		this.setState({ source: source });
+	saveSource = (source) => {
+		ide.api.saveWorkspace({ id: this.props.id, source: source });
 	};
 
 	evaluateClicked = async () => {
@@ -108,7 +107,7 @@ class Workspace extends Component {
 								<PlayIcon style={{ color: "#3bba5d" }} />
 							}
 							onAccept={this.evaluateClicked}
-							onChange={this.sourceChanged}
+							onChange={this.saveSource}
 							evaluating={evaluating}
 						/>
 					</Paper>

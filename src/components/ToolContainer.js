@@ -59,8 +59,8 @@ class ToolContainer extends Component {
 		// return unused === -1 ? maxId + 1 : unused;
 	}
 
-	createPage(label, icon, component, id, onClose) {
-		const pages = this.state.pages;
+	createPage(label, icon, component, id, onClose, nextToSelected) {
+		const { pages, selectedPageId } = this.state;
 		const labelRef = React.createRef();
 		const page = {
 			id: id || this.newPageId(),
@@ -70,7 +70,13 @@ class ToolContainer extends Component {
 			labelRef: labelRef,
 			onClose: onClose,
 		};
-		pages.push(page);
+		if (nextToSelected) {
+			const selectedPage = this.pageWithId(selectedPageId);
+			const index = pages.indexOf(selectedPage) + 1;
+			pages.splice(index, 0, page);
+		} else {
+			pages.push(page);
+		}
 		const state = { pages: pages, selectedPageId: page.id };
 		if (page.label === "Transcript") {
 			ide.resetUnredErrorCount();
@@ -277,7 +283,7 @@ class ToolContainer extends Component {
 				side = "class";
 			}
 			await ide.api.classNamed(name);
-			this.openClassBrowser(name, side);
+			this.openClassBrowser(name, side, null, true);
 		} catch (error) {
 			ide.inform("There is no class named " + name);
 		}
@@ -287,7 +293,7 @@ class ToolContainer extends Component {
 		this.openMethodBrowser([method]);
 	};
 
-	openClassBrowser = (classname, side, selector) => {
+	openClassBrowser = (classname, side, selector, nextToSelected) => {
 		const pageId = this.newPageId();
 		const browser = (
 			<ClassBrowser
@@ -301,7 +307,9 @@ class ToolContainer extends Component {
 			classname || "Class Browser",
 			<ClassBrowserIcon />,
 			browser,
-			pageId
+			pageId,
+			null,
+			nextToSelected
 		);
 	};
 
@@ -325,7 +333,10 @@ class ToolContainer extends Component {
 		this.createPage(
 			title + " (" + methods.length + ")",
 			<MethodBrowserIcon />,
-			browser
+			browser,
+			null,
+			null,
+			true
 		);
 	};
 
@@ -338,7 +349,7 @@ class ToolContainer extends Component {
 		}
 	};
 
-	openWorkspace = async (id) => {
+	openWorkspace = async (id, nextToSelected) => {
 		const existing = this.state.pages.find((p) => {
 			return (
 				p.component.type === Workspace && p.component.props.id === id
@@ -365,7 +376,8 @@ class ToolContainer extends Component {
 				} catch (error) {
 					this.reportError(error);
 				}
-			}
+			},
+			nextToSelected
 		);
 	};
 
@@ -397,16 +409,23 @@ class ToolContainer extends Component {
 				}}
 			/>
 		);
-		this.createPage(title, <DebuggerIcon />, tool, pageId, () => {
-			try {
-				ide.api.deleteDebugger(id);
-			} catch (error) {
-				this.reportError(error);
-			}
-			if (onTerminate) {
-				onTerminate();
-			}
-		});
+		this.createPage(
+			title,
+			<DebuggerIcon />,
+			tool,
+			pageId,
+			() => {
+				try {
+					ide.api.deleteDebugger(id);
+				} catch (error) {
+					this.reportError(error);
+				}
+				if (onTerminate) {
+					onTerminate();
+				}
+			},
+			true
+		);
 	};
 
 	openInspector = (object) => {
@@ -439,7 +458,8 @@ class ToolContainer extends Component {
 				} catch (error) {
 					this.reportError(error);
 				}
-			}
+			},
+			true
 		);
 	};
 

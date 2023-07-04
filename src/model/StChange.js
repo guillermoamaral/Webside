@@ -268,6 +268,18 @@ class AddClass extends ClassChange {
 		return this.definition;
 	}
 
+	isUpToDate() {
+		// console.log(
+		// 	this.currentSourceCode()
+		// 		.replace(/[\r\n]/gm, "")
+		// 		.replace(/\s+/g, " ")
+		// );
+		return (
+			this.sourceCode().replace(/[\r\n]/gm, "") ===
+			this.currentSourceCode().replace(/[\r\n]/gm, "")
+		);
+	}
+
 	async updateCurrentSourceCode() {
 		try {
 			const species = await this.changeset.system.classNamed(

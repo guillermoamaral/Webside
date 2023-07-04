@@ -83,7 +83,11 @@ class IDE extends Component {
 		connection.addText("dialect").readOnly();
 
 		const appearance = settings.addSection("appearance");
-		appearance.addOptions("fontSize", [8, 10, 12, 14, 16, 18, 20, 24], 14);
+		appearance.addOptions(
+			"fontSize",
+			[8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+			14
+		);
 		appearance.addOptions("mode", ["dark", "light"]);
 
 		const light = appearance.addSection("light", "Light Settings");

@@ -6,6 +6,9 @@ import {
 	IconButton,
 	Tooltip,
 	Typography,
+	FormGroup,
+	FormControlLabel,
+	Checkbox,
 } from "@mui/material";
 import CodeMerge from "../parts/CodeMerge";
 import { ide } from "../IDE";
@@ -26,6 +29,7 @@ class ChangesBrowser extends Component {
 		this.state = {
 			changes: props.changeset.changes,
 			selectedChange: props.selectedChange,
+			highlightChanges: true,
 		};
 	}
 
@@ -103,7 +107,8 @@ class ChangesBrowser extends Component {
 
 	rejectChangesUpToDate = async () => {
 		const changeset = this.props.changeset;
-		await changeset.rejectUpToDate();
+		ide.waitFor(async () => await changeset.rejectUpToDate());
+		console.log(changeset.changes);
 		this.updateChanges(changeset.changes);
 	};
 
@@ -166,7 +171,7 @@ class ChangesBrowser extends Component {
 	};
 
 	render() {
-		const { changes, selectedChange } = this.state;
+		const { changes, selectedChange, highlightChanges } = this.state;
 		console.log("rendering changes browser");
 		return (
 			<Grid container spacing={1}>
@@ -256,11 +261,34 @@ class ChangesBrowser extends Component {
 					</Box>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
+					<Box display="flex" justifyContent="flex-end">
+						<FormGroup>
+							<FormControlLabel
+								control={
+									<Checkbox
+										size="small"
+										checked={highlightChanges}
+										color="primary"
+										onChange={(event) =>
+											this.setState({
+												highlightChanges:
+													event.target.checked,
+											})
+										}
+									/>
+								}
+								label="Highlight changes"
+							/>
+						</FormGroup>
+					</Box>
+				</Grid>
+				<Grid item xs={12} md={12} lg={12}>
 					<Paper
 						variant="outlined"
 						style={{ height: "100%", minHeight: 400 }}
 					>
 						<CodeMerge
+							highlightChanges={highlightChanges}
 							style={{ height: "100%" }}
 							context={this.evaluationContext()}
 							leftCode={

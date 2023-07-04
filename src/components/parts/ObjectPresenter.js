@@ -88,7 +88,7 @@ class ObjectPresenter extends Component {
 						{presentation.type === "html" && (
 							<iframe
 								title={presentation.title}
-								srcdoc={presentation.code}
+								srcDoc={presentation.code}
 								height="100%"
 								width="100%"
 							/>
