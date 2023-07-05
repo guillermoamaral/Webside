@@ -5,10 +5,8 @@ import {
 	Box,
 	IconButton,
 	Tooltip,
-	Typography,
-	FormGroup,
-	FormControlLabel,
-	Checkbox,
+	Tab,
+	ToggleButton,
 } from "@mui/material";
 import CodeMerge from "../parts/CodeMerge";
 import { ide } from "../IDE";
@@ -20,6 +18,7 @@ import ApplyIcon from "@mui/icons-material/Done";
 import ApplyAllIcon from "@mui/icons-material/DoneAll";
 import ShowOriginalIcon from "@mui/icons-material/Refresh";
 import ToolContainerContext from "../ToolContainerContext";
+import HighlightIcon from "@mui/icons-material/Highlight";
 
 class ChangesBrowser extends Component {
 	static contextType = ToolContainerContext;
@@ -35,7 +34,6 @@ class ChangesBrowser extends Component {
 
 	changeSelected = async (change) => {
 		await change.updateCurrentSourceCode();
-		change.color = null;
 		this.setState({ selectedChange: change });
 	};
 
@@ -147,7 +145,6 @@ class ChangesBrowser extends Component {
 						try {
 							await ide.api.postChange(ch.asJson());
 							await ch.updateCurrentSourceCode();
-							ch.color = null;
 						} catch (error) {
 							ide.reportError(error);
 						}
@@ -165,7 +162,6 @@ class ChangesBrowser extends Component {
 	showOriginalChanges = async () => {
 		const changeset = this.props.changeset;
 		changeset.changes = changeset.originalChanges || changeset.changes;
-		changeset.changes.forEach((ch) => (ch.color = null));
 		ide.waitFor(async () => await changeset.updateCurrentSourceCode());
 		this.updateChanges(changeset.changes);
 	};
@@ -246,40 +242,40 @@ class ChangesBrowser extends Component {
 					<Box
 						display="flex"
 						alignContent="center"
-						justifyContent="center"
+						justifyContent="flex-start"
 					>
-						<Typography variant="body2">New source</Typography>
+						<Tab label="New source" />
 					</Box>
 				</Grid>
-				<Grid item xs={6} md={6} lg={6}>
+				<Grid item xs={3} md={3} lg={3}>
 					<Box
 						display="flex"
 						alignContent="center"
-						justifyContent="center"
+						justifyContent="flex-start"
 					>
-						<Typography variant="body2">Current source</Typography>
+						<Tab label="Current source" />
 					</Box>
 				</Grid>
-				<Grid item xs={12} md={12} lg={12}>
-					<Box display="flex" justifyContent="flex-end">
-						<FormGroup>
-							<FormControlLabel
-								control={
-									<Checkbox
-										size="small"
-										checked={highlightChanges}
-										color="primary"
-										onChange={(event) =>
-											this.setState({
-												highlightChanges:
-													event.target.checked,
-											})
-										}
-									/>
+				<Grid item xs={3} md={3} lg={3}>
+					<Box
+						display="flex"
+						alignContent="center"
+						justifyContent="flex-end"
+					>
+						<Tooltip title="Highlight changes" placement="top">
+							<ToggleButton
+								value="check"
+								size="small"
+								selected={highlightChanges}
+								onChange={() =>
+									this.setState({
+										highlightChanges: !highlightChanges,
+									})
 								}
-								label="Highlight changes"
-							/>
-						</FormGroup>
+							>
+								<HighlightIcon fontSize="small" />
+							</ToggleButton>
+						</Tooltip>
 					</Box>
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>

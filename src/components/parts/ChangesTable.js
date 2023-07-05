@@ -233,10 +233,8 @@ class ChangesTable extends Component {
 		];
 	}
 
-	colorFor(change) {
-		if (change.color) {
-			return change.color;
-		}
+	changeColor(change) {
+		if (change.color) return change.color;
 		const appearance = ide.settings.section("appearance");
 		const mode = appearance.section(appearance.get("mode"));
 		const colors = mode.section("colors");
@@ -249,7 +247,6 @@ class ChangesTable extends Component {
 		console.log("rendering changes table");
 		const filters = this.state.filters;
 		const { changes, selectedChange } = this.props;
-		changes.forEach((ch) => (ch.color = this.colorFor(ch)));
 		return (
 			<Box
 				display="flex"
@@ -261,6 +258,7 @@ class ChangesTable extends Component {
 						style={{ height: "100%" }}
 						columns={this.colums()}
 						rows={changes}
+						rowColor={this.changeColor}
 						selectedRow={selectedChange}
 						onRowSelect={this.changeSelected}
 						menuOptions={this.menuOptions()}

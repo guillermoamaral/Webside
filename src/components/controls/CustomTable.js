@@ -167,14 +167,14 @@ class CustomTable extends Component {
 	};
 
 	getCellColor = (row, column) => {
-		const color = column.color;
+		const color = this.props.rowColor || column.color || row.color;
 		if (typeof color == "function") {
 			return color(row);
 		}
 		if (typeof color == "string") {
 			return color;
 		}
-		return row.color ? row.color : "default";
+		return "default";
 	};
 
 	keyDown = (event) => {

@@ -40,13 +40,18 @@ class ObjectTree extends Component {
 		return path;
 	}
 
+	objectId = (object) => {
+		if (this.props.roots.includes(object) && object.id) return object.id;
+		return this.objectURIPath(object);
+	};
+
 	render() {
 		const roots = this.props.roots;
 		return (
 			<CustomTree
 				items={roots ? roots : []}
 				itemLabel="slot"
-				itemId={(object) => this.objectURIPath(object)}
+				itemId={this.objectId}
 				children={"slots"}
 				onItemExpand={this.props.onSlotExpand}
 				onItemSelect={this.props.onSlotSelect}
