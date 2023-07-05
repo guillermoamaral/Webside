@@ -220,10 +220,10 @@ class TabControl extends Component {
 					{pages.map((page, index) => {
 						return (
 							<TabPanel
-								id={id + index}
+								id={id + "-" + page.id}
+								key={"tab" + id + "-" + page.id}
 								style={{ height: "100%" }}
-								key={id + index}
-								index={index}
+								//index={index}
 								visible={page.id === selectedPage.id}
 							>
 								{page.component}
