@@ -645,7 +645,7 @@ class IDE extends Component {
 			extraContainers,
 			waiting,
 		} = this.state;
-		const totalWidth = extraContainers.length > 0 ? false : "lg";
+		const totalWidth = false; //extraContainers.length > 0 ? false : "lg";
 		const containerWidth = Math.max(12 / (1 + extraContainers.length), 1);
 		return (
 			<Hotkeys

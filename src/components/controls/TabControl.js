@@ -4,6 +4,7 @@ import TabPanel from "./TabPanel";
 import TabLabel from "./TabLabel";
 import AddIcon from "@mui/icons-material/Add";
 import SelectIcon from "@mui/icons-material/ExpandMore";
+import CloseIcon from "@mui/icons-material/Close";
 
 class TabControl extends Component {
 	constructor(props) {
@@ -200,15 +201,36 @@ class TabControl extends Component {
 										}}
 									>
 										<Box
+											sx={{ width: "100%" }}
 											display="flex"
 											flexWrap="nowrap"
 											alignItems="center"
-											justifyContent="center"
+											justifyContent="space-between"
 										>
-											<Box pt={1} pr={1}>
-												{page.icon}
+											<Box
+												display="flex"
+												flexWrap="nowrap"
+												alignItems="center"
+												justifyContent="flex-start"
+											>
+												<Box pt={1} pr={1}>
+													{page.icon}
+												</Box>
+												<Box>{page.label}</Box>
 											</Box>
-											<Box>{page.label}</Box>
+											<Box>
+												<IconButton
+													onClick={(event) =>
+														this.closeTab(
+															event,
+															index
+														)
+													}
+													size="small"
+												>
+													<CloseIcon fontSize="small" />
+												</IconButton>
+											</Box>
 										</Box>
 									</MenuItem>
 								);
