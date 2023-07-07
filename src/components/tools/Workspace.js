@@ -57,6 +57,7 @@ class Workspace extends Component {
 
 	saveSource = (source) => {
 		ide.api.saveWorkspace({ id: this.props.id, source: source });
+		this.setState({ source: source });
 	};
 
 	evaluateClicked = async () => {
@@ -127,28 +128,27 @@ class Workspace extends Component {
 											alignItems="center"
 											justifyContent="center"
 											mt={0}
-										></Box>
-										<Box>
-											<IconButton
-												onClick={(event) => {
-													this.closeInspector(
-														event,
-														inspector.key
-													);
-												}}
-												size="small"
-											>
-												<CloseIcon fontSize="small" />
-											</IconButton>
-										</Box>
-										{/* <Box pt={0.5} pr={1}>
-										<InspectorIcon />
-									</Box> */}
-										<Box>
-											<Typography>
-												{"Inspecting: " +
-													inspector.props.root.class}
-											</Typography>
+										>
+											<Box>
+												<IconButton
+													onClick={(event) => {
+														this.closeInspector(
+															event,
+															inspector.key
+														);
+													}}
+													size="small"
+												>
+													<CloseIcon fontSize="small" />
+												</IconButton>
+											</Box>
+											<Box>
+												<Typography>
+													{"Inspecting: " +
+														inspector.props.root
+															.class}
+												</Typography>
+											</Box>
 										</Box>
 									</AccordionSummary>
 									{inspector}
