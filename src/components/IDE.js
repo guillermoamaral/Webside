@@ -51,6 +51,7 @@ class IDE extends Component {
 	componentDidMount() {
 		const container = this.mainContainer();
 		container.openTranscript();
+		//container.openPOC();
 		const options = this.queryOptions();
 		if (options.classname) {
 			container.openClassBrowser(options.classname);

@@ -12,10 +12,10 @@ import {
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import TranscriptIcon from "../icons/TranscriptIcon";
 import SearchIcon from "@mui/icons-material/Search";
-import ResourcesIcon from "@mui/icons-material/PinDropRounded";
+import ResourcesIcon from "../icons/ResourcesIcon";
 import ChangesBrowserIcon from "../icons/ChangesBrowserIcon";
-import PeopleIcon from "@mui/icons-material/People";
-import SaveImageIcon from "@mui/icons-material/CameraAlt";
+import ChatIcon from "@mui/icons-material/Chat";
+import SaveImageIcon from "@mui/icons-material/Save";
 import { withDialog } from "../dialogs/index";
 import DrawerHeader from "./DrawerHeader";
 import StyledDrawer from "./StyledDrawer";
@@ -103,11 +103,11 @@ class Sidebar extends Component {
 									badgeContent={unreadMessages}
 									color="secondary"
 								>
-									<PeopleIcon />
+									<ChatIcon />
 								</Badge>
 							</Tooltip>
 						</ListItemIcon>
-						<ListItemText primary="Peers" />
+						<ListItemText primary="Chat" />
 					</ListItemButton>
 					<ListItemButton onClick={onSettingsClick}>
 						<Tooltip title="Settings" placement="top">

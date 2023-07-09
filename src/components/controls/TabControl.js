@@ -171,6 +171,7 @@ class TabControl extends Component {
 								});
 							}}
 							size="medium"
+							disabled={pages.length === 0}
 						>
 							<SelectIcon />
 						</IconButton>
@@ -220,12 +221,15 @@ class TabControl extends Component {
 											</Box>
 											<Box>
 												<IconButton
-													onClick={(event) =>
+													onClick={(event) => {
 														this.closeTab(
 															event,
 															index
-														)
-													}
+														);
+														this.setState({
+															selectMenuOpen: false,
+														});
+													}}
 													size="small"
 												>
 													<CloseIcon fontSize="small" />

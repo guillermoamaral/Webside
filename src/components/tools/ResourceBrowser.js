@@ -7,11 +7,14 @@ import {
 	ListItemText,
 	Box,
 	IconButton,
+	Tooltip,
 } from "@mui/material";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 import InspectorIcon from "../icons/InspectorIcon";
+import ProcessIcon from "../icons/ProcessIcon";
+import ObjectsIcon from "../icons/ObjectsIcon";
 import WorkspaceIcon from "../icons/WorkspaceIcon";
 import DebuggerIcon from "../icons/DebuggerIcon";
 import TestRunnerIcon from "../icons/TestRunnerIcon";
@@ -20,6 +23,7 @@ import MemoryStats from "./MemoryStats";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import DeleteIcon from "@mui/icons-material/Delete";
 import StopIcon from "@mui/icons-material/Stop";
+import EditWorkspace from "@mui/icons-material/Edit"
 
 class ResourceBrowser extends Component {
 	static contextType = ToolContainerContext;
@@ -76,10 +80,10 @@ class ResourceBrowser extends Component {
 		var icon;
 		switch (type) {
 			case "Objects":
-				icon = <InspectorIcon color={color} />;
+				icon = <ObjectsIcon color={color} />;
 				break;
 			case "Evaluations":
-				icon = <InspectorIcon color={color} />;
+				icon = <ProcessIcon color={color} />;
 				break;
 			case "Workspaces":
 				icon = <WorkspaceIcon color={color} />;
@@ -338,7 +342,7 @@ class ResourceBrowser extends Component {
 		return [
 			{
 				label: "Open",
-				icon: <InspectorIcon fontSize="small" />,
+				icon: <EditWorkspace fontSize="small" />,
 				handler: this.openWorkspace,
 			},
 			{
@@ -467,26 +471,40 @@ class ResourceBrowser extends Component {
 				</Grid>
 				<Grid item xs={10} md={10} lg={10}>
 					<Grid container spacing={1}>
-						<Grid item xs={10} md={10} lg={10}></Grid>
-						<Grid item xs={1} md={1} lg={1}>
-							{selectedType === "Objects" &&
-								resources &&
-								resources.length > 0 && (
-									<IconButton
-										color="inherit"
-										onClick={() => this.unpinAllObjects()}
-									>
-										<DeleteIcon fontSize="small" />
-									</IconButton>
-								)}
-						</Grid>
-						<Grid item xs={1} md={1} lg={1}>
-							<IconButton
-								color="inherit"
-								onClick={() => this.typeSelected(selectedType)}
-							>
-								<RefreshIcon fontSize="small" />
-							</IconButton>
+						<Grid item xs={12} md={12} lg={12}>
+							<Box display="flex" justifyContent="flex-end">
+								{selectedType === "Objects" &&
+									resources &&
+									resources.length > 0 && (
+										<Tooltip
+											title="Unpin all"
+											placement="top"
+										>
+											<span>
+												<IconButton
+													color="inherit"
+													onClick={
+														this.unpinAllObjects
+													}
+												>
+													<DeleteIcon fontSize="small" />
+												</IconButton>
+											</span>
+										</Tooltip>
+									)}
+								<Tooltip title="Refresh" placement="top">
+									<span>
+										<IconButton
+											color="inherit"
+											onClick={() =>
+												this.typeSelected(selectedType)
+											}
+										>
+											<RefreshIcon fontSize="small" />
+										</IconButton>
+									</span>
+								</Tooltip>
+							</Box>
 						</Grid>
 						<Grid
 							item

@@ -106,7 +106,6 @@ class ChangesBrowser extends Component {
 	rejectChangesUpToDate = async () => {
 		const changeset = this.props.changeset;
 		ide.waitFor(async () => await changeset.rejectUpToDate());
-		console.log(changeset.changes);
 		this.updateChanges(changeset.changes);
 	};
 

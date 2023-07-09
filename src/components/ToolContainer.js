@@ -34,6 +34,8 @@ import CodeMigrator from "./tools/CodeMigrator";
 import Changeset from "../model/StChangeset";
 import { ide } from "./IDE";
 import ToolContainerContext from "./ToolContainerContext";
+import ResourcesIcon from "./icons/ResourcesIcon";
+import POC from "./tools/POC";
 
 class ToolContainer extends Component {
 	constructor(props) {
@@ -227,6 +229,10 @@ class ToolContainer extends Component {
 			);
 			this.createPage("Transcript", <TranscriptIcon />, transcript);
 		}
+	};
+
+	openPOC = () => {
+		this.createPage("POC", <TranscriptIcon />, <POC />);
 	};
 
 	openSearch = () => {
@@ -483,7 +489,7 @@ class ToolContainer extends Component {
 
 	openResourceBrowser = (title = "Objects") => {
 		const browser = <ResourceBrowser />;
-		this.createPage(title, <InspectorIcon />, browser);
+		this.createPage(title, <ResourcesIcon />, browser);
 	};
 
 	openTestRunner = (id, title = "Test Runner") => {

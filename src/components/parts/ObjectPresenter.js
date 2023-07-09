@@ -57,7 +57,6 @@ class ObjectPresenter extends Component {
 			<Paper variant="outlined" style={{ height: "100%" }}>
 				<CodeEditor
 					context={context}
-					lineNumbers={false}
 					source={!object ? "" : object.printString}
 					onAccept={onAccept}
 				/>

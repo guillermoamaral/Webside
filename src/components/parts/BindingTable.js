@@ -124,7 +124,6 @@ class BindingTable extends PureComponent {
 				<Box height={"20%"}>
 					<Paper variant="outlined" style={{ height: "100%" }}>
 						<CodeEditor
-							lineNumbers={false}
 							source={
 								selectedBinding ? selectedBinding.value : ""
 							}

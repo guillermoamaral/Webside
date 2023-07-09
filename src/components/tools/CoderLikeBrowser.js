@@ -39,14 +39,14 @@ class CoderLikeBrowser extends Component {
 		}
 	}
 
-	changeRootClass = async (name) => {
-		if (!name) {
+	changeRootClass = async (classsname) => {
+		if (!classsname) {
 			return;
 		}
 		try {
-			const species = await ide.api.classTree(name, 3);
-			this.cache[name] = species;
-			this.setState({ root: name }, () => {
+			const species = await ide.api.classTree(classsname, 10, true);
+			this.cache[classsname] = species;
+			this.setState({ root: classsname }, () => {
 				this.classSelected(species);
 			});
 		} catch (error) {

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import {
-	ListItem,
+	ListItemButton,
 	ListItemText,
 	ListItemIcon,
 	Box,
@@ -307,7 +307,7 @@ class CustomList extends Component {
 			selected || highlighted ? "fontWeightBold" : "fontWeightRegular";
 		return (
 			<div style={style}>
-				<ListItem
+				<ListItemButton
 					disableGutters={divider}
 					//autoFocus={selected}
 					style={{
@@ -316,7 +316,6 @@ class CustomList extends Component {
 						paddingLeft: 0,
 						paddingRight: 0,
 					}}
-					button
 					divider={divider}
 					key={"item" + index}
 					selected={selected}
@@ -348,7 +347,7 @@ class CustomList extends Component {
 							</Typography>
 						}
 					/>
-				</ListItem>
+				</ListItemButton>
 			</div>
 		);
 	};

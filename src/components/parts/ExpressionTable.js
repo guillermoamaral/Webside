@@ -252,7 +252,6 @@ class ExpressionTable extends PureComponent {
 				<Box height={"20%"}>
 					<Paper variant="outlined" style={{ height: "100%" }}>
 						<CodeEditor
-							lineNumbers={false}
 							source={
 								selectedExpression
 									? selectedExpression.value

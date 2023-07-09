@@ -11,6 +11,7 @@ import {
 	CardActions,
 	Button,
 	Typography,
+	Paper,
 } from "@mui/material";
 import AcceptIcon from "@mui/icons-material/CheckCircle";
 import PopupMenu from "../controls/PopupMenu";
@@ -149,12 +150,16 @@ class CodeEditor extends Component {
 			JSON.stringify(nextProps.selectedInterval) !==
 				JSON.stringify(this.props.selectedInterval) ||
 			nextProps.selectedSelector !== this.props.selectedSelector ||
-			nextProps.selectedIdentifier !== this.props.selectedIdentifier ||
-			nextProps.evaluating !== this.props.evaluating ||
-			nextState.evaluating !== this.state.evaluating ||
-			nextState.progress !== this.state.progress
+			nextProps.selectedIdentifier !== this.props.selectedIdentifier
 		) {
 			this.selectsRanges = true;
+			return true;
+		}
+		if (
+			nextState.progress !== this.state.progress ||
+			nextProps.evaluating !== this.props.evaluating ||
+			nextState.evaluating !== this.state.evaluating
+		) {
 			return true;
 		}
 		// Review this as responding false none of local setState() calls trigger a re-rendering
@@ -163,19 +168,27 @@ class CodeEditor extends Component {
 	}
 
 	componentDidUpdate() {
-		if (this.selectsRanges && this.state.selectedRanges) {
-			this.selectRanges(this.state.selectedRanges);
+		if (!this.selectsRanges) {
+			//const source = this.state.source;
+			// this.selectRanges([
+			// 	{
+			// 		anchor: source.length - 1,
+			// 		head: source.length - 1,
+			// 	},
+			// ]);
+			return;
 		}
-		if (this.state.selectedSelector) {
-			const ranges = this.rangesContainingSelector(
-				this.state.selectedSelector
-			);
+		const { selectedRanges, selectedSelector, selectedIdentifier } =
+			this.state;
+		if (selectedRanges) {
+			this.selectRanges(selectedRanges);
+		}
+		if (selectedSelector) {
+			const ranges = this.rangesContainingSelector(selectedSelector);
 			this.selectRanges(ranges);
 		}
-		if (this.state.selectedIdentifier) {
-			const ranges = this.rangesContainingIdentifier(
-				this.state.selectedIdentifier
-			);
+		if (selectedIdentifier) {
+			const ranges = this.rangesContainingIdentifier(selectedIdentifier);
 			this.selectRanges(ranges);
 		}
 	}
@@ -185,15 +198,19 @@ class CodeEditor extends Component {
 	}
 
 	currentState() {
-		return this.editorView.viewState.state;
+		if (this.editorView && this.editorView.viewState) {
+			return this.editorView.viewState.state;
+		}
+	}
+
+	currentSelectionRange() {
+		const state = this.currentState();
+		if (state && state.selection) return state.selection.main;
 	}
 
 	selectedText() {
-		if (!this.editorView) {
-			return "";
-		}
-		const selection = this.currentState().selection;
-		return selection ? this.textInRange(selection.main) : "";
+		const range = this.currentSelectionRange();
+		return range ? this.textInRange(range) : "";
 	}
 
 	textInRange(range) {
@@ -444,8 +461,9 @@ class CodeEditor extends Component {
 	}
 
 	wordAt(position) {
-		if (this.editorView) {
-			const range = this.currentState().wordAt(position);
+		const state = this.currentState();
+		if (state) {
+			const range = state.wordAt(position);
 			if (range) return this.textInRange(range);
 		}
 	}
@@ -459,11 +477,8 @@ class CodeEditor extends Component {
 	}
 
 	currentPosition() {
-		if (this.editorView) {
-			const state = this.currentState();
-			if (state && state.selection && state.selection.main)
-				return state.selection.main.from;
-		}
+		const range = this.currentSelectionRange();
+		if (range) return range.from;
 	}
 
 	targetSelector() {
@@ -526,9 +541,9 @@ class CodeEditor extends Component {
 	}
 
 	currentLine() {
-		const state = this.currentState();
-		if (state.selection.main) {
-			return state.doc.lineAt(state.selection.main.head).text;
+		const range = this.currentSelectionRange();
+		if (range) {
+			return this.currentState().doc.lineAt(range.head).text;
 		}
 	}
 
@@ -583,10 +598,10 @@ class CodeEditor extends Component {
 		const expression = this.selectedExpression();
 		const object = await this.evaluateExpression(expression, false, false);
 		if (object) {
-			const selection = this.currentState().selection.main;
+			const range = this.currentSelectionRange();
 			this.inserText(
 				" " + object.printString,
-				Math.max(selection.head, selection.anchor)
+				Math.max(range.head, range.anchor)
 			);
 		}
 	};
@@ -786,7 +801,6 @@ class CodeEditor extends Component {
 			return {
 				title: node.value,
 				titleAction: (s) => this.context.browseImplementors(s),
-				description: "",
 				actions: [
 					{
 						label: "Implementors",
@@ -804,11 +818,12 @@ class CodeEditor extends Component {
 			species = await ide.api.classNamed(word);
 		} catch (error) {}
 		if (species) {
-			const comment = species.comment;
+			const comment = species.comment || "";
 			return {
 				title: species.name,
 				titleAction: (c) => this.context.browseClass(c),
-				description: comment.length > 0 ? comment : "No comment",
+				description: comment.length > 0 ? comment : null,
+				code: species.definition,
 				actions: [
 					{
 						label: "Browse",
@@ -843,84 +858,111 @@ class CodeEditor extends Component {
 			};
 		}
 		const max = 400;
-		if (tip.description.length > max) {
+		if (tip.description && tip.description.length > max) {
 			tip.description = tip.description.substr(0, max - 1) + "…";
 		}
 		return tip;
 	};
 
 	tooltip() {
-		return hoverTooltip(async (view, pos, side) => {
-			const spec = await this.tooltipSpecAt(pos);
-			if (!spec) return null;
-			const appearance = ide.settings.section("appearance");
-			const mode = appearance.section(appearance.get("mode"));
-			const color = mode.section("colors").get("primaryText");
-			const background = mode.section("colors").get("background");
-			return {
-				pos: pos,
-				above: true,
-				arrow: true,
-				create(view) {
-					let dom = document.createElement("div");
-					const root = ReactDOM.createRoot(dom);
-					root.render(
-						<Card
-							sx={{
-								minWidth: 200,
-								maxWidth: 500,
-								background: background,
-							}}
-						>
-							<CardContent>
-								<Link
-									component="button"
-									variant="body1"
-									onClick={(e) => {
-										if (spec.titleAction)
-											spec.titleAction(spec.title);
-									}}
-								>
-									{spec.title}
-								</Link>
-								<Typography
-									variant="body2"
-									sx={{ color: color }}
-								>
-									{spec.description || ""}
-								</Typography>
-							</CardContent>
-							{spec.actions && (
-								<CardActions>
-									{spec.actions.map((a, i) => {
-										return (
-											<Button
-												size="small"
-												sx={{ textTransform: "none" }}
-												key={"tipAction" + i}
-												onClick={() =>
-													a.handler(spec.title)
-												}
-											>
-												{a.label}
-											</Button>
-										);
-									})}
-								</CardActions>
-							)}
-						</Card>
-					);
-					return { dom };
-				},
-			};
-		});
+		return hoverTooltip(
+			async (view, pos, side) => {
+				if (this.props.noTooltips) return null;
+				const spec = await this.tooltipSpecAt(pos);
+				if (!spec) return null;
+				const appearance = ide.settings.section("appearance");
+				const mode = appearance.section(appearance.get("mode"));
+				const color = mode.section("colors").get("primaryText");
+				const background = mode.section("colors").get("background");
+				return {
+					pos: pos,
+					end: pos + spec.title.length - 1,
+					above: true,
+					arrow: true,
+					create(view) {
+						let dom = document.createElement("div");
+						const root = ReactDOM.createRoot(dom);
+						root.render(
+							<Card
+								sx={{
+									minWidth: 200,
+									maxWidth: 600,
+									background: background,
+								}}
+							>
+								<CardContent>
+									<Link
+										component="button"
+										variant="body1"
+										onClick={(e) => {
+											if (spec.titleAction)
+												spec.titleAction(spec.title);
+										}}
+									>
+										{spec.title}
+									</Link>
+									{spec.description && (
+										<Typography
+											variant="body2"
+											sx={{ color: color }}
+										>
+											{spec.description || ""}
+										</Typography>
+									)}
+									{spec.code && (
+										<Paper
+											variant="outlined"
+											style={{
+												minWidth: 400,
+												width: "100%",
+												height: 150,
+											}}
+										>
+											<CodeEditor
+												source={spec.code}
+												readOnly
+												noTooltips
+												showAccept={false}
+											/>
+										</Paper>
+									)}
+								</CardContent>
+								{spec.actions && (
+									<CardActions>
+										{spec.actions.map((a, i) => {
+											return (
+												<Button
+													size="small"
+													sx={{
+														textTransform: "none",
+													}}
+													key={"tipAction" + i}
+													onClick={() =>
+														a.handler(spec.title)
+													}
+												>
+													{a.label}
+												</Button>
+											);
+										})}
+									</CardActions>
+								)}
+							</Card>
+						);
+						return { dom };
+					},
+				};
+			},
+			{ hideOnChange: true, hoverTime: 100 }
+		);
 	}
 
 	render() {
 		console.log("rendering code editor");
 		const { source, evaluating, progress, dirty, menuOpen, menuPosition } =
 			this.state;
-		const { showAccept, lineNumbers } = this.props;
+		const { showAccept, readOnly } = this.props;
+		const lineNumbers = this.props.lineNumbers === true;
 		const acceptIcon = this.props.acceptIcon ? (
 			React.cloneElement(this.props.acceptIcon)
 		) : (
@@ -979,6 +1021,7 @@ class CodeEditor extends Component {
 							]}
 							theme={this.theme()}
 							value={source}
+							//selection={EditorSelection.cursor(source.length)}
 							onChange={this.sourceChanged}
 							onContextMenu={(event) => {
 								this.openMenu(event);
@@ -987,7 +1030,7 @@ class CodeEditor extends Component {
 								this.editorView = view;
 							}}
 							onUpdate={(update) => this.editorUpdated(update)}
-							readOnly={evaluating || progress}
+							readOnly={readOnly || evaluating || progress}
 							basicSetup={{
 								lineNumbers: lineNumbers,
 								closeBrackets: true,
@@ -995,7 +1038,7 @@ class CodeEditor extends Component {
 								highlightActiveLine: false,
 								//allowMultipleSelections: true,
 								drawSelection: true,
-								//keymap: this.extraKeys()
+								//autocompletion: true,
 							}}
 						/>
 					</Scrollable>

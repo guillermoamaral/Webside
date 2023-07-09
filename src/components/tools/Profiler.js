@@ -145,7 +145,6 @@ class Profiler extends Component {
 					{!loading && (
 						<Paper variant="outlined">
 							<CodeEditor
-								lineNumbers={true}
 								source={
 									!selectedMethod ? "" : selectedMethod.source
 								}

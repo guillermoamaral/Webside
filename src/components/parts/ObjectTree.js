@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import CustomTree from "../controls/CustomTree";
+//import CustomTree from "../controls/CustomTree";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
+import FastTree from "../controls/FastTree";
 
 class ObjectTree extends Component {
 	static contextType = ToolContainerContext;
@@ -48,14 +49,23 @@ class ObjectTree extends Component {
 	render() {
 		const roots = this.props.roots;
 		return (
-			<CustomTree
-				items={roots ? roots : []}
-				itemLabel="slot"
-				itemId={this.objectId}
-				children={"slots"}
-				onItemExpand={this.props.onSlotExpand}
-				onItemSelect={this.props.onSlotSelect}
-				selectedItem={this.props.selectedObject}
+			// <CustomTree
+			// 	items={roots ? roots : []}
+			// 	itemLabel="slot"
+			// 	itemId={this.objectId}
+			// 	children={"slots"}
+			// 	onItemExpand={this.props.onSlotExpand}
+			// 	onItemSelect={this.props.onSlotSelect}
+			// 	selectedItem={this.props.selectedObject}
+			// 	menuOptions={this.menuOptions()}
+			// />
+			<FastTree
+				nodes={roots ? roots : []}
+				nodeId={this.objectId}
+				nodeLabel="slot"
+				nodeChildren="slots"
+				onNodeSelect={this.props.onSlotSelect}
+				onNodeExpand={this.props.onSlotExpand}
 				menuOptions={this.menuOptions()}
 			/>
 		);

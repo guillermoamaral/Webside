@@ -54,16 +54,17 @@ class RefactoringBrowser extends Component {
 	}
 
 	async updateSubclasses(species) {
+		if (!species.subclasses || species.subclasses.length === 0) return;
 		try {
-			if (species.subclasses) {
-				await Promise.all(
-					species.subclasses.map(async (c) => {
-						if (!c.subclasses) {
-							c.subclasses = await ide.api.subclasses(c.name);
-						}
-					})
+			const tree = await ide.api.classTree(species.name, 3);
+			species.subclasses.forEach((c) => {
+				const retrieved = tree.subclasses.find(
+					(s) => s.name === c.name
 				);
-			}
+				if (retrieved) {
+					Object.assign(c, retrieved);
+				}
+			});
 		} catch (error) {
 			ide.reportError(error);
 		}

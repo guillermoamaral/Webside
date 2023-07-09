@@ -80,10 +80,10 @@ class TabLabel extends Component {
 				}}
 			>
 				<Box pt={1}>{icon}</Box>
-				<Box pl={1} pr={1}>
+				<Box pl={1} pr={1} pt={1}>
 					{label}
 				</Box>
-				<Box>
+				<Box pt={1}>
 					{!noClose && (
 						<IconButton
 							onClick={(event) => {

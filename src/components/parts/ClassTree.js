@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import CustomTree from "../controls/CustomTree";
+//import CustomTree from "../controls/CustomTree";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
+import FastTree from "../controls/FastTree";
 
 class ClassTree extends Component {
 	static contextType = ToolContainerContext;
@@ -115,14 +116,25 @@ class ClassTree extends Component {
 
 	render() {
 		return (
-			<CustomTree
-				items={this.props.roots || []}
-				itemLabel="name"
-				itemStyle={this.props.labelStyle}
-				children={"subclasses"}
-				onItemExpand={this.props.onClassExpand}
-				onItemSelect={this.props.onClassSelect}
-				selectedItem={this.props.selectedClass}
+			// <CustomTree
+			// 	items={this.props.roots || []}
+			// 	itemLabel="name"
+			// 	itemStyle={this.props.labelStyle}
+			// 	children={"subclasses"}
+			// 	onItemExpand={this.props.onClassExpand}
+			// 	onItemSelect={this.props.onClassSelect}
+			// 	selectedItem={this.props.selectedClass}
+			// 	menuOptions={this.menuOptions()}
+			// />
+			<FastTree
+				nodes={this.props.roots || []}
+				nodeId="name"
+				nodeLabel="name"
+				nodeStyle={this.props.labelStyle}
+				nodeChildren="subclasses"
+				selectedNode={this.props.selectedClass}
+				onNodeSelect={this.props.onClassSelect}
+				onNodeExpand={this.props.onClassExpand}
 				menuOptions={this.menuOptions()}
 			/>
 		);

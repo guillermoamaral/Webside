@@ -64,7 +64,7 @@ class ClassBrowser extends RefactoringBrowser {
 			return;
 		}
 		try {
-			const species = await ide.api.classTree(classsname, 3);
+			const species = await ide.api.classTree(classsname, 10, true);
 			this.cache[classsname] = species;
 			this.setState({ root: classsname }, () => {
 				this.classSelected(species);

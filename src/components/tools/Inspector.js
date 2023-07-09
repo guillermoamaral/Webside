@@ -274,7 +274,6 @@ class Inspector extends Component {
 								>
 									<CodeEditor
 										context={this.evaluationContext()}
-										lineNumbers={false}
 										onEvaluate={this.expressionEvaluated}
 										onAccept={this.assignEvaluation}
 									/>

@@ -130,9 +130,14 @@ class API {
 		);
 	}
 
-	async classTree(root, depth) {
+	async classTree(root, depth, onlyNames = false) {
 		const tree = await this.get(
-			"/classes?names=true&root=" + root + "&tree=true&depth=" + depth,
+			"/classes?names=" +
+				onlyNames +
+				"&root=" +
+				root +
+				"&tree=true&depth=" +
+				depth,
 			"class tree from " + root
 		);
 		return tree[0];

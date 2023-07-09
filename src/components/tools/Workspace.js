@@ -101,7 +101,6 @@ class Workspace extends Component {
 					>
 						<CodeEditor
 							context={this.evaluationContext()}
-							lineNumbers={false}
 							source={source}
 							showAccept
 							acceptIcon={
