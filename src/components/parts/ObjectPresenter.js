@@ -7,95 +7,97 @@ import TabControl from "../controls/TabControl";
 class ObjectPresenter extends Component {
 	constructor(props) {
 		super(props);
+		this.state = {
+			selectedId: null,
+		};
+	}
+
+	// static getDerivedStateFromProps(props, state) {
+	// 	if (
+	// 		props.object &&
+	// 		props.object.presentation &&
+	// 		state.pages.length === 1
+	// 	) {
+	// 		return {
+	// 			pages: [
+	// 				...state.pages,
+	// 				{
+	// 					id: "custom",
+	// 					label: props.object.presentation.title,
+	// 					icon: null,
+	// 					component: null,
+	// 				},
+	// 			],
+	// 			selectedId: "custom",
+	// 		};
+	// 	}
+	// 	if (!props.object || !props.object.presentation) {
+	// 		return {
+	// 			pages: state.pages.slice(0, 1),
+	// 			selectedId: "raw",
+	// 		};
+	// 	}
+	// 	return null;
+	// }
+
+	pages() {
+		const { object, context, onAccept } = this.props;
+		if (!object) return [];
 		const pages = [
 			{
 				id: "raw",
 				label: "Raw",
-				icon: null,
-				component: null,
+				component: (
+					<Paper variant="outlined" style={{ height: "100%" }}>
+						<CodeEditor
+							context={context}
+							source={!object ? "" : object.printString}
+							onAccept={onAccept}
+						/>
+					</Paper>
+				),
 			},
 		];
-		this.state = {
-			pages: pages,
-			selectedId: "raw",
-		};
-	}
-
-	static getDerivedStateFromProps(props, state) {
-		if (
-			props.object &&
-			props.object.presentation &&
-			state.pages.length === 1
-		) {
-			return {
-				pages: [
-					...state.pages,
-					{
-						id: "custom",
-						label: props.object.presentation.title,
-						icon: null,
-						component: null,
-					},
-				],
-				selectedId: "custom",
-			};
-		}
-		if (!props.object || !props.object.presentation) {
-			return {
-				pages: state.pages.slice(0, 1),
-				selectedId: "raw",
-			};
-		}
-		return null;
-	}
-
-	render() {
-		const { object, context, onAccept } = this.props;
-		const { selectedId, pages } = this.state;
-		const selectedPage = pages.find((p) => p.id === selectedId);
-		pages[0].component = (
-			<Paper variant="outlined" style={{ height: "100%" }}>
-				<CodeEditor
-					context={context}
-					source={!object ? "" : object.printString}
-					onAccept={onAccept}
-				/>
-			</Paper>
-		);
-		if (object && object.presentation) {
-			const presentation = object.presentation;
-			const custom = pages.find((p) => p.id === "custom");
-			if (custom) {
-				custom.component = (
+		(object.presentations || []).forEach((p) => {
+			const page = {
+				id: p.title,
+				label: p.title,
+				component: (
 					<Paper variant="outlined" style={{ height: "100%" }}>
-						{presentation.type === "table" &&
-							presentation.rows.length > 100 && (
-								<CustomTable
-									columns={presentation.columns}
-									rows={presentation.rows}
-									rowsPerPage={50}
-									usePagination
-								/>
-							)}
-						{presentation.type === "table" &&
-							presentation.rows.length <= 100 && (
-								<CustomTable
-									columns={presentation.columns}
-									rows={presentation.rows}
-								/>
-							)}
-						{presentation.type === "html" && (
+						{p.type === "table" && p.rows.length > 100 && (
+							<CustomTable
+								columns={p.columns}
+								rows={p.rows}
+								rowsPerPage={50}
+								usePagination
+							/>
+						)}
+						{p.type === "table" && p.rows.length <= 100 && (
+							<CustomTable columns={p.columns} rows={p.rows} />
+						)}
+						{p.type === "html" && (
 							<iframe
-								title={presentation.title}
-								srcDoc={presentation.code}
+								title={p.title}
+								srcDoc={p.code}
 								height="100%"
 								width="100%"
 							/>
 						)}
 					</Paper>
-				);
-			}
-		}
+				),
+			};
+			pages.push(page);
+		});
+		return pages;
+	}
+
+	render() {
+		const { object, context } = this.props;
+		const { selectedId } = this.state;
+		const pages = this.pages();
+		const selectedPage = selectedId
+			? pages.find((p) => p.id === selectedId)
+			: pages[pages.length - 1];
 		return (
 			<TabControl
 				id={object.id || context.object}

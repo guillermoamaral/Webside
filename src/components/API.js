@@ -768,6 +768,14 @@ class API {
 		return response;
 	}
 
+	async objectPresentations(id, path) {
+		const response = await this.objectSlot(
+			id,
+			path + "/custom-presentations"
+		);
+		return response;
+	}
+
 	async objectSlot(id, path) {
 		return await this.get(
 			"/objects/" + id + path,
