@@ -57,7 +57,9 @@ class TabControl extends Component {
 		const { addMenuOpen, selectMenuOpen } = this.state;
 		const { id, pages, selectedPage, noClose } = this.props;
 		const addOptions = this.props.addOptions || [];
-		const selectedIndex = pages.findIndex((p) => p.id === selectedPage.id);
+		const selectedIndex = pages.findIndex(
+			(p) => p && selectedPage && p.id === selectedPage.id
+		);
 		return (
 			<Box
 				display="flex"
