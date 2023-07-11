@@ -67,6 +67,7 @@ class ObjectTree extends Component {
 				onNodeSelect={this.props.onSlotSelect}
 				onNodeExpand={this.props.onSlotExpand}
 				menuOptions={this.menuOptions()}
+				selectedNode={this.props.selectedObject}
 			/>
 		);
 	}

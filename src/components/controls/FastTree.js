@@ -257,13 +257,13 @@ const FastTree = ({
 
 	const menuOptionClicked = (option) => {
 		if (option.action) {
-			option.action(selected.node);
+			option.action(selectedNode);
 		}
 	};
 
 	const getMenuOptionEnabled = (option) => {
 		if (option.enabled) {
-			return option.enabled(selected.node);
+			return option.enabled(selectedNode);
 		}
 		return true;
 	};
