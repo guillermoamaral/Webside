@@ -21,10 +21,12 @@ class MethodList extends Component {
 				defaultValue: method.selector,
 				required: true,
 			});
-			await ide.api.renameSelector(
-				method.methodClass,
-				method.selector,
-				newSelector
+			await ide.waitFor(() =>
+				ide.api.renameSelector(
+					method.methodClass,
+					method.selector,
+					newSelector
+				)
 			);
 			method.selector = newSelector;
 			if (this.props.onMethodRename) {
@@ -98,7 +100,10 @@ class MethodList extends Component {
 
 	browseLocalSenders = (method) => {
 		if (method) {
-			this.context.browseLocalSenders(method.selector, method.methodClass);
+			this.context.browseLocalSenders(
+				method.selector,
+				method.methodClass
+			);
 		}
 	};
 
