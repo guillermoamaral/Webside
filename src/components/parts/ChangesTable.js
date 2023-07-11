@@ -34,6 +34,12 @@ class ChangesTable extends Component {
 		}
 	};
 
+	browseSenders = (change) => {
+		if (change && change.isMethodChange()) {
+			this.context.browseSenders(change.selector);
+		}
+	};
+
 	applyChange = (change) => {
 		if (this.props.onChangeApply) {
 			this.props.onChangeApply(change);
@@ -150,6 +156,7 @@ class ChangesTable extends Component {
 		return [
 			{ label: "Browse class", action: this.browseClass },
 			{ label: "Browse implementors", action: this.browseImplementors },
+			{ label: "Browse senders", action: this.browseSenders },
 			{ label: "Apply", action: this.applyChange },
 			{ label: "Reject", action: this.rejectChange },
 			null,

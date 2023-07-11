@@ -44,108 +44,100 @@ class SettingsEditor extends Component {
 					</Grid>
 				)}
 				<Grid item>
-					<form onSubmit={this.apply}>
-						{settings.sections().map((section) => (
-							<Accordion key={section.name}>
-								<AccordionSummary
-									expandIcon={<ExpandMoreIcon />}
-								>
-									<Typography variant="body1">
-										{section.label}
-									</Typography>
-								</AccordionSummary>
-								<Box ml={10} mb={2}>
-									{section.plainSettings().map((setting) => (
-										<SettingEditor
-											setting={setting}
-											key={setting.name}
-										/>
-									))}
-									{section.sections().map((subsection) => (
-										<Accordion key={subsection.name}>
-											<AccordionSummary
-												expandIcon={<ExpandMoreIcon />}
-											>
-												<Typography variant="body2">
-													{subsection.label}
-												</Typography>
-											</AccordionSummary>
-											<Box ml={10} mb={2}>
-												{subsection
-													.plainSettings()
-													.map((subsetting) => (
-														<SettingEditor
-															setting={subsetting}
-															key={
-																subsetting.name
-															}
-														/>
-													))}
-												{subsection
-													.sections()
-													.map((subsubsection) => (
-														<Accordion
-															key={
-																subsubsection.name
+					{settings.sections().map((section) => (
+						<Accordion key={section.name}>
+							<AccordionSummary expandIcon={<ExpandMoreIcon />}>
+								<Typography variant="body1">
+									{section.label}
+								</Typography>
+							</AccordionSummary>
+							<Box ml={10} mb={2}>
+								{section.plainSettings().map((setting) => (
+									<SettingEditor
+										setting={setting}
+										key={setting.name}
+									/>
+								))}
+								{section.sections().map((subsection) => (
+									<Accordion key={subsection.name}>
+										<AccordionSummary
+											expandIcon={<ExpandMoreIcon />}
+										>
+											<Typography variant="body2">
+												{subsection.label}
+											</Typography>
+										</AccordionSummary>
+										<Box ml={10} mb={2}>
+											{subsection
+												.plainSettings()
+												.map((subsetting) => (
+													<SettingEditor
+														setting={subsetting}
+														key={subsetting.name}
+													/>
+												))}
+											{subsection
+												.sections()
+												.map((subsubsection) => (
+													<Accordion
+														key={subsubsection.name}
+													>
+														<AccordionSummary
+															expandIcon={
+																<ExpandMoreIcon />
 															}
 														>
-															<AccordionSummary
-																expandIcon={
-																	<ExpandMoreIcon />
+															<Typography variant="body2">
+																{
+																	subsubsection.label
 																}
-															>
-																<Typography variant="body2">
-																	{
-																		subsubsection.label
-																	}
-																</Typography>
-															</AccordionSummary>
-															<Box ml={10} mb={2}>
-																{subsubsection
-																	.plainSettings()
-																	.map(
-																		(
-																			subsubsetting
-																		) => (
-																			<SettingEditor
-																				setting={
-																					subsubsetting
-																				}
-																				key={
-																					subsubsetting.name
-																				}
-																			/>
-																		)
-																	)}
-															</Box>
-														</Accordion>
-													))}
-											</Box>
-										</Accordion>
-									))}
-									<Box
-										mt={1}
-										mr={2}
-										display="flex"
-										direction="row"
-										justifyContent="flex-end"
-										alignItems="center"
+															</Typography>
+														</AccordionSummary>
+														<Box ml={10} mb={2}>
+															{subsubsection
+																.plainSettings()
+																.map(
+																	(
+																		subsubsetting
+																	) => (
+																		<SettingEditor
+																			setting={
+																				subsubsetting
+																			}
+																			key={
+																				subsubsetting.name
+																			}
+																		/>
+																	)
+																)}
+														</Box>
+													</Accordion>
+												))}
+										</Box>
+									</Accordion>
+								))}
+								<Box
+									mt={1}
+									mr={2}
+									display="flex"
+									direction="row"
+									justifyContent="flex-end"
+									alignItems="center"
+								>
+									<Button
+										variant="outlined"
+										type="submit"
+										size="small"
+										onClick={() =>
+											this.resetSection(section.name)
+										}
 									>
-										<Button
-											variant="outlined"
-											type="submit"
-											size="small"
-											onClick={() =>
-												this.resetSection(section.name)
-											}
-										>
-											Reset
-										</Button>
-									</Box>
+										Reset
+									</Button>
 								</Box>
-							</Accordion>
-						))}
-					</form>
+							</Box>
+						</Accordion>
+					))}
 				</Grid>
 				<Grid item>
 					<Box

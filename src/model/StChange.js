@@ -98,6 +98,10 @@ class StChange extends Object {
 	isMethodChange() {
 		return false;
 	}
+
+	canOverride(change) {
+		return false;
+	}
 }
 
 class MethodChange extends StChange {

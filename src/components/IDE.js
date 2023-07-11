@@ -159,27 +159,29 @@ class IDE extends Component {
 	}
 
 	applySettings(settings) {
-		if (
+		const hard =
 			this.settings.section("connection").get("backend") !==
-			settings.section("connection").get("backend")
-		) {
-			this.mainContainer().removeAllPages();
-		}
+				settings.section("connection").get("backend") ||
+			this.settings.section("connection").get("developer") !==
+				settings.section("connection").get("developer");
 		this.settings = settings;
 		this.storeSettingsIntoCookie();
 		const connection = this.settings.section("connection");
-		this.props.navigate(
-			"/ide?backend=" +
-				connection.get("backend") +
-				"&developer=" +
-				connection.get("developer")
-		);
+		if (hard) {
+			this.props.navigate(
+				"/ide?backend=" +
+					connection.get("backend") +
+					"&developer=" +
+					connection.get("developer")
+			);
+			this.removeExtraContainers();
+		}
 		this.updateSettings();
-		this.removeExtraContainers();
 	}
 
 	resetSettingsSection(name) {
-		this.settings.setSection(name, this.defaultSettings().section(name));
+		const section = this.defaultSettings().section(name);
+		this.settings.setSection(name, section);
 		this.applySettings(this.settings);
 	}
 
