@@ -102,6 +102,10 @@ class StChange extends Object {
 	canOverride(change) {
 		return false;
 	}
+
+	async apply() {
+		await this.changeset.system.postChange(this.asJson());
+	}
 }
 
 class MethodChange extends StChange {

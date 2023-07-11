@@ -105,7 +105,7 @@ class ChangesBrowser extends Component {
 
 	rejectChangesUpToDate = async () => {
 		const changeset = this.props.changeset;
-		ide.waitFor(async () => await changeset.rejectUpToDate());
+		await ide.waitFor(async () => await changeset.rejectUpToDate());
 		this.updateChanges(changeset.changes);
 	};
 
@@ -137,12 +137,12 @@ class ChangesBrowser extends Component {
 	};
 
 	applyChanges = async (changes) => {
-		ide.waitFor(
+		await ide.waitFor(
 			async () =>
 				await Promise.all(
 					changes.map(async (ch) => {
 						try {
-							await ide.api.postChange(ch.asJson());
+							await ch.apply();
 							await ch.updateCurrentSourceCode();
 						} catch (error) {
 							ide.reportError(error);
@@ -161,7 +161,7 @@ class ChangesBrowser extends Component {
 	showOriginalChanges = async () => {
 		const changeset = this.props.changeset;
 		changeset.changes = changeset.originalChanges || changeset.changes;
-		ide.waitFor(async () => await changeset.updateCurrentSourceCode());
+		await ide.waitFor(async () => await changeset.updateCurrentSourceCode());
 		this.updateChanges(changeset.changes);
 	};
 
