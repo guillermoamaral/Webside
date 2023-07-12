@@ -107,9 +107,12 @@ class ObjectPresenter extends Component {
 		const { object, context } = this.props;
 		const { selectedId } = this.state;
 		const pages = this.pages();
-		const selectedPage = selectedId
+		var selectedPage = selectedId
 			? pages.find((p) => p.id === selectedId)
-			: pages[pages.length - 1];
+			: pages[0];
+		if (!selectedPage) {
+			selectedPage = pages[0];
+		}
 		return (
 			<TabControl
 				id={object.id || context.object}

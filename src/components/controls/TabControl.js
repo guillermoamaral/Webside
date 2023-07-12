@@ -252,7 +252,10 @@ class TabControl extends Component {
 								key={"tab" + id + "-" + page.id}
 								style={{ height: "100%" }}
 								//index={index}
-								visible={page.id === selectedPage.id}
+								visible={
+									selectedPage !== undefined &&
+									page.id === selectedPage.id
+								}
 							>
 								{page.component}
 							</TabPanel>
