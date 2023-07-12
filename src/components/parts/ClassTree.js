@@ -131,7 +131,6 @@ class ClassTree extends Component {
 			// />
 			<FastTree
 				nodes={this.props.roots || []}
-				nodeId="name"
 				nodeLabel="name"
 				nodeStyle={this.props.labelStyle}
 				nodeChildren="subclasses"

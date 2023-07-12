@@ -290,7 +290,7 @@ class API {
 	}
 
 	methodTemplate() {
-		// Retrieve from back-end to support custom templates for each dialect...
+		// Should be retrieved from the backend to support custom templates for each dialect...
 		return {
 			selector: "<new>",
 			template: true,

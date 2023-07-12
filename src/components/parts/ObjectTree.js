@@ -61,7 +61,6 @@ class ObjectTree extends Component {
 			// />
 			<FastTree
 				nodes={roots ? roots : []}
-				nodeId={this.objectId}
 				nodeLabel="slot"
 				nodeChildren="slots"
 				onNodeSelect={this.props.onSlotSelect}

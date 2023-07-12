@@ -3,6 +3,7 @@ import { Paper } from "@mui/material";
 import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";
 import TabControl from "../controls/TabControl";
+import FastTree from "../controls/FastTree";
 
 class ObjectPresenter extends Component {
 	constructor(props) {
@@ -64,6 +65,17 @@ class ObjectPresenter extends Component {
 				label: p.title,
 				component: (
 					<Paper variant="outlined" style={{ height: "100%" }}>
+						{p.type === "source" && (
+							<CodeEditor source={p.code} showAccept={false} />
+						)}
+						{p.type === "tree" && (
+							<FastTree
+								nodes={p.roots}
+								selectedNode={p.roots[0]}
+								nodeLabel={p.nodeLabel}
+								nodeChildren={p.nodeChildren}
+							/>
+						)}
 						{p.type === "table" && p.rows.length > 100 && (
 							<CustomTable
 								columns={p.columns}

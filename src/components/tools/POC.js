@@ -7,17 +7,16 @@ class POC extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			tree: [],
+			tree: [
+				{
+					label: "root",
+					children: [
+						{ label: "a", children: [{ label: "b" }] },
+						{ label: "c", children: [{ label: "d" }] },
+					],
+				},
+			],
 		};
-	}
-
-	async componentDidMount() {
-		try {
-			const tree = await ide.api.classTree("Object", 10);
-			this.setState({ tree: [tree] });
-		} catch (error) {
-			ide.reportError(error);
-		}
 	}
 
 	render() {
@@ -25,9 +24,6 @@ class POC extends Component {
 			<FastTree
 				style={{ height: 400, width: 500 }}
 				nodes={this.state.tree}
-				nodeId="name"
-				nodeLabel="name"
-				nodeChildren="subclasses"
 				onNodeSelect={(node) => {
 					console.log("select", node);
 				}}

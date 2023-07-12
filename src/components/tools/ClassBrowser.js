@@ -181,7 +181,7 @@ class ClassBrowser extends RefactoringBrowser {
 		}
 		if (methods && methods.length === 0) {
 			const template = ide.api.methodTemplate();
-			template.methodClass = species;
+			template.methodClass = species.name;
 			template.category = category;
 			methods.push(template);
 		}
