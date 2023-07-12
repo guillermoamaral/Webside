@@ -329,11 +329,14 @@ class ToolContainer extends Component {
 		const sorted = sortedBy
 			? methods.sort((a, b) => (a[sortedBy] <= b[sortedBy] ? -1 : 1))
 			: methods;
+		const pageId = this.newPageId();
 		const browser = (
 			<MethodBrowser
 				methods={sorted}
 				selectedSelector={selectedSelector}
 				selectedIdentifier={selectedIdentifier}
+				id={pageId}
+				title={title}
 			/>
 		);
 		this.createPage(

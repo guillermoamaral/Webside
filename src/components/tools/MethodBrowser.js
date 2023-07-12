@@ -10,8 +10,11 @@ import { ide } from "../IDE";
 import MethodList from "../parts/MethodList";
 import CodeBrowser from "../parts/CodeBrowser";
 import CustomPaper from "../controls/CustomPaper";
+import ToolContainerContext from "../ToolContainerContext";
 
 class MethodBrowser extends Component {
+	static contextType = ToolContainerContext;
+
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -103,12 +106,25 @@ class MethodBrowser extends Component {
 		return method && method.selector.startsWith("test");
 	}
 
+	updateLabel = () => {
+		const label =
+			(this.props.title || "Methods") +
+			" (" +
+			this.currentMethods().length +
+			")";
+		this.context.updatePageLabel(this.props.id, label);
+	};
+
 	showTests(show) {
 		var selected = this.state.selectedMethod;
 		if (!show && this.isTest(selected)) {
 			selected = null;
 		}
-		this.setState({ showTests: show, selectedMethod: selected });
+
+		this.setState(
+			{ showTests: show, selectedMethod: selected },
+			this.updateLabel
+		);
 	}
 
 	render() {

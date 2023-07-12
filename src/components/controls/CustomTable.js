@@ -64,8 +64,6 @@ class CustomTable extends Component {
 			return {
 				menuOpen: false,
 				selectedRow: props.selectedRow,
-				filterText: "",
-				filteredRows: props.rows,
 			};
 		}
 		return null;
@@ -279,7 +277,7 @@ class CustomTable extends Component {
 				: currentPage;
 		this.setState({
 			filteredRows: filtered,
-			filteredText: text,
+			filterText: text,
 			currentPage: page,
 		});
 	}
@@ -344,6 +342,7 @@ class CustomTable extends Component {
 			rowsPerPage,
 			order,
 			filteredRows,
+			filterText,
 		} = this.state;
 		const useFilter = this.props.useFilter;
 		const columns = this.columns();
@@ -490,6 +489,7 @@ class CustomTable extends Component {
 								</Box>
 								<Box>
 									<InputBase
+										value={filterText}
 										placeholder="Search…"
 										inputProps={{ "aria-label": "search" }}
 										onKeyDown={(event) => {
