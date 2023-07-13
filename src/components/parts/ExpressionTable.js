@@ -133,7 +133,7 @@ class ExpressionTable extends Component {
 				field: "value",
 				headerName: "Value",
 				editable: false,
-				minWidth: 120,
+				minWidth: 200,
 			},
 			{
 				field: "delete",
