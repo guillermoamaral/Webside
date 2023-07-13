@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { Box, Paper, IconButton } from "@mui/material";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
@@ -10,13 +10,12 @@ import {
 	Refresh as RefreshIcon,
 } from "@mui/icons-material";
 
-class ExpressionTable extends PureComponent {
+class ExpressionTable extends Component {
 	static contextType = ToolContainerContext;
 
 	constructor(props) {
 		super(props);
 		this.state = {
-			expressions: [],
 			selectedExpression: null,
 		};
 	}
@@ -26,7 +25,7 @@ class ExpressionTable extends PureComponent {
 	};
 
 	newExpressionId() {
-		const expressions = this.state.expressions;
+		const expressions = this.props.expressions;
 		if (expressions.length === 0) {
 			return 0;
 		}
@@ -46,15 +45,22 @@ class ExpressionTable extends PureComponent {
 					sourceCode: source,
 				};
 				await this.evaluateExpression(expression);
-				this.setState({
-					expressions: [...this.state.expressions, expression],
-				});
+				this.props.onExpressionAdd(expression);
 			}
 		} catch (error) {}
 	};
 
 	expressionWithId(id) {
-		return this.state.expressions.find((e) => e.id === id);
+		return this.props.expressions.find((e) => e.id === id);
+	}
+
+	async updateExpressions() {
+		await Promise.all(
+			this.props.expressions.map(
+				async (e) => await this.evaluateExpression(e)
+			)
+		);
+		this.forceUpdate();
 	}
 
 	updateExpression = async (expression) => {
@@ -82,11 +88,7 @@ class ExpressionTable extends PureComponent {
 	};
 
 	removeExpression = (expression) => {
-		this.setState({
-			expressions: this.state.expressions.filter(
-				(e) => e.id !== expression.id
-			),
-		});
+		this.props.onExpressionRemove(expression);
 	};
 
 	inspectExpression = async (expression) => {
@@ -205,7 +207,8 @@ class ExpressionTable extends PureComponent {
 	};
 
 	render() {
-		const { expressions, selectedExpression } = this.state;
+		const { selectedExpression } = this.state;
+		const { expressions } = this.props;
 		return (
 			<Box
 				display="flex"

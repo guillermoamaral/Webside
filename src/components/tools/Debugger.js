@@ -21,11 +21,13 @@ class Debugger extends PureComponent {
 
 	constructor(props) {
 		super(props);
+		this.expressionTableRef = React.createRef();
 		this.state = {
 			frames: [],
 			selectedFrame: null,
 			stepping: false,
 			showBindings: true,
+			expressions: [],
 		};
 	}
 
@@ -58,9 +60,19 @@ class Debugger extends PureComponent {
 		}
 	}
 
+	updateExpressions = () => {
+		if (
+			!this.state.showBindings &&
+			this.expressionTableRef &&
+			this.expressionTableRef.current
+		) {
+			this.expressionTableRef.current.updateExpressions();
+		}
+	};
+
 	frameSelected = async (frame) => {
 		await this.updateFrame(frame, true);
-		this.setState({ selectedFrame: frame });
+		this.setState({ selectedFrame: frame }, this.updateExpressions);
 	};
 
 	updateFrame = async (frame, forced) => {
@@ -94,6 +106,7 @@ class Debugger extends PureComponent {
 			);
 			this.notifyEvent("stepInto");
 			this.updateFrames();
+			this.updateExpressions();
 		} catch (error) {
 			ide.reportError(error);
 		}
@@ -108,6 +121,7 @@ class Debugger extends PureComponent {
 			);
 			this.notifyEvent("stepOver");
 			this.updateFrames();
+			this.updateExpressions();
 		} catch (error) {
 			ide.reportError(error);
 		}
@@ -121,6 +135,7 @@ class Debugger extends PureComponent {
 			);
 			this.notifyEvent("stepThrough");
 			this.updateFrames();
+			this.updateExpressions();
 		} catch (error) {
 			ide.reportError(error);
 		}
@@ -134,6 +149,7 @@ class Debugger extends PureComponent {
 			);
 			this.notifyEvent("restart");
 			this.updateFrames();
+			this.updateExpressions();
 		} catch (error) {
 			ide.reportError(error);
 		}
@@ -216,8 +232,23 @@ class Debugger extends PureComponent {
 		}
 	};
 
+	addExpression = (expression) => {
+		this.setState({
+			expressions: [...this.state.expressions, expression],
+		});
+	};
+
+	removeExpression = (expression) => {
+		this.setState({
+			expressions: this.state.expressions.filter(
+				(e) => e.id !== expression.id
+			),
+		});
+	};
+
 	render() {
-		const { frames, selectedFrame, stepping, showBindings } = this.state;
+		const { frames, selectedFrame, stepping, showBindings, expressions } =
+			this.state;
 		return (
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
@@ -288,9 +319,13 @@ class Debugger extends PureComponent {
 							)}
 							{!showBindings && (
 								<ExpressionTable
+									ref={this.expressionTableRef}
 									style={{ height: 300 }}
 									id={this.props.id}
 									frame={selectedFrame}
+									expressions={expressions}
+									onExpressionAdd={this.addExpression}
+									onExpressionRemove={this.removeExpression}
 								/>
 							)}
 						</Grid>
