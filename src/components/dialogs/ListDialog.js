@@ -62,6 +62,7 @@ function ListDialog(props, context) {
 					disabled={required && !value}
 					startIcon={ok.startIcon}
 					endIcon={ok.endIcon}
+					autoFocus
 				>
 					{ok.text}
 				</Button>

@@ -61,7 +61,7 @@ class ClassTree extends Component {
 				defaultValue: species.name,
 				required: true,
 			});
-			await ide.api.renameClass(species.name, newName);
+			await ide.waitFor(() => ide.api.renameClass(species.name, newName));
 			species.name = newName;
 			if (this.props.onClassRename) {
 				this.props.onClassRename(species);

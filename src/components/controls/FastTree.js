@@ -136,7 +136,6 @@ const getNodeData = memoizeOne(
 
 const FastTree = ({
 	nodes,
-	nodeId,
 	nodeLabel,
 	nodeChildren,
 	nodeStyle,
@@ -149,17 +148,6 @@ const FastTree = ({
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [menuPosition, setMenuPosition] = useState({ x: null, y: null });
 	const [selected, setSelected] = useState();
-
-	// const getNodeId = (node) => {
-	// 	if (!node) return null;
-	// 	if (!nodeId) {
-	// 		return node.id || getNodeLabel(node);
-	// 	}
-	// 	if (typeof nodeId == "string") {
-	// 		return node[nodeId];
-	// 	}
-	// 	return nodeId(node);
-	// };
 
 	const getNodeLabel = (node) => {
 		if (!nodeLabel) {
