@@ -58,7 +58,7 @@ class Search extends Component {
 
 	async searchClasses(text) {
 		try {
-			const names = await ide.api.classNames();
+			const names = await ide.backend.classNames();
 			return names
 				.filter((name) => {
 					return name.toLowerCase().includes(text);
@@ -73,7 +73,7 @@ class Search extends Component {
 
 	async searchSelectors(text) {
 		try {
-			const methods = await ide.api.methodsMatching(text);
+			const methods = await ide.backend.methodsMatching(text);
 			return methods.map((m) => {
 				return {
 					title: m.methodClass,
@@ -89,7 +89,7 @@ class Search extends Component {
 
 	async searchStringReferences(text) {
 		try {
-			const methods = await ide.api.stringReferences(text);
+			const methods = await ide.backend.stringReferences(text);
 			return methods.map((m) => {
 				return {
 					title: m.methodClass,

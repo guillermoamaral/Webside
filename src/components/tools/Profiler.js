@@ -30,8 +30,8 @@ class Profiler extends Component {
 
 	async updateResults() {
 		try {
-			const tree = await ide.api.profilerTreeResults(this.props.id);
-			const ranking = await ide.api.profilerRankingResults(this.props.id);
+			const tree = await ide.backend.profilerTreeResults(this.props.id);
+			const ranking = await ide.backend.profilerRankingResults(this.props.id);
 			this.setState({ tree: tree, ranking: ranking, loading: false });
 		} catch (error) {
 			ide.reportError(error);
@@ -45,7 +45,7 @@ class Profiler extends Component {
 		} else {
 			const parts = signature.split(") ")[1].split(">>");
 			try {
-				method = await ide.api.method(parts[0], parts[1]);
+				method = await ide.backend.method(parts[0], parts[1]);
 			} catch (error) {
 				ide.reportError(error);
 			}

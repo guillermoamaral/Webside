@@ -42,7 +42,7 @@ class PackageBrowser extends RefactoringBrowser {
 	initializePackages = async () => {
 		let names;
 		try {
-			names = await ide.api.packageNames();
+			names = await ide.backend.packageNames();
 		} catch (error) {
 			names = [];
 			ide.reportError(error);
@@ -140,7 +140,7 @@ class PackageBrowser extends RefactoringBrowser {
 			methods = methods.filter((m) => m.category === category);
 		}
 		if (methods && methods.length === 0) {
-			const template = ide.api.methodTemplate();
+			const template = ide.backend.methodTemplate();
 			template.methodClass = species.name;
 			template.category = category;
 			methods.push(template);
@@ -152,7 +152,7 @@ class PackageBrowser extends RefactoringBrowser {
 	async updatePackage(pack, forced = false) {
 		try {
 			if (forced || !pack.classes || !pack.methods) {
-				const retrieved = await ide.api.packageNamed(pack.name);
+				const retrieved = await ide.backend.packageNamed(pack.name);
 				Object.assign(pack, retrieved);
 			}
 		} catch (error) {
@@ -163,7 +163,7 @@ class PackageBrowser extends RefactoringBrowser {
 	async updateClasses(pack, forced = false) {
 		if (forced || !pack.classes) {
 			try {
-				pack.classes = await ide.api.packageClasses(pack.name, true);
+				pack.classes = await ide.backend.packageClasses(pack.name, true);
 			} catch (error) {
 				ide.reportError(error);
 			}
@@ -176,7 +176,7 @@ class PackageBrowser extends RefactoringBrowser {
 		}
 		try {
 			if (forced || !species.methods) {
-				species.methods = await ide.api.methods(species.name, true);
+				species.methods = await ide.backend.methods(species.name, true);
 			}
 		} catch (error) {
 			ide.reportError(error);

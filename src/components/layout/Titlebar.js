@@ -18,7 +18,7 @@ class Titlebar extends Component {
 	search = async (text) => {
 		if (text && text.length > 0) {
 			try {
-				await ide.api.classNamed(text);
+				await ide.backend.classNamed(text);
 				ide.browseClass(text);
 			} catch (error) {}
 		}

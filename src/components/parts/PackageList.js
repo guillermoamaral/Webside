@@ -12,8 +12,8 @@ class PackageList extends Component {
 				title: "New package",
 				required: true,
 			});
-			await ide.api.createPackage(name);
-			const pack = await ide.api.packageNamed(name);
+			await ide.backend.createPackage(name);
+			const pack = await ide.backend.packageNamed(name);
 			if (this.props.onPackageCreate) {
 				this.props.onPackageCreate(pack);
 			}
@@ -34,7 +34,7 @@ class PackageList extends Component {
 			return;
 		}
 		try {
-			await ide.api.removePackage(pack.name);
+			await ide.backend.removePackage(pack.name);
 			if (this.props.onPackageRemove) {
 				this.props.onPackageRemove(pack);
 			}
@@ -53,7 +53,7 @@ class PackageList extends Component {
 				defaultValue: pack.name,
 				required: true,
 			});
-			await ide.api.renamePackage(pack.name, newName);
+			await ide.backend.renamePackage(pack.name, newName);
 			pack.name = newName;
 			if (this.props.onPackageRename) {
 				this.props.onPackageRename(pack);

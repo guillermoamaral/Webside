@@ -17,7 +17,7 @@ class ObjectTree extends Component {
 		try {
 			const id = this.props.roots[0].id;
 			const path = this.objectURIPath(object);
-			const pinned = await ide.api.pinObjectSlot(id, path);
+			const pinned = await ide.backend.pinObjectSlot(id, path);
 			this.context.openInspector(pinned);
 		} catch (error) {
 			ide.reportError(error);

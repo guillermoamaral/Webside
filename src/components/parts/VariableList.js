@@ -34,7 +34,7 @@ class VariableList extends Component {
 				title: "New variable",
 				required: true,
 			});
-			await ide.api.addInstanceVariable(this.props.class.name, name);
+			await ide.backend.addInstanceVariable(this.props.class.name, name);
 			if (this.props.onVariableAdd) {
 				this.props.onVariableAdd();
 			}
@@ -54,13 +54,13 @@ class VariableList extends Component {
 				required: true,
 			});
 			if (variable.type === "instance") {
-				await ide.api.renameInstanceVariable(
+				await ide.backend.renameInstanceVariable(
 					this.props.class.name,
 					variable.name,
 					newName
 				);
 			} else {
-				await ide.api.renameClassVariable(
+				await ide.backend.renameClassVariable(
 					this.props.class.name,
 					variable.name,
 					newName
@@ -81,12 +81,12 @@ class VariableList extends Component {
 		}
 		try {
 			if (variable.type === "instance") {
-				await ide.api.removeInstanceVariable(
+				await ide.backend.removeInstanceVariable(
 					this.props.class.name,
 					variable.name
 				);
 			} else {
-				await ide.api.removeClassVariable(
+				await ide.backend.removeClassVariable(
 					this.props.class.name,
 					variable.name
 				);
@@ -104,7 +104,7 @@ class VariableList extends Component {
 			return;
 		}
 		try {
-			await ide.api.moveInstanceVariableUp(
+			await ide.backend.moveInstanceVariableUp(
 				this.props.class.name,
 				variable.name
 			);
@@ -121,7 +121,7 @@ class VariableList extends Component {
 			return;
 		}
 		try {
-			await ide.api.moveInstanceVariableDown(
+			await ide.backend.moveInstanceVariableDown(
 				this.props.class.name,
 				variable.name,
 				target

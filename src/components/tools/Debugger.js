@@ -44,7 +44,7 @@ class Debugger extends PureComponent {
 
 	async updateFrames() {
 		try {
-			const frames = await ide.api.debuggerFrames(this.props.id);
+			const frames = await ide.backend.debuggerFrames(this.props.id);
 			var frame;
 			if (frames.length > 0) {
 				frame = frames[0];
@@ -78,7 +78,7 @@ class Debugger extends PureComponent {
 	updateFrame = async (frame, forced) => {
 		try {
 			if (forced || !frame.method) {
-				const info = await ide.api.debuggerFrame(
+				const info = await ide.backend.debuggerFrame(
 					this.props.id,
 					frame.index
 				);
@@ -87,7 +87,7 @@ class Debugger extends PureComponent {
 				frame.interval = info.interval;
 			}
 			if (!frame.bindings || true) {
-				const bindings = await ide.api.frameBindings(
+				const bindings = await ide.backend.frameBindings(
 					this.props.id,
 					frame.index
 				);
@@ -100,7 +100,7 @@ class Debugger extends PureComponent {
 
 	stepIntoClicked = async () => {
 		try {
-			await ide.api.stepIntoDebugger(
+			await ide.backend.stepIntoDebugger(
 				this.props.id,
 				this.state.selectedFrame.index
 			);
@@ -115,7 +115,7 @@ class Debugger extends PureComponent {
 	stepOverClicked = async () => {
 		this.setState({ stepping: true });
 		try {
-			await ide.api.stepOverDebugger(
+			await ide.backend.stepOverDebugger(
 				this.props.id,
 				this.state.selectedFrame.index
 			);
@@ -129,7 +129,7 @@ class Debugger extends PureComponent {
 
 	stepThroughClicked = async () => {
 		try {
-			await ide.api.stepThroughDebugger(
+			await ide.backend.stepThroughDebugger(
 				this.props.id,
 				this.state.selectedFrame.index
 			);
@@ -143,7 +143,7 @@ class Debugger extends PureComponent {
 
 	restartClicked = async () => {
 		try {
-			await ide.api.restartDebugger(
+			await ide.backend.restartDebugger(
 				this.props.id,
 				this.state.selectedFrame.index
 			);
@@ -157,7 +157,7 @@ class Debugger extends PureComponent {
 
 	resumeClicked = async () => {
 		try {
-			await ide.api.resumeDebugger(this.props.id);
+			await ide.backend.resumeDebugger(this.props.id);
 			if (this.props.onResume) {
 				this.props.onResume();
 			}
@@ -168,7 +168,7 @@ class Debugger extends PureComponent {
 
 	terminateClicked = async () => {
 		try {
-			await ide.api.terminateDebugger(this.props.id);
+			await ide.backend.terminateDebugger(this.props.id);
 			if (this.props.onTerminate) {
 				this.props.onTerminate();
 			}
@@ -183,7 +183,7 @@ class Debugger extends PureComponent {
 			return;
 		}
 		try {
-			await ide.api.restartDebugger(
+			await ide.backend.restartDebugger(
 				this.props.id,
 				this.state.selectedFrame.index,
 				true

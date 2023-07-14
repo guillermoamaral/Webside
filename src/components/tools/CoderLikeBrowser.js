@@ -44,7 +44,7 @@ class CoderLikeBrowser extends Component {
 			return;
 		}
 		try {
-			const species = await ide.api.classTree(classsname, 10, true);
+			const species = await ide.backend.classTree(classsname, 10, true);
 			this.cache[classsname] = species;
 			this.setState({ root: classsname }, () => {
 				this.classSelected(species);
@@ -125,13 +125,13 @@ class CoderLikeBrowser extends Component {
 		const species = selections.species;
 		try {
 			if (forced || !species.definition) {
-				const definition = await ide.api.classNamed(species.name);
+				const definition = await ide.backend.classNamed(species.name);
 				species.definition = definition.definition;
 				species.comment = definition.comment;
 				species.superclass = definition.superclass;
 			}
 			if (forced || !species.subclasses) {
-				species.subclasses = await ide.api.subclasses(species.name);
+				species.subclasses = await ide.backend.subclasses(species.name);
 			}
 		} catch (error) {
 			ide.reportError(error);
@@ -144,7 +144,7 @@ class CoderLikeBrowser extends Component {
 				await Promise.all(
 					species.subclasses.map(async (c) => {
 						if (!c.subclasses) {
-							c.subclasses = await ide.api.subclasses(c.name);
+							c.subclasses = await ide.backend.subclasses(c.name);
 						}
 					})
 				);
@@ -158,7 +158,7 @@ class CoderLikeBrowser extends Component {
 		const { species, variable } = selections;
 		try {
 			if (forced || !species.variables) {
-				species.variables = await ide.api.variables(species.name);
+				species.variables = await ide.backend.variables(species.name);
 			}
 			if (variable) {
 				const found = species.variables.find(
@@ -175,7 +175,7 @@ class CoderLikeBrowser extends Component {
 		const species = selections.species;
 		try {
 			if (forced || !species.categories) {
-				const categories = await ide.api.categories(species.name);
+				const categories = await ide.backend.categories(species.name);
 				species.categories = categories.sort();
 			}
 			if (!species.categories.includes(selections.category)) {
@@ -193,7 +193,7 @@ class CoderLikeBrowser extends Component {
 		}
 		try {
 			if (forced || !species.methods) {
-				species.methods = await ide.api.methods(species.name, true);
+				species.methods = await ide.backend.methods(species.name, true);
 			}
 			if (
 				variable &&
@@ -201,7 +201,7 @@ class CoderLikeBrowser extends Component {
 					!species[variable.name] ||
 					!species[variable.name][access])
 			) {
-				const accessors = await ide.api.methodsAccessing(
+				const accessors = await ide.backend.methodsAccessing(
 					species.name,
 					variable.name,
 					access,
@@ -227,7 +227,7 @@ class CoderLikeBrowser extends Component {
 		var method;
 		if (forced) {
 			try {
-				method = await ide.api.method(species.name, selector);
+				method = await ide.backend.method(species.name, selector);
 			} catch (error) {
 				ide.reportError(error);
 			}

@@ -19,7 +19,7 @@ class ObjectBrowser extends Component {
 
 	unpinObject = async (object) => {
 		try {
-			await ide.api.unpinObject(object.id);
+			await ide.backend.unpinObject(object.id);
 		} catch (error) {
 			ide.reportError(error);
 		}

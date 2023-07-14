@@ -18,11 +18,11 @@ class RegisterTable extends Component {
 
 	inspect = async (register) => {
 		try {
-			await ide.api.pinNativeDebuggerRegister(
+			await ide.backend.pinNativeDebuggerRegister(
 				this.props.debugger,
 				register.name
 			);
-			const object = await ide.api.objectWithId(register.name);
+			const object = await ide.backend.objectWithId(register.name);
 			this.context.openInspector(object);
 		} catch (error) {
 			ide.reportError(error);

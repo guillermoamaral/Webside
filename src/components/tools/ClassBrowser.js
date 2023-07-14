@@ -48,7 +48,7 @@ class ClassBrowser extends RefactoringBrowser {
 
 	async initializeClassNames() {
 		try {
-			this.classnames = await ide.api.classNames();
+			this.classnames = await ide.backend.classNames();
 			if (this.state.root) {
 				this.changeRootClass(this.state.root);
 			} else {
@@ -64,7 +64,7 @@ class ClassBrowser extends RefactoringBrowser {
 			return;
 		}
 		try {
-			const species = await ide.api.classTree(classsname, 10, true);
+			const species = await ide.backend.classTree(classsname, 10, true);
 			this.cache[classsname] = species;
 			this.setState({ root: classsname }, () => {
 				this.classSelected(species);
@@ -180,7 +180,7 @@ class ClassBrowser extends RefactoringBrowser {
 			);
 		}
 		if (methods && methods.length === 0) {
-			const template = ide.api.methodTemplate();
+			const template = ide.backend.methodTemplate();
 			template.methodClass = species.name;
 			template.category = category;
 			methods.push(template);
@@ -192,7 +192,7 @@ class ClassBrowser extends RefactoringBrowser {
 	async updateVariables(species, forced = false) {
 		try {
 			if (forced || !species.variables) {
-				species.variables = await ide.api.variables(species.name);
+				species.variables = await ide.backend.variables(species.name);
 			}
 		} catch (error) {
 			ide.reportError(error);
@@ -205,7 +205,7 @@ class ClassBrowser extends RefactoringBrowser {
 		}
 		try {
 			if (forced || !species.methods) {
-				species.methods = await ide.api.methods(species.name, true);
+				species.methods = await ide.backend.methods(species.name, true);
 				species.accessors = null;
 			}
 			if (
@@ -216,7 +216,7 @@ class ClassBrowser extends RefactoringBrowser {
 					!species.accessors[variable.name] ||
 					!species.accessors[variable.name][access])
 			) {
-				const accessing = await ide.api.methodsAccessing(
+				const accessing = await ide.backend.methodsAccessing(
 					species.name,
 					variable.name,
 					access,

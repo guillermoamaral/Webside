@@ -46,7 +46,7 @@ class Workspace extends Component {
 	closeInspector = async (event, id) => {
 		event.stopPropagation();
 		try {
-			await ide.api.unpinObject(id);
+			await ide.backend.unpinObject(id);
 			this.setState({
 				inspectors: this.state.inspectors.filter((i) => i.key !== id),
 			});
@@ -56,7 +56,7 @@ class Workspace extends Component {
 	};
 
 	saveSource = (source) => {
-		ide.api.saveWorkspace({ id: this.props.id, source: source });
+		ide.backend.saveWorkspace({ id: this.props.id, source: source });
 		this.setState({ source: source });
 	};
 

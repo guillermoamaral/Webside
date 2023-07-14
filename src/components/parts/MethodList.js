@@ -22,7 +22,7 @@ class MethodList extends Component {
 				required: true,
 			});
 			await ide.waitFor(() =>
-				ide.api.renameSelector(
+				ide.backend.renameSelector(
 					method.methodClass,
 					method.selector,
 					newSelector
@@ -39,7 +39,7 @@ class MethodList extends Component {
 
 	removeMethod = async (method) => {
 		try {
-			await ide.api.removeMethod(method.methodClass, method.selector);
+			await ide.backend.removeMethod(method.methodClass, method.selector);
 			if (this.props.onMethodRemove) {
 				this.props.onMethodRemove(method);
 			}
@@ -66,7 +66,7 @@ class MethodList extends Component {
 			target = await this.newCategory();
 		}
 		try {
-			await ide.api.classifyMethod(
+			await ide.backend.classifyMethod(
 				method.methodClass,
 				method.selector,
 				target
@@ -313,7 +313,7 @@ class MethodList extends Component {
 
 	newMethod = () => {
 		const selected = this.props.selectedMethod;
-		const method = ide.api.methodTemplate();
+		const method = ide.backend.methodTemplate();
 		method.methodClass = selected ? selected.methodClass : null;
 		method.category = selected ? selected.category : null;
 		this.props.onMethodSelect(method);

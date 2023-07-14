@@ -29,18 +29,18 @@ class NativeDebugger extends Component {
 
 	async updateInfo() {
 		try {
-			const native = await ide.api.nativeDebugger(this.props.id);
+			const native = await ide.backend.nativeDebugger(this.props.id);
 			const running = native.state === "running";
-			const frames = await ide.api.nativeDebuggerFrames(this.props.id);
+			const frames = await ide.backend.nativeDebuggerFrames(this.props.id);
 			let selected = null;
 			if (frames.length > 0) {
 				selected = frames[0];
 				await this.updateFrame(selected);
 			}
-			const registers = await ide.api.nativeDebuggerRegisters(
+			const registers = await ide.backend.nativeDebuggerRegisters(
 				this.props.id
 			);
-			const spaces = await ide.api.nativeDebuggerSpaces(this.props.id);
+			const spaces = await ide.backend.nativeDebuggerSpaces(this.props.id);
 			spaces.forEach((s) => (s.color = this.colorForSpace(s)));
 			this.setState({
 				running: running,
@@ -56,7 +56,7 @@ class NativeDebugger extends Component {
 
 	resumeClicked = async () => {
 		try {
-			await ide.api.resumeNativeDebugger(this.props.id);
+			await ide.backend.resumeNativeDebugger(this.props.id);
 			this.setState({ running: true });
 			this.updateInfo();
 		} catch (error) {
@@ -66,7 +66,7 @@ class NativeDebugger extends Component {
 
 	suspendClicked = async () => {
 		try {
-			await ide.api.suspendNativeDebugger(this.props.id);
+			await ide.backend.suspendNativeDebugger(this.props.id);
 			this.setState({ running: false });
 		} catch (error) {
 			ide.reportError(error);
@@ -81,7 +81,7 @@ class NativeDebugger extends Component {
 	updateFrame = async (frame) => {
 		if (!frame.method) {
 			try {
-				const info = await ide.api.nativeDebuggerFrame(
+				const info = await ide.backend.nativeDebuggerFrame(
 					this.props.id,
 					frame.index
 				);

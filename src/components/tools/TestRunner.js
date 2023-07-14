@@ -113,7 +113,7 @@ class TestRunner extends Component {
 		const results = this.newResults();
 		this.setState({ status: status, results: results });
 		try {
-			await ide.api.runTestRun(this.props.id);
+			await ide.backend.runTestRun(this.props.id);
 			this.updateStatus();
 		} catch (error) {
 			ide.reportError(error);
@@ -122,7 +122,7 @@ class TestRunner extends Component {
 
 	async stopClicked() {
 		try {
-			await ide.api.stopTestRun(this.props.id);
+			await ide.backend.stopTestRun(this.props.id);
 			this.updateStatus();
 		} catch (error) {
 			ide.reportError(error);
@@ -135,7 +135,7 @@ class TestRunner extends Component {
 		}
 		this.setState({ updating: true });
 		try {
-			const status = await ide.api.testRunStatus(this.props.id);
+			const status = await ide.backend.testRunStatus(this.props.id);
 			if (status.running) {
 				setTimeout(() => {
 					this.updateStatus();
@@ -155,7 +155,7 @@ class TestRunner extends Component {
 			return;
 		}
 		try {
-			const results = await ide.api.testRunResults(this.props.id);
+			const results = await ide.backend.testRunResults(this.props.id);
 			results.grouped = this.groupByClass(results);
 			results.updated = true;
 			this.setState({ results: results });
@@ -219,7 +219,7 @@ class TestRunner extends Component {
 
 	debugTest = async (test) => {
 		try {
-			const d = await ide.api.debugTest(
+			const d = await ide.backend.debugTest(
 				this.props.id,
 				test.class,
 				test.selector

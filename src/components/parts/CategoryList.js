@@ -41,7 +41,7 @@ class CategoryList extends Component {
 				title: "Rename category",
 				defaultValue: category,
 			});
-			await ide.api.renameCategory(
+			await ide.backend.renameCategory(
 				this.props.class.name,
 				category,
 				newName
@@ -59,7 +59,7 @@ class CategoryList extends Component {
 			return;
 		}
 		try {
-			await ide.api.removeCategory(this.props.class.name, category);
+			await ide.backend.removeCategory(this.props.class.name, category);
 			if (this.props.onCategoryRemove) {
 				this.props.onCategoryRemove(category);
 			}

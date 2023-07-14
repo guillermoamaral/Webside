@@ -62,7 +62,7 @@ class ChangesBrowser extends Component {
 	download = async (event) => {
 		event.preventDefault();
 		try {
-			const ch = await ide.api.downloadChangeset(
+			const ch = await ide.backend.downloadChangeset(
 				this.props.changeset.changes.map((ch) => {
 					return ch.asJson();
 				})

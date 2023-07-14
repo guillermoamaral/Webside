@@ -54,19 +54,19 @@ class ResourceBrowser extends Component {
 		try {
 			switch (type) {
 				case "Objects":
-					resources = await ide.api.objects();
+					resources = await ide.backend.objects();
 					break;
 				case "Evaluations":
-					resources = await ide.api.evaluations();
+					resources = await ide.backend.evaluations();
 					break;
 				case "Workspaces":
-					resources = await ide.api.workspaces();
+					resources = await ide.backend.workspaces();
 					break;
 				case "Debuggers":
-					resources = await ide.api.debuggers();
+					resources = await ide.backend.debuggers();
 					break;
 				case "Test Runs":
-					resources = await ide.api.testRuns();
+					resources = await ide.backend.testRuns();
 					break;
 				default:
 			}
@@ -115,7 +115,7 @@ class ResourceBrowser extends Component {
 
 	unpinObject = async (object) => {
 		try {
-			await ide.api.unpinObject(object.id);
+			await ide.backend.unpinObject(object.id);
 			this.setState({
 				resources: this.state.resources.filter(
 					(r) => r.id !== object.id
@@ -129,7 +129,7 @@ class ResourceBrowser extends Component {
 
 	unpinAllObjects = async () => {
 		try {
-			await ide.api.unpinAllObjects();
+			await ide.backend.unpinAllObjects();
 			this.setState({
 				resources: [],
 				selectedResource: null,
@@ -141,7 +141,7 @@ class ResourceBrowser extends Component {
 
 	cancelEvaluation = async (evaluation) => {
 		try {
-			await ide.api.cancelEvaluation(evaluation.id);
+			await ide.backend.cancelEvaluation(evaluation.id);
 			this.setState({
 				resources: this.state.resources.filter(
 					(r) => r.id !== evaluation.id
@@ -161,7 +161,7 @@ class ResourceBrowser extends Component {
 	deleteWorkspace = async (w) => {
 		if (w) {
 			try {
-				await ide.api.deleteWorkspace(w.id);
+				await ide.backend.deleteWorkspace(w.id);
 				this.setState({
 					resources: this.state.resources.filter(
 						(r) => r.id !== w.id
@@ -183,7 +183,7 @@ class ResourceBrowser extends Component {
 	terminateDebugger = async (d) => {
 		if (d) {
 			try {
-				await ide.api.terminateDebugger(d.id);
+				await ide.backend.terminateDebugger(d.id);
 				this.setState({
 					resources: this.state.resources.filter(
 						(r) => r.id !== d.id

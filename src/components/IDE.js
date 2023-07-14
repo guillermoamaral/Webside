@@ -14,7 +14,7 @@ import { withNavigation } from "./withNavigation";
 import { withDialog } from "./dialogs/index";
 import { amber, blue, green } from "@mui/material/colors";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
-import API from "./API";
+import Backend from "./Backend";
 import { DialogProvider } from "./dialogs/index";
 import CustomSnacks from "./controls/CustomSnacks";
 import Titlebar from "./layout/Titlebar";
@@ -221,8 +221,8 @@ class IDE extends Component {
 	}
 
 	async updateSettings() {
-		this.initializeAPI();
-		const dialect = await this.api.dialect();
+		this.initializeBackend();
+		const dialect = await this.backend.dialect();
 		document.title = dialect;
 		this.settings.section("connection").set("dialect", dialect);
 		this.updateDialectColorsSettings();
@@ -278,9 +278,9 @@ class IDE extends Component {
 		mainApp.updateTheme(this.settings);
 	}
 
-	initializeAPI() {
+	initializeBackend() {
 		const connection = this.settings.section("connection");
-		this.api = new API(
+		this.backend = new Backend(
 			connection.get("backend"),
 			connection.get("developer"),
 			this.reportError,
@@ -409,7 +409,7 @@ class IDE extends Component {
 
 	saveImage = async () => {
 		try {
-			await this.api.saveImage();
+			await this.backend.saveImage();
 		} catch (error) {
 			this.reportError(error);
 		}
@@ -464,21 +464,21 @@ class IDE extends Component {
 
 	async followTestRun(id, debug) {
 		try {
-			const status = await this.api.testRunStatus(id);
+			const status = await this.backend.testRunStatus(id);
 			if (status.running) {
 				setTimeout(async () => {
 					await this.followTestRun(id);
 				}, 1000);
 			}
 			if (!status.running) {
-				const results = await this.api.testRunResults(id);
+				const results = await this.backend.testRunResults(id);
 				const passed = results.passed.length;
 				const failed = results.failed.length;
 				const errors = results.errors.length;
 				if (debug && (failed > 0 || errors > 0)) {
 					const test =
 						failed > 0 ? results.failed[0] : results.errors[0];
-					const d = await this.api.debugTest(
+					const d = await this.backend.debugTest(
 						id,
 						test.class,
 						test.selector
@@ -488,7 +488,7 @@ class IDE extends Component {
 						d.description || "Debugging test " + test.selector
 					);
 				} else {
-					await this.api.deleteTestRun(id);
+					await this.backend.deleteTestRun(id);
 				}
 				var text = "";
 				var first = true;
@@ -575,7 +575,7 @@ class IDE extends Component {
 
 	reportChange = async (change) => {
 		//this triggers unnecessary renders!!!
-		// const changes = await this.api.lastChanges();
+		// const changes = await this.backend.lastChanges();
 		// this.setState({changesCount: changes.length})
 	};
 

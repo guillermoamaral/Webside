@@ -51,13 +51,13 @@ class CodeBrowser extends Component {
 		const superclass = species ? species.superclass : null;
 		const packagename = species ? species.package : pack ? pack.name : null;
 		try {
-			const change = await ide.api.defineClass(
+			const change = await ide.backend.defineClass(
 				classname,
 				superclass,
 				packagename,
 				definition
 			);
-			const species = await ide.api.classNamed(change.className);
+			const species = await ide.backend.classNamed(change.className);
 			if (this.props.onDefineClass) {
 				this.props.onDefineClass(species);
 			}
@@ -79,7 +79,7 @@ class CodeBrowser extends Component {
 				defaultValue: target,
 				required: true,
 			});
-			await ide.api.renameClass(target, newName);
+			await ide.backend.renameClass(target, newName);
 			this.props.class.name = newName;
 			if (this.props.onRenameClass) {
 				this.props.onRenameClass(this.props.class);
@@ -94,8 +94,8 @@ class CodeBrowser extends Component {
 			return;
 		}
 		try {
-			await ide.api.commentClass(this.props.class.name, comment);
-			const species = await ide.api.classNamed(this.props.class.name);
+			await ide.backend.commentClass(this.props.class.name, comment);
+			const species = await ide.backend.classNamed(this.props.class.name);
 			if (this.props.onCommentClass) {
 				this.props.onCommentClass(species);
 			}
@@ -125,13 +125,13 @@ class CodeBrowser extends Component {
 				: method
 				? method.methodClass
 				: null;
-			const change = await ide.api.compileMethod(
+			const change = await ide.backend.compileMethod(
 				classname,
 				packagename,
 				category,
 				source
 			);
-			const compiled = await ide.api.method(classname, change.selector);
+			const compiled = await ide.backend.method(classname, change.selector);
 			if (this.props.onCompileMethod) {
 				this.props.onCompileMethod(compiled);
 			}
@@ -161,8 +161,8 @@ class CodeBrowser extends Component {
 				try {
 					let method;
 					for (const change of suggestion.changes) {
-						const applied = await ide.api.postChange(change);
-						method = await ide.api.method(
+						const applied = await ide.backend.postChange(change);
+						method = await ide.backend.method(
 							this.props.class.name,
 							applied.selector
 						);

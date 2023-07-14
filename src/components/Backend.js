@@ -1,12 +1,12 @@
 import axios from "axios";
 
-class APIError extends Error {
+class BackendError extends Error {
 	constructor(description, url, request, status, reason, data) {
 		const explanation =
 			reason && reason.lenght > 0 ? " due to " + reason : "";
 		const message = '"' + description + " from " + url + explanation + '"';
 		super(message);
-		this.name = "APIError";
+		this.name = "BackendError";
 		this.url = url;
 		this.request = request;
 		this.status = status;
@@ -15,7 +15,7 @@ class APIError extends Error {
 	}
 }
 
-class API {
+class Backend {
 	constructor(uri, author, reportError, reportChange) {
 		this.backend = uri;
 		this.reportError = reportError ? reportError.bind() : null;
@@ -88,7 +88,7 @@ class API {
 		} else if (error.request) {
 			reason = error.message;
 		}
-		const exception = new APIError(
+		const exception = new BackendError(
 			description,
 			this.backend + uri,
 			error.request,
@@ -954,4 +954,4 @@ class API {
 	}
 }
 
-export default API;
+export default Backend;

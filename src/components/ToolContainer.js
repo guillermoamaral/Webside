@@ -288,7 +288,7 @@ class ToolContainer extends Component {
 				name = name.slice(0, name.length - 6);
 				side = "class";
 			}
-			await ide.api.classNamed(name);
+			await ide.backend.classNamed(name);
 			this.openClassBrowser(name, side, null, true);
 		} catch (error) {
 			ide.inform("There is no class named " + name);
@@ -351,7 +351,7 @@ class ToolContainer extends Component {
 
 	newWorkspace = async () => {
 		try {
-			const workspace = await ide.api.createWorkspace();
+			const workspace = await ide.backend.createWorkspace();
 			this.openWorkspace(workspace.id);
 		} catch (error) {
 			this.reportError(error);
@@ -370,7 +370,7 @@ class ToolContainer extends Component {
 		}
 		var source = "";
 		if (id) {
-			const workspace = await ide.api.workspace(id);
+			const workspace = await ide.backend.workspace(id);
 			source = workspace.source;
 		}
 		const component = <Workspace key={id} id={id} source={source} />;
@@ -381,7 +381,7 @@ class ToolContainer extends Component {
 			null,
 			async () => {
 				try {
-					await ide.api.deleteWorkspace(id);
+					await ide.backend.deleteWorkspace(id);
 				} catch (error) {
 					this.reportError(error);
 				}
@@ -425,7 +425,7 @@ class ToolContainer extends Component {
 			pageId,
 			() => {
 				try {
-					ide.api.deleteDebugger(id);
+					ide.backend.deleteDebugger(id);
 				} catch (error) {
 					this.reportError(error);
 				}
@@ -463,7 +463,7 @@ class ToolContainer extends Component {
 			null,
 			() => {
 				try {
-					ide.api.unpinObject(object.id);
+					ide.backend.unpinObject(object.id);
 				} catch (error) {
 					this.reportError(error);
 				}
@@ -508,7 +508,7 @@ class ToolContainer extends Component {
 		const tool = <TestRunner key={id} id={id} />;
 		this.createPage(title, <TestRunnerIcon />, tool, null, () => {
 			try {
-				ide.api.deleteTestRun(id);
+				ide.backend.deleteTestRun(id);
 			} catch (error) {
 				this.reportError(error);
 			}
@@ -589,7 +589,7 @@ class ToolContainer extends Component {
 
 	browseSenders = async (selector) => {
 		const senders = await ide.searchMethods(() => {
-			return ide.api.senders(selector);
+			return ide.backend.senders(selector);
 		}, "senders of " + selector);
 		if (senders.length > 0) {
 			this.openMethodBrowser(
@@ -604,7 +604,7 @@ class ToolContainer extends Component {
 
 	browseLocalSenders = async (selector, classname) => {
 		const senders = await ide.searchMethods(() => {
-			return ide.api.localSenders(selector, classname);
+			return ide.backend.localSenders(selector, classname);
 		}, "local senders of " + selector);
 		if (senders.length > 0) {
 			this.openMethodBrowser(
@@ -619,7 +619,7 @@ class ToolContainer extends Component {
 
 	browseImplementors = async (selector) => {
 		const implementors = await ide.searchMethods(() => {
-			return ide.api.implementors(selector);
+			return ide.backend.implementors(selector);
 		}, "implementors of " + selector);
 		if (implementors.length > 0) {
 			this.openMethodBrowser(
@@ -634,7 +634,7 @@ class ToolContainer extends Component {
 
 	browseLocalImplementors = async (selector, classname) => {
 		const implementors = await ide.searchMethods(() => {
-			return ide.api.localImplementors(selector, classname);
+			return ide.backend.localImplementors(selector, classname);
 		}, "local implementors of " + selector);
 		if (implementors.length > 0) {
 			this.openMethodBrowser(
@@ -646,7 +646,7 @@ class ToolContainer extends Component {
 
 	browseClassReferences = async (classname) => {
 		const references = await ide.searchMethods(() => {
-			return ide.api.classReferences(classname);
+			return ide.backend.classReferences(classname);
 		}, "references to " + classname);
 		if (references.length > 0) {
 			this.openMethodBrowser(
@@ -661,7 +661,7 @@ class ToolContainer extends Component {
 
 	browseStringReferences = async (string) => {
 		const references = await ide.searchMethods(() => {
-			return ide.api.stringReferences(string);
+			return ide.backend.stringReferences(string);
 		}, "references to " + string);
 		if (references.length > 0) {
 			this.openMethodBrowser(
@@ -676,7 +676,7 @@ class ToolContainer extends Component {
 
 	browseMethodsMatching = async (pattern) => {
 		const matching = await ide.searchMethods(() => {
-			return ide.api.methodsMatching(pattern);
+			return ide.backend.methodsMatching(pattern);
 		}, "methods with selector matching " + pattern);
 		if (matching.length > 0) {
 			this.openMethodBrowser(
@@ -695,9 +695,9 @@ class ToolContainer extends Component {
 			this.selectPage(page);
 		} else {
 			try {
-				const changes = await ide.api.lastChanges();
+				const changes = await ide.backend.lastChanges();
 				const changeset = Changeset.fromJson(changes);
-				changeset.on(ide.api);
+				changeset.on(ide.backend);
 				this.browseChanges(changeset, "Last changes");
 			} catch (error) {
 				this.reportError(error);
@@ -715,9 +715,9 @@ class ToolContainer extends Component {
 				reader.onload = async () => {
 					const ch = reader.result;
 					try {
-						const changes = await ide.api.uploadChangeset(ch);
+						const changes = await ide.backend.uploadChangeset(ch);
 						const changeset = Changeset.fromJson(changes);
-						changeset.on(ide.api);
+						changeset.on(ide.backend);
 						this.browseChanges(changeset, file.name);
 					} catch (error) {
 						this.reportError(error);
@@ -731,7 +731,7 @@ class ToolContainer extends Component {
 
 	debugExpression = async (expression, context) => {
 		try {
-			const id = await ide.api.debugExpression(expression, context);
+			const id = await ide.backend.debugExpression(expression, context);
 			this.openDebugger(id, "Debugging expression");
 		} catch (error) {
 			this.reportError(error);
@@ -767,7 +767,7 @@ class ToolContainer extends Component {
 		};
 		var result;
 		try {
-			result = await ide.api.issueEvaluation(evaluation);
+			result = await ide.backend.issueEvaluation(evaluation);
 			if (sync) {
 				return result;
 			}
@@ -779,7 +779,7 @@ class ToolContainer extends Component {
 		const object = await this.getEvaluationResult(evaluation);
 		if (!pin && !sync) {
 			try {
-				await ide.api.unpinObject(object.id);
+				await ide.backend.unpinObject(object.id);
 			} catch (ignored) {}
 		}
 		return object;
@@ -788,7 +788,7 @@ class ToolContainer extends Component {
 	async getEvaluationResult(evaluation) {
 		var object;
 		try {
-			object = await ide.api.objectWithId(evaluation.id);
+			object = await ide.backend.objectWithId(evaluation.id);
 		} catch (error) {
 			return await this.handleEvaluationError(error, evaluation);
 		}
@@ -810,9 +810,9 @@ class ToolContainer extends Component {
 			if (chosen) {
 				try {
 					for (const change of suggestion.changes) {
-						await ide.api.postChange(change);
+						await ide.backend.postChange(change);
 					}
-					await ide.api.cancelEvaluation(evaluation.id);
+					await ide.backend.cancelEvaluation(evaluation.id);
 				} catch (inner) {
 					this.reportError(inner.description);
 				}
@@ -843,7 +843,7 @@ class ToolContainer extends Component {
 	};
 
 	async debugEvaluationError(error, evaluation) {
-		const d = await ide.api.createDebugger(evaluation.id);
+		const d = await ide.backend.createDebugger(evaluation.id);
 		return new Promise((resolve, reject) => {
 			this.openDebugger(d.id, d.description, resolve, reject);
 		});
@@ -851,7 +851,7 @@ class ToolContainer extends Component {
 
 	runTest = async (classname, selector, silently) => {
 		try {
-			const status = await ide.api.runTest(classname, selector);
+			const status = await ide.backend.runTest(classname, selector);
 			silently
 				? ide.followTestRun(status.id, true)
 				: this.openTestRunner(status.id, "Test " + selector);
@@ -862,7 +862,7 @@ class ToolContainer extends Component {
 
 	runTestClass = async (classname, silently) => {
 		try {
-			const status = await ide.api.runTestClass(classname);
+			const status = await ide.backend.runTestClass(classname);
 			silently
 				? ide.followTestRun(status.id)
 				: this.openTestRunner(status.id, "Test " + classname);
@@ -873,7 +873,7 @@ class ToolContainer extends Component {
 
 	runTestPackage = async (packagename, silently) => {
 		try {
-			const status = await ide.api.runTestPackage(packagename);
+			const status = await ide.backend.runTestPackage(packagename);
 			silently
 				? ide.followTestRun(status.id)
 				: this.openTestRunner(status.id, "Test " + packagename);
@@ -884,7 +884,7 @@ class ToolContainer extends Component {
 
 	profileExpression = async (expression, context) => {
 		try {
-			const id = await ide.api.profileExpression(expression, context);
+			const id = await ide.backend.profileExpression(expression, context);
 			this.openProfiler(id);
 		} catch (error) {
 			this.reportError(error);

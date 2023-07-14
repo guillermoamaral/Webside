@@ -618,7 +618,7 @@ class CodeEditor extends Component {
 		if (!name) return;
 		let species;
 		try {
-			species = await ide.api.classNamed(name);
+			species = await ide.backend.classNamed(name);
 		} catch (error) {}
 		if (species) {
 			return this.context.browseClass(species.name);
@@ -815,7 +815,7 @@ class CodeEditor extends Component {
 		}
 		var species;
 		try {
-			species = await ide.api.classNamed(word);
+			species = await ide.backend.classNamed(word);
 		} catch (error) {}
 		if (species) {
 			const comment = species.comment || "";

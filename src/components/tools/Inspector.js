@@ -56,7 +56,7 @@ class Inspector extends Component {
 		try {
 			const id = this.props.root.id;
 			const path = this.objectURIPath(object);
-			const retrieved = await ide.api.objectSlot(id, path);
+			const retrieved = await ide.backend.objectSlot(id, path);
 			Object.assign(object, retrieved);
 			await this.updatePresentations(object);
 			await this.updateSlots(object);
@@ -69,7 +69,7 @@ class Inspector extends Component {
 		try {
 			const id = this.props.root.id;
 			const path = this.objectURIPath(object);
-			object.presentations = await ide.api.objectPresentations(id, path);
+			object.presentations = await ide.backend.objectPresentations(id, path);
 		} catch (error) {
 			ide.reportError(error);
 		}
@@ -94,8 +94,8 @@ class Inspector extends Component {
 		var slots;
 		try {
 			slots = object.indexable
-				? await ide.api.objectIndexedSlots(id, path)
-				: await ide.api.objectNamedSlots(id, path);
+				? await ide.backend.objectIndexedSlots(id, path)
+				: await ide.backend.objectNamedSlots(id, path);
 		} catch (error) {
 			slots = [];
 			ide.reportError(error);

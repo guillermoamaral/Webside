@@ -11,7 +11,7 @@ class RefactoringBrowser extends Component {
 
 	async initializeUsualCategories() {
 		try {
-			this.usualCategories = await ide.api.usualCategories();
+			this.usualCategories = await ide.backend.usualCategories();
 			this.usualCategories.sort();
 		} catch (error) {
 			ide.reportError(error);
@@ -41,12 +41,12 @@ class RefactoringBrowser extends Component {
 	async updateClass(species, forced = false) {
 		try {
 			if (forced || !species.definition || !species.metaclass) {
-				const definition = await ide.api.classNamed(species.name);
+				const definition = await ide.backend.classNamed(species.name);
 				Object.assign(species, definition);
-				species.metaclass = await ide.api.classNamed(definition.class);
+				species.metaclass = await ide.backend.classNamed(definition.class);
 			}
 			if (forced || !species.subclasses) {
-				species.subclasses = await ide.api.subclasses(species.name);
+				species.subclasses = await ide.backend.subclasses(species.name);
 			}
 		} catch (error) {
 			ide.reportError(error);
@@ -56,7 +56,7 @@ class RefactoringBrowser extends Component {
 	async updateSubclasses(species) {
 		if (!species.subclasses || species.subclasses.length === 0) return;
 		try {
-			const tree = await ide.api.classTree(species.name, 3);
+			const tree = await ide.backend.classTree(species.name, 3);
 			species.subclasses.forEach((c) => {
 				const retrieved = tree.subclasses.find(
 					(s) => s.name === c.name
@@ -73,9 +73,9 @@ class RefactoringBrowser extends Component {
 	async updateCategories(species, forced = false) {
 		try {
 			if (forced || !species.categories) {
-				species.categories = await ide.api.categories(species.name);
+				species.categories = await ide.backend.categories(species.name);
 				species.categories.sort();
-				species.usedCategories = await ide.api.usedCategories(
+				species.usedCategories = await ide.backend.usedCategories(
 					species.name
 				);
 				species.usedCategories.sort();
@@ -87,7 +87,7 @@ class RefactoringBrowser extends Component {
 
 	async updateMethod(method) {
 		try {
-			const retrieved = await ide.api.method(
+			const retrieved = await ide.backend.method(
 				method.methodClass,
 				method.selector
 			);

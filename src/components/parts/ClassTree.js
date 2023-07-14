@@ -16,12 +16,12 @@ class ClassTree extends Component {
 				title: "New " + superclass.name + " subclass",
 				required: true,
 			});
-			await ide.api.defineClass(
+			await ide.backend.defineClass(
 				name,
 				superclass.name,
 				superclass.package
 			);
-			const species = await ide.api.classNamed(name);
+			const species = await ide.backend.classNamed(name);
 			if (this.props.onClassDefine) {
 				this.props.onClassDefine(species);
 			}
@@ -42,7 +42,7 @@ class ClassTree extends Component {
 			if (!confirm) {
 				return;
 			}
-			await ide.api.removeClass(species.name);
+			await ide.backend.removeClass(species.name);
 			if (this.props.onClassRemove) {
 				this.props.onClassRemove(species);
 			}
@@ -61,7 +61,7 @@ class ClassTree extends Component {
 				defaultValue: species.name,
 				required: true,
 			});
-			await ide.waitFor(() => ide.api.renameClass(species.name, newName));
+			await ide.waitFor(() => ide.backend.renameClass(species.name, newName));
 			species.name = newName;
 			if (this.props.onClassRename) {
 				this.props.onClassRename(species);

@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { ide } from "../IDE";
 import ChangesTable from "../parts/ChangesTable";
-import API from "../API";
+import Backend from "../Backend";
 import { AddClass, AddMethod } from "../../model/StChange";
 
 class CodeMigrator extends Component {
@@ -68,7 +68,7 @@ class CodeMigrator extends Component {
 		const packages = [];
 		await Promise.all(
 			this.state.sources.packages.map(async (name) => {
-				const pack = await ide.api.packageNamed(name);
+				const pack = await ide.backend.packageNamed(name);
 				packages.push(pack);
 			})
 		);
@@ -81,9 +81,9 @@ class CodeMigrator extends Component {
 			packages.map(async (pack) => {
 				await Promise.all(
 					pack.classes.map(async (classname) => {
-						const species = await ide.api.classNamed(classname);
+						const species = await ide.backend.classNamed(classname);
 						classes.push(species);
-						const meta = await ide.api.classNamed(species.class);
+						const meta = await ide.backend.classNamed(species.class);
 						classes.push(meta);
 					})
 				);
@@ -91,9 +91,9 @@ class CodeMigrator extends Component {
 		);
 		await Promise.all(
 			this.state.sources.classes.map(async (name) => {
-				const species = await ide.api.classNamed(name);
+				const species = await ide.backend.classNamed(name);
 				classes.push(species);
-				const meta = await ide.api.classNamed(species.class);
+				const meta = await ide.backend.classNamed(species.class);
 				classes.push(meta);
 			})
 		);
@@ -106,7 +106,7 @@ class CodeMigrator extends Component {
 			packages.map(async (pack) => {
 				Object.entries(pack.methods).forEach(async (selectors) => {
 					selectors[1].forEach(async (selector) => {
-						const method = await ide.api.method(
+						const method = await ide.backend.method(
 							selectors[0],
 							selector
 						);
@@ -117,7 +117,7 @@ class CodeMigrator extends Component {
 		);
 		await Promise.all(
 			classes.map(async (species) => {
-				const retrieved = await ide.api.methods(species.name, true);
+				const retrieved = await ide.backend.methods(species.name, true);
 				retrieved.forEach(async (method) => {
 					methods.push(method);
 				});
@@ -129,7 +129,7 @@ class CodeMigrator extends Component {
 
 	classDefinition(species) {
 		const change = new AddClass();
-		change.author = ide.api.author;
+		change.author = ide.backend.author;
 		change.className = species.name;
 		change.label = species.name;
 		change.package = species.package;
@@ -139,7 +139,7 @@ class CodeMigrator extends Component {
 
 	methodDefinition(method) {
 		const change = new AddMethod();
-		change.author = ide.api.author;
+		change.author = ide.backend.author;
 		change.className = method.methodClass;
 		change.label = method.methodClass + ">>" + method.selector;
 		change.package = method.package;
@@ -148,16 +148,16 @@ class CodeMigrator extends Component {
 	}
 
 	applyChanges = async () => {
-		const api = new API(
+		const backend = new Backend(
 			this.state.targetURL,
-			ide.api.author,
+			ide.backend.author,
 			this.reportError,
 			this.reportChange
 		);
 		await Promise.all(
 			this.state.changes.map(async (change) => {
 				try {
-					await api.postChange(change.asJson());
+					await backend.postChange(change.asJson());
 					change.color = "#28a745";
 				} catch (error) {
 					change.error = error.data;
