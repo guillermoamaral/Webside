@@ -27,6 +27,7 @@ import DrawerHeader from "./layout/DrawerHeader";
 import { Settings } from "../model/Settings";
 import { app as mainApp } from "../App";
 import { Setting } from "../model/Settings";
+import CodeAssistant from "./CodeAssistant";
 
 var ide = null;
 
@@ -155,6 +156,8 @@ class IDE extends Component {
 		shortcuts.addText("browseClassReferences", "Alt+r");
 		shortcuts.readOnly();
 
+		const openAI = settings.addSection("openAI", "OpenAI API");
+		openAI.addText("apiKey");
 		return settings;
 	}
 
@@ -276,6 +279,15 @@ class IDE extends Component {
 
 	updateTheme() {
 		mainApp.updateTheme(this.settings);
+	}
+
+	usesCodeAssistant() {
+		const key = ide.settings.section("openAI").get("apiKey");
+		return key !== undefined && key !== "";
+	}
+
+	codeAssistant() {
+		return new CodeAssistant();
 	}
 
 	initializeBackend() {

@@ -1,4 +1,4 @@
-class StMethod extends StObject {
+class StMethod extends Object {
 	constructor() {
 		super();
 		this.methodClass = null;

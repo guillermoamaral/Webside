@@ -60,6 +60,21 @@ class MethodList extends Component {
 		} catch (error) {}
 	};
 
+	suggestCategory = async (method) => {
+		const assistant = ide.codeAssistant();
+		const suggested = await assistant.categorizeMethod(method);
+		try {
+			const category = await ide.prompt({
+				title: "Confirm category",
+				defaultValue: suggested,
+			});
+			if (category && this.props.onCategoryAdd) {
+				this.props.onCategoryAdd(category);
+			}
+			this.classifyMethod(method, category);
+		} catch (error) {}
+	};
+
 	classifyMethod = async (method, category) => {
 		var target = category;
 		if (!target) {
@@ -168,7 +183,14 @@ class MethodList extends Component {
 		const current = this.categoryOptions(this.props.categories);
 		const used = this.categoryOptions(this.props.usedCategories);
 		const usual = this.categoryOptions(this.props.usualCategories);
-		const suboptions = [];
+		const suboptions = ide.usesCodeAssistant()
+			? [
+					{
+						label: "AI suggested..",
+						action: (m) => this.suggestCategory(m),
+					},
+			  ]
+			: [];
 		if (current.length > 0) {
 			suboptions.push({
 				label: "Current",

@@ -131,7 +131,10 @@ class CodeBrowser extends Component {
 				category,
 				source
 			);
-			const compiled = await ide.backend.method(classname, change.selector);
+			const compiled = await ide.backend.method(
+				classname,
+				change.selector
+			);
 			if (this.props.onCompileMethod) {
 				this.props.onCompileMethod(compiled);
 			}
@@ -374,6 +377,7 @@ class CodeBrowser extends Component {
 							onRename={(target) => this.renameClass(target)}
 							onTooltipShow={onTooltipShow}
 							onTooltipClick={onTooltipClick}
+							showAssistant
 						/>
 					</Paper>
 				</Grid>
@@ -393,7 +397,9 @@ class CodeBrowser extends Component {
 					{packagename && (
 						<Link
 							href="#"
-							onClick={() => this.context.browsePackage(packagename)}
+							onClick={() =>
+								this.context.browsePackage(packagename)
+							}
 						>
 							{packagename}
 						</Link>

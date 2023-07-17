@@ -16,15 +16,15 @@ class BackendError extends Error {
 }
 
 class Backend {
-	constructor(uri, author, reportError, reportChange) {
-		this.backend = uri;
+	constructor(url, author, reportError, reportChange) {
+		this.url = url;
 		this.reportError = reportError ? reportError.bind() : null;
 		this.reportChange = reportChange ? reportChange.bind() : null;
 		this.author = author;
 	}
 
-	setBackend(uri) {
-		this.backend = uri;
+	setURL(url) {
+		this.url = url;
 	}
 
 	author(author) {
@@ -33,7 +33,7 @@ class Backend {
 
 	async get(uri, description) {
 		try {
-			const response = await axios.get(this.backend + uri);
+			const response = await axios.get(this.url + uri);
 			return response.data;
 		} catch (error) {
 			this.handleError("Cannot get " + (description || uri), uri, error);
@@ -42,7 +42,7 @@ class Backend {
 
 	async post(uri, payload, description) {
 		try {
-			const response = await axios.post(this.backend + uri, payload);
+			const response = await axios.post(this.url + uri, payload);
 			return response.data;
 		} catch (error) {
 			this.handleError(
@@ -55,7 +55,7 @@ class Backend {
 
 	async put(uri, payload, description) {
 		try {
-			const response = await axios.put(this.backend + uri, payload);
+			const response = await axios.put(this.url + uri, payload);
 			return response.data;
 		} catch (error) {
 			this.handleError(
@@ -68,7 +68,7 @@ class Backend {
 
 	async delete(uri, description) {
 		try {
-			const response = await axios.delete(this.backend + uri);
+			const response = await axios.delete(this.url + uri);
 			return response.data;
 		} catch (error) {
 			this.handleError(
@@ -90,7 +90,7 @@ class Backend {
 		}
 		const exception = new BackendError(
 			description,
-			this.backend + uri,
+			this.url + uri,
 			error.request,
 			status,
 			reason,

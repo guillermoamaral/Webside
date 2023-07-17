@@ -69,6 +69,7 @@ class TabLabel extends Component {
 	render() {
 		const { index, icon, noClose, onClose } = this.props;
 		const { label, menuOpen, menuPosition } = this.state;
+		const text = label.length > 50 ? label.substr(0, 49) + "…" : label;
 		return (
 			<Box
 				display="flex"
@@ -81,7 +82,7 @@ class TabLabel extends Component {
 			>
 				<Box pt={1}>{icon}</Box>
 				<Box pl={1} pr={1} pt={1}>
-					{label}
+					{text}
 				</Box>
 				<Box pt={1}>
 					{!noClose && (

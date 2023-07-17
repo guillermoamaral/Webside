@@ -12,6 +12,8 @@ import {
 	Button,
 	Typography,
 	Paper,
+	SpeedDial,
+	SpeedDialAction,
 } from "@mui/material";
 import AcceptIcon from "@mui/icons-material/CheckCircle";
 import PopupMenu from "../controls/PopupMenu";
@@ -32,6 +34,10 @@ import { StreamLanguage } from "@codemirror/language";
 import { Prec } from "@codemirror/state";
 //import { throwStatement } from "@babel/types";
 import { hoverTooltip } from "@codemirror/view";
+import ChatGPTIcon from "../icons/ChatGPTIcon";
+import ImproveIcon from "@mui/icons-material/AutoFixHigh";
+import TestRunnerIcon from "../icons/TestRunnerIcon";
+import DescriptionIcon from "@mui/icons-material/Description";
 
 // import {
 // 	hyperLinkExtension,
@@ -957,11 +963,67 @@ class CodeEditor extends Component {
 		);
 	}
 
+	assistantActions() {
+		if (!ide.usesCodeAssistant()) return [];
+		return [
+			{
+				icon: <ImproveIcon />,
+				name: "Improve",
+				handler: this.improveSource,
+			},
+			{
+				icon: <TestRunnerIcon />,
+				name: "Suggest a test",
+				handler: this.testSource,
+			},
+			{
+				icon: <DescriptionIcon />,
+				name: "Explain",
+				handler: this.explainSource,
+			},
+		];
+	}
+
+	improveSource = async () => {
+		const source = this.state.source;
+		const assistant = ide.codeAssistant();
+		this.setState({ progress: true });
+		const improved = await assistant.improveCode(source);
+		this.setState({
+			source: source + '\r\r"Improved version"\r' + improved,
+			progress: false,
+		});
+	};
+
+	explainSource = async () => {
+		const source = this.state.source;
+		const assistant = ide.codeAssistant();
+		this.setState({ progress: true });
+		const description = await assistant.explainCode(source);
+		this.setState({
+			source: source + '\r\r"Explanation"\r"' + description + '"',
+			progress: false,
+		});
+	};
+
+	testSource = async () => {
+		const source = this.state.source;
+		const assistant = ide.codeAssistant();
+		this.setState({ progress: true });
+		const test = await assistant.testCode(source);
+		this.setState({
+			source: source + '\r\r"Possible unit test"\r' + test,
+			progress: false,
+		});
+	};
+
 	render() {
 		console.log("rendering code editor");
 		const { source, evaluating, progress, dirty, menuOpen, menuPosition } =
 			this.state;
-		const { showAccept, readOnly } = this.props;
+		const { showAccept, showAssistant, readOnly } = this.props;
+		const showCodeAssistant = showAssistant && ide.usesCodeAssistant();
+		const showButtons = showAccept || showAssistant;
 		const lineNumbers = this.props.lineNumbers === true;
 		const acceptIcon = this.props.acceptIcon ? (
 			React.cloneElement(this.props.acceptIcon)
@@ -973,7 +1035,7 @@ class CodeEditor extends Component {
 			/>
 		);
 		return (
-			<Grid container spacing={1} style={{ height: "100%" }}>
+			<Grid container spacing={0} style={{ height: "100%" }}>
 				<Grid
 					item
 					xs={11}
@@ -1046,15 +1108,47 @@ class CodeEditor extends Component {
 						<LinearProgress variant="indeterminate" />
 					)}
 				</Grid>
-				{showAccept && (
+				{showButtons && (
 					<Grid item xs={1} md={1} lg={1}>
-						<Box display="flex" justifyContent="center">
-							<IconButton
-								color="inherit"
-								onClick={this.acceptClicked}
-							>
-								{acceptIcon}
-							</IconButton>
+						<Box
+							display="flex"
+							justifyContent="space-between"
+							flexDirection="column"
+						>
+							{showAccept && (
+								<Box display="flex" justifyContent="center">
+									<IconButton
+										color="inherit"
+										onClick={this.acceptClicked}
+									>
+										{acceptIcon}
+									</IconButton>
+								</Box>
+							)}
+							{showCodeAssistant && (
+								<Box>
+									<SpeedDial
+										ariaLabel="CodeAssistant actions"
+										icon={<ChatGPTIcon />}
+										direction="up"
+										FabProps={{
+											color: "inherited",
+											size: "small",
+										}}
+									>
+										{this.assistantActions().map(
+											(action) => (
+												<SpeedDialAction
+													key={action.name}
+													icon={action.icon}
+													tooltipTitle={action.name}
+													onClick={action.handler}
+												/>
+											)
+										)}
+									</SpeedDial>
+								</Box>
+							)}
 						</Box>
 					</Grid>
 				)}

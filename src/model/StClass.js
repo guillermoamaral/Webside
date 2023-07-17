@@ -1,4 +1,4 @@
-class StClass extends StObject {
+class StClass extends Object {
 	constructor() {
 		super();
 		this.name = null;
