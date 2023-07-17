@@ -28,6 +28,7 @@ import { Settings } from "../model/Settings";
 import { app as mainApp } from "../App";
 import { Setting } from "../model/Settings";
 import CodeAssistant from "./CodeAssistant";
+import { v4 as uuidv4 } from "uuid";
 
 var ide = null;
 
@@ -100,7 +101,7 @@ class IDE extends Component {
 		lightColors.addColor("primaryText", "#000000").readOnly();
 		lightColors.addColor("secondaryText", "#808080").readOnly();
 		lightColors.addColor("appliedChange", "green");
-		lightColors.addColor("unappliedChange", "black");
+		lightColors.addColor("unappliedChange", "#969696");
 		const lightCode = light.addSection("code", "Code Colors");
 		lightCode.addColor("selector", "black");
 		lightCode.addColor("symbol", "#2aa9b2");
@@ -126,7 +127,7 @@ class IDE extends Component {
 		darkColors.addColor("primaryText", "#aaaaaa").readOnly();
 		darkColors.addColor("secondaryText", "#00000").readOnly();
 		darkColors.addColor("appliedChange", "#c0ff61");
-		darkColors.addColor("unappliedChange", "#ffffff");
+		darkColors.addColor("unappliedChange", "#c8c8c8");
 		const darkCode = dark.addSection("code", "Code Colors");
 		darkCode.addColor("selector", "#d3dddd");
 		darkCode.addColor("symbol", "#3cd2dd");
@@ -364,18 +365,7 @@ class IDE extends Component {
 	// Containers...
 
 	newContainerId() {
-		const containers = this.state.extraContainers;
-		if (containers.length === 0) {
-			return 0;
-		}
-		const sorted = containers.map((p) => p.id).sort();
-		const maxId = sorted[sorted.length - 1];
-		return maxId + 1;
-		//We don't recycle ids for the moment"
-		// const used = new Array(maxId);
-		// sorted.forEach((id) => (used[id] = true));
-		// const unused = used.findIndex((id) => id !== true);
-		// return unused === -1 ? maxId + 1 : unused;
+		return uuidv4();
 	}
 
 	addContainer = (pages) => {

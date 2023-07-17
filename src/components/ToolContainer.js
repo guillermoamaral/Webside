@@ -36,6 +36,7 @@ import { ide } from "./IDE";
 import ToolContainerContext from "./ToolContainerContext";
 import ResourcesIcon from "./icons/ResourcesIcon";
 import POC from "./tools/POC";
+import { v4 as uuidv4 } from "uuid";
 
 class ToolContainer extends Component {
 	constructor(props) {
@@ -47,18 +48,7 @@ class ToolContainer extends Component {
 	}
 
 	newPageId() {
-		const pages = this.state.pages;
-		if (pages.length === 0) {
-			return 0;
-		}
-		const sorted = pages.map((p) => p.id).sort();
-		const maxId = sorted[sorted.length - 1];
-		return maxId + 1;
-		//We don't recycle ids for the moment;
-		// const used = new Array(maxId);
-		// sorted.forEach((id) => (used[id] = true));
-		// const unused = used.findIndex((id) => id !== true);
-		// return unused === -1 ? maxId + 1 : unused;
+		return uuidv4();
 	}
 
 	createPage(label, icon, component, id, onClose, nextToSelected) {
@@ -88,7 +78,6 @@ class ToolContainer extends Component {
 
 	addPage(page) {
 		const pages = this.state.pages;
-		page.id = this.newPageId();
 		pages.push(page);
 		this.setState({ pages: pages, selectedPageId: page.id });
 	}
