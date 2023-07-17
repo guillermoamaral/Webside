@@ -18,6 +18,7 @@ class MethodBrowser extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			methods: props.methods,
 			selectedMethod: null,
 			selectedClass: null,
 			showTests: true,
@@ -26,14 +27,14 @@ class MethodBrowser extends Component {
 
 	componentDidMount() {
 		const method =
-			this.props.methods.length > 0 ? this.props.methods[0] : null;
+			this.state.methods.length > 0 ? this.state.methods[0] : null;
 		if (method) {
 			this.methodSelected(method);
 		}
 	}
 
 	methodRemoved = (method) => {
-		const methods = this.props.methods;
+		const methods = this.state.methods;
 		const index = methods.findIndex(
 			(m) =>
 				m.methodClass === method.methodClass &&
@@ -48,7 +49,11 @@ class MethodBrowser extends Component {
 					? methods[index + 1]
 					: null;
 			const species = selected ? selected.methodClass : null;
-			this.setState({ selectedMethod: selected, selectedClass: species });
+			this.setState({
+				methods: methods,
+				selectedMethod: selected,
+				selectedClass: species,
+			});
 		}
 	};
 
@@ -86,18 +91,39 @@ class MethodBrowser extends Component {
 	};
 
 	methodCompiled = async (method) => {
-		const selected = this.state.selectedMethod;
-		if (method.selector === selected.selector) {
-			selected.source = method.source;
-			this.setState({ selectedMethod: selected });
+		var species;
+		try {
+			species = await ide.backend.classNamed(method.methodClass);
+		} catch (error) {
+			species = null;
+			ide.reportError(error);
+		}
+		const methods = this.state.methods;
+		const index = methods.findIndex(
+			(m) =>
+				m.methodClass === method.methodClass &&
+				m.selector === method.selector
+		);
+		if (index > -1) {
+			const compiled = methods[index];
+			compiled.source = method.source;
+			this.setState({ selectedMethod: compiled });
+		} else {
+			const selected = this.state.selectedMethod;
+			const index = selected ? methods.indexOf(selected) + 1 : 1;
+			methods.splice(index, 0, method);
+			this.setState({
+				methods: methods,
+				selectedMethod: method,
+			});
 		}
 	};
 
 	currentMethods() {
 		if (this.state.showTests) {
-			return this.props.methods;
+			return this.state.methods;
 		}
-		return this.props.methods.filter((m) => {
+		return this.state.methods.filter((m) => {
 			return !this.isTest(m);
 		});
 	}

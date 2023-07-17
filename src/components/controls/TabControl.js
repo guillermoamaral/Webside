@@ -114,7 +114,7 @@ class TabControl extends Component {
 							})}
 						</Tabs>
 					</Box>
-					<Box flexShrink={0}>
+					<Box flexShrink={0} pt={1}>
 						<IconButton
 							id={"addTab" + id}
 							onClick={() => {
@@ -164,7 +164,7 @@ class TabControl extends Component {
 							})}
 						</Menu>
 					</Box>
-					<Box flexShrink={0}>
+					<Box flexShrink={0} pt={1}>
 						<IconButton
 							id={"selectTab" + id}
 							onClick={() => {
