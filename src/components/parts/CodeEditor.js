@@ -893,6 +893,8 @@ class CodeEditor extends Component {
 								sx={{
 									minWidth: 200,
 									maxWidth: 600,
+									border: 1,
+									borderColor: "grey.500",
 									background: background,
 								}}
 							>
@@ -918,10 +920,11 @@ class CodeEditor extends Component {
 									{spec.code && (
 										<Paper
 											variant="outlined"
-											style={{
+											sx={{
 												minWidth: 400,
 												width: "100%",
 												height: 150,
+												background: background,
 											}}
 										>
 											<CodeEditor
