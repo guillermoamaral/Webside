@@ -58,7 +58,7 @@ class RefactoringBrowser extends Component {
 	async updateSubclasses(species) {
 		if (!species.subclasses || species.subclasses.length === 0) return;
 		try {
-			const tree = await ide.backend.classTree(species.name, 10);
+			const tree = await ide.backend.classTree(species.name, 10, true);
 			species.subclasses.forEach((c) => {
 				const retrieved = tree.subclasses.find(
 					(s) => s.name === c.name
@@ -179,7 +179,12 @@ class RefactoringBrowser extends Component {
 			? methods.findIndex((m) => m.selector === method.selector)
 			: -1;
 		if (index === -1) {
-			await this.updateMethods(target, null, null, true);
+			await this.updateMethods(
+				target,
+				selections.variable,
+				selections.access,
+				true
+			);
 			methods = target.methods;
 			index = methods.findIndex((m) => m.selector === method.selector);
 		}
