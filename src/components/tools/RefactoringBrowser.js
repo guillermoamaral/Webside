@@ -43,7 +43,9 @@ class RefactoringBrowser extends Component {
 			if (forced || !species.definition || !species.metaclass) {
 				const definition = await ide.backend.classNamed(species.name);
 				Object.assign(species, definition);
-				species.metaclass = await ide.backend.classNamed(definition.class);
+				species.metaclass = await ide.backend.classNamed(
+					definition.class
+				);
 			}
 			if (forced || !species.subclasses) {
 				species.subclasses = await ide.backend.subclasses(species.name);
@@ -56,7 +58,7 @@ class RefactoringBrowser extends Component {
 	async updateSubclasses(species) {
 		if (!species.subclasses || species.subclasses.length === 0) return;
 		try {
-			const tree = await ide.backend.classTree(species.name, 3);
+			const tree = await ide.backend.classTree(species.name, 10);
 			species.subclasses.forEach((c) => {
 				const retrieved = tree.subclasses.find(
 					(s) => s.name === c.name
@@ -91,8 +93,10 @@ class RefactoringBrowser extends Component {
 				method.methodClass,
 				method.selector
 			);
-			Object.assign(method, retrieved);
-			if (!retrieved) {
+
+			if (retrieved) {
+				Object.assign(method, retrieved);
+			} else {
 				method.source = "method cannot be found";
 				method.ast = null;
 				method.bytecodes = null;

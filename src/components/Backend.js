@@ -240,6 +240,7 @@ class Backend {
 		return methods.length === 0 ? null : methods[0];
 	}
 
+	// Method queries...
 	async senders(selector) {
 		return await this.get(
 			"/methods?sending=" + selector,

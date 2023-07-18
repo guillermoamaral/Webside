@@ -636,7 +636,7 @@ class CodeEditor extends Component {
 	};
 
 	annotations = () => {
-		if (!this.props.annotations) {
+		if (this.state.dirty || !this.props.annotations) {
 			return [];
 		}
 		return this.props.annotations.map((a) => {

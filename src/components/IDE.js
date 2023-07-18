@@ -54,6 +54,7 @@ class IDE extends Component {
 		const container = this.mainContainer();
 		container.openTranscript();
 		//container.openPOC();
+		container.openCoderLikeBrowser("Magnitude");
 		const options = this.queryOptions();
 		if (options.classname) {
 			container.openClassBrowser(options.classname);
