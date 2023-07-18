@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Snackbar, Alert } from "@mui/material";
+import { Snackbar, Alert, Button } from "@mui/material";
 
 class CustomSnacks extends Component {
 	constructor(props) {
@@ -8,15 +8,20 @@ class CustomSnacks extends Component {
 	}
 
 	closeClicked = () => {
-		if (this.props.onClose) {
-			this.props.onClose();
-		} else {
-			this.setState({ open: false });
-		}
+		this.setState({ open: false }, () => {
+			if (this.props.onClose) {
+				this.props.onClose();
+			}
+		});
+	};
+
+	actionClicked = () => {
+		this.closeClicked();
+		this.props.action.handler();
 	};
 
 	render() {
-		const { text, severity, open } = this.props;
+		const { text, severity, open, action } = this.props;
 		return (
 			<Snackbar
 				open={open}
@@ -25,6 +30,17 @@ class CustomSnacks extends Component {
 			>
 				<Alert
 					onClose={this.closeClicked}
+					action={
+						action && (
+							<Button
+								size="small"
+								color="inherit"
+								onClick={this.actionClicked}
+							>
+								{action.label}
+							</Button>
+						)
+					}
 					variant="filled"
 					elevation={6}
 					severity={severity || "info"}

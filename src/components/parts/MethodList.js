@@ -260,7 +260,7 @@ class MethodList extends Component {
 		if (this.isTest(method)) {
 			return (
 				<TestIcon
-					style={{ fontSize: 16, color: "#3bba5d" }}
+					style={{ fontSize: 16 }}
 					onClick={(event) => this.runTest(method, true)}
 				/>
 			);

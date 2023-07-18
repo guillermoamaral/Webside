@@ -54,7 +54,7 @@ class IDE extends Component {
 		const container = this.mainContainer();
 		container.openTranscript();
 		//container.openPOC();
-		container.openCoderLikeBrowser("Magnitude");
+		//container.openCoderLikeBrowser("Magnitude");
 		const options = this.queryOptions();
 		if (options.classname) {
 			container.openClassBrowser(options.classname);
@@ -470,7 +470,7 @@ class IDE extends Component {
 			const status = await this.backend.testRunStatus(id);
 			if (status.running) {
 				setTimeout(async () => {
-					await this.followTestRun(id);
+					await this.followTestRun(id, debug);
 				}, 1000);
 			}
 			if (!status.running) {
@@ -478,18 +478,20 @@ class IDE extends Component {
 				const passed = results.passed.length;
 				const failed = results.failed.length;
 				const errors = results.errors.length;
+				var d;
 				if (debug && (failed > 0 || errors > 0)) {
 					const test =
 						failed > 0 ? results.failed[0] : results.errors[0];
-					const d = await this.backend.debugTest(
+					d = await this.backend.debugTest(
 						id,
 						test.class,
 						test.selector
 					);
-					this.openDebugger(
+					this.mainContainer().openDebugger(
 						d.id,
 						d.description || "Debugging test " + test.selector
 					);
+					return;
 				} else {
 					await this.backend.deleteTestRun(id);
 				}
@@ -506,7 +508,8 @@ class IDE extends Component {
 						(first ? "" : ", ") + results[type].length + " " + type;
 					first = false;
 				});
-				const type =
+				const message = { text: text };
+				message.type =
 					passed > 0 && failed === 0 && errors === 0
 						? "success"
 						: failed > 0 && errors === 0
@@ -514,9 +517,18 @@ class IDE extends Component {
 						: errors > 0
 						? "error"
 						: "info";
-				this.setState({
-					lastMessage: { type: type, text: text },
-				});
+				// if (d) {
+				// 	message.action = {
+				// 		label: "Debug",
+				// 		handler: () =>
+				// 			this.mainContainer().openDebugger(
+				// 				d.id,
+				// 				d.description ||
+				// 					"Debugging test " + test.selector
+				// 			),
+				// 	};
+				// }
+				this.setState({ lastMessage: message });
 			}
 		} catch (error) {
 			this.reportError(error);
@@ -777,6 +789,7 @@ class IDE extends Component {
 					<CustomSnacks
 						open={lastMessage !== null}
 						onClose={() => this.setState({ lastMessage: null })}
+						action={lastMessage ? lastMessage.action : null}
 						text={lastMessage ? lastMessage.text : ""}
 						severity={lastMessage ? lastMessage.type : ""}
 					/>
