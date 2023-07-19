@@ -4,6 +4,18 @@ class CodeCache {
 		this.cache = {};
 	}
 
+	async classNames() {
+		const cached = this.cache.classNames;
+		if (cached) return cached;
+		const retrieved = await this.backend.classNames();
+		this.cache.classNames = retrieved;
+		return retrieved;
+	}
+
+	invalidateClassNames() {
+		delete this.cache.classNames;
+	}
+
 	async classNamed(classname) {
 		const cached = this.cache[classname];
 		if (cached) return cached;
