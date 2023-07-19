@@ -489,7 +489,9 @@ class IDE extends Component {
 					);
 					this.mainContainer().openDebugger(
 						d.id,
-						d.description || "Debugging test " + test.selector
+						d.description || "Debugging test " + test.selector,
+						() => this.backend.deleteTestRun(id),
+						() => this.backend.deleteTestRun(id)
 					);
 					return;
 				} else {

@@ -216,7 +216,7 @@ class ClassBrowser extends RefactoringBrowser {
 					!species.accessors[variable.name] ||
 					!species.accessors[variable.name][access])
 			) {
-				const accessing = await ide.backend.methodsAccessing(
+				const accessing = await ide.backend.accessors(
 					species.name,
 					variable.name,
 					access,

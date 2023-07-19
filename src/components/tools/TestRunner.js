@@ -11,6 +11,11 @@ import {
 	Card,
 	CardContent,
 	CardActionArea,
+	FormGroup,
+	FormControlLabel,
+	Checkbox,
+	Box,
+	Chip,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CustomTable from "../controls/CustomTable";
@@ -42,7 +47,8 @@ class TestRunner extends Component {
 			status: this.newStatus(),
 			results: this.newResults(),
 			updating: false,
-			filterType: null,
+			filterType: "run",
+			showGroups: true,
 		};
 	}
 
@@ -53,6 +59,7 @@ class TestRunner extends Component {
 	newResults() {
 		return {
 			updated: false,
+			run: [],
 			passed: [],
 			failed: [],
 			errors: [],
@@ -86,6 +93,9 @@ class TestRunner extends Component {
 	typeColor(type) {
 		let color;
 		switch (type) {
+			case "run":
+				color = "#4f4f4f";
+				break;
 			case "passed":
 				color = "#28a745";
 				break;
@@ -156,7 +166,7 @@ class TestRunner extends Component {
 		}
 		try {
 			const results = await ide.backend.testRunResults(this.props.id);
-			results.grouped = this.groupByClass(results);
+			results.grouped = this.groupResults(results);
 			results.updated = true;
 			this.setState({ results: results });
 		} catch (error) {
@@ -164,24 +174,31 @@ class TestRunner extends Component {
 		}
 	}
 
-	groupByClass(results) {
+	groupResults(results) {
 		const grouped = {};
+		results.run = [];
 		["passed", "failed", "errors", "skipped", "knownIssues"].forEach(
-			(k) => {
-				const tests = results[k] || [];
-				tests.forEach((t) => {
-					const c = t.class;
-					t.type = k;
-					if (!grouped[c]) {
-						grouped[c] = { summary: this.newSummary(), all: [] };
+			(type) => {
+				const tests = results[type] || [];
+				const color = this.typeColor(type);
+				tests.forEach((test) => {
+					results.run.push(test);
+					test.type = type;
+					test.color = color;
+					const group = test.class;
+					if (!grouped[group]) {
+						grouped[group] = {
+							summary: this.newSummary(),
+							run: [],
+						};
 					}
-					if (!grouped[c][k]) {
-						grouped[c][k] = [];
+					if (!grouped[group][type]) {
+						grouped[group][type] = [];
 					}
-					grouped[c][k].push(t);
-					grouped[c].all.push(t);
-					grouped[c].summary[k] += 1;
-					grouped[c].summary.run += 1;
+					grouped[group][type].push(test);
+					grouped[group].run.push(test);
+					grouped[group].summary[type] += 1;
+					grouped[group].summary.run += 1;
 				});
 			}
 		);
@@ -189,8 +206,7 @@ class TestRunner extends Component {
 	}
 
 	filterTests(type) {
-		const filter = type === "run" ? null : type;
-		this.setState({ filterType: filter });
+		this.setState({ filterType: type });
 	}
 
 	browseImplementors = (test) => {
@@ -265,23 +281,79 @@ class TestRunner extends Component {
 		];
 	}
 
+	sortedGroups() {
+		const grouped = this.state.results.grouped;
+		const sorted = Object.keys(grouped).sort((g1, g2) => {
+			const n1 =
+				grouped[g1].summary.failed ||
+				0 + grouped[g1].summary.error ||
+				0;
+			const n2 =
+				grouped[g2].summary.failed ||
+				0 + grouped[g2].summary.error ||
+				0;
+			return n1 > n2 ? -1 : n1 < n2 ? 1 : 0;
+		});
+		return sorted;
+	}
+
+	showGroups(show) {
+		this.setState({ showGroups: show });
+	}
+
+	barChartData(label, summary) {
+		return {
+			labels: [label],
+			datasets: Object.keys(summary)
+				.filter((type) => {
+					return type !== "run" && summary[type] > 0;
+				})
+				.map((type) => {
+					return {
+						label: type,
+						backgroundColor: this.typeColor(type),
+						borderWidth: 0,
+						data: [summary[type] || 0],
+					};
+				}),
+		};
+	}
+
+	barChartOptions() {
+		return {
+			indexAxis: "y",
+			scales: {
+				x: {
+					stacked: true,
+					display: false,
+				},
+				y: {
+					stacked: true,
+					display: true,
+				},
+			},
+			plugins: {
+				legend: {
+					display: false,
+				},
+				title: {
+					display: false,
+				},
+				datalabels: {
+					display: true,
+					color: "white",
+				},
+			},
+		};
+	}
+
 	render() {
-		const { status, results, filterType } = this.state;
+		const { status, results, filterType, showGroups, showBars } =
+			this.state;
 		const { total, running, current } = status;
 		const summary = status.summary || this.newSummary();
 		const percent = total > 0 ? (summary.run / total) * 100 : 0;
 		const grouped = results.grouped;
-		const ranking = Object.keys(grouped).sort((c1, c2) => {
-			const n1 =
-				grouped[c1].summary.failed ||
-				0 + grouped[c1].summary.error ||
-				0;
-			const n2 =
-				grouped[c2].summary.failed ||
-				0 + grouped[c2].summary.error ||
-				0;
-			return n1 > n2 ? -1 : n1 < n2 ? 1 : 0;
-		});
 		return (
 			<div>
 				<Grid
@@ -356,8 +428,8 @@ class TestRunner extends Component {
 									>
 										<Card
 											id={"card-" + type}
-											style={{
-												backgroundColor:
+											sx={{
+												background:
 													this.typeColor(type),
 											}}
 										>
@@ -373,19 +445,17 @@ class TestRunner extends Component {
 														variant={
 															type === "run"
 																? "h2"
-																: "h3"
+																: "h4"
 														}
-														style={{
+														sx={{
 															color: "white",
 														}}
 													>
 														{summary[type] || 0}
 													</Typography>
 													<Typography
-														variant={"button"}
-														style={{
-															color: "white",
-														}}
+														variant="button"
+														sx={{ color: "white" }}
 														align="right"
 													>
 														{type}
@@ -399,98 +469,124 @@ class TestRunner extends Component {
 						</Grid>
 					</Grid>
 					<Grid item xs={12} md={12} lg={12}>
-						{ranking
-							.filter((c) => {
-								return (
-									!filterType ||
-									grouped[c].summary[filterType] > 0
-								);
-							})
-							.map((c) => {
-								const classSummary = grouped[c].summary;
-								const classTests = filterType
-									? grouped[c][filterType]
-									: grouped[c].all;
-								classTests.forEach((t) => {
-									t.color = this.typeColor(t.type);
-								});
-								const data = {
-									labels: [c],
-									datasets: Object.keys(classSummary)
-										.filter((type) => {
-											return (
-												type !== "run" &&
-												classSummary[type] > 0
-											);
-										})
-										.map((type) => {
-											return {
-												label: type,
-												backgroundColor:
-													this.typeColor(type),
-												borderWidth: 0,
-												data: [classSummary[type] || 0],
-											};
-										}),
-								};
-								const options = {
-									indexAxis: "y",
-									scales: {
-										x: {
-											stacked: true,
-											display: false,
-										},
-										y: {
-											stacked: true,
-											display: true,
-										},
-									},
-									plugins: {
-										legend: {
-											display: false,
-										},
-										title: {
-											display: false,
-										},
-										datalabels: {
-											display: true,
-											color: "white",
-										},
-									},
-								};
-								return (
-									<Accordion key={c}>
-										<AccordionSummary
-											style={{ maxHeight: 15 }}
-											expandIcon={<ExpandMoreIcon />}
-											id={c}
-										>
-											<Bar
-												height={15}
-												data={data}
-												options={options}
-											/>
-										</AccordionSummary>
-										<Grid container>
-											<Grid item xs={1} md={1} lg={1} />
-											<Grid
-												item
-												xs={11}
-												md={11}
-												lg={11}
-												style={{ minHeight: 300 }}
+						<Box
+							display="flex"
+							flexDirection="row"
+							justifyContent="space-between"
+							alignContent="center"
+						>
+							<Box
+								display="flex"
+								flexDirection="row"
+								justifyContent="center"
+								alignContent="center"
+							>
+								<Chip
+									label={"Showing: " + filterType}
+									sx={{
+										color: "white",
+										background: this.typeColor(filterType),
+									}}
+								/>
+							</Box>
+							<FormGroup>
+								<FormControlLabel
+									control={
+										<Checkbox
+											size="small"
+											checked={showGroups}
+											color="primary"
+											onChange={(event) =>
+												this.showGroups(
+													event.target.checked
+												)
+											}
+										/>
+									}
+									label="Group tests"
+								/>
+							</FormGroup>
+						</Box>
+					</Grid>
+					<Grid item xs={12} md={12} lg={12}>
+						{showGroups &&
+							this.sortedGroups()
+								.filter(
+									(group) =>
+										grouped[group].summary[filterType] > 0
+								)
+								.map((group) => {
+									const groupTests =
+										grouped[group][filterType];
+									const showBars = filterType === "run";
+									return (
+										<Accordion key={group}>
+											<AccordionSummary
+												sx={{ maxHeight: 15 }}
+												expandIcon={<ExpandMoreIcon />}
+												id={group}
 											>
-												<CustomTable
-													columns={this.columns()}
-													rows={classTests}
-													menuOptions={this.menuOptions()}
-													rowActions={this.rowActions()}
-												></CustomTable>
+												<Box
+													display="flex"
+													flexDirection="row"
+													alignContent="center"
+												>
+													{!showBars && group}
+													<Box>
+														{showBars && (
+															<Bar
+																height={60}
+																//width={"100%"}
+																data={this.barChartData(
+																	group,
+																	grouped[
+																		group
+																	].summary
+																)}
+																options={this.barChartOptions()}
+															/>
+														)}
+													</Box>
+												</Box>
+											</AccordionSummary>
+											<Grid container>
+												<Grid
+													item
+													xs={1}
+													md={1}
+													lg={1}
+												/>
+												<Grid
+													item
+													xs={11}
+													md={11}
+													lg={11}
+													sx={{ minHeight: 300 }}
+												>
+													<CustomTable
+														columns={this.columns()}
+														rows={groupTests}
+														menuOptions={this.menuOptions()}
+														rowActions={this.rowActions()}
+													></CustomTable>
+												</Grid>
 											</Grid>
-										</Grid>
-									</Accordion>
-								);
-							})}
+										</Accordion>
+									);
+								})}
+					</Grid>
+					<Grid item xs={12} md={12} lg={12} sx={{ height: 500 }}>
+						{!showGroups && (
+							<CustomTable
+								//sx={{ width: "100%", heigh: "100%" }}
+								columns={this.columns()}
+								rows={results[filterType]}
+								menuOptions={this.menuOptions()}
+								rowActions={this.rowActions()}
+								rowsPerPage={50}
+								usePagination
+							></CustomTable>
+						)}
 					</Grid>
 				</Grid>
 			</div>

@@ -41,15 +41,15 @@ class CodeCache {
 		return retrieved;
 	}
 
-	async methods(classname, sorted) {
+	async methods(classname) {
 		const cached = this.classNamed(classname);
 		if (cached.methods) return cached.methods;
-		const retrieved = await this.backend.methods(classname, sorted);
+		const retrieved = await this.backend.methods(classname);
 		cached.methods = retrieved;
 		return retrieved;
 	}
 
-	async methodsAccessing(classname, variable, type, sorted) {
+	async accessors(classname, variable, type) {
 		const cached = this.classNamed(classname);
 		if (
 			cached.accessors &&
@@ -57,11 +57,10 @@ class CodeCache {
 			cached.accessors[variable][type]
 		)
 			return cached.accessors[variable][type];
-		const retrieved = await this.backend.methodsAccessing(
+		const retrieved = await this.backend.accessors(
 			classname,
 			variable,
-			type,
-			sorted
+			type
 		);
 		if (!cached.accessors) cached.accessors = {};
 		if (!cached.accessors[variable]) cached.accessors[variable] = {};

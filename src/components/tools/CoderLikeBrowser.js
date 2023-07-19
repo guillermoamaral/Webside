@@ -201,7 +201,7 @@ class CoderLikeBrowser extends Component {
 					!species[variable.name] ||
 					!species[variable.name][access])
 			) {
-				const accessors = await ide.backend.methodsAccessing(
+				const accessors = await ide.backend.accessors(
 					species.name,
 					variable.name,
 					access,

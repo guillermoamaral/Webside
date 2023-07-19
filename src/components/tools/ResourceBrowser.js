@@ -3,7 +3,7 @@ import {
 	Grid,
 	Paper,
 	List,
-	ListItem,
+	ListItemButton,
 	ListItemText,
 	Box,
 	IconButton,
@@ -23,7 +23,7 @@ import MemoryStats from "./MemoryStats";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import DeleteIcon from "@mui/icons-material/Delete";
 import StopIcon from "@mui/icons-material/Stop";
-import EditWorkspace from "@mui/icons-material/Edit"
+import EditWorkspace from "@mui/icons-material/Edit";
 
 class ResourceBrowser extends Component {
 	static contextType = ToolContainerContext;
@@ -48,6 +48,306 @@ class ResourceBrowser extends Component {
 	componentDidMount() {
 		this.typeSelected("Objects");
 	}
+
+	// Objects...
+
+	objectColumns() {
+		return [
+			{
+				field: "id",
+				link: this.openInspector,
+				label: "ID",
+				align: "left",
+			},
+			{ field: "class", label: "Class", align: "left", minWidth: 200 },
+			{
+				field: "printString",
+				label: "Print String",
+				minWidth: 200,
+				align: "left",
+			},
+		];
+	}
+
+	objectOptions() {
+		return [
+			{ label: "Inspect", action: this.openInspector },
+			{ label: "Unpin", action: this.unpinObject },
+		];
+	}
+
+	objectActions() {
+		return [
+			{
+				label: "Inspect",
+				icon: <InspectorIcon fontSize="small" />,
+				handler: this.openInspector,
+			},
+			{
+				label: "Unpin",
+				icon: <DeleteIcon fontSize="small" />,
+				handler: this.unpinObject,
+			},
+		];
+	}
+
+	openInspector = (object) => {
+		if (object) {
+			this.context.openInspector(object);
+		}
+	};
+
+	unpinObject = async (object) => {
+		try {
+			await ide.backend.unpinObject(object.id);
+			this.setState({
+				resources: this.state.resources.filter(
+					(r) => r.id !== object.id
+				),
+				selectedResource: null,
+			});
+		} catch (error) {
+			ide.reportError(error);
+		}
+	};
+
+	unpinAllObjects = async () => {
+		try {
+			await ide.backend.unpinAllObjects();
+			this.setState({
+				resources: [],
+				selectedResource: null,
+			});
+		} catch (error) {
+			ide.reportError(error);
+		}
+	};
+
+	// Evaluations...
+
+	evaluationColumns() {
+		return [
+			{ field: "id", label: "ID", align: "left" },
+			{
+				field: "expression",
+				label: "Expression",
+				align: "left",
+				minWidth: 200,
+			},
+			{
+				field: "state",
+				label: "State",
+				minWidth: 200,
+				align: "left",
+			},
+		];
+	}
+
+	evaluationOptions() {
+		return [{ label: "Stop", action: this.cancelEvaluation }];
+	}
+
+	evaluationActions() {
+		return [
+			{
+				label: "Stop",
+				icon: <StopIcon fontSize="small" />,
+				handler: this.cancelEvaluation,
+			},
+		];
+	}
+
+	cancelEvaluation = async (evaluation) => {
+		try {
+			await ide.backend.cancelEvaluation(evaluation.id);
+			this.setState({
+				resources: this.state.resources.filter(
+					(r) => r.id !== evaluation.id
+				),
+			});
+		} catch (error) {
+			ide.reportError(error);
+		}
+	};
+
+	// Workspaces...
+
+	workspaceColumns() {
+		return [
+			{
+				field: "id",
+				link: this.openWorkspace,
+				label: "ID",
+				align: "left",
+			},
+			{
+				field: (w) => {
+					const source = w.source.trim();
+					return source.length > 100
+						? source.substr(0, 99) + "…"
+						: source;
+				},
+				label: "Contents",
+				align: "left",
+			},
+			{ field: "owner", label: "Owner", align: "center" },
+		];
+	}
+
+	workspaceOptions() {
+		return [
+			{ label: "Open", action: this.openWorkspace },
+			{ label: "Delete", action: this.deleteWorkspace },
+		];
+	}
+
+	workspaceActions() {
+		return [
+			{
+				label: "Open",
+				icon: <EditWorkspace fontSize="small" />,
+				handler: this.openWorkspace,
+			},
+			{
+				label: "Delete",
+				icon: <DeleteIcon fontSize="small" />,
+				handler: this.deleteWorkspace,
+			},
+		];
+	}
+
+	openWorkspace = (workspace) => {
+		if (workspace) {
+			this.context.openWorkspace(workspace.id);
+		}
+	};
+
+	deleteWorkspace = async (w) => {
+		if (w) {
+			try {
+				await ide.backend.deleteWorkspace(w.id);
+				this.setState({
+					resources: this.state.resources.filter(
+						(r) => r.id !== w.id
+					),
+					selectedResource: null,
+				});
+			} catch (error) {
+				ide.reportError(error);
+			}
+		}
+	};
+
+	// Debuggers...
+
+	debuggerColumns() {
+		return [
+			{
+				field: "id",
+				link: this.openDebugger,
+				label: "ID",
+				align: "left",
+			},
+			{
+				field: "description",
+				label: "Description",
+				align: "left",
+				minWidth: 200,
+			},
+			{ field: "creator", label: "Creator", align: "center" },
+		];
+	}
+
+	debuggerOptions() {
+		return [
+			{ label: "Open", action: this.openDebugger },
+			{ label: "Terminate", action: this.terminateDebugger },
+		];
+	}
+
+	debuggerActions() {
+		return [
+			{
+				label: "Terminate",
+				icon: <StopIcon fontSize="small" />,
+				handler: this.terminateDebugger,
+			},
+		];
+	}
+
+	openDebugger = (d) => {
+		if (d) {
+			this.context.openDebugger(d.id, d.description);
+		}
+	};
+
+	terminateDebugger = async (d) => {
+		if (d) {
+			try {
+				await ide.backend.terminateDebugger(d.id);
+				this.setState({
+					resources: this.state.resources.filter(
+						(r) => r.id !== d.id
+					),
+					selectedResource: null,
+				});
+			} catch (error) {
+				ide.reportError(error);
+			}
+		}
+	};
+
+	// Test runs...
+
+	testRunColumns() {
+		return [
+			{ field: "id", link: this.openTestRun, label: "ID", align: "left" },
+			{ field: "name", label: "Name", align: "left" },
+			{ field: "total", label: "Tests", align: "right" },
+			{ field: "running", label: "Running", align: "center" },
+		];
+	}
+
+	testRunOptions() {
+		return [
+			{ label: "Open", action: this.openTestRun },
+			{ label: "Delete", action: this.openTestRun },
+		];
+	}
+
+	testRunActions() {
+		return [
+			{
+				label: "Delete",
+				icon: <DeleteIcon fontSize="small" />,
+				handler: this.deleteTestRun,
+			},
+		];
+	}
+
+	openTestRun = (run) => {
+		if (run) {
+			this.context.openTestRunner(run.id, run.name);
+		}
+	};
+
+	deleteTestRun = async (run) => {
+		if (run) {
+			try {
+				await ide.backend.deleteTestRun(run.id);
+				this.setState({
+					resources: this.state.resources.filter(
+						(r) => run.id !== run.id
+					),
+					selectedResource: null,
+				});
+			} catch (error) {
+				ide.reportError(error);
+			}
+		}
+	};
+
+	// Common...
 
 	typeSelected = async (type) => {
 		var resources;
@@ -106,269 +406,6 @@ class ResourceBrowser extends Component {
 	resourceSelected = (resource) => {
 		this.setState({ selectedResource: resource });
 	};
-
-	openInspector = (object) => {
-		if (object) {
-			this.context.openInspector(object);
-		}
-	};
-
-	unpinObject = async (object) => {
-		try {
-			await ide.backend.unpinObject(object.id);
-			this.setState({
-				resources: this.state.resources.filter(
-					(r) => r.id !== object.id
-				),
-				selectedResource: null,
-			});
-		} catch (error) {
-			ide.reportError(error);
-		}
-	};
-
-	unpinAllObjects = async () => {
-		try {
-			await ide.backend.unpinAllObjects();
-			this.setState({
-				resources: [],
-				selectedResource: null,
-			});
-		} catch (error) {
-			ide.reportError(error);
-		}
-	};
-
-	cancelEvaluation = async (evaluation) => {
-		try {
-			await ide.backend.cancelEvaluation(evaluation.id);
-			this.setState({
-				resources: this.state.resources.filter(
-					(r) => r.id !== evaluation.id
-				),
-			});
-		} catch (error) {
-			ide.reportError(error);
-		}
-	};
-
-	openWorkspace = (workspace) => {
-		if (workspace) {
-			this.context.openWorkspace(workspace.id);
-		}
-	};
-
-	deleteWorkspace = async (w) => {
-		if (w) {
-			try {
-				await ide.backend.deleteWorkspace(w.id);
-				this.setState({
-					resources: this.state.resources.filter(
-						(r) => r.id !== w.id
-					),
-					selectedResource: null,
-				});
-			} catch (error) {
-				ide.reportError(error);
-			}
-		}
-	};
-
-	openDebugger = (d) => {
-		if (d) {
-			this.context.openDebugger(d.id, d.description);
-		}
-	};
-
-	terminateDebugger = async (d) => {
-		if (d) {
-			try {
-				await ide.backend.terminateDebugger(d.id);
-				this.setState({
-					resources: this.state.resources.filter(
-						(r) => r.id !== d.id
-					),
-					selectedResource: null,
-				});
-			} catch (error) {
-				ide.reportError(error);
-			}
-		}
-	};
-
-	openTestRun = (run) => {
-		if (run) {
-			this.context.openTestRunner(run.id, run.name);
-		}
-	};
-
-	debuggerColumns() {
-		return [
-			{
-				field: "id",
-				link: this.openDebugger,
-				label: "ID",
-				align: "left",
-			},
-			{
-				field: "description",
-				label: "Description",
-				align: "left",
-				minWidth: 200,
-			},
-			{ field: "creator", label: "Creator", align: "center" },
-		];
-	}
-
-	debuggerOptions() {
-		return [
-			{ label: "Open", action: this.openDebugger },
-			{ label: "Terminate", action: this.terminateDebugger },
-		];
-	}
-
-	debuggerActions() {
-		return [
-			{
-				label: "Terminate",
-				icon: <StopIcon fontSize="small" />,
-				handler: this.terminateDebugger,
-			},
-		];
-	}
-
-	objectColumns() {
-		return [
-			{
-				field: "id",
-				link: this.openInspector,
-				label: "ID",
-				align: "left",
-			},
-			{ field: "class", label: "Class", align: "left", minWidth: 200 },
-			{
-				field: "printString",
-				label: "Print String",
-				minWidth: 200,
-				align: "left",
-			},
-		];
-	}
-
-	objectOptions() {
-		return [
-			{ label: "Inspect", action: this.openInspector },
-			{ label: "Unpin", action: this.unpinObject },
-		];
-	}
-
-	objectActions() {
-		return [
-			{
-				label: "Inspect",
-				icon: <InspectorIcon fontSize="small" />,
-				handler: this.openInspector,
-			},
-			{
-				label: "Unpin",
-				icon: <DeleteIcon fontSize="small" />,
-				handler: this.unpinObject,
-			},
-		];
-	}
-
-	evaluationColumns() {
-		return [
-			{ field: "id", label: "ID", align: "left" },
-			{
-				field: "expression",
-				label: "Expression",
-				align: "left",
-				minWidth: 200,
-			},
-			{
-				field: "state",
-				label: "State",
-				minWidth: 200,
-				align: "left",
-			},
-		];
-	}
-
-	evaluationOptions() {
-		return [{ label: "Stop", action: this.cancelEvaluation }];
-	}
-
-	evaluationActions() {
-		return [
-			{
-				label: "Stop",
-				icon: <StopIcon fontSize="small" />,
-				handler: this.cancelEvaluation,
-			},
-		];
-	}
-
-	workspaceColumns() {
-		return [
-			{
-				field: "id",
-				link: this.openWorkspace,
-				label: "ID",
-				align: "left",
-			},
-			{
-				field: (w) => {
-					const source = w.source.trim();
-					return source.length > 100
-						? source.substr(0, 99) + "…"
-						: source;
-				},
-				label: "Contents",
-				align: "left",
-			},
-			{ field: "owner", label: "Owner", align: "center" },
-		];
-	}
-
-	workspaceOptions() {
-		return [
-			{ label: "Open", action: this.openWorkspace },
-			{ label: "Delete", action: this.deleteWorkspace },
-		];
-	}
-
-	workspaceActions() {
-		return [
-			{
-				label: "Open",
-				icon: <EditWorkspace fontSize="small" />,
-				handler: this.openWorkspace,
-			},
-			{
-				label: "Delete",
-				icon: <DeleteIcon fontSize="small" />,
-				handler: this.deleteWorkspace,
-			},
-		];
-	}
-
-	testRunColumns() {
-		return [
-			{ field: "id", link: this.openTestRun, label: "ID", align: "left" },
-			{ field: "name", label: "Name", align: "left" },
-			{ field: "total", label: "Tests", align: "right" },
-			{ field: "running", label: "Running", align: "center" },
-		];
-	}
-
-	testRunOptions() {
-		return [{ label: "Open", action: this.openTestRun }];
-	}
-
-	testRunActions() {
-		return [];
-	}
 
 	columns() {
 		var columns;
@@ -440,7 +477,7 @@ class ResourceBrowser extends Component {
 	}
 
 	render() {
-		const { selectedType, resources } = this.state;
+		const { selectedType, resources, selectedResource } = this.state;
 		return (
 			<Grid container spacing={1} style={{ height: "100%" }}>
 				<Grid item xs={2} md={2} lg={2}>
@@ -449,8 +486,7 @@ class ResourceBrowser extends Component {
 							const color =
 								type === selectedType ? "primary" : "inherit";
 							return (
-								<ListItem
-									button
+								<ListItemButton
 									key={type}
 									selected={type === selectedType}
 									onClick={(event) => this.typeSelected(type)}
@@ -464,7 +500,7 @@ class ResourceBrowser extends Component {
 										}}
 										primary={<Box pl={1}>{type}</Box>}
 									/>
-								</ListItem>
+								</ListItemButton>
 							);
 						})}
 					</List>
@@ -524,6 +560,7 @@ class ResourceBrowser extends Component {
 										onRowSelect={this.resourceSelected}
 										menuOptions={this.menuOptions()}
 										rowActions={this.rowActions()}
+										selectedRow={selectedResource}
 									/>
 								</Paper>
 							)}

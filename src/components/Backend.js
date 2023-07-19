@@ -216,7 +216,7 @@ class Backend {
 		return methods;
 	}
 
-	async methodsAccessing(classname, variable, type, sorted = false) {
+	async accessors(classname, variable, type, sorted = false) {
 		const methods = await this.get(
 			"/classes/" + classname + "/methods?" + type + "=" + variable,
 			"methods of class " + classname + " using " + variable
