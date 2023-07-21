@@ -8,7 +8,8 @@ These are the common properties at the moment:
 ```json
 {
 	"class": "string",
-	"indexable": "boolean",
+	"hasNamedSlots": "boolean",
+	"hasIndexedSlots": "boolean",
 	"size": "number",
 	"printString": "string"
 }

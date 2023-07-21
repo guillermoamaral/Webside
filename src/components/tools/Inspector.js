@@ -97,12 +97,13 @@ class Inspector extends Component {
 		var slots;
 		try {
 			slots = [];
-			if (object.indexable) {
+			if (object.hasIndexedSlots) {
 				const indexed = await ide.backend.objectIndexedSlots(id, path);
 				slots = slots.concat(indexed);
 			}
-			if (object.nameable) {
+			if (object.hasNamedSlots) {
 				const named = await ide.backend.objectNamedSlots(id, path);
+				console.log(named, slots, slots.concat(named))
 				slots = slots.concat(named);
 			}
 		} catch (error) {
@@ -252,7 +253,7 @@ class Inspector extends Component {
 							)}
 						</Box>
 						<Box pl={1}>
-							{selectedObject && selectedObject.indexable && (
+							{selectedObject && selectedObject.hasIndexedSlots && (
 								<Typography>
 									{"[" + selectedObject.size + " elements]"}
 								</Typography>

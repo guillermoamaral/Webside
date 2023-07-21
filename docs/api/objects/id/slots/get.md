@@ -24,7 +24,8 @@ Finally, custom object presentations could be available from `custom-presentatio
 {
 	"id": "string",
 	"class": "string",
-	"indexable": "boolean",
+	"hasNamedSlots": "boolean",
+	"hasIndexedSlots": "boolean",
 	"size": "number",
 	"printString": "string"
 }
@@ -35,7 +36,8 @@ Finally, custom object presentations could be available from `custom-presentatio
 ```json
 {
 	"class": "Point",
-	"indexable": false,
+	"hasNamedSlots": true,
+	"hasIndexedSlots": false,
 	"size": 0,
 	"printString": "2 @ 2"
 }
@@ -46,7 +48,7 @@ Finally, custom object presentations could be available from `custom-presentatio
 ```json
 {
 	"class": "SmallInteger",
-	"indexable": false,
+	"hasIndexedSlots": false,
 	"size": 0,
 	"printString": "2"
 }
@@ -58,14 +60,16 @@ Finally, custom object presentations could be available from `custom-presentatio
 [
 	{
 		"class": "Point",
-		"indexable": false,
+		"hasNamedSlots": true,
+		"hasIndexedSlots": false,
 		"size": 0,
 		"printString": "1 @ 1",
 		"slot": "origin"
 	},
 	{
 		"class": "Point",
-		"indexable": false,
+		"hasNamedSlots": true,
+		"hasIndexedSlots": false,
 		"size": 0,
 		"printString": "2 @ 2",
 		"slot": "corner"
@@ -81,14 +85,16 @@ Note the `slot` property in each object.
 [
 	{
 		"class": "SmallInteger",
-		"indexable": false,
+		"hasNamedSlots": false,
+		"hasIndexedSlots": false,
 		"size": 0,
 		"printString": "2",
 		"slot": "x"
 	},
 	{
 		"class": "SmallInteger",
-		"indexable": false,
+		"hasNamedSlots": false,
+		"hasIndexedSlots": false,
 		"size": 0,
 		"printString": "2",
 		"slot": "y"
@@ -102,21 +108,24 @@ Note the `slot` property in each object.
 [
 	{
 		"class": "True",
-		"indexable": false,
+		"hasNamedSlots": false,
+		"hasIndexedSlots": false,
 		"size": 0,
 		"printString": "true",
 		"slot": 1
 	},
 	{
 		"class": "SmallInteger",
-		"indexable": false,
+		"hasNamedSlots": false,
+		"hasIndexedSlots": false,
 		"size": 0,
 		"printString": "2",
 		"slot": 2
 	},
 	{
 		"class": "UndefinedObject",
-		"indexable": false,
+		"hasNamedSlots": false,
+		"hasIndexedSlots": false,
 		"size": 0,
 		"printString": "nil",
 		"slot": 3
@@ -129,7 +138,8 @@ Note the `slot` property in each object.
 ```json
 {
 	"class": "SmallInteger",
-	"indexable": false,
+	"hasNamedSlots": false,
+	"hasIndexedSlots": false,
 	"size": 0,
 	"printString": "2"
 }

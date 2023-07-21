@@ -16,7 +16,8 @@ Retrive the pinned object with a given ID.
 {
 	"id": "string",
 	"class": "string",
-	"indexable": "boolean",
+	"hasNamedSlots": "boolean",
+	"hasIndexedSlots": "boolean",
 	"size": "number",
 	"printString": "string"
 }
@@ -28,7 +29,8 @@ Retrive the pinned object with a given ID.
 {
 	"id": "1",
 	"class": "Rectangle",
-	"indexable": false,
+	"hasNamedSlots": true,
+	"hasIndexedSlots": false,
 	"size": 0,
 	"printString": "1 @ 2 rightBottom: 11 @ 12"
 }

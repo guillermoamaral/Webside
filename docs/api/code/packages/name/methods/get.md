@@ -18,7 +18,8 @@ Retrieve extended methods of a given package.
 [
     {
         "class": "CompiledMethod",
-        "indexable": true,
+        "hasNamedSlots": true,
+        "hasIndexedSlots": true,
         "size": 70,
         "printString": "CompiledMethod>>#firstComment",
         "selector": "firstComment",
@@ -33,7 +34,8 @@ Retrieve extended methods of a given package.
     },
     {
         "class": "CompiledMethod",
-        "indexable": true,
+        "hasNamedSlots": true,
+        "hasIndexedSlots": true,
         "size": 40,
         "printString": "CompiledMethod>>#ast",
         "selector": "ast",
@@ -48,7 +50,8 @@ Retrieve extended methods of a given package.
     },
     {
         "class": "CompiledMethod",
-        "indexable": true,
+        "hasNamedSlots": true,
+        "hasIndexedSlots": true,
         "size": 68,
         "printString": "CompiledMethod>>#comments",
         "selector": "comments",
@@ -63,7 +66,8 @@ Retrieve extended methods of a given package.
     },
     {
         "class": "CompiledMethod",
-        "indexable": true,
+        "hasNamedSlots": true,
+        "hasIndexedSlots": true,
         "size": 123,
         "printString": "CompiledMethod>>#parseTree",
         "selector": "parseTree",
@@ -78,7 +82,8 @@ Retrieve extended methods of a given package.
     },
     {
         "class": "CompiledMethod",
-        "indexable": true,
+        "hasNamedSlots": true,
+        "hasIndexedSlots": true,
         "size": 49,
         "printString": "Behavior>>#parseTreeFor:",
         "selector": "parseTreeFor:",
@@ -93,7 +98,8 @@ Retrieve extended methods of a given package.
     },
     {
         "class": "CompiledMethod",
-        "indexable": true,
+        "hasNamedSlots": true,
+        "hasIndexedSlots": true,
         "size": 48,
         "printString": "String>>#isValidSelector",
         "selector": "isValidSelector",
@@ -108,7 +114,8 @@ Retrieve extended methods of a given package.
     },
     {
         "class": "CompiledMethod",
-        "indexable": true,
+        "hasNamedSlots": true,
+        "hasIndexedSlots": true,
         "size": 48,
         "printString": "String>>#asNumber",
         "selector": "asNumber",
@@ -123,7 +130,8 @@ Retrieve extended methods of a given package.
     },
     {
         "class": "CompiledMethod",
-        "indexable": true,
+        "hasNamedSlots": true,
+        "hasIndexedSlots": true,
         "size": 57,
         "printString": "ScaledDecimal class>>#readFrom:",
         "selector": "readFrom:",

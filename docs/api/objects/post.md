@@ -18,7 +18,8 @@ See [GET](get.md) for details on how to form this URI.
 {
 	"id": "string",
 	"class": "string",
-	"indexable": "boolean",
+	"hasNamedSlots": "boolean",
+	"hasIndexedSlots": "boolean",
 	"size": "number",
 	"printString": "string"
 }

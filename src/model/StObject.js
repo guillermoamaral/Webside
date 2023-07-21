@@ -3,7 +3,8 @@ class StObject extends Object {
 		super();
 		this.id = null;
 		this.class = null;
-		this.indexable = false;
+		this.hasNamedSlots = false,
+		this.hasIndexedSlots = false;
 		this.size = null;
 		this.printString = "";
 	}
@@ -11,7 +12,8 @@ class StObject extends Object {
 	fromJson(json) {
 		this.id = json.id;
 		this.class = json.class;
-		this.indexable = json.indexable;
+		this.hasNamedSlots = json.hasNamedSlots;
+		this.hasIndexedSlots = json.hasIndexedSlots;
 		this.size = json.size;
 		this.printString = json.printString;
 	}

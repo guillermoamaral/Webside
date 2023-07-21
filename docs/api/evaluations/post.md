@@ -100,7 +100,8 @@ And this is the result:
 ```json
 {
 	"class": "SmallInteger",
-	"indexable": false,
+	"hasNamedSlots": false,
+	"hasIndexedSlots": false,
 	"size": 0,
 	"printString": "6"
 }
