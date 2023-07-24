@@ -1,10 +1,7 @@
-import { Component } from "react";
+import Tool from "./Tool";
 import { ide } from "../IDE";
-import ToolContainerContext from "../ToolContainerContext";
 
-class RefactoringBrowser extends Component {
-	static contextType = ToolContainerContext;
-
+class RefactoringBrowser extends Tool {
 	async componentDidMount() {
 		await this.initializeUsualCategories();
 	}

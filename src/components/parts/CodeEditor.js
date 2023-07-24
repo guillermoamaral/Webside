@@ -33,6 +33,14 @@ import { StreamLanguage } from "@codemirror/language";
 //import { EditorSelection, EditorState, Prec } from "@codemirror/state";
 import { Prec } from "@codemirror/state";
 //import { throwStatement } from "@babel/types";
+// import {
+// 	autocompletion,
+// 	closeCompletion,
+// 	startCompletion,
+// 	Completion,
+// 	CompletionContext,
+// 	CompletionResult,
+// } from "@codemirror/autocomplete";
 import { hoverTooltip } from "@codemirror/view";
 import ChatGPTIcon from "../icons/ChatGPTIcon";
 import ImproveIcon from "@mui/icons-material/AutoFixHigh";

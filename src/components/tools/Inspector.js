@@ -1,14 +1,12 @@
-import React, { Component } from "react";
+import React from "react";
+import Tool from "./Tool";
 import { Grid, Box, Paper, Breadcrumbs, Link, Typography } from "@mui/material";
 import { ide } from "../IDE";
-import ToolContainerContext from "../ToolContainerContext";
 import ObjectTree from "../parts/ObjectTree";
 import ObjectPresenter from "../parts/ObjectPresenter";
 import CodeEditor from "../parts/CodeEditor";
 
-class Inspector extends Component {
-	static contextType = ToolContainerContext;
-
+class Inspector extends Tool {
 	constructor(props) {
 		super(props);
 		const root = props.root;
@@ -20,6 +18,14 @@ class Inspector extends Component {
 			objectTree: !root ? [] : [root],
 			selectedObject: !root ? null : root,
 		};
+	}
+
+	aboutToClose() {
+		try {
+			ide.backend.unpinObject(this.props.root.id);
+		} catch (error) {
+			this.reportError(error);
+		}
 	}
 
 	async componentDidMount() {
@@ -103,7 +109,6 @@ class Inspector extends Component {
 			}
 			if (object.hasNamedSlots) {
 				const named = await ide.backend.objectNamedSlots(id, path);
-				console.log(named, slots, slots.concat(named))
 				slots = slots.concat(named);
 			}
 		} catch (error) {
@@ -253,11 +258,14 @@ class Inspector extends Component {
 							)}
 						</Box>
 						<Box pl={1}>
-							{selectedObject && selectedObject.hasIndexedSlots && (
-								<Typography>
-									{"[" + selectedObject.size + " elements]"}
-								</Typography>
-							)}
+							{selectedObject &&
+								selectedObject.hasIndexedSlots && (
+									<Typography>
+										{"[" +
+											selectedObject.size +
+											" elements]"}
+									</Typography>
+								)}
 						</Box>
 					</Box>
 				</Grid>

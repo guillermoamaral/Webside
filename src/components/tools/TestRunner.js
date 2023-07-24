@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React from "react";
+import Tool from "./Tool";
 import { ide } from "../IDE";
-import ToolContainerContext from "../ToolContainerContext";
 import LinearProgress from "@mui/material/LinearProgress";
 import {
 	Accordion,
@@ -38,9 +38,7 @@ ChartJS.register(
 	ChartDataLabels
 );
 
-class TestRunner extends Component {
-	static contextType = ToolContainerContext;
-
+class TestRunner extends Tool {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -50,6 +48,18 @@ class TestRunner extends Component {
 			filterType: "run",
 			showGroups: true,
 		};
+	}
+
+	aboutToSelect() {
+		this.updateStatus(true);
+	}
+
+	aboutToClose() {
+		try {
+			ide.backend.deleteTestRun(this.props.id);
+		} catch (error) {
+			this.reportError(error);
+		}
 	}
 
 	componentDidMount() {
@@ -139,7 +149,7 @@ class TestRunner extends Component {
 		}
 	}
 
-	async updateStatus() {
+	async updateStatus(force) {
 		if (this.state.updating) {
 			return;
 		}
@@ -153,15 +163,15 @@ class TestRunner extends Component {
 			}
 			this.setState({ status: status, updating: false });
 			if (!status.running) {
-				this.updateResults();
+				this.updateResults(force);
 			}
 		} catch (error) {
 			ide.reportError(error);
 		}
 	}
 
-	async updateResults() {
-		if (this.state.results.updated) {
+	async updateResults(force = false) {
+		if (!force && this.state.results.updated) {
 			return;
 		}
 		try {
@@ -348,8 +358,8 @@ class TestRunner extends Component {
 	}
 
 	render() {
-		const { status, results, filterType, showGroups, showBars } =
-			this.state;
+		console.log("rendering test runer");
+		const { status, results, filterType, showGroups } = this.state;
 		const { total, running, current } = status;
 		const summary = status.summary || this.newSummary();
 		const percent = total > 0 ? (summary.run / total) * 100 : 0;

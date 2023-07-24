@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React from "react";
+import Tool from "./Tool";
 import { Grid, IconButton, Tooltip } from "@mui/material";
 import { Icon } from "@iconify/react";
 import SuspendIcon from "@iconify/icons-mdi/pause";
@@ -11,7 +12,7 @@ import CodeBrowser from "../parts/CodeBrowser";
 import { Bar } from "react-chartjs-2";
 import CustomPaper from "../controls/CustomPaper";
 
-class NativeDebugger extends Component {
+class NativeDebugger extends Tool {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -31,7 +32,9 @@ class NativeDebugger extends Component {
 		try {
 			const native = await ide.backend.nativeDebugger(this.props.id);
 			const running = native.state === "running";
-			const frames = await ide.backend.nativeDebuggerFrames(this.props.id);
+			const frames = await ide.backend.nativeDebuggerFrames(
+				this.props.id
+			);
 			let selected = null;
 			if (frames.length > 0) {
 				selected = frames[0];
@@ -40,7 +43,9 @@ class NativeDebugger extends Component {
 			const registers = await ide.backend.nativeDebuggerRegisters(
 				this.props.id
 			);
-			const spaces = await ide.backend.nativeDebuggerSpaces(this.props.id);
+			const spaces = await ide.backend.nativeDebuggerSpaces(
+				this.props.id
+			);
 			spaces.forEach((s) => (s.color = this.colorForSpace(s)));
 			this.setState({
 				running: running,

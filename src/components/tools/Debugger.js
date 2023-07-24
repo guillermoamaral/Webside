@@ -1,4 +1,5 @@
-import React, { PureComponent } from "react";
+import React from "react";
+import Tool from "./Tool";
 import {
 	Grid,
 	Paper,
@@ -9,16 +10,13 @@ import {
 	Box,
 } from "@mui/material";
 import { ide } from "../IDE";
-import ToolContainerContext from "../ToolContainerContext";
 import FrameList from "../parts/FrameList";
 import BindingTable from "../parts/BindingTable";
 import ExpressionTable from "../parts/ExpressionTable";
 import CodeBrowser from "../parts/CodeBrowser";
 import DebuggerControls from "../parts/DebuggerControls";
 
-class Debugger extends PureComponent {
-	static contextType = ToolContainerContext;
-
+class Debugger extends Tool {
 	constructor(props) {
 		super(props);
 		this.expressionTableRef = React.createRef();
@@ -29,6 +27,17 @@ class Debugger extends PureComponent {
 			showBindings: true,
 			expressions: [],
 		};
+	}
+
+	aboutToClose() {
+		try {
+			ide.backend.deleteDebugger(this.props.id);
+		} catch (error) {
+			this.reportError(error);
+		}
+		if (this.props.onTerminate) {
+			this.props.onTerminate();
+		}
 	}
 
 	componentDidMount() {

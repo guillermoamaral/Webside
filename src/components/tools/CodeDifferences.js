@@ -1,8 +1,9 @@
-import React, { Component } from "react";
+import React from "react";
+import Tool from "./Tool";
 import { Grid, Paper } from "@mui/material";
 import CodeMerge from "../parts/CodeMerge";
 
-class CodeDifferences extends Component {
+class CodeDifferences extends Tool {
 	render() {
 		return (
 			<Grid container spacing={1}>

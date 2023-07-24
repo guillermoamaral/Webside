@@ -1,10 +1,11 @@
-import React, { Component } from "react";
+import React from "react";
+import Tool from "./Tool";
 import { Grid, Box, TextField, IconButton } from "@mui/material";
 import CustomList from "../controls/CustomList";
 import SendIcon from "@mui/icons-material/Send";
 import CustomPaper from "../controls/CustomPaper";
 
-class Chat extends Component {
+class Chat extends Tool {
 	constructor(props) {
 		super(props);
 		this.channel = this.props.channel;

@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React from "react";
+import Tool from "./Tool";
 import {
 	Grid,
 	Paper,
@@ -11,7 +12,6 @@ import {
 } from "@mui/material";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
-import ToolContainerContext from "../ToolContainerContext";
 import InspectorIcon from "../icons/InspectorIcon";
 import ProcessIcon from "../icons/ProcessIcon";
 import ObjectsIcon from "../icons/ObjectsIcon";
@@ -25,9 +25,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import StopIcon from "@mui/icons-material/Stop";
 import EditWorkspace from "@mui/icons-material/Edit";
 
-class ResourceBrowser extends Component {
-	static contextType = ToolContainerContext;
-
+class ResourceBrowser extends Tool {
 	constructor(props) {
 		super(props);
 		this.types = [
@@ -43,6 +41,10 @@ class ResourceBrowser extends Component {
 			resources: [],
 			selectedResource: null,
 		};
+	}
+
+	aboutToSelect() {
+		this.refreshResources();
 	}
 
 	componentDidMount() {
@@ -337,7 +339,7 @@ class ResourceBrowser extends Component {
 				await ide.backend.deleteTestRun(run.id);
 				this.setState({
 					resources: this.state.resources.filter(
-						(r) => run.id !== run.id
+						(r) => r.id !== run.id
 					),
 					selectedResource: null,
 				});
@@ -401,6 +403,10 @@ class ResourceBrowser extends Component {
 				icon = <InspectorIcon color={color} />;
 		}
 		return icon;
+	}
+
+	refreshResources() {
+		this.typeSelected(this.state.selectedType);
 	}
 
 	resourceSelected = (resource) => {
@@ -477,6 +483,7 @@ class ResourceBrowser extends Component {
 	}
 
 	render() {
+		console.log("rendering resource browser");
 		const { selectedType, resources, selectedResource } = this.state;
 		return (
 			<Grid container spacing={1} style={{ height: "100%" }}>
@@ -532,9 +539,7 @@ class ResourceBrowser extends Component {
 									<span>
 										<IconButton
 											color="inherit"
-											onClick={() =>
-												this.typeSelected(selectedType)
-											}
+											onClick={this.refreshResources}
 										>
 											<RefreshIcon fontSize="small" />
 										</IconButton>

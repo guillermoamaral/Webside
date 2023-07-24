@@ -51,7 +51,7 @@ class ToolContainer extends Component {
 		return uuidv4();
 	}
 
-	createPage(label, icon, component, id, onClose, nextToSelected) {
+	createPage(label, icon, component, id, ref, nextToSelected) {
 		const { pages, selectedPageId } = this.state;
 		const labelRef = React.createRef();
 		const page = {
@@ -59,8 +59,8 @@ class ToolContainer extends Component {
 			label: label,
 			icon: icon,
 			component: component,
+			ref: ref,
 			labelRef: labelRef,
-			onClose: onClose,
 		};
 		if (nextToSelected) {
 			const selectedPage = this.pageWithId(selectedPageId);
@@ -70,9 +70,6 @@ class ToolContainer extends Component {
 			pages.push(page);
 		}
 		const state = { pages: pages, selectedPageId: page.id };
-		if (page.label === "Transcript") {
-			ide.resetUnredErrorCount();
-		}
 		this.setState(state);
 	}
 
@@ -88,18 +85,15 @@ class ToolContainer extends Component {
 
 	selectPage = (page) => {
 		const state = { selectedPageId: page.id };
-		if (page.label === "Transcript") {
-			ide.resetUnredErrorCount();
-			if (
-				page.component &&
-				page.component.ref &&
-				page.component.ref.current
-			) {
-				page.component.ref.current.forceUpdate();
-			}
-		}
+		this.aboutToSelectPage(page);
 		this.setState(state);
 	};
+
+	aboutToSelectPage(page) {
+		if (page.ref && page.ref.current) {
+			page.ref.current.aboutToSelect();
+		}
+	}
 
 	selectPageAtOffset(offset) {
 		const pages = this.state.pages;
@@ -157,6 +151,9 @@ class ToolContainer extends Component {
 		if (this.props.onPagesRemove) {
 			this.props.onPagesRemove(this);
 		}
+		if (selectedPageId !== selectedId) {
+			this.aboutToSelectPage(this.pageWithId(selectedId));
+		}
 		this.setState(
 			{
 				selectedPageId: selectedId,
@@ -178,11 +175,15 @@ class ToolContainer extends Component {
 		this.removePage(page);
 	};
 
+	aboutToClosePage(page) {
+		if (page.ref && page.ref.current) {
+			page.ref.current.aboutToClose();
+		}
+	}
+
 	closePages = (pages) => {
-		pages.forEach((p) => {
-			if (p.onClose) {
-				p.onClose();
-			}
+		pages.forEach((page) => {
+			this.aboutToClosePage(page);
 		});
 		this.removePages(pages);
 	};
@@ -208,6 +209,7 @@ class ToolContainer extends Component {
 		if (page) {
 			this.selectPage(page);
 		} else {
+			ide.resetUnredErrorCount();
 			const ref = React.createRef();
 			const transcript = (
 				<Transcript
@@ -216,7 +218,14 @@ class ToolContainer extends Component {
 					onChange={this.transcriptChanged}
 				/>
 			);
-			this.createPage("Transcript", <TranscriptIcon />, transcript);
+			this.createPage(
+				"Transcript",
+				<TranscriptIcon />,
+				transcript,
+				null,
+				ref,
+				false
+			);
 		}
 	};
 
@@ -262,7 +271,12 @@ class ToolContainer extends Component {
 		const browser = (
 			<PackageBrowser selectedPackage={packagename} id={pageId} />
 		);
-		this.createPage("Package Browser", <PackageBrowserIcon />, browser);
+		this.createPage(
+			"Package Browser",
+			<PackageBrowserIcon />,
+			browser,
+			pageId
+		);
 	};
 
 	browsePackage(name) {
@@ -362,19 +376,16 @@ class ToolContainer extends Component {
 			const workspace = await ide.backend.workspace(id);
 			source = workspace.source;
 		}
-		const component = <Workspace key={id} id={id} source={source} />;
+		const ref = React.createRef();
+		const component = (
+			<Workspace ref={ref} key={id} id={id} source={source} />
+		);
 		this.createPage(
 			"Workspace",
 			<WorkspaceIcon />,
 			component,
 			null,
-			async () => {
-				try {
-					await ide.backend.deleteWorkspace(id);
-				} catch (error) {
-					this.reportError(error);
-				}
-			},
+			ref,
 			nextToSelected
 		);
 	};
@@ -387,9 +398,11 @@ class ToolContainer extends Component {
 			this.selectPage(existing);
 			return;
 		}
+		const ref = React.createRef();
 		const pageId = this.newPageId();
 		const tool = (
 			<Debugger
+				ref={ref}
 				key={id}
 				id={id}
 				title={title}
@@ -407,23 +420,7 @@ class ToolContainer extends Component {
 				}}
 			/>
 		);
-		this.createPage(
-			title,
-			<DebuggerIcon />,
-			tool,
-			pageId,
-			() => {
-				try {
-					ide.backend.deleteDebugger(id);
-				} catch (error) {
-					this.reportError(error);
-				}
-				if (onTerminate) {
-					onTerminate();
-				}
-			},
-			true
-		);
+		this.createPage(title, <DebuggerIcon />, tool, pageId, ref, true);
 	};
 
 	openInspector = (object) => {
@@ -437,8 +434,10 @@ class ToolContainer extends Component {
 			this.selectPage(existing);
 			return;
 		}
+		const ref = React.createRef();
 		const inspector = (
 			<Inspector
+				ref={ref}
 				key={object.id}
 				id={object.id}
 				root={object}
@@ -450,13 +449,7 @@ class ToolContainer extends Component {
 			<InspectorIcon />,
 			inspector,
 			null,
-			() => {
-				try {
-					ide.backend.unpinObject(object.id);
-				} catch (error) {
-					this.reportError(error);
-				}
-			},
+			ref,
 			true
 		);
 	};
@@ -475,16 +468,19 @@ class ToolContainer extends Component {
 		this.createPage(
 			title + " (" + changeset.size() + ")",
 			<ChangesBrowserIcon />,
-			browser
+			browser,
+			pageId
 		);
 	};
 
 	openResourceBrowser = (title = "Objects") => {
-		const browser = <ResourceBrowser />;
-		this.createPage(title, <ResourcesIcon />, browser);
+		const ref = React.createRef();
+		const browser = <ResourceBrowser ref={ref} />;
+		this.createPage(title, <ResourcesIcon />, browser, null, ref, false);
 	};
 
 	openTestRunner = (id, title = "Test Runner") => {
+		const ref = React.createRef();
 		const existing = this.state.pages.find((p) => {
 			return (
 				p.component.type === TestRunner && p.component.props.id === id
@@ -494,14 +490,8 @@ class ToolContainer extends Component {
 			this.selectPage(existing);
 			return;
 		}
-		const tool = <TestRunner key={id} id={id} />;
-		this.createPage(title, <TestRunnerIcon />, tool, null, () => {
-			try {
-				ide.backend.deleteTestRun(id);
-			} catch (error) {
-				this.reportError(error);
-			}
-		});
+		const tool = <TestRunner ref={ref} key={id} id={id} />;
+		this.createPage(title, <TestRunnerIcon />, tool, null, ref, false);
 	};
 
 	openProfiler = (id, title = "Profiler") => {

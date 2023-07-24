@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import RefactoringBrowser from "./RefactoringBrowser";
 import { ide } from "../IDE";
-import ToolContainerContext from "../ToolContainerContext";
 import PackageList from "../parts/PackageList";
 import ClassTree from "../parts/ClassTree";
 import CategoryList from "../parts/CategoryList";
@@ -18,8 +17,6 @@ import CodeBrowser from "../parts/CodeBrowser";
 import CustomPaper from "../controls/CustomPaper";
 
 class PackageBrowser extends RefactoringBrowser {
-	static contextType = ToolContainerContext;
-
 	constructor(props) {
 		super(props);
 		this.cache = { packages: {}, classes: {} };
@@ -163,7 +160,10 @@ class PackageBrowser extends RefactoringBrowser {
 	async updateClasses(pack, forced = false) {
 		if (forced || !pack.classes) {
 			try {
-				pack.classes = await ide.backend.packageClasses(pack.name, true);
+				pack.classes = await ide.backend.packageClasses(
+					pack.name,
+					true
+				);
 			} catch (error) {
 				ide.reportError(error);
 			}

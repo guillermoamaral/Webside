@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React from "react";
+import Tool from "./Tool";
 import {
 	Grid,
 	Box,
@@ -10,11 +11,8 @@ import { ide } from "../IDE";
 import MethodList from "../parts/MethodList";
 import CodeBrowser from "../parts/CodeBrowser";
 import CustomPaper from "../controls/CustomPaper";
-import ToolContainerContext from "../ToolContainerContext";
 
-class MethodBrowser extends Component {
-	static contextType = ToolContainerContext;
-
+class MethodBrowser extends Tool {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -91,13 +89,6 @@ class MethodBrowser extends Component {
 	};
 
 	methodCompiled = async (method) => {
-		var species;
-		try {
-			species = await ide.backend.classNamed(method.methodClass);
-		} catch (error) {
-			species = null;
-			ide.reportError(error);
-		}
 		const methods = this.state.methods;
 		const index = methods.findIndex(
 			(m) =>

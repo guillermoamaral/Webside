@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React from "react";
+import Tool from "./tools/Tool";
 import {
 	Accordion,
 	AccordionSummary,
@@ -11,7 +12,7 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SettingEditor from "./SettingEditor";
 
-class SettingsEditor extends Component {
+class SettingsEditor extends Tool {
 	constructor(props) {
 		super(props);
 		this.state = {

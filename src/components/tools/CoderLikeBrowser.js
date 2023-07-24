@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React from "react";
+import Tool from "./Tool";
 import {
 	Grid,
 	Box,
@@ -16,7 +17,7 @@ import ClassTree from "../parts/ClassTree";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CodeEditor from "../parts/CodeEditor";
 
-class CoderLikeBrowser extends Component {
+class CoderLikeBrowser extends Tool {
 	constructor(props) {
 		super(props);
 		this.cache = {};

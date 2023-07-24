@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React from "react";
+import Tool from "./Tool";
 import {
 	Grid,
 	Paper,
@@ -17,12 +18,9 @@ import RejectUpToDateIcon from "@mui/icons-material/RemoveDone";
 import ApplyIcon from "@mui/icons-material/Done";
 import ApplyAllIcon from "@mui/icons-material/DoneAll";
 import ShowOriginalIcon from "@mui/icons-material/Refresh";
-import ToolContainerContext from "../ToolContainerContext";
 import HighlightIcon from "@mui/icons-material/Highlight";
 
-class ChangesBrowser extends Component {
-	static contextType = ToolContainerContext;
-
+class ChangesBrowser extends Tool {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -161,7 +159,9 @@ class ChangesBrowser extends Component {
 	showOriginalChanges = async () => {
 		const changeset = this.props.changeset;
 		changeset.changes = changeset.originalChanges || changeset.changes;
-		await ide.waitFor(async () => await changeset.updateCurrentSourceCode());
+		await ide.waitFor(
+			async () => await changeset.updateCurrentSourceCode()
+		);
 		this.updateChanges(changeset.changes);
 	};
 

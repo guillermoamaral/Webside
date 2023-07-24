@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React from "react";
+import Tool from "./Tool";
 import {
 	Grid,
 	TextField,
@@ -14,11 +15,8 @@ import {
 } from "@mui/material";
 import { Pagination } from "@mui/lab";
 import { ide } from "../IDE";
-import ToolContainerContext from "../ToolContainerContext";
 
-class Search extends Component {
-	static contextType = ToolContainerContext;
-
+class Search extends Tool {
 	constructor(props) {
 		super(props);
 		this.itemsPerPage = 10;
@@ -107,7 +105,10 @@ class Search extends Component {
 			this.context.browseClass(r.text);
 		}
 		if (r.type === "method") {
-			this.context.browseMethod({ methodClass: r.title, selector: r.text });
+			this.context.browseMethod({
+				methodClass: r.title,
+				selector: r.text,
+			});
 		}
 	};
 

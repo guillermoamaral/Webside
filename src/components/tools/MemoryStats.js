@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React from "react";
+import Tool from "./Tool";
 import { ide } from "../IDE";
 import { Grid } from "@mui/material";
 import {
@@ -23,7 +24,7 @@ ChartJS.register(
 	Legend
 );
 
-class MemoryStats extends Component {
+class MemoryStats extends Tool {
 	constructor(props) {
 		super(props);
 		this.state = {

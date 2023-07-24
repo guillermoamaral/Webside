@@ -1,11 +1,12 @@
-import React, { Component } from "react";
+import React from "react";
+import Tool from "./Tool";
 import { Grid, Paper } from "@mui/material";
 import CustomTable from "../controls/CustomTable";
 import Inspector from "./Inspector";
 import { ide } from "../IDE";
 import CustomPaper from "../controls/CustomPaper";
 
-class ObjectBrowser extends Component {
+class ObjectBrowser extends Tool {
 	constructor(props) {
 		super(props);
 		this.state = {

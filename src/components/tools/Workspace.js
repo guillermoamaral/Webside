@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React from "react";
+import Tool from "./Tool";
 import {
 	Grid,
 	Paper,
@@ -14,11 +15,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CodeEditor from "../parts/CodeEditor";
 import Inspector from "./Inspector";
 import { ide } from "../IDE";
-import ToolContainerContext from "../ToolContainerContext";
 
-class Workspace extends Component {
-	static contextType = ToolContainerContext;
-
+class Workspace extends Tool {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -27,6 +25,14 @@ class Workspace extends Component {
 			inspectors: [],
 			evaluating: false,
 		};
+	}
+
+	aboutToClose() {
+		try {
+			ide.backend.deleteWorkspace(this.props.id);
+		} catch (error) {
+			this.reportError(error);
+		}
 	}
 
 	openInspector(object) {

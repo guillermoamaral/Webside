@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { ide } from "../IDE";
+import React from "react";
+import Tool from "./Tool";
 import FastTree from "../controls/FastTree";
 
 //This is is a component to test ideas in a tool-like tab.
-class POC extends Component {
+class POC extends Tool {
 	constructor(props) {
 		super(props);
 		this.state = {

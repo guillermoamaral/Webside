@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React from "react";
+import Tool from "./Tool";
 import {
 	Grid,
 	Paper,
@@ -13,7 +14,7 @@ import ChangesTable from "../parts/ChangesTable";
 import Backend from "../Backend";
 import { AddClass, AddMethod } from "../../model/StChange";
 
-class CodeMigrator extends Component {
+class CodeMigrator extends Tool {
 	constructor(props) {
 		super(props);
 		const packages = this.props.package ? [this.props.package] : [];
@@ -83,7 +84,9 @@ class CodeMigrator extends Component {
 					pack.classes.map(async (classname) => {
 						const species = await ide.backend.classNamed(classname);
 						classes.push(species);
-						const meta = await ide.backend.classNamed(species.class);
+						const meta = await ide.backend.classNamed(
+							species.class
+						);
 						classes.push(meta);
 					})
 				);

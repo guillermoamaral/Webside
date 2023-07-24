@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React from "react";
+import Tool from "./Tool";
 import { ide } from "../IDE";
 import {
 	Grid,
@@ -12,7 +13,7 @@ import CodeEditor from "../parts/CodeEditor";
 //import { FlameGraph } from "react-flame-graph";
 import { Bar } from "react-chartjs-2";
 
-class Profiler extends Component {
+class Profiler extends Tool {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -31,7 +32,9 @@ class Profiler extends Component {
 	async updateResults() {
 		try {
 			const tree = await ide.backend.profilerTreeResults(this.props.id);
-			const ranking = await ide.backend.profilerRankingResults(this.props.id);
+			const ranking = await ide.backend.profilerRankingResults(
+				this.props.id
+			);
 			this.setState({ tree: tree, ranking: ranking, loading: false });
 		} catch (error) {
 			ide.reportError(error);
