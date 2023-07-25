@@ -5,13 +5,6 @@ import {
 	Box,
 	IconButton,
 	LinearProgress,
-	Link,
-	Card,
-	CardContent,
-	CardActions,
-	Button,
-	Typography,
-	Paper,
 	SpeedDial,
 	SpeedDialAction,
 } from "@mui/material";
@@ -42,6 +35,7 @@ import { Prec } from "@codemirror/state";
 // 	CompletionResult,
 // } from "@codemirror/autocomplete";
 import { hoverTooltip } from "@codemirror/view";
+import CodeTooltip from "./CodeTooltip";
 import ChatGPTIcon from "../icons/ChatGPTIcon";
 import ImproveIcon from "@mui/icons-material/AutoFixHigh";
 import TestRunnerIcon from "../icons/TestRunnerIcon";
@@ -884,10 +878,6 @@ class CodeEditor extends Component {
 				if (this.props.noTooltips) return null;
 				const spec = await this.tooltipSpecAt(pos);
 				if (!spec) return null;
-				const appearance = ide.settings.section("appearance");
-				const mode = appearance.section(appearance.get("mode"));
-				const color = mode.section("colors").get("primaryText");
-				const background = mode.section("colors").get("background");
 				return {
 					pos: pos,
 					end: pos + spec.title.length - 1,
@@ -897,74 +887,13 @@ class CodeEditor extends Component {
 						let dom = document.createElement("div");
 						const root = ReactDOM.createRoot(dom);
 						root.render(
-							<Card
-								sx={{
-									minWidth: 200,
-									maxWidth: 600,
-									border: 1,
-									borderColor: "grey.500",
-									background: background,
-								}}
-							>
-								<CardContent>
-									<Link
-										component="button"
-										variant="body1"
-										onClick={(e) => {
-											if (spec.titleAction)
-												spec.titleAction(spec.title);
-										}}
-									>
-										{spec.title}
-									</Link>
-									{spec.description && (
-										<Typography
-											variant="body2"
-											sx={{ color: color }}
-										>
-											{spec.description || ""}
-										</Typography>
-									)}
-									{spec.code && (
-										<Paper
-											variant="outlined"
-											sx={{
-												minWidth: 400,
-												width: "100%",
-												height: 150,
-												background: background,
-											}}
-										>
-											<CodeEditor
-												source={spec.code}
-												readOnly
-												noTooltips
-												showAccept={false}
-											/>
-										</Paper>
-									)}
-								</CardContent>
-								{spec.actions && (
-									<CardActions>
-										{spec.actions.map((a, i) => {
-											return (
-												<Button
-													size="small"
-													sx={{
-														textTransform: "none",
-													}}
-													key={"tipAction" + i}
-													onClick={() =>
-														a.handler(spec.title)
-													}
-												>
-													{a.label}
-												</Button>
-											);
-										})}
-									</CardActions>
-								)}
-							</Card>
+							<CodeTooltip
+								title={spec.title}
+								titleAction={spec.titleAction}
+								description={spec.description}
+								code={spec.code}
+								actions={spec.actions}
+							/>
 						);
 						return { dom };
 					},
