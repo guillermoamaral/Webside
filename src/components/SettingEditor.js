@@ -63,13 +63,18 @@ class SettingEditor extends Component {
 						<FormControlLabel
 							control={
 								<Checkbox
+									checked={value}
 									onChange={(event) =>
 										this.valueChanged(event.target.value)
 									}
 									disabled={!setting.editable}
 								/>
 							}
-							label={setting.label}
+							label={
+								setting.label !== setting.description
+									? setting.description
+									: ""
+							}
 							size="small"
 						/>
 					</FormGroup>

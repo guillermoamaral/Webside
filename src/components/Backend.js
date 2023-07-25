@@ -240,6 +240,16 @@ class Backend {
 		return methods.length === 0 ? null : methods[0];
 	}
 
+	async autocompletions(classname, source, position) {
+		const data = { class: classname, source: source, position: position };
+		const autocompletions = await this.post(
+			"/autocompletions",
+			data,
+			"autocompletions for source " + source + " at " + position
+		);
+		return autocompletions;
+	}
+
 	// Method queries...
 	async senders(selector) {
 		return await this.get(

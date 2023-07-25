@@ -41,8 +41,8 @@ class Setting extends Object {
 		return new Setting(name, "url", "http://server/site");
 	}
 
-	static boolean(name) {
-		return new Setting(name, "boolean", false);
+	static boolean(name, defaultValue = false, label, description) {
+		return new Setting(name, "boolean", defaultValue, label, description);
 	}
 
 	static number(name) {
@@ -136,8 +136,10 @@ class Settings extends Object {
 		return this.add(Setting.url(name));
 	}
 
-	addBoolean(name) {
-		return this.add(Setting.boolean(name));
+	addBoolean(name, defaultValue, label, description) {
+		return this.add(
+			Setting.boolean(name, defaultValue, label, description)
+		);
 	}
 
 	addNumber(name) {

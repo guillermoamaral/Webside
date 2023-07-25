@@ -26,14 +26,11 @@ import { StreamLanguage } from "@codemirror/language";
 //import { EditorSelection, EditorState, Prec } from "@codemirror/state";
 import { Prec } from "@codemirror/state";
 //import { throwStatement } from "@babel/types";
-// import {
-// 	autocompletion,
-// 	closeCompletion,
-// 	startCompletion,
-// 	Completion,
-// 	CompletionContext,
-// 	CompletionResult,
-// } from "@codemirror/autocomplete";
+import {
+	autocompletion,
+	closeCompletion,
+	startCompletion,
+} from "@codemirror/autocomplete";
 import { hoverTooltip } from "@codemirror/view";
 import CodeTooltip from "./CodeTooltip";
 import ChatGPTIcon from "../icons/ChatGPTIcon";
@@ -90,6 +87,7 @@ class CodeEditor extends Component {
 		this.editorView = null;
 		this.selectsRanges = true;
 		this.typingTimer = null;
+		this.autocompletionTimer = null;
 		this.state = {
 			originalSource: props.source,
 			source: props.source,
@@ -957,6 +955,51 @@ class CodeEditor extends Component {
 		});
 	};
 
+	completionSource = async (context) => {
+		const word = context.matchBefore(/[^\s]*/);
+		console.log(word);
+		if (!word || word.from === word.to || word.text.trim().length <= 0)
+			return null;
+		const classname = this.props.class ? this.props.class.name : null;
+		var options;
+		try {
+			options = await ide.backend.autocompletions(
+				classname,
+				this.state.source,
+				word.to
+			);
+		} catch (error) {
+			return null;
+		}
+		// Hide descriptions
+		options.forEach((o) => (o.detail = ""));
+		if (options.length === 0) return null;
+		return {
+			from: word.from,
+			options: options,
+			filter: false,
+		};
+	};
+
+	customCompletionDisplay() {
+		return EditorView.updateListener.of(({ view, docChanged }) => {
+			if (docChanged) {
+				// when a completion is active each keystroke triggers the
+				// completion source function, to avoid it we close any open
+				// completion inmediatly.
+				closeCompletion(view);
+				this.delayedStartCompletion(view);
+			}
+		});
+	}
+
+	delayedStartCompletion = (view) => {
+		clearTimeout(this.autocompletionTimer);
+		this.autocompletionTimer = setTimeout(() => {
+			startCompletion(view);
+		}, 300);
+	};
+
 	render() {
 		console.log("rendering code editor");
 		const { source, evaluating, progress, dirty, menuOpen, menuPosition } =
@@ -995,31 +1038,11 @@ class CodeEditor extends Component {
 								linter(this.annotations),
 								Prec.highest(keymap.of(this.extraKeys())),
 								this.tooltip(),
-								// hyperLinkExtension({
-								// 	regexp: /\b[A-Z].*?\b/g,
-								// 	// match: { Dale: "https://google1.com" },
-								// 	handle: (value, input, from, to) => {
-								// 		const globals = ["Well"];
-								// 		if (globals.includes(value))
-								// 			return value;
-								// 	},
-								// 	anchor: ($dom) => {
-								// 		const url = new URL($dom.href);
-								// 		const global = url.pathname.slice(1);
-								// 		$dom.onclick = (e) => {
-								// 			this.browseGlobal(global);
-								// 			return false;
-								// 		};
-								// 		if (global === "undefined") {
-								// 			$dom.removeChild(
-								// 				$dom.childNodes[0]
-								// 			);
-								// 		}
-								// 		//$dom.className = "cm-hyper-link-icon";
-								// 		return $dom;
-								// 	},
-								// }),
-								// hyperLinkStyle,
+								autocompletion({
+									activateOnTyping: false,
+									override: [this.completionSource],
+								}),
+								this.customCompletionDisplay(),
 							]}
 							theme={this.theme()}
 							value={source}

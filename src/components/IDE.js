@@ -86,6 +86,16 @@ class IDE extends Component {
 		connection.addText("developer");
 		connection.addText("dialect").readOnly();
 
+		const general = settings.addSection("code");
+		general
+			.addBoolean(
+				"autocompletion",
+				false,
+				"Use autocomplation",
+				"This is determined by the backend"
+			)
+			.readOnly();
+
 		const appearance = settings.addSection("appearance");
 		appearance.addOptions(
 			"fontSize",
@@ -230,12 +240,20 @@ class IDE extends Component {
 		const dialect = await this.backend.dialect();
 		document.title = dialect;
 		this.settings.section("connection").set("dialect", dialect);
-		this.updateDialectColorsSettings();
+		var autocompletion;
+		try {
+			await ide.backend.autocompletions("Object", "m\r Objec", 8);
+			autocompletion = true;
+		} catch (error) {
+			autocompletion = false;
+		}
+		this.settings.section("code").set("autocompletion", autocompletion);
+		this.updateColorsSettings();
 		this.updateTheme();
 		this.initializeMessageChannel();
 	}
 
-	updateDialectColorsSettings() {
+	updateColorsSettings() {
 		var primary;
 		var secondary;
 		const dialect = this.settings.section("connection").get("dialect");
