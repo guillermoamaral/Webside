@@ -20,11 +20,11 @@ class Inspector extends Tool {
 		};
 	}
 
-	aboutToClose() {
+	async aboutToClose() {
 		try {
-			ide.backend.unpinObject(this.props.root.id);
+			await ide.backend.unpinObject(this.props.root.id);
 		} catch (error) {
-			this.reportError(error);
+			ide.reportError(error);
 		}
 	}
 

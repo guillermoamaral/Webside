@@ -54,11 +54,11 @@ class TestRunner extends Tool {
 		this.updateStatus(true);
 	}
 
-	aboutToClose() {
+	async aboutToClose() {
 		try {
-			ide.backend.deleteTestRun(this.props.id);
+			await ide.backend.deleteTestRun(this.props.id);
 		} catch (error) {
-			this.reportError(error);
+			ide.reportError(error);
 		}
 	}
 
@@ -268,6 +268,12 @@ class TestRunner extends Tool {
 			{
 				field: "selector",
 				label: "Selector",
+				minWidth: 100,
+				align: "left",
+			},
+			{
+				field: "class",
+				label: "Clas",
 				minWidth: 100,
 				align: "left",
 			},

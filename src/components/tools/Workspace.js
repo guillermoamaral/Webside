@@ -27,11 +27,11 @@ class Workspace extends Tool {
 		};
 	}
 
-	aboutToClose() {
+	async aboutToClose() {
 		try {
-			ide.backend.deleteWorkspace(this.props.id);
+			await ide.backend.deleteWorkspace(this.props.id);
 		} catch (error) {
-			this.reportError(error);
+			ide.reportError(error);
 		}
 	}
 

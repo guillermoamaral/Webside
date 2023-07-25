@@ -65,7 +65,7 @@ class SettingEditor extends Component {
 								<Checkbox
 									checked={value}
 									onChange={(event) =>
-										this.valueChanged(event.target.value)
+										this.valueChanged(event.target.checked)
 									}
 									disabled={!setting.editable}
 								/>

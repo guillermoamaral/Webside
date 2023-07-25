@@ -29,11 +29,11 @@ class Debugger extends Tool {
 		};
 	}
 
-	aboutToClose() {
+	async aboutToClose() {
 		try {
-			ide.backend.deleteDebugger(this.props.id);
+			await ide.backend.deleteDebugger(this.props.id);
 		} catch (error) {
-			this.reportError(error);
+			ide.reportError(error);
 		}
 		if (this.props.onTerminate) {
 			this.props.onTerminate();

@@ -175,16 +175,18 @@ class ToolContainer extends Component {
 		this.removePage(page);
 	};
 
-	aboutToClosePage(page) {
+	async aboutToClosePage(page) {
 		if (page.ref && page.ref.current) {
-			page.ref.current.aboutToClose();
+			await page.ref.current.aboutToClose();
 		}
 	}
 
-	closePages = (pages) => {
-		pages.forEach((page) => {
-			this.aboutToClosePage(page);
-		});
+	closePages = async (pages) => {
+		await Promise.all(
+			pages.map(async (page) => {
+				await this.aboutToClosePage(page);
+			})
+		);
 		this.removePages(pages);
 	};
 

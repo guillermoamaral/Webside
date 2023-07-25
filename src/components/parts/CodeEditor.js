@@ -956,8 +956,8 @@ class CodeEditor extends Component {
 	};
 
 	completionSource = async (context) => {
+		if (!ide.settings.section("code").get("autocompletion")) return null;
 		const word = context.matchBefore(/[^\s]*/);
-		console.log(word);
 		if (!word || word.from === word.to || word.text.trim().length <= 0)
 			return null;
 		const classname = this.props.class ? this.props.class.name : null;
@@ -973,7 +973,7 @@ class CodeEditor extends Component {
 		}
 		// Hide descriptions
 		options.forEach((o) => (o.detail = ""));
-		if (options.length === 0) return null;
+		if (options.length <= 1) return null;
 		return {
 			from: word.from,
 			options: options,
@@ -994,10 +994,13 @@ class CodeEditor extends Component {
 	}
 
 	delayedStartCompletion = (view) => {
+		if (!this.state.dirty) {
+			return;
+		}
 		clearTimeout(this.autocompletionTimer);
 		this.autocompletionTimer = setTimeout(() => {
 			startCompletion(view);
-		}, 300);
+		}, 350);
 	};
 
 	render() {
