@@ -256,6 +256,9 @@ class Debugger extends Tool {
 	};
 
 	render() {
+		const id = this.props.id;
+		var title = this.props.title || "";
+		if (title.length > 100) title = title.slice(0, 50) + "...";
 		const { frames, selectedFrame, stepping, showBindings, expressions } =
 			this.state;
 		return (
@@ -285,9 +288,7 @@ class Debugger extends Tool {
 								alignItems="center"
 								justifyContent="center"
 							>
-								<Typography variant="body1">
-									{this.props.title || ""}
-								</Typography>
+								<Typography variant="body1">{title}</Typography>
 							</Box>
 						</Grid>
 						<Grid item>
@@ -322,7 +323,7 @@ class Debugger extends Tool {
 							{showBindings && (
 								<BindingTable
 									style={{ height: 300 }}
-									id={this.props.id}
+									id={id}
 									frame={selectedFrame}
 								/>
 							)}
@@ -330,7 +331,7 @@ class Debugger extends Tool {
 								<ExpressionTable
 									ref={this.expressionTableRef}
 									style={{ height: 300 }}
-									id={this.props.id}
+									id={id}
 									frame={selectedFrame}
 									expressions={expressions}
 									onExpressionAdd={this.addExpression}

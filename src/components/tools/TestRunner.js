@@ -47,6 +47,7 @@ class TestRunner extends Tool {
 			updating: false,
 			filterType: "run",
 			showGroups: true,
+			selectedTest: null,
 		};
 	}
 
@@ -363,9 +364,14 @@ class TestRunner extends Tool {
 		};
 	}
 
+	testSelected = (test) => {
+		this.setState({ selectedTest: test });
+	};
+
 	render() {
 		console.log("rendering test runer");
-		const { status, results, filterType, showGroups } = this.state;
+		const { status, results, filterType, showGroups, selectedTest } =
+			this.state;
 		const { total, running, current } = status;
 		const summary = status.summary || this.newSummary();
 		const percent = total > 0 ? (summary.run / total) * 100 : 0;
@@ -584,6 +590,12 @@ class TestRunner extends Tool {
 														rows={groupTests}
 														menuOptions={this.menuOptions()}
 														rowActions={this.rowActions()}
+														selectedRow={
+															selectedTest
+														}
+														onRowSelect={
+															this.testSelected
+														}
 													></CustomTable>
 												</Grid>
 											</Grid>
@@ -601,6 +613,8 @@ class TestRunner extends Tool {
 								rowActions={this.rowActions()}
 								rowsPerPage={50}
 								usePagination
+								selectedRow={selectedTest}
+								onRowSelect={this.testSelected}
 							></CustomTable>
 						)}
 					</Grid>
