@@ -1,15 +1,10 @@
 import React from "react";
 import Tool from "./Tool";
-import {
-	Grid,
-	Box,
-	FormGroup,
-	FormControlLabel,
-	Checkbox,
-} from "@mui/material";
+import { Box, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 import { ide } from "../IDE";
 import MethodList from "../parts/MethodList";
 import CodeBrowser from "../parts/CodeBrowser";
+import CustomSplit from "../controls/CustomSplit";
 import CustomPaper from "../controls/CustomPaper";
 
 class MethodBrowser extends Tool {
@@ -149,8 +144,8 @@ class MethodBrowser extends Tool {
 		const { selectedSelector, selectedIdentifier } = this.props;
 		const methods = this.currentMethods();
 		return (
-			<Grid container spacing={1}>
-				<Grid item xs={12} md={12} lg={12}>
+			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
+				<Box>
 					<Box display="flex" justifyContent="flex-end">
 						<FormGroup>
 							<FormControlLabel
@@ -168,30 +163,34 @@ class MethodBrowser extends Tool {
 							/>
 						</FormGroup>
 					</Box>
-				</Grid>
-				<Grid item xs={12} md={12} lg={12}>
-					<CustomPaper height={300}>
-						<MethodList
-							useTable
-							selectedMethod={selectedMethod}
-							methods={methods}
-							onMethodSelect={this.methodSelected}
-							onMethodRemove={this.methodRemoved}
-						/>
-					</CustomPaper>
-				</Grid>
-				<Grid item xs={12} md={12} lg={12}>
-					<CodeBrowser
-						class={selectedClass}
-						method={selectedMethod}
-						selectedSelector={selectedSelector}
-						selectedIdentifier={selectedIdentifier}
-						onCompileMethod={this.methodCompiled}
-						onDefineClass={this.classDefined}
-						onCommentClass={this.classCommented}
-					/>
-				</Grid>
-			</Grid>
+				</Box>
+				<Box flexGrow={1}>
+					<CustomSplit mode="vertical">
+						<Box sx={{ height: "45%" }}>
+							<CustomPaper>
+								<MethodList
+									useTable
+									selectedMethod={selectedMethod}
+									methods={methods}
+									onMethodSelect={this.methodSelected}
+									onMethodRemove={this.methodRemoved}
+								/>
+							</CustomPaper>
+						</Box>
+						<Box sx={{ height: "50%" }}>
+							<CodeBrowser
+								class={selectedClass}
+								method={selectedMethod}
+								selectedSelector={selectedSelector}
+								selectedIdentifier={selectedIdentifier}
+								onCompileMethod={this.methodCompiled}
+								onDefineClass={this.classDefined}
+								onCommentClass={this.classCommented}
+							/>
+						</Box>
+					</CustomSplit>
+				</Box>
+			</Box>
 		);
 	}
 }

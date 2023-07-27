@@ -15,6 +15,7 @@ import CategoryList from "../parts/CategoryList";
 import MethodList from "../parts/MethodList";
 import CodeBrowser from "../parts/CodeBrowser";
 import CustomPaper from "../controls/CustomPaper";
+import CustomSplit from "../controls/CustomSplit";
 
 class PackageBrowser extends RefactoringBrowser {
 	constructor(props) {
@@ -187,12 +188,15 @@ class PackageBrowser extends RefactoringBrowser {
 	sideChanged = async (side) => {
 		const selections = this.currentSelections();
 		selections.side = side;
-		const species =
-			side === "instance"
-				? selections.species
-				: selections.species.metaclass;
-		await this.updateCategories(species);
-		await this.updateMethods(species);
+		selections.side = side;
+		var species = selections.species;
+		if (species && side === "class") {
+			species = selections.species.metaclass;
+		}
+		if (species) {
+			await this.updateCategories(species);
+			await this.updateMethods(species);
+		}
 		this.applySelections(selections);
 	};
 
@@ -344,8 +348,8 @@ class PackageBrowser extends RefactoringBrowser {
 				  })
 				: packages;
 		return (
-			<Grid container spacing={1}>
-				<Grid item xs={12} md={12} lg={12}>
+			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
+				<Box mb={1}>
 					<Grid container spacing={1}>
 						<Grid item xs={3} md={3} lg={3}>
 							<TextField
@@ -401,87 +405,115 @@ class PackageBrowser extends RefactoringBrowser {
 							</Box>
 						</Grid>
 						<Grid item xs={3} md={3} lg={3} />
-						<Grid item xs={12} md={3} lg={3}>
-							<CustomPaper>
-								<PackageList
-									packages={filtered}
-									selectedPackage={selectedPackage}
-									onPackageSelect={this.packageSelected}
-									onPackageRemove={this.packageRemoved}
-									onPackageRename={this.packageRenamed}
-									onPackageCreate={this.packageCreated}
-								/>
-							</CustomPaper>
-						</Grid>
-						<Grid item xs={12} md={3} lg={3}>
-							<CustomPaper>
-								<ClassTree
-									roots={
-										selectedPackage
-											? selectedPackage.classes
-											: []
-									}
-									selectedClass={selectedClass}
-									labelStyle={this.classLabelStyle}
-									onClassExpand={this.classExpanded}
-									onClassSelect={this.classSelected}
-									onClassRemove={this.classRemoved}
-									onClassRename={this.classRenamed}
-									onClassDefine={this.classDefined}
-								/>
-							</CustomPaper>
-						</Grid>
-						<Grid item xs={12} md={3} lg={3}>
-							<CustomPaper>
-								<CategoryList
-									class={selectedClass}
-									categories={this.currentCategories()}
-									usualCategories={this.usualCategories}
-									usedCategories={this.currentUsedCategories()}
-									selectedCategory={selectedCategory}
-									highlightedCategory={
-										selectedMethod
-											? selectedMethod.category
-											: null
-									}
-									onCategoryAdd={this.categoryAdded}
-									onCategoryRename={this.categoryRenamed}
-									onCategorySelect={this.categorySelected}
-									onCategoryRemove={this.categoryRemoved}
-								/>
-							</CustomPaper>
-						</Grid>
-						<Grid item xs={12} md={3} lg={3}>
-							<CustomPaper>
-								<MethodList
-									methods={this.currentMethods()}
-									selectedMethod={selectedMethod}
-									categories={this.currentCategories()}
-									usualCategories={this.usualCategories}
-									usedCategories={this.currentUsedCategories()}
-									labelStyle={this.methodLabelStyle}
-									onMethodSelect={this.methodSelected}
-									onMethodRename={this.methodRenamed}
-									onMethodRemove={this.methodRemoved}
-									onMethodClassify={this.methodClassified}
-									showNewOption
-								/>
-							</CustomPaper>
-						</Grid>
 					</Grid>
-				</Grid>
-				<Grid item xs={12} md={12} lg={12}>
-					<CodeBrowser
-						context={this.evaluationContext()}
-						package={selectedPackage}
-						class={selectedClass}
-						method={selectedMethod}
-						onCompileMethod={this.methodCompiled}
-						onDefineClass={this.classDefined}
-						onCommentClass={this.classCommented}
-					/>
-				</Grid>
-			</Grid>
+				</Box>
+				<Box flexGrow={1}>
+					<CustomSplit mode="vertical">
+						<Box sx={{ minHeight: 50, height: "35%" }}>
+							<Grid container spacing={1} sx={{ height: "100%" }}>
+								<Grid item xs={3} md={3} lg={3}>
+									<CustomPaper>
+										<PackageList
+											packages={filtered}
+											selectedPackage={selectedPackage}
+											onPackageSelect={
+												this.packageSelected
+											}
+											onPackageRemove={
+												this.packageRemoved
+											}
+											onPackageRename={
+												this.packageRenamed
+											}
+											onPackageCreate={
+												this.packageCreated
+											}
+										/>
+									</CustomPaper>
+								</Grid>
+								<Grid item xs={3} md={3} lg={3}>
+									<CustomPaper>
+										<ClassTree
+											roots={
+												selectedPackage
+													? selectedPackage.classes
+													: []
+											}
+											selectedClass={selectedClass}
+											labelStyle={this.classLabelStyle}
+											onClassExpand={this.classExpanded}
+											onClassSelect={this.classSelected}
+											onClassRemove={this.classRemoved}
+											onClassRename={this.classRenamed}
+											onClassDefine={this.classDefined}
+										/>
+									</CustomPaper>
+								</Grid>
+								<Grid item xs={3} md={3} lg={3}>
+									<CustomPaper>
+										<CategoryList
+											class={selectedClass}
+											categories={this.currentCategories()}
+											usualCategories={
+												this.usualCategories
+											}
+											usedCategories={this.currentUsedCategories()}
+											selectedCategory={selectedCategory}
+											highlightedCategory={
+												selectedMethod
+													? selectedMethod.category
+													: null
+											}
+											onCategoryAdd={this.categoryAdded}
+											onCategoryRename={
+												this.categoryRenamed
+											}
+											onCategorySelect={
+												this.categorySelected
+											}
+											onCategoryRemove={
+												this.categoryRemoved
+											}
+										/>
+									</CustomPaper>
+								</Grid>
+								<Grid item xs={3} md={3} lg={3}>
+									<CustomPaper>
+										<MethodList
+											methods={this.currentMethods()}
+											selectedMethod={selectedMethod}
+											categories={this.currentCategories()}
+											usualCategories={
+												this.usualCategories
+											}
+											usedCategories={this.currentUsedCategories()}
+											labelStyle={this.methodLabelStyle}
+											onMethodSelect={this.methodSelected}
+											onMethodRename={this.methodRenamed}
+											onMethodRemove={this.methodRemoved}
+											onMethodClassify={
+												this.methodClassified
+											}
+											showNewOption
+										/>
+									</CustomPaper>
+								</Grid>
+							</Grid>
+						</Box>
+						<Box sx={{ height: "60%" }}>
+							<CodeBrowser
+								context={this.evaluationContext()}
+								package={selectedPackage}
+								class={selectedClass}
+								method={selectedMethod}
+								onCompileMethod={this.methodCompiled}
+								onDefineClass={this.classDefined}
+								onCommentClass={this.classCommented}
+							/>
+						</Box>
+					</CustomSplit>
+				</Box>
+			</Box>
 		);
 	}
 }

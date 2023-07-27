@@ -22,13 +22,13 @@ import Sidebar from "./layout/Sidebar";
 import Transcript from "./tools/Transcript";
 import MessageChannel from "./MessageChannel";
 import Hotkeys from "react-hot-keys";
-//import SplitIcon from "@mui/icons-material/VerticalSplit";
 import DrawerHeader from "./layout/DrawerHeader";
 import { Settings } from "../model/Settings";
 import { app as mainApp } from "../App";
 import { Setting } from "../model/Settings";
 import CodeAssistant from "./CodeAssistant";
 import { v4 as uuidv4 } from "uuid";
+import CustomSplit from "./controls/CustomSplit";
 
 var ide = null;
 
@@ -389,6 +389,7 @@ class IDE extends Component {
 			component: (
 				<ToolContainer
 					id={id}
+					key={id}
 					ref={ref}
 					onPagesRemove={(c) => {
 						if (c.pages().length === 0) {
@@ -397,6 +398,7 @@ class IDE extends Component {
 					}}
 					onPageSplit={this.splitPage}
 					pages={pages}
+					sx={{ height: "100%" }}
 				/>
 			),
 		};
@@ -677,7 +679,6 @@ class IDE extends Component {
 			waiting,
 		} = this.state;
 		const totalWidth = false; //extraContainers.length > 0 ? false : "lg";
-		const containerWidth = Math.max(12 / (1 + extraContainers.length), 1);
 		return (
 			<Hotkeys
 				keyName="Ctrl+Alt+W, Ctrl+Alt+Left, Ctrl+Alt+Right"
@@ -688,9 +689,10 @@ class IDE extends Component {
 				onKeyDown={(hotkey, e, handle) => this.hotkeyPressed(hotkey)}
 			>
 				<DialogProvider>
-					<div
+					<Box
 						sx={{
 							display: "flex",
+							height: "100vh",
 						}}
 					>
 						<Titlebar
@@ -724,36 +726,32 @@ class IDE extends Component {
 						/>
 						<Box
 							component="main"
-							sx={{ flexGrow: 1, ml: 6, mr: 2, p: 3 }}
+							sx={{
+								flexGrow: 1,
+								ml: 6,
+								mr: 2,
+								p: 3,
+								height: "100vh",
+							}}
 						>
 							<DrawerHeader />
-							<Container maxWidth={totalWidth} disableGutters>
-								<Grid container spacing={0}>
-									<Grid
-										item
-										xs={containerWidth}
-										md={containerWidth}
-										lg={containerWidth}
-									>
-										<ToolContainer
-											id={99999}
-											key="mainContainer"
-											ref={this.mainContainerRef}
-											onPageSplit={this.splitPage}
-										/>
-									</Grid>
-									{extraContainers.map((container) => (
-										<Grid
-											item
-											xs={containerWidth}
-											md={containerWidth}
-											lg={containerWidth}
-											key={"container" + container.id}
-										>
-											{container.component}
-										</Grid>
-									))}
-								</Grid>
+							<Container
+								maxWidth={totalWidth}
+								disableGutters
+								sx={{ height: "100%" }}
+							>
+								<CustomSplit>
+									<ToolContainer
+										id={99999}
+										key="mainContainer"
+										ref={this.mainContainerRef}
+										onPageSplit={this.splitPage}
+										sx={{ width: "100vw" }}
+									/>
+									{extraContainers.map(
+										(container) => container.component
+									)}
+								</CustomSplit>
 							</Container>
 						</Box>
 						<React.Fragment key="bottom">
@@ -792,7 +790,7 @@ class IDE extends Component {
 								</Grid>
 							</Drawer>
 						</React.Fragment>
-					</div>
+					</Box>
 					<Backdrop
 						//sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
 						open={waiting}

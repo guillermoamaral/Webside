@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import {
-	Grid,
+	Box,
 	Paper,
 	Link,
 	ToggleButton,
@@ -338,8 +338,12 @@ class CodeBrowser extends Component {
 			onTooltipClick,
 		} = this.props;
 		return (
-			<Grid container spacing={1}>
-				<Grid item xs={12} md={12} lg={12}>
+			<Box
+				display="flex"
+				flexDirection="column"
+				sx={{ height: "100%" }}
+			>
+				<Box>
 					<ToggleButtonGroup
 						label="primary"
 						value={mode}
@@ -357,11 +361,11 @@ class CodeBrowser extends Component {
 							</ToggleButton>
 						))}
 					</ToggleButtonGroup>
-				</Grid>
-				<Grid item xs={12} md={12} lg={12}>
+				</Box>
+				<Box flexGrow={1}>
 					<Paper
 						variant="outlined"
-						style={{ height: "100%", minHeight: 300 }}
+						sx={{ height: "100%", minHeight: 300 }}
 					>
 						<CodeEditor
 							context={this.props.context}
@@ -381,8 +385,8 @@ class CodeBrowser extends Component {
 							showAssistant
 						/>
 					</Paper>
-				</Grid>
-				<Grid item xs={12} md={12} lg={12}>
+				</Box>
+				<Box>
 					{timestamp ? "Modified on " : ""}
 					{timestamp}
 					{author ? " by " : ""}
@@ -405,8 +409,8 @@ class CodeBrowser extends Component {
 							{packagename}
 						</Link>
 					)}
-				</Grid>
-			</Grid>
+				</Box>
+			</Box>
 		);
 	}
 }

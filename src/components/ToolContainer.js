@@ -90,7 +90,7 @@ class ToolContainer extends Component {
 	};
 
 	aboutToSelectPage(page) {
-		if (page.ref && page.ref.current) {
+		if (page && page.ref && page.ref.current) {
 			page.ref.current.aboutToSelect();
 		}
 	}

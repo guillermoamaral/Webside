@@ -1080,6 +1080,7 @@ class CodeEditor extends Component {
 							display="flex"
 							justifyContent="space-between"
 							flexDirection="column"
+							sx={{ height: "100%" }}
 						>
 							{showAccept && (
 								<Box display="flex" justifyContent="center">
@@ -1092,7 +1093,7 @@ class CodeEditor extends Component {
 								</Box>
 							)}
 							{showCodeAssistant && (
-								<Box>
+								<Box mb={1}>
 									<SpeedDial
 										ariaLabel="CodeAssistant actions"
 										icon={<ChatGPTIcon />}

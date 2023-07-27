@@ -19,6 +19,7 @@ import ApplyIcon from "@mui/icons-material/Done";
 import ApplyAllIcon from "@mui/icons-material/DoneAll";
 import ShowOriginalIcon from "@mui/icons-material/Refresh";
 import HighlightIcon from "@mui/icons-material/Highlight";
+import CustomSplit from "../controls/CustomSplit";
 
 class ChangesBrowser extends Tool {
 	constructor(props) {
@@ -169,8 +170,8 @@ class ChangesBrowser extends Tool {
 		const { changes, selectedChange, highlightChanges } = this.state;
 		console.log("rendering changes browser");
 		return (
-			<Grid container spacing={1}>
-				<Grid item xs={12} md={12} lg={12}>
+			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
+				<Box>
 					<Box display="flex" justifyContent="flex-end">
 						<Tooltip title="Apply change" placement="top">
 							<span>
@@ -224,82 +225,104 @@ class ChangesBrowser extends Tool {
 							</IconButton>
 						</Tooltip>
 					</Box>
-				</Grid>
-				<Grid item xs={12} md={12} lg={12}>
-					<Paper variant="outlined" style={{ height: 350 }}>
-						<ChangesTable
-							changes={changes}
-							selectedChange={selectedChange}
-							onChangeSelect={this.changeSelected}
-							onChangeApply={this.applyChange}
-							onChangeReject={this.rejectChange}
-							onFiltersChange={this.filtersChanged}
-						/>
-					</Paper>
-				</Grid>
-				<Grid item xs={6} md={6} lg={6}>
-					<Box
-						display="flex"
-						alignContent="center"
-						justifyContent="flex-start"
-					>
-						<Tab label="New source" />
-					</Box>
-				</Grid>
-				<Grid item xs={3} md={3} lg={3}>
-					<Box
-						display="flex"
-						alignContent="center"
-						justifyContent="flex-start"
-					>
-						<Tab label="Current source" />
-					</Box>
-				</Grid>
-				<Grid item xs={3} md={3} lg={3}>
-					<Box
-						display="flex"
-						alignContent="center"
-						justifyContent="flex-end"
-					>
-						<Tooltip title="Highlight changes" placement="top">
-							<ToggleButton
-								value="check"
-								size="small"
-								selected={highlightChanges}
-								onChange={() =>
-									this.setState({
-										highlightChanges: !highlightChanges,
-									})
-								}
-							>
-								<HighlightIcon fontSize="small" />
-							</ToggleButton>
-						</Tooltip>
-					</Box>
-				</Grid>
-				<Grid item xs={12} md={12} lg={12}>
-					<Paper
-						variant="outlined"
-						style={{ height: "100%", minHeight: 400 }}
-					>
-						<CodeMerge
-							highlightChanges={highlightChanges}
-							style={{ height: "100%" }}
-							context={this.evaluationContext()}
-							leftCode={
-								selectedChange
-									? selectedChange.sourceCode()
-									: ""
-							}
-							rightCode={
-								selectedChange
-									? selectedChange.currentSourceCode()
-									: ""
-							}
-						/>
-					</Paper>
-				</Grid>
-			</Grid>
+				</Box>
+				<Box flexGrow={1}>
+					<CustomSplit mode="vertical">
+						<Box sx={{ minHeight: 100, height: "35%" }}>
+							<Paper variant="outlined" sx={{ height: "100%" }}>
+								<ChangesTable
+									changes={changes}
+									selectedChange={selectedChange}
+									onChangeSelect={this.changeSelected}
+									onChangeApply={this.applyChange}
+									onChangeReject={this.rejectChange}
+									onFiltersChange={this.filtersChanged}
+								/>
+							</Paper>
+						</Box>
+						<Box
+							display="flex"
+							flexDirection="column"
+							sx={{ height: "60%" }}
+						>
+							<Box>
+								<Grid
+									container
+									spacing={1}
+									sx={{ height: "100%" }}
+								>
+									<Grid item xs={6} md={6} lg={6}>
+										<Box
+											display="flex"
+											alignContent="center"
+											justifyContent="flex-start"
+										>
+											<Tab label="New source" />
+										</Box>
+									</Grid>
+									<Grid item xs={3} md={3} lg={3}>
+										<Box
+											display="flex"
+											alignContent="center"
+											justifyContent="flex-start"
+										>
+											<Tab label="Current source" />
+										</Box>
+									</Grid>
+									<Grid item xs={3} md={3} lg={3}>
+										<Box
+											display="flex"
+											alignContent="center"
+											justifyContent="flex-end"
+										>
+											<Tooltip
+												title="Highlight changes"
+												placement="top"
+											>
+												<ToggleButton
+													value="check"
+													size="small"
+													selected={highlightChanges}
+													onChange={() =>
+														this.setState({
+															highlightChanges:
+																!highlightChanges,
+														})
+													}
+												>
+													<HighlightIcon fontSize="small" />
+												</ToggleButton>
+											</Tooltip>
+										</Box>
+									</Grid>
+								</Grid>
+							</Box>
+							<Box flexGrow={1}>
+								<Paper
+									variant="outlined"
+									sx={{ height: "100%", minHeight: 400 }}
+								>
+									<CodeMerge
+										highlightChanges={highlightChanges}
+										sx={{ height: "100%" }}
+										context={this.evaluationContext()}
+										leftCode={
+											selectedChange
+												? selectedChange.sourceCode()
+												: ""
+										}
+										rightCode={
+											selectedChange
+												? selectedChange.currentSourceCode()
+												: ""
+										}
+									/>
+								</Paper>
+							</Box>
+						</Box>
+					</CustomSplit>
+				</Box>
+			</Box>
 		);
 	}
 }

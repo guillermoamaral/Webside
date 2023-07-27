@@ -7,6 +7,7 @@ import { EditorView } from "@codemirror/view";
 import CodeEditor from "./CodeEditor.js";
 import { smalltalk } from "./CodeEditor.js";
 import { lintGutter } from "@codemirror/lint";
+import { Box } from "@mui/material";
 
 const Original = CodeMirrorMerge.Original;
 const Modified = CodeMirrorMerge.Modified;
@@ -62,53 +63,59 @@ class CodeMerge extends CodeEditor {
 		const highlightChanges = this.props.highlightChanges;
 		const theme = this.theme();
 		return (
-			<Scrollable>
-				<CodeMirrorMerge
-					width="100%"
-					height="100%"
-					orientation="a-b"
-					gutter={false}
-					highlightChanges={highlightChanges}
-				>
-					<Original
-						value={leftCode}
-						extensions={[
-							smalltalk,
-							EditorView.lineWrapping,
-							lintGutter(),
-							theme,
-						]}
-						onContextMenu={(event) => {
-							console.log("mmm");
-							this.openMenu(event);
-						}}
-						basicSetup={{
-							lineNumbers: false,
-						}}
+			<Box
+				display="flex"
+				flexDirection="column"
+				style={{ height: "100%" }}
+			>
+				<Scrollable>
+					<CodeMirrorMerge
+						width="100%"
+						height="100%"
+						orientation="a-b"
+						gutter={false}
+						highlightChanges={highlightChanges}
+					>
+						<Original
+							value={leftCode}
+							extensions={[
+								smalltalk,
+								EditorView.lineWrapping,
+								lintGutter(),
+								theme,
+							]}
+							onContextMenu={(event) => {
+								console.log("mmm");
+								this.openMenu(event);
+							}}
+							basicSetup={{
+								lineNumbers: false,
+							}}
+						/>
+						<Modified
+							value={rightCode}
+							extensions={[
+								smalltalk,
+								EditorView.lineWrapping,
+								lintGutter(),
+								theme,
+							]}
+							onContextMenu={(event) => {
+								this.openMenu(event);
+							}}
+							basicSetup={{
+								lineNumbers: false,
+							}}
+						/>
+					</CodeMirrorMerge>
+					<PopupMenu
+						options={this.menuOptions()}
+						open={menuOpen}
+						position={menuPosition}
+						onClose={this.closeMenu}
 					/>
-					<Modified
-						value={rightCode}
-						extensions={[
-							smalltalk,
-							EditorView.lineWrapping,
-							lintGutter(),
-							theme,
-						]}
-						onContextMenu={(event) => {
-							this.openMenu(event);
-						}}
-						basicSetup={{
-							lineNumbers: false,
-						}}
-					/>
-				</CodeMirrorMerge>
-				<PopupMenu
-					options={this.menuOptions()}
-					open={menuOpen}
-					position={menuPosition}
-					onClose={this.closeMenu}
-				/>
-			</Scrollable>
+				</Scrollable>
+			</Box>
 		);
 	}
 }

@@ -2,7 +2,6 @@ import React from "react";
 import Tool from "./Tool";
 import {
 	Grid,
-	Paper,
 	Typography,
 	LinearProgress,
 	Tabs,
@@ -15,6 +14,8 @@ import BindingTable from "../parts/BindingTable";
 import ExpressionTable from "../parts/ExpressionTable";
 import CodeBrowser from "../parts/CodeBrowser";
 import DebuggerControls from "../parts/DebuggerControls";
+import CustomSplit from "../controls/CustomSplit";
+import CustomPaper from "../controls/CustomPaper";
 
 class Debugger extends Tool {
 	constructor(props) {
@@ -262,8 +263,12 @@ class Debugger extends Tool {
 		const { frames, selectedFrame, stepping, showBindings, expressions } =
 			this.state;
 		return (
-			<Grid container spacing={1}>
-				<Grid item xs={12} md={12} lg={12}>
+			<Box
+				display="flex"
+				flexDirection="column"
+				style={{ height: "100%" }}
+			>
+				<Box>
 					<Grid
 						container
 						spacing={1}
@@ -307,59 +312,71 @@ class Debugger extends Tool {
 							</Tabs>
 						</Grid>
 					</Grid>
-				</Grid>
-				<Grid item xs={12} md={12} lg={12}>
-					<Grid container spacing={1}>
-						<Grid item xs={12} md={8} lg={8}>
-							<Paper style={{ height: 300 }} variant="outlined">
-								<FrameList
-									frames={frames}
-									selectedFrame={selectedFrame}
-									onFrameSelect={this.frameSelected}
-								/>
-							</Paper>
-						</Grid>
-						<Grid item xs={12} md={4} lg={4}>
-							{showBindings && (
-								<BindingTable
-									style={{ height: 300 }}
-									id={id}
-									frame={selectedFrame}
-								/>
-							)}
-							{!showBindings && (
-								<ExpressionTable
-									ref={this.expressionTableRef}
-									style={{ height: 300 }}
-									id={id}
-									frame={selectedFrame}
-									expressions={expressions}
-									onExpressionAdd={this.addExpression}
-									onExpressionRemove={this.removeExpression}
-								/>
-							)}
-						</Grid>
-					</Grid>
-				</Grid>
-				<Grid item xs={12} md={12} lg={12}>
-					<CodeBrowser
-						context={this.evaluationContext()}
-						class={selectedFrame ? selectedFrame.class : null}
-						method={selectedFrame ? selectedFrame.method : null}
-						selectedInterval={
-							selectedFrame ? selectedFrame.interval : null
-						}
-						onCompileMethod={this.methodCompiled}
-						onDefineClass={this.classDefined}
-						onCommentClass={this.classCommented}
-						onTooltipShow={this.tooltipForBinding}
-						onTooltipClick={this.inspectBinding}
-					/>
-				</Grid>
-				<Grid item xs={12} md={12} lg={12}>
+				</Box>
+				<Box flexGrow={1}>
+					<CustomSplit mode="vertical">
+						<Box sx={{ minHeight: 50, height: "35%" }}>
+							<Grid container spacing={1} sx={{ height: "100%" }}>
+								<Grid item xs={12} md={8} lg={8}>
+									<CustomPaper>
+										<FrameList
+											frames={frames}
+											selectedFrame={selectedFrame}
+											onFrameSelect={this.frameSelected}
+										/>
+									</CustomPaper>
+								</Grid>
+								<Grid item xs={12} md={4} lg={4}>
+									{showBindings && (
+										<BindingTable
+											style={{ height: 300 }}
+											id={id}
+											frame={selectedFrame}
+										/>
+									)}
+									{!showBindings && (
+										<ExpressionTable
+											ref={this.expressionTableRef}
+											style={{ height: 300 }}
+											id={id}
+											frame={selectedFrame}
+											expressions={expressions}
+											onExpressionAdd={this.addExpression}
+											onExpressionRemove={
+												this.removeExpression
+											}
+										/>
+									)}
+								</Grid>
+							</Grid>
+						</Box>
+						<Box sx={{ height: "60%" }}>
+							<CodeBrowser
+								context={this.evaluationContext()}
+								class={
+									selectedFrame ? selectedFrame.class : null
+								}
+								method={
+									selectedFrame ? selectedFrame.method : null
+								}
+								selectedInterval={
+									selectedFrame
+										? selectedFrame.interval
+										: null
+								}
+								onCompileMethod={this.methodCompiled}
+								onDefineClass={this.classDefined}
+								onCommentClass={this.classCommented}
+								onTooltipShow={this.tooltipForBinding}
+								onTooltipClick={this.inspectBinding}
+							/>
+						</Box>
+					</CustomSplit>
+				</Box>
+				<Box>
 					{stepping && <LinearProgress variant="indeterminate" />}
-				</Grid>
-			</Grid>
+				</Box>
+			</Box>
 		);
 	}
 }
