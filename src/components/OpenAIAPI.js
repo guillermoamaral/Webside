@@ -19,7 +19,7 @@ class OpenAIAPI {
 				model: "gpt-3.5-turbo",
 				messages: [{ role: "user", content: text }],
 				temperature: 1,
-				max_tokens: 250,
+				max_tokens: 2000,
 			};
 			const response = await axios.post(
 				"https://api.openai.com/v1/chat/completions",

@@ -75,6 +75,10 @@ class CodeMerge extends CodeEditor {
 						orientation="a-b"
 						gutter={false}
 						highlightChanges={highlightChanges}
+						onContextMenu={(event) => {
+							console.log("mmm");
+							this.openMenu(event);
+						}}
 					>
 						<Original
 							value={leftCode}

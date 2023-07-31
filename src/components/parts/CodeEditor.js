@@ -762,18 +762,19 @@ class CodeEditor extends Component {
 		const mode = appearance.section(appearance.get("mode"));
 		const colors = mode.section("colors");
 		const code = mode.section("code");
+		const background = colors.get("background");
 		return createTheme({
 			theme: appearance.get("mode"),
 			settings: {
 				//fontFamily: appearance.get("fontfamily"),
-				background: colors.get("background"),
+				background: background,
 				foreground: "#75baff",
 				caret: mode === "light" ? "black" : colors.get("primaryColor"),
-				selection: "#80cbc433",
-				selectionMatch: "#80cbc433",
+				selection: mode === "light" ? "blue" : "grey",
+				selectionMatch: mode === "light" ? "blue" : "grey",
 				lineHighlight: "#8a91991a",
-				gutterBackground: colors.get("background"),
-				gutterBorder: colors.get("background"),
+				gutterBackground: background,
+				gutterBorder: background,
 				gutterForeground: "#8a919966",
 			},
 			styles: [
@@ -971,13 +972,16 @@ class CodeEditor extends Component {
 		} catch (error) {
 			return null;
 		}
-		// Hide descriptions
+		// Remove perfect matches (this prevents completion menu appear when the target word is completed)
+		options = options.filter((o) => o.label !== word.text);
+		if (options.length <= 0) return null;
+
+		// Hide descriptions by now
 		options.forEach((o) => (o.detail = ""));
-		if (options.length <= 1) return null;
 		return {
 			from: word.from,
 			options: options,
-			filter: false,
+			filter: true,
 		};
 	};
 

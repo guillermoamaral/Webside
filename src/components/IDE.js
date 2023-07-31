@@ -87,7 +87,7 @@ class IDE extends Component {
 		connection.addText("dialect").readOnly();
 
 		const general = settings.addSection("code");
-		general.addBoolean("autocompletion", false, "Use autocomplation");
+		general.addBoolean("autocompletion", false, "Use autocompletion");
 
 		const appearance = settings.addSection("appearance");
 		appearance.addOptions(
