@@ -975,13 +975,12 @@ class CodeEditor extends Component {
 		// Remove perfect matches (this prevents completion menu appear when the target word is completed)
 		options = options.filter((o) => o.label !== word.text);
 		if (options.length <= 0) return null;
-
 		// Hide descriptions by now
 		options.forEach((o) => (o.detail = ""));
 		return {
 			from: word.from,
 			options: options,
-			filter: true,
+			filter: false,
 		};
 	};
 
