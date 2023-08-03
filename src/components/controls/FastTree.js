@@ -62,13 +62,14 @@ const CustomScrollbarsVirtualList = React.forwardRef((props, ref) => (
 const drawNode = memo(({ data, index, style }) => {
 	const { flattenedData, toggleHandler, selectHandler, menuHandler } = data;
 	const nodeInfo = flattenedData[index];
-	const icon = nodeInfo.hasChildren ? (
-		nodeInfo.collapsed ? (
-			<ArrowRight />
-		) : (
-			<ArrowDown />
-		)
-	) : null;
+	const icon =
+		nodeInfo.children.length > 0 ? (
+			nodeInfo.expanded ? (
+				<ArrowDown />
+			) : (
+				<ArrowRight />
+			)
+		) : null;
 	return (
 		<div style={style}>
 			<ListItemButton
@@ -179,19 +180,19 @@ const FastTree = ({
 		return nodeChildren(node);
 	};
 
-	const traverse = (node, fx) => {
+	const traverseNodes = (node, fx) => {
 		fx(node);
 		const children = getNodeChildren(node);
 		if (!children) return;
 		for (let child of children) {
-			traverse(child, fx);
+			traverseNodes(child, fx);
 		}
 	};
 
 	const ensureIds = (roots) => {
 		var id = 0;
 		for (let node of roots) {
-			traverse(node, (n) => {
+			traverseNodes(node, (n) => {
 				n._id = id;
 				id++;
 			});
@@ -207,16 +208,23 @@ const FastTree = ({
 		return flatten;
 	};
 
+	const findNode = (node, condition) => {
+		var found;
+		traverseNodes(node, (n) => {
+			if (condition(n)) found = n;
+		});
+		return found;
+	};
+
 	const nodeInfo = (node) => {
 		const _id = node._id;
 		const label = getNodeLabel(node);
-		const children = getNodeChildren(node);
+		const children = getNodeChildren(node) || [];
 		const style = getNodeStyle(node);
 		return {
 			_id,
 			label,
 			children,
-			hasChildren: children && children.length > 0,
 			style,
 			node,
 		};
@@ -225,13 +233,14 @@ const FastTree = ({
 	const flattenNode = (node, depth, result) => {
 		const info = nodeInfo(node);
 		info.depth = depth;
-		info.collapsed = !expandedIds.includes(info._id);
+		info.expanded =
+			expandedIds.includes(info._id);
 		info.selected = selected
 			? selected._id === info._id
 			: selectedNode === node;
 		result.push(info);
-		if (!info.collapsed && info.hasChildren) {
-			for (let child of getNodeChildren(node)) {
+		if (info.expanded && info.children.length > 0) {
+			for (let child of info.children) {
 				flattenNode(child, depth + 1, result);
 			}
 		}
@@ -239,13 +248,13 @@ const FastTree = ({
 
 	const toggleHandler = (event, nodeInfo) => {
 		event.stopPropagation();
-		if (nodeInfo.collapsed) {
+		if (nodeInfo.expanded) {
+			setExpandedIds(expandedIds.filter((id) => id !== nodeInfo._id));
+		} else {
 			setExpandedIds([...expandedIds, nodeInfo._id]);
 			if (onNodeExpand) {
 				onNodeExpand(nodeInfo.node);
 			}
-		} else {
-			setExpandedIds(expandedIds.filter((id) => id !== nodeInfo._id));
 		}
 	};
 

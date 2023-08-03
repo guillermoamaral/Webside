@@ -730,8 +730,8 @@ class IDE extends Component {
 								flexGrow: 1,
 								ml: 6,
 								mr: 2,
-								p: 3,
-								height: "100vh",
+								p: 2,
+								height: "95vh",
 							}}
 						>
 							<DrawerHeader />
