@@ -13,7 +13,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import PopupMenu from "./PopupMenu";
 import RSC from "react-scrollbars-custom";
 
-const ITEM_SIZE = 30;
+const ITEM_SIZE = 24;
 
 const CustomScrollbars = ({
 	children,
@@ -305,6 +305,7 @@ class CustomList extends Component {
 		const highlighted = this.props.highlightedItem === item;
 		const weight =
 			selected || highlighted ? "fontWeightBold" : "fontWeightRegular";
+		console.log(style)
 		return (
 			<div style={style}>
 				<ListItemButton
@@ -330,6 +331,7 @@ class CustomList extends Component {
 						</ListItemIcon>
 					</Box>
 					<ListItemText
+						style={{ margin: 0 }}
 						primary={
 							<Typography
 								noWrap

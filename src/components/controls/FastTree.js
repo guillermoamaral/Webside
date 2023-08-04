@@ -14,7 +14,7 @@ import memoizeOne from "memoize-one";
 import RSC from "react-scrollbars-custom";
 import PopupMenu from "./PopupMenu";
 
-const ITEM_SIZE = 30;
+const ITEM_SIZE = 26;
 
 const CustomScrollbars = ({
 	children,
