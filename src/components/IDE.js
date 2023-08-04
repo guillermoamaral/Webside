@@ -150,16 +150,20 @@ class IDE extends Component {
 		darkCode.addColor("separator", "#b3bab6");
 
 		const shortcuts = settings.addSection("shortcuts");
-		shortcuts.addText("evaluateExpression", "Ctrl+d");
-		shortcuts.addText("inspectEvaluation", "Ctrl+i");
-		shortcuts.addText("showEvaluation", "Ctrl+p");
-		shortcuts.addText("debugExpression", "Ctrl+u");
-		shortcuts.addText("acceptCode", "Ctrl+s");
-		shortcuts.addText("browseClass", "Ctrl+b");
-		shortcuts.addText("browseSenders", "Alt+n");
-		shortcuts.addText("browseImplementors", "Alt+m");
-		shortcuts.addText("browseClassReferences", "Alt+r");
-		shortcuts.readOnly();
+		shortcuts.addShortcut("openClassBrowser", "Ctrl+b");
+		shortcuts.addShortcut("newWorkspace", "Ctrl+Alt+w");
+		shortcuts.addShortcut("moveToLeftTab", "Ctrl+Alt+Left");
+		shortcuts.addShortcut("moveToRightTab", "Ctrl+Alt+Right");
+
+		shortcuts.addShortcut("evaluateExpression", "Ctrl+d");
+		shortcuts.addShortcut("inspectEvaluation", "Ctrl+i");
+		shortcuts.addShortcut("showEvaluation", "Ctrl+p");
+		shortcuts.addShortcut("debugExpression", "Ctrl+u");
+		shortcuts.addShortcut("acceptCode", "Ctrl+s");
+		shortcuts.addShortcut("browseClass", "Ctrl+b");
+		shortcuts.addShortcut("browseSenders", "Alt+n");
+		shortcuts.addShortcut("browseImplementors", "Alt+m");
+		shortcuts.addShortcut("browseClassReferences", "Alt+r");
 
 		const openAI = settings.addSection("openAI", "OpenAI API");
 		openAI.addText("apiKey");
@@ -610,14 +614,18 @@ class IDE extends Component {
 	};
 
 	hotkeyPressed = async (hotkey) => {
+		const shortcuts = this.settings.section("shortcuts");
 		switch (hotkey) {
-			case "Ctrl+Alt+W":
+			case shortcuts.get("openClassBrowser"):
+				this.mainContainer().openClassBrowser();
+				break;
+			case shortcuts.get("newWorkspace"):
 				this.mainContainer().newWorkspace();
 				break;
-			case "Ctrl+Alt+Left":
+			case shortcuts.get("moveToLeftTab"):
 				this.mainContainer().selectPageAtOffset(-1);
 				break;
-			case "Ctrl+Alt+Right":
+			case shortcuts.get("moveToRightTab"):
 				this.mainContainer().selectPageAtOffset(1);
 				break;
 			default:
@@ -679,9 +687,19 @@ class IDE extends Component {
 			waiting,
 		} = this.state;
 		const totalWidth = false; //extraContainers.length > 0 ? false : "lg";
+		const shortcuts = this.settings.section("shortcuts");
+		console.log(shortcuts.get("newWorkspace") )
 		return (
 			<Hotkeys
-				keyName="Ctrl+Alt+W, Ctrl+Alt+Left, Ctrl+Alt+Right"
+				keyName={
+					shortcuts.get("openClassBrowser") +
+					"," +
+					shortcuts.get("newWorkspace") +
+					"," +
+					shortcuts.get("moveToLeftTab") +
+					"," +
+					shortcuts.get("moveToRightTab")
+				}
 				filter={(event) => {
 					return true;
 				}}

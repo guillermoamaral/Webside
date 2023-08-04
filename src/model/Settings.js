@@ -61,6 +61,10 @@ class Setting extends Object {
 		return setting;
 	}
 
+	static shortcut(name, defaultValue) {
+		return new Setting(name, "shortcut", defaultValue);
+	}
+
 	readOnly() {
 		this.editable = false;
 	}
@@ -152,6 +156,10 @@ class Settings extends Object {
 
 	addOptions(name, options, defaultValue) {
 		return this.add(Setting.options(name, options, defaultValue));
+	}
+
+	addShortcut(name, defaultValue) {
+		return this.add(Setting.shortcut(name, defaultValue));
 	}
 
 	toJson() {

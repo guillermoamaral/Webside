@@ -46,7 +46,7 @@ class TestRunner extends Tool {
 			results: this.newResults(),
 			updating: false,
 			filterType: "run",
-			showGroups: true,
+			showGroups: false,
 			selectedTest: null,
 		};
 	}
@@ -377,14 +377,10 @@ class TestRunner extends Tool {
 		const percent = total > 0 ? (summary.run / total) * 100 : 0;
 		const grouped = results.grouped;
 		return (
-			<div>
-				<Grid
-					container
-					spacing={1}
-					display="flex"
-					alignItems="center"
-					justifyContent="center"
-				>
+			<Box
+			//sx={{ height: "100%" }}
+			>
+				<Grid container spacing={1} sx={{ height: "100%" }}>
 					<Grid item xs={12} md={12} lg={12}>
 						<Typography variant="h6" color="primary">
 							Suite: {status.name}
@@ -619,7 +615,7 @@ class TestRunner extends Tool {
 						)}
 					</Grid>
 				</Grid>
-			</div>
+			</Box>
 		);
 	}
 }

@@ -10,6 +10,7 @@ import {
 	FormGroup,
 	FormControlLabel,
 } from "@mui/material";
+import ShortcutEditor from "./ShortcutEditor";
 
 class SettingEditor extends Component {
 	constructor(props) {
@@ -95,6 +96,12 @@ class SettingEditor extends Component {
 							</MenuItem>
 						))}
 					</Select>
+				)}
+				{setting.type === "shortcut" && (
+					<ShortcutEditor
+						value={value}
+						onChange={(value) => this.valueChanged(value)}
+					/>
 				)}
 			</Box>
 		);

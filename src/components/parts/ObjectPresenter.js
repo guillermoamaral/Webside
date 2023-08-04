@@ -109,6 +109,8 @@ class ObjectPresenter extends Component {
 		const pages = this.pages();
 		var selectedPage = selectedId
 			? pages.find((p) => p.id === selectedId)
+			: pages.length > 0
+			? pages[1]
 			: pages[0];
 		if (!selectedPage) {
 			selectedPage = pages[0];

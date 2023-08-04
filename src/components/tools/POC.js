@@ -1,6 +1,7 @@
 import React from "react";
 import Tool from "./Tool";
 import FastTree from "../controls/FastTree";
+import ShortcutEditor from "../ShortcutEditor";
 
 //This is is a component to test ideas in a tool-like tab.
 class POC extends Tool {
@@ -19,14 +20,15 @@ class POC extends Tool {
 			],
 		};
 		return (
-			<FastTree
-				//sx={{ height: "100%" }}
-				nodes={[root]}
-				nodeLabel="label"
-				nodeChildren="children"
-				selectedNode={root.children[1].children[0]}
-				//expandedNodes={}
-			/>
+			<ShortcutEditor/>
+			// <FastTree
+			// 	//sx={{ height: "100%" }}
+			// 	nodes={[root]}
+			// 	nodeLabel="label"
+			// 	nodeChildren="children"
+			// 	selectedNode={root.children[1].children[0]}
+			// 	//expandedNodes={}
+			// />
 		);
 	}
 }
