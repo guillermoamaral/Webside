@@ -688,7 +688,6 @@ class IDE extends Component {
 		} = this.state;
 		const totalWidth = false; //extraContainers.length > 0 ? false : "lg";
 		const shortcuts = this.settings.section("shortcuts");
-		console.log(shortcuts.get("newWorkspace") )
 		return (
 			<Hotkeys
 				keyName={

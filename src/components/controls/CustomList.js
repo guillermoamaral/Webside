@@ -305,7 +305,6 @@ class CustomList extends Component {
 		const highlighted = this.props.highlightedItem === item;
 		const weight =
 			selected || highlighted ? "fontWeightBold" : "fontWeightRegular";
-		console.log(style)
 		return (
 			<div style={style}>
 				<ListItemButton
