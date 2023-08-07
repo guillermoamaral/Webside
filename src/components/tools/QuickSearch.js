@@ -30,7 +30,7 @@ class QuickSearch extends Tool {
 			clearTimeout(this.typingTimer);
 			this.typingTimer = setTimeout(() => {
 				this.search(this.state.text);
-			}, 400);
+			}, 500);
 		});
 	};
 
@@ -88,6 +88,7 @@ class QuickSearch extends Tool {
 		if (type === "class") return "Classes";
 		if (type === "pool") return "Pool dictionaries";
 		if (type === "package") return "Packages";
+		if (type === "method") return "Implementors";
 		return "";
 	}
 
