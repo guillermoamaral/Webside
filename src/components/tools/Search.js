@@ -8,7 +8,7 @@ import {
 	FormControlLabel,
 	Radio,
 	List,
-	ListItem,
+	ListItemButton,
 	ListItemText,
 	Typography,
 	LinearProgress,
@@ -19,7 +19,7 @@ import { ide } from "../IDE";
 class Search extends Tool {
 	constructor(props) {
 		super(props);
-		this.itemsPerPage = 10;
+		this.resultsPerPage = 10;
 		this.state = {
 			selectedType: "classes",
 			text: "",
@@ -115,16 +115,13 @@ class Search extends Tool {
 	render() {
 		const { text, selectedType, results, searching, currentPage } =
 			this.state;
-		const pages = Math.ceil(results.length / this.itemsPerPage);
-		const begin = (currentPage - 1) * this.itemsPerPage;
-		const end = begin + this.itemsPerPage;
+		const k = this.resultsPerPage;
+		const pages = Math.ceil(results.length / k);
+		const begin = (currentPage - 1) * k;
+		const end = begin + k;
 		const pageResults = results.slice(begin, end);
 		return (
 			<Grid container spacing={1}>
-				<Grid item xs={12} md={12} lg={12}>
-					(Warning: this component is under construction and might not
-					work properly)
-				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<TextField
 						value={text}
@@ -140,7 +137,7 @@ class Search extends Tool {
 						autoFocus
 						type="text"
 						disabled={searching}
-						onKeyPress={(event) => {
+						onKeyDown={(event) => {
 							if (event.key === "Enter") {
 								this.search();
 							}
@@ -185,16 +182,15 @@ class Search extends Tool {
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<List>
-						{pageResults.map((r, i) => {
+						{pageResults.map((result, index) => {
 							return (
-								<ListItem
+								<ListItemButton
 									alignItems="flex-start"
-									key={i}
-									button
-									onClick={(event) => this.goToResult(r)}
+									key={index}
+									onClick={(event) => this.goToResult(result)}
 								>
 									<ListItemText
-										primary={r.title}
+										primary={result.title}
 										secondary={
 											<React.Fragment>
 												<Typography
@@ -203,7 +199,7 @@ class Search extends Tool {
 													variant="body2"
 													color="primary"
 												>
-													{r.type}
+													{result.type}
 												</Typography>
 												{": "}
 												<Box
@@ -211,19 +207,19 @@ class Search extends Tool {
 													component="span"
 													fontWeight="fontWeightBold"
 												>
-													{r.text}
+													{result.text}
 												</Box>
 												<Typography>
-													{r.subtext || ""}
+													{result.subtext || ""}
 												</Typography>
 											</React.Fragment>
 										}
 									/>
-								</ListItem>
+								</ListItemButton>
 							);
 						})}
 					</List>
-					{this.state.results.length > 0 && (
+					{results.length > 0 && (
 						<Pagination
 							count={pages}
 							size="medium"

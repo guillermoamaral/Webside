@@ -1,3 +1,4 @@
+import { TroubleshootTwoTone } from "@mui/icons-material";
 import axios from "axios";
 
 class BackendError extends Error {
@@ -242,12 +243,16 @@ class Backend {
 
 	async autocompletions(classname, source, position) {
 		const data = { class: classname, source: source, position: position };
-		const autocompletions = await this.post(
+		return await this.post(
 			"/autocompletions",
 			data,
 			"autocompletions for source " + source + " at " + position
 		);
-		return autocompletions;
+	}
+
+	async search(text, ignoreCase = TroubleshootTwoTone) {
+		const data = { text: text, ignoreCase: ignoreCase };
+		return await this.post("/search", data, "search for " + text);
 	}
 
 	// Method queries...

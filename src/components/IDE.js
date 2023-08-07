@@ -7,6 +7,9 @@ import {
 	Box,
 	Backdrop,
 	CircularProgress,
+	Dialog,
+	DialogTitle,
+	DialogContent,
 } from "@mui/material";
 import ToolContainer from "./ToolContainer";
 import { withCookies } from "react-cookie";
@@ -29,6 +32,7 @@ import { Setting } from "../model/Settings";
 import CodeAssistant from "./CodeAssistant";
 import { v4 as uuidv4 } from "uuid";
 import CustomSplit from "./controls/CustomSplit";
+import QuickSearch from "./tools/QuickSearch";
 
 var ide = null;
 
@@ -47,6 +51,7 @@ class IDE extends Component {
 			transcriptText: this.welcomeMessage(),
 			extraContainers: [],
 			waiting: false,
+			quickSearchOpen: false,
 		};
 	}
 
@@ -463,7 +468,8 @@ class IDE extends Component {
 	};
 
 	openSearch = () => {
-		this.mainContainer().openSearch();
+		//this.mainContainer().openSearch();
+		this.setState({ quickSearchOpen: true });
 	};
 
 	browseLastChanges = () => {
@@ -685,6 +691,7 @@ class IDE extends Component {
 			lastMessage,
 			extraContainers,
 			waiting,
+			quickSearchOpen,
 		} = this.state;
 		const totalWidth = false; //extraContainers.length > 0 ? false : "lg";
 		const shortcuts = this.settings.section("shortcuts");
@@ -822,6 +829,15 @@ class IDE extends Component {
 						severity={lastMessage ? lastMessage.type : ""}
 					/>
 				</DialogProvider>
+				<Dialog
+					onClose={() => this.setState({ quickSearchOpen: false })}
+					open={quickSearchOpen}
+				>
+					<DialogTitle>Quick Search</DialogTitle>
+					<DialogContent dividers sx={{ width: 600, height: 400 }}>
+						<QuickSearch />
+					</DialogContent>
+				</Dialog>
 			</Hotkeys>
 		);
 	}
