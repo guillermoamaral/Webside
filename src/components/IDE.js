@@ -469,15 +469,31 @@ class IDE extends Component {
 
 	openSearch = () => {
 		//this.mainContainer().openSearch();
+		this.openQuickSearch();
+	};
+
+	openQuickSearch = () => {
 		this.setState({ quickSearchOpen: true });
+	};
+
+	closeQuickSearch = () => {
+		this.setState({ quickSearchOpen: false });
 	};
 
 	browseLastChanges = () => {
 		this.mainContainer().browseLastChanges();
 	};
 
+	browsePackage = (packname) => {
+		this.mainContainer().browsePackage(packname);
+	};
+
 	browseClass = (classname) => {
 		this.mainContainer().browseClass(classname);
+	};
+
+	browseImplementors = (selector) => {
+		this.mainContainer().browseImplementors(selector);
 	};
 
 	openResources = () => {
@@ -620,8 +636,12 @@ class IDE extends Component {
 	};
 
 	hotkeyPressed = async (hotkey) => {
+		console.log(hotkey);
 		const shortcuts = this.settings.section("shortcuts");
 		switch (hotkey) {
+			case "Shift+Enter":
+				this.openQuickSearch();
+				break;
 			case shortcuts.get("openClassBrowser"):
 				this.mainContainer().openClassBrowser();
 				break;
@@ -698,6 +718,7 @@ class IDE extends Component {
 		return (
 			<Hotkeys
 				keyName={
+					"Shift+Enter," +
 					shortcuts.get("openClassBrowser") +
 					"," +
 					shortcuts.get("newWorkspace") +
@@ -835,7 +856,11 @@ class IDE extends Component {
 				>
 					<DialogTitle>Quick Search</DialogTitle>
 					<DialogContent dividers sx={{ width: 600, height: 400 }}>
-						<QuickSearch />
+						<QuickSearch
+							onResultSelect={() =>
+								this.setState({ quickSearchOpen: false })
+							}
+						/>
 					</DialogContent>
 				</Dialog>
 			</Hotkeys>

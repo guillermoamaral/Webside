@@ -161,14 +161,14 @@ class CustomList extends Component {
 	};
 
 	getItemIcon = (item) => {
-		const getter = this.props.itemIcon;
-		if (!getter) {
+		const icon = this.props.itemIcon;
+		if (!icon) {
 			return null;
 		}
-		if (typeof getter === "function") {
-			return getter(item);
+		if (typeof icon === "function") {
+			return icon(item);
 		}
-		return null;
+		return icon;
 	};
 
 	getItemStyle = (item) => {
