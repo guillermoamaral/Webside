@@ -250,8 +250,12 @@ class Backend {
 		);
 	}
 
-	async search(text, ignoreCase = TroubleshootTwoTone) {
-		const data = { text: text, ignoreCase: ignoreCase };
+	async search(text, ignoreCase = false, beginning = true) {
+		const data = {
+			text: text,
+			ignoreCase: ignoreCase,
+			beginning: beginning,
+		};
 		return await this.post("/search", data, "search for " + text);
 	}
 

@@ -22,6 +22,7 @@ class QuickSearch extends Tool {
 			searching: false,
 			selectedResult: null,
 			matchCase: true,
+			beginning: true,
 		};
 	}
 
@@ -29,17 +30,18 @@ class QuickSearch extends Tool {
 		this.setState({ text: text }, () => {
 			clearTimeout(this.typingTimer);
 			this.typingTimer = setTimeout(() => {
-				this.search(this.state.text);
+				this.search();
 			}, 500);
 		});
 	};
 
-	search = async (text) => {
+	search = async () => {
+		const { text, matchCase, beginning } = this.state;
 		this.setState({ searching: true });
 		var results = [];
 		try {
 			if (text.length > 0) {
-				results = await ide.backend.search(text, !this.state.matchCase);
+				results = await ide.backend.search(text, !matchCase, beginning);
 			}
 		} catch (error) {
 			ide.reportError(error);
@@ -57,15 +59,16 @@ class QuickSearch extends Tool {
 	};
 
 	goToResult = (result) => {
-		if (result.type === "separator") return;
-		if (result.type === "package") {
-			ide.browsePackage(result.text);
+		const { type, text } = result;
+		if (type === "separator") return;
+		if (type === "package") {
+			ide.browsePackage(text);
 		}
-		if (result.type === "class") {
-			ide.browseClass(result.text);
+		if (type === "class") {
+			ide.browseClass(text);
 		}
-		if (result.type === "selector") {
-			ide.browseImplementors(result.text);
+		if (type === "selector") {
+			ide.browseImplementors(text);
 		}
 		if (this.props.onResultSelect) {
 			this.props.onResultSelect();
@@ -89,29 +92,40 @@ class QuickSearch extends Tool {
 		if (type === "pool") return "Pool dictionaries";
 		if (type === "package") return "Packages";
 		if (type === "method") return "Implementors";
+		console.log(type);
 		return "";
 	}
 
 	extendedResults() {
 		const grouped = this.groupedResults();
 		const extended = [];
-		Object.keys(grouped).forEach((type) => {
-			const title =
-				this.titleForType(type) + " (" + grouped[type].length + ")";
-			extended.push({ type: "separator", text: title });
-			grouped[type].forEach((result) => extended.push(result));
+		["class", "method", "selector", "package", "pool"].forEach((type) => {
+			const group = grouped[type];
+			if (group) {
+				const title =
+					this.titleForType(type) + " (" + group.length + ")";
+				extended.push({ type: "separator", text: title });
+				group.forEach((result) => extended.push(result));
+			}
 		});
 		return extended;
 	}
 
 	toggleMatchCase() {
 		this.setState({ matchCase: !this.state.matchCase }, () =>
-			this.search(this.state.text)
+			this.search()
+		);
+	}
+
+	toggleBeginning() {
+		this.setState({ beginning: !this.state.beginning }, () =>
+			this.search()
 		);
 	}
 
 	render() {
-		const { text, searching, selectedResult, matchCase } = this.state;
+		const { text, searching, selectedResult, matchCase, beginning } =
+			this.state;
 		const results = this.extendedResults();
 		return (
 			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
@@ -140,8 +154,21 @@ class QuickSearch extends Tool {
 							onChange={() => this.toggleMatchCase()}
 							size="small"
 							value="shift"
+							sx={{ width: 30 }}
+							mr={1}
 						>
 							Aa
+						</ToggleButton>
+					</Box>
+					<Box>
+						<ToggleButton
+							selected={beginning}
+							onChange={() => this.toggleBeginning()}
+							size="small"
+							value="shift"
+							sx={{ width: 30 }}
+						>
+							a*
 						</ToggleButton>
 					</Box>
 				</Box>
