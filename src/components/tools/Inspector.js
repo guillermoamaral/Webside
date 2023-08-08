@@ -1,10 +1,11 @@
 import React from "react";
 import Tool from "./Tool";
-import { Grid, Box, Paper, Breadcrumbs, Link, Typography } from "@mui/material";
+import { Box, Paper, Breadcrumbs, Link, Typography } from "@mui/material";
 import { ide } from "../IDE";
 import ObjectTree from "../parts/ObjectTree";
 import ObjectPresenter from "../parts/ObjectPresenter";
 import CodeEditor from "../parts/CodeEditor";
+import CustomSplit from "../controls/CustomSplit";
 
 class Inspector extends Tool {
 	constructor(props) {
@@ -213,106 +214,102 @@ class Inspector extends Tool {
 		const path = selectedObject ? selectedObject.path : [];
 		const subpaths = this.subpaths(path);
 		return (
-			<Grid container>
-				<Grid item xs={12} md={12} lg={12}>
-					<Box ml={2} display="flex" alignItems="center">
-						<Breadcrumbs>
-							{subpaths.map((subpath) => {
-								const label =
-									subpath.length === 0
-										? "self"
-										: subpath[subpath.length - 1];
-								const color =
-									label === path[path.length - 1]
-										? "primary"
-										: "inherit";
-								return (
-									<Link
-										style={{
-											cursor: "pointer",
-										}}
-										color={color}
-										key={label}
-										onClick={(event) => {
-											this.selectSlot(subpath);
-										}}
-									>
-										{label}
-									</Link>
-								);
-							})}
-						</Breadcrumbs>
-						<Box pl={1}>
-							{selectedObject && (
+			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
+				<Box ml={2} display="flex" alignItems="center">
+					<Breadcrumbs>
+						{subpaths.map((subpath) => {
+							const label =
+								subpath.length === 0
+									? "self"
+									: subpath[subpath.length - 1];
+							const color =
+								label === path[path.length - 1]
+									? "primary"
+									: "inherit";
+							return (
 								<Link
 									style={{
 										cursor: "pointer",
 									}}
-									color="inherit"
+									color={color}
+									key={label}
 									onClick={(event) => {
-										this.browseClass(selectedObject.class);
+										this.selectSlot(subpath);
 									}}
 								>
-									{"(" + selectedObject.class + ")"}
+									{label}
 								</Link>
-							)}
-						</Box>
-						<Box pl={1}>
-							{selectedObject &&
-								selectedObject.hasIndexedSlots && (
-									<Typography>
-										{"[" +
-											selectedObject.size +
-											" elements]"}
-									</Typography>
-								)}
-						</Box>
+							);
+						})}
+					</Breadcrumbs>
+					<Box pl={1}>
+						{selectedObject && (
+							<Link
+								style={{
+									cursor: "pointer",
+								}}
+								color="inherit"
+								onClick={(event) => {
+									this.browseClass(selectedObject.class);
+								}}
+							>
+								{"(" + selectedObject.class + ")"}
+							</Link>
+						)}
 					</Box>
-				</Grid>
-				<Grid item xs={12} md={4} lg={4}>
-					<Paper
-						variant="outlined"
-						style={{ height: "100%", minHeight: minHeight }}
-					>
-						<ObjectTree
-							roots={objectTree}
-							selectedObject={selectedObject}
-							onSlotExpand={this.slotExpanded}
-							onSlotSelect={this.slotSelected}
-						/>
-					</Paper>
-				</Grid>
-				<Grid item xs={12} md={8} lg={8}>
-					<Box
-						display="flex"
-						flexDirection="column"
-						justifyContent="center"
-						style={{ height: "100%" }}
-					>
-						<Box flexGrow={1}>
-							<ObjectPresenter
-								context={this.evaluationContext()}
-								object={selectedObject}
-								onAccept={this.assignEvaluation}
-							/>
+					<Box pl={1}>
+						{selectedObject && selectedObject.hasIndexedSlots && (
+							<Typography>
+								{"[" + selectedObject.size + " elements]"}
+							</Typography>
+						)}
+					</Box>
+				</Box>
+				<Box flexGrow={1}>
+					<CustomSplit>
+						<Box sx={{ width: "40%" }}>
+							<Paper
+								variant="outlined"
+								style={{ height: "100%", minHeight: minHeight }}
+							>
+								<ObjectTree
+									roots={objectTree}
+									selectedObject={selectedObject}
+									onSlotExpand={this.slotExpanded}
+									onSlotSelect={this.slotSelected}
+								/>
+							</Paper>
 						</Box>
-						<Box ml={1} mr={1}>
-							{showWorkspace && (
-								<Paper
-									variant="outlined"
-									style={{ minHeight: 100, height: "100%" }}
-								>
-									<CodeEditor
+						<Box sx={{ width: "60%" }}>
+							<CustomSplit mode="vertical">
+								<Box sx={{ height: "80%" }}>
+									<ObjectPresenter
 										context={this.evaluationContext()}
-										onEvaluate={this.expressionEvaluated}
+										object={selectedObject}
 										onAccept={this.assignEvaluation}
 									/>
-								</Paper>
-							)}
+								</Box>
+								<Box ml={1} mr={1} sx={{ height: "20%" }}>
+									{showWorkspace && (
+										<Paper
+											variant="outlined"
+											sx={{ height: "100%" }}
+										>
+											<CodeEditor
+												context={this.evaluationContext()}
+												onEvaluate={
+													this.expressionEvaluated
+												}
+												onAccept={this.assignEvaluation}
+											/>
+										</Paper>
+									)}
+								</Box>
+							</CustomSplit>
 						</Box>
-					</Box>
-				</Grid>
-			</Grid>
+					</CustomSplit>
+				</Box>
+			</Box>
 		);
 	}
 }
