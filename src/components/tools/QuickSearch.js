@@ -2,10 +2,12 @@ import React from "react";
 import Tool from "./Tool";
 import {
 	ToggleButton,
+	ToggleButtonGroup,
 	TextField,
 	Box,
 	Typography,
 	CircularProgress,
+	Tooltip,
 } from "@mui/material";
 import { ide } from "../IDE";
 import CustomList from "../controls/CustomList";
@@ -22,7 +24,7 @@ class QuickSearch extends Tool {
 			searching: false,
 			selectedResult: null,
 			matchCase: true,
-			beginning: true,
+			position: "beginning",
 		};
 	}
 
@@ -36,12 +38,16 @@ class QuickSearch extends Tool {
 	};
 
 	search = async () => {
-		const { text, matchCase, beginning } = this.state;
+		const { text, matchCase, position } = this.state;
 		this.setState({ searching: true });
 		var results = [];
 		try {
 			if (text.length > 0) {
-				results = await ide.backend.search(text, !matchCase, beginning);
+				results = await ide.backend.search(
+					text,
+					!matchCase,
+					position === "beginning"
+				);
 			}
 		} catch (error) {
 			ide.reportError(error);
@@ -92,7 +98,6 @@ class QuickSearch extends Tool {
 		if (type === "pool") return "Pool dictionaries";
 		if (type === "package") return "Packages";
 		if (type === "method") return "Implementors";
-		console.log(type);
 		return "";
 	}
 
@@ -111,20 +116,18 @@ class QuickSearch extends Tool {
 		return extended;
 	}
 
-	toggleMatchCase() {
+	toggleMatchCase = () => {
 		this.setState({ matchCase: !this.state.matchCase }, () =>
 			this.search()
 		);
-	}
+	};
 
-	toggleBeginning() {
-		this.setState({ beginning: !this.state.beginning }, () =>
-			this.search()
-		);
-	}
+	setPosition = (value) => {
+		this.setState({ position: value }, () => this.search());
+	};
 
 	render() {
-		const { text, searching, selectedResult, matchCase, beginning } =
+		const { text, searching, selectedResult, matchCase, position } =
 			this.state;
 		const results = this.extendedResults();
 		return (
@@ -149,27 +152,31 @@ class QuickSearch extends Tool {
 						/>
 					</Box>
 					<Box>
-						<ToggleButton
-							selected={matchCase}
-							onChange={() => this.toggleMatchCase()}
-							size="small"
-							value="shift"
-							sx={{ width: 30 }}
-							mr={1}
-						>
-							Aa
-						</ToggleButton>
+						<Tooltip title="Match case" placement="top">
+							<ToggleButton
+								selected={matchCase}
+								onChange={this.toggleMatchCase}
+								size="small"
+								value="shift"
+								sx={{ width: 30 }}
+								mr={1}
+							>
+								Aa
+							</ToggleButton>
+						</Tooltip>
 					</Box>
-					<Box>
-						<ToggleButton
-							selected={beginning}
-							onChange={() => this.toggleBeginning()}
+					<Box ml={1}>
+						<ToggleButtonGroup
+							value={position}
+							exclusive
 							size="small"
-							value="shift"
-							sx={{ width: 30 }}
+							onChange={(event) =>
+								this.setPosition(event.target.value)
+							}
 						>
-							a*
-						</ToggleButton>
+							<ToggleButton value={"beginning"}>a*</ToggleButton>
+							<ToggleButton value={"inside"}>*a*</ToggleButton>
+						</ToggleButtonGroup>
 					</Box>
 				</Box>
 				{!searching && results.length === 0 && (
@@ -203,11 +210,11 @@ class QuickSearch extends Tool {
 							// itemIcon={(result) => {
 							// 	return result.type !== "separator" ? (
 							// 		<SubdirectoryArrowRightIcon
-							// 			style={{ fontSize: 16 }}
+							// 			style={{ fontSize: 12 }}
 							// 		/>
 							// 	) : null;
 							// }}
-							//selectedItem={selectedResult}
+							selectedItem={selectedResult}
 							onItemSelect={this.goToResult}
 						/>
 					</Box>
