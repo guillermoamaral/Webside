@@ -175,7 +175,7 @@ class MethodList extends Component {
 	}
 
 	availableCategories() {
-		const suggested = this.props.categories || [];
+		const suggested = [...(this.props.categories || [])];
 		(this.props.usedCategories || []).forEach((c) => {
 			if (!suggested.includes(c)) suggested.push(c);
 		});
