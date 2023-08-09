@@ -80,6 +80,7 @@ class MethodList extends Component {
 		if (!target) {
 			target = await this.newCategory();
 		}
+		if (!target) return;
 		try {
 			await ide.backend.classifyMethod(
 				method.methodClass,
@@ -92,6 +93,20 @@ class MethodList extends Component {
 			}
 		} catch (error) {
 			ide.reportError(error);
+		}
+	};
+
+	chooseCategoryForMethod = async (method) => {
+		var category;
+		try {
+			category = await ide.choose({
+				title: "Category",
+				message: "Select a category",
+				items: this.availableCategories(),
+			});
+		} catch (error) {}
+		if (category) {
+			this.classifyMethod(method, category);
 		}
 	};
 
@@ -155,18 +170,20 @@ class MethodList extends Component {
 		}
 	};
 
-	categoryOptions(categories) {
-		const options = (categories || []).map((c) => {
-			return {
-				label: c,
-				action: (m) => this.classifyMethod(m, c),
-			};
-		});
-		return options;
-	}
-
 	isTest(method) {
 		return method && method.selector.startsWith("test");
+	}
+
+	availableCategories() {
+		const suggested = this.props.categories || [];
+		(this.props.usedCategories || []).forEach((c) => {
+			if (!suggested.includes(c)) suggested.push(c);
+		});
+		(this.props.usualCategories || []).forEach((c) => {
+			if (!suggested.includes(c)) suggested.push(c);
+		});
+		suggested.sort();
+		return suggested;
 	}
 
 	menuOptions = () => {
@@ -180,39 +197,34 @@ class MethodList extends Component {
 				{ label: "Remove", action: this.removeMethod },
 			]
 		);
-		const current = this.categoryOptions(this.props.categories);
-		const used = this.categoryOptions(this.props.usedCategories);
-		const usual = this.categoryOptions(this.props.usualCategories);
-		const suboptions = ide.usesCodeAssistant()
-			? [
-					{
-						label: "AI suggested..",
-						action: (m) => this.suggestCategory(m),
-					},
-			  ]
-			: [];
-		if (current.length > 0) {
+		const categories = this.availableCategories();
+		const suboptions = categories
+			.slice(0, Math.min(20, categories.length))
+			.map((c) => {
+				return {
+					label: c,
+					action: (m) => this.classifyMethod(m, c),
+				};
+			});
+		if (categories.length > 20) {
 			suboptions.push({
-				label: "Current",
-				suboptions: current,
+				label: "More...",
+				action: (m) => this.chooseCategoryForMethod(m),
 			});
 		}
-		if (used.length > 0) {
-			suboptions.push({
-				label: "Used",
-				suboptions: used,
-			});
-		}
-		if (usual.length > 0) {
-			suboptions.push({
-				label: "Usual",
-				suboptions: usual,
-			});
+		if (categories.length > 0) {
+			suboptions.push(null);
 		}
 		suboptions.push({
 			label: "New..",
 			action: (m) => this.classifyMethod(m),
 		});
+		if (ide.usesCodeAssistant()) {
+			suboptions.push({
+				label: "AI suggested..",
+				action: (m) => this.suggestCategory(m),
+			});
+		}
 		options.push(
 			...[
 				{
