@@ -40,7 +40,6 @@ class ClassBrowser extends RefactoringBrowser {
 	}
 
 	async componentDidMount() {
-		await super.componentDidMount();
 		await this.initializeClassNames();
 	}
 
@@ -531,9 +530,7 @@ class ClassBrowser extends RefactoringBrowser {
 										<CategoryList
 											class={this.currentClass()}
 											categories={this.currentCategories()}
-											usualCategories={
-												this.usualCategories
-											}
+											usualCategories={this.currentUsualCategories()}
 											usedCategories={this.currentUsedCategories()}
 											selectedCategory={selectedCategory}
 											highlightedCategory={
@@ -560,9 +557,7 @@ class ClassBrowser extends RefactoringBrowser {
 											methods={this.currentMethods()}
 											selectedMethod={selectedMethod}
 											categories={this.currentCategories()}
-											usualCategories={
-												this.usualCategories
-											}
+											usualCategories={this.currentUsualCategories()}
 											usedCategories={this.currentUsedCategories()}
 											onMethodSelect={this.methodSelected}
 											onMethodRename={this.methodRenamed}

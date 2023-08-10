@@ -33,7 +33,6 @@ class PackageBrowser extends RefactoringBrowser {
 	}
 
 	async componentDidMount() {
-		await super.componentDidMount();
 		await this.initializePackages();
 	}
 
@@ -454,9 +453,7 @@ class PackageBrowser extends RefactoringBrowser {
 										<CategoryList
 											class={selectedClass}
 											categories={this.currentCategories()}
-											usualCategories={
-												this.usualCategories
-											}
+											usualCategories={this.currentUsualCategories()}
 											usedCategories={this.currentUsedCategories()}
 											selectedCategory={selectedCategory}
 											highlightedCategory={
@@ -483,9 +480,7 @@ class PackageBrowser extends RefactoringBrowser {
 											methods={this.currentMethods()}
 											selectedMethod={selectedMethod}
 											categories={this.currentCategories()}
-											usualCategories={
-												this.usualCategories
-											}
+											usualCategories={this.currentUsualCategories()}
 											usedCategories={this.currentUsedCategories()}
 											labelStyle={this.methodLabelStyle}
 											onMethodSelect={this.methodSelected}

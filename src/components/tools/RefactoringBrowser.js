@@ -2,19 +2,6 @@ import Tool from "./Tool";
 import { ide } from "../IDE";
 
 class RefactoringBrowser extends Tool {
-	async componentDidMount() {
-		await this.initializeUsualCategories();
-	}
-
-	async initializeUsualCategories() {
-		try {
-			this.usualCategories = await ide.backend.usualCategories();
-			this.usualCategories.sort();
-		} catch (error) {
-			ide.reportError(error);
-		}
-	}
-
 	// Contents...
 	currentClass() {
 		const { selectedClass, selectedSide } = this.state;
@@ -32,6 +19,11 @@ class RefactoringBrowser extends Tool {
 	currentUsedCategories = () => {
 		const species = this.currentClass();
 		return species ? species.usedCategories || [] : [];
+	};
+
+	currentUsualCategories = () => {
+		const species = this.currentClass();
+		return species ? species.usualCategories || [] : [];
 	};
 
 	// Updating...
@@ -78,6 +70,10 @@ class RefactoringBrowser extends Tool {
 					species.name
 				);
 				species.usedCategories.sort();
+					species.usualCategories = await ide.backend.usualCategories(
+					species.name.endsWith(" class")
+				);
+				species.usualCategories.sort();
 			}
 		} catch (error) {
 			ide.reportError(error);

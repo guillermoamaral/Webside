@@ -195,8 +195,11 @@ class Backend {
 		);
 	}
 
-	async usualCategories() {
-		return await this.get("/usual-categories", "usual categories ");
+	async usualCategories(meta = false) {
+		return await this.get(
+			"/usual-categories?meta=" + meta,
+			"usual categories "
+		);
 	}
 
 	async usedCategories(classname) {
