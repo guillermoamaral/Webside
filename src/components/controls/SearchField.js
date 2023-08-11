@@ -72,7 +72,7 @@ class SearchField extends Component {
 							text: event.target.value,
 						});
 					}}
-					onKeyPress={(event) => {
+					onKeyDown={(event) => {
 						if (event.key === "Enter") {
 							this.search();
 						}

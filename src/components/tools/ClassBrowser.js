@@ -393,6 +393,9 @@ class ClassBrowser extends RefactoringBrowser {
 			selectedMethod,
 		} = this.state;
 		const rootclass = this.cache[root];
+		const appearance = ide.settings.section("appearance");
+		const mode = appearance.section(appearance.get("mode"));
+		const background = mode.section("colors").get("background");
 		return (
 			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
 				<Box mb={1}>
@@ -407,6 +410,10 @@ class ClassBrowser extends RefactoringBrowser {
 												: null
 										}
 										options={this.classnames}
+										// options={async (value) => {
+										// 	return ide.backend.searchClassNames(value);
+										// }}
+										backColor={background}
 										onChange={(classname) => {
 											this.changeRootClass(classname);
 										}}

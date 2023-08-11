@@ -253,11 +253,17 @@ class Backend {
 		);
 	}
 
-	async search(text, ignoreCase = false, beginning = true) {
+	async searchClassNames(text) {
+		const results = await this.search(text, true, true, "classes");
+		return results.map((r) => r.text);
+	}
+
+	async search(text, ignoreCase = false, beginning = true, type = "all") {
 		const data = {
 			text: text,
 			ignoreCase: ignoreCase,
 			beginning: beginning,
+			type: type,
 		};
 		return await this.post("/search", data, "search for " + text);
 	}

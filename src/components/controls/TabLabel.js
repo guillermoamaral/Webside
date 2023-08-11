@@ -66,10 +66,16 @@ class TabLabel extends Component {
 		this.props.onCloseOthers(this.props.index);
 	};
 
+	visibleLabel() {
+		const label = this.state.label;
+		const max = 40;
+		return label.length > max ? label.substr(0, max - 1) + "…" : label;
+	}
+
 	render() {
 		const { index, icon, noClose, onClose } = this.props;
 		const { label, menuOpen, menuPosition } = this.state;
-		const text = label.length > 50 ? label.substr(0, 49) + "…" : label;
+		const text = this.visibleLabel();
 		return (
 			<Box
 				display="flex"

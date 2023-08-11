@@ -9,75 +9,52 @@ import {
 	Typography,
 	InputAdornment,
 } from "@mui/material";
-// Must get rid of withStyles
-import { withStyles } from "@mui/styles";
-//import { styled } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/SearchRounded";
-
-const styles = (theme) => ({
-	container: {
-		flexGrow: 1,
-		position: "relative",
-		//height: 250,
-	},
-	suggestion: {
-		display: "block",
-	},
-	suggestionsList: {
-		margin: 0,
-		padding: 0,
-		listStyleType: "none",
-	},
-});
-
-const suggestionLimit = 5;
-
-// const StyledAutosuggest = styled(Autosuggest)(({ theme }) => ({
-// 	".SearchList-container-1": {
-// 		flexGrow: 1,
-// 		position: "relative",
-// 		height: 250,
-// 	},
-// 	".SearchList-suggestion-1": {
-// 		display: "block",
-// 	},
-// 	".SearchList-suggestionsList-1": {
-// 		margin: 0,
-// 		padding: 0,
-// 		listStyleType: "none",
-// 	},
-// }));
 
 class SearchList2 extends React.Component {
 	constructor(props) {
 		super(props);
+		this.typingTimer = null;
 		this.state = {
 			value: props.value || "",
 			suggestions: [],
 		};
 	}
 
-	filterSuggestions(value) {
-		const inputValue = value.trim().toLowerCase();
-		const inputLength = inputValue.length;
-		let count = 0;
-		return inputLength === 0 || !this.props.options
-			? []
-			: this.props.options.filter((option) => {
-					const keep =
-						count < suggestionLimit &&
-						option &&
-						option.toLowerCase().slice(0, inputLength) ===
-							inputValue;
-					if (keep) {
-						count += 1;
-					}
-					return keep;
-			  });
+	suggestionLimit() {
+		return this.props.suggestionLimit || 5;
 	}
 
-	suggestionsFetchRequested = ({ value }) => {
-		this.setState({ suggestions: this.filterSuggestions(value) });
+	async getSuggestions(value) {
+		const options = this.props.options;
+		if (!options) return [];
+		const limit = this.suggestionLimit();
+		if (typeof options === "function") {
+			const retrieved = await options(value);
+			return retrieved.slice(0, Math.min(retrieved.length, limit));
+		}
+		const target = value.trim().toLowerCase();
+		const length = target.length;
+		if (length === 0) return [];
+		let count = 0;
+		return options.filter((option) => {
+			const keep =
+				count < limit &&
+				option &&
+				option.toLowerCase().slice(0, length) === target;
+			if (keep) {
+				count += 1;
+			}
+			return keep;
+		});
+	}
+
+	suggestionsFetchRequested = async ({ value }) => {
+		clearTimeout(this.typingTimer);
+		this.typingTimer = setTimeout(async () => {
+			const suggestions = await this.getSuggestions(value);
+			this.setState({ suggestions: suggestions });
+		}, 500);
 	};
 
 	suggestionsClearRequested = () => {
@@ -104,7 +81,7 @@ class SearchList2 extends React.Component {
 				variant="outlined"
 				InputProps={{ inputRef: ref, ...other }}
 				autoFocus
-				onKeyPress={(event) => {
+				onKeyDown={(event) => {
 					if (
 						event.key === "Enter" &&
 						this.state.suggestions.length > 0
@@ -149,18 +126,30 @@ class SearchList2 extends React.Component {
 	};
 
 	render() {
-		const { classes } = this.props;
+		const { backColor } = this.props;
 		return (
 			<Autosuggest
-				// theme={{
-				// 	container: "SearchList-container-1",
-				// 	suggestionsList: "SearchList-suggestionsList-1",
-				// 	suggestion: "SearchList-suggestion-1",
-				// }}
 				theme={{
-					container: classes.container,
-					suggestionsList: classes.suggestionsList,
-					suggestion: classes.suggestion,
+					container: {
+						position: "relative",
+					},
+					suggestion: {
+						display: "block",
+					},
+					suggestionsContainerOpen: {
+						display: "block",
+						position: "absolute",
+						top: 51,
+						width: "100%",
+						border: "1px solid #cccccc",
+						backgroundColor: backColor,
+						zIndex: 2,
+					},
+					suggestionsList: {
+						margin: 0,
+						padding: 0,
+						listStyleType: "none",
+					},
 				}}
 				renderInputComponent={this.renderInput}
 				suggestions={this.state.suggestions}
@@ -193,6 +182,4 @@ class SearchList2 extends React.Component {
 	}
 }
 
-export default withStyles(styles)(SearchList2);
-
-//export default SearchList2;
+export default SearchList2;
