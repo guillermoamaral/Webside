@@ -25,6 +25,7 @@ class QuickSearch extends Tool {
 			selectedResult: null,
 			matchCase: true,
 			position: "beginning",
+			type: "all",
 		};
 	}
 
@@ -38,7 +39,7 @@ class QuickSearch extends Tool {
 	};
 
 	search = async () => {
-		const { text, matchCase, position } = this.state;
+		const { text, matchCase, position, type } = this.state;
 		this.setState({ searching: true });
 		var results = [];
 		try {
@@ -46,7 +47,8 @@ class QuickSearch extends Tool {
 				results = await ide.backend.search(
 					text,
 					!matchCase,
-					position === "beginning"
+					position,
+					type
 				);
 			}
 		} catch (error) {
@@ -75,6 +77,9 @@ class QuickSearch extends Tool {
 		}
 		if (type === "selector") {
 			ide.browseImplementors(text);
+		}
+		if (type === "pool") {
+			ide.inspectExpression(text);
 		}
 		if (this.props.onResultSelect) {
 			this.props.onResultSelect();
@@ -122,14 +127,23 @@ class QuickSearch extends Tool {
 		);
 	};
 
+	searchIn = (type) => {
+		this.setState({ type: type }, () => this.search());
+	};
+
 	setPosition = (value) => {
 		this.setState({ position: value }, () => this.search());
 	};
 
 	render() {
-		const { text, searching, selectedResult, matchCase, position } =
+		const { text, searching, selectedResult, matchCase, position, type } =
 			this.state;
 		const results = this.extendedResults();
+		const appearance = ide.settings.section("appearance");
+		const color = appearance
+			.section(appearance.get("mode"))
+			.section("colors")
+			.get("primaryColor");
 		return (
 			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
 				<Box display="flex" flexDirection="row" alignItems="center">
@@ -175,9 +189,62 @@ class QuickSearch extends Tool {
 							}
 						>
 							<ToggleButton value={"beginning"}>a*</ToggleButton>
-							<ToggleButton value={"inside"}>*a*</ToggleButton>
+							<ToggleButton value={"including"}>*a*</ToggleButton>
+							<ToggleButton value={"ending"}>*a</ToggleButton>
 						</ToggleButtonGroup>
 					</Box>
+				</Box>
+				<Box display="flex" flexDirection="row">
+					<ToggleButton
+						selected={type === "all"}
+						onChange={() => this.searchIn("all")}
+						size="small"
+						value="shift"
+						sx={{ minWidth: 50, borderRadius: 28 }}
+						mr={1}
+					>
+						All
+					</ToggleButton>
+					<ToggleButton
+						selected={type === "classes"}
+						onChange={() => this.searchIn("classes")}
+						size="small"
+						value="shift"
+						sx={{ borderRadius: 28 }}
+						mr={1}
+					>
+						Classes
+					</ToggleButton>
+					<ToggleButton
+						selected={type === "selectors"}
+						onChange={() => this.searchIn("selectors")}
+						size="small"
+						value="shift"
+						sx={{ borderRadius: 28 }}
+						mr={1}
+					>
+						Selectors
+					</ToggleButton>
+					<ToggleButton
+						selected={type === "packages"}
+						onChange={() => this.searchIn("packages")}
+						size="small"
+						value="shift"
+						sx={{ borderRadius: 28 }}
+						mr={1}
+					>
+						Packages
+					</ToggleButton>
+					<ToggleButton
+						selected={type === "pools"}
+						onChange={() => this.searchIn("pools")}
+						size="small"
+						value="shift"
+						sx={{ borderRadius: 28 }}
+						mr={1}
+					>
+						Pools
+					</ToggleButton>
 				</Box>
 				{!searching && results.length === 0 && (
 					<Typography variant="body">No results</Typography>
@@ -199,13 +266,11 @@ class QuickSearch extends Tool {
 							enableFilter={false}
 							items={results}
 							itemLabel="text"
-							labelSize={(result) =>
-								result.type === "separator" ? "normal" : "small"
+							itemColor={(result) =>
+								result.type === "separator" ? color : "default"
 							}
-							labelStyle={(result) =>
-								result.type === "separator"
-									? "italic"
-									: "normal"
+							labelSize={(result) =>
+								result.type === "separator" ? "large" : "small"
 							}
 							// itemIcon={(result) => {
 							// 	return result.type !== "separator" ? (

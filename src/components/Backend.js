@@ -258,14 +258,23 @@ class Backend {
 		return results.map((r) => r.text);
 	}
 
-	async search(text, ignoreCase = false, beginning = true, type = "all") {
-		const data = {
-			text: text,
-			ignoreCase: ignoreCase,
-			beginning: beginning,
-			type: type,
-		};
-		return await this.post("/search", data, "search for " + text);
+	async search(
+		text,
+		ignoreCase = false,
+		position = "beginning",
+		type = "all"
+	) {
+		return await this.get(
+			"/search?text=" +
+				text +
+				"&ignoreCase=" +
+				ignoreCase +
+				"&position=" +
+				position +
+				"&type=" +
+				type,
+			"search for " + text
+		);
 	}
 
 	// Method queries...

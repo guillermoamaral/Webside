@@ -504,6 +504,17 @@ class IDE extends Component {
 		this.mainContainer().openChat();
 	};
 
+	async inspectExpression(expression) {
+		const object = await this.backend.evaluateExpression(
+			expression,
+			false,
+			true
+		);
+		if (object) {
+			this.mainContainer().openInspector(object);
+		}
+	}
+
 	async followTestRun(id, debug) {
 		try {
 			const status = await this.backend.testRunStatus(id);
