@@ -280,7 +280,10 @@ class QuickSearch extends Tool {
 							// 	) : null;
 							// }}
 							selectedItem={selectedResult}
-							onItemSelect={this.goToResult}
+							onItemSelect={(r) =>
+								this.setState({ selectedResult: r })
+							}
+							onItemDoubleClick={this.goToResult}
 						/>
 					</Box>
 				)}

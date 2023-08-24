@@ -98,8 +98,8 @@ class CustomList extends Component {
 	}
 
 	itemDoubleClicked = (item) => {
-		if (this.props.onDoubleClick) {
-			this.props.onDoubleClick(item);
+		if (this.props.onItemDoubleClick) {
+			this.props.onItemDoubleClick(item);
 		}
 	};
 
