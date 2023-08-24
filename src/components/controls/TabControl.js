@@ -68,7 +68,7 @@ class TabControl extends Component {
 				height="100%"
 			>
 				<Box pt={0} display="flex" flexDirection="row">
-					<Box pt={0} width="95%">
+					<Box pt={0} flexGrow={1} style={{ overflow: "hidden" }}>
 						<Tabs
 							value={Math.max(selectedIndex, 0)}
 							onChange={this.tabChanged}

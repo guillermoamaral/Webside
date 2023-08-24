@@ -407,7 +407,7 @@ class IDE extends Component {
 					}}
 					onPageSplit={this.splitPage}
 					pages={pages}
-					sx={{ height: "100%" }}
+					sx={{ width: "100%", height: "100%" }}
 				/>
 			),
 		};
@@ -787,6 +787,7 @@ class IDE extends Component {
 								ml: 6,
 								mr: 2,
 								p: 2,
+								width: "100vh",
 								height: "95vh",
 							}}
 						>
@@ -794,9 +795,9 @@ class IDE extends Component {
 							<Container
 								maxWidth={totalWidth}
 								disableGutters
-								sx={{ height: "100%" }}
+								sx={{ height: "100%", width: "100%" }}
 							>
-								<CustomSplit>
+								<CustomSplit sx={{ width: "100%" }}>
 									<ToolContainer
 										id={99999}
 										key="mainContainer"
