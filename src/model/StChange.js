@@ -340,17 +340,6 @@ class RenameClass extends ClassChange {
 		json.newName = this.newName;
 		return json;
 	}
-
-	async updateCurrentSourceCode() {
-		try {
-			const species = await this.changeset.system.classNamed(
-				this.newName
-			);
-			this.currentSource = this.newName;
-		} catch (error) {
-			this.currentSource = "";
-		}
-	}
 }
 
 class VariableChange extends ClassChange {
