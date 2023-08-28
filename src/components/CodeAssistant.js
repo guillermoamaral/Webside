@@ -12,7 +12,7 @@ class CodeAssistant {
 		const response = await this.openAI.sendMessage(
 			"Improve this Smalltalk code " + code
 		);
-		return this.extractSmalltalkBlocks(response);
+		return this.extractCodeBlocks(response);
 	}
 
 	async explainCode(code) {
@@ -27,17 +27,17 @@ class CodeAssistant {
 		const response = await this.openAI.sendMessage(
 			"Write a unit test for this Smalltalk code " + code
 		);
-		return this.extractSmalltalkBlocks(response);
+		return this.extractCodeBlocks(response);
 	}
 
 	async categorizeMethod(method) {
 		const response = await this.openAI.sendMessage(
 			"Suggest a category this Smalltalk method " + method.source
 		);
-		return this.extractSmalltalkBlocks(response);
+		return this.extractCodeBlocks(response);
 	}
 
-	extractSmalltalkBlocks(text) {
+	extractCodeBlocks(text) {
 		const regex = /```smalltalk(.*?)```/gs;
 		const matches = [...text.matchAll(regex)];
 		const blocks = matches.map((match) => match[1]);

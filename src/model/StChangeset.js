@@ -13,6 +13,10 @@ class StChangeset extends Object {
 		return changeset;
 	}
 
+	asJson() {
+		return this.changes.map((ch) => ch.asJson());
+	}
+
 	fromJson(json) {
 		this.changes = json.map((j) => {
 			const change = StChange.fromJson(j);
@@ -36,27 +40,27 @@ class StChangeset extends Object {
 		this.changes = this.changes.filter((ch) => ch !== change);
 	}
 
-	compress() {
+	async compress() {
 		if (!this.originalChanges) {
 			this.originalChanges = this.changes;
 		}
-		var compressed = [];
-		this.changes.forEach((ch) => {
-			compressed = compressed.filter((ch2) => !ch.canOverride(ch2));
-			compressed.push(ch);
-		});
-		this.changes = compressed;
+		const compressed = await this.system.compressChanges(this.asJson());
+		this.fromJson(compressed);
+	}
+
+	async update() {
+		const updated = await this.system.updateChanges(this.asJson());
+		this.fromJson(updated);
 	}
 
 	async rejectUpToDate() {
 		if (!this.originalChanges) {
 			this.originalChanges = this.changes;
 		}
-		await this.updateCurrentSourceCode();
-		const newer = this.changes.filter((ch) => {
+		await this.update();
+		this.changes = this.changes.filter((ch) => {
 			return !ch.isUpToDate();
 		});
-		this.changes = newer;
 	}
 
 	filterChanges(filters) {
@@ -66,14 +70,6 @@ class StChangeset extends Object {
 		var filtered = [...this.changes];
 		filters.forEach((f) => (filtered = filtered.filter(f.function)));
 		this.changes = filtered;
-	}
-
-	async updateCurrentSourceCode() {
-		await Promise.all(
-			this.changes.map(async (ch) => {
-				await ch.updateCurrentSourceCode();
-			})
-		);
 	}
 }
 

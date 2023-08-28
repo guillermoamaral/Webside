@@ -141,7 +141,7 @@ class SearchList2 extends React.Component {
 						position: "absolute",
 						top: 51,
 						width: "100%",
-						border: "1px solid #cccccc",
+						border: "2px solid #c4c4c41f",
 						backgroundColor: backColor,
 						zIndex: 2,
 					},

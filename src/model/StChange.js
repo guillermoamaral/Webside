@@ -8,6 +8,8 @@ class StChange extends Object {
 		this.changeset = null;
 		this.source = null;
 		this.currentSource = null;
+		this.changesSomething = false;
+		this.canBeApplied = false;
 	}
 
 	static type() {
@@ -60,6 +62,8 @@ class StChange extends Object {
 		this.author = json.author;
 		this.source = json.sourceCode;
 		this.currentSource = json.currentSourceCode;
+		this.changesSomething = json.changesSomething;
+		this.canBeApplied = json.canBeApplied;
 	}
 
 	asJson() {
@@ -70,6 +74,8 @@ class StChange extends Object {
 		json.timestamp = this.timestamp;
 		json.author = this.author;
 		json.sourceCode = this.source;
+		json.changesSomething = this.changesSomething;
+		json.canBeApplied = this.canBeApplied;
 		return json;
 	}
 
@@ -85,10 +91,8 @@ class StChange extends Object {
 		return this.currentSource;
 	}
 
-	updateCurrentSourceCode() {}
-
 	isUpToDate() {
-		return this.sourceCode() === this.currentSourceCode();
+		return !this.changesSomething;
 	}
 
 	isClassChange() {
@@ -104,7 +108,15 @@ class StChange extends Object {
 	}
 
 	async apply() {
-		await this.changeset.system.postChange(this.asJson());
+		const applied = await this.changeset.system.postChange(this.asJson());
+		this.fromJson(applied);
+	}
+
+	async update() {
+		const updated = await this.changeset.system.updateChanges([
+			this.asJson(),
+		]);
+		this.fromJson(updated[0]);
 	}
 }
 
@@ -130,18 +142,6 @@ class MethodChange extends StChange {
 
 	isMethodChange() {
 		return true;
-	}
-
-	async updateCurrentSourceCode() {
-		try {
-			const method = await this.changeset.system.method(
-				this.className,
-				this.selector
-			);
-			this.currentSource = method.source;
-		} catch (error) {
-			this.currentSource = "could not find method";
-		}
 	}
 
 	canOverride(change) {
@@ -171,11 +171,7 @@ class AddMethod extends MethodChange {
 	}
 }
 
-class RemoveMethod extends MethodChange {
-	isUpToDate() {
-		return this.currentSource === "could not find method";
-	}
-}
+class RemoveMethod extends MethodChange {}
 
 class ClassifyMethod extends MethodChange {
 	constructor() {
@@ -192,22 +188,6 @@ class ClassifyMethod extends MethodChange {
 		var json = super.asJson();
 		json.category = this.category;
 		return json;
-	}
-
-	async updateCurrentSourceCode() {
-		try {
-			const method = await this.changeset.system.method(
-				this.className,
-				this.selector
-			);
-			this.currentSource = method.category;
-		} catch (error) {
-			this.currentSource = "could not find method";
-		}
-	}
-
-	isUpToDate() {
-		return this.category === this.currentSource;
 	}
 }
 
@@ -274,29 +254,6 @@ class AddClass extends ClassChange {
 
 	sourceCode() {
 		return this.definition;
-	}
-
-	isUpToDate() {
-		// console.log(
-		// 	this.currentSourceCode()
-		// 		.replace(/[\r\n]/gm, "")
-		// 		.replace(/\s+/g, " ")
-		// );
-		return (
-			this.sourceCode().replace(/[\r\n]/gm, "") ===
-			this.currentSourceCode().replace(/[\r\n]/gm, "")
-		);
-	}
-
-	async updateCurrentSourceCode() {
-		try {
-			const species = await this.changeset.system.classNamed(
-				this.className
-			);
-			this.currentSource = species.definition;
-		} catch (error) {
-			this.currentSource = "could not find class";
-		}
 	}
 }
 

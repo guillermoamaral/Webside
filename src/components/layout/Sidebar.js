@@ -12,7 +12,7 @@ import {
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import TranscriptIcon from "../icons/TranscriptIcon";
 import SearchIcon from "@mui/icons-material/Search";
-import ResourcesIcon from "../icons/ResourcesIcon";
+import ObjectsIcon from "../icons/ObjectsIcon";
 import ChangesBrowserIcon from "../icons/ChangesBrowserIcon";
 import ChatIcon from "@mui/icons-material/Chat";
 import SaveImageIcon from "@mui/icons-material/Save";
@@ -91,7 +91,7 @@ class Sidebar extends Component {
 					<ListItemButton onClick={onResourcesClick}>
 						<Tooltip title="Resources" placement="top">
 							<ListItemIcon>
-								<ResourcesIcon />
+								<ObjectsIcon />
 							</ListItemIcon>
 						</Tooltip>
 						<ListItemText primary="Resources" />

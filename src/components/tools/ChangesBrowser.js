@@ -32,7 +32,7 @@ class ChangesBrowser extends Tool {
 	}
 
 	changeSelected = async (change) => {
-		await change.updateCurrentSourceCode();
+		await change.update();
 		this.setState({ selectedChange: change });
 	};
 
@@ -96,9 +96,9 @@ class ChangesBrowser extends Tool {
 		this.updateChanges(changeset.changes, next);
 	};
 
-	rejectOlderChanges = () => {
+	rejectOlderChanges = async () => {
 		const changeset = this.props.changeset;
-		changeset.compress();
+		await changeset.compress();
 		this.updateChanges(changeset.changes);
 	};
 
@@ -136,19 +136,17 @@ class ChangesBrowser extends Tool {
 	};
 
 	applyChanges = async (changes) => {
-		await ide.waitFor(
-			async () =>
-				await Promise.all(
-					changes.map(async (ch) => {
-						try {
-							await ch.apply();
-							await ch.updateCurrentSourceCode();
-						} catch (error) {
-							ide.reportError(error);
-						}
-					})
-				)
-		);
+		await ide.waitFor(async () => {
+			await Promise.all(
+				changes.map(async (ch) => {
+					try {
+						await ch.apply();
+					} catch (error) {
+						ide.reportError(error);
+					}
+				})
+			);
+		});
 	};
 
 	filtersChanged = (filters) => {
@@ -160,9 +158,7 @@ class ChangesBrowser extends Tool {
 	showOriginalChanges = async () => {
 		const changeset = this.props.changeset;
 		changeset.changes = changeset.originalChanges || changeset.changes;
-		await ide.waitFor(
-			async () => await changeset.updateCurrentSourceCode()
-		);
+		await ide.waitFor(async () => await changeset.update());
 		this.updateChanges(changeset.changes);
 	};
 

@@ -485,6 +485,18 @@ class Backend {
 		);
 	}
 
+	async updateChanges(changes) {
+		return await this.post("/changes/update", changes, "update changes");
+	}
+
+	async compressChanges(changes) {
+		return await this.post(
+			"/changes/compress",
+			changes,
+			"compress changes"
+		);
+	}
+
 	// Change helpers...
 	async createPackage(packagename) {
 		const change = this.newChange("AddPackage");
