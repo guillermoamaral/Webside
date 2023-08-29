@@ -48,7 +48,7 @@ class Titlebar extends Component {
 				open={sidebarExpanded}
 				enableColorOnDark
 			>
-				<Toolbar>
+				<Toolbar variant="dense">
 					<IconButton
 						edge="start"
 						color="inherit"
