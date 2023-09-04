@@ -23,7 +23,7 @@ class QuickSearch extends Tool {
 			results: [],
 			searching: false,
 			selectedResult: null,
-			matchCase: true,
+			matchCase: false,
 			position: "beginning",
 			type: "all",
 		};
