@@ -36,12 +36,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 		paddingLeft: `calc(1em + ${theme.spacing(4)})`,
 		transition: theme.transitions.create("width"),
 		width: "100%",
-		[theme.breakpoints.up("sm")]: {
-			width: "12ch",
-			"&:focus": {
-				width: "20ch",
-			},
-		},
+		// [theme.breakpoints.up("sm")]: {
+		// 	width: "12ch",
+		// 	"&:focus": {
+		// 		width: "20ch",
+		// 	},
+		// },
 	},
 }));
 
@@ -60,13 +60,15 @@ class SearchField extends Component {
 	}
 
 	render() {
+		const { onClick, placeholder } = this.props;
 		return (
 			<Search>
 				<SearchIconWrapper>
 					<SearchIcon />
 				</SearchIconWrapper>
 				<StyledInputBase
-					placeholder="Search…"
+					placeholder={placeholder || "Search..."}
+					onClick={onClick}
 					onChange={(event) => {
 						this.setState({
 							text: event.target.value,

@@ -155,6 +155,7 @@ class IDE extends Component {
 		darkCode.addColor("separator", "#b3bab6");
 
 		const shortcuts = settings.addSection("shortcuts");
+		shortcuts.addShortcut("quickSearch", "Shift+Enter");
 		shortcuts.addShortcut("openClassBrowser", "Ctrl+b");
 		shortcuts.addShortcut("newWorkspace", "Ctrl+Alt+w");
 		shortcuts.addShortcut("moveToLeftTab", "Ctrl+Alt+Left");
@@ -650,7 +651,7 @@ class IDE extends Component {
 		console.log(hotkey);
 		const shortcuts = this.settings.section("shortcuts");
 		switch (hotkey) {
-			case "Shift+Enter":
+			case shortcuts.get("quickSearch"):
 				this.openQuickSearch();
 				break;
 			case shortcuts.get("openClassBrowser"):
@@ -729,7 +730,8 @@ class IDE extends Component {
 		return (
 			<Hotkeys
 				keyName={
-					"Shift+Enter," +
+					shortcuts.get("quickSearch") +
+					"," +
 					shortcuts.get("openClassBrowser") +
 					"," +
 					shortcuts.get("newWorkspace") +
@@ -766,6 +768,10 @@ class IDE extends Component {
 								.section("appearance")
 								.get("mode")}
 							onColorModeToggle={this.toggleColorMode}
+							onSearchClick={this.openQuickSearch}
+							searchPlaceholder={
+								"Use " + shortcuts.get("quickSearch")
+							}
 						/>
 						<Sidebar
 							expanded={sidebarExpanded}

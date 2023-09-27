@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 import { ide } from "../IDE";
 import CustomList from "../controls/CustomList";
-import SubdirectoryArrowRightIcon from "@mui/icons-material/SubdirectoryArrowRight";
 
 class QuickSearch extends Tool {
 	constructor(props) {
@@ -19,7 +18,7 @@ class QuickSearch extends Tool {
 		this.inputRef = React.createRef();
 		this.typingTimer = null;
 		this.state = {
-			text: "",
+			text: props.initialText || "",
 			results: [],
 			searching: false,
 			selectedResult: null,
@@ -27,15 +26,20 @@ class QuickSearch extends Tool {
 			position: "beginning",
 			type: "all",
 		};
+		if (props.initialText) {
+			this.scheduleSearch();
+		}
 	}
 
 	textChanged = (text) => {
-		this.setState({ text: text }, () => {
-			clearTimeout(this.typingTimer);
-			this.typingTimer = setTimeout(() => {
-				this.search();
-			}, 500);
-		});
+		this.setState({ text: text }, this.scheduleSearch);
+	};
+
+	scheduleSearch = () => {
+		clearTimeout(this.typingTimer);
+		this.typingTimer = setTimeout(() => {
+			this.search();
+		}, 500);
 	};
 
 	search = async () => {

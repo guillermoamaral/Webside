@@ -76,7 +76,6 @@ class CodeMerge extends CodeEditor {
 						gutter={false}
 						highlightChanges={highlightChanges}
 						onContextMenu={(event) => {
-							console.log("mmm");
 							this.openMenu(event);
 						}}
 					>
@@ -88,10 +87,6 @@ class CodeMerge extends CodeEditor {
 								lintGutter(),
 								theme,
 							]}
-							onContextMenu={(event) => {
-								console.log("mmm");
-								this.openMenu(event);
-							}}
 							basicSetup={{
 								lineNumbers: false,
 							}}
@@ -104,9 +99,6 @@ class CodeMerge extends CodeEditor {
 								lintGutter(),
 								theme,
 							]}
-							onContextMenu={(event) => {
-								this.openMenu(event);
-							}}
 							basicSetup={{
 								lineNumbers: false,
 							}}

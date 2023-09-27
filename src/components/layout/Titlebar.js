@@ -8,22 +8,12 @@ import {
 	Box,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { ide } from "../IDE";
 import StyledAppBar from "./StyledAppBar";
 import SearchField from "../controls/SearchField";
 import LightModeIcon from "@mui/icons-material/LightModeRounded";
 import DarkModeIcon from "@mui/icons-material/DarkModeRounded";
 
 class Titlebar extends Component {
-	search = async (text) => {
-		if (text && text.length > 0) {
-			try {
-				await ide.backend.classNamed(text);
-				ide.browseClass(text);
-			} catch (error) {}
-		}
-	};
-
 	render() {
 		const {
 			dialect,
@@ -34,6 +24,8 @@ class Titlebar extends Component {
 			onUserClick,
 			colorMode,
 			onColorModeToggle,
+			onSearchClick,
+			searchPlaceholder,
 		} = this.props;
 		let logo;
 		if (dialect) {
@@ -90,7 +82,10 @@ class Titlebar extends Component {
 						</Link>
 					</Box>
 					<Box flexGrow={1} />
-					<SearchField onSearch={(text) => this.search(text)} />
+					<SearchField
+						onClick={onSearchClick}
+						placeholder={searchPlaceholder}
+					/>
 					<Box flexGrow={1} />
 					<IconButton color="inherit" onClick={onColorModeToggle}>
 						{colorMode === "dark" ? (
