@@ -704,7 +704,7 @@ class ToolContainer extends Component {
 						this.reportError(error);
 					}
 				};
-				reader.readAsText(file, "UTF-8");
+				reader.readAsBinaryString(file);
 			}
 		};
 		input.click();
