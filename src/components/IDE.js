@@ -281,7 +281,7 @@ class IDE extends Component {
 				primary = "#2b5b84";
 				secondary = "#1e415e";
 				break;
-			case "Powerlang":
+			case "PowerlangJS":
 				primary = green[300];
 				secondary = green[800];
 				break;
