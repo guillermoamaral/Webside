@@ -405,9 +405,9 @@ class ResourceBrowser extends Tool {
 		return icon;
 	}
 
-	refreshResources() {
+	refreshResources = () => {
 		this.typeSelected(this.state.selectedType);
-	}
+	};
 
 	resourceSelected = (resource) => {
 		this.setState({ selectedResource: resource });
