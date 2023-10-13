@@ -107,7 +107,7 @@ class CustomTable extends Component {
 		const field = column.field;
 		var text = typeof field == "string" ? row[field] : field(row);
 		text = column.formatter ? column.formatter(text) : text;
-		return text;
+		return text || "";
 	};
 
 	setCellText = (row, column, value) => {
@@ -263,9 +263,8 @@ class CustomTable extends Component {
 			filtered = filtered.filter((row) => {
 				return (
 					columns.find((column) => {
-						return this.getCellText(row, column)
-							.toLowerCase()
-							.includes(target);
+						const text = this.getCellText(row, column);
+						return text.toLowerCase().includes(target);
 					}) !== undefined
 				);
 			});
