@@ -7,11 +7,24 @@ import {
 	TextField,
 	Typography,
 	Link,
+	Tooltip,
+	IconButton,
+	Button,
 } from "@mui/material";
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import PopupMenu from "./PopupMenu";
 import RSC from "react-scrollbars-custom";
+import { styled } from "@mui/material/styles";
+
+const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
+	"& .actionButton": {
+		display: "none",
+	},
+	"&:hover .actionButton": {
+		display: "block",
+	},
+}));
 
 const ITEM_SIZE = 24;
 
@@ -305,9 +318,10 @@ class CustomList extends Component {
 		const highlighted = this.props.highlightedItem === item;
 		const weight =
 			selected || highlighted ? "fontWeightBold" : "fontWeightRegular";
+		const actions = this.props.itemActions || [];
 		return (
 			<div style={style}>
-				<ListItemButton
+				<StyledListItemButton
 					disableGutters={divider}
 					//autoFocus={selected}
 					style={{
@@ -348,7 +362,63 @@ class CustomList extends Component {
 							</Typography>
 						}
 					/>
-				</ListItemButton>
+					<Box display="flex" alignItems="center" key={"box" + index}>
+						{actions.map((action, j) => {
+							const visible =
+								action.visible === undefined ||
+								(typeof action.visible == "boolean" &&
+									action.visible) ||
+								(typeof action.visible == "function" &&
+									action.visible(item));
+							return (
+								<Box>
+									{visible && action.icon && (
+										<Tooltip
+											title={action.label}
+											placement="top"
+										>
+											<IconButton
+												className="actionButton"
+												// style={{
+												// 	width: 28,
+												// 	height: 28,
+												// }}
+												key={
+													"button" +
+													index +
+													"action" +
+													j
+												}
+												color="inherit"
+												size="small"
+												onClick={(event) => {
+													event.stopPropagation();
+													action.handler(item);
+												}}
+											>
+												{action.icon}
+											</IconButton>
+										</Tooltip>
+									)}
+									{visible && !action.icon && (
+										<Link
+											className="actionButton"
+											component="button"
+											variant="contained"
+											size="small"
+											sx={{ marginLeft: 1 }}
+											onClick={(e) => {
+												action.handler(item);
+											}}
+										>
+											{action.label}
+										</Link>
+									)}
+								</Box>
+							);
+						})}
+					</Box>
+				</StyledListItemButton>
 			</div>
 		);
 	};

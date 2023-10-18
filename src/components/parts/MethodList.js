@@ -345,6 +345,19 @@ class MethodList extends Component {
 		];
 	}
 
+	methodActions() {
+		return [
+			{
+				label: "implementors",
+				handler: this.browseImplementors,
+			},
+			{
+				label: "senders",
+				handler: this.browseSenders,
+			},
+		];
+	}
+
 	newMethod = () => {
 		const selected = this.props.selectedMethod;
 		const method = ide.backend.methodTemplate();
@@ -391,6 +404,7 @@ class MethodList extends Component {
 					selectedItem={selectedMethod}
 					onItemSelect={onMethodSelect}
 					menuOptions={this.menuOptions()}
+					itemActions={this.methodActions()}
 				/>
 			);
 		}
