@@ -1006,6 +1006,18 @@ class CodeEditor extends Component {
 		}, 350);
 	};
 
+	includeColonInSelection = () => {
+		const range = this.currentSelectionRange();
+		if (this.textInRange({ from: range.to, to: range.to + 1 }) == ":") {
+			this.selectRanges([
+				{
+					anchor: range.from,
+					head: range.to + 1,
+				},
+			]);
+		}
+	};
+
 	render() {
 		console.log("rendering code editor");
 		const { source, evaluating, progress, dirty, menuOpen, menuPosition } =
@@ -1061,6 +1073,7 @@ class CodeEditor extends Component {
 								this.editorView = view;
 							}}
 							onUpdate={(update) => this.editorUpdated(update)}
+							onDoubleClick={this.includeColonInSelection}
 							readOnly={readOnly || evaluating || progress}
 							basicSetup={{
 								lineNumbers: lineNumbers,
