@@ -38,6 +38,7 @@ class RefactoringBrowser extends Tool {
 			}
 			if (forced || !species.subclasses) {
 				species.subclasses = await ide.backend.subclasses(species.name);
+				species.subclasses.sort((a, b) => (a.name <= b.name ? -1 : 1));
 			}
 		} catch (error) {
 			ide.reportError(error);
@@ -70,7 +71,7 @@ class RefactoringBrowser extends Tool {
 					species.name
 				);
 				species.usedCategories.sort();
-					species.usualCategories = await ide.backend.usualCategories(
+				species.usualCategories = await ide.backend.usualCategories(
 					species.name.endsWith(" class")
 				);
 				species.usualCategories.sort();
