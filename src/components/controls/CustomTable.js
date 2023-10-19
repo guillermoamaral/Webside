@@ -263,8 +263,8 @@ class CustomTable extends Component {
 			filtered = filtered.filter((row) => {
 				return (
 					columns.find((column) => {
-						const text = this.getCellText(row, column);
-						return text.toLowerCase().includes(target);
+						const text = this.getCellText(row, column) || "";
+						return text.toString().toLowerCase().includes(target);
 					}) !== undefined
 				);
 			});
