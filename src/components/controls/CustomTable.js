@@ -24,7 +24,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 		display: "none",
 	},
 	"&:hover .actionButton": {
-		display: "block",
+		display: "flex",
 	},
 }));
 
@@ -145,7 +145,7 @@ class CustomTable extends Component {
 					disabled={false}
 					readOnly={false}
 					//Review this fix size. It was fixed to avoid dynamic resizing
-					style={{ height: 22 }}
+					//style={{ height: 22 }}
 					placeholder={text}
 					value={text}
 					inputProps={{ "aria-label": "expression", size: "small" }}
@@ -228,14 +228,14 @@ class CustomTable extends Component {
 					return (
 						<Box
 							//Review these fixed sizes. They were fixed to avoid dynamic resizing when hovering
-							style={{ width: 28, height: 28 }}
+							style={{ width: 22, height: 22 }}
 							key={"box" + index + "action" + j}
 						>
 							{visible && (
 								<Tooltip title={action.label} placement="top">
 									<IconButton
-										//className="actionButton"
-										style={{ width: 28, height: 28 }}
+										className="actionButton"
+										style={{ width: 22, height: 22 }}
 										key={"button" + index + "action" + j}
 										color="inherit"
 										size="small"
@@ -404,6 +404,7 @@ class CustomTable extends Component {
 										return (
 											<StyledTableRow
 												hover
+												sx={{ cursor: "pointer" }}
 												tabIndex={-1}
 												key={"row" + i}
 												selected={row === selectedRow}
