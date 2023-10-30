@@ -601,10 +601,10 @@ class CodeEditor extends Component {
 	}
 
 	showEvaluation = async () => {
+		const range = this.currentSelectionRange();
 		const expression = this.selectedExpression();
 		const object = await this.evaluateExpression(expression, false, false);
 		if (object) {
-			const range = this.currentSelectionRange();
 			this.inserText(
 				" " + object.printString,
 				Math.max(range.head, range.anchor)
