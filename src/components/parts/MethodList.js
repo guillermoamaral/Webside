@@ -7,6 +7,8 @@ import CustomList from "../controls/CustomList";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
+//import ImplementorsIcon from "../icons/ImplementorsIcon";
+//import SendersIcon from "../icons/SendersIcon";
 
 class MethodList extends Component {
 	static contextType = ToolContainerContext;
@@ -269,14 +271,6 @@ class MethodList extends Component {
 
 	methodIcon = (method) => {
 		const size = 12;
-		if (this.isTest(method)) {
-			return (
-				<TestIcon
-					style={{ fontSize: 16 }}
-					onClick={(event) => this.runTest(method, true)}
-				/>
-			);
-		}
 		if (method.overriding && method.overriden) {
 			return (
 				<OverridingOverridenIcon
@@ -345,18 +339,29 @@ class MethodList extends Component {
 		];
 	}
 
-	methodActions() {
-		return [
-			{
-				label: "implementors",
-				handler: this.browseImplementors,
-			},
-			{
-				label: "senders",
-				handler: this.browseSenders,
-			},
-		];
-	}
+	methodActions = (method) => {
+		var actions = [];
+		if (this.isTest(method)) {
+			actions.push({
+				icon: <TestIcon style={{ fontSize: 16 }} />,
+				label: "Run test",
+				handler: (m) => this.runTest(m, true),
+			});
+		}
+		actions.push({
+			//icon: <ImplementorsIcon style={{ fontSize: 14 }} />,
+			icon: "i",
+			label: "Implementors",
+			handler: this.browseImplementors,
+		});
+		actions.push({
+			//icon: <SendersIcon style={{ fontSize: 14 }} />,
+			icon: "s",
+			label: "Senders",
+			handler: this.browseSenders,
+		});
+		return actions;
+	};
 
 	newMethod = () => {
 		const selected = this.props.selectedMethod;
@@ -404,7 +409,7 @@ class MethodList extends Component {
 					selectedItem={selectedMethod}
 					onItemSelect={onMethodSelect}
 					menuOptions={this.menuOptions()}
-					itemActions={this.methodActions()}
+					itemActions={this.methodActions}
 				/>
 			);
 		}

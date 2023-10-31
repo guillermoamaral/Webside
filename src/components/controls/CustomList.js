@@ -18,11 +18,11 @@ import RSC from "react-scrollbars-custom";
 import { styled } from "@mui/material/styles";
 
 const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
-	"& .actionButton": {
+	"& .actionButtons": {
 		display: "none",
 	},
-	"&:hover .actionButton": {
-		display: "block",
+	"&:hover .actionButtons": {
+		display: "flex",
 	},
 }));
 
@@ -217,6 +217,14 @@ class CustomList extends Component {
 		return size(item);
 	};
 
+	getItemActions = (item) => {
+		const actions = this.props.itemActions;
+		if (typeof actions === "function") {
+			return actions(item);
+		}
+		return actions || [];
+	};
+
 	openMenu = (event) => {
 		event.preventDefault();
 		this.setState({
@@ -318,7 +326,7 @@ class CustomList extends Component {
 		const highlighted = this.props.highlightedItem === item;
 		const weight =
 			selected || highlighted ? "fontWeightBold" : "fontWeightRegular";
-		const actions = this.props.itemActions || [];
+		const actions = this.getItemActions(item);
 		return (
 			<div style={style}>
 				<StyledListItemButton
@@ -362,7 +370,12 @@ class CustomList extends Component {
 							</Typography>
 						}
 					/>
-					<Box display="flex" alignItems="center" key={"box" + index}>
+					<Box
+						display="flex"
+						alignItems="center"
+						key={"box" + index}
+						className="actionButtons"
+					>
 						{actions.map((action, j) => {
 							const visible =
 								action.visible === undefined ||
@@ -371,18 +384,17 @@ class CustomList extends Component {
 								(typeof action.visible == "function" &&
 									action.visible(item));
 							return (
-								<Box>
+								<Box key={"box" + index + "action" + j}>
 									{visible && action.icon && (
 										<Tooltip
 											title={action.label}
 											placement="top"
 										>
 											<IconButton
-												className="actionButton"
-												// style={{
-												// 	width: 28,
-												// 	height: 28,
-												// }}
+												style={{
+													width: ITEM_SIZE,
+													height: ITEM_SIZE,
+												}}
 												key={
 													"button" +
 													index +
