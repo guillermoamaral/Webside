@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import OverridenIcon from "@mui/icons-material/ExpandMore";
 import OverridingIcon from "@mui/icons-material/ExpandLess";
 import OverridingOverridenIcon from "@mui/icons-material/UnfoldMore";
-import TestIcon from "@mui/icons-material/PlayArrow";
+import RunTestIcon from "@mui/icons-material/PlayArrow";
+import TestStateIcon from "@mui/icons-material/CircleRounded";
 import CustomList from "../controls/CustomList";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
@@ -272,6 +273,17 @@ class MethodList extends Component {
 
 	methodIcon = (method) => {
 		const size = 12;
+		if (this.isTest(method) && method.status) {
+			const color =
+				method.status == "passed"
+					? "green"
+					: method.status == "failed"
+					? "yellow"
+					: method.status == "error"
+					? "red"
+					: "grey";
+			return <TestStateIcon style={{ color: color, fontSize: size }} />;
+		}
 		if (method.overriding && method.overriden) {
 			return (
 				<OverridingOverridenIcon
@@ -344,7 +356,7 @@ class MethodList extends Component {
 		var actions = [];
 		if (this.isTest(method)) {
 			actions.push({
-				icon: <TestIcon color="primary" style={{ fontSize: 16 }} />,
+				icon: <RunTestIcon color="primary" style={{ fontSize: 16 }} />,
 				label: "Run test",
 				handler: (m) => this.runTest(m, true),
 			});

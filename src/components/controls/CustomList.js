@@ -352,7 +352,12 @@ class CustomList extends Component {
 						</ListItemIcon>
 					</Box>
 					<ListItemText
-						style={{ margin: 0 }}
+						style={{
+							marginLeft: 2,
+							marginBottom: 0,
+							marginRight: 0,
+							marginTop: 0,
+						}}
 						primary={
 							<Typography
 								noWrap
