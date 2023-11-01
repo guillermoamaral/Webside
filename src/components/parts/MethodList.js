@@ -7,6 +7,7 @@ import CustomList from "../controls/CustomList";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
+import { Typography } from "@mui/material";
 //import ImplementorsIcon from "../icons/ImplementorsIcon";
 //import SendersIcon from "../icons/SendersIcon";
 
@@ -343,20 +344,20 @@ class MethodList extends Component {
 		var actions = [];
 		if (this.isTest(method)) {
 			actions.push({
-				icon: <TestIcon style={{ fontSize: 16 }} />,
+				icon: <TestIcon color="primary" style={{ fontSize: 16 }} />,
 				label: "Run test",
 				handler: (m) => this.runTest(m, true),
 			});
 		}
 		actions.push({
 			//icon: <ImplementorsIcon style={{ fontSize: 14 }} />,
-			icon: "i",
+			icon: <Typography color="primary">i</Typography>,
 			label: "Implementors",
 			handler: this.browseImplementors,
 		});
 		actions.push({
 			//icon: <SendersIcon style={{ fontSize: 14 }} />,
-			icon: "s",
+			icon: <Typography color="primary">s</Typography>,
 			label: "Senders",
 			handler: this.browseSenders,
 		});
