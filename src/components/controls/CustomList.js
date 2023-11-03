@@ -9,7 +9,6 @@ import {
 	Link,
 	Tooltip,
 	IconButton,
-	Button,
 } from "@mui/material";
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";

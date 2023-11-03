@@ -275,11 +275,11 @@ class MethodList extends Component {
 		const size = 12;
 		if (this.isTest(method) && method.status) {
 			const color =
-				method.status == "passed"
+				method.status === "passed"
 					? "green"
-					: method.status == "failed"
+					: method.status === "failed"
 					? "yellow"
-					: method.status == "error"
+					: method.status === "error"
 					? "red"
 					: "grey";
 			return <TestStateIcon style={{ color: color, fontSize: size }} />;
