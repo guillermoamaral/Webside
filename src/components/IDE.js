@@ -516,23 +516,21 @@ class IDE extends Component {
 		}
 	}
 
-	async followTestRun(id, debug) {
+	async followTestRun(id, debug, onRun) {
 		try {
 			const status = await this.backend.testRunStatus(id);
 			if (status.running) {
 				setTimeout(async () => {
-					await this.followTestRun(id, debug);
+					await this.followTestRun(id, debug, onRun);
 				}, 1000);
 			}
 			if (!status.running) {
+				if (onRun) onRun();
 				const results = await this.backend.testRunResults(id);
-				const passed = results.passed.length;
-				const failed = results.failed.length;
-				const errors = results.errors.length;
+				const { failed, errors } = results;
 				var d;
-				if (debug && (failed > 0 || errors > 0)) {
-					const test =
-						failed > 0 ? results.failed[0] : results.errors[0];
+				if (debug && (failed.length > 0 || errors.length > 0)) {
+					const test = failed.length > 0 ? failed[0] : errors[0];
 					d = await this.backend.debugTest(
 						id,
 						test.class,
@@ -548,28 +546,7 @@ class IDE extends Component {
 				} else {
 					await this.backend.deleteTestRun(id);
 				}
-				var text = "";
-				var first = true;
-				[
-					"passed",
-					"failed",
-					"errors",
-					"skipped",
-					"knownIssues",
-				].forEach((type) => {
-					text +=
-						(first ? "" : ", ") + results[type].length + " " + type;
-					first = false;
-				});
-				const message = { text: text };
-				message.type =
-					passed > 0 && failed === 0 && errors === 0
-						? "success"
-						: failed > 0 && errors === 0
-						? "warning"
-						: errors > 0
-						? "error"
-						: "info";
+				var message = this.testRunResultMessage(results);
 				// if (d) {
 				// 	message.action = {
 				// 		label: "Debug",
@@ -586,6 +563,30 @@ class IDE extends Component {
 		} catch (error) {
 			this.reportError(error);
 		}
+	}
+
+	testRunResultMessage(results) {
+		var text = "";
+		var first = true;
+		["passed", "failed", "errors", "skipped", "knownIssues"].forEach(
+			(type) => {
+				if (results[type]) {
+					text +=
+						(first ? "" : ", ") + results[type].length + " " + type;
+					first = false;
+				}
+			}
+		);
+		var { passed, failed, errors } = results;
+		var type =
+			passed.length > 0 && failed.length === 0 && errors.length === 0
+				? "success"
+				: failed.length > 0 && errors.length === 0
+				? "warning"
+				: errors.length > 0
+				? "error"
+				: "info";
+		return { text: text, type: type };
 	}
 
 	expandSidebar = () => {

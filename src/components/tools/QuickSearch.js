@@ -47,7 +47,7 @@ class QuickSearch extends Tool {
 		this.setState({ searching: true });
 		var results = [];
 		try {
-			if (text.length > 0) {
+			if (text.trim().length > 0) {
 				results = await ide.backend.search(
 					text,
 					!matchCase,

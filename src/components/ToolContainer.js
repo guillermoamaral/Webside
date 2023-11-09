@@ -410,15 +410,11 @@ class ToolContainer extends Component {
 				title={title}
 				onResume={() => {
 					this.removePageWithId(pageId);
-					if (onResume) {
-						onResume();
-					}
+					if (onResume) onResume();
 				}}
 				onTerminate={() => {
 					this.removePageWithId(pageId);
-					if (onTerminate) {
-						onTerminate();
-					}
+					if (onTerminate) onTerminate();
 				}}
 			/>
 		);
@@ -830,33 +826,33 @@ class ToolContainer extends Component {
 		});
 	}
 
-	runTest = async (classname, selector, silently) => {
+	runTest = async (classname, selector, silently, onRun) => {
 		try {
 			const status = await ide.backend.runTest(classname, selector);
 			silently
-				? ide.followTestRun(status.id, true)
+				? ide.followTestRun(status.id, true, onRun)
 				: this.openTestRunner(status.id, "Test " + selector);
 		} catch (error) {
 			this.reportError(error);
 		}
 	};
 
-	runTestClass = async (classname, silently) => {
+	runTestClass = async (classname, silently, onRun) => {
 		try {
 			const status = await ide.backend.runTestClass(classname);
 			silently
-				? ide.followTestRun(status.id)
+				? ide.followTestRun(status.id, onRun)
 				: this.openTestRunner(status.id, "Test " + classname);
 		} catch (error) {
 			this.reportError(error);
 		}
 	};
 
-	runTestPackage = async (packagename, silently) => {
+	runTestPackage = async (packagename, silently, onRun) => {
 		try {
 			const status = await ide.backend.runTestPackage(packagename);
 			silently
-				? ide.followTestRun(status.id)
+				? ide.followTestRun(status.id, onRun)
 				: this.openTestRunner(status.id, "Test " + packagename);
 		} catch (error) {
 			this.reportError(error);

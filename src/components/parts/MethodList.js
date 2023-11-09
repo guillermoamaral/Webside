@@ -164,7 +164,17 @@ class MethodList extends Component {
 
 	runTest = (method, silently) => {
 		if (method) {
-			this.context.runTest(method.methodClass, method.selector, silently);
+			var onRun = silently
+				? () => {
+						this.props.onMethodSelect(method);
+				  }
+				: null;
+			this.context.runTest(
+				method.methodClass,
+				method.selector,
+				silently,
+				onRun
+			);
 		}
 	};
 
