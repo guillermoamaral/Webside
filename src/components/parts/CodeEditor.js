@@ -373,6 +373,7 @@ class CodeEditor extends Component {
 				});
 			}
 		}
+		const species = this.props.class;
 		options.push(
 			...[
 				{
@@ -411,13 +412,29 @@ class CodeEditor extends Component {
 						")",
 					action: this.browseSenders,
 				},
-				{
-					label:
-						"Browse implementors (" +
-						shortcuts.get("browseImplementors") +
-						")",
-					action: this.browseImplementors,
-				},
+			]
+		);
+		if (species) {
+			options.push({
+				label: "Browse local senders",
+				action: this.browseLocalSenders,
+			});
+		}
+		options.push({
+			label:
+				"Browse implementors (" +
+				shortcuts.get("browseImplementors") +
+				")",
+			action: this.browseImplementors,
+		});
+		if (species) {
+			options.push({
+				label: "Browse local implementors",
+				action: this.browseLocalImplementors,
+			});
+		}
+		options.push(
+			...[
 				{
 					label:
 						"Browse class references (" +
@@ -515,8 +532,22 @@ class CodeEditor extends Component {
 		this.context.browseSenders(this.targetSelector());
 	};
 
+	browseLocalSenders = () => {
+		this.context.browseLocalSenders(
+			this.targetSelector(),
+			this.props.class.name
+		);
+	};
+
 	browseImplementors = () => {
 		this.context.browseImplementors(this.targetSelector());
+	};
+
+	browseLocalImplementors = () => {
+		this.context.browseLocalImplementors(
+			this.targetSelector(),
+			this.props.class.name
+		);
 	};
 
 	browseClass = (e, f) => {
@@ -1008,7 +1039,7 @@ class CodeEditor extends Component {
 
 	includeColonInSelection = () => {
 		const range = this.currentSelectionRange();
-		if (this.textInRange({ from: range.to, to: range.to + 1 }) == ":") {
+		if (this.textInRange({ from: range.to, to: range.to + 1 }) === ":") {
 			this.selectRanges([
 				{
 					anchor: range.from,
