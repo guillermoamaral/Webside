@@ -114,7 +114,7 @@ class TabControl extends Component {
 							})}
 						</Tabs>
 					</Box>
-					<Box pt={1}>
+					{addOptions.length > 0 && <Box pt={1}>
 						<IconButton
 							id={"addTab" + id}
 							onClick={() => {
@@ -163,7 +163,7 @@ class TabControl extends Component {
 								);
 							})}
 						</Menu>
-					</Box>
+					</Box>}
 					<Box pt={1}>
 						<IconButton
 							id={"selectTab" + id}
