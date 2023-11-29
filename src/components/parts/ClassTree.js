@@ -118,25 +118,19 @@ class ClassTree extends Component {
 	}
 
 	render() {
+		const { roots, labelStyle, selectedClass, onClassSelect, expandedClasses, onClassExpand, onClassCollapse } = this.props;
 		return (
-			// <CustomTree
-			// 	items={this.props.roots || []}
-			// 	itemLabel="name"
-			// 	itemStyle={this.props.labelStyle}
-			// 	children={"subclasses"}
-			// 	onItemExpand={this.props.onClassExpand}
-			// 	onItemSelect={this.props.onClassSelect}
-			// 	selectedItem={this.props.selectedClass}
-			// 	menuOptions={this.menuOptions()}
-			// />
 			<FastTree
-				nodes={this.props.roots || []}
+				nodes={roots || []}
+				nodeId="name"
 				nodeLabel="name"
-				nodeStyle={this.props.labelStyle}
+				nodeStyle={labelStyle}
 				nodeChildren="subclasses"
-				selectedNode={this.props.selectedClass}
-				onNodeSelect={this.props.onClassSelect}
-				onNodeExpand={this.props.onClassExpand}
+				selectedNode={selectedClass}
+				onNodeSelect={onClassSelect}
+				expandedNodes={expandedClasses}
+				onNodeExpand={onClassExpand}
+				onNodeCollapse={onClassCollapse}
 				menuOptions={this.menuOptions()}
 			/>
 		);

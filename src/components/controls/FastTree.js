@@ -103,7 +103,7 @@ const drawNode = memo(({ data, index, style }) => {
 							<Typography
 								noWrap
 								component="div"
-								//style={{ color: node.color }}
+							//style={{ color: node.color }}
 							>
 								<Box
 									fontWeight={
@@ -112,8 +112,8 @@ const drawNode = memo(({ data, index, style }) => {
 											: "fontWeightRegular"
 									}
 									fontStyle={nodeInfo.style}
-									// fontSize={size}
-									// align={alignment}
+								// fontSize={size}
+								// align={alignment}
 								>
 									{nodeInfo.label}
 								</Box>
@@ -137,18 +137,32 @@ const getNodeData = memoizeOne(
 
 const FastTree = ({
 	nodes,
+	nodeId,
 	nodeLabel,
 	nodeChildren,
 	nodeStyle,
 	menuOptions,
 	onNodeExpand,
+	onNodeCollapse,
 	onNodeSelect,
 	selectedNode,
+	expandedNodes,
 }) => {
 	const [expandedIds, setExpandedIds] = useState([]);
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [menuPosition, setMenuPosition] = useState({ x: null, y: null });
 	const [selected, setSelected] = useState();
+	var lastId = 0;
+
+	const getNodeId = (node) => {
+		if (!nodeId) {
+			return node.id;
+		}
+		if (typeof nodeId == "string") {
+			return node[nodeId];
+		}
+		return nodeId(node);
+	};
 
 	const getNodeLabel = (node) => {
 		if (!nodeLabel) {
@@ -180,64 +194,33 @@ const FastTree = ({
 		return nodeChildren(node);
 	};
 
-	const traverseNodes = (node, fx) => {
-		fx(node);
-		const children = getNodeChildren(node);
-		if (!children) return;
-		for (let child of children) {
-			traverseNodes(child, fx);
-		}
-	};
-
-	const ensureIds = (roots) => {
-		var id = 0;
-		for (let node of roots) {
-			traverseNodes(node, (n) => {
-				n._id = id;
-				id++;
-			});
-		}
-	};
-
 	const flattenNodes = (roots) => {
-		ensureIds(roots);
 		const flatten = [];
+		lastId = 0;
 		for (let node of roots) {
 			flattenNode(node, 0, flatten);
 		}
 		return flatten;
 	};
 
-	const findNode = (node, condition) => {
-		var found;
-		traverseNodes(node, (n) => {
-			if (condition(n)) found = n;
-		});
-		return found;
-	};
-
-	const nodeInfo = (node) => {
-		const _id = node._id;
-		const label = getNodeLabel(node);
-		const children = getNodeChildren(node) || [];
-		const style = getNodeStyle(node);
-		return {
-			_id,
-			label,
-			children,
-			style,
-			node,
-		};
-	};
-
 	const flattenNode = (node, depth, result) => {
-		const info = nodeInfo(node);
+		const info = {}
+		info.node = node;
+		info.id = getNodeId(node);
+		if (!info.id) {
+			lastId++;
+			info.id = lastId;
+		}
 		info.depth = depth;
-		info.expanded =
-			expandedIds.includes(info._id);
-		info.selected = selected
-			? selected._id === info._id
-			: selectedNode === node;
+		info.label = getNodeLabel(node);
+		info.children = getNodeChildren(node) || [];
+		info.style = getNodeStyle(node);
+		info.expanded = expandedNodes ?
+			expandedNodes.includes(node) :
+			expandedIds.includes(info.id);
+		info.selected = selectedNode ?
+			selectedNode === node :
+			selected && selected.id === info.id;
 		result.push(info);
 		if (info.expanded && info.children.length > 0) {
 			for (let child of info.children) {
@@ -249,9 +232,12 @@ const FastTree = ({
 	const toggleHandler = (event, nodeInfo) => {
 		event.stopPropagation();
 		if (nodeInfo.expanded) {
-			setExpandedIds(expandedIds.filter((id) => id !== nodeInfo._id));
+			setExpandedIds(expandedIds.filter((id) => id !== nodeInfo.id));
+			if (onNodeCollapse) {
+				onNodeCollapse(nodeInfo.node);
+			}
 		} else {
-			setExpandedIds([...expandedIds, nodeInfo._id]);
+			setExpandedIds([...expandedIds, nodeInfo.id]);
 			if (onNodeExpand) {
 				onNodeExpand(nodeInfo.node);
 			}
@@ -307,7 +293,7 @@ const FastTree = ({
 						width={width}
 						itemCount={flattenedData.length}
 						itemSize={ITEM_SIZE}
-						itemKey={(index) => flattenedData[index]._id}
+						itemKey={(index) => flattenedData[index].id}
 						itemData={itemData}
 						outerElementType={CustomScrollbarsVirtualList}
 					>

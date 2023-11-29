@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-//import CustomTree from "../controls/CustomTree";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 import FastTree from "../controls/FastTree";
@@ -24,7 +23,7 @@ class ObjectTree extends Component {
 		}
 	};
 
-	browseReferences = (object) => {};
+	browseReferences = (object) => { };
 
 	menuOptions() {
 		return [
@@ -47,26 +46,16 @@ class ObjectTree extends Component {
 	};
 
 	render() {
-		const roots = this.props.roots;
+		const { roots, onSlotSelect, onSlotExpand, selectedObject } = this.props;
 		return (
-			// <CustomTree
-			// 	items={roots ? roots : []}
-			// 	itemLabel="slot"
-			// 	itemId={this.objectId}
-			// 	children={"slots"}
-			// 	onItemExpand={this.props.onSlotExpand}
-			// 	onItemSelect={this.props.onSlotSelect}
-			// 	selectedItem={this.props.selectedObject}
-			// 	menuOptions={this.menuOptions()}
-			// />
 			<FastTree
 				nodes={roots ? roots : []}
 				nodeLabel="slot"
 				nodeChildren="slots"
-				onNodeSelect={this.props.onSlotSelect}
-				onNodeExpand={this.props.onSlotExpand}
+				onNodeSelect={onSlotSelect}
+				onNodeExpand={onSlotExpand}
 				menuOptions={this.menuOptions()}
-				selectedNode={this.props.selectedObject}
+				selectedNode={selectedObject}
 			/>
 		);
 	}
