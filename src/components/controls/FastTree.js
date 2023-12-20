@@ -6,6 +6,7 @@ import {
 	ListItemText,
 	ListItemIcon,
 	Typography,
+	Skeleton,
 } from "@mui/material";
 import ArrowRight from "@mui/icons-material/ArrowRight";
 import ArrowDown from "@mui/icons-material/ArrowDropDown";
@@ -147,6 +148,7 @@ const FastTree = ({
 	onNodeSelect,
 	selectedNode,
 	expandedNodes,
+	loading,
 }) => {
 	const [expandedIds, setExpandedIds] = useState([]);
 	const [menuOpen, setMenuOpen] = useState(false);
@@ -282,25 +284,45 @@ const FastTree = ({
 
 	const listRef = React.createRef();
 
+	if (selected) {
+		let ids = flattenedData.map(n => n.id);
+		if (!ids.includes(getNodeId(selected.node))) { setSelected(null) }
+	}  
+
 	return (
 		<Box style={{ height: "100%", width: "100%" }}>
-			<AutoSizer>
-				{({ height, width }) => (
-					<List
-						ref={listRef}
-						className="List"
-						height={height}
-						width={width}
-						itemCount={flattenedData.length}
-						itemSize={ITEM_SIZE}
-						itemKey={(index) => flattenedData[index].id}
-						itemData={itemData}
-						outerElementType={CustomScrollbarsVirtualList}
-					>
-						{drawNode}
-					</List>
-				)}
-			</AutoSizer>
+			{loading &&
+				<Box>
+					<Box width="40%">
+						<Skeleton animation="wave" />
+					</Box>
+					<Box ml={10} width="40%">
+						<Skeleton animation="wave">
+							<Box ml={10} width="40%">
+								<Skeleton animation="wave" />
+							</Box>
+						</Skeleton>
+						<Skeleton animation="wave" />
+					</Box>
+				</Box>}
+			{!loading &&
+				<AutoSizer>
+					{({ height, width }) => (
+						<List
+							ref={listRef}
+							className="List"
+							height={height}
+							width={width}
+							itemCount={flattenedData.length}
+							itemSize={ITEM_SIZE}
+							itemKey={(index) => flattenedData[index].id}
+							itemData={itemData}
+							outerElementType={CustomScrollbarsVirtualList}
+						>
+							{drawNode}
+						</List>
+					)}
+				</AutoSizer>}
 			{menuOptions && (
 				<PopupMenu
 					options={menuOptions}
@@ -310,8 +332,9 @@ const FastTree = ({
 					onOptionEnable={getMenuOptionEnabled}
 					onClose={() => setMenuOpen(false)}
 				/>
-			)}
-		</Box>
+			)
+			}
+		</Box >
 	);
 };
 
