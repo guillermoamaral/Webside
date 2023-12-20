@@ -179,18 +179,18 @@ class IDE extends Component {
 	applySettings(settings) {
 		const hard =
 			this.settings.section("connection").get("backend") !==
-				settings.section("connection").get("backend") ||
+			settings.section("connection").get("backend") ||
 			this.settings.section("connection").get("developer") !==
-				settings.section("connection").get("developer");
+			settings.section("connection").get("developer");
 		this.settings = settings;
 		this.storeSettingsIntoCookie();
 		const connection = this.settings.section("connection");
 		if (hard) {
 			this.props.navigate(
 				"/ide?backend=" +
-					connection.get("backend") +
-					"&developer=" +
-					connection.get("developer")
+				connection.get("backend") +
+				"&developer=" +
+				connection.get("developer")
 			);
 			this.removeExtraContainers();
 		}
@@ -582,10 +582,10 @@ class IDE extends Component {
 			passed.length > 0 && failed.length === 0 && errors.length === 0
 				? "success"
 				: failed.length > 0 && errors.length === 0
-				? "warning"
-				: errors.length > 0
-				? "error"
-				: "info";
+					? "warning"
+					: errors.length > 0
+						? "error"
+						: "info";
 		return { text: text, type: type };
 	}
 
