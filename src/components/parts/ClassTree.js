@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-//import CustomTree from "../controls/CustomTree";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 import FastTree from "../controls/FastTree";
