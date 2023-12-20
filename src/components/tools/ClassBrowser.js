@@ -36,6 +36,7 @@ class ClassBrowser extends RefactoringBrowser {
 			selectedCategory: null,
 			selectedMethod: null,
 			selectedSide: this.props.side || "instance",
+			expandedClasses: [],
 		};
 	}
 
@@ -70,6 +71,10 @@ class ClassBrowser extends RefactoringBrowser {
 			ide.reportError(error);
 		}
 	};
+
+	expandClass(species) {
+		this.setState({ expandedClasses: [...this.state.expandedClasses, species] })
+	}
 
 	// Selections...
 	currentSelections() {
@@ -251,6 +256,17 @@ class ClassBrowser extends RefactoringBrowser {
 		this.applySelections(selections);
 	};
 
+	classExpanded = async (species) => {
+		await this.updateSubclasses(species);
+		this.expandClass(species)
+	};
+
+	classCollapsed = async (species) => {
+		const expanded = this.state.expandedClasses;
+		expanded.splice(expanded.indexOf(species), 1);
+		this.setState({ expandedClasses: expanded })
+	};
+
 	classSelected = async (species, keepSelections = true) => {
 		this.context.updatePageLabel(this.props.id, species.name);
 		const selections = this.currentSelections();
@@ -296,6 +312,9 @@ class ClassBrowser extends RefactoringBrowser {
 			this.isInSubclasses(this.state.root, instance.superclass)
 		) {
 			this.classSelected(instance, false);
+			// if (superclass && !this.state.expandedClasses.find(c => c.name === superclass.name)) {
+			// 	this.expandClass(superclass);
+			// }
 		} else {
 			this.changeRootClass(instance.name);
 		}
@@ -310,7 +329,7 @@ class ClassBrowser extends RefactoringBrowser {
 			return false;
 		}
 		return root.subclasses.some((c) => {
-			return c.name === classname || this.isInSubclasses(c, classname);
+			return c.name === classname || this.isInSubclasses(c.name, classname);
 		});
 	}
 
@@ -391,6 +410,7 @@ class ClassBrowser extends RefactoringBrowser {
 			selectedVariable,
 			selectedCategory,
 			selectedMethod,
+			expandedClasses,
 		} = this.state;
 		const rootclass = this.cache[root];
 		const appearance = ide.settings.section("appearance");
@@ -410,9 +430,6 @@ class ClassBrowser extends RefactoringBrowser {
 												: null
 										}
 										options={this.classnames}
-										// options={async (value) => {
-										// 	return ide.backend.searchClassNames(value);
-										// }}
 										backColor={background}
 										onChange={(classname) => {
 											this.changeRootClass(classname);
@@ -505,7 +522,9 @@ class ClassBrowser extends RefactoringBrowser {
 										<ClassTree
 											roots={rootclass ? [rootclass] : []}
 											selectedClass={selectedClass}
+											expandedClasses={expandedClasses}
 											onClassExpand={this.classExpanded}
+											onClassCollapse={this.classCollapsed}
 											onClassSelect={this.classSelected}
 											onClassRemove={this.classRemoved}
 											onClassRename={this.classRenamed}
