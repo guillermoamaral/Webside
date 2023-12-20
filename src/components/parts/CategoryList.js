@@ -21,7 +21,7 @@ class CategoryList extends Component {
 				title: "New category",
 			});
 			if (category) {
-				this.addCate(category);
+				this.addCategory(category);
 			}
 		} catch (error) {}
 	};
