@@ -9,6 +9,7 @@ import {
 	Link,
 	Tooltip,
 	IconButton,
+	Skeleton,
 } from "@mui/material";
 import { FixedSizeList as List } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -184,7 +185,7 @@ class CustomList extends Component {
 	};
 
 	getItemStyle = (item) => {
-		const style = this.props.labelStyle;
+		const style = this.props.itemStyle;
 		if (!style) {
 			return "normal";
 		}
@@ -302,8 +303,8 @@ class CustomList extends Component {
 		const target = text.toLowerCase();
 		const filtered = enabled
 			? all.filter((i) => {
-					return this.getItemLabel(i).toLowerCase().includes(target);
-			  })
+				return this.getItemLabel(i).toLowerCase().includes(target);
+			})
 			: all;
 		this.setState({
 			filterEnabled: enabled,
@@ -452,10 +453,18 @@ class CustomList extends Component {
 			typeof this.props.enableFilter == "boolean"
 				? this.props.enableFilter
 				: true;
-		const showFilter = enableFilter && filterEnabled;
+		const loading = this.props.loading;
+		const showFilter = !loading && enableFilter && filterEnabled;
 		return (
 			<Box style={{ height: showFilter ? "90%" : "100%" }}>
-				<Box style={{ height: showFilter ? "90%" : "100%" }}>
+				{loading &&
+					<Box ml={2} width="50%">
+						<Skeleton animation="wave" />
+						<Skeleton animation="wave" />
+						<Skeleton animation="wave" />
+						<Skeleton animation="wave" />
+					</Box>}
+				{!loading && <Box style={{ height: showFilter ? "90%" : "100%" }}>
 					<AutoSizer>
 						{({ height, width }) => (
 							<List
@@ -486,7 +495,7 @@ class CustomList extends Component {
 							</List>
 						)}
 					</AutoSizer>
-				</Box>
+				</Box>}
 				{showFilter && (
 					<Box style={{ height: "10%" }}>
 						<TextField
