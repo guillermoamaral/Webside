@@ -17,7 +17,18 @@ class UClassTree extends Component {
 			selectedClass: null,
 			expandedClasses: [],
 			loading: false,
+			preselectedClass: null,
 		};
+	}
+
+	static getDerivedStateFromProps(props, state) {
+		if (props.preselectedClass != state.preselectedClass) {
+			console.log("class preselected");
+			return {
+				preselectedClass: props.preselectedClass,
+			};
+		}
+		return null;
 	}
 
 	componentDidMount() {
@@ -44,10 +55,15 @@ class UClassTree extends Component {
 		} else {
 			trees = await this.fetchSubtrees(classes);
 		}
+		let preselectedClass = this.state.preselectedClass;
+		let selected;
+		if (preselectedClass) {
+			trees.forEach(root => selected = this.findSubclass(preselectedClass.name, root));
+		}
 		this.setState({
 			roots: trees,
 			expandedClasses: [...trees],
-			selectedClass: null,
+			selectedClass: selected,
 			loading: false,
 		});
 	};
