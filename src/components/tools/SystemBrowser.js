@@ -31,7 +31,26 @@ class SystemBrowser extends Tool {
 			selectedCategory: null,
 			selectedAccess: "accessing",
 			selectedMethod: null,
+			preselectedClass: null,
+			preselectedPackage: null,
 		};
+	}
+
+	static getDerivedStateFromProps(props, state) {
+		if (props.preselectedClass && state.roots.length === 1 && state.roots[0].name !== props.preselectedClass.name) {
+			return {
+				roots: [{ name: props.preselectedClass.name }],
+				selectedClass: props.preselectedClass,
+				preselectedClass: props.preselectedClass,
+				selectedSide: props.side || "instance"
+			};
+		}
+		if (props.preselectedPackage && props.showPackages) {
+			return {
+				preselectedPackage: props.preselectedPackage,
+			};
+		}
+		return null;
 	}
 
 	async updateClass(species) {
@@ -65,6 +84,7 @@ class SystemBrowser extends Tool {
 	}
 
 	classSelected = async (species) => {
+		this.context.updatePageLabel(this.props.id, species.name);
 		await this.updateClass(species);
 		this.setState({ selectedClass: species });
 	}
@@ -185,7 +205,9 @@ class SystemBrowser extends Tool {
 			selectedVariable,
 			selectedAccess,
 			selectedCategory,
-			selectedMethod } = this.state;
+			selectedMethod,
+			preselectedClass,
+			preselectedPackage } = this.state;
 		let targetClass = this.targetClass();
 		let showPackages = this.props.showPackages;
 		let width = showPackages ? "20%" : "25%";
@@ -197,6 +219,7 @@ class SystemBrowser extends Tool {
 							{showPackages && <Box sx={{ width: width }}>
 								<UPackageList
 									onPackageSelect={this.packageSelected}
+									preselectedPackage={preselectedPackage}
 								/>
 							</Box>}
 							<Box sx={{ width: width }}>
@@ -206,6 +229,7 @@ class SystemBrowser extends Tool {
 									onClassSelect={this.classSelected}
 									showSearch={!showPackages}
 									labelStyle={this.classLabelStyle}
+									preselectedClass={preselectedClass}
 								/>
 							</Box>
 							<Box display="flex" flexDirection="column" sx={{ height: "100%", width: width }}>
