@@ -7,7 +7,7 @@ class POC extends Tool {
 
 	render() {
 		return (
-			<SystemBrowser showPackages={true} />
+			<SystemBrowser showPackages={true} preselectedPackage={{ name: "CI" }} />
 		);
 	}
 }

@@ -15,8 +15,8 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import TabControl from "./controls/TabControl";
 import Transcript from "./tools/Transcript";
 import Search from "./tools/Search";
-import PackageBrowser from "./tools/PackageBrowser";
-import ClassBrowser from "./tools/ClassBrowser";
+//import PackageBrowser from "./tools/PackageBrowser";
+//import ClassBrowser from "./tools/ClassBrowser";
 import MethodBrowser from "./tools/MethodBrowser";
 import Inspector from "./tools/Inspector";
 import Workspace from "./tools/Workspace";
@@ -36,6 +36,7 @@ import { ide } from "./IDE";
 import ToolContainerContext from "./ToolContainerContext";
 import ResourcesIcon from "./icons/ResourcesIcon";
 import POC from "./tools/POC";
+import SystemBrowser from "./tools/SystemBrowser";
 import { v4 as uuidv4 } from "uuid";
 
 class ToolContainer extends Component {
@@ -141,12 +142,12 @@ class ToolContainer extends Component {
 			currentPages.length === pages.length
 				? null
 				: !ids.includes(selectedPageId)
-				? selectedPageId
-				: i0 > 0
-				? currentPages[i0 - 1].id
-				: ik < currentPages.length - 1
-				? currentPages[ik + 1].id
-				: null;
+					? selectedPageId
+					: i0 > 0
+						? currentPages[i0 - 1].id
+						: ik < currentPages.length - 1
+							? currentPages[ik + 1].id
+							: null;
 		const filtered = currentPages.filter((p) => !ids.includes(p.id));
 		if (this.props.onPagesRemove) {
 			this.props.onPagesRemove(this);
@@ -271,7 +272,7 @@ class ToolContainer extends Component {
 	openPackageBrowser = (packagename) => {
 		const pageId = this.newPageId();
 		const browser = (
-			<PackageBrowser selectedPackage={packagename} id={pageId} />
+			<SystemBrowser showPackages={true} preselectedPackage={{ name: packagename }} id={pageId} />
 		);
 		this.createPage(
 			"Package Browser",
@@ -294,7 +295,7 @@ class ToolContainer extends Component {
 				side = "class";
 			}
 			await ide.backend.classNamed(name);
-			this.openClassBrowser(name, side, null, true);
+			this.openClassBrowser(name, side, true);
 		} catch (error) {
 			ide.inform("There is no class named " + name);
 		}
@@ -304,13 +305,12 @@ class ToolContainer extends Component {
 		this.openMethodBrowser([method]);
 	};
 
-	openClassBrowser = (classname, side, selector, nextToSelected) => {
+	openClassBrowser = (classname, side, nextToSelected) => {
 		const pageId = this.newPageId();
 		const browser = (
-			<ClassBrowser
-				root={classname}
+			<SystemBrowser
+				preselectedClass={classname ? { name: classname } : null}
 				side={side}
-				selectedSelector={selector}
 				id={pageId}
 			/>
 		);
@@ -757,7 +757,7 @@ class ToolContainer extends Component {
 		if (!pin && !sync) {
 			try {
 				await ide.backend.unpinObject(object.id);
-			} catch (ignored) {}
+			} catch (ignored) { }
 		}
 		return object;
 	};
