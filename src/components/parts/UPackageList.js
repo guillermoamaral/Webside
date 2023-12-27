@@ -12,7 +12,18 @@ class UPackageList extends Component {
 		this.state = {
 			packages: [],
 			selectedPackage: null,
+			preselectedPackage: null,
 		};
+	}
+
+	static getDerivedStateFromProps(props, state) {
+		if (props.preselectedPackage != state.preselectedPackage) {
+			console.log("package preselected");
+			return {
+				preselectedPackage: props.preselectedPackage,
+			};
+		}
+		return null;
 	}
 
 	componentDidMount() {
@@ -21,9 +32,12 @@ class UPackageList extends Component {
 
 	async updatePackages() {
 		let packages = await this.fetchPackages();
+		let selected = this.props.preselectedPackage ?
+			packages.find(p => p.name === this.props.preselectedPackage.name)
+			: null;
 		this.setState({
 			packages: packages,
-			selectedPackage: null,
+			selectedPackage: selected,
 		});
 	}
 
