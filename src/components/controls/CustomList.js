@@ -380,6 +380,8 @@ class CustomList extends Component {
 						alignItems="center"
 						key={"box" + index}
 						className="actionButtons"
+						justifyContent="flex-end"
+						mr={2}
 					>
 						{actions.map((action, j) => {
 							const visible =
