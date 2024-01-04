@@ -17,8 +17,7 @@ class UPackageList extends Component {
 	}
 
 	static getDerivedStateFromProps(props, state) {
-		if (props.preselectedPackage != state.preselectedPackage) {
-			console.log("package preselected");
+		if (props.preselectedPackage !== state.preselectedPackage) {
 			return {
 				preselectedPackage: props.preselectedPackage,
 			};

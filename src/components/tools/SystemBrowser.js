@@ -22,6 +22,7 @@ import CodeBrowser from "../parts/CodeBrowser";
 class SystemBrowser extends Tool {
 	constructor(props) {
 		super(props);
+		this.classTreeRef = React.createRef();
 		this.state = {
 			roots: [{ name: "Object" }],
 			selectedSide: "instance",
@@ -87,6 +88,18 @@ class SystemBrowser extends Tool {
 		this.context.updatePageLabel(this.props.id, species.name);
 		await this.updateClass(species);
 		this.setState({ selectedClass: species });
+	}
+
+	classDefined = async (species) => {
+		this.context.updatePageLabel(this.props.id, species.name);
+		if (this.classTreeRef && this.classTreeRef.current) {
+			this.classTreeRef.current.refreshEnsuring(species);
+		}
+		this.setState({ selectedClass: species });
+	}
+
+	classRemoved = async (species) => {
+		this.setState({ selectedClass: null });
 	}
 
 	accessSelected = async (access) => {
@@ -224,9 +237,12 @@ class SystemBrowser extends Tool {
 							</Box>}
 							<Box sx={{ width: width }}>
 								<UClassTree
+									ref={this.classTreeRef}
 									roots={!showPackages ? roots : null}
 									package={showPackages ? selectedPackage : null}
 									onClassSelect={this.classSelected}
+									onClassDefine={this.classDefined}
+									onClassRemove={this.classRemoved}
 									showSearch={!showPackages}
 									labelStyle={this.classLabelStyle}
 									preselectedClass={preselectedClass}
@@ -325,9 +341,9 @@ class SystemBrowser extends Tool {
 						context={this.evaluationContext()}
 						class={targetClass}
 						method={selectedMethod}
-						onCompileMethod={this.methodCompiled}
-						onDefineClass={this.classDefined}
-						onCommentClass={this.classCommented}
+						onMethodCompile={this.methodCompiled}
+						onClassDefine={this.classDefined}
+						onClassComment={this.classCommented}
 						sx={{ height: "100%" }}
 					/>
 				</Box>
