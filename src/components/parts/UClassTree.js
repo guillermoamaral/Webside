@@ -22,8 +22,7 @@ class UClassTree extends Component {
 	}
 
 	static getDerivedStateFromProps(props, state) {
-		if (props.preselectedClass != state.preselectedClass) {
-			console.log("class preselected");
+		if (props.preselectedClass !== state.preselectedClass) {
 			return {
 				preselectedClass: props.preselectedClass,
 			};
@@ -32,33 +31,54 @@ class UClassTree extends Component {
 	}
 
 	componentDidMount() {
-		this.changeRoots(this.props.roots, this.props.package);
+		this.changeRoots(this.props.roots, this.props.package, this.props.preselectedClass);
 	}
 
 	componentDidUpdate(prevProps) {
 		if (this.props.roots !== prevProps.roots || this.props.package !== prevProps.package) {
-			this.changeRoots(this.props.roots, this.props.package);
+			this.changeRoots(this.props.roots, this.props.package, this.state.selectedClass);
 		}
 	}
 
 	goToRoot = (name) => {
 		if (name) {
-			this.changeRoots([{ name: name }])
+			this.changeRoots([{ name: name }], null, this.state.selectedClass)
 		}
 	}
 
-	changeRoots = async (classes, pack) => {
+	async refreshEnsuring(species) {
 		this.setState({ loading: true });
-		let trees;
-		if (!classes) {
-			trees = await this.fetchPackageClasses(pack);
-		} else {
-			trees = await this.fetchSubtrees(classes);
-		}
-		let preselectedClass = this.state.preselectedClass;
+		let pack = this.props.package;
+		let trees = await this.fetchClasses(this.state.roots, pack);
 		let selected;
-		if (preselectedClass) {
-			trees.forEach(root => selected = this.findSubclass(preselectedClass.name, root));
+		trees.forEach(root => selected = this.findSubclass(species.name, root));
+		if (!selected && !pack) {
+			return this.goToRoot(species.name)
+		}
+		let expanded = [];
+		let found;
+		this.state.expandedClasses.forEach(c => {
+			found = null;
+			trees.forEach(root => found = this.findSubclass(c.name, root));
+			if (found) { expanded.push(found) };
+		});
+		found = null;
+		trees.forEach(root => found = this.findSubclass(species.superclass, root));
+		if (found) { expanded.push(found) };
+		this.setState({
+			roots: trees,
+			expandedClasses: expanded,
+			selectedClass: selected,
+			loading: false,
+		});
+	}
+
+	changeRoots = async (classes, pack, selectedClass) => {
+		this.setState({ loading: true });
+		let trees = await this.fetchClasses(classes, pack);
+		let selected;
+		if (selectedClass) {
+			trees.forEach(root => selected = this.findSubclass(selectedClass.name, root));
 		}
 		this.setState({
 			roots: trees,
@@ -68,7 +88,17 @@ class UClassTree extends Component {
 		});
 	};
 
-	async fetchPackageClasses(pack) {
+	async fetchClasses(roots, pack) {
+		let trees;
+		if (pack) {
+			trees = await this.fetchPackageSubtrees(pack);
+		} else {
+			trees = roots ? await this.fetchSubtrees(roots) : [];
+		}
+		return trees;
+	}
+
+	async fetchPackageSubtrees(pack) {
 		let trees = [];
 		if (!pack) return trees;
 		try {
@@ -219,9 +249,8 @@ class UClassTree extends Component {
 				selected = superclass;
 			}
 			this.setState({ roots: this.state.roots, expandedClasses: expanded, selectedClass: selected })
-			if (this.props.onClassRemove) {
-				this.props.onClassRemove(species);
-			}
+			if (this.props.onClassRemove) { this.props.onClassRemove(species); }
+			if (this.props.onClassSelect) { this.props.onClassSelect(selected); }
 		} catch (error) {
 			ide.reportError(error);
 		}
