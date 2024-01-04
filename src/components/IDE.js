@@ -614,6 +614,7 @@ class IDE extends Component {
 	//Services...
 
 	reportError = (error) => {
+		console.log(error)
 		if (!error) {
 			return;
 		}
