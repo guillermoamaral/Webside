@@ -501,9 +501,9 @@ class PackageBrowser extends RefactoringBrowser {
 								package={selectedPackage}
 								class={selectedClass}
 								method={selectedMethod}
-								onCompileMethod={this.methodCompiled}
-								onDefineClass={this.classDefined}
-								onCommentClass={this.classCommented}
+								onMethodCompile={this.methodCompiled}
+								onClassDefine={this.classDefined}
+								onClassComment={this.classCommented}
 							/>
 						</Box>
 					</CustomSplit>

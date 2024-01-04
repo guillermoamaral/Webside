@@ -364,9 +364,9 @@ class Debugger extends Tool {
 										? selectedFrame.interval
 										: null
 								}
-								onCompileMethod={this.methodCompiled}
-								onDefineClass={this.classDefined}
-								onCommentClass={this.classCommented}
+								onMethodCompile={this.methodCompiled}
+								onClassDefine={this.classDefined}
+								onClassComment={this.classCommented}
 								onTooltipShow={this.tooltipForBinding}
 								onTooltipClick={this.inspectBinding}
 							/>

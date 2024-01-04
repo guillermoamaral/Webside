@@ -58,8 +58,8 @@ class CodeBrowser extends Component {
 				definition
 			);
 			const species = await ide.backend.classNamed(change.className);
-			if (this.props.onDefineClass) {
-				this.props.onDefineClass(species);
+			if (this.props.onClassDefine) {
+				this.props.onClassDefine(species);
 			}
 		} catch (error) {
 			ide.reportError(error);
@@ -96,8 +96,8 @@ class CodeBrowser extends Component {
 		try {
 			await ide.backend.commentClass(this.props.class.name, comment);
 			const species = await ide.backend.classNamed(this.props.class.name);
-			if (this.props.onCommentClass) {
-				this.props.onCommentClass(species);
+			if (this.props.onClassComment) {
+				this.props.onClassComment(species);
 			}
 		} catch (error) {
 			ide.reportError(error);
@@ -135,8 +135,8 @@ class CodeBrowser extends Component {
 				classname,
 				change.selector
 			);
-			if (this.props.onCompileMethod) {
-				this.props.onCompileMethod(compiled);
+			if (this.props.onMethodCompile) {
+				this.props.onMethodCompile(compiled);
 			}
 		} catch (error) {
 			this.handleCompilationError(error, source);
@@ -170,8 +170,8 @@ class CodeBrowser extends Component {
 							applied.selector
 						);
 					}
-					if (this.props.onCompileMethod) {
-						this.props.onCompileMethod(method);
+					if (this.props.onMethodCompile) {
+						this.props.onMethodCompile(method);
 					}
 				} catch (inner) {
 					this.handleCompilationError(
