@@ -15,8 +15,8 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import TabControl from "./controls/TabControl";
 import Transcript from "./tools/Transcript";
 import Search from "./tools/Search";
-//import PackageBrowser from "./tools/PackageBrowser";
-//import ClassBrowser from "./tools/ClassBrowser";
+import PackageBrowser from "./tools/PackageBrowser";
+import ClassBrowser from "./tools/ClassBrowser";
 import MethodBrowser from "./tools/MethodBrowser";
 import Inspector from "./tools/Inspector";
 import Workspace from "./tools/Workspace";
@@ -38,6 +38,8 @@ import ResourcesIcon from "./icons/ResourcesIcon";
 import POC from "./tools/POC";
 import SystemBrowser from "./tools/SystemBrowser";
 import { v4 as uuidv4 } from "uuid";
+
+const useSystemBrowser = true;
 
 class ToolContainer extends Component {
 	constructor(props) {
@@ -271,9 +273,9 @@ class ToolContainer extends Component {
 
 	openPackageBrowser = (packagename) => {
 		const pageId = this.newPageId();
-		const browser = (
-			<SystemBrowser showPackages={true} preselectedPackage={{ name: packagename }} id={pageId} />
-		);
+		const browser = useSystemBrowser ?
+			(<SystemBrowser showPackages={true} preselectedPackage={{ name: packagename }} id={pageId} />) :
+			(<PackageBrowser selectedPackage={packagename} id={pageId} />);
 		this.createPage(
 			"Package Browser",
 			<PackageBrowserIcon />,
@@ -305,15 +307,23 @@ class ToolContainer extends Component {
 		this.openMethodBrowser([method]);
 	};
 
-	openClassBrowser = (classname, side, nextToSelected) => {
+	openClassBrowser = async (classname, side, nextToSelected) => {
 		const pageId = this.newPageId();
-		const browser = (
-			<SystemBrowser
-				preselectedClass={classname ? { name: classname } : null}
-				side={side}
-				id={pageId}
-			/>
-		);
+		let browser;
+		if (useSystemBrowser) {
+			let species;
+			if (classname) {
+				try {
+					species = await ide.backend.classNamed(classname);
+					species.metaclass = await ide.backend.classNamed(species.class);
+				} catch (error) {
+					ide.reportError(error);
+				}
+			}
+			browser = <SystemBrowser preselectedClass={species} side={side} id={pageId} />;
+		} else {
+			browser = <ClassBrowser root={classname} side={side} id={pageId} />;
+		}
 		this.createPage(
 			classname || "Class Browser",
 			<ClassBrowserIcon />,
