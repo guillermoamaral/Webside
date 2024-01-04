@@ -51,6 +51,13 @@ class UMethodList extends Component {
 		if (selected) {
 			selected = methods.find(m => m.methodClass === selected.methodClass && m.selector === selected.selector);
 		}
+		let species = this.props.class;
+		if (methods.length === 0 && species) {
+			const template = ide.backend.methodTemplate();
+			template.methodClass = species.name;
+			template.category = this.props.category;
+			methods.push(template);
+		}
 		this.setState({
 			loading: false,
 			methods: methods,
