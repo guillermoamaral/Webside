@@ -53,9 +53,9 @@ class BindingTable extends PureComponent {
 		const frame = this.props.frame;
 		return frame
 			? {
-					debugger: this.props.id,
-					frame: frame.index,
-			  }
+				debugger: this.props.id,
+				frame: frame.index,
+			}
 			: {};
 	}
 
@@ -67,7 +67,7 @@ class BindingTable extends PureComponent {
 	}
 
 	bindingValue(binding) {
-		const value = binding.value;
+		const value = binding.value || "error retrieving value";
 		const max = 100;
 		return value.length > max ? value.substr(0, 99) + "…" : value;
 	}
