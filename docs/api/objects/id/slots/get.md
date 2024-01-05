@@ -1,6 +1,6 @@
 # Retrieve object slots
 
-Retrive the object reached thru the given URI.
+Retrieve the object reached thru the given URI.
 
 This This URI starts with a pinned object ID and contains a _variable_ part, `/*`, that indicates the path from the root (pinned) object to the slot of interest, thru a chain of slots.
 

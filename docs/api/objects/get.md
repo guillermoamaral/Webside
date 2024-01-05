@@ -1,6 +1,6 @@
 # Retrieve objects
 
-Retrive pinned objects.
+Retrieve pinned objects.
 
 These objects are the result of evaluating expressions. As it is described in [/evaluations](../evaluations/post), a synchronous evaluation might pin the resulting object or not, while an asynchronous evaulation pins always the resulting object. In any case, the ID of the object is the same as the one of the corresponding evaluation.
 

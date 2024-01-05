@@ -1,6 +1,6 @@
 # Retrieve test run results
 
-Retrive the results of the test run with a given ID.
+Retrieve the results of the test run with a given ID.
 
 **URL**: `/test-runs/{id}/results`
 

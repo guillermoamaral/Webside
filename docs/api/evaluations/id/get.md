@@ -1,6 +1,6 @@
 # Retrieve evaluation
 
-Retrive the active evaluation with a given ID.
+Retrieve the active evaluation with a given ID.
 
 **URL**: `/evaluations/{id}`
 

@@ -1,6 +1,6 @@
 # Retrieve active workspaces
 
-Retrive active workspaces.
+Retrieve active workspaces.
 
 **URL**: `/workspaces`
 

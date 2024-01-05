@@ -1,6 +1,6 @@
 # Retrieve evaluations
 
-Retrive active evaluations, i.e., evaluations initiated as explained [here](post.md), and that are being processed at the moment of making this request.
+Retrieve active evaluations, i.e., evaluations initiated as explained [here](post.md), and that are being processed at the moment of making this request.
 
 **URL**: `/evaluations`
 

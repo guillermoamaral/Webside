@@ -1,6 +1,6 @@
 # Retrieve test run status
 
-Retrive the status of the test run with a given ID.
+Retrieve the status of the test run with a given ID.
 
 This object allows to provide feedback to the user on how an active test run is progressing. It indicates not only the test being executed at a given time, but the current summary of `"passed"`, `"failed"`, `"errors"`, `"sikkped"`, and `"knownIssues"` tests.
 

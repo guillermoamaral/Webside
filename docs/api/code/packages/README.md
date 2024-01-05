@@ -22,7 +22,7 @@ Where `classes` should contain the names of classes defined in the package, and 
 
 | Method | Path                                            | Description                               | Parameters | Payload |
 | :----: | ----------------------------------------------- | ----------------------------------------- | :--------: | ------- |
-|  GET   | [/packages](get.md)                             | Retrive all packages                      |  `names`   | -       |
-|  GET   | [/packages/{name}](name/get.md)                 | Retrive a given package                   |     -      | -       |
-|  GET   | [/packages/{name}/classes](name/classes/get.md) | Retrive actual classes of a given package |     -      | -       |
-|  GET   | [/packages/{name}/methods](name/methods/get.md) | Retrive actual methods of a given package |     -      | -       |
+|  GET   | [/packages](get.md)                             | Retrieve all packages                      |  `names`   | -       |
+|  GET   | [/packages/{name}](name/get.md)                 | Retrieve a given package                   |     -      | -       |
+|  GET   | [/packages/{name}/classes](name/classes/get.md) | Retrieve actual classes of a given package |     -      | -       |
+|  GET   | [/packages/{name}/methods](name/methods/get.md) | Retrieve actual methods of a given package |     -      | -       |

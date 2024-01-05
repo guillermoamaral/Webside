@@ -1,6 +1,6 @@
 # Retrieve an object
 
-Retrive the pinned object with a given ID.
+Retrieve the pinned object with a given ID.
 
 **URL**: `/objects/{id}`
 
