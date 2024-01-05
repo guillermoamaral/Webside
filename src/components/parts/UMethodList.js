@@ -291,6 +291,18 @@ class UMethodList extends Component {
 		}
 	};
 
+	canRename(method) {
+		return method && !method.template;
+	}
+
+	canRemove(method) {
+		return method && !method.template;
+	}
+
+	canClassify(method) {
+		return method && !method.template;
+	}
+
 	isTest(method) {
 		return method && method.selector.startsWith("test");
 	}
@@ -302,8 +314,8 @@ class UMethodList extends Component {
 		}
 		options.push(
 			...[
-				{ label: "Rename", action: this.renameMethod },
-				{ label: "Remove", action: this.removeMethod },
+				{ label: "Rename", action: this.renameMethod, enabled: this.canRename },
+				{ label: "Remove", action: this.removeMethod, enabled: this.canRemove },
 			]
 		);
 		const categories = this.state.categories;
@@ -313,12 +325,14 @@ class UMethodList extends Component {
 				return {
 					label: c,
 					action: (m) => this.classifyMethod(m, c),
+					enabled: this.canClassify,
 				};
 			});
 		if (categories.length > 20) {
 			suboptions.push({
 				label: "More...",
 				action: (m) => this.chooseCategoryForMethod(m),
+				enabled: this.canClassify,
 			});
 		}
 		if (categories.length > 0) {
@@ -327,11 +341,13 @@ class UMethodList extends Component {
 		suboptions.push({
 			label: "New..",
 			action: (m) => this.classifyMethod(m),
+			enabled: this.canClassify,
 		});
 		if (ide.usesCodeAssistant()) {
 			suboptions.push({
 				label: "AI suggested..",
 				action: (m) => this.suggestCategory(m),
+				enabled: this.canClassify,
 			});
 		}
 		options.push(
