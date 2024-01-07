@@ -112,6 +112,25 @@ class SystemBrowser extends Tool {
 		this.setState({ selectedVariable: variable });
 	}
 
+	variableAdded = async (variable) => {
+		let species = this.state.selectedClass;
+		await this.updateClass(species);
+		this.setState({ selectedClass: species, selectedCategory: null, selectedVariable: variable, selectedMethod: null });
+	}
+
+	variableRenamed = async (variable) => {
+		let species = this.state.selectedClass;
+		await this.updateClass(species);
+		this.setState({ selectedClass: species, selectedCategory: null, selectedVariable: variable, selectedMethod: null });
+	}
+
+	variableRemoved = async (variable) => {
+		let species = this.state.selectedClass;
+		await this.updateClass(species);
+		this.setState({ selectedClass: species, selectedCategory: null, selectedVariable: null, selectedMethod: null });
+
+	}
+
 	categorySelected = (category) => {
 		this.setState({ selectedCategory: category });
 	}
@@ -279,6 +298,9 @@ class SystemBrowser extends Tool {
 									<UVariableList
 										class={targetClass}
 										onVariableSelect={this.variableSelected}
+										onVariableAdd={this.variableAdded}
+										onVariableRename={this.variableRenamed}
+										onVariableRemove={this.variableRemoved}
 									/>
 								</Box>
 							</Box>
