@@ -89,7 +89,7 @@ class SystemBrowser extends Tool {
 	classSelected = async (species) => {
 		this.context.updatePageLabel(this.props.id, species.name);
 		await this.updateClass(species);
-		this.setState({ selectedClass: species });
+		this.setState({ selectedClass: species, selectedCategory: null, selectedVariable: null, selectedMethod: null });
 	}
 
 	classDefined = async (species) => {
