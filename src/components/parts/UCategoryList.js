@@ -28,15 +28,20 @@ class UCategoryList extends Component {
 		}
 	}
 
-	async updateCategories() {
+	async refreshEnsuring(category) {
+		this.updateCategories(category);
+	}
+
+	async updateCategories(selectedCategory) {
 		this.setState({ loading: true })
 		let categories = await this.fetchCategories();
+		let selected = categories.defined.find(c => c === selectedCategory);
 		this.setState({
 			loading: false,
 			categories: categories.defined,
 			used: categories.used,
 			usual: categories.usual,
-			selectedCategory: null,
+			selectedCategory: selected,
 		});
 	}
 

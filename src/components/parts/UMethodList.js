@@ -39,17 +39,22 @@ class UMethodList extends Component {
 			|| this.props.category !== prevProps.category
 			|| this.props.access !== prevProps.access
 			|| this.props.variable !== prevProps.variable) {
-			this.updateMethods();
+			this.updateMethods(this.state.selectedMethod);
 		}
 	}
 
-	async updateMethods() {
+	async refreshEnsuring(method) {
+		this.updateMethods(method);
+	}
+
+	async updateMethods(selectedMethod) {
 		this.setState({ loading: true });
 		let methods = await this.fetchMethods();
 		let categories = await this.fetchCategories();
-		let selected = this.state.selectedMethod;
-		if (selected) {
-			selected = methods.find(m => m.methodClass === selected.methodClass && m.selector === selected.selector);
+		let selected;
+		if (selectedMethod) {
+			selected = methods.find(m => m.methodClass === selectedMethod.methodClass
+				&& m.selector === selectedMethod.selector);
 		}
 		let species = this.props.class;
 		if (methods.length === 0 && species) {

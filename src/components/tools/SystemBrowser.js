@@ -23,6 +23,8 @@ class SystemBrowser extends Tool {
 	constructor(props) {
 		super(props);
 		this.classTreeRef = React.createRef();
+		this.categoryListRef = React.createRef();
+		this.methodListRef = React.createRef();
 		this.state = {
 			roots: [{ name: "Object" }],
 			selectedSide: "instance",
@@ -167,13 +169,19 @@ class SystemBrowser extends Tool {
 	};
 
 	methodCompiled = async (method) => {
-		if (!method) {
-			return;
+		if (!method) return;
+		if (this.methodListRef && this.methodListRef.current) {
+			this.methodListRef.current.refreshEnsuring(method);
 		}
+		this.setState({ selectedMethod: method });
 	};
 
 	methodClassified = async (method) => {
-
+		if (!method) return;
+		if (this.categoryListRef && this.categoryListRef.current) {
+			this.categoryListRef.current.refreshEnsuring(method.category);
+		}
+		this.setState({ selectedCategory: method.category });
 	};
 
 	targetClass() {
@@ -307,6 +315,7 @@ class SystemBrowser extends Tool {
 								</Box>
 								<Box mt={1} flexGrow={1}>
 									<UCategoryList
+										ref={this.categoryListRef}
 										class={targetClass}
 										onCategorySelect={this.categorySelected}
 										highlightedCategory={selectedMethod ? selectedMethod.category : null}
@@ -319,6 +328,7 @@ class SystemBrowser extends Tool {
 							<Box sx={{ width: width }}>
 								<CustomPaper>
 									<UMethodList
+										ref={this.methodListRef}
 										class={targetClass}
 										category={selectedCategory}
 										access={selectedAccess}
