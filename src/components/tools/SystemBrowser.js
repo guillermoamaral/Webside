@@ -109,7 +109,7 @@ class SystemBrowser extends Tool {
 	}
 
 	variableSelected = (variable) => {
-		this.setState({ selectedVariable: variable });
+		this.setState({ selectedVariable: variable, selectedMethod: null });
 	}
 
 	variableAdded = async (variable) => {
