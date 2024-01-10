@@ -42,23 +42,24 @@ class SettingEditor extends Component {
 					setting.type === "number" ||
 					setting.type === "color" ||
 					setting.type === "url") && (
-					<TextField
-						sx={{ minWidth: 50 }}
-						size="small"
-						id={setting.name}
-						type={type}
-						placeholder={setting.description}
-						margin="dense"
-						name={setting.name}
-						variant="outlined"
-						value={value}
-						onChange={(event) => {
-							this.valueChanged(event.target.value);
-						}}
-						required
-						disabled={!setting.editable}
-					/>
-				)}
+						<TextField
+							sx={{ minWidth: 50 }}
+							size="small"
+							id={setting.name}
+							type={type}
+							placeholder={setting.description}
+							margin="dense"
+							name={setting.name}
+							variant="outlined"
+							value={value}
+							inputProps={{ id: setting.name + "key" }}
+							onChange={(event) => {
+								this.valueChanged(event.target.value);
+							}}
+							required
+							disabled={!setting.editable}
+						/>
+					)}
 				{setting.type === "boolean" && (
 					<FormGroup>
 						<FormControlLabel
