@@ -113,20 +113,20 @@ class CodeEditor extends Component {
 			//!state.dirty &&
 			source !== state.originalSource ||
 			JSON.stringify(selectedInterval) !==
-				JSON.stringify(state.selectedInterval) ||
+			JSON.stringify(state.selectedInterval) ||
 			selectedSelector !== state.selectedSelector ||
 			selectedIdentifier !== state.selectedIdentifier
 		) {
 			const ranges =
 				source && selectedInterval
 					? [
-							{
-								from: selectedInterval.start - 1,
-								anchor: selectedInterval.start - 1,
-								to: selectedInterval.end,
-								head: selectedInterval.end,
-							},
-					  ]
+						{
+							from: selectedInterval.start - 1,
+							anchor: selectedInterval.start - 1,
+							to: selectedInterval.end,
+							head: selectedInterval.end,
+						},
+					]
 					: [];
 			return {
 				originalSource: source,
@@ -154,7 +154,7 @@ class CodeEditor extends Component {
 		if (
 			nextProps.source !== this.props.source ||
 			JSON.stringify(nextProps.selectedInterval) !==
-				JSON.stringify(this.props.selectedInterval) ||
+			JSON.stringify(this.props.selectedInterval) ||
 			nextProps.selectedSelector !== this.props.selectedSelector ||
 			nextProps.selectedIdentifier !== this.props.selectedIdentifier
 		) {
@@ -239,7 +239,7 @@ class CodeEditor extends Component {
 						},
 						scrollIntoView: true,
 					});
-				} catch (error) {}
+				} catch (error) { }
 			}, 200 * i);
 		}
 	}
@@ -285,7 +285,7 @@ class CodeEditor extends Component {
 				title: "Replacement",
 				defaultValue: identifier,
 			});
-		} catch (error) {}
+		} catch (error) { }
 		if (!replacement) {
 			return;
 		}
@@ -588,7 +588,7 @@ class CodeEditor extends Component {
 		const expression = this.selectedExpression();
 		try {
 			await this.context.debugExpression(expression, this.props.context);
-		} catch (error) {}
+		} catch (error) { }
 	};
 
 	profileExpression = async () => {
@@ -598,7 +598,7 @@ class CodeEditor extends Component {
 				expression,
 				this.props.context
 			);
-		} catch (error) {}
+		} catch (error) { }
 	};
 
 	evaluateExpression = async (expression, sync, pin) => {
@@ -656,7 +656,7 @@ class CodeEditor extends Component {
 		let species;
 		try {
 			species = await ide.backend.classNamed(name);
-		} catch (error) {}
+		} catch (error) { }
 		if (species) {
 			return this.context.browseClass(species.name);
 		}
@@ -800,9 +800,9 @@ class CodeEditor extends Component {
 				//fontFamily: appearance.get("fontfamily"),
 				background: background,
 				foreground: "#75baff",
-				caret: mode === "light" ? "black" : colors.get("primaryColor"),
-				selection: mode === "light" ? "blue" : "grey",
-				selectionMatch: mode === "light" ? "blue" : "grey",
+				caret: mode.name === "light" ? "black" : colors.get("primaryColor"),
+				selection: "#9bcaef",
+				selectionMatch: "grey",
 				lineHighlight: "#8a91991a",
 				gutterBackground: background,
 				gutterBorder: background,
@@ -854,7 +854,7 @@ class CodeEditor extends Component {
 		var species;
 		try {
 			species = await ide.backend.classNamed(word);
-		} catch (error) {}
+		} catch (error) { }
 		if (species) {
 			const comment = species.comment || "";
 			return {
