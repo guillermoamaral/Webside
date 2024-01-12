@@ -103,7 +103,7 @@ class Settings extends Object {
 	get(name) {
 		const setting = this.setting(name);
 		if (setting) {
-			return setting.value || setting.default;
+			return setting.value === null ? setting.default : setting.value;
 		}
 	}
 

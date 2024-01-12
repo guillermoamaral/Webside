@@ -15,9 +15,9 @@ import ShortcutEditor from "./ShortcutEditor";
 class SettingEditor extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			value: this.props.setting.value || this.props.setting.default,
-		};
+		let value = this.props.setting.value;
+		if (value === null) { value = this.props.setting.default }
+		this.state = { value: value };
 	}
 
 	valueChanged(value) {

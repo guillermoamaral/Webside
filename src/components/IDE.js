@@ -93,6 +93,7 @@ class IDE extends Component {
 
 		const general = settings.addSection("code");
 		general.addBoolean("autocompletion", false, "Use autocompletion");
+		general.addBoolean("tooltips", true, "Show tooltips");
 
 		const appearance = settings.addSection("appearance");
 		appearance.addOptions(

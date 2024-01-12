@@ -902,10 +902,16 @@ class CodeEditor extends Component {
 		return tip;
 	};
 
+	showsTooltip() {
+		let show = ide.settings.section("code").get("tooltips");
+		console.log(ide.settings)
+		return show && !this.props.noTooltips;
+	}
+
 	tooltip() {
 		return hoverTooltip(
 			async (view, pos, side) => {
-				if (this.props.noTooltips) return null;
+				if (!this.showsTooltip()) return null;
 				const spec = await this.tooltipSpecAt(pos);
 				if (!spec) return null;
 				return {
