@@ -790,6 +790,7 @@ class CodeEditor extends Component {
 
 	theme() {
 		const appearance = ide.settings.section("appearance");
+		console.log(appearance)
 		const mode = appearance.section(appearance.get("mode"));
 		const colors = mode.section("colors");
 		const code = mode.section("code");

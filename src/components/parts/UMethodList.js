@@ -290,6 +290,12 @@ class UMethodList extends Component {
 		}
 	};
 
+	browseHistory = (method) => {
+		if (method) {
+			this.context.browseMethodHistory(method);
+		}
+	};
+
 	migrateMethod = (method) => {
 		if (method) {
 			this.context.migrateMethod(method);
@@ -390,6 +396,8 @@ class UMethodList extends Component {
 					action: this.runTest,
 					enabled: this.isTest,
 				},
+				null,
+				{ label: "History", action: this.browseHistory },
 				null,
 				{ label: "Migrate", action: this.migrateMethod },
 			]

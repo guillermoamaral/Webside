@@ -61,7 +61,7 @@ class MethodList extends Component {
 				this.props.onCategoryAdd(category);
 			}
 			return category;
-		} catch (error) {}
+		} catch (error) { }
 	};
 
 	suggestCategory = async (method) => {
@@ -76,7 +76,7 @@ class MethodList extends Component {
 				this.props.onCategoryAdd(category);
 			}
 			this.classifyMethod(method, category);
-		} catch (error) {}
+		} catch (error) { }
 	};
 
 	classifyMethod = async (method, category) => {
@@ -108,7 +108,7 @@ class MethodList extends Component {
 				message: "Select a category",
 				items: this.availableCategories(),
 			});
-		} catch (error) {}
+		} catch (error) { }
 		if (category) {
 			this.classifyMethod(method, category);
 		}
@@ -166,8 +166,8 @@ class MethodList extends Component {
 		if (method) {
 			var onRun = silently
 				? () => {
-						this.props.onMethodSelect(method);
-				  }
+					this.props.onMethodSelect(method);
+				}
 				: null;
 			this.context.runTest(
 				method.methodClass,
@@ -175,6 +175,12 @@ class MethodList extends Component {
 				silently,
 				onRun
 			);
+		}
+	};
+
+	browseHistory = (method) => {
+		if (method) {
+			this.context.browseMethodHistory(method);
 		}
 	};
 
@@ -275,6 +281,8 @@ class MethodList extends Component {
 					enabled: this.isTest,
 				},
 				null,
+				{ label: "History", action: this.browseHistory },
+				null,
 				{ label: "Migrate", action: this.migrateMethod },
 			]
 		);
@@ -288,10 +296,10 @@ class MethodList extends Component {
 				method.status === "passed"
 					? "green"
 					: method.status === "failed"
-					? "yellow"
-					: method.status === "error"
-					? "red"
-					: "grey";
+						? "yellow"
+						: method.status === "error"
+							? "red"
+							: "grey";
 			return <TestStateIcon style={{ color: color, fontSize: size }} />;
 		}
 		if (method.overriding && method.overriden) {
@@ -418,7 +426,7 @@ class MethodList extends Component {
 					rowsPerPage={50}
 					usePagination
 					selectedRow={selectedMethod}
-					//noHeaders
+				//noHeaders
 				/>
 			);
 		} else {

@@ -38,6 +38,7 @@ import ResourcesIcon from "./icons/ResourcesIcon";
 import POC from "./tools/POC";
 import SystemBrowser from "./tools/SystemBrowser";
 import { v4 as uuidv4 } from "uuid";
+import MethodHistoryBrowser from "./tools/MethodHistoryBrowser";
 
 const useSystemBrowser = true;
 
@@ -715,6 +716,12 @@ class ToolContainer extends Component {
 		};
 		input.click();
 	};
+
+	browseMethodHistory(method) {
+		this.createPage(
+			"History of " + method.selector, <ChangesBrowserIcon />,
+			<MethodHistoryBrowser method={method} />)
+	}
 
 	debugExpression = async (expression, context) => {
 		try {

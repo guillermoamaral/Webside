@@ -243,6 +243,19 @@ class Backend {
 		return methods.length === 0 ? null : methods[0];
 	}
 
+	async methodHistory(classname, selector) {
+		const encoded = encodeURIComponent(selector);
+		const changes = await this.get(
+			"/classes/" +
+			classname +
+			"/methods/" +
+			encoded +
+			"/history",
+			"history of " + classname + ">>#" + selector
+		);
+		return changes;
+	}
+
 	async autocompletions(classname, source, position) {
 		const data = { class: classname, source: source, position: position };
 		return await this.post(
