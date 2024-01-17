@@ -128,6 +128,7 @@ class IDE extends Component {
 		lightCode.addColor("number", "#65a14e");
 		lightCode.addColor("comment", "#586e75");
 		lightCode.addColor("separator", "#b3bab6");
+		lightCode.addColor("selection", "#9bcaef64"); 
 
 		const dark = appearance.addSection("dark", "Dark Settings");
 		const darkColors = dark.addSection("colors", "Dialect Colors");
@@ -154,6 +155,7 @@ class IDE extends Component {
 		darkCode.addColor("number", "#65a14e");
 		darkCode.addColor("comment", "#586e75");
 		darkCode.addColor("separator", "#b3bab6");
+		darkCode.addColor("selection", "#9bcaef50");
 
 		const shortcuts = settings.addSection("shortcuts");
 		shortcuts.addShortcut("quickSearch", "Shift+Enter");
@@ -651,7 +653,6 @@ class IDE extends Component {
 	};
 
 	hotkeyPressed = async (hotkey) => {
-		console.log(hotkey);
 		const shortcuts = this.settings.section("shortcuts");
 		switch (hotkey) {
 			case shortcuts.get("quickSearch"):

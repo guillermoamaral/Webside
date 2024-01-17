@@ -48,7 +48,6 @@ class ShortcutEditor extends Component {
 	setShortcut(shift, ctrl, alt, key) {
 		if (this.props.onChange) {
 			const shortcut = this.shourtcut(shift, ctrl, alt, key);
-			console.log(shortcut);
 			return this.props.onChange(shortcut);
 		}
 		this.setState({

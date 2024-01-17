@@ -790,7 +790,6 @@ class CodeEditor extends Component {
 
 	theme() {
 		const appearance = ide.settings.section("appearance");
-		console.log(appearance)
 		const mode = appearance.section(appearance.get("mode"));
 		const colors = mode.section("colors");
 		const code = mode.section("code");
@@ -802,8 +801,8 @@ class CodeEditor extends Component {
 				background: background,
 				foreground: "#75baff",
 				caret: mode.name === "light" ? "black" : colors.get("primaryColor"),
-				selection: "#9bcaef",
-				selectionMatch: "grey",
+				selection: code.get("selection"),
+				selectionMatch: "#cccccc50",
 				lineHighlight: "#8a91991a",
 				gutterBackground: background,
 				gutterBorder: background,
@@ -905,7 +904,6 @@ class CodeEditor extends Component {
 
 	showsTooltip() {
 		let show = ide.settings.section("code").get("tooltips");
-		console.log(ide.settings)
 		return show && !this.props.noTooltips;
 	}
 
