@@ -426,6 +426,7 @@ class MethodList extends Component {
 					rowsPerPage={50}
 					usePagination
 					selectedRow={selectedMethod}
+					rowActions={this.methodActions}
 				//noHeaders
 				/>
 			);

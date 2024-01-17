@@ -155,9 +155,9 @@ class CustomTable extends Component {
 					onBlur={(event) => {
 						this.setState({ editingCell: null });
 					}}
-					// onKeyDown={(event) => {
-					// 	console.log(event.key);
-					// }}
+				// onKeyDown={(event) => {
+				// 	console.log(event.key);
+				// }}
 				/>
 			);
 		}
@@ -214,8 +214,16 @@ class CustomTable extends Component {
 		return columns;
 	}
 
+	getRowActions = (row) => {
+		const actions = this.props.rowActions;
+		if (typeof actions === "function") {
+			return actions(row);
+		}
+		return actions || [];
+	};
+
 	renderActionButtons(row, index) {
-		const actions = this.props.rowActions || [];
+		const actions = this.getRowActions(row);
 		return (
 			<Box display="flex" alignItems="center" key={"box" + index}>
 				{actions.map((action, j) => {
@@ -381,7 +389,7 @@ class CustomTable extends Component {
 															order.column &&
 															order.column
 																.field ===
-																column.field
+															column.field
 														}
 														direction={
 															order.direction
