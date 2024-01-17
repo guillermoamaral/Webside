@@ -719,8 +719,12 @@ class ToolContainer extends Component {
 
 	browseMethodHistory(method) {
 		this.createPage(
-			"History of " + method.selector, <ChangesBrowserIcon />,
-			<MethodHistoryBrowser method={method} />)
+			"History of " + method.methodClass + ">>" + method.selector,
+			<ChangesBrowserIcon />,
+			<MethodHistoryBrowser method={method} />,
+			null,
+			null,
+			true)
 	}
 
 	debugExpression = async (expression, context) => {

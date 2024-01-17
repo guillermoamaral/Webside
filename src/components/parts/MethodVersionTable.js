@@ -8,7 +8,6 @@ class MethodVersionTable extends Component {
 	static contextType = ToolContainerContext;
 
 	changeSelected = (change) => {
-		console.log(change)
 		if (this.props.onChangeSelect) {
 			this.props.onChangeSelect(change);
 		}
