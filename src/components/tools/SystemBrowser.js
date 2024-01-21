@@ -40,12 +40,16 @@ class SystemBrowser extends Tool {
 	}
 
 	static getDerivedStateFromProps(props, state) {
-		if (props.preselectedClass && state.roots.length === 1 && state.roots[0].name !== props.preselectedClass.name) {
+		if (
+			props.preselectedClass &&
+			state.roots.length === 1 &&
+			state.roots[0].name !== props.preselectedClass.name
+		) {
 			return {
 				roots: [{ name: props.preselectedClass.name }],
 				selectedClass: props.preselectedClass,
 				preselectedClass: props.preselectedClass,
-				selectedSide: props.side || "instance"
+				selectedSide: props.side || "instance",
 			};
 		}
 		if (props.preselectedPackage && props.showPackages) {
@@ -57,6 +61,7 @@ class SystemBrowser extends Tool {
 	}
 
 	async updateClass(species) {
+		if (!species) return;
 		try {
 			let retrieved = await ide.backend.classNamed(species.name);
 			Object.assign(species, retrieved);
@@ -78,19 +83,35 @@ class SystemBrowser extends Tool {
 	packageSelected = async (pack) => {
 		this.context.updatePageLabel(this.props.id, pack.name);
 		await this.updatePackage(pack);
-		this.setState({ selectedPackage: pack, selectedClass: null, selectedCategory: null, selectedVariable: null, selectedMethod: null })
+		this.setState({
+			selectedPackage: pack,
+			selectedClass: null,
+			selectedCategory: null,
+			selectedVariable: null,
+			selectedMethod: null,
+		});
 	};
 
 	sideSelected = async (side) => {
 		await this.updateClass(this.state.selectedClass);
-		this.setState({ selectedSide: side, selectedCategory: null, selectedVariable: null, selectedMethod: null })
-	}
+		this.setState({
+			selectedSide: side,
+			selectedCategory: null,
+			selectedVariable: null,
+			selectedMethod: null,
+		});
+	};
 
 	classSelected = async (species) => {
 		this.context.updatePageLabel(this.props.id, species.name);
 		await this.updateClass(species);
-		this.setState({ selectedClass: species, selectedCategory: null, selectedVariable: null, selectedMethod: null });
-	}
+		this.setState({
+			selectedClass: species,
+			selectedCategory: null,
+			selectedVariable: null,
+			selectedMethod: null,
+		});
+	};
 
 	classDefined = async (species) => {
 		this.context.updatePageLabel(this.props.id, species.name);
@@ -98,54 +119,68 @@ class SystemBrowser extends Tool {
 			this.classTreeRef.current.refreshEnsuring(species);
 		}
 		this.setState({ selectedClass: species });
-	}
+	};
 
 	classRemoved = async (species) => {
 		this.setState({ selectedClass: null });
-	}
+	};
 
 	accessSelected = async (access) => {
 		this.setState({ selectedAccess: access });
-	}
+	};
 
 	variableSelected = (variable) => {
 		this.setState({ selectedVariable: variable, selectedMethod: null });
-	}
+	};
 
 	variableAdded = async (variable) => {
 		let species = this.state.selectedClass;
 		await this.updateClass(species);
-		this.setState({ selectedClass: species, selectedCategory: null, selectedVariable: variable, selectedMethod: null });
-	}
+		this.setState({
+			selectedClass: species,
+			selectedCategory: null,
+			selectedVariable: variable,
+			selectedMethod: null,
+		});
+	};
 
 	variableRenamed = async (variable) => {
 		let species = this.state.selectedClass;
 		await this.updateClass(species);
-		this.setState({ selectedClass: species, selectedCategory: null, selectedVariable: variable, selectedMethod: null });
-	}
+		this.setState({
+			selectedClass: species,
+			selectedCategory: null,
+			selectedVariable: variable,
+			selectedMethod: null,
+		});
+	};
 
 	variableRemoved = async (variable) => {
 		let species = this.state.selectedClass;
 		await this.updateClass(species);
-		this.setState({ selectedClass: species, selectedCategory: null, selectedVariable: null, selectedMethod: null });
-
-	}
+		this.setState({
+			selectedClass: species,
+			selectedCategory: null,
+			selectedVariable: null,
+			selectedMethod: null,
+		});
+	};
 
 	categorySelected = (category) => {
 		this.setState({ selectedCategory: category });
-	}
+	};
 
 	categoryAdded = (category) => {
 		this.setState({ selectedCategory: category });
-	}
+	};
 
 	categoryRenamed = (category, renamed) => {
 		this.setState({ selectedCategory: renamed });
-	}
+	};
 
 	categoryRemoved = (category) => {
-		this.setState({ selectedCategory: null })
-	}
+		this.setState({ selectedCategory: null });
+	};
 
 	async updateMethod(method) {
 		try {
@@ -205,31 +240,42 @@ class SystemBrowser extends Tool {
 
 	targetClass() {
 		let { selectedSide, selectedClass } = this.state;
-		return selectedClass ?
-			selectedSide === "instance" ? selectedClass : selectedClass.metaclass
+		return selectedClass
+			? selectedSide === "instance"
+				? selectedClass
+				: selectedClass.metaclass
 			: null;
 	}
 
-	classLabelStyle = (species) => {
-		if (!this.props.showPackages) return "normal";
-		const pack = this.state.selectedPackage;
-		return pack &&
+	classLabelColor = (species) => {
+		if (!this.props.showPackages) return;
+		let pack = this.state.selectedPackage;
+		if (
+			pack &&
 			pack.methods &&
 			(pack.methods[species.name] ||
 				pack.methods[species.name + " class"])
-			? "italic"
-			: "normal";
+		) {
+			let appearance = ide.settings.section("appearance");
+			let mode = appearance.section(appearance.get("mode"));
+			return mode.section("colors").get("disabledText");
+		}
 	};
 
-	methodLabelStyle = (method) => {
-		if (!this.props.showPackages) return "normal";
+	methodLabelColor = (method) => {
+		if (!this.props.showPackages) return;
 		const pack = this.state.selectedPackage;
-		return pack &&
+		if (
+			pack &&
 			pack.methods &&
 			pack.methods[method.methodClass] &&
 			pack.methods[method.methodClass].includes(method.selector)
-			? "italic"
-			: "normal";
+		) {
+			return;
+		}
+		let appearance = ide.settings.section("appearance");
+		let mode = appearance.section(appearance.get("mode"));
+		return mode.section("colors").get("disabledText");
 	};
 
 	evaluationContext() {
@@ -247,45 +293,68 @@ class SystemBrowser extends Tool {
 			selectedCategory,
 			selectedMethod,
 			preselectedClass,
-			preselectedPackage } = this.state;
+			preselectedPackage,
+		} = this.state;
 		let targetClass = this.targetClass();
 		let showPackages = this.props.showPackages;
 		let width = showPackages ? "20%" : "25%";
 		return (
 			<CustomSplit mode="vertical">
 				<Box sx={{ minHeight: 50, height: "35%" }}>
-					<Box display="flex" flexDirection="row" width="100%" height="100%">
-						<CustomSplit >
-							{showPackages && <Box sx={{ width: width }}>
-								<UPackageList
-									onPackageSelect={this.packageSelected}
-									preselectedPackage={preselectedPackage}
-								/>
-							</Box>}
+					<Box
+						display="flex"
+						flexDirection="row"
+						width="100%"
+						height="100%"
+					>
+						<CustomSplit>
+							{showPackages && (
+								<Box sx={{ width: width }}>
+									<UPackageList
+										onPackageSelect={this.packageSelected}
+										preselectedPackage={preselectedPackage}
+									/>
+								</Box>
+							)}
 							<Box sx={{ width: width }}>
 								<UClassTree
 									ref={this.classTreeRef}
 									roots={!showPackages ? roots : null}
-									package={showPackages ? selectedPackage : null}
+									package={
+										showPackages ? selectedPackage : null
+									}
 									onClassSelect={this.classSelected}
 									onClassDefine={this.classDefined}
 									onClassRemove={this.classRemoved}
 									showSearch={!showPackages}
-									labelStyle={this.classLabelStyle}
+									labelColor={this.classLabelColor}
 									preselectedClass={preselectedClass}
 								/>
 							</Box>
-							<Box display="flex" flexDirection="column" sx={{ height: "100%", width: width }}>
+							<Box
+								display="flex"
+								flexDirection="column"
+								sx={{ height: "100%", width: width }}
+							>
 								<Box>
 									<Select
 										size="small"
 										value={selectedAccess}
 										input={
-											<OutlinedInput margin="dense" fullWidth />
+											<OutlinedInput
+												margin="dense"
+												fullWidth
+											/>
 										}
-										onChange={(event) => { this.accessSelected(event.target.value) }}
+										onChange={(event) => {
+											this.accessSelected(
+												event.target.value
+											);
+										}}
 									>
-										<MenuItem value={"using"}>using</MenuItem>
+										<MenuItem value={"using"}>
+											using
+										</MenuItem>
 										<MenuItem value={"assigning"}>
 											assigning
 										</MenuItem>
@@ -304,12 +373,18 @@ class SystemBrowser extends Tool {
 									/>
 								</Box>
 							</Box>
-							<Box display="flex" flexDirection="column" sx={{ height: "100%", width: width }}>
+							<Box
+								display="flex"
+								flexDirection="column"
+								sx={{ height: "100%", width: width }}
+							>
 								<Box display="flex" justifyContent="center">
 									<RadioGroup
 										name="side"
 										value={selectedSide}
-										onChange={(event, side) => this.sideSelected(side)}
+										onChange={(event, side) =>
+											this.sideSelected(side)
+										}
 										defaultValue="instance"
 										row
 									>
@@ -340,7 +415,11 @@ class SystemBrowser extends Tool {
 										ref={this.categoryListRef}
 										class={targetClass}
 										onCategorySelect={this.categorySelected}
-										highlightedCategory={selectedMethod ? selectedMethod.category : null}
+										highlightedCategory={
+											selectedMethod
+												? selectedMethod.category
+												: null
+										}
 										onCategoryAdd={this.categoryAdded}
 										onCategoryRename={this.categoryRenamed}
 										onCategoryRemove={this.categoryRemoved}
@@ -360,7 +439,7 @@ class SystemBrowser extends Tool {
 										onMethodRemove={this.methodRemoved}
 										onMethodClassify={this.methodClassified}
 										onCategoryAdd={this.categoryAdded}
-										labelStyle={this.methodLabelStyle}
+										labelColor={this.methodLabelColor}
 										showNewOption
 									/>
 								</CustomPaper>

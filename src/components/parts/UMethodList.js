@@ -33,12 +33,17 @@ class UMethodList extends Component {
 
 	async componentDidUpdate(prevProps) {
 		if (this.props.methods !== prevProps.methods) {
-			return this.setState({ methods: this.props.methods, selectedMethod: null })
+			return this.setState({
+				methods: this.props.methods,
+				selectedMethod: null,
+			});
 		}
-		if (this.props.class !== prevProps.class
-			|| this.props.category !== prevProps.category
-			|| this.props.access !== prevProps.access
-			|| this.props.variable !== prevProps.variable) {
+		if (
+			this.props.class !== prevProps.class ||
+			this.props.category !== prevProps.category ||
+			this.props.access !== prevProps.access ||
+			this.props.variable !== prevProps.variable
+		) {
 			this.updateMethods(this.state.selectedMethod);
 		}
 	}
@@ -53,8 +58,11 @@ class UMethodList extends Component {
 		let categories = await this.fetchCategories();
 		let selected;
 		if (selectedMethod) {
-			selected = methods.find(m => m.methodClass === selectedMethod.methodClass
-				&& m.selector === selectedMethod.selector);
+			selected = methods.find(
+				(m) =>
+					m.methodClass === selectedMethod.methodClass &&
+					m.selector === selectedMethod.selector
+			);
 		}
 		let species = this.props.class;
 		if (methods.length === 0 && species) {
@@ -78,7 +86,12 @@ class UMethodList extends Component {
 		if (!species) return methods;
 		try {
 			if (variable && access) {
-				methods = await ide.backend.accessors(species.name, variable.name, access, true);
+				methods = await ide.backend.accessors(
+					species.name,
+					variable.name,
+					access,
+					true
+				);
 			} else {
 				methods = await ide.backend.methods(species.name, true);
 			}
@@ -86,7 +99,7 @@ class UMethodList extends Component {
 			ide.reportError(error);
 		}
 		if (category) {
-			methods = methods.filter(m => m.category === category);
+			methods = methods.filter((m) => m.category === category);
 		}
 		return methods;
 	}
@@ -94,26 +107,35 @@ class UMethodList extends Component {
 	updateCategories = async () => {
 		let categories = await this.fetchCategories();
 		this.setState({ categories: categories });
-	}
+	};
 
 	fetchCategories = async () => {
 		let method = this.state.selectedMethod;
 		let categories = [];
-		let classname = method ? method.methodClass : this.props.class ? this.props.class.name : null;
+		let classname = method
+			? method.methodClass
+			: this.props.class
+			? this.props.class.name
+			: null;
 		if (!classname) return categories;
 		try {
 			categories = await ide.backend.categories(classname);
 			let used = await ide.backend.usedCategories(classname);
-			let usual = await ide.backend.usualCategories(classname.endsWith(" class"));
-			used.forEach((c) => { if (!categories.includes(c)) categories.push(c) });
-			usual.forEach((c) => { if (!categories.includes(c)) categories.push(c) });
+			let usual = await ide.backend.usualCategories(
+				classname.endsWith(" class")
+			);
+			used.forEach((c) => {
+				if (!categories.includes(c)) categories.push(c);
+			});
+			usual.forEach((c) => {
+				if (!categories.includes(c)) categories.push(c);
+			});
 			categories.sort();
-		}
-		catch (error) {
+		} catch (error) {
 			ide.reportError(error);
 		}
 		return categories;
-	}
+	};
 
 	methodSelected = async (method) => {
 		await this.updateCategories();
@@ -173,7 +195,7 @@ class UMethodList extends Component {
 				this.props.onCategoryAdd(category);
 			}
 			return category;
-		} catch (error) { }
+		} catch (error) {}
 	};
 
 	suggestCategory = async (method) => {
@@ -188,7 +210,7 @@ class UMethodList extends Component {
 				this.props.onCategoryAdd(category);
 			}
 			this.classifyMethod(method, category);
-		} catch (error) { }
+		} catch (error) {}
 	};
 
 	classifyMethod = async (method, category) => {
@@ -220,7 +242,7 @@ class UMethodList extends Component {
 				message: "Select a category",
 				items: this.state.categories,
 			});
-		} catch (error) { }
+		} catch (error) {}
 		if (category) {
 			this.classifyMethod(method, category);
 		}
@@ -278,8 +300,8 @@ class UMethodList extends Component {
 		if (method) {
 			var onRun = silently
 				? () => {
-					this.methodSelected(method);
-				}
+						this.methodSelected(method);
+				  }
 				: null;
 			this.context.runTest(
 				method.methodClass,
@@ -325,8 +347,16 @@ class UMethodList extends Component {
 		}
 		options.push(
 			...[
-				{ label: "Rename", action: this.renameMethod, enabled: this.canRename },
-				{ label: "Remove", action: this.removeMethod, enabled: this.canRemove },
+				{
+					label: "Rename",
+					action: this.renameMethod,
+					enabled: this.canRename,
+				},
+				{
+					label: "Remove",
+					action: this.removeMethod,
+					enabled: this.canRemove,
+				},
 			]
 		);
 		const categories = this.state.categories;
@@ -412,10 +442,10 @@ class UMethodList extends Component {
 				method.status === "passed"
 					? "green"
 					: method.status === "failed"
-						? "yellow"
-						: method.status === "error"
-							? "red"
-							: "grey";
+					? "yellow"
+					: method.status === "error"
+					? "red"
+					: "grey";
 			return <TestStateIcon style={{ color: color, fontSize: size }} />;
 		}
 		if (method.overriding && method.overriden) {
@@ -525,12 +555,21 @@ class UMethodList extends Component {
 	};
 
 	methodColor = (method) => {
+		let color = this.props.labelColor;
+		if (color) {
+			if (typeof color === "function") {
+				return color(method);
+			}
+			if (typeof color === "string") {
+				return color;
+			}
+		}
 		if (method && method.needsRecompilation) return "red";
 	};
 
 	render() {
-		const { methods, selectedMethod, loading } = this.state;
-		const { useTable, labelStyle } = this.props;
+		let { methods, selectedMethod, loading } = this.state;
+		let { useTable, labelStyle } = this.props;
 		if (useTable) {
 			return (
 				<CustomTable
@@ -542,7 +581,8 @@ class UMethodList extends Component {
 					rowsPerPage={50}
 					usePagination
 					selectedRow={selectedMethod}
-				//noHeaders
+					rowColor={this.methodColor}
+					//noHeaders
 				/>
 			);
 		} else {

@@ -104,7 +104,7 @@ const drawNode = memo(({ data, index, style }) => {
 							<Typography
 								noWrap
 								component="div"
-							//style={{ color: node.color }}
+								style={{ color: nodeInfo.color }}
 							>
 								<Box
 									fontWeight={
@@ -113,8 +113,8 @@ const drawNode = memo(({ data, index, style }) => {
 											: "fontWeightRegular"
 									}
 									fontStyle={nodeInfo.style}
-								// fontSize={size}
-								// align={alignment}
+									// fontSize={size}
+									// align={alignment}
 								>
 									{nodeInfo.label}
 								</Box>
@@ -142,6 +142,7 @@ const FastTree = ({
 	nodeLabel,
 	nodeChildren,
 	nodeStyle,
+	nodeColor,
 	menuOptions,
 	onNodeExpand,
 	onNodeCollapse,
@@ -186,6 +187,17 @@ const FastTree = ({
 		return nodeStyle(node);
 	};
 
+	const getNodeColor = (node) => {
+		const color = nodeColor;
+		if (typeof color == "function") {
+			return color(node);
+		}
+		if (typeof color == "string") {
+			return color;
+		}
+		return node.color ? node.color : "default";
+	};
+
 	const getNodeChildren = (node) => {
 		if (!nodeChildren) {
 			return node.children;
@@ -206,7 +218,7 @@ const FastTree = ({
 	};
 
 	const flattenNode = (node, depth, result) => {
-		const info = {}
+		const info = {};
 		info.node = node;
 		info.id = getNodeId(node);
 		if (!info.id) {
@@ -217,12 +229,13 @@ const FastTree = ({
 		info.label = getNodeLabel(node);
 		info.children = getNodeChildren(node) || [];
 		info.style = getNodeStyle(node);
-		info.expanded = expandedNodes ?
-			expandedNodes.includes(node) :
-			expandedIds.includes(info.id);
-		info.selected = selectedNode ?
-			selectedNode === node :
-			selected && selected.id === info.id;
+		info.color = getNodeColor(node);
+		info.expanded = expandedNodes
+			? expandedNodes.includes(node)
+			: expandedIds.includes(info.id);
+		info.selected = selectedNode
+			? selectedNode === node
+			: selected && selected.id === info.id;
 		result.push(info);
 		if (info.expanded && info.children.length > 0) {
 			for (let child of info.children) {
@@ -285,13 +298,15 @@ const FastTree = ({
 	const listRef = React.createRef();
 
 	if (selected) {
-		let ids = flattenedData.map(n => n.id);
-		if (!ids.includes(getNodeId(selected.node))) { setSelected(null) }
-	}  
+		let ids = flattenedData.map((n) => n.id);
+		if (!ids.includes(getNodeId(selected.node))) {
+			setSelected(null);
+		}
+	}
 
 	return (
 		<Box style={{ height: "100%", width: "100%" }}>
-			{loading &&
+			{loading && (
 				<Box>
 					<Box width="40%">
 						<Skeleton animation="wave" />
@@ -304,8 +319,9 @@ const FastTree = ({
 						</Skeleton>
 						<Skeleton animation="wave" />
 					</Box>
-				</Box>}
-			{!loading &&
+				</Box>
+			)}
+			{!loading && (
 				<AutoSizer>
 					{({ height, width }) => (
 						<List
@@ -322,7 +338,8 @@ const FastTree = ({
 							{drawNode}
 						</List>
 					)}
-				</AutoSizer>}
+				</AutoSizer>
+			)}
 			{menuOptions && (
 				<PopupMenu
 					options={menuOptions}
@@ -332,9 +349,8 @@ const FastTree = ({
 					onOptionEnable={getMenuOptionEnabled}
 					onClose={() => setMenuOpen(false)}
 				/>
-			)
-			}
-		</Box >
+			)}
+		</Box>
 	);
 };
 

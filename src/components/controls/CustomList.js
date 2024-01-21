@@ -146,10 +146,10 @@ class CustomList extends Component {
 
 	getItemColor = (item) => {
 		const color = this.props.itemColor;
-		if (typeof color == "function") {
+		if (typeof color === "function") {
 			return color(item);
 		}
-		if (typeof color == "string") {
+		if (typeof color === "string") {
 			return color;
 		}
 		return item.color ? item.color : "default";
@@ -303,8 +303,8 @@ class CustomList extends Component {
 		const target = text.toLowerCase();
 		const filtered = enabled
 			? all.filter((i) => {
-				return this.getItemLabel(i).toLowerCase().includes(target);
-			})
+					return this.getItemLabel(i).toLowerCase().includes(target);
+			  })
 			: all;
 		this.setState({
 			filterEnabled: enabled,
@@ -459,45 +459,50 @@ class CustomList extends Component {
 		const showFilter = !loading && enableFilter && filterEnabled;
 		return (
 			<Box style={{ height: showFilter ? "90%" : "100%" }}>
-				{loading &&
+				{loading && (
 					<Box ml={2} width="50%">
 						<Skeleton animation="wave" />
 						<Skeleton animation="wave" />
 						<Skeleton animation="wave" />
 						<Skeleton animation="wave" />
-					</Box>}
-				{!loading && <Box style={{ height: showFilter ? "90%" : "100%" }}>
-					<AutoSizer>
-						{({ height, width }) => (
-							<List
-								ref={listRef}
-								height={height}
-								width={width}
-								itemSize={ITEM_SIZE}
-								itemCount={count}
-								overscanCount={5}
-								onKeyDown={this.keyDown}
-								style={{ paddingTop: 0, paddingBottom: 0 }}
-								outerElementType={CustomScrollbarsVirtualList}
-								outerRef={outerRef}
-								onScroll={({
-									scrollOffset,
-									scrollUpdateWasRequested,
-								}) => {
-									if (scrollUpdateWasRequested) {
-										console.log(
-											"TODO: check scroll position",
-											scrollOffset,
-											outerRef.current.scrollHeight
-										);
+					</Box>
+				)}
+				{!loading && (
+					<Box style={{ height: showFilter ? "90%" : "100%" }}>
+						<AutoSizer>
+							{({ height, width }) => (
+								<List
+									ref={listRef}
+									height={height}
+									width={width}
+									itemSize={ITEM_SIZE}
+									itemCount={count}
+									overscanCount={5}
+									onKeyDown={this.keyDown}
+									style={{ paddingTop: 0, paddingBottom: 0 }}
+									outerElementType={
+										CustomScrollbarsVirtualList
 									}
-								}}
-							>
-								{this.renderItem}
-							</List>
-						)}
-					</AutoSizer>
-				</Box>}
+									outerRef={outerRef}
+									onScroll={({
+										scrollOffset,
+										scrollUpdateWasRequested,
+									}) => {
+										if (scrollUpdateWasRequested) {
+											console.log(
+												"TODO: check scroll position",
+												scrollOffset,
+												outerRef.current.scrollHeight
+											);
+										}
+									}}
+								>
+									{this.renderItem}
+								</List>
+							)}
+						</AutoSizer>
+					</Box>
+				)}
 				{showFilter && (
 					<Box style={{ height: "10%" }}>
 						<TextField

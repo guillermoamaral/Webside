@@ -303,7 +303,7 @@ class UClassTree extends Component {
 	}
 
 	render() {
-		let { showSearch, labelStyle } = this.props;
+		let { showSearch, labelStyle, labelColor } = this.props;
 		if (showSearch === undefined) showSearch = true;
 		let { roots, selectedClass, expandedClasses, loading } = this.state;
 		let appearance = ide.settings.section("appearance");
@@ -351,6 +351,7 @@ class UClassTree extends Component {
 							nodeId="name"
 							nodeLabel="name"
 							nodeStyle={labelStyle}
+							nodeColor={labelColor}
 							nodeChildren="subclasses"
 							selectedNode={selectedClass}
 							onNodeSelect={this.classSelected}

@@ -110,6 +110,7 @@ class IDE extends Component {
 		lightColors.addColor("background", "#ffffff").readOnly();
 		lightColors.addColor("primaryText", "#000000").readOnly();
 		lightColors.addColor("secondaryText", "#808080").readOnly();
+		lightColors.addColor("disabledText", "#00000080").readOnly();
 		lightColors.addColor("appliedChange", "green");
 		lightColors.addColor("unappliedChange", "#969696");
 		const lightCode = light.addSection("code", "Code Colors");
@@ -128,7 +129,7 @@ class IDE extends Component {
 		lightCode.addColor("number", "#65a14e");
 		lightCode.addColor("comment", "#586e75");
 		lightCode.addColor("separator", "#b3bab6");
-		lightCode.addColor("selection", "#9bcaef64"); 
+		lightCode.addColor("selection", "#9bcaef64");
 
 		const dark = appearance.addSection("dark", "Dark Settings");
 		const darkColors = dark.addSection("colors", "Dialect Colors");
@@ -137,6 +138,7 @@ class IDE extends Component {
 		darkColors.addColor("background", "#303030").readOnly();
 		darkColors.addColor("primaryText", "#aaaaaa").readOnly();
 		darkColors.addColor("secondaryText", "#00000").readOnly();
+		darkColors.addColor("disabledText", "#aaaaaa80").readOnly();
 		darkColors.addColor("appliedChange", "#c0ff61");
 		darkColors.addColor("unappliedChange", "#c8c8c8");
 		const darkCode = dark.addSection("code", "Code Colors");
@@ -182,18 +184,18 @@ class IDE extends Component {
 	applySettings(settings) {
 		const hard =
 			this.settings.section("connection").get("backend") !==
-			settings.section("connection").get("backend") ||
+				settings.section("connection").get("backend") ||
 			this.settings.section("connection").get("developer") !==
-			settings.section("connection").get("developer");
+				settings.section("connection").get("developer");
 		this.settings = settings;
 		this.storeSettingsIntoCookie();
 		const connection = this.settings.section("connection");
 		if (hard) {
 			this.props.navigate(
 				"/ide?backend=" +
-				connection.get("backend") +
-				"&developer=" +
-				connection.get("developer")
+					connection.get("backend") +
+					"&developer=" +
+					connection.get("developer")
 			);
 			this.removeExtraContainers();
 		}
@@ -585,10 +587,10 @@ class IDE extends Component {
 			passed.length > 0 && failed.length === 0 && errors.length === 0
 				? "success"
 				: failed.length > 0 && errors.length === 0
-					? "warning"
-					: errors.length > 0
-						? "error"
-						: "info";
+				? "warning"
+				: errors.length > 0
+				? "error"
+				: "info";
 		return { text: text, type: type };
 	}
 
@@ -617,7 +619,7 @@ class IDE extends Component {
 	//Services...
 
 	reportError = (error) => {
-		console.log(error)
+		console.log(error);
 		if (!error) {
 			return;
 		}
