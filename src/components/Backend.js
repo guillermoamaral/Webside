@@ -123,9 +123,9 @@ class Backend {
 	async packageClasses(packagename, extended = false) {
 		return await this.get(
 			"/packages/" +
-			packagename +
-			"/classes?tree=true&extended=" +
-			extended,
+				packagename +
+				"/classes?tree=true&extended=" +
+				extended,
 			"classes from package " + packagename
 		);
 	}
@@ -133,11 +133,11 @@ class Backend {
 	async classTree(root, depth, onlyNames = false) {
 		const tree = await this.get(
 			"/classes?names=" +
-			onlyNames +
-			"&root=" +
-			root +
-			"&tree=true&depth=" +
-			depth,
+				onlyNames +
+				"&root=" +
+				root +
+				"&tree=true&depth=" +
+				depth,
 			"class tree from " + root
 		);
 		return tree[0];
@@ -234,10 +234,10 @@ class Backend {
 		const encoded = encodeURIComponent(selector);
 		const methods = await this.get(
 			"/classes/" +
-			classname +
-			"/methods?selector=" +
-			encoded +
-			"&bytecodes=true&disassembly=true&ast=true&annotations=true",
+				classname +
+				"/methods?selector=" +
+				encoded +
+				"&bytecodes=true&disassembly=true&ast=true&annotations=true",
 			"method " + classname + ">>#" + selector
 		);
 		return methods.length === 0 ? null : methods[0];
@@ -246,11 +246,7 @@ class Backend {
 	async methodHistory(classname, selector) {
 		const encoded = encodeURIComponent(selector);
 		const changes = await this.get(
-			"/classes/" +
-			classname +
-			"/methods/" +
-			encoded +
-			"/history",
+			"/classes/" + classname + "/methods/" + encoded + "/history",
 			"history of " + classname + ">>#" + selector
 		);
 		return changes;
@@ -266,7 +262,7 @@ class Backend {
 	}
 
 	async searchClassNames(text) {
-		const results = await this.search(text, true, "beginning", "classes");
+		const results = await this.search(text, true, "beginning", "class");
 		return results.map((r) => r.text);
 	}
 
@@ -278,13 +274,13 @@ class Backend {
 	) {
 		return await this.get(
 			"/search?text=" +
-			text +
-			"&ignoreCase=" +
-			ignoreCase +
-			"&position=" +
-			position +
-			"&type=" +
-			type,
+				text +
+				"&ignoreCase=" +
+				ignoreCase +
+				"&position=" +
+				position +
+				"&type=" +
+				type,
 			"search for " + text
 		);
 	}
@@ -410,11 +406,11 @@ class Backend {
 	async restartDebugger(id, index, update = false) {
 		return await this.post(
 			"/debuggers/" +
-			id +
-			"/frames/" +
-			index +
-			"/restart?update=" +
-			update,
+				id +
+				"/frames/" +
+				index +
+				"/restart?update=" +
+				update,
 			null,
 			"restart on frame " + index + " of debugger " + id
 		);
@@ -587,11 +583,11 @@ class Backend {
 		return await this.postChange(
 			change,
 			"rename instance variable " +
-			variable +
-			" to " +
-			newName +
-			" of class " +
-			classname
+				variable +
+				" to " +
+				newName +
+				" of class " +
+				classname
 		);
 	}
 
@@ -603,11 +599,11 @@ class Backend {
 		return await this.postChange(
 			change,
 			"rename class variable " +
-			variable +
-			" to " +
-			newName +
-			" of class " +
-			classname
+				variable +
+				" to " +
+				newName +
+				" of class " +
+				classname
 		);
 	}
 
@@ -660,11 +656,11 @@ class Backend {
 		return await this.postChange(
 			change,
 			"rename category " +
-			category +
-			" to " +
-			newName +
-			" of class " +
-			classname
+				category +
+				" to " +
+				newName +
+				" of class " +
+				classname
 		);
 	}
 
@@ -708,11 +704,11 @@ class Backend {
 		return await this.postChange(
 			change,
 			"classify methodd " +
-			classname +
-			">>#" +
-			selector +
-			" under " +
-			category
+				classname +
+				">>#" +
+				selector +
+				" under " +
+				category
 		);
 	}
 
@@ -1003,9 +999,9 @@ class Backend {
 			"/native-debuggers/" + id + "/registers/" + register + "/pin",
 			null,
 			"pin object pointed by register " +
-			register +
-			" of native debugger " +
-			id
+				register +
+				" of native debugger " +
+				id
 		);
 	}
 

@@ -210,8 +210,8 @@ class QuickSearch extends Tool {
 						All
 					</ToggleButton>
 					<ToggleButton
-						selected={type === "classes"}
-						onChange={() => this.searchIn("classes")}
+						selected={type === "class"}
+						onChange={() => this.searchIn("class")}
 						size="small"
 						value="shift"
 						sx={{ borderRadius: 28 }}
@@ -220,8 +220,8 @@ class QuickSearch extends Tool {
 						Classes
 					</ToggleButton>
 					<ToggleButton
-						selected={type === "selectors"}
-						onChange={() => this.searchIn("selectors")}
+						selected={type === "selector"}
+						onChange={() => this.searchIn("selector")}
 						size="small"
 						value="shift"
 						sx={{ borderRadius: 28 }}
@@ -230,8 +230,8 @@ class QuickSearch extends Tool {
 						Selectors
 					</ToggleButton>
 					<ToggleButton
-						selected={type === "packages"}
-						onChange={() => this.searchIn("packages")}
+						selected={type === "package"}
+						onChange={() => this.searchIn("package")}
 						size="small"
 						value="shift"
 						sx={{ borderRadius: 28 }}
@@ -240,8 +240,8 @@ class QuickSearch extends Tool {
 						Packages
 					</ToggleButton>
 					<ToggleButton
-						selected={type === "pools"}
-						onChange={() => this.searchIn("pools")}
+						selected={type === "pool"}
+						onChange={() => this.searchIn("pool")}
 						size="small"
 						value="shift"
 						sx={{ borderRadius: 28 }}
