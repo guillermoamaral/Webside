@@ -1,13 +1,17 @@
 import React from "react";
 import Tool from "./Tool";
-import SystemBrowser from "./SystemBrowser";
+import CustomText from "../controls/CustomText";
 
 //This is is a component to test ideas in a tool-like tab.
 class POC extends Tool {
-
 	render() {
 		return (
-			<SystemBrowser showPackages={true} preselectedPackage={{ name: "CI" }} />
+			<CustomText
+				variant="h4"
+				text={
+					"default <colored>, *bold*, _italic_, <*colored bold*>, _*<italic, colored and bold>*_"
+				}
+			/>
 		);
 	}
 }
