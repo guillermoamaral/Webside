@@ -12,6 +12,7 @@ class UClassTree extends Component {
 
 	constructor(props) {
 		super(props);
+		this.classSearch = null;
 		this.state = {
 			roots: [],
 			selectedClass: null,
@@ -30,41 +31,75 @@ class UClassTree extends Component {
 		return null;
 	}
 
-	componentDidMount() {
-		this.changeRoots(this.props.roots, this.props.package, this.props.preselectedClass);
+	async componentDidMount() {
+		await this.initializeClassSearch();
+		this.changeRoots(
+			this.props.roots,
+			this.props.package,
+			this.props.preselectedClass
+		);
+	}
+
+	async initializeClassSearch() {
+		try {
+			//This is just a check to detect if there is a /search endpoint to use.
+			//In that case, options are dynamically fetch using such endpoint.
+			await ide.backend.searchClassNames("Object");
+			this.classSearch = this.searchClass;
+		} catch (error) {
+			//In case there is no /search endpoint, we keep the list of class names
+			//in the system (at the moment of initialization).
+			this.classSearch = await ide.backend.classNames();
+		}
 	}
 
 	componentDidUpdate(prevProps) {
-		if (this.props.roots !== prevProps.roots || this.props.package !== prevProps.package) {
-			this.changeRoots(this.props.roots, this.props.package, this.state.selectedClass);
+		if (
+			this.props.roots !== prevProps.roots ||
+			this.props.package !== prevProps.package
+		) {
+			this.changeRoots(
+				this.props.roots,
+				this.props.package,
+				this.state.selectedClass
+			);
 		}
 	}
 
 	goToRoot = (name) => {
 		if (name) {
-			this.changeRoots([{ name: name }], null, this.state.selectedClass)
+			const target = { name: name };
+			this.changeRoots([target], null, target);
 		}
-	}
+	};
 
 	async refreshEnsuring(species) {
 		this.setState({ loading: true });
 		let pack = this.props.package;
 		let trees = await this.fetchClasses(this.state.roots, pack);
 		let selected;
-		trees.forEach(root => selected = this.findSubclass(species.name, root));
+		trees.forEach(
+			(root) => (selected = this.findSubclass(species.name, root))
+		);
 		if (!selected && !pack) {
-			return this.goToRoot(species.name)
+			return this.goToRoot(species.name);
 		}
 		let expanded = [];
 		let found;
-		this.state.expandedClasses.forEach(c => {
+		this.state.expandedClasses.forEach((c) => {
 			found = null;
-			trees.forEach(root => found = this.findSubclass(c.name, root));
-			if (found) { expanded.push(found) };
+			trees.forEach((root) => (found = this.findSubclass(c.name, root)));
+			if (found) {
+				expanded.push(found);
+			}
 		});
 		found = null;
-		trees.forEach(root => found = this.findSubclass(species.superclass, root));
-		if (found) { expanded.push(found) };
+		trees.forEach(
+			(root) => (found = this.findSubclass(species.superclass, root))
+		);
+		if (found) {
+			expanded.push(found);
+		}
 		this.setState({
 			roots: trees,
 			expandedClasses: expanded,
@@ -78,7 +113,10 @@ class UClassTree extends Component {
 		let trees = await this.fetchClasses(classes, pack);
 		let selected;
 		if (selectedClass) {
-			trees.forEach(root => selected = this.findSubclass(selectedClass.name, root));
+			trees.forEach(
+				(root) =>
+					(selected = this.findSubclass(selectedClass.name, root))
+			);
 		}
 		this.setState({
 			roots: trees,
@@ -105,7 +143,7 @@ class UClassTree extends Component {
 			trees = await ide.backend.packageClasses(pack.name, true);
 		} catch (error) {
 			ide.reportError(error);
-		};
+		}
 		return trees;
 	}
 
@@ -113,13 +151,18 @@ class UClassTree extends Component {
 		let trees = [];
 		try {
 			await Promise.all(
-				roots.map(async root => {
-					let tree = await ide.backend.classTree(root.name, 100, true);
+				roots.map(async (root) => {
+					let tree = await ide.backend.classTree(
+						root.name,
+						100,
+						true
+					);
 					trees.push(tree);
-				}))
+				})
+			);
 		} catch (error) {
 			ide.reportError(error);
-		};
+		}
 		return trees;
 	}
 
@@ -157,24 +200,39 @@ class UClassTree extends Component {
 		}
 	}
 
-	classSelected = async (species) => {
-		await this.updateClass(species);
-		this.setState({ selectedClass: species })
-		if (this.props.onClassSelect) { this.props.onClassSelect(species) }
+	searchClass = async (text) => {
+		let names;
+		try {
+			names = ide.backend.searchClassNames(text);
+		} catch (error) {}
+		return names;
 	};
 
+	classSelected = async (species) => {
+		await this.updateClass(species);
+		this.setState({ selectedClass: species });
+		if (this.props.onClassSelect) {
+			this.props.onClassSelect(species);
+		}
+	};
 
 	classExpanded = async (species) => {
 		await this.updateClass(species);
-		this.setState({ expandedClasses: [...this.state.expandedClasses, species] })
-		if (this.props.onClassExpand) { this.props.onClassExpand(species) }
+		this.setState({
+			expandedClasses: [...this.state.expandedClasses, species],
+		});
+		if (this.props.onClassExpand) {
+			this.props.onClassExpand(species);
+		}
 	};
 
 	classCollapsed = (species) => {
 		const expanded = this.state.expandedClasses;
 		expanded.splice(expanded.indexOf(species), 1);
-		this.setState({ expandedClasses: expanded })
-		if (this.props.onClassCollapse) { this.props.onClassCollapse(species) }
+		this.setState({ expandedClasses: expanded });
+		if (this.props.onClassCollapse) {
+			this.props.onClassCollapse(species);
+		}
 	};
 
 	newClass = async (superclass) => {
@@ -193,10 +251,15 @@ class UClassTree extends Component {
 			);
 			const species = await ide.backend.classNamed(name);
 			let expanded = this.state.expandedClasses;
-			if (!expanded.find(c => c.name === superclass.name)) { expanded.push(superclass) }
+			if (!expanded.find((c) => c.name === superclass.name)) {
+				expanded.push(superclass);
+			}
 			superclass.subclasses.push(species);
 			superclass.subclasses.sort((a, b) => (a.name <= b.name ? -1 : 1));
-			this.setState({ expandedClasses: expanded, selectedClass: species })
+			this.setState({
+				expandedClasses: expanded,
+				selectedClass: species,
+			});
 			if (this.props.onClassDefine) {
 				this.props.onClassDefine(species);
 			}
@@ -215,9 +278,11 @@ class UClassTree extends Component {
 				defaultValue: species.name,
 				required: true,
 			});
-			await ide.waitFor(() => ide.backend.renameClass(species.name, newName));
+			await ide.waitFor(() =>
+				ide.backend.renameClass(species.name, newName)
+			);
 			species.name = newName;
-			this.setState({ selectedClass: species })
+			this.setState({ selectedClass: species });
 			if (this.props.onClassRename) {
 				this.props.onClassRename(species);
 			}
@@ -241,16 +306,28 @@ class UClassTree extends Component {
 			await ide.backend.removeClass(species.name);
 			let expanded = this.state.expandedClasses;
 			let index = expanded.indexOf(species);
-			if (index > -1) { expanded.splice(index, 1) }
+			if (index > -1) {
+				expanded.splice(index, 1);
+			}
 			let superclass = this.findSubclass(species.superclass);
 			let selected;
 			if (superclass) {
-				superclass.subclasses = superclass.subclasses.filter(c => c.name !== species.name);
+				superclass.subclasses = superclass.subclasses.filter(
+					(c) => c.name !== species.name
+				);
 				selected = superclass;
 			}
-			this.setState({ roots: this.state.roots, expandedClasses: expanded, selectedClass: selected })
-			if (this.props.onClassRemove) { this.props.onClassRemove(species); }
-			if (this.props.onClassSelect) { this.props.onClassSelect(selected); }
+			this.setState({
+				roots: this.state.roots,
+				expandedClasses: expanded,
+				selectedClass: selected,
+			});
+			if (this.props.onClassRemove) {
+				this.props.onClassRemove(species);
+			}
+			if (this.props.onClassSelect) {
+				this.props.onClassSelect(selected);
+			}
 		} catch (error) {
 			ide.reportError(error);
 		}
@@ -312,37 +389,39 @@ class UClassTree extends Component {
 		let root = roots.length === 1 ? roots[0] : null;
 		return (
 			<Box display="flex" flexDirection="column" height="100%">
-				{showSearch && <Box display="flex" flexDirection="row" width="100%">
-					<Box mb={1} flexGrow={1}>
-						<SearchList2
-							value={
-								selectedClass
-									? selectedClass.name
-									: null
-							}
-							options={async (value) => {
-								return ide.backend.searchClassNames(value);
-							}}
-							backColor={background}
-							onChange={this.goToRoot}
-						/>
+				{showSearch && (
+					<Box display="flex" flexDirection="row" width="100%">
+						<Box mb={1} flexGrow={1}>
+							<SearchList2
+								value={
+									selectedClass ? selectedClass.name : null
+								}
+								options={this.classSearch}
+								backColor={background}
+								onChange={this.goToRoot}
+							/>
+						</Box>
+						{root && (
+							<Box>
+								<Tooltip
+									title={root.superclass || ""}
+									placement="top"
+								>
+									<IconButton
+										color="inherit"
+										size="small"
+										onClick={() =>
+											this.goToRoot(root.superclass)
+										}
+										disabled={!root.superclass}
+									>
+										<UpIcon />
+									</IconButton>
+								</Tooltip>
+							</Box>
+						)}
 					</Box>
-					{root && <Box>
-						<Tooltip
-							title={root.superclass || ""}
-							placement="top"
-						>
-							<IconButton
-								color="inherit"
-								size="small"
-								onClick={() => this.goToRoot(root.superclass)}
-								disabled={!root.superclass}
-							>
-								<UpIcon />
-							</IconButton>
-						</Tooltip>
-					</Box>}
-				</Box>}
+				)}
 				<Box flexGrow={1}>
 					<CustomPaper>
 						<FastTree
@@ -359,7 +438,7 @@ class UClassTree extends Component {
 							onNodeExpand={this.classExpanded}
 							onNodeCollapse={this.classCollapsed}
 							menuOptions={this.menuOptions()}
-						/>
+													/>
 					</CustomPaper>
 				</Box>
 			</Box>
