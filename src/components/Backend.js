@@ -335,13 +335,15 @@ class Backend {
 		);
 	}
 
-	methodTemplate() {
-		// Should be retrieved from the backend to support custom templates for each dialect...
-		return {
-			selector: "<new>",
-			template: true,
-			source: 'messagePattern\r\t"comment"\r\t| temporaries |\r\tstatements',
-		};
+	async methodTemplate() {
+		return await this.get("/methodtemplate", "method template");
+	}
+
+	async classTemplate(pack) {
+		return await this.get(
+			"/classtemplate?package=" + pack,
+			"class template"
+		);
 	}
 
 	// Debugging...
