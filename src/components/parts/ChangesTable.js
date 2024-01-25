@@ -234,7 +234,7 @@ class ChangesTable extends Component {
 				minWidth: 300,
 				align: "left",
 				formatter: (ts) => {
-					return ts ? ts.toLocaleString("en-US") : "";
+					return ts ? new Date(ts).toLocaleString() : "";
 				},
 			},
 		];

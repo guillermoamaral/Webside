@@ -58,7 +58,15 @@ class MethodVersionTable extends Component {
 
 	colums() {
 		return [
-			{ field: "timestamp", label: "Timestamp", minWidth: 250, align: "left" },
+			{
+				field: "timestamp",
+				label: "Timestamp",
+				minWidth: 250,
+				align: "left",
+				formatter: (ts) => {
+					return ts ? new Date(ts).toLocaleString() : "";
+				},
+			},
 			{ field: "author", label: "Author", minWidth: 250, align: "left" },
 		];
 	}
