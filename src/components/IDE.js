@@ -798,7 +798,8 @@ class IDE extends Component {
 								flexGrow: 1,
 								ml: 6,
 								mr: 2,
-								p: 2,
+								mt: 0,
+								p: 0,
 								width: "100vh",
 								height: "95vh",
 							}}
