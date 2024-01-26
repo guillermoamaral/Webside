@@ -267,8 +267,9 @@ const FastTree = ({
 		}
 	};
 
-	const menuHanlder = (event) => {
+	const menuHandler = (event) => {
 		event.preventDefault();
+		event.stopPropagation();
 		setMenuOpen(true);
 		setMenuPosition({ x: event.clientX - 2, y: event.clientY - 4 });
 	};
@@ -292,7 +293,7 @@ const FastTree = ({
 		toggleHandler,
 		selectHandler,
 		flattenedData,
-		menuHanlder
+		menuHandler
 	);
 
 	const listRef = React.createRef();
@@ -305,7 +306,10 @@ const FastTree = ({
 	}
 
 	return (
-		<Box style={{ height: "100%", width: "100%" }}>
+		<Box
+			style={{ height: "100%", width: "100%" }}
+			onContextMenu={menuHandler}
+		>
 			{loading && (
 				<Box>
 					<Box width="40%">
