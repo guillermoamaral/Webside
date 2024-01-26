@@ -49,7 +49,7 @@ class CodeBrowser extends Component {
 		const species = this.props.class;
 		const classname = species ? species.name : null;
 		const superclass = species ? species.superclass : null;
-		const packagename = species ? species.package : pack ? pack.name : null;
+		const packagename = pack ? pack.name : species ? species.package : null;
 		try {
 			const change = await ide.backend.defineClass(
 				classname,
@@ -112,12 +112,12 @@ class CodeBrowser extends Component {
 			const pack = this.props.package;
 			const species = this.props.class;
 			const method = this.props.method;
-			const packagename = method
+			const packagename = pack
+				? pack.name
+				: method
 				? method.package
 				: species
 				? species.package
-				: pack
-				? pack.name
 				: null;
 			const category = method ? method.category : null;
 			const classname = species
@@ -286,7 +286,9 @@ class CodeBrowser extends Component {
 		return "";
 	};
 
-	currentPackage = () => {
+	currentPackageName = () => {
+		const pack = this.props.package;
+		if (pack) return pack.name;
 		const species = this.props.class;
 		const method = this.props.method;
 		if (this.state.selectedMode === "source" && method) {
@@ -329,7 +331,7 @@ class CodeBrowser extends Component {
 		const mode = this.state.selectedMode;
 		const author = this.currentAuthor();
 		const timestamp = this.currentTimestamp();
-		const packagename = this.currentPackage();
+		const packagename = this.currentPackageName();
 		const {
 			selectedInterval,
 			selectedSelector,
@@ -338,11 +340,7 @@ class CodeBrowser extends Component {
 			onTooltipClick,
 		} = this.props;
 		return (
-			<Box
-				display="flex"
-				flexDirection="column"
-				sx={{ height: "100%" }}
-			>
+			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
 				<Box>
 					<ToggleButtonGroup
 						label="primary"

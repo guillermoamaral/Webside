@@ -39,6 +39,7 @@ class UVariableList extends Component {
 		let variables = [];
 		let species = this.props.class;
 		if (!species) return variables;
+		if (species.template) return variables;
 		try {
 			variables = await ide.backend.variables(species.name);;
 		} catch (error) {

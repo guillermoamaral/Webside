@@ -62,6 +62,7 @@ class SystemBrowser extends Tool {
 
 	async updateClass(species) {
 		if (!species) return;
+		if (species.template) return;
 		try {
 			let retrieved = await ide.backend.classNamed(species.name);
 			Object.assign(species, retrieved);
@@ -247,37 +248,6 @@ class SystemBrowser extends Tool {
 			: null;
 	}
 
-	classLabelColor = (species) => {
-		if (!this.props.showPackages) return;
-		let pack = this.state.selectedPackage;
-		if (
-			pack &&
-			pack.methods &&
-			(pack.methods[species.name] ||
-				pack.methods[species.name + " class"])
-		) {
-			let appearance = ide.settings.section("appearance");
-			let mode = appearance.section(appearance.get("mode"));
-			return mode.section("colors").get("disabledText");
-		}
-	};
-
-	methodLabelColor = (method) => {
-		if (!this.props.showPackages) return;
-		const pack = this.state.selectedPackage;
-		if (
-			pack &&
-			pack.methods &&
-			pack.methods[method.methodClass] &&
-			pack.methods[method.methodClass].includes(method.selector)
-		) {
-			return;
-		}
-		let appearance = ide.settings.section("appearance");
-		let mode = appearance.section(appearance.get("mode"));
-		return mode.section("colors").get("disabledText");
-	};
-
 	evaluationContext() {
 		const species = this.targetClass();
 		return species ? { class: species.name } : {};
@@ -326,7 +296,6 @@ class SystemBrowser extends Tool {
 									onClassSelect={this.classSelected}
 									onClassDefine={this.classDefined}
 									onClassRemove={this.classRemoved}
-									showSearch={!showPackages}
 									labelColor={this.classLabelColor}
 									preselectedClass={preselectedClass}
 								/>
@@ -430,6 +399,11 @@ class SystemBrowser extends Tool {
 								<CustomPaper>
 									<UMethodList
 										ref={this.methodListRef}
+										package={
+											showPackages
+												? selectedPackage
+												: null
+										}
 										class={targetClass}
 										category={selectedCategory}
 										access={selectedAccess}
@@ -439,7 +413,6 @@ class SystemBrowser extends Tool {
 										onMethodRemove={this.methodRemoved}
 										onMethodClassify={this.methodClassified}
 										onCategoryAdd={this.categoryAdded}
-										labelColor={this.methodLabelColor}
 										showNewOption
 									/>
 								</CustomPaper>
@@ -450,6 +423,7 @@ class SystemBrowser extends Tool {
 				<Box sx={{ height: "60%" }}>
 					<CodeBrowser
 						context={this.evaluationContext()}
+						package={showPackages ? selectedPackage : null}
 						class={targetClass}
 						method={selectedMethod}
 						onMethodCompile={this.methodCompiled}

@@ -19,6 +19,7 @@ class UClassTree extends Component {
 			expandedClasses: [],
 			loading: false,
 			preselectedClass: null,
+			showSearch: true,
 		};
 	}
 
@@ -118,6 +119,10 @@ class UClassTree extends Component {
 					(selected = this.findSubclass(selectedClass.name, root))
 			);
 		}
+		// if (trees.length === 0 && pack) {
+		// 	const template = await ide.backend.classTemplate(pack.name);
+		// 	trees.push(template);
+		// }
 		this.setState({
 			roots: trees,
 			expandedClasses: [...trees],
@@ -191,6 +196,7 @@ class UClassTree extends Component {
 	}
 
 	async updateClass(species) {
+		if (species.template) return;
 		try {
 			let retrieved = await ide.backend.classNamed(species.name);
 			Object.assign(species, retrieved);
@@ -244,11 +250,10 @@ class UClassTree extends Component {
 				title: "New " + superclass.name + " subclass",
 				required: true,
 			});
-			await ide.backend.defineClass(
-				name,
-				superclass.name,
-				superclass.package
-			);
+			const packagename = this.props.package
+				? this.props.package.name
+				: superclass.package;
+			await ide.backend.defineClass(name, superclass.name, packagename);
 			const species = await ide.backend.classNamed(name);
 			let expanded = this.state.expandedClasses;
 			if (!expanded.find((c) => c.name === superclass.name)) {
@@ -363,30 +368,75 @@ class UClassTree extends Component {
 		}
 	};
 
-	menuOptions() {
+	canAddClass = (species) => {
+		return species || this.props.package;
+	};
+
+	classOptions() {
 		return [
-			{ label: "New", action: this.newClass },
-			{ label: "Rename", action: this.renameClass },
-			{ label: "Remove", action: this.removeClass },
+			{ label: "New", action: this.newClass, enabled: this.canAddClass },
+			{
+				label: "Rename",
+				action: this.renameClass,
+				enabled: (c) => c != null,
+			},
+			{
+				label: "Remove",
+				action: this.removeClass,
+				enabled: (c) => c != null,
+			},
 			null,
-			{ label: "Browse", action: this.browseClass },
-			{ label: "Browse package", action: this.browsePackage },
-			{ label: "Browse references", action: this.browseClassReferences },
+			{
+				label: "Browse",
+				action: this.browseClass,
+				enabled: (c) => c != null,
+			},
+			{
+				label: "Browse package",
+				action: this.browsePackage,
+				enabled: (c) => c != null,
+			},
+			{
+				label: "Browse references",
+				action: this.browseClassReferences,
+				enabled: (c) => c != null,
+			},
 			null,
-			{ label: "Run tests", action: this.runTests },
+			{
+				label: "Run tests",
+				action: this.runTests,
+				enabled: (c) => c != null,
+			},
 			null,
-			{ label: "Migrate", action: this.migrateClass },
+			{
+				label: "Migrate",
+				action: this.migrateClass,
+				enabled: (c) => c != null,
+			},
 		];
 	}
 
+	classLabel = (species) => {
+		return species.template ? "<new>" : species.name;
+	};
+
+	classColor = (species) => {
+		const pack = this.props.package;
+		if (pack && pack.classes && pack.classes.includes(species.name)) {
+			return;
+		}
+		const appearance = ide.settings.section("appearance");
+		const mode = appearance.section(appearance.get("mode"));
+		return mode.section("colors").get("disabledText");
+	};
+
 	render() {
-		let { showSearch, labelStyle, labelColor } = this.props;
-		if (showSearch === undefined) showSearch = true;
-		let { roots, selectedClass, expandedClasses, loading } = this.state;
-		let appearance = ide.settings.section("appearance");
-		let mode = appearance.section(appearance.get("mode"));
-		let background = mode.section("colors").get("background");
-		let root = roots.length === 1 ? roots[0] : null;
+		const { roots, selectedClass, expandedClasses, loading, showSearch } =
+			this.state;
+		const appearance = ide.settings.section("appearance");
+		const mode = appearance.section(appearance.get("mode"));
+		const background = mode.section("colors").get("background");
+		const root = roots.length === 1 ? roots[0] : null;
 		return (
 			<Box display="flex" flexDirection="column" height="100%">
 				{showSearch && (
@@ -428,17 +478,16 @@ class UClassTree extends Component {
 							loading={loading}
 							nodes={roots}
 							nodeId="name"
-							nodeLabel="name"
-							nodeStyle={labelStyle}
-							nodeColor={labelColor}
+							nodeLabel={this.classLabel}
+							nodeColor={this.classColor}
 							nodeChildren="subclasses"
 							selectedNode={selectedClass}
 							onNodeSelect={this.classSelected}
 							expandedNodes={expandedClasses}
 							onNodeExpand={this.classExpanded}
 							onNodeCollapse={this.classCollapsed}
-							menuOptions={this.menuOptions()}
-													/>
+							menuOptions={this.classOptions()}
+						/>
 					</CustomPaper>
 				</Box>
 			</Box>

@@ -49,6 +49,7 @@ class UCategoryList extends Component {
 		let categories = { defined: [], used: [], usual: [] };
 		let species = this.props.class;
 		if (!species) return categories;
+		if (species.template) return categories;
 		try {
 			categories.defined = await ide.backend.categories(species.name);
 			categories.defined.sort();

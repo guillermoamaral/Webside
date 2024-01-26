@@ -64,13 +64,13 @@ class UMethodList extends Component {
 					m.selector === selectedMethod.selector
 			);
 		}
-		let species = this.props.class;
-		if (methods.length === 0 && species) {
-			const template = ide.backend.methodTemplate();
-			template.methodClass = species.name;
-			template.category = this.props.category;
-			methods.push(template);
-		}
+		// let species = this.props.class;
+		// if (methods.length === 0 && species && !species.template) {
+		// 	const template = await ide.backend.methodTemplate();
+		// 	template.methodClass = species.name;
+		// 	template.category = this.props.category;
+		// 	methods.push(template);
+		// }
 		this.setState({
 			loading: false,
 			methods: methods,
@@ -84,6 +84,7 @@ class UMethodList extends Component {
 		let species = this.props.class;
 		let { category, variable, access } = this.props;
 		if (!species) return methods;
+		if (species.template) return methods;
 		try {
 			if (variable && access) {
 				methods = await ide.backend.accessors(
@@ -114,7 +115,7 @@ class UMethodList extends Component {
 		let categories = [];
 		let classname = method
 			? method.methodClass
-			: this.props.class
+			: this.props.class && !this.props.class.template
 			? this.props.class.name
 			: null;
 		if (!classname) return categories;
@@ -324,38 +325,58 @@ class UMethodList extends Component {
 		}
 	};
 
-	canRename(method) {
-		return method && !method.template;
-	}
+	canRenameMethod = (method) => {
+		return method && !this.isMethodTemplate(method);
+	};
 
-	canRemove(method) {
-		return method && !method.template;
-	}
+	canRemoveMethod = (method) => {
+		return method && !this.isMethodTemplate(method);
+	};
 
-	canClassify(method) {
-		return method && !method.template;
-	}
+	canClassifyMethod = (method) => {
+		return method && !this.isMethodTemplate(method);
+	};
 
-	isTest(method) {
+	canMigrateMethod = (method) => {
+		return method && !this.isMethodTemplate(method);
+	};
+
+	canBrowseHistory = (method) => {
+		return method && !this.isMethodTemplate(method);
+	};
+
+	isMethodTemplate = (method) => {
+		return method && method.template;
+	};
+
+	isTestMethod = (method) => {
 		return method && method.selector.startsWith("test");
-	}
+	};
+
+	canAddMethod = (method) => {
+		return method || this.props.class;
+	};
 
 	menuOptions = () => {
 		const options = [];
 		if (this.props.showNewOption) {
-			options.push({ label: "New", action: this.newMethod });
+			options.push({
+				label: "New",
+				action: this.newMethod,
+				enabled: this.canAddMethod,
+			});
 		}
 		options.push(
 			...[
 				{
 					label: "Rename",
 					action: this.renameMethod,
-					enabled: this.canRename,
+					enabled: this.canRenameMethod,
 				},
 				{
 					label: "Remove",
 					action: this.removeMethod,
-					enabled: this.canRemove,
+					enabled: this.canRemoveMethod,
 				},
 			]
 		);
@@ -366,14 +387,14 @@ class UMethodList extends Component {
 				return {
 					label: c,
 					action: (m) => this.classifyMethod(m, c),
-					enabled: this.canClassify,
+					enabled: this.canClassifyMethod,
 				};
 			});
 		if (categories.length > 20) {
 			suboptions.push({
 				label: "More...",
 				action: (m) => this.chooseCategoryForMethod(m),
-				enabled: this.canClassify,
+				enabled: this.canClassifyMethod,
 			});
 		}
 		if (categories.length > 0) {
@@ -382,13 +403,13 @@ class UMethodList extends Component {
 		suboptions.push({
 			label: "New..",
 			action: (m) => this.classifyMethod(m),
-			enabled: this.canClassify,
+			enabled: this.canClassifyMethod,
 		});
 		if (ide.usesCodeAssistant()) {
 			suboptions.push({
 				label: "AI suggested..",
 				action: (m) => this.suggestCategory(m),
-				enabled: this.canClassify,
+				enabled: this.canClassifyMethod,
 			});
 		}
 		options.push(
@@ -398,38 +419,59 @@ class UMethodList extends Component {
 					suboptions: suboptions,
 				},
 				null,
-				{ label: "Browse class", action: this.browseClass },
-				{ label: "Browse senders", action: this.browseSenders },
+				{
+					label: "Browse class",
+					action: this.browseClass,
+					enabled: (m) => m != null,
+				},
+				{
+					label: "Browse senders",
+					action: this.browseSenders,
+					enabled: (m) => m != null,
+				},
 				{
 					label: "Browse local senders",
 					action: this.browseLocalSenders,
+					enabled: (m) => m != null,
 				},
 				{
 					label: "Browse implementors",
 					action: this.browseImplementors,
+					enabled: (m) => m != null,
 				},
 				{
 					label: "Browse local implementors",
 					action: this.browseLocalImplementors,
+					enabled: (m) => m != null,
 				},
 				{
 					label: "Browse class references",
 					action: this.browseClassReferences,
+					enabled: (m) => m != null,
 				},
 				{
 					label: "Browse package",
 					action: this.browsePackage,
+					enabled: (m) => m != null,
 				},
 				null,
 				{
 					label: "Run test",
 					action: this.runTest,
-					enabled: this.isTest,
+					enabled: this.isTestMethod,
 				},
 				null,
-				{ label: "History", action: this.browseHistory },
+				{
+					label: "History",
+					action: this.browseHistory,
+					enabled: this.canBrowseHistory,
+				},
 				null,
-				{ label: "Migrate", action: this.migrateMethod },
+				{
+					label: "Migrate",
+					action: this.migrateMethod,
+					enabled: this.canMigrateMethod,
+				},
 			]
 		);
 		return options;
@@ -437,7 +479,7 @@ class UMethodList extends Component {
 
 	methodIcon = (method) => {
 		const size = 12;
-		if (this.isTest(method) && method.status) {
+		if (this.isTestMethod(method) && method.status) {
 			const color =
 				method.status === "passed"
 					? "green"
@@ -518,7 +560,7 @@ class UMethodList extends Component {
 
 	methodActions = (method) => {
 		var actions = [];
-		if (this.isTest(method)) {
+		if (this.isTestMethod(method)) {
 			actions.push({
 				icon: <RunTestIcon color="primary" style={{ fontSize: 16 }} />,
 				label: "Run test",
@@ -540,31 +582,39 @@ class UMethodList extends Component {
 		return actions;
 	};
 
-	newMethod = () => {
+	newMethod = async () => {
 		const selected = this.state.selectedMethod;
-		const method = ide.backend.methodTemplate();
-		method.methodClass = selected ? selected.methodClass : null;
+		const method = await ide.backend.methodTemplate();
+		method.methodClass = selected
+			? selected.methodClass
+			: this.props.class
+			? this.props.class.name
+			: null;
 		method.category = selected ? selected.category : null;
 		this.methodSelected(method);
 	};
 
 	methodLabel = (method) => {
+		const selector = method.template ? "<new>" : method.selector;
 		return this.props.showClass === true
-			? method.methodClass + " >> #" + method.selector
-			: method.selector;
+			? method.methodClass + " >> #" + selector
+			: selector;
 	};
 
 	methodColor = (method) => {
-		let color = this.props.labelColor;
-		if (color) {
-			if (typeof color === "function") {
-				return color(method);
-			}
-			if (typeof color === "string") {
-				return color;
-			}
+		const pack = this.props.package;
+		if (
+			pack &&
+			((pack.classes && pack.classes.includes(method.methodClass)) ||
+				(pack.methods &&
+					pack.methods[method.methodClass] &&
+					pack.methods[method.methodClass].includes(method.selector)))
+		) {
+			return method && method.needsRecompilation ? "red" : null;
 		}
-		if (method && method.needsRecompilation) return "red";
+		const appearance = ide.settings.section("appearance");
+		const mode = appearance.section(appearance.get("mode"));
+		return mode.section("colors").get("disabledText");
 	};
 
 	render() {
