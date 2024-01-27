@@ -7,6 +7,10 @@ class Tool extends Component {
 	aboutToClose() {}
 
 	aboutToSelect() {}
+
+	updateLabel(label) {
+		this.context.updatePageLabel(this.props.id, label);
+	}
 }
 
 export default Tool;

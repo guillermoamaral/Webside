@@ -241,7 +241,7 @@ class UClassTree extends Component {
 		}
 	};
 
-	newClass = async (superclass) => {
+	newSubclass = async (superclass) => {
 		if (!superclass) {
 			return;
 		}
@@ -258,6 +258,9 @@ class UClassTree extends Component {
 			let expanded = this.state.expandedClasses;
 			if (!expanded.find((c) => c.name === superclass.name)) {
 				expanded.push(superclass);
+			}
+			if (!superclass.subclasses) {
+				superclass.subclasses = [];
 			}
 			superclass.subclasses.push(species);
 			superclass.subclasses.sort((a, b) => (a.name <= b.name ? -1 : 1));
@@ -369,12 +372,16 @@ class UClassTree extends Component {
 	};
 
 	canAddClass = (species) => {
-		return species || this.props.package;
+		return species; //|| this.props.package;
 	};
 
 	classOptions() {
 		return [
-			{ label: "New", action: this.newClass, enabled: this.canAddClass },
+			{
+				label: "New subclass",
+				action: this.newSubclass,
+				enabled: this.canAddClass,
+			},
 			{
 				label: "Rename",
 				action: this.renameClass,
@@ -422,7 +429,8 @@ class UClassTree extends Component {
 
 	classColor = (species) => {
 		const pack = this.props.package;
-		if (pack && pack.classes && pack.classes.includes(species.name)) {
+		if (!pack) return;
+		if (pack.classes && pack.classes.includes(species.name)) {
 			return;
 		}
 		const appearance = ide.settings.section("appearance");

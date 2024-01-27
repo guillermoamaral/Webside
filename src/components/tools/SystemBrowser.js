@@ -82,7 +82,7 @@ class SystemBrowser extends Tool {
 	}
 
 	packageSelected = async (pack) => {
-		this.context.updatePageLabel(this.props.id, pack.name);
+		this.updateLabel(pack.name);
 		await this.updatePackage(pack);
 		this.setState({
 			selectedPackage: pack,
@@ -91,6 +91,11 @@ class SystemBrowser extends Tool {
 			selectedVariable: null,
 			selectedMethod: null,
 		});
+	};
+
+	packageCreated = async (pack) => {
+		this.updateLabel(pack.name);
+		this.setState({ selectedPackage: pack });
 	};
 
 	sideSelected = async (side) => {
@@ -104,7 +109,7 @@ class SystemBrowser extends Tool {
 	};
 
 	classSelected = async (species) => {
-		this.context.updatePageLabel(this.props.id, species.name);
+		this.updateLabel(species.name);
 		await this.updateClass(species);
 		this.setState({
 			selectedClass: species,
@@ -115,9 +120,16 @@ class SystemBrowser extends Tool {
 	};
 
 	classDefined = async (species) => {
-		this.context.updatePageLabel(this.props.id, species.name);
-		if (this.classTreeRef && this.classTreeRef.current) {
-			this.classTreeRef.current.refreshEnsuring(species);
+		this.updateLabel(species.name);
+		if (this.props.showPackages) {
+			const pack = this.state.selectedPackage;
+			if (pack && pack.name === species.package) {
+				await this.updatePackage(pack);
+			}
+		}
+		const ref = this.classTreeRef;
+		if (ref && ref.current) {
+			ref.current.refreshEnsuring(species);
 		}
 		this.setState({ selectedClass: species });
 	};
@@ -204,10 +216,7 @@ class SystemBrowser extends Tool {
 
 	methodSelected = async (method) => {
 		if (method) {
-			this.context.updatePageLabel(
-				this.props.id,
-				method.methodClass + ">>" + method.selector
-			);
+			this.updateLabel(method.methodClass + ">>" + method.selector);
 		}
 		if (!method.template) {
 			await this.updateMethod(method);
@@ -225,8 +234,12 @@ class SystemBrowser extends Tool {
 
 	methodCompiled = async (method) => {
 		if (!method) return;
-		if (this.methodListRef && this.methodListRef.current) {
-			this.methodListRef.current.refreshEnsuring(method);
+		if (method) {
+			this.updateLabel(method.methodClass + ">>" + method.selector);
+		}
+		const ref = this.methodListRef;
+		if (ref && ref.current) {
+			ref.current.refreshEnsuring(method);
 		}
 		this.setState({ selectedMethod: method });
 	};
@@ -282,6 +295,7 @@ class SystemBrowser extends Tool {
 								<Box sx={{ width: width }}>
 									<UPackageList
 										onPackageSelect={this.packageSelected}
+										onPackageCreate={this.packageCreated}
 										preselectedPackage={preselectedPackage}
 									/>
 								</Box>
