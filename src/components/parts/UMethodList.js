@@ -603,12 +603,12 @@ class UMethodList extends Component {
 
 	methodColor = (method) => {
 		const pack = this.props.package;
+		if (!pack) return;
 		if (
-			pack &&
-			((pack.classes && pack.classes.includes(method.methodClass)) ||
-				(pack.methods &&
-					pack.methods[method.methodClass] &&
-					pack.methods[method.methodClass].includes(method.selector)))
+			(pack.classes && pack.classes.includes(method.methodClass)) ||
+			(pack.methods &&
+				pack.methods[method.methodClass] &&
+				pack.methods[method.methodClass].includes(method.selector))
 		) {
 			return method && method.needsRecompilation ? "red" : null;
 		}
