@@ -123,6 +123,9 @@ class UClassTree extends Component {
 		// 	const template = await ide.backend.classTemplate(pack.name);
 		// 	trees.push(template);
 		// }
+		if (selected && this.props.onClassSelect) {
+			this.props.onClassSelect(selected);
+		}
 		this.setState({
 			roots: trees,
 			expandedClasses: [...trees],
