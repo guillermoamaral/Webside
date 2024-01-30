@@ -70,7 +70,7 @@ class Titlebar extends Component {
 						display="inline"
 						noWrap
 					>
-						{dialect + " Web IDE "}
+						{dialect}
 					</Typography>
 					<Box p={1}>
 						<Link
