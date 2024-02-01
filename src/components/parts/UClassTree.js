@@ -308,12 +308,12 @@ class UClassTree extends Component {
 		}
 		try {
 			const confirm = await ide.confirm({
-				title: "Delete " + species.name + " class?",
+				title: "Remove class",
+				message: "Remove " + species.name + " class?",
 				ok: { text: "Delete", color: "secondary", variant: "outlined" },
+				cancel: { text: "Cancel" },
 			});
-			if (!confirm) {
-				return;
-			}
+			if (!confirm) return;
 			await ide.backend.removeClass(species.name);
 			let expanded = this.state.expandedClasses;
 			let index = expanded.indexOf(species);

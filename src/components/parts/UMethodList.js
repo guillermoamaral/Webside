@@ -175,6 +175,27 @@ class UMethodList extends Component {
 
 	removeMethod = async (method) => {
 		try {
+			const senders = await ide.backend.senders(method.selector);
+			if (senders.length > 0) {
+				const confirm = await ide.confirm({
+					title: "Remove method",
+					message:
+						"Method #" +
+						method.selector +
+						" has " +
+						senders.length +
+						" senders. Remove anyway?",
+					ok: {
+						text: "Delete",
+						color: "secondary",
+						variant: "outlined",
+					},
+					cancel: {
+						text: "Cancel",
+					},
+				});
+				if (!confirm) return;
+			}
 			await ide.backend.removeMethod(method.methodClass, method.selector);
 			let methods = this.state.methods;
 			methods.splice(methods.indexOf(method), 1);
