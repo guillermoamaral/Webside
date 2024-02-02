@@ -15,7 +15,6 @@ import ToolContainer from "./ToolContainer";
 import { withCookies } from "react-cookie";
 import { withNavigation } from "./withNavigation";
 import { withDialog } from "./dialogs/index";
-import { amber, blue, green } from "@mui/material/colors";
 import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import Backend from "./Backend";
 import { DialogProvider } from "./dialogs/index";
@@ -246,6 +245,9 @@ class IDE extends Component {
 	async updateSettings() {
 		this.initializeBackend();
 		const dialect = await this.backend.dialect();
+		try {
+			this.logo = await this.backend.logo();
+		} catch (error) {}
 		document.title = dialect;
 		this.settings.section("connection").set("dialect", dialect);
 		var autocompletion;
@@ -256,43 +258,21 @@ class IDE extends Component {
 			autocompletion = false;
 		}
 		this.settings.section("code").set("autocompletion", autocompletion);
-		this.updateColorsSettings();
+		await this.updateColorsSettings();
 		this.updateTheme();
 		this.initializeMessageChannel();
 	}
 
-	updateColorsSettings() {
-		var primary;
-		var secondary;
-		const dialect = this.settings.section("connection").get("dialect");
-		switch (dialect) {
-			case "Bee":
-				primary = "#eebd00";
-				secondary = amber[800];
-				break;
-			case "Pharo":
-				primary = "#3297d4";
-				secondary = blue[800];
-				break;
-			case "Dolphin":
-				primary = "#1d7bb9";
-				secondary = blue[800];
-				break;
-			case "VAST":
-				primary = "#28AAE1";
-				secondary = "#003865";
-				break;
-			case "Python":
-				primary = "#2b5b84";
-				secondary = "#1e415e";
-				break;
-			case "EggJS":
-				primary = green[300];
-				secondary = green[800];
-				break;
-			default:
-				primary = "#00000";
-				secondary = "#00000";
+	async updateColorsSettings() {
+		let primary;
+		let secondary;
+		try {
+			let colors = await this.backend.colors();
+			primary = colors.primary;
+			secondary = colors.secondary;
+		} catch (error) {
+			primary = "#00000";
+			secondary = "#00000";
 		}
 		const appearance = this.settings.section("appearance");
 		const dark = appearance.section("dark").section("colors");
@@ -766,6 +746,7 @@ class IDE extends Component {
 							dialect={this.settings
 								.section("connection")
 								.get("dialect")}
+							logo={this.logo}
 							sidebarExpanded={sidebarExpanded}
 							onSidebarExpand={this.expandSidebar}
 							searchOptions={[]}

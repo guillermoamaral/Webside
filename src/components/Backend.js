@@ -104,6 +104,14 @@ class Backend {
 		return await this.get("/dialect", "dialect");
 	}
 
+	async colors() {
+		return await this.get("/colors", "colors");
+	}
+
+	async logo() {
+		return await this.get("/logo", "logo");
+	}
+
 	async saveImage() {
 		return await this.post("/save", null, "save image");
 	}

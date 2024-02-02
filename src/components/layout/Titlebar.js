@@ -17,6 +17,7 @@ class Titlebar extends Component {
 	render() {
 		const {
 			dialect,
+			logo,
 			backend,
 			developer,
 			sidebarExpanded,
@@ -27,12 +28,6 @@ class Titlebar extends Component {
 			onSearchClick,
 			searchPlaceholder,
 		} = this.props;
-		let logo;
-		if (dialect) {
-			try {
-				logo = require("../../resources/" + dialect + ".png");
-			} catch (error) {}
-		}
 		return (
 			<StyledAppBar
 				color="primary"
@@ -56,7 +51,7 @@ class Titlebar extends Component {
 						{logo && (
 							<Link to={backend}>
 								<img
-									src={logo}
+									src={"data:image/png;base64," + logo}
 									width={28}
 									height={28}
 									alt={dialect}
