@@ -2,7 +2,7 @@ import React from "react";
 import Tool from "./Tool";
 import { Box, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 import { ide } from "../IDE";
-import MethodList from "../parts/MethodList";
+import UMethodList from "../parts/UMethodList";
 import CodeBrowser from "../parts/CodeBrowser";
 import CustomSplit from "../controls/CustomSplit";
 import CustomPaper from "../controls/CustomPaper";
@@ -26,7 +26,7 @@ class MethodBrowser extends Tool {
 		}
 	}
 
-	methodRemoved = (method) => {
+	methodRemoved = async (method) => {
 		const methods = this.state.methods;
 		const index = methods.findIndex(
 			(m) =>
@@ -41,7 +41,14 @@ class MethodBrowser extends Tool {
 					: index + 1 < methods.length
 					? methods[index + 1]
 					: null;
-			const species = selected ? selected.methodClass : null;
+			let species;
+			if (selected) {
+				try {
+					species = await ide.backend.classNamed(
+						selected.methodClass
+					);
+				} catch (error) {}
+			}
 			this.setState({
 				methods: methods,
 				selectedMethod: selected,
@@ -139,6 +146,15 @@ class MethodBrowser extends Tool {
 		);
 	}
 
+	evaluationContext() {
+		const species = this.state.selectedClass;
+		return species
+			? {
+					class: species.name,
+			  }
+			: {};
+	}
+
 	render() {
 		const { selectedMethod, selectedClass, showTests } = this.state;
 		const { selectedSelector, selectedIdentifier } = this.props;
@@ -168,7 +184,7 @@ class MethodBrowser extends Tool {
 					<CustomSplit mode="vertical">
 						<Box sx={{ height: "45%" }}>
 							<CustomPaper>
-								<MethodList
+								<UMethodList
 									useTable
 									selectedMethod={selectedMethod}
 									methods={methods}
@@ -179,6 +195,7 @@ class MethodBrowser extends Tool {
 						</Box>
 						<Box sx={{ height: "50%" }}>
 							<CodeBrowser
+								context={this.evaluationContext()}
 								class={selectedClass}
 								method={selectedMethod}
 								selectedSelector={selectedSelector}

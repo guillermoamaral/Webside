@@ -32,7 +32,10 @@ class UMethodList extends Component {
 	}
 
 	async componentDidUpdate(prevProps) {
-		if (this.props.methods !== prevProps.methods) {
+		if (
+			this.props.methods !== prevProps.methods ||
+			this.props.methods !== this.state.methods
+		) {
 			return this.setState({
 				methods: this.props.methods,
 				selectedMethod: null,
@@ -637,6 +640,15 @@ class UMethodList extends Component {
 		const mode = appearance.section(appearance.get("mode"));
 		return mode.section("colors").get("disabledText");
 	};
+
+	evaluationContext() {
+		const method = this.state.selectedMethod;
+		return method
+			? {
+					class: method.methodClass,
+			  }
+			: {};
+	}
 
 	render() {
 		let { methods, selectedMethod, loading } = this.state;
