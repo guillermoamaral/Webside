@@ -119,10 +119,6 @@ class UClassTree extends Component {
 					(selected = this.findSubclass(selectedClass.name, root))
 			);
 		}
-		// if (trees.length === 0 && pack) {
-		// 	const template = await ide.backend.classTemplate(pack.name);
-		// 	trees.push(template);
-		// }
 		if (selected && this.props.onClassSelect) {
 			this.props.onClassSelect(selected);
 		}
@@ -244,6 +240,19 @@ class UClassTree extends Component {
 		}
 	};
 
+	newClass = async () => {
+		const species = this.state.selectedClass;
+		const pack = this.props.package?.name || species?.package;
+		if (!pack) return;
+		const template = await ide.backend.classTemplate(pack);
+		if (species) {
+			template.superclass = species.name;
+		}
+		if (this.props.onClassSelect) {
+			this.props.onClassSelect(template);
+		}
+	};
+
 	newSubclass = async (superclass) => {
 		if (!superclass) {
 			return;
@@ -292,7 +301,8 @@ class UClassTree extends Component {
 			await ide.waitFor(() =>
 				ide.backend.renameClass(species.name, newName)
 			);
-			species.name = newName;
+			const renamed = await ide.backend.classNamed(newName);
+			Object.assign(species, renamed);
 			this.setState({ selectedClass: species });
 			if (this.props.onClassRename) {
 				this.props.onClassRename(species);
@@ -303,9 +313,7 @@ class UClassTree extends Component {
 	};
 
 	removeClass = async (species) => {
-		if (!species) {
-			return;
-		}
+		if (!species) return;
 		try {
 			const confirm = await ide.confirm({
 				title: "Remove class",
@@ -317,9 +325,7 @@ class UClassTree extends Component {
 			await ide.backend.removeClass(species.name);
 			let expanded = this.state.expandedClasses;
 			let index = expanded.indexOf(species);
-			if (index > -1) {
-				expanded.splice(index, 1);
-			}
+			if (index > -1) expanded.splice(index, 1);
 			let superclass = this.findSubclass(species.superclass);
 			let selected;
 			if (superclass) {
@@ -328,15 +334,18 @@ class UClassTree extends Component {
 				);
 				selected = superclass;
 			}
+			let roots = this.state.roots;
+			index = roots.indexOf(species);
+			if (index > -1) roots.splice(index, 1);
 			this.setState({
-				roots: this.state.roots,
+				roots: roots,
 				expandedClasses: expanded,
 				selectedClass: selected,
 			});
 			if (this.props.onClassRemove) {
 				this.props.onClassRemove(species);
 			}
-			if (this.props.onClassSelect) {
+			if (selected && this.props.onClassSelect) {
 				this.props.onClassSelect(selected);
 			}
 		} catch (error) {
@@ -379,51 +388,62 @@ class UClassTree extends Component {
 	};
 
 	classOptions() {
-		return [
-			{
-				label: "New subclass",
-				action: this.newSubclass,
-				enabled: this.canAddClass,
-			},
-			{
-				label: "Rename",
-				action: this.renameClass,
-				enabled: (c) => c != null,
-			},
-			{
-				label: "Remove",
-				action: this.removeClass,
-				enabled: (c) => c != null,
-			},
-			null,
-			{
-				label: "Browse",
-				action: this.browseClass,
-				enabled: (c) => c != null,
-			},
-			{
-				label: "Browse package",
-				action: this.browsePackage,
-				enabled: (c) => c != null,
-			},
-			{
-				label: "Browse references",
-				action: this.browseClassReferences,
-				enabled: (c) => c != null,
-			},
-			null,
-			{
-				label: "Run tests",
-				action: this.runTests,
-				enabled: (c) => c != null,
-			},
-			null,
-			{
-				label: "Migrate",
-				action: this.migrateClass,
-				enabled: (c) => c != null,
-			},
-		];
+		let options = [];
+		let pack = this.props.package;
+		if (pack) {
+			options.push({
+				label: "New",
+				action: this.newClass,
+			});
+		}
+		options.push(
+			...[
+				{
+					label: "New subclass",
+					action: this.newSubclass,
+					enabled: this.canAddClass,
+				},
+				{
+					label: "Rename",
+					action: this.renameClass,
+					enabled: (c) => c != null,
+				},
+				{
+					label: "Remove",
+					action: this.removeClass,
+					enabled: (c) => c != null,
+				},
+				null,
+				{
+					label: "Browse",
+					action: this.browseClass,
+					enabled: (c) => c != null,
+				},
+				{
+					label: "Browse package",
+					action: this.browsePackage,
+					enabled: (c) => c != null,
+				},
+				{
+					label: "Browse references",
+					action: this.browseClassReferences,
+					enabled: (c) => c != null,
+				},
+				null,
+				{
+					label: "Run tests",
+					action: this.runTests,
+					enabled: (c) => c != null,
+				},
+				null,
+				{
+					label: "Migrate",
+					action: this.migrateClass,
+					enabled: (c) => c != null,
+				},
+			]
+		);
+		return options;
 	}
 
 	classLabel = (species) => {
