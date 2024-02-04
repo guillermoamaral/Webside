@@ -154,7 +154,6 @@ class UPackageList extends Component {
 		return (
 			<CustomPaper>
 				<CustomList
-					enableFilter={false}
 					items={packages}
 					itemLabel="name"
 					selectedItem={selectedPackage}
