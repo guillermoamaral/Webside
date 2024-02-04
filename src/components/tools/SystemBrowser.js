@@ -134,6 +134,14 @@ class SystemBrowser extends Tool {
 		this.setState({ selectedClass: species });
 	};
 
+	classRenamed = async (species) => {
+		this.classDefined(species);
+		const ref = this.methodListRef;
+		if (ref && ref.current) {
+			ref.current.refreshEnsuring();
+		}
+	};
+
 	classRemoved = async (species) => {
 		this.setState({ selectedClass: null });
 	};
@@ -309,6 +317,7 @@ class SystemBrowser extends Tool {
 									}
 									onClassSelect={this.classSelected}
 									onClassDefine={this.classDefined}
+									onClassRename={this.classRenamed}
 									onClassRemove={this.classRemoved}
 									labelColor={this.classLabelColor}
 									preselectedClass={preselectedClass}
