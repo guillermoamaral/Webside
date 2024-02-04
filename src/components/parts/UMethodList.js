@@ -33,8 +33,9 @@ class UMethodList extends Component {
 
 	async componentDidUpdate(prevProps) {
 		if (
-			this.props.methods !== prevProps.methods ||
-			this.props.methods !== this.state.methods
+			this.props.methods &&
+			(this.props.methods !== prevProps.methods ||
+				this.props.methods !== this.state.methods)
 		) {
 			return this.setState({
 				methods: this.props.methods,
