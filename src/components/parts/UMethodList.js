@@ -18,10 +18,6 @@ class UMethodList extends Component {
 		this.state = {
 			methods: [],
 			selectedMethod: null,
-			class: null,
-			category: null,
-			access: null,
-			variable: null,
 			loading: false,
 			categories: [],
 		};
@@ -59,7 +55,6 @@ class UMethodList extends Component {
 	async updateMethods(selectedMethod) {
 		this.setState({ loading: true });
 		let methods = await this.fetchMethods();
-		let categories = await this.fetchCategories();
 		let selected;
 		if (selectedMethod) {
 			selected = methods.find(
@@ -68,6 +63,7 @@ class UMethodList extends Component {
 					m.selector === selectedMethod.selector
 			);
 		}
+		let categories = await this.fetchCategories(selected);
 		// let species = this.props.class;
 		// if (methods.length === 0 && species && !species.template) {
 		// 	const template = await ide.backend.methodTemplate();
@@ -87,8 +83,7 @@ class UMethodList extends Component {
 		let methods = [];
 		let species = this.props.class;
 		let { category, variable, access } = this.props;
-		if (!species) return methods;
-		if (species.template) return methods;
+		if (!species || species.template) return methods;
 		try {
 			if (variable && access) {
 				methods = await ide.backend.accessors(
@@ -109,13 +104,7 @@ class UMethodList extends Component {
 		return methods;
 	}
 
-	updateCategories = async () => {
-		let categories = await this.fetchCategories();
-		this.setState({ categories: categories });
-	};
-
-	fetchCategories = async () => {
-		let method = this.state.selectedMethod;
+	fetchCategories = async (method) => {
 		let categories = [];
 		let classname = method
 			? method.methodClass
@@ -143,8 +132,8 @@ class UMethodList extends Component {
 	};
 
 	methodSelected = async (method) => {
-		await this.updateCategories();
-		this.setState({ selectedMethod: method });
+		let categories = await this.fetchCategories(method);
+		this.setState({ selectedMethod: method, categories: categories });
 		if (this.props.onMethodSelect) {
 			this.props.onMethodSelect(method);
 		}
@@ -609,14 +598,14 @@ class UMethodList extends Component {
 
 	newMethod = async () => {
 		const selected = this.state.selectedMethod;
-		const method = await ide.backend.methodTemplate();
-		method.methodClass = selected
+		const template = await ide.backend.methodTemplate();
+		template.methodClass = selected
 			? selected.methodClass
 			: this.props.class
 			? this.props.class.name
 			: null;
-		method.category = selected ? selected.category : null;
-		this.methodSelected(method);
+		template.category = selected ? selected.category : null;
+		this.methodSelected(template);
 	};
 
 	methodLabel = (method) => {
