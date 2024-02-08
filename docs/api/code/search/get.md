@@ -13,7 +13,7 @@ This endpoint serves for searching the system for code elements (selectors, meth
 | text       | string  | The text to compare with                                               |
 | ignoreCase | boolean | Whether to ignore the case when comparing. `false` by default          |
 | position   | string  | Either `beginning` (default), `including` or `ending`                  |
-| type       | string  | Either `all` (default), `selectors`, `classes`, `packages`, or `pools` |
+| type       | string  | Either `all` (default), `selector`, `class`, `package`, or `pool` |
 
 ## Success Responses
 
