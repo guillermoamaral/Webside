@@ -315,9 +315,23 @@ class UClassTree extends Component {
 	removeClass = async (species) => {
 		if (!species) return;
 		try {
+			let message;
+			const references = await ide.waitFor(() =>
+				ide.backend.classReferences(species.name)
+			);
+			if (references.length > 0) {
+				message =
+					"Class " +
+					species.name +
+					" has " +
+					references.length +
+					" references. Remove it anyway?";
+			} else {
+				message = "Remove " + species.name + " class?";
+			}
 			const confirm = await ide.confirm({
 				title: "Remove class",
-				message: "Remove " + species.name + " class?",
+				message: message,
 				ok: { text: "Delete", color: "secondary", variant: "outlined" },
 				cancel: { text: "Cancel" },
 			});
