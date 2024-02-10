@@ -604,7 +604,11 @@ class IDE extends Component {
 			return;
 		}
 		const description =
-			(error.data ? error.data.description : null) || error.toString();
+			(error.data
+				? typeof error.data === "string"
+					? error.data
+					: error.data.description
+				: null) || error.toString();
 		this.setState({
 			lastMessage: { type: "error", text: description },
 			transcriptText: this.state.transcriptText + "\r" + description,
