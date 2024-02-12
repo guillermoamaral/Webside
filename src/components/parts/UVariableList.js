@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import CustomList from "../controls/CustomList";
 import CustomPaper from "../controls/CustomPaper";
 import { ide } from "../IDE";
+import ToolContainerContext from "../ToolContainerContext";
 
 class UVariableList extends Component {
+	static contextType = ToolContainerContext;
 
 	constructor(props) {
 		super(props);
@@ -41,7 +43,7 @@ class UVariableList extends Component {
 		if (!species) return variables;
 		if (species.template) return variables;
 		try {
-			variables = await ide.backend.variables(species.name);;
+			variables = await ide.backend.variables(species.name);
 		} catch (error) {
 			ide.reportError(error);
 		}
@@ -68,7 +70,7 @@ class UVariableList extends Component {
 
 	variableSelected = (variable) => {
 		let selected = variable.type === "separator" ? null : variable;
-		this.setState({ selectedVariable: selected })
+		this.setState({ selectedVariable: selected });
 		if (this.props.onVariableSelect) {
 			this.props.onVariableSelect(selected);
 		}
@@ -82,8 +84,8 @@ class UVariableList extends Component {
 			});
 			await ide.backend.addInstanceVariable(this.props.class.name, name);
 			let variables = await this.fetchVariables();
-			let variable = variables.find(v => v.name === name);
-			this.setState({ variables: variables, selectedVariable: variable })
+			let variable = variables.find((v) => v.name === name);
+			this.setState({ variables: variables, selectedVariable: variable });
 			if (this.props.onVariableAdd) {
 				this.props.onVariableAdd(variable);
 			}
@@ -116,7 +118,7 @@ class UVariableList extends Component {
 				);
 			}
 			variable.name = newName;
-			this.setState({ selectedVariable: variable })
+			this.setState({ selectedVariable: variable });
 			if (this.props.onVariableRename) {
 				this.props.onVariableRename(variable);
 			}
@@ -142,7 +144,7 @@ class UVariableList extends Component {
 				);
 			}
 			let variables = await this.fetchVariables();
-			this.setState({ variables: variables, selectedVariable: null })
+			this.setState({ variables: variables, selectedVariable: null });
 			if (this.props.onVariableRemove) {
 				this.props.onVariableRemove(variable);
 			}
@@ -161,8 +163,8 @@ class UVariableList extends Component {
 				variable.name
 			);
 			let variables = await this.fetchVariables();
-			let moved = variables.find(v => v.name === variable.name);
-			this.setState({ variables: variables, selectedVariable: moved })
+			let moved = variables.find((v) => v.name === variable.name);
+			this.setState({ variables: variables, selectedVariable: moved });
 			if (this.props.onMoveUp) {
 				this.props.onMoveUp(moved);
 			}
@@ -182,8 +184,8 @@ class UVariableList extends Component {
 				target
 			);
 			let variables = await this.fetchVariables();
-			let moved = variables.find(v => v.name === variable.name);
-			this.setState({ variables: variables, selectedVariable: moved })
+			let moved = variables.find((v) => v.name === variable.name);
+			this.setState({ variables: variables, selectedVariable: moved });
 			if (this.props.onVariableRemove) {
 				this.props.onVariableRemove(moved);
 			}
@@ -192,12 +194,24 @@ class UVariableList extends Component {
 		}
 	};
 
+	browseReferences = async (variable) => {
+		let methods = await ide.backend.accessors(
+			this.props.class.name,
+			variable.name,
+			"accessing",
+			true
+		);
+		this.context.openMethodBrowser(methods);
+	};
+
 	menuOptions() {
 		const options = [
 			{ label: "Add", action: this.addVariable },
 			{ label: "Rename", action: this.renameVariable },
 			{ label: "Remove", action: this.removeVariable },
 			{ label: "Move to superclass", action: this.moveVariableUp },
+			null,
+			{ label: "Browse references", action: this.browseReferences },
 		];
 		if (this.props.class && this.props.class.subclasses) {
 			options.push({
