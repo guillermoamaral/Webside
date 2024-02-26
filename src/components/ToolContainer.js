@@ -145,12 +145,12 @@ class ToolContainer extends Component {
 			currentPages.length === pages.length
 				? null
 				: !ids.includes(selectedPageId)
-					? selectedPageId
-					: i0 > 0
-						? currentPages[i0 - 1].id
-						: ik < currentPages.length - 1
-							? currentPages[ik + 1].id
-							: null;
+				? selectedPageId
+				: i0 > 0
+				? currentPages[i0 - 1].id
+				: ik < currentPages.length - 1
+				? currentPages[ik + 1].id
+				: null;
 		const filtered = currentPages.filter((p) => !ids.includes(p.id));
 		if (this.props.onPagesRemove) {
 			this.props.onPagesRemove(this);
@@ -274,9 +274,19 @@ class ToolContainer extends Component {
 
 	openPackageBrowser = (packagename) => {
 		const pageId = this.newPageId();
-		const browser = useSystemBrowser ?
-			(<SystemBrowser showPackages={true} preselectedPackage={{ name: packagename }} id={pageId} />) :
-			(<PackageBrowser selectedPackage={packagename} id={pageId} />);
+		let pack;
+		if (packagename) {
+			pack = { name: packagename };
+		}
+		const browser = useSystemBrowser ? (
+			<SystemBrowser
+				showPackages={true}
+				preselectedPackage={pack}
+				id={pageId}
+			/>
+		) : (
+			<PackageBrowser selectedPackage={packagename} id={pageId} />
+		);
 		this.createPage(
 			"Package Browser",
 			<PackageBrowserIcon />,
@@ -316,12 +326,20 @@ class ToolContainer extends Component {
 			if (classname) {
 				try {
 					species = await ide.backend.classNamed(classname);
-					species.metaclass = await ide.backend.classNamed(species.class);
+					species.metaclass = await ide.backend.classNamed(
+						species.class
+					);
 				} catch (error) {
 					ide.reportError(error);
 				}
 			}
-			browser = <SystemBrowser preselectedClass={species} side={side} id={pageId} />;
+			browser = (
+				<SystemBrowser
+					preselectedClass={species}
+					side={side}
+					id={pageId}
+				/>
+			);
 		} else {
 			browser = <ClassBrowser root={classname} side={side} id={pageId} />;
 		}
@@ -724,7 +742,8 @@ class ToolContainer extends Component {
 			<MethodHistoryBrowser method={method} />,
 			null,
 			null,
-			true)
+			true
+		);
 	}
 
 	debugExpression = async (expression, context) => {
@@ -778,7 +797,7 @@ class ToolContainer extends Component {
 		if (!pin && !sync) {
 			try {
 				await ide.backend.unpinObject(object.id);
-			} catch (ignored) { }
+			} catch (ignored) {}
 		}
 		return object;
 	};

@@ -52,8 +52,14 @@ class SystemBrowser extends Tool {
 				selectedSide: props.side || "instance",
 			};
 		}
-		if (props.preselectedPackage && props.showPackages) {
+		if (
+			props.showPackages &&
+			props.preselectedPackage &&
+			(!state.preselectedPackage ||
+				state.preselectedPackage.name !== props.preselectedPackage.name)
+		) {
 			return {
+				selectedPackage: props.preselectedPackage,
 				preselectedPackage: props.preselectedPackage,
 			};
 		}
