@@ -289,7 +289,7 @@ class Inspector extends Tool {
 										onAccept={this.assignEvaluation}
 									/>
 								</Box>
-								<Box ml={1} mr={1} sx={{ height: "20%" }}>
+								<Box sx={{ height: "20%" }}>
 									{showWorkspace && (
 										<Paper
 											variant="outlined"

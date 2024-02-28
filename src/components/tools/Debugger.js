@@ -316,8 +316,8 @@ class Debugger extends Tool {
 				<Box flexGrow={1}>
 					<CustomSplit mode="vertical">
 						<Box sx={{ minHeight: 50, height: "35%" }}>
-							<Grid container spacing={1} sx={{ height: "100%" }}>
-								<Grid item xs={12} md={8} lg={8}>
+							<CustomSplit>
+								<Box sx={{ width: "70%" }}>
 									<CustomPaper>
 										<FrameList
 											frames={frames}
@@ -325,8 +325,8 @@ class Debugger extends Tool {
 											onFrameSelect={this.frameSelected}
 										/>
 									</CustomPaper>
-								</Grid>
-								<Grid item xs={12} md={4} lg={4}>
+								</Box>
+								<Box sx={{ width: "30%" }}>
 									{showBindings && (
 										<BindingTable
 											style={{ height: 300 }}
@@ -347,8 +347,8 @@ class Debugger extends Tool {
 											}
 										/>
 									)}
-								</Grid>
-							</Grid>
+								</Box>
+							</CustomSplit>
 						</Box>
 						<Box sx={{ height: "60%" }}>
 							<CodeBrowser

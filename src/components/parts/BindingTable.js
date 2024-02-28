@@ -4,6 +4,7 @@ import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
+import CustomSplit from "../controls/CustomSplit";
 
 class BindingTable extends PureComponent {
 	static contextType = ToolContainerContext;
@@ -53,9 +54,9 @@ class BindingTable extends PureComponent {
 		const frame = this.props.frame;
 		return frame
 			? {
-				debugger: this.props.id,
-				frame: frame.index,
-			}
+					debugger: this.props.id,
+					frame: frame.index,
+			  }
 			: {};
 	}
 
@@ -110,28 +111,30 @@ class BindingTable extends PureComponent {
 				justifyContent="center"
 				style={{ height: "100%" }}
 			>
-				<Box pb={1} height={"80%"}>
-					<Paper variant="outlined" style={{ height: "100%" }}>
-						<CustomTable
-							noHeaders
-							columns={this.bindingColumns()}
-							rows={bindings}
-							onRowSelect={this.bindingSelected}
-							menuOptions={this.bindingOptions()}
-						/>
-					</Paper>
-				</Box>
-				<Box height={"20%"}>
-					<Paper variant="outlined" style={{ height: "100%" }}>
-						<CodeEditor
-							source={
-								selectedBinding ? selectedBinding.value : ""
-							}
-							//onAccept={this.saveBinding}
-							context={this.evaluationContext()}
-						/>
-					</Paper>
-				</Box>
+				<CustomSplit mode="vertical">
+					<Box height={"80%"}>
+						<Paper variant="outlined" style={{ height: "100%" }}>
+							<CustomTable
+								noHeaders
+								columns={this.bindingColumns()}
+								rows={bindings}
+								onRowSelect={this.bindingSelected}
+								menuOptions={this.bindingOptions()}
+							/>
+						</Paper>
+					</Box>
+					<Box height={"20%"}>
+						<Paper variant="outlined" style={{ height: "100%" }}>
+							<CodeEditor
+								source={
+									selectedBinding ? selectedBinding.value : ""
+								}
+								//onAccept={this.saveBinding}
+								context={this.evaluationContext()}
+							/>
+						</Paper>
+					</Box>
+				</CustomSplit>
 			</Box>
 		);
 	}
