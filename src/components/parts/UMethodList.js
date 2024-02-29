@@ -33,9 +33,17 @@ class UMethodList extends Component {
 			(this.props.methods !== prevProps.methods ||
 				this.props.methods !== this.state.methods)
 		) {
+			let selected = this.state.selectedMethod;
+			if (selected) {
+				selected = this.props.methods.find(
+					(m) =>
+						m.selector == selected.selector &&
+						m.methodClass == selected.methodClass
+				);
+			}
 			return this.setState({
 				methods: this.props.methods,
-				selectedMethod: null,
+				selectedMethod: selected,
 			});
 		}
 		if (
