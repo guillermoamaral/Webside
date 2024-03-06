@@ -43,10 +43,10 @@ class TabLabel extends Component {
 				label: "Close others",
 				action: this.closeOtherTabs,
 			},
-			{
-				label: "Split",
-				action: this.splitTab,
-			},
+			// {	//disabled for the moment
+			// 	label: "Split",
+			// 	action: this.splitTab,
+			// },
 		];
 	}
 
@@ -73,8 +73,10 @@ class TabLabel extends Component {
 	}
 
 	render() {
-		const { index, icon, noClose, onClose } = this.props;
-		const { label, menuOpen, menuPosition } = this.state;
+		const { index, icon, onClose } = this.props;
+		let showClose =
+			this.props.showClose === undefined ? true : this.props.showClose;
+		const { menuOpen, menuPosition } = this.state;
 		const text = this.visibleLabel();
 		return (
 			<Box
@@ -91,7 +93,7 @@ class TabLabel extends Component {
 					{text}
 				</Box>
 				<Box pt={1}>
-					{!noClose && (
+					{showClose && (
 						<IconButton
 							onClick={(event) => {
 								onClose(event, index);

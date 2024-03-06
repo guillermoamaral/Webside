@@ -122,7 +122,7 @@ class ObjectPresenter extends Component {
 				selectedPage={selectedPage}
 				pages={pages}
 				onTabSelect={(p) => this.setState({ selectedId: p.id })}
-				noClose
+				showTabClose={false}
 			/>
 		);
 	}

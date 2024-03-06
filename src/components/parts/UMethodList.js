@@ -28,21 +28,21 @@ class UMethodList extends Component {
 	}
 
 	async componentDidUpdate(prevProps) {
+		const methods = this.props.methods;
 		if (
-			this.props.methods &&
-			(this.props.methods !== prevProps.methods ||
-				this.props.methods !== this.state.methods)
+			methods &&
+			(methods !== prevProps.methods || methods !== this.state.methods)
 		) {
 			let selected = this.state.selectedMethod;
 			if (selected) {
-				selected = this.props.methods.find(
+				selected = methods.find(
 					(m) =>
-						m.selector == selected.selector &&
-						m.methodClass == selected.methodClass
+						m.selector === selected.selector &&
+						m.methodClass === selected.methodClass
 				);
 			}
 			return this.setState({
-				methods: this.props.methods,
+				methods: methods,
 				selectedMethod: selected,
 			});
 		}

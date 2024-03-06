@@ -46,7 +46,10 @@ class ToolContainer extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			selectedPageId: props.pages ? props.pages[0].id : null,
+			selectedPageId:
+				props.pages && props.pages.length > 0
+					? props.pages[0].id
+					: null,
 			pages: props.pages || [],
 		};
 	}
@@ -134,7 +137,7 @@ class ToolContainer extends Component {
 	};
 
 	removePages = (pages) => {
-		if (pages.length === 0) return;
+		//if (pages.length === 0) return;
 		const selectedPageId = this.state.selectedPageId;
 		const currentPages = this.state.pages;
 		const ids = pages.map((p) => p.id);
@@ -958,6 +961,7 @@ class ToolContainer extends Component {
 	}
 
 	render() {
+		const showClose = this.props.showClose;
 		const { selectedPageId, pages } = this.state;
 		const selectedPage = this.pageWithId(selectedPageId);
 		return (
@@ -971,6 +975,7 @@ class ToolContainer extends Component {
 					onTabsClose={this.closePages}
 					addOptions={this.addPageOptions()}
 					onTabSplit={this.splitPage}
+					showClose={showClose}
 				/>
 			</ToolContainerContext.Provider>
 		);

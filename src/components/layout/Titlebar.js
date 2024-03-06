@@ -12,6 +12,7 @@ import StyledAppBar from "./StyledAppBar";
 import SearchField from "../controls/SearchField";
 import LightModeIcon from "@mui/icons-material/LightModeRounded";
 import DarkModeIcon from "@mui/icons-material/DarkModeRounded";
+import SplitIcon from "../icons/SplitIcon";
 
 class Titlebar extends Component {
 	render() {
@@ -27,6 +28,7 @@ class Titlebar extends Component {
 			onColorModeToggle,
 			onSearchClick,
 			searchPlaceholder,
+			onSplit,
 		} = this.props;
 		return (
 			<StyledAppBar
@@ -88,6 +90,15 @@ class Titlebar extends Component {
 						) : (
 							<DarkModeIcon />
 						)}
+					</IconButton>
+					<IconButton
+						color="inherit"
+						onClick={(event) => {
+							onSplit();
+						}}
+						disabled={!onSplit}
+					>
+						<SplitIcon />
 					</IconButton>
 					<IconButton color="primary" onClick={onUserClick}>
 						<Avatar alt={developer} />

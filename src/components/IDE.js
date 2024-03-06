@@ -34,6 +34,7 @@ import CustomSplit from "./controls/CustomSplit";
 import QuickSearch from "./tools/QuickSearch";
 
 var ide = null;
+var MaxContainers = 4;
 
 class IDE extends Component {
 	constructor(props) {
@@ -375,7 +376,7 @@ class IDE extends Component {
 		return uuidv4();
 	}
 
-	addContainer = (pages) => {
+	addContainer = (pages, index) => {
 		const containers = this.state.extraContainers;
 		const id = this.newContainerId();
 		const ref = React.createRef();
@@ -391,13 +392,16 @@ class IDE extends Component {
 							this.removeContainer(c);
 						}
 					}}
-					onPageSplit={this.splitPage}
+					//onSplit={this.splitContainer} //disabled for the moment
 					pages={pages}
+					showClose={true}
 					sx={{ width: "100%", height: "100%" }}
 				/>
 			),
 		};
-		containers.push(container);
+		let i = index;
+		if (i === undefined) i = containers.length;
+		containers.splice(i, 0, container);
 		this.setState({
 			extraContainers: containers,
 		});
@@ -596,6 +600,18 @@ class IDE extends Component {
 		container.removePage(page);
 	};
 
+	splitContainer = (container) => {
+		const containers = this.state.extraContainers;
+		if (containers.length < MaxContainers) {
+			const index = container
+				? containers.findIndex(
+						(c) => c.component.ref.current === container
+				  )
+				: containers.length - 1;
+			this.addContainer([], index + 1);
+		}
+	};
+
 	//Services...
 
 	reportError = (error) => {
@@ -603,12 +619,14 @@ class IDE extends Component {
 		if (!error) {
 			return;
 		}
-		const description =
-			(error.data
-				? typeof error.data === "string"
-					? error.data
-					: error.data.description
-				: null) || error.toString();
+		let description = error.toString();
+		let message = error.data
+			? typeof error.data === "string"
+				? error.data
+				: error.data.description
+			: "";
+		if (message.length > 0)
+			description = description + "\rServer message: " + message;
 		this.setState({
 			lastMessage: { type: "error", text: description },
 			transcriptText: this.state.transcriptText + "\r" + description,
@@ -716,6 +734,7 @@ class IDE extends Component {
 			quickSearchOpen,
 		} = this.state;
 		const totalWidth = false; //extraContainers.length > 0 ? false : "lg";
+		let extraContainersWidth = 100 / (extraContainers.length + 1) + "%";
 		const shortcuts = this.settings.section("shortcuts");
 		return (
 			<Hotkeys
@@ -763,6 +782,11 @@ class IDE extends Component {
 							searchPlaceholder={
 								"Use " + shortcuts.get("quickSearch")
 							}
+							onSplit={
+								extraContainers.length < MaxContainers
+									? this.splitContainer
+									: null
+							}
 						/>
 						<Sidebar
 							expanded={sidebarExpanded}
@@ -785,8 +809,9 @@ class IDE extends Component {
 								mr: 2,
 								mt: 0,
 								p: 0,
-								width: "100vh",
+								width: "100vw",
 								height: "95vh",
+								maxWidth: "100vw",
 							}}
 						>
 							<DrawerHeader />
@@ -796,16 +821,27 @@ class IDE extends Component {
 								sx={{ height: "100%", width: "100%" }}
 							>
 								<CustomSplit sx={{ width: "100%" }}>
-									<ToolContainer
-										id={99999}
-										key="mainContainer"
-										ref={this.mainContainerRef}
-										onPageSplit={this.splitPage}
-										sx={{ width: "100vw" }}
-									/>
-									{extraContainers.map(
-										(container) => container.component
-									)}
+									<Box
+										key="mainContainerBox"
+										flex={1}
+										sx={{ maxWidth: "100%" }}
+									>
+										<ToolContainer
+											id={99999}
+											key="mainContainer"
+											ref={this.mainContainerRef}
+											//onSplit={this.splitContainer} //disabled for the moment
+											showClose={false}
+										/>
+									</Box>
+									{extraContainers.map((container, index) => (
+										<Box
+											key={"container" + index + "Box"}
+											sx={{ width: extraContainersWidth }}
+										>
+											{container.component}
+										</Box>
+									))}
 								</CustomSplit>
 							</Container>
 						</Box>
