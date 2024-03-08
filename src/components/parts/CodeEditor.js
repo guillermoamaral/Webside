@@ -325,6 +325,24 @@ class CodeEditor extends Component {
 		}
 	}
 
+	astSelectorInRage(range) {
+		const ast = this.props.ast;
+		var node;
+		if (ast) {
+			this.traverseAst(ast, (n) => {
+				if (
+					n.type === "Selector" &&
+					range.from <= n.start &&
+					n.end <= range.to &&
+					(!node || (n.start <= node.start && node.end <= n.end))
+				) {
+					node = n;
+				}
+			});
+		}
+		return node;
+	}
+
 	astNodeAtOffset(offset) {
 		const ast = this.props.ast;
 		var node;
@@ -506,11 +524,11 @@ class CodeEditor extends Component {
 	}
 
 	targetSelector() {
-		const selected = this.selectedText();
-		if (selected.length > 0) {
-			return selected.trim();
-		}
-		const node = this.targetAstNode();
+		const range = this.currentSelectionRange();
+		const node =
+			range && range.from < range.to
+				? this.astSelectorInRage(range)
+				: this.targetAstNode();
 		if (node && (node.type === "Selector" || node.type === "Literal")) {
 			return node.value;
 		}
