@@ -520,7 +520,7 @@ class CodeEditor extends Component {
 	targetAstNode() {
 		const position = this.currentPosition();
 		if (position) {
-			return this.astNodeAtOffset(position);
+			return this.astNodeAtOffset(position + 1);
 		}
 	}
 
