@@ -11,19 +11,20 @@ The `class`, `hierarchy` and `package` options can be used in conjunction with o
 
 **Filtering Query Options**
 
-| Option           |  Type  | Description                                                                    |
-| ---------------- | :----: | ------------------------------------------------------------------------------ |
-| class            | string | to get methods of a given class                                                |
-| selector         | string | to get implementors of a given selector                                        |
-| category         | string | to get methods under a given category                                          |
-| accessing        | string | to get those methods accessing a given variable (either using or assigning it) |
-| using            | string | to get those methods using a given variable                                    |
-| assigning        | string | to get those methods assigning a given variable                                |
-| sending          | string | to get senders of a given selector                                             |
-| referencingClass | string | to get those methods referencing a given class                                 |
-| selectorMatching | string | to get those methods with a selector matching a given pattern string           |
-| hierarchy        | string | used to restrict the search to a given hierarchy                               |
-| package          | string | used to restrict the search to a given package                                 |
+| Option           |  Type   | Description                                                                    |
+| ---------------- | :-----: | ------------------------------------------------------------------------------ |
+| class            | string  | to get methods of a given class                                                |
+| selector         | string  | to get implementors of a given selector                                        |
+| category         | string  | to get methods under a given category                                          |
+| accessing        | string  | to get those methods accessing a given variable (either using or assigning it) |
+| using            | string  | to get those methods using a given variable                                    |
+| assigning        | string  | to get those methods assigning a given variable                                |
+| sending          | string  | to get senders of a given selector                                             |
+| referencingClass | string  | to get those methods referencing a given class                                 |
+| selectorMatching | string  | to get those methods with a selector matching a given pattern string           |
+| hierarchy        | string  | used to restrict the search to a given hierarchy                               |
+| package          | string  | used to restrict the search to a given package                                 |
+| count            | boolean | true to get only the number of methods statisfying the condition               |
 
 **Decoration Query Options**
 
@@ -173,6 +174,7 @@ Here are a couple of examples of methods with annotations, one sending a message
 ```
 
 ## Test Methods
+
 Every Smalltalk dialect provides some sort of unit tests (e.g., SUnit). In any case, a test is usually a method that can be _ran_, either isolatedly or in the context of a _test suite_. This implies additional IDE options, and sometimes visual decorations to distinguish them from regular methods.
 
 Webside has a naive, yet effective way to detect whether a method represents a test, so the backend is not obligated to specify that.
@@ -180,10 +182,9 @@ Webside has a naive, yet effective way to detect whether a method represents a t
 There are some dialects that keep track of the last run result. They used it as a test _state_, usually to show a colored icon: green if the last run resulted in the test passing, yellow if it failed, and red if it ended up in an error.\
 If the backend at hand provides such information (in a property `status`), Webside will display it as a mark near the selector.
 
-
 ```json
 {
-	"status": "string",
+	"status": "string"
 }
 ```
 

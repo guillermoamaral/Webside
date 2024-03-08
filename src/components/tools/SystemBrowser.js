@@ -40,7 +40,7 @@ class SystemBrowser extends Tool {
 	}
 
 	static getDerivedStateFromProps(props, state) {
-		if (
+				if (
 			props.preselectedClass &&
 			state.roots.length === 1 &&
 			state.roots[0].name !== props.preselectedClass.name
@@ -63,7 +63,7 @@ class SystemBrowser extends Tool {
 				preselectedPackage: props.preselectedPackage,
 			};
 		}
-		return null;
+				return null;
 	}
 
 	async updateClass(species) {
@@ -251,17 +251,22 @@ class SystemBrowser extends Tool {
 		if (method) {
 			this.updateLabel(method.methodClass + ">>" + method.selector);
 		}
-		const ref = this.methodListRef;
+		let ref = this.methodListRef;
 		if (ref && ref.current) {
 			ref.current.refreshEnsuring(method);
+		}
+		ref = this.categoryListRef;
+		if (ref && ref.current) {
+			ref.current.refreshEnsuring(method.category);
 		}
 		this.setState({ selectedMethod: method });
 	};
 
 	methodClassified = async (method) => {
 		if (!method) return;
-		if (this.categoryListRef && this.categoryListRef.current) {
-			this.categoryListRef.current.refreshEnsuring(method.category);
+		const ref = this.categoryListRef;
+		if (ref && ref.current) {
+			ref.current.refreshEnsuring(method.category);
 		}
 		this.setState({ selectedCategory: method.category });
 	};
@@ -281,7 +286,7 @@ class SystemBrowser extends Tool {
 	}
 
 	render() {
-		let {
+				let {
 			roots,
 			selectedPackage,
 			selectedSide,

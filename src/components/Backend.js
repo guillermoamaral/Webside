@@ -4,7 +4,7 @@ class BackendError extends Error {
 	constructor(description, url, request, status, reason, data) {
 		const explanation =
 			reason && reason.lenght > 0 ? " due to " + reason : "";
-		const message = '"' + description + " from " + url + explanation + '"';
+		const message = '"' + description + " (" + url + explanation + ')"';
 		super(message);
 		this.name = "BackendError";
 		this.url = url;
@@ -240,15 +240,15 @@ class Backend {
 
 	async method(classname, selector) {
 		const encoded = encodeURIComponent(selector);
-		const methods = await this.get(
+		const method = await this.get(
 			"/classes/" +
 				classname +
-				"/methods?selector=" +
+				"/methods/" +
 				encoded +
-				"&bytecodes=true&disassembly=true&ast=true&annotations=true",
+				"?bytecodes=true&disassembly=true&ast=true&annotations=true",
 			"method " + classname + ">>#" + selector
 		);
-		return methods.length === 0 ? null : methods[0];
+		return method;
 	}
 
 	async methodHistory(classname, selector) {
@@ -297,6 +297,13 @@ class Backend {
 	async senders(selector) {
 		return await this.get(
 			"/methods?sending=" + selector,
+			"senders of " + selector
+		);
+	}
+
+	async sendersCount(selector) {
+		return await this.get(
+			"/methods?count=true&sending=" + selector,
 			"senders of " + selector
 		);
 	}
@@ -867,7 +874,7 @@ class Backend {
 	}
 
 	async runTestSuite(suite) {
-		return await this.post("/test-runs", suite, "run test suite " + suite);
+		return await this.post("/test-runs", suite, "run test suite");
 	}
 
 	async runTest(classname, selector) {
