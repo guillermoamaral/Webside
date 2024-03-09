@@ -302,10 +302,12 @@ class Backend {
 	}
 
 	async sendersCount(selector) {
-		return await this.get(
+		let result = await this.get(
 			"/methods?count=true&sending=" + selector,
 			"senders of " + selector
 		);
+		if (Array.isArray(result)) result = result.length;
+		return result;
 	}
 
 	async localSenders(selector, classname) {
