@@ -119,7 +119,9 @@ class CodeBrowser extends Component {
 				: species
 				? species.package
 				: null;
-			const category = method ? method.category : null;
+			const category = method
+				? method.category || this.props.category
+				: this.props.category;
 			const classname = species
 				? species.name
 				: method

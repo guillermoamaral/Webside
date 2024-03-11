@@ -40,7 +40,7 @@ class SystemBrowser extends Tool {
 	}
 
 	static getDerivedStateFromProps(props, state) {
-				if (
+		if (
 			props.preselectedClass &&
 			state.roots.length === 1 &&
 			state.roots[0].name !== props.preselectedClass.name
@@ -63,7 +63,7 @@ class SystemBrowser extends Tool {
 				preselectedPackage: props.preselectedPackage,
 			};
 		}
-				return null;
+		return null;
 	}
 
 	async updateClass(species) {
@@ -286,7 +286,7 @@ class SystemBrowser extends Tool {
 	}
 
 	render() {
-				let {
+		let {
 			roots,
 			selectedPackage,
 			selectedSide,
@@ -457,6 +457,7 @@ class SystemBrowser extends Tool {
 				<Box sx={{ height: "60%" }}>
 					<CodeBrowser
 						context={this.evaluationContext()}
+						category={selectedCategory}
 						package={showPackages ? selectedPackage : null}
 						class={targetClass}
 						method={selectedMethod}
