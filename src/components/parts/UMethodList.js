@@ -29,11 +29,11 @@ class UMethodList extends Component {
 
 	async componentDidUpdate(prevProps) {
 		const methods = this.props.methods;
+		let selected = this.props.selectedMethod || this.state.selectedMethod;
 		if (
 			methods &&
 			(methods !== prevProps.methods || methods !== this.state.methods)
 		) {
-			let selected = this.state.selectedMethod;
 			if (selected) {
 				selected = methods.find(
 					(m) =>
@@ -52,7 +52,12 @@ class UMethodList extends Component {
 			this.props.access !== prevProps.access ||
 			this.props.variable !== prevProps.variable
 		) {
-			this.updateMethods(this.state.selectedMethod);
+			return this.updateMethods(selected);
+		}
+		if (prevProps.selectedMethod !== this.props.selectedMethod) {
+			this.setState({
+				selectedMethod: this.props.selectedMethod,
+			});
 		}
 	}
 
