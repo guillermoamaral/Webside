@@ -700,7 +700,12 @@ class IDE extends Component {
 
 	waitFor = async (evaluation) => {
 		this.setState({ waiting: true });
-		const result = await evaluation();
+		let result;
+		try {
+			result = await evaluation();
+		} catch (error) {
+			this.reportError(error);
+		}
 		this.setState({ waiting: false });
 		return result;
 	};
