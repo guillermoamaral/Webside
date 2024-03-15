@@ -524,13 +524,15 @@ class CodeEditor extends Component {
 	}
 
 	targetSelector() {
-		const range = this.currentSelectionRange();
-		const node =
-			range && range.from < range.to
-				? this.astSelectorInRage(range)
-				: this.targetAstNode();
-		if (node && (node.type === "Selector" || node.type === "Literal")) {
-			return node.value;
+		if (!this.state.dirty) {
+			const range = this.currentSelectionRange();
+			const node =
+				range && range.from < range.to
+					? this.astSelectorInRage(range)
+					: this.targetAstNode();
+			if (node && (node.type === "Selector" || node.type === "Literal")) {
+				return node.value;
+			}
 		}
 		return this.targetWord();
 	}
