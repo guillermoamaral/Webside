@@ -99,7 +99,7 @@ class Workspace extends Tool {
 		const { source, inspectors, evaluating } = this.state;
 		const editorWidth = inspectors.length > 0 ? 8 : 12;
 		return (
-			<Grid container spacing={1}>
+			<Grid container spacing={1} sx={{ height: "100%" }}>
 				<Grid item xs={12} md={editorWidth} lg={editorWidth}>
 					<Paper
 						variant="outlined"

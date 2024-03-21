@@ -12,7 +12,7 @@ class Transcript extends Tool {
 
 	render() {
 		return (
-			<Box style={{ minHeight: 100, height: 300 }}>
+			<Box sx={{ minHeight: 100, height: "100%" }}>
 				<CodeEditor
 					source={ide.transcriptText()}
 					onChange={this.props.onChange}
