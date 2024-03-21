@@ -725,6 +725,174 @@ class IDE extends Component {
 		}
 	};
 
+	extensionMenuOptions(definitions, handler) {
+		let options = [null];
+		if (!definitions || definitions.length === 0) return options;
+		let grouped = {};
+		let ungrouped = [];
+		definitions.forEach((d) => {
+			let s = d.section;
+			if (s) {
+				if (!grouped[s]) grouped[s] = [];
+				grouped[s].push(d);
+			} else {
+				ungrouped.push(d);
+			}
+		});
+		ungrouped.forEach((d) => {
+			options.push({
+				label: d.label,
+				action: (e) => handler(d, e),
+			});
+		});
+		for (const [s, v] of Object.entries(grouped)) {
+			options.push({
+				label: s,
+				suboptions: v.map((d) => {
+					return {
+						label: d.label,
+						action: (e) => handler(d, e),
+					};
+				}),
+			});
+		}
+		return options;
+	}
+
+	performExtendedOption = async (specification, element) => {
+		if (specification.extensionType === "change") {
+			await this.performExtendedChange(specification, element);
+		}
+		if (specification.extensionType === "download") {
+			await this.performDownload(specification, element);
+		}
+	};
+
+	performDownload = async (specification, element) => {
+		const get = specification.get;
+		let data;
+		if (get.startsWith("element.")) {
+			data = element[get.split(".")[1]];
+		}
+		if (get.startsWith("/")) {
+			let uri = "/";
+			get.split("/").forEach((s) => {
+				let segment = s;
+				if (
+					s.startsWith("{") &&
+					s.endsWith("}") &&
+					s.includes("element.")
+				) {
+					let attribute = s.substring(1, s.length - 1).split(".")[1];
+					segment = element[attribute];
+				}
+				uri += "/" + segment;
+			});
+			data = await this.backend.get(uri, get);
+			data = JSON.stringify(data);
+		}
+		if (!data) return;
+		const blob = new Blob([data], {
+			type: "text/plain",
+		});
+		let filename = specification.defaultFilename;
+		if (filename.startsWith("element.")) {
+			filename = element[filename.split(".")[1]];
+		}
+		this.download(blob, filename || "file");
+	};
+
+	performExtendedChange = async (specification, element) => {
+		const description = specification.label.toLowerCase();
+		if (specification.needsConfirmation) {
+			const proceed = await this.confirm(
+				"Do you want to " + description + "?"
+			);
+			if (!proceed) return;
+		}
+		const properties = specification.properties;
+		const parameters = {};
+		let change = {};
+		let value, defaultValue, result;
+		let parameterMissing = false;
+		await Promise.all(
+			specification.parameters.map(async (p) => {
+				defaultValue = p.defaultValue;
+				if (defaultValue.startsWith("element.")) {
+					defaultValue = element[defaultValue.split(".")[1]];
+				}
+				try {
+					value = await this.prompt({
+						title: p.label,
+						defaultValue: defaultValue,
+						required: true,
+					});
+				} catch (error) {}
+				if (!value) parameterMissing = true;
+				parameters[p.name] = value;
+			})
+		);
+		if (parameterMissing) return;
+		for (const [k, v] of Object.entries(properties)) {
+			value = v;
+			if (typeof v === "string" && v.startsWith("element.")) {
+				value = element[v.split(".")[1]];
+			}
+			if (typeof v === "string" && v.startsWith("parameters.")) {
+				value = parameters[v.split(".")[1]];
+			}
+			change[k] = value;
+		}
+		try {
+			result = await this.backend.postChange(change, description);
+		} catch (error) {
+			this.handleChangeError(error);
+		}
+		return result;
+	};
+
+	async handleChangeError(error) {
+		const data = error.data;
+		if (typeof data === "string") return this.reportError(error);
+		if (data && data.suggestions && data.suggestions.length > 0) {
+			const chosen = await this.choose({
+				title: data.description,
+				message: "What do you want to do?",
+				items: data.suggestions.map((s) => s.description),
+				defaultValue: data.suggestions[0].description,
+			});
+			const suggestion = chosen
+				? data.suggestions.find((s) => s.description === chosen)
+				: null;
+			if (chosen) {
+				try {
+					for (const change of suggestion.changes) {
+						await this.backend.postChange(change);
+					}
+				} catch (inner) {
+					this.handleChangeError(inner);
+				}
+			}
+		} else {
+			const description = data ? data.description : data;
+			ide.reportError(description || "Unknown change error");
+		}
+	}
+
+	download(blob, filename) {
+		try {
+			const url = window.URL.createObjectURL(blob);
+			const link = document.createElement("a");
+			link.href = url;
+			link.setAttribute("download", filename);
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		} catch (error) {
+			this.reportError(error);
+		}
+	}
+
 	render() {
 		console.log("rendering IDE");
 		const {

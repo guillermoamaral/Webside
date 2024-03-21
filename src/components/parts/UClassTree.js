@@ -18,26 +18,18 @@ class UClassTree extends Component {
 			selectedClass: null,
 			expandedClasses: [],
 			loading: false,
-			preselectedClass: null,
 			showSearch: true,
+			extendedOptions: [],
 		};
-	}
-
-	static getDerivedStateFromProps(props, state) {
-		if (props.preselectedClass !== state.preselectedClass) {
-			return {
-				preselectedClass: props.preselectedClass,
-			};
-		}
-		return null;
 	}
 
 	async componentDidMount() {
 		await this.initializeClassSearch();
+		this.initializeExtendedOptions();
 		this.changeRoots(
 			this.props.roots,
 			this.props.package,
-			this.props.preselectedClass
+			this.props.selectedElement
 		);
 	}
 
@@ -55,15 +47,21 @@ class UClassTree extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
+		let selected = this.props.selectedElement || this.state.selectedElement;
 		if (
 			this.props.roots !== prevProps.roots ||
 			this.props.package !== prevProps.package
 		) {
-			this.changeRoots(
+			return this.changeRoots(
 				this.props.roots,
 				this.props.package,
-				this.state.selectedClass
+				selected
 			);
+		}
+		if (prevProps.selectedElement !== this.props.selectedElement) {
+			this.setState({
+				selectedElement: this.props.selectedElement,
+			});
 		}
 	}
 
@@ -168,6 +166,11 @@ class UClassTree extends Component {
 			ide.reportError(error);
 		}
 		return trees;
+	}
+
+	async initializeExtendedOptions() {
+		const extensions = await ide.backend.extensions("class");
+		this.setState({ extendedOptions: extensions });
 	}
 
 	findSubclass(name, root) {
@@ -401,7 +404,7 @@ class UClassTree extends Component {
 		return species; //|| this.props.package;
 	};
 
-	classOptions() {
+	menuOptions() {
 		let options = [];
 		let pack = this.props.package;
 		if (pack) {
@@ -457,7 +460,21 @@ class UClassTree extends Component {
 				},
 			]
 		);
-		return options;
+		const extended = ide.extensionMenuOptions(
+			this.state.extendedOptions,
+			this.performExtendedOption
+		);
+		return options.concat(extended);
+	}
+
+	performExtendedOption = async (option, species) => {
+		await ide.performExtendedOption(option, species);
+		this.extendedOptionPerformed();
+	};
+
+	extendedOptionPerformed() {
+		const handler = this.props.onExtendedOptionPerform;
+		handler ? handler() : this.forceUpdate();
 	}
 
 	classLabel = (species) => {
@@ -531,7 +548,7 @@ class UClassTree extends Component {
 							expandedNodes={expandedClasses}
 							onNodeExpand={this.classExpanded}
 							onNodeCollapse={this.classCollapsed}
-							menuOptions={this.classOptions()}
+							menuOptions={this.menuOptions()}
 						/>
 					</CustomPaper>
 				</Box>

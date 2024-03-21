@@ -2,7 +2,7 @@
 
 These endpoints are used to apply changes and retrieve changes made to the system.
 
-Important: the list of possible changes at the moment of writing this documentation is by no means a closed list and it can be extended to support more changes and refactorings.
+**Important**. The API specifies a set of _basic_ changes applicable to all dialect analized. However, this list can be extended to support more changes and refactorings by means of [/extensions](../extensions/ChangeExtensions.md) endpoint.
 
 | Method | Path                                                                                               | Description                                   | Parameters | Payload  |
 | :----: | -------------------------------------------------------------------------------------------------- | --------------------------------------------- | :--------: | -------- |

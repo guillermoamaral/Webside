@@ -20,14 +20,16 @@ class UMethodList extends Component {
 			selectedMethod: null,
 			loading: false,
 			categories: [],
+			extendedOptions: [],
 		};
 	}
 
 	async componentDidMount() {
 		this.updateMethods();
+		this.initializeExtendedOptions();
 	}
 
-	async componentDidUpdate(prevProps) {
+	componentDidUpdate(prevProps) {
 		const methods = this.props.methods;
 		let selected = this.props.selectedMethod || this.state.selectedMethod;
 		if (
@@ -143,6 +145,11 @@ class UMethodList extends Component {
 		}
 		return categories;
 	};
+
+	async initializeExtendedOptions() {
+		const extensions = await ide.backend.extensions("method");
+		this.setState({ extendedOptions: extensions });
+	}
 
 	methodSelected = async (method) => {
 		let categories = await this.fetchCategories(method);
@@ -386,7 +393,7 @@ class UMethodList extends Component {
 		return method || this.props.class;
 	};
 
-	menuOptions = () => {
+	menuOptions() {
 		const options = [];
 		if (this.props.showNewOption) {
 			options.push({
@@ -503,8 +510,22 @@ class UMethodList extends Component {
 				},
 			]
 		);
-		return options;
+		const extended = ide.extensionMenuOptions(
+			this.state.extendedOptions,
+			this.performExtendedOption
+		);
+		return options.concat(extended);
+	}
+
+	performExtendedOption = async (option, method) => {
+		await ide.performExtendedOption(option, method);
+		this.extendedOptionPerformed();
 	};
+
+	extendedOptionPerformed() {
+		const handler = this.props.onExtendedOptionPerform;
+		handler ? handler() : this.forceUpdate();
+	}
 
 	methodIcon = (method) => {
 		const size = 12;

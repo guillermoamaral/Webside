@@ -87,6 +87,22 @@ class SystemBrowser extends Tool {
 		}
 	}
 
+	targetClass() {
+		let { selectedSide, selectedClass } = this.state;
+		return selectedClass
+			? selectedSide === "instance"
+				? selectedClass
+				: selectedClass.metaclass
+			: null;
+	}
+
+	evaluationContext() {
+		const species = this.targetClass();
+		return species ? { class: species.name } : {};
+	}
+
+	// Events...
+
 	packageSelected = async (pack) => {
 		this.updateLabel(pack.name);
 		await this.updatePackage(pack);
@@ -201,8 +217,8 @@ class SystemBrowser extends Tool {
 		this.setState({ selectedCategory: category });
 	};
 
-	categoryRenamed = (category, renamed) => {
-		this.setState({ selectedCategory: renamed });
+	categoryRenamed = (category) => {
+		this.setState({ selectedCategory: category });
 	};
 
 	categoryRemoved = (category) => {
@@ -271,19 +287,13 @@ class SystemBrowser extends Tool {
 		this.setState({ selectedCategory: method.category });
 	};
 
-	targetClass() {
-		let { selectedSide, selectedClass } = this.state;
-		return selectedClass
-			? selectedSide === "instance"
-				? selectedClass
-				: selectedClass.metaclass
-			: null;
-	}
-
-	evaluationContext() {
-		const species = this.targetClass();
-		return species ? { class: species.name } : {};
-	}
+	codeExtendedOptionPerformed = () => {
+		console.log("dale")
+		let ref = this.methodListRef;
+		if (ref && ref.current) {
+			ref.current.refreshEnsuring(this.state.selectedMethod);
+		}
+	};
 
 	render() {
 		let {
@@ -315,7 +325,7 @@ class SystemBrowser extends Tool {
 									<UPackageList
 										onPackageSelect={this.packageSelected}
 										onPackageCreate={this.packageCreated}
-										preselectedPackage={preselectedPackage}
+										selectedPackage={preselectedPackage}
 									/>
 								</Box>
 							)}
@@ -331,7 +341,7 @@ class SystemBrowser extends Tool {
 									onClassRename={this.classRenamed}
 									onClassRemove={this.classRemoved}
 									labelColor={this.classLabelColor}
-									preselectedClass={preselectedClass}
+									selectedClass={preselectedClass}
 								/>
 							</Box>
 							<Box
@@ -464,6 +474,9 @@ class SystemBrowser extends Tool {
 						onMethodCompile={this.methodCompiled}
 						onClassDefine={this.classDefined}
 						onClassComment={this.classCommented}
+						onExtendedOptionPerform={
+							this.codeExtendedOptionPerformed
+						}
 						sx={{ height: "100%" }}
 					/>
 				</Box>

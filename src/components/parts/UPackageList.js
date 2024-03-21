@@ -12,27 +12,26 @@ class UPackageList extends Component {
 		this.state = {
 			packages: [],
 			selectedPackage: null,
-			preselectedPackage: null,
+			extendedOptions: [],
 		};
 	}
-
-	static getDerivedStateFromProps(props, state) {
-		if (props.preselectedPackage !== state.preselectedPackage) {
-			return {
-				preselectedPackage: props.preselectedPackage,
-			};
-		}
-		return null;
-	}
-
 	componentDidMount() {
 		this.updatePackages();
+		this.initializeExtendedOptions();
 	}
 
-	async updatePackages() {
+	componentDidUpdate(prevProps) {
+		if (prevProps.selectedPackage !== this.props.selectedPackage) {
+			this.setState({
+				selectedPackage: this.props.selectedPackage,
+			});
+		}
+	}
+
+	async updatePackages(selectedPackage) {
 		let packages = await this.fetchPackages();
-		let selected = this.props.preselectedPackage ?
-			packages.find(p => p.name === this.props.preselectedPackage.name)
+		let selected = selectedPackage
+			? packages.find((p) => p.name === selectedPackage.name)
 			: null;
 		this.setState({
 			packages: packages,
@@ -44,15 +43,22 @@ class UPackageList extends Component {
 		let packages = [];
 		try {
 			let names = await ide.backend.packageNames();
-			packages = names.sort().map(name => { return { name: name } });
+			packages = names.sort().map((name) => {
+				return { name: name };
+			});
 		} catch (error) {
 			ide.reportError(error);
 		}
 		return packages;
 	}
 
+	async initializeExtendedOptions() {
+		const extensions = await ide.backend.extensions("package");
+		this.setState({ extendedOptions: extensions });
+	}
+
 	packageSelected = (pack) => {
-		this.setState({ selectedPackage: pack })
+		this.setState({ selectedPackage: pack });
 		if (this.props.onPackageSelect) {
 			this.props.onPackageSelect(pack);
 		}
@@ -115,7 +121,7 @@ class UPackageList extends Component {
 		try {
 			await ide.backend.removePackage(pack.name);
 			let packages = this.state.packages;
-			packages = packages.filter(p => p.name !== pack.name);
+			packages = packages.filter((p) => p.name !== pack.name);
 			this.setState({ packages: packages });
 			if (this.props.onPackageRemove) {
 				this.props.onPackageRemove(pack);
@@ -138,7 +144,7 @@ class UPackageList extends Component {
 	};
 
 	menuOptions() {
-		return [
+		let options = [
 			{ label: "New", action: this.createPackage },
 			{ label: "Rename", action: this.renamePackage },
 			{ label: "Remove", action: this.removePackage },
@@ -147,6 +153,21 @@ class UPackageList extends Component {
 			null,
 			{ label: "Migrate", action: this.migratePackage },
 		];
+		const extended = ide.extensionMenuOptions(
+			this.state.extendedOptions,
+			this.performExtendedOption
+		);
+		return options.concat(extended);
+	}
+
+	performExtendedOption = async (option, pack) => {
+		await ide.performExtendedOption(option, pack);
+		this.extendedOptionPerformed();
+	};
+
+	extendedOptionPerformed() {
+		const handler = this.props.onExtendedOptionPerform;
+		handler ? handler() : this.forceUpdate();
 	}
 
 	render() {

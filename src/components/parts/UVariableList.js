@@ -14,11 +14,13 @@ class UVariableList extends Component {
 			variables: [],
 			selectedVariable: null,
 			loading: false,
+			extendedOptions: [],
 		};
 	}
 
 	componentDidMount() {
 		this.updateVariables();
+		this.initializeExtendedOptions();
 	}
 
 	componentDidUpdate(prevProps) {
@@ -48,6 +50,11 @@ class UVariableList extends Component {
 			ide.reportError(error);
 		}
 		return variables;
+	}
+
+	async initializeExtendedOptions() {
+		const extensions = await ide.backend.extensions("variable");
+		this.setState({ extendedOptions: extensions });
 	}
 
 	extendedVariables(variables) {
@@ -205,7 +212,7 @@ class UVariableList extends Component {
 	};
 
 	menuOptions() {
-		const options = [
+		let options = [
 			{ label: "Add", action: this.addVariable },
 			{ label: "Rename", action: this.renameVariable },
 			{ label: "Remove", action: this.removeVariable },
@@ -213,10 +220,11 @@ class UVariableList extends Component {
 			null,
 			{ label: "Browse references", action: this.browseReferences },
 		];
-		if (this.props.class && this.props.class.subclasses) {
+		const species = this.props.class;
+		if (species && species.subclasses && species.subclasses.length > 1) {
 			options.push({
 				label: "Move to subclass",
-				suboptions: this.props.class.subclasses.map((c) => {
+				suboptions: species.subclasses.map((c) => {
 					return {
 						label: c.name,
 						action: (v) => this.moveVariableDown(v, c.name),
@@ -224,7 +232,21 @@ class UVariableList extends Component {
 				}),
 			});
 		}
-		return options;
+		const extended = ide.extensionMenuOptions(
+			this.state.extendedOptions,
+			this.performExtendedOption
+		);
+		return options.concat(extended);
+	}
+
+	performExtendedOption = async (option, variable) => {
+		await ide.performExtendedOption(option, variable);
+		this.extendedOptionPerformed();
+	};
+
+	extendedOptionPerformed() {
+		const handler = this.props.onExtendedOptionPerform;
+		handler ? handler() : this.forceUpdate();
 	}
 
 	render() {

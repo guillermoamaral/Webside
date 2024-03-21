@@ -67,13 +67,7 @@ class ChangesBrowser extends Tool {
 				})
 			);
 			const blob = new Blob([ch]);
-			const url = window.URL.createObjectURL(blob);
-			const link = document.createElement("a");
-			link.href = url;
-			link.setAttribute("download", "changes.ch");
-			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
+			ide.download(blob, "changes.ch");
 		} catch (error) {
 			ide.reportError();
 		}

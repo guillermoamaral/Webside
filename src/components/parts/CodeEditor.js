@@ -98,6 +98,7 @@ class CodeEditor extends Component {
 			menuPosition: { x: null, y: null },
 			evaluating: false,
 			progress: false,
+			extendedOptions: [],
 		};
 	}
 
@@ -145,6 +146,10 @@ class CodeEditor extends Component {
 			};
 		}
 		return null;
+	}
+
+	componentDidMount() {
+		this.initializeExtendedOptions();
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -197,6 +202,11 @@ class CodeEditor extends Component {
 			const ranges = this.rangesContainingIdentifier(selectedIdentifier);
 			this.selectRanges(ranges);
 		}
+	}
+
+	async initializeExtendedOptions() {
+		const extensions = await ide.backend.extensions("code");
+		this.setState({ extendedOptions: extensions });
 	}
 
 	editor() {
@@ -471,8 +481,22 @@ class CodeEditor extends Component {
 				},
 			]
 		);
-		return options;
+		const extended = ide.extensionMenuOptions(
+			this.state.extendedOptions,
+			this.performExtendedOption
+		);
+		return options.concat(extended);
 	}
+
+	performExtendedOption = async (option) => {
+		let element = {
+			className: this.props.class ? this.props.class.name : null,
+			sourceCode: this.selectedText(),
+		};
+		await ide.performExtendedOption(option, element);
+		const handler = this.props.onExtendedOptionPerform;
+		if (handler) handler();
+	};
 
 	copyToClipboard = () => {
 		const text = this.selectedText();

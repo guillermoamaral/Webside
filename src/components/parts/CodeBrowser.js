@@ -340,6 +340,7 @@ class CodeBrowser extends Component {
 			selectedIdentifier,
 			onTooltipShow,
 			onTooltipClick,
+			onExtendedOptionPerform,
 		} = this.props;
 		return (
 			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
@@ -383,6 +384,7 @@ class CodeBrowser extends Component {
 							onTooltipShow={onTooltipShow}
 							onTooltipClick={onTooltipClick}
 							showAssistant
+							onExtendedOptionPerform={onExtendedOptionPerform}
 						/>
 					</Paper>
 				</Box>

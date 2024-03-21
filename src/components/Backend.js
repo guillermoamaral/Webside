@@ -524,6 +524,11 @@ class Backend {
 		);
 	}
 
+	async extensions(elementType) {
+		let extensions = await this.get("/extensions", "extensions");
+		return extensions.filter((e) => e.elementType === elementType);
+	}
+
 	// Change helpers...
 	async createPackage(packagename) {
 		const change = this.newChange("AddPackage");

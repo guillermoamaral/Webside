@@ -4,7 +4,6 @@ import CustomPaper from "../controls/CustomPaper";
 import { ide } from "../IDE";
 
 class UCategoryList extends Component {
-
 	constructor(props) {
 		super(props);
 		this.all = "All selectors";
@@ -15,11 +14,13 @@ class UCategoryList extends Component {
 			usual: [],
 			selectedCategory: null,
 			loading: false,
+			extendedOptions: [],
 		};
 	}
 
 	componentDidMount() {
 		this.updateCategories();
+		this.initializeExtendedOptions();
 	}
 
 	componentDidUpdate(prevProps) {
@@ -33,9 +34,9 @@ class UCategoryList extends Component {
 	}
 
 	async updateCategories(selectedCategory) {
-		this.setState({ loading: true })
+		this.setState({ loading: true });
 		let categories = await this.fetchCategories();
-		let selected = categories.defined.find(c => c === selectedCategory);
+		let selected = categories.defined.find((c) => c === selectedCategory);
 		this.setState({
 			loading: false,
 			categories: categories.defined,
@@ -55,12 +56,19 @@ class UCategoryList extends Component {
 			categories.defined.sort();
 			categories.used = await ide.backend.usedCategories(species.name);
 			categories.used.sort();
-			categories.usual = await ide.backend.usualCategories(species.name.endsWith(" class"));
+			categories.usual = await ide.backend.usualCategories(
+				species.name.endsWith(" class")
+			);
 			categories.usual.sort();
 		} catch (error) {
 			ide.reportError(error);
 		}
 		return categories;
+	}
+
+	async initializeExtendedOptions() {
+		const extensions = await ide.backend.extensions("category");
+		this.setState({ extendedOptions: extensions });
 	}
 
 	categorySelected = (category) => {
@@ -79,14 +87,14 @@ class UCategoryList extends Component {
 			if (category) {
 				this.addCategory(category);
 			}
-		} catch (error) { }
+		} catch (error) {}
 	};
 
 	addCategory = (category) => {
 		let categories = this.state.categories;
 		categories.push(category);
 		categories.sort();
-		this.setState({ categories: categories, selectedCategory: category })
+		this.setState({ categories: categories, selectedCategory: category });
 		if (this.props.onCategoryAdd) {
 			this.props.onCategoryAdd(category);
 		}
@@ -109,9 +117,12 @@ class UCategoryList extends Component {
 			let categories = this.state.categories;
 			categories.splice(categories.indexOf(category), 1, renamed);
 			categories.sort();
-			this.setState({ categories: categories, selectedCategory: renamed });
+			this.setState({
+				categories: categories,
+				selectedCategory: renamed,
+			});
 			if (this.props.onCategoryRename) {
-				this.props.onCategoryRename(category, renamed);
+				this.props.onCategoryRename(renamed);
 			}
 		} catch (error) {
 			ide.reportError(error);
@@ -125,7 +136,10 @@ class UCategoryList extends Component {
 		try {
 			await ide.backend.removeCategory(this.props.class.name, category);
 			let categories = await this.fetchCategories();
-			this.setState({ categories: categories.defined, selectedCategory: null });
+			this.setState({
+				categories: categories.defined,
+				selectedCategory: null,
+			});
 			if (this.props.onCategoryRemove) {
 				this.props.onCategoryRemove(category);
 			}
@@ -135,34 +149,48 @@ class UCategoryList extends Component {
 	};
 
 	menuOptions() {
-		const options = [];
-		const used = (this.state.used).map((c) => {
-			return { label: c, action: () => this.addCategory(c) };
-		});
-		if (used.length > 0) {
-			options.push({
+		let suboptions = [];
+		if (this.state.used.length > 0) {
+			suboptions.push({
 				label: "Used",
-				suboptions: used,
+				suboptions: this.state.used.map((c) => {
+					return { label: c, action: () => this.addCategory(c) };
+				}),
 			});
 		}
-		const usual = (this.state.usual).map((c) => {
+		const usual = this.state.usual.map((c) => {
 			return { label: c, action: () => this.addCategory(c) };
 		});
 		if (usual.length > 0) {
-			options.push({
+			suboptions.push({
 				label: "Usual",
 				suboptions: usual,
 			});
 		}
-		options.push({
+		suboptions.push({
 			label: "New...",
 			action: this.addNewCategory,
 		});
-		return [
-			{ label: "Add", suboptions: options },
+		let options = [
+			{ label: "Add", suboptions: suboptions },
 			{ label: "Rename", action: this.renameCategory },
 			{ label: "Remove", action: this.removeCategory },
 		];
+		const extended = ide.extensionMenuOptions(
+			this.state.extendedOptions,
+			this.performExtendedOption
+		);
+		return options.concat(extended);
+	}
+
+	performExtendedOption = async (option, category) => {
+		await ide.performExtendedOption(option, category);
+		this.extendedOptionPerformed();
+	};
+
+	extendedOptionPerformed() {
+		const handler = this.props.onExtendedOptionPerform;
+		handler ? handler() : this.forceUpdate();
 	}
 
 	render() {
@@ -176,8 +204,12 @@ class UCategoryList extends Component {
 					loading={loading}
 					items={categories}
 					itemDivider={(item) => item === this.all}
-					labelStyle={(item) => (item === this.all ? "italic" : "normal")}
-					labelSize={(item) => (item === this.all ? "small" : "normal")}
+					labelStyle={(item) =>
+						item === this.all ? "italic" : "normal"
+					}
+					labelSize={(item) =>
+						item === this.all ? "small" : "normal"
+					}
 					selectedItem={selectedCategory}
 					highlightedItem={highlightedCategory}
 					onItemSelect={this.categorySelected}

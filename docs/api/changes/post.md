@@ -2,9 +2,10 @@
 
 Apply a change to the system.
 This is one of the most important endpoints as it centralizes every change the user can apply to the system.
-Important: the list of possible changes at the moment of writing this documentation is by no means a closed list and it can be extended to support more changes and refactorings.
 
-Special attention must be paid to the way the API should handle compilation errors so Webside can react properly.
+**Important**. The API specifies a set of _basic_ changes applicable to all dialect analized. However, this list can be extended to support more changes and refactorings by means of [/extensions](../extensions/get.md) endpoint.
+
+Special attention must be paid to the way the target system implementing the API must handle compilation errors so Webside ID can react properly (see [Errors](#errors) below).
 
 **URL**: `/changes`
 
@@ -45,9 +46,9 @@ All changes should include `author` proprerty and might specify a `package` prop
 The change is validated before being applied and updated with some information afterwards, thus, the change returned contains more information. For instance, one of the common properties added to the change is `timestamp`, corresponding to the moment at which the change is applied.
 There are some special cases like the `selector` property in a `AddMethod`. This property is not required as it is determined by the `sourceCode` property. However, this property is filled by the server and returned to the client.
 
-### Error Details
+## Errors
 
-Besides the internal errors in the server (HTTP code `500`), changes might result in a compilation error. These errors are reported with code `409` with a payload having the following aspect:
+Besides the internal errors in the server (HTTP code `500`), changes might result in a compilation error. These errors should be reported with code `409` with a payload having the following aspect:
 
 ```json
 {
