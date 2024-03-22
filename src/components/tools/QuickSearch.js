@@ -23,7 +23,7 @@ class QuickSearch extends Tool {
 			searching: false,
 			selectedResult: null,
 			matchCase: false,
-			position: "beginning",
+			condition: "beginning",
 			type: "all",
 		};
 		if (props.initialText) {
@@ -43,7 +43,7 @@ class QuickSearch extends Tool {
 	};
 
 	search = async () => {
-		const { text, matchCase, position, type } = this.state;
+		const { text, matchCase, condition, type } = this.state;
 		this.setState({ searching: true });
 		var results = [];
 		try {
@@ -51,7 +51,7 @@ class QuickSearch extends Tool {
 				results = await ide.backend.search(
 					text,
 					!matchCase,
-					position,
+					condition,
 					type
 				);
 			}
@@ -135,12 +135,12 @@ class QuickSearch extends Tool {
 		this.setState({ type: type }, () => this.search());
 	};
 
-	setPosition = (value) => {
-		this.setState({ position: value }, () => this.search());
+	setCondition = (value) => {
+		this.setState({ condition: value }, () => this.search());
 	};
 
 	render() {
-		const { text, searching, selectedResult, matchCase, position, type } =
+		const { text, searching, selectedResult, matchCase, condition, type } =
 			this.state;
 		const results = this.extendedResults();
 		const appearance = ide.settings.section("appearance");
@@ -185,16 +185,17 @@ class QuickSearch extends Tool {
 					</Box>
 					<Box ml={1}>
 						<ToggleButtonGroup
-							value={position}
+							value={condition}
 							exclusive
 							size="small"
 							onChange={(event) =>
-								this.setPosition(event.target.value)
+								this.setCondition(event.target.value)
 							}
 						>
 							<ToggleButton value={"beginning"}>a*</ToggleButton>
 							<ToggleButton value={"including"}>*a*</ToggleButton>
 							<ToggleButton value={"ending"}>*a</ToggleButton>
+							<ToggleButton value={"similar"}>~</ToggleButton>
 						</ToggleButtonGroup>
 					</Box>
 				</Box>

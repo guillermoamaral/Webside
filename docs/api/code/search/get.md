@@ -8,11 +8,11 @@ This endpoint serves for searching the system for code elements (selectors, meth
 
 **Query Options**
 
-| Option     |  Type   | Description                                                            |
-| ---------- | :-----: | ---------------------------------------------------------------------- |
-| text       | string  | The text to compare with                                               |
-| ignoreCase | boolean | Whether to ignore the case when comparing. `false` by default          |
-| position   | string  | Either `beginning` (default), `including` or `ending`                  |
+| Option     |  Type   | Description                                                       |
+| ---------- | :-----: | ----------------------------------------------------------------- |
+| text       | string  | The text to compare with                                          |
+| ignoreCase | boolean | Whether to ignore the case when comparing. `false` by default     |
+| condition  | string  | Either `beginning` (default), `including`, `ending` or `similar`  |
 | type       | string  | Either `all` (default), `selector`, `class`, `package`, or `pool` |
 
 ## Success Responses
@@ -49,7 +49,46 @@ Where `type` is the type of the element found and can be either `project`, `clas
 ]
 ```
 
-**Example 2:**: every class whose name ends with "ix", `GET /search?text=x&position=ending&type=classes`.
+**Example 2:**: every class whose name ends with "ix", `GET /search?text=x&condition=ending&type=classes`.
+
+```json
+[
+	{
+		"type": "class",
+		"text": "FlatMatrix"
+	},
+	{
+		"type": "class",
+		"text": "ByteMatrix"
+	},
+	{
+		"type": "class",
+		"text": "ColorMatrix"
+	},
+	{
+		"type": "class",
+		"text": "FloatMatrix"
+	},
+	{
+		"type": "class",
+		"text": "OpenCLMatrix"
+	},
+	{
+		"type": "class",
+		"text": "CorrelationMatrix"
+	},
+	{
+		"type": "class",
+		"text": "InstructionPrefix"
+	},
+	{
+		"type": "class",
+		"text": "IncompleteGammaPrefix"
+	}
+]
+```
+
+**Example 3:**: classes whose name is similar to "Sream", `GET /search?text=Sream&condition=similar&type=classes`.
 
 ```json
 [

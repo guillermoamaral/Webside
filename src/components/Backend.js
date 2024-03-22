@@ -270,14 +270,14 @@ class Backend {
 	}
 
 	async searchClassNames(text) {
-		const results = await this.search(text, true, "beginning", "class");
+		const results = await this.search(text, true, "similar", "class");
 		return results.map((r) => r.text);
 	}
 
 	async search(
 		text,
 		ignoreCase = false,
-		position = "beginning",
+		condition = "beginning",
 		type = "all"
 	) {
 		return await this.get(
@@ -285,8 +285,8 @@ class Backend {
 				text +
 				"&ignoreCase=" +
 				ignoreCase +
-				"&position=" +
-				position +
+				"&condition=" +
+				condition +
 				"&type=" +
 				type,
 			"search for " + text
