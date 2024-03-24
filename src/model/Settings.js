@@ -85,7 +85,7 @@ class Settings extends Object {
 	}
 
 	sections() {
-		return this.settings.filter((s) => s.constructor.name === "Settings");
+		return this.settings.filter((s) => s instanceof Settings);
 	}
 
 	section(name) {
@@ -93,7 +93,7 @@ class Settings extends Object {
 	}
 
 	plainSettings() {
-		return this.settings.filter((s) => s.constructor.name === "Setting");
+		return this.settings.filter((s) => s instanceof Setting);
 	}
 
 	setting(name) {
@@ -165,7 +165,7 @@ class Settings extends Object {
 	toJson() {
 		var json = {};
 		this.settings.forEach((s) => {
-			if (s.constructor.name === "Settings") {
+			if (s instanceof Settings) {
 				json[s.name] = s.toJson();
 			} else {
 				if (s.editable) {
