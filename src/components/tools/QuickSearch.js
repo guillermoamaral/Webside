@@ -17,16 +17,17 @@ class QuickSearch extends Tool {
 		super(props);
 		this.inputRef = React.createRef();
 		this.typingTimer = null;
+		const options = props.initialOptions || {};
 		this.state = {
-			text: props.initialText || "",
+			text: options.text || "",
 			results: [],
 			searching: false,
 			selectedResult: null,
-			matchCase: false,
-			condition: "beginning",
+			matchCase: options.matchCase || false,
+			condition: options.condition || "beginning",
 			type: "all",
 		};
-		if (props.initialText) {
+		if (options.text) {
 			this.scheduleSearch();
 		}
 	}
@@ -86,7 +87,8 @@ class QuickSearch extends Tool {
 			ide.inspectExpression(text);
 		}
 		if (this.props.onResultSelect) {
-			this.props.onResultSelect();
+			const { text, matchCase, condition } = this.state;
+			this.props.onResultSelect(result, { text, matchCase, condition });
 		}
 	};
 

@@ -52,6 +52,7 @@ class IDE extends Component {
 			extraContainers: [],
 			waiting: false,
 			quickSearchOpen: false,
+			quickSearchOptions: {},
 		};
 	}
 
@@ -905,6 +906,7 @@ class IDE extends Component {
 			extraContainers,
 			waiting,
 			quickSearchOpen,
+			quickSearchOptions,
 		} = this.state;
 		const totalWidth = false; //extraContainers.length > 0 ? false : "lg";
 		let extraContainersWidth = 100 / (extraContainers.length + 1) + "%";
@@ -1076,8 +1078,12 @@ class IDE extends Component {
 					<DialogTitle>Quick Search</DialogTitle>
 					<DialogContent dividers sx={{ width: 600, height: 400 }}>
 						<QuickSearch
-							onResultSelect={() =>
-								this.setState({ quickSearchOpen: false })
+							initialOptions={quickSearchOptions}
+							onResultSelect={(result, options) =>
+								this.setState({
+									quickSearchOpen: false,
+									quickSearchOptions: options,
+								})
 							}
 						/>
 					</DialogContent>
