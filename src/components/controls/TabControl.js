@@ -66,6 +66,7 @@ class TabControl extends Component {
 				flexDirection="column"
 				width="100%"
 				height="100%"
+				maxWidth="95vw"
 			>
 				<Box pt={0} display="flex" flexDirection="row">
 					<Box pt={0} flexGrow={1} style={{ overflow: "hidden" }}>

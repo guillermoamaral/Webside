@@ -61,9 +61,9 @@ class Workspace extends Tool {
 		}
 	};
 
-	saveSource = (source) => {
-		ide.backend.saveWorkspace({ id: this.props.id, source: source });
+	sourceChanged = (source) => {
 		this.setState({ source: source });
+		ide.backend.saveWorkspace({ id: this.props.id, source: source });
 	};
 
 	evaluateClicked = async () => {
@@ -113,7 +113,7 @@ class Workspace extends Tool {
 								<PlayIcon style={{ color: "#3bba5d" }} />
 							}
 							onAccept={this.evaluateClicked}
-							onChange={this.saveSource}
+							onChange={this.sourceChanged}
 							evaluating={evaluating}
 						/>
 					</Paper>

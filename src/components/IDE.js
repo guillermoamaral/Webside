@@ -1,9 +1,5 @@
 import React, { Component } from "react";
 import {
-	Container,
-	Grid,
-	IconButton,
-	Drawer,
 	Box,
 	Backdrop,
 	CircularProgress,
@@ -15,16 +11,14 @@ import ToolContainer from "./ToolContainer";
 import { withCookies } from "react-cookie";
 import { withNavigation } from "./withNavigation";
 import { withDialog } from "./dialogs/index";
-import KeyboardArrowDown from "@mui/icons-material/KeyboardArrowDown";
 import Backend from "./Backend";
 import { DialogProvider } from "./dialogs/index";
 import CustomSnacks from "./controls/CustomSnacks";
 import Titlebar from "./layout/Titlebar";
 import Sidebar from "./layout/Sidebar";
-import Transcript from "./tools/Transcript";
 import MessageChannel from "./MessageChannel";
 import Hotkeys from "react-hot-keys";
-import DrawerHeader from "./layout/DrawerHeader";
+//import DrawerHeader from "./layout/DrawerHeader";
 import { Settings } from "../model/Settings";
 import { app as mainApp } from "../App";
 import { Setting } from "../model/Settings";
@@ -34,7 +28,7 @@ import CustomSplit from "./controls/CustomSplit";
 import QuickSearch from "./tools/QuickSearch";
 
 var ide = null;
-var MaxContainers = 4;
+var MaxExtraContainers = 2;
 
 class IDE extends Component {
 	constructor(props) {
@@ -44,7 +38,6 @@ class IDE extends Component {
 		this.mainContainerRef = React.createRef();
 		this.state = {
 			sidebarExpanded: false,
-			transcriptOpen: false,
 			lastMessage: null,
 			unreadErrorsCount: 0,
 			unreadMessages: 0,
@@ -439,13 +432,6 @@ class IDE extends Component {
 		}
 	};
 
-	toggleShowTranscript = () => {
-		this.setState({
-			transcriptOpen: !this.state.transcriptOpen,
-			unreadErrorsCount: 0,
-		});
-	};
-
 	openSettings = () => {
 		this.mainContainer().openSettings();
 	};
@@ -603,7 +589,7 @@ class IDE extends Component {
 
 	splitContainer = (container) => {
 		const containers = this.state.extraContainers;
-		if (containers.length < MaxContainers) {
+		if (containers.length < MaxExtraContainers) {
 			const index = container
 				? containers.findIndex(
 						(c) => c.component.ref.current === container
@@ -900,16 +886,14 @@ class IDE extends Component {
 			sidebarExpanded,
 			unreadErrorsCount,
 			unreadMessages,
-			transcriptOpen,
-			transcriptText,
 			lastMessage,
 			extraContainers,
 			waiting,
 			quickSearchOpen,
 			quickSearchOptions,
 		} = this.state;
-		const totalWidth = false; //extraContainers.length > 0 ? false : "lg";
-		let extraContainersWidth = 100 / (extraContainers.length + 1) + "%";
+		const extraContainersWidth = 100 / (extraContainers.length + 1) + "%";
+		const extraContainersMinWidth = 100 / (MaxExtraContainers + 1) + "%";
 		const shortcuts = this.settings.section("shortcuts");
 		return (
 			<Hotkeys
@@ -931,12 +915,7 @@ class IDE extends Component {
 				onKeyDown={(hotkey, e, handle) => this.hotkeyPressed(hotkey)}
 			>
 				<DialogProvider>
-					<Box
-						sx={{
-							display: "flex",
-							height: "100vh",
-						}}
-					>
+					<Box display="flex" sx={{ height: "95vh" }}>
 						<Titlebar
 							developer={this.settings
 								.section("connection")
@@ -958,7 +937,7 @@ class IDE extends Component {
 								"Use " + shortcuts.get("quickSearch")
 							}
 							onSplit={
-								extraContainers.length < MaxContainers
+								extraContainers.length < MaxExtraContainers
 									? this.splitContainer
 									: null
 							}
@@ -976,86 +955,50 @@ class IDE extends Component {
 							onSettingsClick={this.openSettings}
 							onCollapse={this.collapseSidebar}
 						/>
+
 						<Box
 							component="main"
+							mt={6}
+							//disableGutters
 							sx={{
 								flexGrow: 1,
-								ml: 6,
-								mr: 2,
-								mt: 0,
-								p: 0,
-								width: "100vw",
 								height: "95vh",
-								maxWidth: "100vw",
+								width: "100vw",
+								maxWidth: "95vw",
+								padding: 1,
 							}}
 						>
-							<DrawerHeader />
-							<Container
-								maxWidth={totalWidth}
-								disableGutters
-								sx={{ height: "100%", width: "100%" }}
-							>
-								<CustomSplit sx={{ width: "100%" }}>
+							{/* <DrawerHeader /> */}
+							<CustomSplit>
+								<Box
+									key="mainContainerBox"
+									flex={1}
+									sx={{
+										minWidth: extraContainersMinWidth,
+										width: extraContainersWidth,
+									}}
+								>
+									<ToolContainer
+										id={99999}
+										key="mainContainer"
+										ref={this.mainContainerRef}
+										//onSplit={this.splitContainer} //disabled for the moment
+										showClose={false}
+									/>
+								</Box>
+								{extraContainers.map((container, index) => (
 									<Box
-										key="mainContainerBox"
-										flex={1}
-										sx={{ maxWidth: "100%" }}
+										key={"container" + index + "Box"}
+										sx={{
+											minWidth: extraContainersMinWidth,
+											width: extraContainersWidth,
+										}}
 									>
-										<ToolContainer
-											id={99999}
-											key="mainContainer"
-											ref={this.mainContainerRef}
-											//onSplit={this.splitContainer} //disabled for the moment
-											showClose={false}
-										/>
+										{container.component}
 									</Box>
-									{extraContainers.map((container, index) => (
-										<Box
-											key={"container" + index + "Box"}
-											sx={{ width: extraContainersWidth }}
-										>
-											{container.component}
-										</Box>
-									))}
-								</CustomSplit>
-							</Container>
+								))}
+							</CustomSplit>
 						</Box>
-						<React.Fragment key="bottom">
-							<Drawer
-								anchor="bottom"
-								variant="persistent"
-								open={transcriptOpen}
-							>
-								<Grid container spacing={0}>
-									<Grid item xs={11} md={11} lg={11}>
-										{transcriptOpen && (
-											<Transcript
-												text={transcriptText}
-												onChange={
-													this.transcriptChanged
-												}
-											/>
-										)}
-									</Grid>
-									<Grid item xs={1} md={1} lg={1}>
-										<Box
-											display="flex"
-											justifyContent="center"
-										>
-											<IconButton
-												onClick={() =>
-													this.setState({
-														transcriptOpen: false,
-													})
-												}
-											>
-												<KeyboardArrowDown />
-											</IconButton>
-										</Box>
-									</Grid>
-								</Grid>
-							</Drawer>
-						</React.Fragment>
 					</Box>
 					<Backdrop
 						//sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}

@@ -6,6 +6,7 @@ class CustomSplit extends PureComponent {
 		return (
 			<Split
 				{...this.props}
+				//Not sure if this is the best option... perhaps removing this customization produces better results
 				renderBar={({ onMouseDown, ...props }) => {
 					return (
 						<div
