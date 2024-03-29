@@ -28,7 +28,7 @@ import CustomSplit from "./controls/CustomSplit";
 import QuickSearch from "./tools/QuickSearch";
 
 var ide = null;
-var MaxExtraContainers = 2;
+var MaxExtraContainers = 3;
 
 class IDE extends Component {
 	constructor(props) {
@@ -892,8 +892,8 @@ class IDE extends Component {
 			quickSearchOpen,
 			quickSearchOptions,
 		} = this.state;
-		const extraContainersWidth = 100 / (extraContainers.length + 1) + "%";
-		const extraContainersMinWidth = 100 / (MaxExtraContainers + 1) + "%";
+		const extraContainersWidth = Math.round(100 / (extraContainers.length + 1)) + "%";
+		const extraContainersMinWidth = "10%";
 		const shortcuts = this.settings.section("shortcuts");
 		return (
 			<Hotkeys

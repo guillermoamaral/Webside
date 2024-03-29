@@ -125,7 +125,10 @@ class CustomTable extends Component {
 				<Link
 					key={{ text }}
 					href="#"
-					onClick={() => column.link(row)}
+					onClick={(event) => {
+						event.preventDefault();
+						column.link(row);
+					}}
 					color="textPrimary"
 					style={{ color: color }}
 				>
@@ -155,9 +158,9 @@ class CustomTable extends Component {
 					onBlur={(event) => {
 						this.setState({ editingCell: null });
 					}}
-				// onKeyDown={(event) => {
-				// 	console.log(event.key);
-				// }}
+					// onKeyDown={(event) => {
+					// 	console.log(event.key);
+					// }}
 				/>
 			);
 		}
@@ -389,7 +392,7 @@ class CustomTable extends Component {
 															order.column &&
 															order.column
 																.field ===
-															column.field
+																column.field
 														}
 														direction={
 															order.direction

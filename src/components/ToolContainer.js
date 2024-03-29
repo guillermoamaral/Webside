@@ -76,8 +76,7 @@ class ToolContainer extends Component {
 		} else {
 			pages.push(page);
 		}
-		const state = { pages: pages, selectedPageId: page.id };
-		this.setState(state);
+		this.setState({ pages: pages, selectedPageId: page.id });
 	}
 
 	addPage(page) {
