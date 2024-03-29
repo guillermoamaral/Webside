@@ -23,6 +23,7 @@ import MemoryStats from "./MemoryStats";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import DeleteIcon from "@mui/icons-material/Delete";
 import StopIcon from "@mui/icons-material/Stop";
+import PauseIcon from "@mui/icons-material/Pause";
 import EditWorkspace from "@mui/icons-material/Edit";
 
 class ResourceBrowser extends Tool {
@@ -146,11 +147,19 @@ class ResourceBrowser extends Tool {
 	}
 
 	evaluationOptions() {
-		return [{ label: "Stop", action: this.cancelEvaluation }];
+		return [
+			{ label: "Pause", action: this.pauseEvaluation },
+			{ label: "Stop", action: this.cancelEvaluation },
+		];
 	}
 
 	evaluationActions() {
 		return [
+			{
+				label: "Pause",
+				icon: <PauseIcon fontSize="small" />,
+				handler: this.pauseEvaluation,
+			},
 			{
 				label: "Stop",
 				icon: <StopIcon fontSize="small" />,
@@ -158,6 +167,16 @@ class ResourceBrowser extends Tool {
 			},
 		];
 	}
+
+	pauseEvaluation = async (evaluation) => {
+		try {
+			await ide.backend.pauseEvaluation(evaluation.id);
+			const d = await ide.backend.createDebugger(evaluation.id);
+			this.context.openDebugger(d.id, d.description);
+		} catch (error) {
+			ide.reportError(error);
+		}
+	};
 
 	cancelEvaluation = async (evaluation) => {
 		try {

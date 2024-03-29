@@ -73,12 +73,13 @@ Endpoints to convert changesets to/from changes.
 
 Endpoints to evaluate expressions and manage active evaluations.
 
-| Method | Path                                        | Description                             | Parameters | Payload      |
-| :----: | ------------------------------------------- | --------------------------------------- | :--------: | ------------ |
-|  POST  | [/evaluations](evaluations/post.md)         | Evaluate an expression                  |     -      | `evaluation` |
-|  GET   | [/evaluations](evaluations/get.md)          | Retrieve active evaluations             |     -      | -            |
-|  GET   | [/evaluations/id](evaluations/id/get.md)    | Retrieve the evaluation with a given ID |     -      | -            |
-| DELETE | [/evaluations/id](evaluations/id/delete.md) | Cancel the evaluation with a given ID   |     -      | -            |
+| Method | Path                                             | Description                             | Parameters | Payload      |
+| :----: | ------------------------------------------------ | --------------------------------------- | :--------: | ------------ |
+|  POST  | [/evaluations](evaluations/post.md)              | Evaluate an expression                  |     -      | `evaluation` |
+|  GET   | [/evaluations](evaluations/get.md)               | Retrieve active evaluations             |     -      | -            |
+|  GET   | [/evaluations/id](evaluations/id/get.md)         | Retrieve the evaluation with a given ID |     -      | -            |
+| DELETE | [/evaluations/id](evaluations/id/delete.md)      | Cancel the evaluation with a given ID   |     -      | -            |
+|  POST  | [/evaluations/id/pause](evaluations/id/pause.md) | Pause the evaluation with a given ID    |     -      | -            |
 
 ## [Objects](objects)
 

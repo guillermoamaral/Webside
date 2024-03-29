@@ -773,6 +773,14 @@ class Backend {
 		);
 	}
 
+	async pauseEvaluation(id) {
+		return await this.post(
+			"/evaluations/" + id + "/pause",
+			null,
+			"pause evaluation with id " + id
+		);
+	}
+
 	async cancelEvaluation(id) {
 		return await this.delete(
 			"/evaluations/" + id,

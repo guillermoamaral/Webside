@@ -36,7 +36,7 @@ Read more [here](docs).
 
 ### Prerequisites (for development)
 The following steps will demand both time and space, and are only intended to recreate the development environment in your local machine.
-In case you only want to use Webside to connect to some Smalltalk backend, you can skip these steps and go directly to [Usage](#usage). 
+In case you only want to use Webside to connect to some Smalltalk back-end, you can skip these steps and go directly to [Usage](#usage). 
 
 *  npm
 ```sh

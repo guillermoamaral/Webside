@@ -2,7 +2,7 @@
 
 Evaluate an expression, either synchronously or asynchronously.
 
-Pay special attention to the way compilation errors should be handled by the API so the front-end can react properly.
+Special attention must be paid to the way compilation errors should be handled by the API so the front-end can react properly.
 
 **URL**: `/evaluations`
 
@@ -21,17 +21,18 @@ Pay special attention to the way compilation errors should be handled by the API
 }
 ```
 
-Where `sync` indicates whether the call should be blocked until the evaluation finishes or will return immediately, with the ID of the just created evaluation to follow its state.  
-The asynchronous evaluation allows Webside to have control over the evaluation, being able to offer the user the chance to cancel the evaluation or interrupt it and debug it (a feature that is not implemented at the moment of writing this documentation).  
+Where 
+- `sync` indicates whether the call should be blocked until the evaluation finishes or return immediately (with the ID of the just created evaluation to follow its state). 
+Asynchronous evaluations allow the IDE to have control over the evaluation, being able to offer the user the chance to cancel the evaluation or interrupt it and debug it (a feature that is not implemented at the moment of writing this documentation).  
 Once Webside has the evaluation ID, it can make a synchronous call to [`/objects/{id}`](../objects/id/get.md) (with the ID of the evaluation) to avoid polling the state of the evaluation before getting the object.
 
-`pin` makes the resulting object to be pinned (with the same ID of the evaluation that generated it) or be discarded. Of course, an asyncrhonic evaluation will keep (pin) the object once the evaluation finishes so the client is able to get it.
+- `pin` makes the resulting object to be pinned (with the same ID of the evaluation that generated it) or be discarded. Of course, an asyncrhonic evaluation will keep (pin) the object once the evaluation finishes so the client is able to get it.
 
-`debug` inserts a breakpoint right before the expression and triggers a synchronous evaluation (as it has a breakpoint it should return immediately), returing the ID of a debugger created on the active evaluation (process).
+- `debug` inserts a breakpoint right before the expression and triggers a synchronous evaluation (as it has a breakpoint it should return immediately), returing the ID of a debugger created on the active evaluation (process).
 
-`profile` creates a profiler and forces a synchronous profiling of the expression at hand and then returns the ID of the created profiler to fetch their results.
+- `profile` creates a profiler and forces a synchronous profiling of the expression at hand and then returns the ID of the created profiler to fetch their results.
 
-`context` can be one of the following:
+- `context` can be one of the following:
 
 ```json
 {
@@ -39,15 +40,11 @@ Once Webside has the evaluation ID, it can make a synchronous call to [`/objects
 }
 ```
 
-Where `class` is the name of a class.
-
 ```json
 {
 	"object": "string"
 }
 ```
-
-Where `object` is the ID of a pinned object.
 
 ```json
 {
@@ -55,16 +52,17 @@ Where `object` is the ID of a pinned object.
 }
 ```
 
-Here `workspace` is the ID of an existing workspace.
-
 ```json
 {
 	"debugger": "string",
 	"frame": "number"
 }
 ```
-
-Here `debugger` is the ID of an existing debugger and `frame` is the index of the frame within debugger current frames.
+Where
+- `class` is the name of a class.
+- `object` is the ID of a pinned object.
+- `workspace` is the ID of an existing workspace.
+- `debugger` is the ID of an existing debugger and `frame` is the index of the frame within its current frames.
 
 ## Success Responses
 
@@ -135,7 +133,7 @@ For example, the following error is returned after trying to evaluate `1 + `:
 ```
 
 #### Suggestions
-There might be other special cases where the backend could suggest some ways to overcome a given evaluation error. For instance, suppose
+There might be other special cases where the back-end could suggest some ways to overcome a given evaluation error. For instance, suppose
 the following evaluation request:
 
 ```json
@@ -143,7 +141,7 @@ the following evaluation request:
 	"expression": "NonExistingGlobal := 1",
 }
 ```
-Assuming that `NonExistingGlobal` does not actually exist in the system, the backend could return suggestions in the followin way:
+Assuming that `NonExistingGlobal` does not actually exist in the system, the back-end could return suggestions in the followin way:
 
 ```json
 {
