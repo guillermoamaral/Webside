@@ -713,6 +713,7 @@ class IDE extends Component {
 	};
 
 	extensionMenuOptions(definitions, handler) {
+		if (definitions.length === 0) return [];
 		let options = [null];
 		if (!definitions || definitions.length === 0) return options;
 		let grouped = {};
@@ -892,7 +893,8 @@ class IDE extends Component {
 			quickSearchOpen,
 			quickSearchOptions,
 		} = this.state;
-		const extraContainersWidth = Math.round(100 / (extraContainers.length + 1)) + "%";
+		const extraContainersWidth =
+			Math.round(100 / (extraContainers.length + 1)) + "%";
 		const extraContainersMinWidth = "10%";
 		const shortcuts = this.settings.section("shortcuts");
 		return (

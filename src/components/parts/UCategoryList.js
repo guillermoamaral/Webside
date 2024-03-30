@@ -2,8 +2,11 @@ import React, { Component } from "react";
 import CustomList from "../controls/CustomList";
 import CustomPaper from "../controls/CustomPaper";
 import { ide } from "../IDE";
+import ToolContainerContext from "../ToolContainerContext";
 
 class UCategoryList extends Component {
+	static contextType = ToolContainerContext;
+
 	constructor(props) {
 		super(props);
 		this.all = "All selectors";
@@ -148,6 +151,16 @@ class UCategoryList extends Component {
 		}
 	};
 
+	browseMethods = async (category) => {
+		let species = this.props.class;
+		if (!species) return [];
+		let methods = await ide.backend.methodsInCategory(
+			species.name,
+			category
+		);
+		this.context.openMethodBrowser(methods);
+	};
+
 	menuOptions() {
 		let suboptions = [];
 		if (this.state.used.length > 0) {
@@ -175,6 +188,8 @@ class UCategoryList extends Component {
 			{ label: "Add", suboptions: suboptions },
 			{ label: "Rename", action: this.renameCategory },
 			{ label: "Remove", action: this.removeCategory },
+			null,
+			{ label: "Browse methods", action: this.browseMethods },
 		];
 		const extended = ide.extensionMenuOptions(
 			this.state.extendedOptions,

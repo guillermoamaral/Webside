@@ -363,6 +363,13 @@ class Backend {
 		);
 	}
 
+	async methodsInCategory(classname, category) {
+		return await this.get(
+			"/classes/" + classname + "/methods?category=" + category,
+			"methods of class " + classname + " in category " + category
+		);
+	}
+
 	// Debugging...
 	async debuggers() {
 		return await this.get("/debuggers", "debuggers");
