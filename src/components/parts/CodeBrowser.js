@@ -404,9 +404,10 @@ class CodeBrowser extends Component {
 					{packagename && (
 						<Link
 							href="#"
-							onClick={() =>
-								this.context.browsePackage(packagename)
-							}
+							onClick={(event) => {
+								event.preventDefault();
+								this.context.browsePackage(packagename);
+							}}
 						>
 							{packagename}
 						</Link>
