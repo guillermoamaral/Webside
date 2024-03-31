@@ -95,6 +95,29 @@ class Workspace extends Tool {
 		};
 	}
 
+	tooltipForBinding = async (name) => {
+		let binding;
+		try {
+			const bindings = await ide.backend.workspaceBindings(this.props.id);
+			binding = bindings.find((b) => b.name === name);
+		} catch (error) {}
+		if (binding) return binding.value;
+	};
+
+	inspectBinding = async (name) => {
+		try {
+			const object = await this.context.evaluateExpression(
+				name,
+				false,
+				true,
+				this.evaluationContext()
+			);
+			this.context.openInspector(object);
+		} catch (error) {
+			this.context.reportError(error);
+		}
+	};
+
 	render() {
 		const { source, inspectors, evaluating } = this.state;
 		const editorWidth = inspectors.length > 0 ? 8 : 12;
@@ -115,6 +138,8 @@ class Workspace extends Tool {
 							onAccept={this.evaluateClicked}
 							onChange={this.sourceChanged}
 							evaluating={evaluating}
+							onTooltipShow={this.tooltipForBinding}
+							onTooltipClick={this.inspectBinding}
 						/>
 					</Paper>
 				</Grid>

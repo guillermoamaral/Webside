@@ -483,6 +483,13 @@ class Backend {
 		return await this.delete("/workspaces/" + id, "workspace " + id);
 	}
 
+	async workspaceBindings(id) {
+		return await this.get(
+			"/workspaces/" + id + "/bindings",
+			"bindings of workspace " + id
+		);
+	}
+
 	// Changes...
 	async lastChanges() {
 		return await this.get("/changes", "changes");

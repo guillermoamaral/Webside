@@ -98,13 +98,14 @@ Endpoints to retrieve the objects in the system, either globally accessible or a
 
 Endpoints to manage workspaces.
 
-| Method | Path                                        | Description                            | Parameters | Payload |
-| :----: | ------------------------------------------- | -------------------------------------- | :--------: | ------- |
-|  GET   | [/workspaces](workspaces/get.md)            | Retrieve active workspaces             |     -      | -       |
-|  POST  | [/workspaces](workspaces/post.md)           | Create a new workspace                 |     -      | -       |
-|  GET   | [/workspaces/{id}](workspaces/id/get.md)    | Retrieve the workspace with a given ID |     -      | -       |
-|  PUT   | [/workspaces/{id}](workspaces/id/put.md)    | Update the workspace with a given ID   |     -      | -       |
-| DELETE | [/workspaces/{id}](workspaces/id/delete.md) | Delete the workspece with a given ID   |     -      | -       |
+| Method | Path                                                       | Description                                        | Parameters | Payload |
+| :----: | ---------------------------------------------------------- | -------------------------------------------------- | :--------: | ------- |
+|  GET   | [/workspaces](workspaces/get.md)                           | Retrieve active workspaces                         |     -      | -       |
+|  POST  | [/workspaces](workspaces/post.md)                          | Create a new workspace                             |     -      | -       |
+|  GET   | [/workspaces/{id}](workspaces/id/get.md)                   | Retrieve the workspace with a given ID             |     -      | -       |
+|  PUT   | [/workspaces/{id}](workspaces/id/put.md)                   | Update the workspace with a given ID               |     -      | -       |
+| DELETE | [/workspaces/{id}](workspaces/id/delete.md)                | Delete the workspece with a given ID               |     -      | -       |
+|  GET   | [/workspaces/{id}/bindings](workspaces/id/bindings/get.md) | Retrieve bindings of the workspece with a given ID |     -      | -       |
 
 ## [Debuggers](debuggers)
 

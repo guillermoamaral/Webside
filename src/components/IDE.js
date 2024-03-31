@@ -713,7 +713,7 @@ class IDE extends Component {
 	};
 
 	extensionMenuOptions(definitions, handler) {
-		if (definitions.length === 0) return [];
+		if (!definitions || definitions.length === 0) return [];
 		let options = [null];
 		if (!definitions || definitions.length === 0) return options;
 		let grouped = {};
