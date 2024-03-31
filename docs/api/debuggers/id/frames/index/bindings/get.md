@@ -16,7 +16,7 @@ Retrieve bindings of the frame at a given index, within the debugger with a give
 [
 	{
 		"name": "string",
-        "type": "string",
+		"type": "string",
 		"value": "string"
 	}
 ]
@@ -28,15 +28,15 @@ Where `name` corresponds to the name in the AST, and `type` can be `temporary`, 
 
 ```json
 [
-    {
-        "name": "self",
-        "value": "1 @ 2",
-        "type": "variable"
-    },
-    {
-        "name": "aPoint",
-        "value": "10 @ 20",
-        "type": "argument"
-    }
+	{
+		"name": "self",
+		"value": "1 @ 2",
+		"type": "variable"
+	},
+	{
+		"name": "aPoint",
+		"value": "10 @ 20",
+		"type": "argument"
+	}
 ]
 ```
