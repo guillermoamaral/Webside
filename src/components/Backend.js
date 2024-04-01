@@ -363,11 +363,16 @@ class Backend {
 		);
 	}
 
-	async methodsInCategory(classname, category) {
-		return await this.get(
+	async methodsInCategory(classname, category, sorted = false) {
+		const methods = await this.get(
 			"/classes/" + classname + "/methods?category=" + category,
 			"methods of class " + classname + " in category " + category
 		);
+
+		if (sorted) {
+			methods.sort((a, b) => (a.selector <= b.selector ? -1 : 1));
+		}
+		return methods;
 	}
 
 	// Debugging...

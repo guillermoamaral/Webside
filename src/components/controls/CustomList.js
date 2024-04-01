@@ -458,10 +458,7 @@ class CustomList extends Component {
 		const loading = this.props.loading;
 		const showFilter = !loading && enableFilter && filterEnabled;
 		return (
-			<Box
-				style={{ height: showFilter ? "90%" : "100%" }}
-				onContextMenu={this.openMenu}
-			>
+			<Box style={{ height: "100%" }} onContextMenu={this.openMenu}>
 				{loading && (
 					<Box ml={2} width="50%">
 						<Skeleton animation="wave" />
