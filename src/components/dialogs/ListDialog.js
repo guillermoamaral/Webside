@@ -44,7 +44,7 @@ function ListDialog(props, context) {
 				) : (
 					message
 				)}
-				<Paper variant="outlined" style={{ height: 100 }}>
+				<Paper variant="outlined" style={{ height: 200 }}>
 					<CustomList
 						autoFocus
 						items={items}
