@@ -107,6 +107,12 @@ class UMethodList extends Component {
 					access,
 					true
 				);
+			} else if (category) {
+				methods = await ide.backend.methodsInCategory(
+					species.name,
+					category,
+					true
+				);
 			} else {
 				methods = await ide.backend.methods(species.name, true);
 			}
