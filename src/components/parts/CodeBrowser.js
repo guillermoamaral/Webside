@@ -290,7 +290,6 @@ class CodeBrowser extends Component {
 
 	currentPackageName = () => {
 		const pack = this.props.package;
-		if (pack) return pack.name;
 		const species = this.props.class;
 		const method = this.props.method;
 		if (this.state.selectedMode === "source" && method) {
@@ -299,6 +298,7 @@ class CodeBrowser extends Component {
 		if (species) {
 			return species.package;
 		}
+		if (pack) return pack.name;
 		return "";
 	};
 

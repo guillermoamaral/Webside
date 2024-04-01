@@ -652,19 +652,15 @@ class UMethodList extends Component {
 	};
 
 	methodColor = (method) => {
+		if (!method) return;
+		if (method.needsRecompilation) return "red";
 		const pack = this.props.package;
 		if (!pack) return;
-		if (
-			(pack.classes && pack.classes.includes(method.methodClass)) ||
-			(pack.methods &&
-				pack.methods[method.methodClass] &&
-				pack.methods[method.methodClass].includes(method.selector))
-		) {
-			return method && method.needsRecompilation ? "red" : null;
+		if (method.package && method.package !== pack.name) {
+			const appearance = ide.settings.section("appearance");
+			const mode = appearance.section(appearance.get("mode"));
+			return mode.section("colors").get("disabledText");
 		}
-		const appearance = ide.settings.section("appearance");
-		const mode = appearance.section(appearance.get("mode"));
-		return mode.section("colors").get("disabledText");
 	};
 
 	evaluationContext() {
