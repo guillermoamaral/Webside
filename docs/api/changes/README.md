@@ -2,7 +2,7 @@
 
 These endpoints are used to apply changes and retrieve changes made to the system.
 
-**Important**. The API specifies a set of _basic_ changes applicable to all dialect analized. However, this list can be extended to support more changes and refactorings by means of [/extensions](../extensions/ChangeExtensions.md) endpoint.
+**Important**. The API specifies a set of _basic_ changes applicable to all dialect analized. However, this list can be extended to support more changes and refactorings by means of [/extensions](../extensions/changes.md) endpoint.
 
 | Method | Path                                                                                               | Description                                   | Parameters | Payload  |
 | :----: | -------------------------------------------------------------------------------------------------- | --------------------------------------------- | :--------: | -------- |

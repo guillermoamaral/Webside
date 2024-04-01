@@ -757,36 +757,24 @@ class IDE extends Component {
 	};
 
 	performDownload = async (specification, element) => {
-		const get = specification.get;
-		let data;
-		if (get.startsWith("element.")) {
-			data = element[get.split(".")[1]];
-		}
+		const get = this.resolveDotExpressions(
+			specification.get,
+			"element",
+			element
+		);
+		let data = get;
 		if (get.startsWith("/")) {
-			let uri = "/";
-			get.split("/").forEach((s) => {
-				let segment = s;
-				if (
-					s.startsWith("{") &&
-					s.endsWith("}") &&
-					s.includes("element.")
-				) {
-					let attribute = s.substring(1, s.length - 1).split(".")[1];
-					segment = element[attribute];
-				}
-				uri += "/" + segment;
-			});
-			data = await this.backend.get(uri, get);
-			data = JSON.stringify(data);
+			data = await this.backend.get(get);
 		}
 		if (!data) return;
 		const blob = new Blob([data], {
 			type: "text/plain",
 		});
-		let filename = specification.defaultFilename;
-		if (filename.startsWith("element.")) {
-			filename = element[filename.split(".")[1]];
-		}
+		let filename = this.resolveDotExpressions(
+			specification.defaultFilename,
+			"element",
+			element
+		);
 		this.download(blob, filename || "file");
 	};
 
@@ -805,10 +793,11 @@ class IDE extends Component {
 		let parameterMissing = false;
 		await Promise.all(
 			specification.parameters.map(async (p) => {
-				defaultValue = p.defaultValue;
-				if (defaultValue.startsWith("element.")) {
-					defaultValue = element[defaultValue.split(".")[1]];
-				}
+				defaultValue = this.resolveDotExpressions(
+					p.defaultValue,
+					"element",
+					element
+				);
 				try {
 					value = await this.prompt({
 						title: p.label,
@@ -823,11 +812,13 @@ class IDE extends Component {
 		if (parameterMissing) return;
 		for (const [k, v] of Object.entries(properties)) {
 			value = v;
-			if (typeof v === "string" && v.startsWith("element.")) {
-				value = element[v.split(".")[1]];
-			}
-			if (typeof v === "string" && v.startsWith("parameters.")) {
-				value = parameters[v.split(".")[1]];
+			if (typeof value === "string") {
+				value = this.resolveDotExpressions(value, "element", element);
+				value = this.resolveDotExpressions(
+					value,
+					"parameters",
+					parameters
+				);
 			}
 			change[k] = value;
 		}
@@ -838,6 +829,17 @@ class IDE extends Component {
 		}
 		return result;
 	};
+
+	resolveDotExpressions(string, variable, target) {
+		let result = "";
+		let parts = string.split(/{([^}]+)}/g);
+		parts.forEach((p) => {
+			result += p.startsWith(variable + ".")
+				? target[p.split(".")[1]]
+				: p;
+		});
+		return result;
+	}
 
 	async handleChangeError(error) {
 		const data = error.data;

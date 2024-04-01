@@ -1,6 +1,10 @@
 # Retrieve extensions
 
-Retrieve IDE extensions.
+Retrieve IDE extensions defined by the back-end.
+
+| Method | Path                  | Description                        | Parameters | Payload |
+| :----: | --------------------- | ---------------------------------- | :--------: | ------- |
+|  GET   | [/extensions](get.md) | Retrieve list of change defintions |     -      | -       |
 
 **URL**: `/extensions`
 
@@ -10,22 +14,7 @@ Retrieve IDE extensions.
 
 **Code** : `200 OK`
 
-**Content**: `[definition]` where `definition` like described [here](./README.md).
+By the moment, there are two types of extensions:
 
-**Example:** one `change` extension to move a method to the superclass of its current class:
-
-```json
-[
-	{
-		"extensionType": "change",
-		"elementType": "method",
-		"label": "Move to superclass",
-		"properties": {
-			"type": "MoveUpMethod",
-			"className": "element.methodClass",
-			"selector": "element.selector"
-		},
-		"parameters": []
-	}
-]
-```
+-   [**Change**](change.md)
+-   [**Download**](downloads.md)
