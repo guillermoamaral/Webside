@@ -274,11 +274,13 @@ class ToolContainer extends Component {
 		}
 	};
 
-	openPackageBrowser = (packagename) => {
+	openPackageBrowser = async (packagename) => {
 		const pageId = this.newPageId();
 		let pack;
 		if (packagename) {
-			pack = { name: packagename };
+			try {
+				pack = await ide.backend.packageNamed(packagename);
+			} catch (error) {}
 		}
 		const browser = useSystemBrowser ? (
 			<SystemBrowser
