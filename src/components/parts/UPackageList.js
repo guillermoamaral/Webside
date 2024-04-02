@@ -16,7 +16,7 @@ class UPackageList extends Component {
 		};
 	}
 	componentDidMount() {
-		this.updatePackages();
+		this.updatePackages(this.props.selectedPackage);
 		this.initializeExtendedOptions();
 	}
 

@@ -16,5 +16,5 @@ Retrieve IDE extensions defined by the back-end.
 
 By the moment, there are two types of extensions:
 
--   [**Change**](change.md)
+-   [**Change**](changes.md)
 -   [**Download**](downloads.md)

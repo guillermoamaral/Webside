@@ -792,7 +792,7 @@ class IDE extends Component {
 		let value, defaultValue, result;
 		let parameterMissing = false;
 		await Promise.all(
-			specification.parameters.map(async (p) => {
+			(specification.parameters || []).map(async (p) => {
 				defaultValue = this.resolveDotExpressions(
 					p.defaultValue,
 					"element",

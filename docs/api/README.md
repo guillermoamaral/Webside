@@ -149,3 +149,11 @@ Endpoints to manage profilers and access their results.
 |  GET   | [/profilers/{id}/tree](profilers/id/tree/get.md)       | Retrieve a tree-like results of a given profiler |     -      | -       |
 |  GET   | [/profilers/{id}/ranking](profilers/id/ranking/get.md) | Retrieve ranked results of a given profiler      |     -      | -       |
 | DELETE | [/profilers/{id}](profilers/id/delete.md)              | Delete a given profiler                          |     -      | -       |
+
+## [Extensions](extensions)
+
+Retrieve IDE extensions defined by the back-end.
+
+| Method | Path                  | Description                        | Parameters | Payload |
+| :----: | --------------------- | ---------------------------------- | :--------: | ------- |
+|  GET   | [/extensions](get.md) | Retrieve list of change defintions |     -      | -       |
