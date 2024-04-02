@@ -29,7 +29,7 @@ class UClassTree extends Component {
 		this.changeRoots(
 			this.props.roots,
 			this.props.package,
-			this.props.selectedElement
+			this.props.selectedClass
 		);
 	}
 
