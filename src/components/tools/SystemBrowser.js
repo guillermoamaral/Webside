@@ -210,7 +210,12 @@ class SystemBrowser extends Tool {
 	};
 
 	categorySelected = (category) => {
-		this.setState({ selectedCategory: category });
+		const method = this.state.selectedMethod;
+		const selected =
+			!category || (method && method.category === category)
+				? method
+				: null;
+		this.setState({ selectedCategory: category, selectedMethod: selected });
 	};
 
 	categoryAdded = (category) => {
@@ -288,7 +293,6 @@ class SystemBrowser extends Tool {
 	};
 
 	codeExtendedOptionPerformed = () => {
-		console.log("dale")
 		let ref = this.methodListRef;
 		if (ref && ref.current) {
 			ref.current.refreshEnsuring(this.state.selectedMethod);
