@@ -115,10 +115,11 @@ As shown in our example, a parameter has the following form:
 }
 ```
 
-At the moment of writing this documentation there is only one `type`: `input`.
+Where,
 
-The `defaultValue` can contain zero or more element attribute expressions ({`element.xxx`}) spread accross a fixed string.\
-In our example, the default value is the current name of the class, and so it is defined as `{element.name}`.
+- `type` specifies how the parameter will be prompted to the user. At the moment of writing this documentation only `input` is supported.
+- `label` will be used to prompt the user for a value.
+- `defaultValue` (optional) is the default value presented to the user. In the case of a string, it can contain zero or more attribute expressions ({`element.xxx`}). (In our example, the default value is the current name of the class, and so it is defined as `{element.name}`).
 
 With this specification, users will find an option _My own class renaming_ withing the class menu options, and when they hit it, they will be prompted for _New name_, with the curren name as the default value. Should they accept the prompt, the IDE will post the following change:
 

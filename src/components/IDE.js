@@ -793,11 +793,14 @@ class IDE extends Component {
 		let parameterMissing = false;
 		await Promise.all(
 			(specification.parameters || []).map(async (p) => {
-				defaultValue = this.resolveDotExpressions(
-					p.defaultValue,
-					"element",
-					element
-				);
+				defaultValue = p.defaultValue;
+				if (defaultValue) {
+					defaultValue = this.resolveDotExpressions(
+						defaultValue,
+						"element",
+						element
+					);
+				}
 				try {
 					value = await this.prompt({
 						title: p.label,
