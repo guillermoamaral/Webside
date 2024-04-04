@@ -255,7 +255,7 @@ class CodeEditor extends Component {
 		}
 	}
 
-	inserText(text, position) {
+	insertText(text, position) {
 		this.editorView.dispatch({
 			changes: { from: position, to: position, insert: text },
 		});
@@ -680,11 +680,15 @@ class CodeEditor extends Component {
 		const range = this.currentSelectionRange();
 		const expression = this.selectedExpression();
 		const object = await this.evaluateExpression(expression, false, false);
+		const position = Math.max(range.head, range.anchor);
 		if (object) {
-			this.inserText(
-				" " + object.printString,
-				Math.max(range.head, range.anchor)
-			);
+			this.insertText(" " + object.printString, position);
+			this.selectRanges([
+				{
+					anchor: position + 1,
+					head: position + object.printString.length + 1,
+				},
+			]);
 		}
 	};
 
