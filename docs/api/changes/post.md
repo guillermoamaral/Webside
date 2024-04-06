@@ -3,7 +3,7 @@
 Apply a change to the system.
 This is one of the most important endpoints as it centralizes every change the user can apply to the system.
 
-**Important**. The API specifies a set of _basic_ changes applicable to all dialect analized. However, this list can be extended to support more changes and refactorings by means of [/extensions](../extensions/get.md) endpoint.
+**Important**. The API specifies a set of _basic_ changes applicable to all dialect analized. However, this list can be extended to support more changes and refactorings by means of [/extensions](../extensions/changes.md) endpoint.
 
 Special attention must be paid to the way the target system implementing the API must handle compilation errors so Webside ID can react properly (see [Errors](#errors) below).
 
