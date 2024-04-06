@@ -2,7 +2,9 @@
 
 This type of extension allows us to extend the set of changes that the API specifies (and that the IDE will expect to be present). Hence, specifications retrieved from this endpoint will enlarge the list of options available on the IDE.
 
-Of course, every change defined here must be supported by the system. At the moment of writing this documentation it is the same system that both **extends** the list of changes and **processes** them. But in the future it could be extended in a different way. In any case, if a change `MySuperCoolChange` is defined, the target system must accept it as a valid change afterwards.
+Of course, every change defined as an extension must be supported by the system.
+
+As in the case of pre-defined changes, they might result in errors. These will provide the same information explained [here](../changes/post.md#errors).
 
 ## Target object
 
