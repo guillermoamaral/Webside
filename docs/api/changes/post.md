@@ -38,6 +38,19 @@ All changes should include `author` proprerty and might specify a `package` prop
 |      RemovePackage       | Remove a given package                                                 | <pre>{<br> "type": "RemovePackage",<br> "name": "string"<br>} </pre>                                                                   |
 |      RenamePackage       | Rename a given package.                                                | <pre>{<br> "type": "RenamePackage",<br> "name": "string",<br> "newName": "string"<br>} </pre>                                          |
 
+**Example:**: compile method `phi` in `Float`
+`POST /changes`
+
+```json
+{
+	"type": "AddMethod",
+	"className": "Float class",
+	"category": "constants",
+	"sourceCode": "phi\r\t^1.0 + 5.0 sqrt / 2.0",
+	"author": "guille"
+}
+```
+
 ## Success Responses
 
 **Code** : `200 OK`
@@ -48,7 +61,34 @@ There are some special cases like the `selector` property in a `AddMethod`. This
 
 ## Errors
 
-Besides the internal errors in the server (HTTP code `500`), changes might result in a compilation error. These errors should be reported with code `409` with a payload having the following aspect:
+Whenever a change cannot be appplied, the back-end should respond with an client error code (typically `409`), indicating what went wrong with the requeted change by means the `description` property.\
+Also, the back-end might provide one or more *suggestions* on how to carry on the intended chagne. These are variations of the original change, together with a description that will be used by the IDE to propmt the user what they want to do.
+This is the aspect of an error response data.
+
+```json
+{
+	"description": "string",
+	"suggestions": ["suggestion"]
+}
+```
+
+Where, `suggestion` has the following shape:
+
+```json
+{
+	"description": "string",
+	"changes": ["change"]
+}
+```
+
+and `changes` is the set of changes that will be applied to mitigate the reported error.\
+
+Note that this is a list as it would be necessary to apply several changes to accomplish what the client wanted to do (i.e., the original change). This is better understood by an example like the one below.
+
+
+### Compilation Errors
+These errors should be reported with code `409`. Like explained above the payload will contain a `description` and a list of `suggestions`.
+Also, in the case of a compilation error, a more detail description (`fullDescription`) and the `interval` of the error should be provided.
 
 ```json
 {
@@ -62,18 +102,7 @@ Besides the internal errors in the server (HTTP code `500`), changes might resul
 }
 ```
 
-Here, `suggestion` has the following shape:
-
-```json
-{
-	"description": "string",
-	"changes": ["change"]
-}
-```
-
-where `changes` is the set of changes that can be applied to mitigate the reported compilation error.
-
-For example, the following error is returned after trying to compile (via a `AddMethod`) the method `m` in `Number` with the source `^1 + `. Note that the interval corresponds the the missing part and there is no suggestion.
+For example, after sending a `AddMethod` change on `Number` class with the source code `^1 + `, the the following error is returned:
 
 ```json
 409
@@ -86,9 +115,9 @@ For example, the following error is returned after trying to compile (via a `Add
 	}
 }
 ```
+Note that the interval corresponds the the missing part and there are no suggestions.
 
-Another example with suggestions that Webside provides to the user in the form of questions.
-Let's say we try to compile a method with a single line assigning `t := 1` in a class where `t` is not defined (it is not an instance variable nor a global).
+Here is another example with suggestions: Llt's say we try to compile a method with a single line `t := 1` on a class where `t` is not defined.
 The error returned should look like:
 
 ```json
@@ -120,17 +149,60 @@ The error returned should look like:
 
 Note that `changes` contains a list with another `AddMethod` with a modified source, which corresponds to accepting the suggestion.
 
-Note also that in the case that the original source had more than one compilation error with potential suggestions, they will be handled one at a time, asking the user to choose what to do for each one. After a first attempt, and having received an error with a list of suggestions, Webside will ask the user; should the user accept one of the proposed suggestions, it will retry with the suggested changes, and if the server finds a new error, the process will repeat.
+Note also that in the case that the original source might contain more than one compilation error. However, these should be presented one at a time, asking the user what suggestion they want, sending the changes of the chosen one, and repeating the process if a new error is reported.\
+For instance, if the code sent in an `AddMethod` change is the following `m t1 := 1. t2 := 2`, and neither `t1` and `t2` are defined, a first response will be like before:
 
-**Example:**: compile method `phi` in `Float`
-`POST /changes`
 
 ```json
+409
 {
-	"type": "AddMethod",
-	"className": "Float class",
-	"category": "constants",
-	"sourceCode": "phi\r\t^1.0 + 5.0 sqrt / 2.0",
-	"author": "guille"
+    "description": "undeclared t1",
+    "fullDescription": "undeclared identifier t1 at line 2 position 3",
+    "interval": {
+        "start": 5,
+        "end": 6
+    },
+    "suggestions": [
+        {
+            "description": "Declare 't1' as a temporary",
+            "changes": [
+                {
+                    "type": "AddMethod",
+                    "author": "guille",
+                    "sourceCode": "m\r   | t1 | \r\tt1 := 1.\r  t2 := 2.",
+                    "className": "Number",
+                    "category": "arithmetic"
+                }
+            ]
+        }
+    ]
 }
 ```
+
+And once the user choses the suggestion, a new error is generated indicating `t2` is not defined, but this time based on the code of the previously accepted suggestion.
+
+```json
+409
+{
+    "description": "undeclared t2",
+    "fullDescription": "undeclared identifier t2 at line 4 position 3",
+    "interval": {
+        "start": 26,
+        "end": 27
+    },
+    "suggestions": [
+        {
+            "description": "Declare 't2' as a temporary",
+            "changes": [
+                {
+                    "type": "AddMethod",
+                    "author": "guille",
+                    "sourceCode": "m\r   | t1 t2 | \r\tt1 := 1.\r  t2 := 2.",
+                    "className": "Number",
+                    "category": "arithmetic"
+                }
+            ]
+        }
+    ]
+}
+````
