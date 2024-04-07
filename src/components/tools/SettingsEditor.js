@@ -1,5 +1,5 @@
 import React from "react";
-import Tool from "./tools/Tool";
+import Tool from "./Tool";
 import {
 	Accordion,
 	AccordionSummary,
@@ -10,7 +10,7 @@ import {
 	FormHelperText,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import SettingEditor from "./SettingEditor";
+import SettingEditor from "../parts/SettingEditor";
 
 class SettingsEditor extends Tool {
 	constructor(props) {
