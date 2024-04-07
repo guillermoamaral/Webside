@@ -846,18 +846,30 @@ class IDE extends Component {
 
 	async handleChangeError(error) {
 		const data = error.data;
-		if (typeof data === "string") return this.reportError(error);
-		if (data && data.suggestions && data.suggestions.length > 0) {
-			const chosen = await this.choose({
-				title: data.description,
-				message: "What do you want to do?",
-				items: data.suggestions.map((s) => s.description),
-				defaultValue: data.suggestions[0].description,
-			});
-			const suggestion = chosen
-				? data.suggestions.find((s) => s.description === chosen)
-				: null;
-			if (chosen) {
+		if (!data || typeof data === "string") return this.reportError(error);
+		const suggestions = data.suggestions;
+		if (suggestions && suggestions.length > 0) {
+			let suggestion;
+			if (suggestions.length === 1) {
+				let confirm = await ide.confirm({
+					title: data.description,
+					message: suggestions[0].description,
+				});
+				if (confirm) suggestion = suggestions[0];
+			} else {
+				let description = await this.choose({
+					title: data.description,
+					message: "What do you want to do?",
+					items: suggestions.map((s) => s.description),
+					defaultValue: suggestions[0].description,
+				});
+				if (description) {
+					suggestion = suggestions.find(
+						(s) => s.description === description
+					);
+				}
+			}
+			if (suggestion) {
 				try {
 					for (const change of suggestion.changes) {
 						await this.backend.postChange(change);

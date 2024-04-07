@@ -209,4 +209,6 @@ And once the user choses the suggestion, a new error is generated indicating `t2
 
 ### Confirmation
 
-Notice that this mechanism can be use to just confirm a change at the server side: by just providing a suggestion with the original change and a description like `Are you sure?`.
+Notice that this mechanism can be use to just confirm a change on the server side: by just providing a suggestion with the original change (plus a flag with the confirmation) and a description like `Are you sure?`.
+
+This differs from any confirmation on the IDE side as the back-end might have (and surely has) a richer context.

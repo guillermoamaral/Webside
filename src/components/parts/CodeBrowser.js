@@ -153,16 +153,28 @@ class CodeBrowser extends Component {
 		method.source = source;
 		const data = error.data;
 		if (data && data.suggestions && data.suggestions.length > 0) {
-			const chosen = await ide.choose({
-				title: data.description,
-				message: "What do you want to do?",
-				items: data.suggestions.map((s) => s.description),
-				defaultValue: data.suggestions[0].description,
-			});
-			const suggestion = chosen
-				? data.suggestions.find((s) => s.description === chosen)
-				: null;
-			if (chosen) {
+			const suggestions = data.suggestions;
+			let suggestion;
+			if (suggestions.length === 1) {
+				let confirm = await ide.confirm({
+					title: data.description,
+					message: suggestions[0].description,
+				});
+				if (confirm) suggestion = suggestions[0];
+			} else {
+				let description = await ide.choose({
+					title: data.description,
+					message: "What do you want to do?",
+					items: suggestions.map((s) => s.description),
+					defaultValue: suggestions[0].description,
+				});
+				if (description) {
+					suggestion = suggestions.find(
+						(s) => s.description === description
+					);
+				}
+			}
+			if (suggestion) {
 				try {
 					let method;
 					for (const change of suggestion.changes) {
