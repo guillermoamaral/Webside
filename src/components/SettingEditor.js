@@ -28,7 +28,6 @@ class SettingEditor extends Component {
 	render() {
 		const value = this.state.value;
 		const setting = this.props.setting;
-		const type = setting.type === "boolean" ? "checkbox" : setting.type;
 		return (
 			<Box
 				mt={1}
@@ -46,7 +45,7 @@ class SettingEditor extends Component {
 							sx={{ minWidth: 50 }}
 							size="small"
 							id={setting.name}
-							type={type}
+							type={setting.type}
 							placeholder={setting.description}
 							margin="dense"
 							name={setting.name}
