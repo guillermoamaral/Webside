@@ -27,7 +27,7 @@ import Profiler from "./tools/Profiler";
 import NativeDebugger from "./tools/NativeDebugger";
 import Chat from "./tools/Chat";
 import CodeDifferences from "./tools/CodeDifferences";
-import SettingsEditor from "./SettingsEditor";
+import SettingsEditor from "./tools/SettingsEditor";
 import ResourceBrowser from "./tools/ResourceBrowser";
 import CoderLikeBrowser from "./tools/CoderLikeBrowser";
 import CodeMigrator from "./tools/CodeMigrator";
