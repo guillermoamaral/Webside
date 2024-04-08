@@ -15,8 +15,6 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import TabControl from "./controls/TabControl";
 import Transcript from "./tools/Transcript";
 import Search from "./tools/Search";
-import PackageBrowser from "./tools/PackageBrowser";
-import ClassBrowser from "./tools/ClassBrowser";
 import MethodBrowser from "./tools/MethodBrowser";
 import Inspector from "./tools/Inspector";
 import Workspace from "./tools/Workspace";
@@ -29,7 +27,6 @@ import Chat from "./tools/Chat";
 import CodeDifferences from "./tools/CodeDifferences";
 import SettingsEditor from "./tools/SettingsEditor";
 import ResourceBrowser from "./tools/ResourceBrowser";
-import CoderLikeBrowser from "./tools/CoderLikeBrowser";
 import CodeMigrator from "./tools/CodeMigrator";
 import Changeset from "../model/StChangeset";
 import { ide } from "./IDE";
@@ -39,8 +36,6 @@ import POC from "./tools/POC";
 import SystemBrowser from "./tools/SystemBrowser";
 import { v4 as uuidv4 } from "uuid";
 import MethodHistoryBrowser from "./tools/MethodHistoryBrowser";
-
-const useSystemBrowser = true;
 
 class ToolContainer extends Component {
 	constructor(props) {
@@ -282,14 +277,12 @@ class ToolContainer extends Component {
 				pack = await ide.backend.packageNamed(packagename);
 			} catch (error) {}
 		}
-		const browser = useSystemBrowser ? (
+		const browser = (
 			<SystemBrowser
 				showPackages={true}
 				preselectedPackage={pack}
 				id={pageId}
 			/>
-		) : (
-			<PackageBrowser selectedPackage={packagename} id={pageId} />
 		);
 		this.createPage(
 			"Package Browser",
@@ -324,29 +317,18 @@ class ToolContainer extends Component {
 
 	openClassBrowser = async (classname, side, nextToSelected) => {
 		const pageId = this.newPageId();
-		let browser;
-		if (useSystemBrowser) {
-			let species;
-			if (classname) {
-				try {
-					species = await ide.backend.classNamed(classname);
-					species.metaclass = await ide.backend.classNamed(
-						species.class
-					);
-				} catch (error) {
-					ide.reportError(error);
-				}
+		let browser, species;
+		if (classname) {
+			try {
+				species = await ide.backend.classNamed(classname);
+				species.metaclass = await ide.backend.classNamed(species.class);
+			} catch (error) {
+				ide.reportError(error);
 			}
-			browser = (
-				<SystemBrowser
-					preselectedClass={species}
-					side={side}
-					id={pageId}
-				/>
-			);
-		} else {
-			browser = <ClassBrowser root={classname} side={side} id={pageId} />;
 		}
+		browser = (
+			<SystemBrowser preselectedClass={species} side={side} id={pageId} />
+		);
 		this.createPage(
 			classname || "Class Browser",
 			<ClassBrowserIcon />,
@@ -586,15 +568,6 @@ class ToolContainer extends Component {
 			/>
 		);
 		this.createPage(title, <MethodBrowserIcon />, browser);
-	};
-
-	openCoderLikeBrowser = (classname) => {
-		const browser = <CoderLikeBrowser root={classname} />;
-		this.createPage(
-			browser.props.root || "Class Browser",
-			<ClassBrowserIcon />,
-			browser
-		);
 	};
 
 	browseSenders = async (selector) => {
