@@ -846,7 +846,7 @@ class CodeEditor extends Component {
 		return createTheme({
 			theme: appearance.get("mode"),
 			settings: {
-				//fontFamily: appearance.get("fontfamily"),
+				fontFamily: appearance.get("fontFamily"),
 				background: background,
 				foreground: "#75baff",
 				caret:

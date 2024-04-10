@@ -38,7 +38,7 @@ class App extends Component {
 		const background = colors.get("background");
 		this.theme = createTheme({
 			typography: {
-				//fontFamily: appearance.section("font").get("family"),
+				fontFamily: appearance.get("fontFamily"),
 				fontSize: appearance.get("fontSize"),
 				button: {
 					textTransform: "none",
