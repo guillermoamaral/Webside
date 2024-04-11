@@ -4,6 +4,7 @@ import ConfirmDialog from "./ConfirmDialog";
 import PromptDialog from "./PromptDialog";
 import DialogContext from "./DialogContext";
 import ListDialog from "./ListDialog";
+import FormDialog from "./FormDialog";
 
 class DialogProvider extends React.PureComponent {
 	state = {
@@ -122,11 +123,26 @@ class DialogProvider extends React.PureComponent {
 			  });
 	};
 
+	form = (options) => {
+		return new Promise((resolve, reject) => {
+			this.setState({
+				dialog: {
+					...options,
+					type: "form",
+					resolve,
+					reject,
+					open: true,
+				},
+			});
+		});
+	};
+
 	dialog = {
 		alert: this.alert,
 		confirm: this.confirm,
 		prompt: this.prompt,
 		list: this.list,
+		form: this.form,
 	};
 
 	render() {
@@ -158,6 +174,13 @@ class DialogProvider extends React.PureComponent {
 				)}
 				{dialog.type === "list" && (
 					<ListDialog
+						{...dialog}
+						open={dialog.open}
+						onClose={this.handleClose}
+					/>
+				)}
+				{dialog.type === "form" && (
+					<FormDialog
 						{...dialog}
 						open={dialog.open}
 						onClose={this.handleClose}
