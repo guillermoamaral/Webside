@@ -547,8 +547,8 @@ class CodeEditor extends Component {
 		if (range) return range.from;
 	}
 
-	targetSelector() {
-		if (!this.state.dirty) {
+	async targetSelector() {
+		if (!this.state.dirty && this.props.ast) {
 			const range = this.currentSelectionRange();
 			const node =
 				range && range.from < range.to
@@ -558,6 +558,19 @@ class CodeEditor extends Component {
 				return node.value;
 			}
 		}
+		try {
+			let selector;
+			const selection = this.selectedText();
+			if (selection.length > 0) {
+				selector = await ide.backend.selectorInSource(selection);
+			} else {
+				selector = await ide.backend.selectorInSource(
+					this.state.source,
+					this.currentPosition()
+				);
+			}
+			if (selector !== null) return selector;
+		} catch (error) {}
 		return this.targetWord();
 	}
 
@@ -573,26 +586,24 @@ class CodeEditor extends Component {
 		window.open(url, "_blank").focus();
 	};
 
-	browseSenders = () => {
-		this.context.browseSenders(this.targetSelector());
+	browseSenders = async () => {
+		const selector = await this.targetSelector();
+		this.context.browseSenders(selector);
 	};
 
-	browseLocalSenders = () => {
-		this.context.browseLocalSenders(
-			this.targetSelector(),
-			this.props.class.name
-		);
+	browseLocalSenders = async () => {
+		const selector = await this.targetSelector();
+		this.context.browseLocalSenders(selector, this.props.class.name);
 	};
 
-	browseImplementors = () => {
-		this.context.browseImplementors(this.targetSelector());
+	browseImplementors = async () => {
+		const selector = await this.targetSelector();
+		this.context.browseImplementors(selector);
 	};
 
-	browseLocalImplementors = () => {
-		this.context.browseLocalImplementors(
-			this.targetSelector(),
-			this.props.class.name
-		);
+	browseLocalImplementors = async () => {
+		const selector = await this.targetSelector();
+		this.context.browseLocalImplementors(selector, this.props.class.name);
 	};
 
 	browseClass = (e, f) => {

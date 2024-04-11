@@ -293,6 +293,11 @@ class Backend {
 		);
 	}
 
+	async selectorInSource(source, position) {
+		const data = { source: source, position: position };
+		return await this.post("/selectors", data, "selector in source");
+	}
+
 	// Method queries...
 	async senders(selector) {
 		return await this.get(
