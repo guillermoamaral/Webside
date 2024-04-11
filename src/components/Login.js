@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { Button, TextField, Grid, FormHelperText } from "@mui/material";
+import {
+	Button,
+	TextField,
+	Grid,
+	FormHelperText,
+	Typography,
+	Link,
+	Box,
+} from "@mui/material";
 import axios from "axios";
 import { withNavigation } from "./withNavigation";
 
@@ -26,18 +34,7 @@ class Login extends Component {
 		event.preventDefault();
 		const { backend, developer } = this.state;
 		if (backend && backend !== "" && developer && developer !== "") {
-			try {
-				this.setState({ connecting: true });
-				await axios.get(backend + "/dialect");
-				this.props.navigate(
-					"/ide?backend=" + backend + "&developer=" + developer
-				);
-			} catch (error) {
-				this.setState({
-					error: "Cannot connect to target Smalltalk",
-					connecting: false,
-				});
-			}
+			this.connect(backend, developer);
 		} else {
 			this.setState({
 				error: "You must complete the fields",
@@ -46,9 +43,38 @@ class Login extends Component {
 		}
 	};
 
+	async connect(backend, developer) {
+		try {
+			this.setState({ connecting: true });
+			await axios.get(backend + "/dialect");
+			this.props.navigate(
+				"/ide?backend=" + backend + "&developer=" + developer
+			);
+		} catch (error) {
+			this.setState({
+				error: "Cannot connect to " + backend,
+				connecting: false,
+			});
+		}
+	}
+
+	recentConnections() {
+		const connections = [];
+		for (let i = 0; i < localStorage.length; i++) {
+			const key = localStorage.key(i);
+			if (key.startsWith("webside-settings")) {
+				const data = localStorage.getItem(key);
+				const settings = JSON.parse(data);
+				connections.push(settings.connection);
+			}
+		}
+		return connections;
+	}
+
 	render() {
 		const { backend, developer, error, connecting } = this.state;
 		const buttonLabel = connecting ? "Connecting" : "Connect";
+		const recent = this.recentConnections();
 		return (
 			<div
 				sx={{
@@ -136,6 +162,39 @@ class Login extends Component {
 								{error && (
 									<Grid item>
 										<FormHelperText>{error}</FormHelperText>
+									</Grid>
+								)}
+								{recent.length > 0 && (
+									<Grid item>
+										<Box
+											display="flex"
+											flexDirection="column"
+										>
+											<Typography variant="h6">
+												Recent
+											</Typography>
+											{recent.map((c) => (
+												<Link
+													key={c.backend}
+													color="inherit"
+													underline="hover"
+													variant="body2"
+													href="#"
+													onClick={(event) => {
+														event.preventDefault();
+														this.connect(
+															c.backend,
+															c.developer
+														);
+													}}
+												>
+													{c.backend +
+														" (" +
+														c.developer +
+														")"}
+												</Link>
+											))}
+										</Box>
 									</Grid>
 								)}
 							</Grid>

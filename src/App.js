@@ -5,7 +5,6 @@ import Login from "./components/Login";
 import IDE from "./components/IDE";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { DialogProvider } from "./components/dialogs/index";
-import { CookiesProvider } from "react-cookie";
 
 var app = null;
 
@@ -71,39 +70,33 @@ class App extends Component {
 			<ThemeProvider theme={this.theme}>
 				<CssBaseline />
 				<DialogProvider>
-					<CookiesProvider>
-						<div
-							sx={{
-								display: "flex",
-							}}
-						>
-							<Router>
-								<Routes>
-									<Route path="/" exact element={<Login />} />
-									<Route
-										path="/ide/"
-										exact
-										element={<IDE />}
-									/>
-									<Route
-										path="/ide?backend=:backend"
-										exact
-										element={<IDE />}
-									/>
-									<Route
-										path="/ide/classes/:classname"
-										exact
-										element={<IDE />}
-									/>
-									<Route
-										path="/ide/debuggers/:debugger"
-										exact
-										element={<IDE />}
-									/>
-								</Routes>
-							</Router>
-						</div>
-					</CookiesProvider>
+					<div
+						sx={{
+							display: "flex",
+						}}
+					>
+						<Router>
+							<Routes>
+								<Route path="/" exact element={<Login />} />
+								<Route path="/ide/" exact element={<IDE />} />
+								<Route
+									path="/ide?backend=:backend"
+									exact
+									element={<IDE />}
+								/>
+								<Route
+									path="/ide/classes/:classname"
+									exact
+									element={<IDE />}
+								/>
+								<Route
+									path="/ide/debuggers/:debugger"
+									exact
+									element={<IDE />}
+								/>
+							</Routes>
+						</Router>
+					</div>
 				</DialogProvider>
 			</ThemeProvider>
 		);

@@ -21,8 +21,8 @@ class CustomInput extends Component {
 	};
 	render() {
 		const value = this.state.value;
-		const { name, type, label, description, options, errorText } =
-			this.props;
+		const { name, type, label, description, options } = this.props;
+		const errorText = this.props.errorText || "";
 		return (
 			<Box>
 				{!options && (
@@ -91,6 +91,7 @@ class CustomInput extends Component {
 								height: 200,
 								border: errorText ? "1px solid red" : "none",
 								borderRadius: 4,
+								padding: 5,
 							}}
 						>
 							<CustomList

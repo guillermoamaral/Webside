@@ -6,6 +6,8 @@ import {
 	IconButton,
 	Link,
 	Box,
+	Menu,
+	MenuItem,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import StyledAppBar from "./StyledAppBar";
@@ -15,6 +17,11 @@ import DarkModeIcon from "@mui/icons-material/DarkModeRounded";
 import SplitIcon from "../icons/SplitIcon";
 
 class Titlebar extends Component {
+	constructor(props) {
+		super(props);
+		this.state = { developerMenuOpen: false };
+	}
+
 	render() {
 		const {
 			dialect,
@@ -23,13 +30,15 @@ class Titlebar extends Component {
 			developer,
 			sidebarExpanded,
 			onSidebarExpand,
-			onUserClick,
+			onSettingsClick,
+			onDisconnectClick,
 			colorMode,
 			onColorModeToggle,
 			onSearchClick,
 			searchPlaceholder,
 			onSplit,
 		} = this.props;
+		const developerMenuOpen = this.state.developerMenuOpen;
 		return (
 			<StyledAppBar
 				color="primary"
@@ -100,9 +109,66 @@ class Titlebar extends Component {
 					>
 						<SplitIcon />
 					</IconButton>
-					<IconButton color="primary" onClick={onUserClick}>
-						<Avatar alt={developer} />
-					</IconButton>
+					<Box sx={{ flexGrow: 0 }}>
+						<IconButton
+							id="developer"
+							color="primary"
+							onClick={() => {
+								this.setState({
+									developerMenuOpen: true,
+								});
+							}}
+						>
+							<Avatar alt={developer} />
+						</IconButton>
+						<Menu
+							sx={{ mt: "45px" }}
+							id="menu-appbar"
+							anchorEl={document.getElementById("developer")}
+							anchorOrigin={{
+								vertical: "top",
+								horizontal: "right",
+							}}
+							keepMounted
+							transformOrigin={{
+								vertical: "top",
+								horizontal: "right",
+							}}
+							open={developerMenuOpen}
+							onClose={() => {
+								this.setState({
+									developerMenuOpen: false,
+								});
+							}}
+						>
+							<MenuItem
+								key="settings"
+								onClick={() => {
+									this.setState(
+										{ developerMenuOpen: false },
+										onSettingsClick
+									);
+								}}
+							>
+								<Typography textAlign="center">
+									Settings
+								</Typography>
+							</MenuItem>
+							<MenuItem
+								key="disconnect"
+								onClick={() => {
+									this.setState(
+										{ developerMenuOpen: false },
+										onDisconnectClick
+									);
+								}}
+							>
+								<Typography textAlign="center">
+									Disconnect
+								</Typography>
+							</MenuItem>
+						</Menu>
+					</Box>
 					<Box p={1}>
 						<Typography
 							variant="subtitle1"

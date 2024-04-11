@@ -8,7 +8,6 @@ import {
 	DialogContent,
 } from "@mui/material";
 import ToolContainer from "./ToolContainer";
-import { withCookies } from "react-cookie";
 import { withNavigation } from "./withNavigation";
 import { withDialog } from "./dialogs/index";
 import Backend from "./Backend";
@@ -19,9 +18,8 @@ import Sidebar from "./layout/Sidebar";
 import MessageChannel from "./MessageChannel";
 import Hotkeys from "react-hot-keys";
 //import DrawerHeader from "./layout/DrawerHeader";
-import { Settings } from "../model/Settings";
+import { Settings, Setting } from "../model/Settings";
 import { app as mainApp } from "../App";
-import { Setting } from "../model/Settings";
 import CodeAssistant from "./CodeAssistant";
 import { v4 as uuidv4 } from "uuid";
 import CustomSplit from "./controls/CustomSplit";
@@ -66,7 +64,7 @@ class IDE extends Component {
 	// Settings
 	initializeSettings = () => {
 		this.settings = this.defaultSettings();
-		this.loadSettingsFromCookie();
+		this.loadSettings();
 		this.updateConnectionSettings();
 		this.updateSettings();
 	};
@@ -195,7 +193,7 @@ class IDE extends Component {
 			this.settings.section("connection").get("developer") !==
 				settings.section("connection").get("developer");
 		this.settings = settings;
-		this.storeSettingsIntoCookie();
+		this.storeSettings();
 		const connection = this.settings.section("connection");
 		if (hard) {
 			this.props.navigate(
@@ -209,6 +207,10 @@ class IDE extends Component {
 		this.updateSettings();
 	}
 
+	disconnect = () => {
+		this.props.navigate("/");
+	};
+
 	resetSettingsSection(name) {
 		const section = this.defaultSettings().section(name);
 		this.settings.setSection(name, section);
@@ -221,33 +223,31 @@ class IDE extends Component {
 			"mode",
 			appearance.get("mode") === "dark" ? "light" : "dark"
 		);
-		this.storeSettingsIntoCookie();
+		this.storeSettings();
 		this.updateTheme();
 		this.forceUpdate();
 	};
 
-	settingsCookieName() {
+	settingsStoreName() {
 		const options = this.queryOptions();
 		return (
-			"webside-settings-for-backend-" +
+			"webside-settings-" +
 			options.backend +
 			"-developer-" +
 			options.developer
 		);
 	}
 
-	loadSettingsFromCookie() {
-		const raw = this.props.cookies.get(this.settingsCookieName());
-		if (raw) {
-			this.settings.fromJson(JSON.parse(raw));
+	loadSettings() {
+		const data = localStorage.getItem(this.settingsStoreName());
+		if (data) {
+			this.settings.fromJson(JSON.parse(data));
 		}
 	}
 
-	storeSettingsIntoCookie() {
-		this.props.cookies.set(
-			this.settingsCookieName(),
-			JSON.stringify(JSON.stringify(this.settings.toJson()))
-		);
+	storeSettings() {
+		const data = JSON.stringify(this.settings.toJson());
+		localStorage.setItem(this.settingsStoreName(), data);
 	}
 
 	async updateSettings() {
@@ -698,6 +698,10 @@ class IDE extends Component {
 		return await this.props.dialog.alert(info);
 	}
 
+	async fillForm(info) {
+		return await this.props.dialog.form(info);
+	}
+
 	waitFor = async (evaluation) => {
 		this.setState({ waiting: true });
 		let result;
@@ -799,45 +803,30 @@ class IDE extends Component {
 			);
 			if (!proceed) return;
 		}
-		const properties = specification.properties;
-		const parameters = {};
+		let parameters;
+		if (specification.parameters && specification.parameters.length > 0) {
+			parameters = await this.promptChangeParameters(
+				specification,
+				element
+			);
+			if (!parameters) return;
+		}
 		let change = {};
-		let value, defaultValue, result;
-		let parameterMissing = false;
-		await Promise.all(
-			(specification.parameters || []).map(async (p) => {
-				defaultValue = p.defaultValue;
-				if (defaultValue) {
-					defaultValue = this.resolveDotExpressions(
-						defaultValue,
-						"element",
-						element
-					);
-				}
-				try {
-					value = await this.prompt({
-						title: p.label,
-						defaultValue: defaultValue,
-						required: true,
-					});
-				} catch (error) {}
-				if (!value) parameterMissing = true;
-				parameters[p.name] = value;
-			})
-		);
-		if (parameterMissing) return;
-		for (const [k, v] of Object.entries(properties)) {
-			value = v;
+		for (const [k, v] of Object.entries(specification.properties)) {
+			let value = v;
 			if (typeof value === "string") {
 				value = this.resolveDotExpressions(value, "element", element);
-				value = this.resolveDotExpressions(
-					value,
-					"parameters",
-					parameters
-				);
+				if (parameters) {
+					value = this.resolveDotExpressions(
+						value,
+						"parameters",
+						parameters
+					);
+				}
 			}
 			change[k] = value;
 		}
+		let result;
 		try {
 			result = await this.backend.postChange(change, description);
 		} catch (error) {
@@ -845,6 +834,40 @@ class IDE extends Component {
 		}
 		return result;
 	};
+
+	async promptChangeParameters(specification, element) {
+		const parameters = specification.parameters;
+		let options = {};
+		await Promise.all(
+			parameters.map(async (p) => {
+				let list = await this.resolveOptions(p.options);
+				options[p.name] = list;
+			})
+		);
+		const inputs = parameters.map((p) => {
+			let defaultValue;
+			if (p.defaultValue) {
+				defaultValue = this.resolveDotExpressions(
+					p.defaultValue,
+					"element",
+					element
+				);
+			}
+			return {
+				name: p.name,
+				label: p.label,
+				type: p.type,
+				defaultValue: defaultValue,
+				options: options[p.name],
+				required: true,
+			};
+		});
+		return await this.fillForm({
+			title: specification.label,
+			message: specification.description,
+			inputs: inputs,
+		});
+	}
 
 	resolveDotExpressions(string, variable, target) {
 		let result = "";
@@ -855,6 +878,12 @@ class IDE extends Component {
 				: p;
 		});
 		return result;
+	}
+
+	async resolveOptions(options) {
+		if (options === "{packages}") return await this.backend.packageNames();
+		if (options === "{classes}") return await this.backend.classNames();
+		return options;
 	}
 
 	async handleChangeError(error) {
@@ -959,7 +988,8 @@ class IDE extends Component {
 							sidebarExpanded={sidebarExpanded}
 							onSidebarExpand={this.expandSidebar}
 							searchOptions={[]}
-							onUserClick={this.openSettings}
+							onSettingsClick={this.openSettings}
+							onDisconnectClick={this.disconnect}
 							colorMode={this.settings
 								.section("appearance")
 								.get("mode")}
@@ -1068,6 +1098,6 @@ class IDE extends Component {
 	}
 }
 
-export default withDialog()(withNavigation(withCookies(IDE)));
+export default withDialog()(withNavigation(IDE));
 
 export { ide };

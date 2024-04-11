@@ -43,7 +43,7 @@ function FormDialog(props, context) {
 	const validateInput = (input, value) => {
 		return isValidValue(input, value)
 			? ""
-			: "A valid value for " + input.name + " must be provided";
+			: "A valid value for \"" + input.label + "\" must be provided";
 	};
 
 	const setValue = (name, value) => {

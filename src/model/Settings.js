@@ -54,10 +54,9 @@ class Setting extends Object {
 	}
 
 	static options(name, options, defaultValue) {
-		const setting = new Setting(name, "options");
+		const df = defaultValue || (options.length > 0 ? options[0] : null);
+		const setting = new Setting(name, "options", df);
 		setting.options = options;
-		setting.default =
-			defaultValue || (options.length > 0 ? options[0] : null);
 		return setting;
 	}
 
@@ -103,7 +102,9 @@ class Settings extends Object {
 	get(name) {
 		const setting = this.setting(name);
 		if (setting) {
-			return setting.value === null || setting.value === undefined ? setting.default : setting.value;
+			return setting.value === null || setting.value === undefined
+				? setting.default
+				: setting.value;
 		}
 	}
 
