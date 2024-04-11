@@ -113,13 +113,15 @@ As shown in our example, a parameter has the following form:
 	"name": "string",
 	"label": "string",
 	"defaultValue": "value",
-	"type": "input"
+	"type": "string",
+	"options": "string"
 }
 ```
 
 Where,
 
-- `type` specifies how the parameter will be prompted to the user. At the moment of writing this documentation only `input` is supported.
+- `type` specifies how the parameter will be prompted to the user. At the moment of writing this document it can be `text`, `number` or `boolean`.
+- `options` (optional) provides a list of alternatives. This can be either a fixed list, or a *dynamic* one. By the moment, there are only two possibilities for the latter: `packages` or `classes`, to provide the user with the list of the names of existing packages and classes, respectively.
 - `label` will be used to prompt the user for a value.
 - `defaultValue` (optional) is the default value presented to the user. In the case of a string, it can contain zero or more attribute expressions ({`element.xxx`}). (In our example, the default value is the current name of the class, and so it is defined as `{element.name}`).
 
