@@ -132,7 +132,7 @@ class SearchList3 extends Component {
 			<Autocomplete
 				id="SearchList"
 				size="small"
-				//sx={{ width: 300 }}
+				sx={{ width: 300 }}
 				disableListWrap
 				PopperComponent={StyledPopper}
 				ListboxComponent={ListboxComponent}

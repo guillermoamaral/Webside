@@ -213,15 +213,15 @@ class UVariableList extends Component {
 
 	menuOptions() {
 		let options = [
+			{ label: "Browse references", action: this.browseReferences },
 			{ label: "Add", action: this.addVariable },
 			{ label: "Rename", action: this.renameVariable },
 			{ label: "Remove", action: this.removeVariable },
 			{ label: "Move to superclass", action: this.moveVariableUp },
 			null,
-			{ label: "Browse references", action: this.browseReferences },
 		];
 		const species = this.props.class;
-		if (species && species.subclasses && species.subclasses.length > 1) {
+		if (species && species.subclasses && species.subclasses.length > 0) {
 			options.push({
 				label: "Move to subclass",
 				suboptions: species.subclasses.map((c) => {
@@ -246,7 +246,7 @@ class UVariableList extends Component {
 
 	extendedOptionPerformed() {
 		const handler = this.props.onExtendedOptionPerform;
-		handler ? handler() : this.forceUpdate();
+		handler ? handler() : this.updateVariables();
 	}
 
 	render() {

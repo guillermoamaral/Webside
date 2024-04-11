@@ -143,7 +143,7 @@ class SearchList2 extends React.Component {
 						width: "100%",
 						border: "2px solid #c4c4c41f",
 						backgroundColor: backColor,
-						zIndex: 2,
+						//zIndex: 15,
 					},
 					suggestionsList: {
 						margin: 0,

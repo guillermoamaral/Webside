@@ -205,7 +205,9 @@ class UCategoryList extends Component {
 
 	extendedOptionPerformed() {
 		const handler = this.props.onExtendedOptionPerform;
-		handler ? handler() : this.forceUpdate();
+		handler
+			? handler()
+			: this.updateCategories(this.state.selectedCategory);
 	}
 
 	render() {

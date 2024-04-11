@@ -284,6 +284,7 @@ class UMethodList extends Component {
 				title: "Category",
 				message: "Select a category",
 				items: this.state.categories,
+				filter: true,
 			});
 		} catch (error) {}
 		if (category) {
@@ -530,7 +531,7 @@ class UMethodList extends Component {
 
 	extendedOptionPerformed() {
 		const handler = this.props.onExtendedOptionPerform;
-		handler ? handler() : this.forceUpdate();
+		handler ? handler() : this.updateMethods(this.state.selectedMethod);
 	}
 
 	methodIcon = (method) => {

@@ -451,14 +451,18 @@ class CustomList extends Component {
 			menuPosition,
 		} = this.state;
 		const count = filteredItems ? filteredItems.length : 0;
-		const enableFilter =
-			typeof this.props.enableFilter == "boolean"
-				? this.props.enableFilter
-				: true;
-		const loading = this.props.loading;
-		const showFilter = !loading && enableFilter && filterEnabled;
+		const { enableFilter, filterAlwaysPresent, loading } = this.props;
+		const showsFilter =
+			typeof enableFilter == "boolean" ? enableFilter : true;
+		const showFilter =
+			!loading && (filterAlwaysPresent || (showsFilter && filterEnabled));
 		return (
-			<Box style={{ height: "100%" }} onContextMenu={this.openMenu}>
+			<Box
+				display="flex"
+				flexDirection="column"
+				style={{ height: "100%" }}
+				onContextMenu={this.openMenu}
+			>
 				{loading && (
 					<Box ml={2} width="50%">
 						<Skeleton animation="wave" />
@@ -467,8 +471,32 @@ class CustomList extends Component {
 						<Skeleton animation="wave" />
 					</Box>
 				)}
+				{showFilter && filterAlwaysPresent && (
+					<Box>
+						<TextField
+							id="filter"
+							variant="outlined"
+							size="small"
+							type="text"
+							placeholder="Filter..."
+							margin="dense"
+							fullWidth
+							autoFocus
+							name="filter"
+							value={filterText}
+							onKeyDown={(event) => {
+								if (event.key === "Escape") {
+									this.clearFilter();
+								}
+							}}
+							onChange={(event) =>
+								this.filterItems(event.target.value)
+							}
+						/>
+					</Box>
+				)}
 				{!loading && (
-					<Box style={{ height: showFilter ? "90%" : "100%" }}>
+					<Box flexGrow={1}>
 						<AutoSizer>
 							{({ height, width }) => (
 								<List
@@ -503,8 +531,8 @@ class CustomList extends Component {
 						</AutoSizer>
 					</Box>
 				)}
-				{showFilter && (
-					<Box style={{ height: "10%" }}>
+				{showFilter && !filterAlwaysPresent && (
+					<Box>
 						<TextField
 							id="filter"
 							variant="standard"

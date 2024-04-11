@@ -7,7 +7,7 @@ import {
 	DialogContentText,
 	DialogTitle,
 	Button,
-	Paper,
+	Box,
 } from "@mui/material";
 import CustomList from "../controls/CustomList";
 
@@ -22,6 +22,7 @@ function ListDialog(props, context) {
 		cancel,
 		required,
 		defaultValue,
+		filter,
 	} = props;
 	const [value, setValue] = useState(defaultValue);
 	useEffect(() => {
@@ -44,14 +45,15 @@ function ListDialog(props, context) {
 				) : (
 					message
 				)}
-				<Paper variant="outlined" style={{ height: 200 }}>
+				<Box style={{ height: 200 }}>
 					<CustomList
 						autoFocus
 						items={items}
 						selectedItem={value}
 						onItemSelect={setValue}
+						filterAlwaysPresent={filter}
 					/>
-				</Paper>
+				</Box>
 			</DialogContent>
 			<DialogActions>
 				<Button

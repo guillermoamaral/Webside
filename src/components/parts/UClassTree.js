@@ -26,7 +26,7 @@ class UClassTree extends Component {
 	async componentDidMount() {
 		await this.initializeClassSearch();
 		this.initializeExtendedOptions();
-		this.changeRoots(
+		this.updateClasses(
 			this.props.roots,
 			this.props.package,
 			this.props.selectedClass
@@ -52,7 +52,7 @@ class UClassTree extends Component {
 			this.props.roots !== prevProps.roots ||
 			this.props.package !== prevProps.package
 		) {
-			return this.changeRoots(
+			return this.updateClasses(
 				this.props.roots,
 				this.props.package,
 				selected
@@ -68,7 +68,7 @@ class UClassTree extends Component {
 	goToRoot = (name) => {
 		if (name) {
 			const target = { name: name };
-			this.changeRoots([target], null, target);
+			this.updateClasses([target], null, target);
 		}
 	};
 
@@ -107,7 +107,7 @@ class UClassTree extends Component {
 		});
 	}
 
-	changeRoots = async (classes, pack, selectedClass) => {
+	updateClasses = async (classes, pack, selectedClass) => {
 		this.setState({ loading: true });
 		let trees = await this.fetchClasses(classes, pack);
 		let selected;
@@ -474,7 +474,13 @@ class UClassTree extends Component {
 
 	extendedOptionPerformed() {
 		const handler = this.props.onExtendedOptionPerform;
-		handler ? handler() : this.forceUpdate();
+		handler
+			? handler()
+			: this.updateClasses(
+					this.state.roots,
+					this.props.package,
+					this.state.selectedClass
+			  );
 	}
 
 	classLabel = (species) => {
