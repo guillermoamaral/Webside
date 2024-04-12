@@ -2,7 +2,7 @@ import React from "react";
 import Tool from "./Tool";
 import { Box, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 import { ide } from "../IDE";
-import UMethodList from "../parts/UMethodList";
+import MethodList from "../parts/MethodList";
 import CodeBrowser from "../parts/CodeBrowser";
 import CustomSplit from "../controls/CustomSplit";
 import CustomPaper from "../controls/CustomPaper";
@@ -184,7 +184,7 @@ class MethodBrowser extends Tool {
 					<CustomSplit mode="vertical">
 						<Box sx={{ height: "45%" }}>
 							<CustomPaper>
-								<UMethodList
+								<MethodList
 									useTable
 									selectedMethod={selectedMethod}
 									methods={methods}

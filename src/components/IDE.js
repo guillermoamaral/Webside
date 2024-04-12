@@ -219,10 +219,8 @@ class IDE extends Component {
 
 	toggleColorMode = () => {
 		const appearance = this.settings.section("appearance");
-		appearance.set(
-			"mode",
-			appearance.get("mode") === "dark" ? "light" : "dark"
-		);
+		const mode = appearance.get("mode") === "dark" ? "light" : "dark";
+		appearance.set("mode", mode);
 		this.storeSettings();
 		this.updateTheme();
 		this.forceUpdate();

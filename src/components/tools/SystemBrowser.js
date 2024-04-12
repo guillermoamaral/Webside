@@ -12,11 +12,11 @@ import {
 import CustomSplit from "../controls/CustomSplit";
 import CustomPaper from "../controls/CustomPaper";
 import { ide } from "../IDE";
-import UPackageList from "../parts/UPackageList";
-import UClassTree from "../parts/UClassTree";
-import UVariableList from "../parts/UVariableList";
-import UCategoryList from "../parts/UCategoryList";
-import UMethodList from "../parts/UMethodList";
+import PackageList from "../parts/PackageList";
+import ClassTree from "../parts/ClassTree";
+import VariableList from "../parts/VariableList";
+import CategoryList from "../parts/CategoryList";
+import MethodList from "../parts/MethodList";
 import CodeBrowser from "../parts/CodeBrowser";
 
 class SystemBrowser extends Tool {
@@ -326,7 +326,7 @@ class SystemBrowser extends Tool {
 						<CustomSplit>
 							{showPackages && (
 								<Box sx={{ width: width }}>
-									<UPackageList
+									<PackageList
 										onPackageSelect={this.packageSelected}
 										onPackageCreate={this.packageCreated}
 										selectedPackage={preselectedPackage}
@@ -334,7 +334,7 @@ class SystemBrowser extends Tool {
 								</Box>
 							)}
 							<Box sx={{ width: width }}>
-								<UClassTree
+								<ClassTree
 									ref={this.classTreeRef}
 									roots={!showPackages ? roots : null}
 									package={
@@ -381,7 +381,7 @@ class SystemBrowser extends Tool {
 									</Select>
 								</Box>
 								<Box mt={1} flexGrow={1}>
-									<UVariableList
+									<VariableList
 										class={targetClass}
 										onVariableSelect={this.variableSelected}
 										onVariableAdd={this.variableAdded}
@@ -428,7 +428,7 @@ class SystemBrowser extends Tool {
 									</RadioGroup>
 								</Box>
 								<Box mt={1} flexGrow={1}>
-									<UCategoryList
+									<CategoryList
 										ref={this.categoryListRef}
 										class={targetClass}
 										onCategorySelect={this.categorySelected}
@@ -445,7 +445,7 @@ class SystemBrowser extends Tool {
 							</Box>
 							<Box sx={{ width: width }}>
 								<CustomPaper>
-									<UMethodList
+									<MethodList
 										ref={this.methodListRef}
 										package={
 											showPackages

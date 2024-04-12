@@ -13,7 +13,7 @@ class CustomSplit extends PureComponent {
 							{...props}
 							style={{
 								boxShadow: "none",
-								backgroundColor: "default",
+								backgroundColor: "transparent",
 							}}
 						>
 							<div
@@ -29,8 +29,8 @@ class CustomSplit extends PureComponent {
 				style={{
 					height: "100%",
 					width: "100%",
-					// boxShadow: "none",
-					// background: "transparent",
+					boxShadow: "none",
+					background: "transparent",
 				}}
 			>
 				{this.props.children}

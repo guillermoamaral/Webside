@@ -4,7 +4,7 @@ import CustomPaper from "../controls/CustomPaper";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 
-class UVariableList extends Component {
+class VariableList extends Component {
 	static contextType = ToolContainerContext;
 
 	constructor(props) {
@@ -275,4 +275,4 @@ class UVariableList extends Component {
 	}
 }
 
-export default UVariableList;
+export default VariableList;

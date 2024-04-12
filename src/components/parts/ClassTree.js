@@ -7,7 +7,7 @@ import SearchList2 from "../controls/SearchList2";
 import UpIcon from "@mui/icons-material/ArrowDropUp";
 import CustomPaper from "../controls/CustomPaper";
 
-class UClassTree extends Component {
+class ClassTree extends Component {
 	static contextType = ToolContainerContext;
 
 	constructor(props) {
@@ -562,4 +562,4 @@ class UClassTree extends Component {
 		);
 	}
 }
-export default UClassTree;
+export default ClassTree;

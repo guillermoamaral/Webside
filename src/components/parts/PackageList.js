@@ -4,7 +4,7 @@ import CustomPaper from "../controls/CustomPaper";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 
-class UPackageList extends Component {
+class PackageList extends Component {
 	static contextType = ToolContainerContext;
 
 	constructor(props) {
@@ -185,4 +185,4 @@ class UPackageList extends Component {
 		);
 	}
 }
-export default UPackageList;
+export default PackageList;

@@ -10,7 +10,7 @@ import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 import { Typography } from "@mui/material";
 
-class UMethodList extends Component {
+class MethodList extends Component {
 	static contextType = ToolContainerContext;
 
 	constructor(props) {
@@ -716,4 +716,4 @@ class UMethodList extends Component {
 	}
 }
 
-export default UMethodList;
+export default MethodList;

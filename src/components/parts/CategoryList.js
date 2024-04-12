@@ -4,7 +4,7 @@ import CustomPaper from "../controls/CustomPaper";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 
-class UCategoryList extends Component {
+class CategoryList extends Component {
 	static contextType = ToolContainerContext;
 
 	constructor(props) {
@@ -237,4 +237,4 @@ class UCategoryList extends Component {
 	}
 }
 
-export default UCategoryList;
+export default CategoryList;
