@@ -19,7 +19,12 @@ class Login extends Component {
 			developer: "",
 			connecting: false,
 			error: null,
+			recentConnections: [],
 		};
+	}
+
+	async componentDidMount() {
+		await this.initializeRecentConnections();
 	}
 
 	backendChanged(uri) {
@@ -58,23 +63,27 @@ class Login extends Component {
 		}
 	}
 
-	recentConnections() {
+	async initializeRecentConnections() {
 		const connections = [];
 		for (let i = 0; i < localStorage.length; i++) {
 			const key = localStorage.key(i);
 			if (key.startsWith("webside-settings")) {
 				const data = localStorage.getItem(key);
-				const settings = JSON.parse(data);
-				connections.push(settings.connection);
+				const connection = JSON.parse(data).connection;
+				try {
+					let logo = await axios.get(connection.backend + "/logo");
+					connection.logo = logo.data;
+				} catch (error) {}
+				connections.push(connection);
 			}
 		}
-		return connections;
+		this.setState({ recentConnections: connections });
 	}
 
 	render() {
-		const { backend, developer, error, connecting } = this.state;
+		const { backend, developer, error, connecting, recentConnections } =
+			this.state;
 		const buttonLabel = connecting ? "Connecting" : "Connect";
-		const recent = this.recentConnections();
 		return (
 			<div
 				sx={{
@@ -164,35 +173,57 @@ class Login extends Component {
 										<FormHelperText>{error}</FormHelperText>
 									</Grid>
 								)}
-								{recent.length > 0 && (
+								{recentConnections.length > 0 && (
 									<Grid item>
 										<Box
 											display="flex"
 											flexDirection="column"
+											alignContent="center"
+											justifyContent="center"
 										>
-											<Typography variant="h6">
-												Recent
+											<Typography variant="subtitle1">
+												Recent connections:
 											</Typography>
-											{recent.map((c) => (
-												<Link
-													key={c.backend}
-													color="inherit"
-													underline="hover"
-													variant="body2"
-													href="#"
-													onClick={(event) => {
-														event.preventDefault();
-														this.connect(
-															c.backend,
-															c.developer
-														);
-													}}
+											{recentConnections.map((c) => (
+												<Box
+													p={1}
+													key={
+														c.backend + c.developer
+													}
+													display="flex"
+													flexDirection="row"
 												>
-													{c.backend +
-														" (" +
-														c.developer +
-														")"}
-												</Link>
+													{c.logo && (
+														<img
+															src={
+																"data:image/png;base64," +
+																c.logo
+															}
+															width={20}
+															height={20}
+														/>
+													)}
+													<Link
+														ml={1}
+														key={c.backend}
+														color="inherit"
+														underline="hover"
+														variant="body2"
+														href="#"
+														onClick={(event) => {
+															event.preventDefault();
+															this.connect(
+																c.backend,
+																c.developer
+															);
+														}}
+													>
+														{c.backend +
+															" (" +
+															c.developer +
+															")"}
+													</Link>
+												</Box>
 											))}
 										</Box>
 									</Grid>
