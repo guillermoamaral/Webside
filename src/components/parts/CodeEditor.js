@@ -150,7 +150,16 @@ class CodeEditor extends Component {
 
 	componentDidMount() {
 		this.initializeExtendedOptions();
+		ide.onColorModeChange(this.colorModeChanged);
 	}
+
+	componentWillUnmount() {
+		ide.removeColorModeChangeHandler(this.colorModeChanged);
+	}
+
+	colorModeChanged = () => {
+		this.forceUpdate()
+	};
 
 	shouldComponentUpdate(nextProps, nextState) {
 		// if (this.state.dirty) {

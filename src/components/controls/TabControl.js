@@ -22,6 +22,12 @@ class TabControl extends Component {
 		}
 	};
 
+	tabFocused = (event, index) => {
+		if (this.props.onTabFocus) {
+			this.props.onTabFocus(this.props.pages[index]);
+		}
+	};
+
 	closeTab = (event, index) => {
 		if (event) {
 			event.stopPropagation();
@@ -94,6 +100,7 @@ class TabControl extends Component {
 											paddingBotton: 0,
 											minHeight: 20,
 										}}
+										onFocus={this.tabFocused}
 										label={
 											<TabLabel
 												index={index}

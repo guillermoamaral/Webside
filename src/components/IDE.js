@@ -34,6 +34,7 @@ class IDE extends Component {
 		ide = this;
 		this.initializeSettings();
 		this.mainContainerRef = React.createRef();
+		this.colorModeChangeHandlers = [];
 		this.state = {
 			sidebarExpanded: false,
 			lastMessage: null,
@@ -44,6 +45,7 @@ class IDE extends Component {
 			waiting: false,
 			quickSearchOpen: false,
 			quickSearchOptions: {},
+			activeContainer: null,
 		};
 	}
 
@@ -224,6 +226,16 @@ class IDE extends Component {
 		this.storeSettings();
 		this.updateTheme();
 		this.forceUpdate();
+		this.colorModeChangeHandlers.forEach((h) => h());
+	};
+
+	onColorModeChange = (handler) => {
+		this.colorModeChangeHandlers.push(handler);
+	};
+
+	removeColorModeChangeHandler = (handler) => {
+		const index = this.colorModeChangeHandlers.indexOf(handler);
+		this.colorModeChangeHandlers.splice(index, 1);
 	};
 
 	settingsStoreName() {
@@ -392,11 +404,8 @@ class IDE extends Component {
 					id={id}
 					key={id}
 					ref={ref}
-					onPagesRemove={(c) => {
-						if (c.pages().length === 0) {
-							this.removeContainer(c);
-						}
-					}}
+					onPageFocus={this.pageFocusedInContainer}
+					onPagesRemove={this.pagesRemovedInContainer}
 					//onSplit={this.splitContainer} //disabled for the moment
 					pages={pages}
 					showClose={true}
@@ -426,6 +435,45 @@ class IDE extends Component {
 			extralContainers: [],
 		});
 	}
+
+	splitPage = (container, page) => {
+		const containers = this.state.extraContainers;
+		const index =
+			containers.findIndex((c) => c.component.ref.current === container) +
+			1;
+		if (index > containers.length - 1) {
+			this.addContainer([page]);
+		} else {
+			const target = containers[index];
+			target.component.ref.current.addPage(page);
+		}
+		container.removePage(page);
+	};
+
+	splitContainer = (container) => {
+		const containers = this.state.extraContainers;
+		if (containers.length < MaxExtraContainers) {
+			const index = container
+				? containers.findIndex(
+						(c) => c.component.ref.current === container
+				  )
+				: containers.length - 1;
+			this.addContainer([], index + 1);
+		}
+	};
+
+	pagesRemovedInContainer = (container) => {
+		if (container.pages().length === 0) {
+			this.removeContainer(container);
+		}
+	};
+
+	pageFocusedInContainer = (container, page) => {
+		if (container === this.state.activeContainer) return;
+		this.setState({ activeContainer: container });
+	};
+
+	// ...
 
 	saveImage = async () => {
 		try {
@@ -582,32 +630,6 @@ class IDE extends Component {
 
 	collapseSidebar = () => {
 		this.setState({ sidebarExpanded: false });
-	};
-
-	splitPage = (container, page) => {
-		const containers = this.state.extraContainers;
-		const index =
-			containers.findIndex((c) => c.component.ref.current === container) +
-			1;
-		if (index > containers.length - 1) {
-			this.addContainer([page]);
-		} else {
-			const target = containers[index];
-			target.component.ref.current.addPage(page);
-		}
-		container.removePage(page);
-	};
-
-	splitContainer = (container) => {
-		const containers = this.state.extraContainers;
-		if (containers.length < MaxExtraContainers) {
-			const index = container
-				? containers.findIndex(
-						(c) => c.component.ref.current === container
-				  )
-				: containers.length - 1;
-			this.addContainer([], index + 1);
-		}
 	};
 
 	//Services...
@@ -1028,7 +1050,6 @@ class IDE extends Component {
 								padding: 1,
 							}}
 						>
-							{/* <DrawerHeader /> */}
 							<CustomSplit>
 								<Box
 									key="mainContainerBox"
@@ -1042,6 +1063,9 @@ class IDE extends Component {
 										id={99999}
 										key="mainContainer"
 										ref={this.mainContainerRef}
+										onPageFocus={
+											this.pageFocusedInContainer
+										}
 										//onSplit={this.splitContainer} //disabled for the moment
 										showClose={false}
 									/>

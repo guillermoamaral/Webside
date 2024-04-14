@@ -88,6 +88,11 @@ class ToolContainer extends Component {
 		const state = { selectedPageId: page.id };
 		this.aboutToSelectPage(page);
 		this.setState(state);
+		if (this.props.onPageSelect) this.props.onPageSelect(this, page);
+	};
+
+	pageFocused = (page) => {
+		if (this.props.onPageFocus) this.props.onPageFocus(this, page);
 	};
 
 	aboutToSelectPage(page) {
@@ -949,6 +954,7 @@ class ToolContainer extends Component {
 					onTabsClose={this.closePages}
 					addOptions={this.addPageOptions()}
 					onTabSplit={this.splitPage}
+					onTabFocus={this.pageFocused}
 					showClose={showClose}
 				/>
 			</ToolContainerContext.Provider>
