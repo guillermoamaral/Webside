@@ -1,7 +1,6 @@
 import React from "react";
 import Tool from "./Tool";
 import {
-	Grid,
 	Paper,
 	Accordion,
 	AccordionSummary,
@@ -15,6 +14,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CodeEditor from "../parts/CodeEditor";
 import Inspector from "./Inspector";
 import { ide } from "../IDE";
+import CustomSplit from "../controls/CustomSplit";
 
 class Workspace extends Tool {
 	constructor(props) {
@@ -120,74 +120,78 @@ class Workspace extends Tool {
 
 	render() {
 		const { source, inspectors, evaluating } = this.state;
-		const editorWidth = inspectors.length > 0 ? 8 : 12;
 		return (
-			<Grid container spacing={1} sx={{ height: "100%" }}>
-				<Grid item xs={12} md={editorWidth} lg={editorWidth}>
-					<Paper
-						variant="outlined"
-						style={{ minHeight: 300, height: "100%" }}
-					>
-						<CodeEditor
-							context={this.evaluationContext()}
-							source={source}
-							showAccept
-							acceptIcon={
-								<PlayIcon style={{ color: "#3bba5d" }} />
-							}
-							onAccept={this.evaluateClicked}
-							onChange={this.sourceChanged}
-							evaluating={evaluating}
-							onTooltipShow={this.tooltipForBinding}
-							onTooltipClick={this.inspectBinding}
-						/>
-					</Paper>
-				</Grid>
-				{inspectors.length > 0 && (
-					<Grid item xs={12} md={4} lg={4}>
-						{inspectors.map((inspector, index) => {
-							return (
-								<Accordion key={inspector.key} defaultExpanded>
-									<AccordionSummary
-										expandIcon={<ExpandMoreIcon />}
-										iconbuttonprops={{ size: "small" }}
+			<Box display="flex" sx={{ height: "100%" }}>
+				<CustomSplit>
+					<Box flexGrow={1} sx={{ width: "50%" }}>
+						<Paper
+							variant="outlined"
+							style={{ minHeight: 300, height: "100%" }}
+						>
+							<CodeEditor
+								context={this.evaluationContext()}
+								source={source}
+								showAccept
+								acceptIcon={
+									<PlayIcon style={{ color: "#3bba5d" }} />
+								}
+								onAccept={this.evaluateClicked}
+								onChange={this.sourceChanged}
+								evaluating={evaluating}
+								onTooltipShow={this.tooltipForBinding}
+								onTooltipClick={this.inspectBinding}
+							/>
+						</Paper>
+					</Box>
+					{inspectors.length > 0 && (
+						<Box sx={{ width: "50%" }}>
+							{inspectors.map((inspector, index) => {
+								return (
+									<Accordion
+										key={inspector.key}
+										defaultExpanded
 									>
-										<Box
-											display="flex"
-											flexWrap="nowrap"
-											alignItems="center"
-											justifyContent="center"
-											mt={0}
+										<AccordionSummary
+											expandIcon={<ExpandMoreIcon />}
+											iconbuttonprops={{ size: "small" }}
 										>
-											<Box>
-												<IconButton
-													onClick={(event) => {
-														this.closeInspector(
-															event,
-															inspector.key
-														);
-													}}
-													size="small"
-												>
-													<CloseIcon fontSize="small" />
-												</IconButton>
+											<Box
+												display="flex"
+												flexWrap="nowrap"
+												alignItems="center"
+												justifyContent="center"
+												mt={0}
+											>
+												<Box>
+													<IconButton
+														onClick={(event) => {
+															this.closeInspector(
+																event,
+																inspector.key
+															);
+														}}
+														size="small"
+													>
+														<CloseIcon fontSize="small" />
+													</IconButton>
+												</Box>
+												<Box>
+													<Typography>
+														{"Inspecting: " +
+															inspector.props.root
+																.class}
+													</Typography>
+												</Box>
 											</Box>
-											<Box>
-												<Typography>
-													{"Inspecting: " +
-														inspector.props.root
-															.class}
-												</Typography>
-											</Box>
-										</Box>
-									</AccordionSummary>
-									{inspector}
-								</Accordion>
-							);
-						})}
-					</Grid>
-				)}
-			</Grid>
+										</AccordionSummary>
+										{inspector}
+									</Accordion>
+								);
+							})}
+						</Box>
+					)}
+				</CustomSplit>
+			</Box>
 		);
 	}
 }
