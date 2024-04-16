@@ -3,11 +3,12 @@ import Scrollable from "../controls/Scrollable.js";
 import PopupMenu from "../controls/PopupMenu";
 //import { ide } from "../IDE.js";
 import CodeMirrorMerge from "react-codemirror-merge";
-import { EditorView } from "@codemirror/view";
+import { EditorView, keymap } from "@codemirror/view";
 import CodeEditor from "./CodeEditor.js";
 import { smalltalk } from "./CodeEditor.js";
 import { lintGutter } from "@codemirror/lint";
 import { Box } from "@mui/material";
+import { Prec } from "@codemirror/state";
 
 const Original = CodeMirrorMerge.Original;
 const Modified = CodeMirrorMerge.Modified;
@@ -47,6 +48,7 @@ class CodeMerge extends CodeEditor {
 
 	openMenu = (event) => {
 		event.preventDefault();
+		event.stopPropagation();
 		this.setState({
 			menuOpen: true,
 			menuPosition: { x: event.clientX - 2, y: event.clientY - 4 },
@@ -86,6 +88,7 @@ class CodeMerge extends CodeEditor {
 								EditorView.lineWrapping,
 								lintGutter(),
 								theme,
+								Prec.highest(keymap.of(this.extraKeys())),
 							]}
 							basicSetup={{
 								lineNumbers: false,
@@ -98,6 +101,7 @@ class CodeMerge extends CodeEditor {
 								EditorView.lineWrapping,
 								lintGutter(),
 								theme,
+								Prec.highest(keymap.of(this.extraKeys())),
 							]}
 							basicSetup={{
 								lineNumbers: false,
