@@ -176,16 +176,20 @@ class CodeBrowser extends Component {
 			}
 			if (suggestion) {
 				try {
-					let method;
+					let applied;
 					for (const change of suggestion.changes) {
-						const applied = await ide.backend.postChange(change);
-						method = await ide.backend.method(
-							this.props.class.name,
-							applied.selector
-						);
+						applied = await ide.backend.postChange(change);
 					}
-					if (this.props.onMethodCompile) {
-						this.props.onMethodCompile(method);
+					let method;
+					if (applied && applied.type === "AddMethod") {
+						try {
+							method = await ide.backend.method(
+								this.props.class.name,
+								applied.selector
+							);
+						} catch (error) {}
+						if (method && this.props.onMethodCompile)
+							this.props.onMethodCompile(method);
 					}
 				} catch (inner) {
 					this.handleCompilationError(
