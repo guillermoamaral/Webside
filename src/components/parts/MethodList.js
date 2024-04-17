@@ -259,7 +259,11 @@ class MethodList extends Component {
 	classifyMethod = async (method, category) => {
 		var target = category;
 		if (!target) {
-			target = await this.newCategory();
+			try {
+				target = await ide.prompt({
+					title: "New category",
+				});
+			} catch (error) {}
 		}
 		if (!target) return;
 		try {

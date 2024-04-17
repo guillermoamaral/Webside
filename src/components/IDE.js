@@ -913,7 +913,7 @@ class IDE extends Component {
 		if (suggestions && suggestions.length > 0) {
 			let suggestion;
 			if (suggestions.length === 1) {
-				let confirm = await ide.confirm({
+				let confirm = await this.confirm({
 					title: data.description,
 					message: suggestions[0].description,
 				});
