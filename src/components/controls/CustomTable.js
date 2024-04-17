@@ -76,6 +76,12 @@ class CustomTable extends Component {
 		}
 	};
 
+	rowDoubleClicked = (row) => {
+		if (this.props.onRowDoubleClick) {
+			this.props.onRowDoubleClick(row);
+		}
+	};
+
 	openMenu = (event) => {
 		event.preventDefault();
 		this.setState({
@@ -423,6 +429,10 @@ class CustomTable extends Component {
 													this.rowSelected(row)
 												}
 												onContextMenu={this.openMenu}
+												onDoubleClick={(event) => {
+													event.preventDefault();
+													this.rowDoubleClicked(row);
+												}}
 											>
 												{columns.map((column, j) => {
 													const color =

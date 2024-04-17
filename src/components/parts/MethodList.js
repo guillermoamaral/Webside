@@ -682,8 +682,8 @@ class MethodList extends Component {
 	}
 
 	render() {
-		let { methods, selectedMethod, loading } = this.state;
-		let { useTable, labelStyle } = this.props;
+		const { methods, selectedMethod, loading } = this.state;
+		const { useTable, labelStyle } = this.props;
 		if (useTable) {
 			return (
 				<CustomTable
@@ -697,6 +697,7 @@ class MethodList extends Component {
 					selectedRow={selectedMethod}
 					rowColor={this.methodColor}
 					//noHeaders
+					onRowDoubleClick={this.browseClass}
 				/>
 			);
 		} else {
