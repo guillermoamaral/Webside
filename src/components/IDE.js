@@ -906,9 +906,22 @@ class IDE extends Component {
 		return options;
 	}
 
+	performChange = async (fx) => {
+		let applied;
+		try {
+			applied = await fx(this.backend);
+		} catch (error) {
+			applied = await this.handleChangeError(error);
+		}
+		return applied;
+	};
+
 	async handleChangeError(error) {
 		const data = error.data;
-		if (!data || typeof data === "string") return this.reportError(error);
+		if (!data || typeof data === "string") {
+			this.reportError(error);
+			return;
+		}
 		const suggestions = data.suggestions;
 		if (suggestions && suggestions.length > 0) {
 			let suggestion;
@@ -931,19 +944,20 @@ class IDE extends Component {
 					);
 				}
 			}
+			let last;
 			if (suggestion) {
 				try {
 					for (const change of suggestion.changes) {
-						await this.backend.postChange(change);
+						last = await this.backend.postChange(change);
 					}
 				} catch (inner) {
-					this.handleChangeError(inner);
+					return this.handleChangeError(inner);
 				}
 			}
-		} else {
-			const description = data ? data.description : data;
-			ide.reportError(description || "Unknown change error");
+			return last;
 		}
+		const description = data ? data.description : data;
+		ide.reportError(description || "Unknown change error");
 	}
 
 	download(blob, filename) {

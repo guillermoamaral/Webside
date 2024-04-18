@@ -136,19 +136,17 @@ class CategoryList extends Component {
 		if (!category) {
 			return;
 		}
-		try {
-			await ide.backend.removeCategory(this.props.class.name, category);
+		const applied = await ide.performChange((backend) =>
+			backend.removeCategory(this.props.class.name, category)
+		);
+		if (applied) {
 			let categories = await this.fetchCategories();
 			this.setState({
 				categories: categories.defined,
 				selectedCategory: null,
 			});
-			if (this.props.onCategoryRemove) {
-				this.props.onCategoryRemove(category);
-			}
-		} catch (error) {
-			ide.reportError(error);
 		}
+		if (this.props.onCategoryRemove) this.props.onCategoryRemove(category);
 	};
 
 	browseMethods = async (category) => {

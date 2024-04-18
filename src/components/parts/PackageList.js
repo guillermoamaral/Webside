@@ -15,6 +15,7 @@ class PackageList extends Component {
 			extendedOptions: [],
 		};
 	}
+	
 	componentDidMount() {
 		this.updatePackages(this.props.selectedPackage);
 		this.initializeExtendedOptions();
