@@ -47,7 +47,7 @@ class ClassTree extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		let selected = this.props.selectedElement || this.state.selectedElement;
+		let selected = this.props.selectedClass || this.state.selectedClass;
 		if (
 			this.props.roots !== prevProps.roots ||
 			this.props.package !== prevProps.package
@@ -58,9 +58,9 @@ class ClassTree extends Component {
 				selected
 			);
 		}
-		if (prevProps.selectedElement !== this.props.selectedElement) {
+		if (prevProps.selectedClass !== this.props.selectedClass) {
 			this.setState({
-				selectedElement: this.props.selectedElement,
+				selectedClass: this.props.selectedClass,
 			});
 		}
 	}
@@ -107,9 +107,9 @@ class ClassTree extends Component {
 		});
 	}
 
-	updateClasses = async (classes, pack, selectedClass) => {
+	updateClasses = async (roots, pack, selectedClass) => {
 		this.setState({ loading: true });
-		let trees = await this.fetchClasses(classes, pack);
+		let trees = await this.fetchClasses(roots, pack);
 		let selected;
 		if (selectedClass) {
 			trees.forEach(
@@ -117,9 +117,8 @@ class ClassTree extends Component {
 					(selected = this.findSubclass(selectedClass.name, root))
 			);
 		}
-		if (selected && this.props.onClassSelect) {
+		if (selected && this.props.onClassSelect)
 			this.props.onClassSelect(selected);
-		}
 		this.setState({
 			roots: trees,
 			expandedClasses: [...trees],
@@ -219,9 +218,7 @@ class ClassTree extends Component {
 	classSelected = async (species) => {
 		await this.updateClass(species);
 		this.setState({ selectedClass: species });
-		if (this.props.onClassSelect) {
-			this.props.onClassSelect(species);
-		}
+		if (this.props.onClassSelect) this.props.onClassSelect(species);
 	};
 
 	classExpanded = async (species) => {
@@ -229,18 +226,14 @@ class ClassTree extends Component {
 		this.setState({
 			expandedClasses: [...this.state.expandedClasses, species],
 		});
-		if (this.props.onClassExpand) {
-			this.props.onClassExpand(species);
-		}
+		if (this.props.onClassExpand) this.props.onClassExpand(species);
 	};
 
 	classCollapsed = (species) => {
 		const expanded = this.state.expandedClasses;
 		expanded.splice(expanded.indexOf(species), 1);
 		this.setState({ expandedClasses: expanded });
-		if (this.props.onClassCollapse) {
-			this.props.onClassCollapse(species);
-		}
+		if (this.props.onClassCollapse) this.props.onClassCollapse(species);
 	};
 
 	newClass = async () => {
@@ -251,9 +244,7 @@ class ClassTree extends Component {
 		if (species) {
 			template.superclass = species.name;
 		}
-		if (this.props.onClassSelect) {
-			this.props.onClassSelect(template);
-		}
+		if (this.props.onClassSelect) this.props.onClassSelect(template);
 	};
 
 	newSubclass = async (superclass) => {
@@ -283,9 +274,7 @@ class ClassTree extends Component {
 				expandedClasses: expanded,
 				selectedClass: species,
 			});
-			if (this.props.onClassDefine) {
-				this.props.onClassDefine(species);
-			}
+			if (this.props.onClassDefine) this.props.onClassDefine(species);
 		} catch (error) {
 			ide.reportError(error);
 		}
@@ -307,9 +296,7 @@ class ClassTree extends Component {
 			const renamed = await ide.backend.classNamed(newName);
 			Object.assign(species, renamed);
 			this.setState({ selectedClass: species });
-			if (this.props.onClassRename) {
-				this.props.onClassRename(species);
-			}
+			if (this.props.onClassRename) this.props.onClassRename(species);
 		} catch (error) {
 			ide.reportError(error);
 		}
@@ -359,12 +346,9 @@ class ClassTree extends Component {
 				expandedClasses: expanded,
 				selectedClass: selected,
 			});
-			if (this.props.onClassRemove) {
-				this.props.onClassRemove(species);
-			}
-			if (selected && this.props.onClassSelect) {
+			if (this.props.onClassRemove) this.props.onClassRemove(species);
+			if (selected && this.props.onClassSelect)
 				this.props.onClassSelect(selected);
-			}
 		} catch (error) {
 			ide.reportError(error);
 		}

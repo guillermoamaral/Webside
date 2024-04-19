@@ -218,7 +218,6 @@ class VariableList extends Component {
 			{ label: "Rename", action: this.renameVariable },
 			{ label: "Remove", action: this.removeVariable },
 			{ label: "Move to superclass", action: this.moveVariableUp },
-			null,
 		];
 		const species = this.props.class;
 		if (species && species.subclasses && species.subclasses.length > 0) {
