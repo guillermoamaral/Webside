@@ -42,6 +42,7 @@ Where `class` is the class of the receiver as defined [here](../../../../code/cl
 		"definition": "Integer\r\tsubclass: #SmallInteger\r\tinstanceVariableNames: ''\r\tclassVariableNames: 'Maximum Minimum'\r\tpoolDictionaries: ''",
 		"superclass": "Integer",
 		"comment": "",
+		"category": "Numbers",
 		"variable": false,
 		"package": "Kernel"
 	},

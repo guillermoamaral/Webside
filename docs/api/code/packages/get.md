@@ -23,7 +23,17 @@ Retrieve all packages in the system.
 	"classes": ["string"],
 	"methods": {
 		"classname": ["selector"]
-	}
+	},
+	"categories": ["category"]
+}
+```
+
+Where `category` is defined as:
+
+```json
+{
+	"name": "string",
+	"package": "string"
 }
 ```
 
@@ -194,13 +204,31 @@ Retrieve all packages in the system.
                 "websideType"
             ]
         },
+        "categories": [
+            "Manifest",
+            "Base"
+        ],
     }
     {
         "name": "Webside-Tests",
         "classes": [
             "WebsideAPITest"
         ],
-        "methods": {}
-    }
+        "methods": {},
+        "categories": [
+            {
+                "name": "Extensions",
+                "package": "Webside"
+            },
+            {
+                "name": "Base",
+                "package": "Webside"
+            },
+            {
+                "name": "Manifest",
+                "package": "Webside"
+            }
+        ],
+    },
 ]
 ```

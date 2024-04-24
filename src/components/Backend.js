@@ -121,6 +121,10 @@ class Backend {
 		return await this.get("/packages?names=true", "package names");
 	}
 
+	async packageTree() {
+		return await this.get("/packages?tree=true", "package tree");
+	}
+
 	async packageNamed(packagename) {
 		return await this.get(
 			"/packages/" + encodeURIComponent(packagename),
@@ -128,14 +132,14 @@ class Backend {
 		);
 	}
 
-	async packageClasses(packagename, extended = false) {
-		return await this.get(
+	async packageClasses(packagename, extended = false, category) {
+		let uri =
 			"/packages/" +
-				packagename +
-				"/classes?tree=true&extended=" +
-				extended,
-			"classes from package " + packagename
-		);
+			packagename +
+			"/classes?tree=true&extended=" +
+			extended;
+		if (category) uri += "&category=" + category;
+		return await this.get(uri, "classes from package " + packagename);
 	}
 
 	async classTree(root, depth, onlyNames = false) {
@@ -275,6 +279,11 @@ class Backend {
 
 	async searchClassNames(text) {
 		const results = await this.search(text, true, "similar", "class");
+		return results.map((r) => r.text);
+	}
+
+	async searchPackageNames(text) {
+		const results = await this.search(text, true, "similar", "package");
 		return results.map((r) => r.text);
 	}
 
@@ -772,6 +781,42 @@ class Backend {
 		return await this.postChange(
 			change,
 			"rename selector " + selector + " to " + newSelector
+		);
+	}
+
+	async addClassCategory(packagename, category) {
+		const change = this.newChange("AddClassCategory");
+		change.package = packagename;
+		change.category = category;
+		return await this.postChange(
+			change,
+			"add class category " + category + " to package " + packagename
+		);
+	}
+
+	async renameClassCategory(packagename, category, newName) {
+		const change = this.newChange("RenameClassCategory");
+		change.package = packagename;
+		change.category = category;
+		change.newName = newName;
+		return await this.postChange(
+			change,
+			"rename class category " +
+				category +
+				" to " +
+				newName +
+				" of package " +
+				packagename
+		);
+	}
+
+	async removeClassCategory(packagename, category) {
+		const change = this.newChange("RemoveClassCategory");
+		change.package = packagename;
+		change.category = category;
+		return await this.postChange(
+			change,
+			"remove class category " + category + " from package " + packagename
 		);
 	}
 

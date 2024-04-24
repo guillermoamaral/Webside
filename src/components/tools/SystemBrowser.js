@@ -12,7 +12,7 @@ import {
 import CustomSplit from "../controls/CustomSplit";
 import CustomPaper from "../controls/CustomPaper";
 import { ide } from "../IDE";
-import PackageList from "../parts/PackageList";
+import PackageTree from "../parts/PackageTree";
 import ClassTree from "../parts/ClassTree";
 import VariableList from "../parts/VariableList";
 import CategoryList from "../parts/CategoryList";
@@ -29,6 +29,7 @@ class SystemBrowser extends Tool {
 			roots: [{ name: "Object" }],
 			selectedSide: "instance",
 			selectedPackage: null,
+			selectedClassCategory: null,
 			selectedClass: null,
 			selectedVariable: null,
 			selectedCategory: null,
@@ -106,12 +107,26 @@ class SystemBrowser extends Tool {
 	packageSelected = async (pack) => {
 		this.updateLabel(pack.name);
 		await this.updatePackage(pack);
+		let category;
+		if (pack.categories && this.state.selectedCategory) {
+			category = pack.categories.find(
+				(c) => c.name === this.state.selectedCategory.name
+			);
+		}
 		this.setState({
 			selectedPackage: pack,
+			selectedClassCategory: category,
 			selectedClass: null,
 			selectedCategory: null,
 			selectedVariable: null,
 			selectedMethod: null,
+		});
+	};
+
+	classCategorySelected = async (category, pack) => {
+		this.setState({
+			selectedPackage: pack,
+			selectedClassCategory: category,
 		});
 	};
 
@@ -300,9 +315,10 @@ class SystemBrowser extends Tool {
 	};
 
 	render() {
-		let {
+		const {
 			roots,
 			selectedPackage,
+			selectedClassCategory,
 			selectedSide,
 			selectedVariable,
 			selectedAccess,
@@ -311,9 +327,9 @@ class SystemBrowser extends Tool {
 			preselectedClass,
 			preselectedPackage,
 		} = this.state;
-		let targetClass = this.targetClass();
-		let showPackages = this.props.showPackages;
-		let width = showPackages ? "20%" : "25%";
+		const targetClass = this.targetClass();
+		const showPackages = this.props.showPackages;
+		const width = showPackages ? "20%" : "25%";
 		return (
 			<CustomSplit mode="vertical">
 				<Box sx={{ minHeight: 50, height: "35%" }}>
@@ -326,10 +342,13 @@ class SystemBrowser extends Tool {
 						<CustomSplit>
 							{showPackages && (
 								<Box sx={{ width: width }}>
-									<PackageList
+									<PackageTree
 										onPackageSelect={this.packageSelected}
 										onPackageCreate={this.packageCreated}
 										selectedPackage={preselectedPackage}
+										onCategorySelect={
+											this.classCategorySelected
+										}
 									/>
 								</Box>
 							)}
@@ -339,6 +358,11 @@ class SystemBrowser extends Tool {
 									roots={!showPackages ? roots : null}
 									package={
 										showPackages ? selectedPackage : null
+									}
+									category={
+										showPackages
+											? selectedClassCategory
+											: null
 									}
 									onClassSelect={this.classSelected}
 									onClassDefine={this.classDefined}

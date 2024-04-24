@@ -16,18 +16,23 @@ Retrieve classes of a given package.
 
 ```json
 [
-	{
-		"name": "WebsideAPI",
-		"definition": "Object subclass: #WebsideAPI\r\tinstanceVariableNames: 'request server'\r\tclassVariableNames: 'Debuggers Evaluations Objects Workspaces'\r\tpoolDictionaries: ''\r\tcategory: 'Webside-Base'",
-		"superclass": "Object",
-		"package": "Webside"
-	},
-	{
-		"name": "WebsideServer",
-		"definition": "Object subclass: #WebsideServer\r\tinstanceVariableNames: 'server apiClass baseUri port resources'\r\tclassVariableNames: ''\r\tpoolDictionaries: ''\r\tcategory: 'Webside-Base'",
-		"superclass": "Object",
-		"comment": "Handy class to make WebsideAPI accessible on a Teapot server.\r\rWebsideServer allInstances.\r\rWebsideServer new\r\tbaseUri: '/pharo';\r\tport: 9001;\r\tstart",
-		"package": "Webside"
-	}
+    {
+        "name": "WebsideServer",
+        "definition": "Object subclass: #WebsideServer\r\tinstanceVariableNames: 'server apiClass baseUri port resources'\r\tclassVariableNames: ''\r\tpoolDictionaries: ''\r\tcategory: 'Webside-Base'",
+        "superclass": "Object",
+        "comment": "Handy class to make WebsideAPI accessible on a Teapot server.\r\rWebsideServer allInstances.\r\rWebsideServer new\r\tbaseUri: '/pharo';\r\tport: 9001;\r\tstart",
+        "category": "Base",
+        "variable": false,
+        "package": "Webside"
+    },
+    {
+        "name": "WebsideAPI",
+        "definition": "Object subclass: #WebsideAPI\r\tinstanceVariableNames: 'request server'\r\tclassVariableNames: ''\r\tpoolDictionaries: ''\r\tcategory: 'Webside-Base'",
+        "superclass": "Object",
+        "comment": "self startServer\r\rself stopServer\r",
+        "category": "Base",
+        "variable": false,
+        "package": "Webside"
+    },
 ]
 ```

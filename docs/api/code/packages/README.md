@@ -20,9 +20,9 @@ Where `classes` should contain the names of classes defined in the package, and 
 
 ## Endpoints
 
-| Method | Path                                            | Description                               | Parameters | Payload |
-| :----: | ----------------------------------------------- | ----------------------------------------- | :--------: | ------- |
-|  GET   | [/packages](get.md)                             | Retrieve all packages                      |  `names`   | -       |
-|  GET   | [/packages/{name}](name/get.md)                 | Retrieve a given package                   |     -      | -       |
-|  GET   | [/packages/{name}/classes](name/classes/get.md) | Retrieve actual classes of a given package |     -      | -       |
-|  GET   | [/packages/{name}/methods](name/methods/get.md) | Retrieve actual methods of a given package |     -      | -       |
+| Method | Path                                            | Description                                |               Parameters                | Payload |
+| :----: | ----------------------------------------------- | ------------------------------------------ | :-------------------------------------: | ------- |
+|  GET   | [/packages](get.md)                             | Retrieve all packages                      |                 `names`                 | -       |
+|  GET   | [/packages/{name}](name/get.md)                 | Retrieve a given package                   |                    -                    | -       |
+|  GET   | [/packages/{name}/classes](name/classes/get.md) | Retrieve actual classes of a given package | `extended`, `tree`, `names`, `category` | -       |
+|  GET   | [/packages/{name}/methods](name/methods/get.md) | Retrieve actual methods of a given package |                    -                    | -       |

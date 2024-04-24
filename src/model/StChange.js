@@ -26,6 +26,9 @@ class StChange extends Object {
 		this.typeMap["CommentClass"] = CommentClass;
 		this.typeMap["RemoveClass"] = RemoveClass;
 		this.typeMap["RenameClass"] = RenameClass;
+		this.typeMap["AddClassCategory"] = AddClassCategory;
+		this.typeMap["RenameClassCategory"] = RenameClassCategory;
+		this.typeMap["RemoveClassCategory"] = RemoveClassCategory;
 		this.typeMap["AddInstanceVariable"] = AddInstanceVariable;
 		this.typeMap["RemoveInstanceVariable"] = RemoveInstanceVariable;
 		this.typeMap["RenameInstanceVariable"] = RenameInstanceVariable;
@@ -398,6 +401,46 @@ class CategoryChange extends ClassChange {
 		return json;
 	}
 }
+
+class ClassCategorCategory extends CategoryChange {
+	constructor() {
+		super();
+		this.package = null;
+	}
+
+	fromJson(json) {
+		super.fromJson(json);
+		this.package = json.package;
+	}
+
+	asJson() {
+		var json = super.asJson();
+		json.package = this.package;
+		return json;
+	}
+}
+
+class AddClassCategory extends ClassCategorCategory {}
+
+class RenameClassCategory extends ClassCategorCategory {
+	constructor() {
+		super();
+		this.newName = null;
+	}
+
+	fromJson(json) {
+		super.fromJson(json);
+		this.newName = json.newName;
+	}
+
+	asJson() {
+		var json = super.asJson();
+		json.newName = this.newName;
+		return json;
+	}
+}
+
+class RemoveClassCategory extends ClassCategorCategory {}
 
 class RenameCategory extends CategoryChange {
 	constructor() {

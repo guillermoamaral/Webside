@@ -98,44 +98,36 @@ class CategoryList extends Component {
 		categories.push(category);
 		categories.sort();
 		this.setState({ categories: categories, selectedCategory: category });
-		if (this.props.onCategoryAdd) {
-			this.props.onCategoryAdd(category);
-		}
+		if (this.props.onCategoryAdd) this.props.onCategoryAdd(category);
 	};
 
 	renameCategory = async (category) => {
-		if (!category) {
-			return;
-		}
+		if (!category) return;
 		try {
-			const renamed = await ide.prompt({
+			const name = await ide.prompt({
 				title: "Rename category",
 				defaultValue: category,
 			});
 			await ide.backend.renameCategory(
 				this.props.class.name,
 				category,
-				renamed
+				name
 			);
 			let categories = this.state.categories;
-			categories.splice(categories.indexOf(category), 1, renamed);
+			categories.splice(categories.indexOf(category), 1, name);
 			categories.sort();
 			this.setState({
 				categories: categories,
-				selectedCategory: renamed,
+				selectedCategory: name,
 			});
-			if (this.props.onCategoryRename) {
-				this.props.onCategoryRename(renamed);
-			}
+			if (this.props.onCategoryRename) this.props.onCategoryRename(name);
 		} catch (error) {
 			ide.reportError(error);
 		}
 	};
 
 	removeCategory = async (category) => {
-		if (!category) {
-			return;
-		}
+		if (!category) return;
 		const applied = await ide.performChange((backend) =>
 			backend.removeCategory(this.props.class.name, category)
 		);

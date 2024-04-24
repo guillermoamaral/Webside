@@ -29,6 +29,7 @@ class ClassTree extends Component {
 		this.updateClasses(
 			this.props.roots,
 			this.props.package,
+			this.props.category,
 			this.props.selectedClass
 		);
 	}
@@ -50,11 +51,13 @@ class ClassTree extends Component {
 		let selected = this.props.selectedClass || this.state.selectedClass;
 		if (
 			this.props.roots !== prevProps.roots ||
-			this.props.package !== prevProps.package
+			this.props.package !== prevProps.package ||
+			this.props.category !== prevProps.category
 		) {
 			return this.updateClasses(
 				this.props.roots,
 				this.props.package,
+				this.props.category,
 				selected
 			);
 		}
@@ -75,7 +78,11 @@ class ClassTree extends Component {
 	async refreshEnsuring(species) {
 		this.setState({ loading: true });
 		let pack = this.props.package;
-		let trees = await this.fetchClasses(this.state.roots, pack);
+		let trees = await this.fetchClasses(
+			this.state.roots,
+			pack,
+			this.props.category
+		);
 		let selected;
 		trees.forEach(
 			(root) => (selected = this.findSubclass(species.name, root))
@@ -88,9 +95,7 @@ class ClassTree extends Component {
 		this.state.expandedClasses.forEach((c) => {
 			found = null;
 			trees.forEach((root) => (found = this.findSubclass(c.name, root)));
-			if (found) {
-				expanded.push(found);
-			}
+			if (found) expanded.push(found);
 		});
 		found = null;
 		trees.forEach(
@@ -107,9 +112,9 @@ class ClassTree extends Component {
 		});
 	}
 
-	updateClasses = async (roots, pack, selectedClass) => {
+	updateClasses = async (roots, pack, category, selectedClass) => {
 		this.setState({ loading: true });
-		let trees = await this.fetchClasses(roots, pack);
+		let trees = await this.fetchClasses(roots, pack, category);
 		let selected;
 		if (selectedClass) {
 			trees.forEach(
@@ -127,21 +132,25 @@ class ClassTree extends Component {
 		});
 	};
 
-	async fetchClasses(roots, pack) {
-		let trees;
-		if (pack) {
-			trees = await this.fetchPackageSubtrees(pack);
-		} else {
-			trees = roots ? await this.fetchSubtrees(roots) : [];
+	async fetchClasses(roots, pack, category) {
+		let trees = [];
+		try {
+			if (pack) {
+				trees = await this.fetchPackageSubtrees(pack, category);
+			} else {
+				trees = roots ? await this.fetchSubtrees(roots) : [];
+			}
+		} catch (error) {
+			ide.reportError(error);
 		}
 		return trees;
 	}
 
-	async fetchPackageSubtrees(pack) {
+	async fetchPackageSubtrees(pack, category) {
 		let trees = [];
 		if (!pack) return trees;
 		try {
-			trees = await ide.backend.packageClasses(pack.name, true);
+			trees = await ide.backend.packageClasses(pack.name, true, category);
 		} catch (error) {
 			ide.reportError(error);
 		}

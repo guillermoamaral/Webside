@@ -21,7 +21,17 @@ Retrieve a given package.
 			"class": "string",
 			"selector": "string"
 		}
-	]
+	],
+	"categories": ["category"]
+}
+```
+
+Where `category` is defined as:
+
+```json
+{
+	"name": "string",
+	"package": "string"
 }
 ```
 
@@ -89,6 +99,20 @@ Retrieve a given package.
 		"RBPushDownInstanceVariableRefactoring": ["websideType"],
 		"RBAddInstanceVariableChange": ["websideType"],
 		"RBRenameInstanceVariableChange": ["websideType"]
-	}
+	},
+	"categories": [
+		{
+			"name": "Extensions",
+			"package": "Webside"
+		},
+		{
+			"name": "Base",
+			"package": "Webside"
+		},
+		{
+			"name": "Manifest",
+			"package": "Webside"
+		}
+	]
 }
 ```

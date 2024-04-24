@@ -39,6 +39,9 @@ And `type` can be one of the following:
 - `"CommentClass"`
 - `"RemoveClass"`
 - `"RenameClass"`
+- `"AddClassCategory"`
+- `"RenameClassCategory"`
+- `"RemoveClassCategory"`
 - `"AddInstanceVariable"`
 - `"RemoveInstanceVariable"`
 - `"RenameInstanceVariable"`
