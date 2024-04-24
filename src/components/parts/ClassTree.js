@@ -472,6 +472,7 @@ class ClassTree extends Component {
 			: this.updateClasses(
 					this.state.roots,
 					this.props.package,
+					this.props.category,
 					this.state.selectedClass
 			  );
 	}
