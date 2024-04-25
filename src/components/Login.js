@@ -201,6 +201,7 @@ class Login extends Component {
 															}
 															width={20}
 															height={20}
+															alt={c.backend}
 														/>
 													)}
 													<Link
