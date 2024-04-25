@@ -15,7 +15,7 @@ class PackageList extends Component {
 			extendedOptions: [],
 		};
 	}
-	
+
 	componentDidMount() {
 		this.updatePackages(this.props.selectedPackage);
 		this.initializeExtendedOptions();
@@ -168,7 +168,7 @@ class PackageList extends Component {
 
 	extendedOptionPerformed() {
 		const handler = this.props.onExtendedOptionPerform;
-		handler ? handler() : this.forceUpdate();
+		handler ? handler() : this.updatePackages(this.state.selectedPackage);
 	}
 
 	render() {

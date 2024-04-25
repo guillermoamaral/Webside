@@ -93,9 +93,10 @@ class ClassTree extends Component {
 		let expanded = [];
 		let found;
 		this.state.expandedClasses.forEach((c) => {
-			found = null;
-			trees.forEach((root) => (found = this.findSubclass(c.name, root)));
-			if (found) expanded.push(found);
+			found = trees.forEach((root) => {
+				found = this.findSubclass(c.name, root);
+				if (found) expanded.push(found);
+			});
 		});
 		found = null;
 		trees.forEach(
@@ -124,9 +125,18 @@ class ClassTree extends Component {
 		}
 		if (selected && this.props.onClassSelect)
 			this.props.onClassSelect(selected);
+		let expanded = [];
+		let found;
+		this.state.expandedClasses.forEach((c) => {
+			found = trees.forEach((root) => {
+				found = this.findSubclass(c.name, root);
+				if (found) expanded.push(found);
+			});
+		});
+		console.log(expanded);
 		this.setState({
 			roots: trees,
-			expandedClasses: [...trees],
+			expandedClasses: expanded,
 			selectedClass: selected,
 			loading: false,
 		});
@@ -271,12 +281,9 @@ class ClassTree extends Component {
 			await ide.backend.defineClass(name, superclass.name, packagename);
 			const species = await ide.backend.classNamed(name);
 			let expanded = this.state.expandedClasses;
-			if (!expanded.find((c) => c.name === superclass.name)) {
+			if (!expanded.find((c) => c.name === superclass.name))
 				expanded.push(superclass);
-			}
-			if (!superclass.subclasses) {
-				superclass.subclasses = [];
-			}
+			if (!superclass.subclasses) superclass.subclasses = [];
 			superclass.subclasses.push(species);
 			superclass.subclasses.sort((a, b) => (a.name <= b.name ? -1 : 1));
 			this.setState({

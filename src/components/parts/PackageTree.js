@@ -58,7 +58,6 @@ class PackageTree extends Component {
 		let packages = [];
 		try {
 			packages = await ide.backend.packageTree();
-			console.log(packages);
 			packages.forEach((p) => {
 				p.nodeType = "package";
 				if (p.categories) {
