@@ -52,6 +52,7 @@ function ListDialog(props, context) {
 						selectedItem={value}
 						onItemSelect={setValue}
 						filterAlwaysPresent={filter}
+						onItemDoubleClick={(item) => onClose(item)}
 					/>
 				</Box>
 			</DialogContent>

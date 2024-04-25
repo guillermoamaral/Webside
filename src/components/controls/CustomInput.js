@@ -19,6 +19,12 @@ class CustomInput extends Component {
 		this.setState({ value: value });
 		if (this.props.onValueChange) this.props.onValueChange(value);
 	};
+
+	valueAccepted = (value) => {
+		this.setState({ value: value });
+		if (this.props.onValueAccepted) this.props.onValueAccepted(value);
+	};
+
 	render() {
 		const value = this.state.value;
 		const { name, type, label, description, options } = this.props;
@@ -100,6 +106,7 @@ class CustomInput extends Component {
 								selectedItem={value}
 								onItemSelect={this.valueChanged}
 								filterAlwaysPresent={true}
+								onItemDoubleClick={this.valueAccepted}
 							/>
 						</Box>
 						{errorText.length > 0 && (
