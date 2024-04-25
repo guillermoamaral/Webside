@@ -764,6 +764,10 @@ class IDE extends Component {
 				ungrouped.push(d);
 			}
 		});
+		Object.entries(grouped).forEach((e) => {
+			grouped[e[0]] = e[1].sort((a, b) => (a.label <= b.label ? -1 : 1));
+		});
+		ungrouped = ungrouped.sort((a, b) => (a.label <= b.label ? -1 : 1));
 		ungrouped.forEach((d) => {
 			options.push({
 				label: d.label,
