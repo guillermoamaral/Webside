@@ -1,7 +1,7 @@
 # Packages
 
-While not every Smalltalk name them _packages_, they all manages some sort of code bundles, essentially a named bunch of classes and methods, sometimes global definitions, an additional description, etc.\
-There are some aspects however, that are specific of a given Smalltalk. For instance, there are _tags_ in Pharo, an optional _packageVersion_ in Dolphin, or even _children_ in Bee, forming a hierarchy projects (they are called that way).
+While not every Smalltalk call them _packages_, they all manage some sort of code bundles, essentially a named bunch of classes and methods, sometimes global definitions, an additional description, etc.\
+There are some aspects however, that are specific to a given Smalltalk. For instance, there are _tags_ in Pharo (class categories), an optional _packageVersion_ in Dolphin, or even _children_ in Bee, forming a *project hierarchy*.
 
 For the sake of generality, Webside expects this package structure:
 
@@ -11,12 +11,14 @@ For the sake of generality, Webside expects this package structure:
 	"description": "boolean",
 	"classes": ["string"],
 	"methods": {
-		"[class name]": ["string"]
+		"[classname]": ["string"]
 	}
 }
 ```
 
-Where `classes` should contain the names of classes defined in the package, and `methods` class extensions grouped by class.
+Where
+- `classes` is the names of the classes defined in the package, and
+- `methods` is the list of extensions, grouped by class name.
 
 ## Endpoints
 

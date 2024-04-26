@@ -16,12 +16,9 @@ Retrieve a given package.
 {
 	"name": "string",
 	"classes": ["string"],
-	"methods": [
-		{
-			"class": "string",
-			"selector": "string"
-		}
-	],
+	"methods": {
+		"[classname]": ["string"]
+	},
 	"categories": ["category"]
 }
 ```
