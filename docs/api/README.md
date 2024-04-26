@@ -158,6 +158,6 @@ Endpoints to manage profilers and access their results.
 
 Retrieve IDE extensions defined by the back-end.
 
-| Method | Path                  | Description                        | Parameters | Payload |
-| :----: | --------------------- | ---------------------------------- | :--------: | ------- |
-|  GET   | [/extensions](get.md) | Retrieve list of change defintions |     -      | -       |
+| Method | Path                             | Description                        | Parameters | Payload |
+| :----: | -------------------------------- | ---------------------------------- | :--------: | ------- |
+|  GET   | [/extensions](extensions/get.md) | Retrieve list of change defintions |     -      | -       |

@@ -70,14 +70,21 @@ class Login extends Component {
 			if (key.startsWith("webside-settings")) {
 				const data = localStorage.getItem(key);
 				const connection = JSON.parse(data).connection;
-				try {
-					let logo = await axios.get(connection.backend + "/logo");
-					connection.logo = logo.data;
-				} catch (error) {}
 				connections.push(connection);
 			}
 		}
-		this.setState({ recentConnections: connections });
+		this.setState({ recentConnections: connections }, this.fetchLogos);
+	}
+
+	fetchLogos() {
+		const connections = this.state.recentConnections;
+		connections.forEach(async (c) => {
+			try {
+				let logo = await axios.get(c.backend + "/logo");
+				c.logo = logo.data;
+				this.setState({ recentConnections: connections });
+			} catch (error) {}
+		});
 	}
 
 	render() {
