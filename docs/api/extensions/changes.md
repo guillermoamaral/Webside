@@ -41,7 +41,7 @@ Where:
 -   `section` (optional) is used by the IDE to place the option under a submenu. By default no submenu is used (i.e., the option is just appended to the corresponding menu)
 -   `needsConfirmation` (optional) specifies whether the change should be confirmed by the user. By default is `false.`.
 
-## Example
+## Example 1: our own class renaming
 
 Lets take a look at one of the changes pre-defined in the API: `RenameClass`.
 As detailed [here](../changes/post.md), this change must look like the following in order to be valid for its application:
@@ -136,7 +136,7 @@ With this specification, users will find an option _My own class renaming_ withi
 }
 ```
 
-## Another example: move a method to superclass
+## Example 2: move a method to superclass
 
 Lets suppose we want to extend method options to include one for moving the selected method to its superclass (available in some IDEs such as Pharo's one).
 We should include the following extension:
