@@ -105,9 +105,7 @@ class CodeBrowser extends Component {
 	};
 
 	compileMethod = async (source) => {
-		if (!this.props.class) {
-			return;
-		}
+		if (!this.props.class) return;
 		try {
 			const pack = this.props.package;
 			const species = this.props.class;
@@ -137,9 +135,8 @@ class CodeBrowser extends Component {
 				classname,
 				change.selector
 			);
-			if (this.props.onMethodCompile) {
+			if (this.props.onMethodCompile)
 				this.props.onMethodCompile(compiled);
-			}
 		} catch (error) {
 			this.handleCompilationError(error, source);
 		}
@@ -345,6 +342,11 @@ class CodeBrowser extends Component {
 		}
 	};
 
+	extendedOptionPerformed = () => {
+		if (this.props.onExtendedOptionPerform)
+			this.props.onExtendedOptionPerform();
+	};
+
 	render() {
 		const mode = this.state.selectedMode;
 		const author = this.currentAuthor();
@@ -356,7 +358,6 @@ class CodeBrowser extends Component {
 			selectedIdentifier,
 			onTooltipShow,
 			onTooltipClick,
-			onExtendedOptionPerform,
 		} = this.props;
 		return (
 			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
@@ -387,6 +388,7 @@ class CodeBrowser extends Component {
 						<CodeEditor
 							context={this.props.context}
 							class={this.props.class}
+							method={this.props.method}
 							source={this.currentSource()}
 							mode={this.currentCodeMode()}
 							ast={this.currentAst()}
@@ -400,7 +402,9 @@ class CodeBrowser extends Component {
 							onTooltipShow={onTooltipShow}
 							onTooltipClick={onTooltipClick}
 							showAssistant
-							onExtendedOptionPerform={onExtendedOptionPerform}
+							onExtendedOptionPerform={
+								this.extendedOptionPerformed
+							}
 						/>
 					</Paper>
 				</Box>

@@ -247,7 +247,7 @@ class SystemBrowser extends Tool {
 
 	async updateMethod(method) {
 		try {
-			let retrieved = await ide.backend.method(
+			const retrieved = await ide.backend.method(
 				method.methodClass,
 				method.selector
 			);
@@ -307,11 +307,14 @@ class SystemBrowser extends Tool {
 		this.setState({ selectedCategory: method.category });
 	};
 
-	codeExtendedOptionPerformed = () => {
-		let ref = this.methodListRef;
+	codeExtendedOptionPerformed = async () => {
+		const ref = this.methodListRef;
+		const method = this.state.selectedMethod;
 		if (ref && ref.current) {
-			ref.current.refreshEnsuring(this.state.selectedMethod);
+			ref.current.refreshEnsuring(method);
 		}
+		await this.updateMethod(method);
+		this.setState({ selectedMethod: method });
 	};
 
 	render() {

@@ -158,7 +158,7 @@ class CodeEditor extends Component {
 	}
 
 	colorModeChanged = () => {
-		this.forceUpdate()
+		this.forceUpdate();
 	};
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -498,13 +498,18 @@ class CodeEditor extends Component {
 	}
 
 	performExtendedOption = async (option) => {
-		let element = {
+		const selection = this.selectedText();
+		if (selection === "") return;
+		const range = this.currentSelectionRange();
+		const element = {
 			className: this.props.class ? this.props.class.name : null,
-			sourceCode: this.selectedText(),
+			selector: this.props.method ? this.props.method.selector : null,
+			sourceInterval: { from: range.from, to: range.to },
+			sourceCode: selection,
 		};
 		await ide.performExtendedOption(option, element);
-		const handler = this.props.onExtendedOptionPerform;
-		if (handler) handler();
+		if (this.props.onExtendedOptionPerform)
+			this.props.onExtendedOptionPerform();
 	};
 
 	copyToClipboard = () => {
@@ -691,9 +696,7 @@ class CodeEditor extends Component {
 	};
 
 	triggerOnEvaluate() {
-		if (this.props.onEvaluate) {
-			this.props.onEvaluate();
-		}
+		if (this.props.onEvaluate) this.props.onEvaluate();
 	}
 
 	showEvaluation = async () => {
