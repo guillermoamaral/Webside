@@ -894,8 +894,12 @@ class IDE extends Component {
 	}
 
 	resolveDotExpressions(string, variable, target) {
+		if (typeof string !== "string") return string;
+		const parts = string.split(/{([^}]+)}/g).filter((p) => p.length > 0);
+		if (parts.length === 1 && parts[0].startsWith(variable + ".")) {
+			return target[parts[0].split(".")[1]];
+		}
 		let result = "";
-		let parts = string.split(/{([^}]+)}/g);
 		parts.forEach((p) => {
 			result += p.startsWith(variable + ".")
 				? target[p.split(".")[1]]
