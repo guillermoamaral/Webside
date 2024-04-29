@@ -330,10 +330,13 @@ class PackageTree extends Component {
 			<Box
 				display="flex"
 				flexDirection="column"
-				style={{ height: "100%" }}
+				height="100%"
+				p={0}
+				m={0}
 			>
 				<Box>
 					<TextField
+						sx={{ marginTop: 0, marginBottom: 1 }}
 						id="filter"
 						variant="outlined"
 						size="small"
@@ -354,21 +357,23 @@ class PackageTree extends Component {
 						}
 					/>
 				</Box>
-				<CustomPaper>
-					<FastTree
-						loading={loading}
-						nodes={filteredPackages}
-						nodeId="name"
-						nodeLabel={"name"}
-						nodeChildren="categories"
-						selectedNode={selectedNode}
-						onNodeSelect={this.nodeSelected}
-						expandedNodes={expandedNodes}
-						onNodeExpand={this.nodeExpanded}
-						onNodeCollapse={this.nodeCollaspsed}
-						menuOptions={this.menuOptions()}
-					/>
-				</CustomPaper>
+				<Box flexGrow={1}>
+					<CustomPaper>
+						<FastTree
+							loading={loading}
+							nodes={filteredPackages}
+							nodeId="name"
+							nodeLabel={"name"}
+							nodeChildren="categories"
+							selectedNode={selectedNode}
+							onNodeSelect={this.nodeSelected}
+							expandedNodes={expandedNodes}
+							onNodeExpand={this.nodeExpanded}
+							onNodeCollapse={this.nodeCollaspsed}
+							menuOptions={this.menuOptions()}
+						/>
+					</CustomPaper>
+				</Box>
 			</Box>
 		);
 	}
