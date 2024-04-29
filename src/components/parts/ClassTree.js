@@ -26,11 +26,15 @@ class ClassTree extends Component {
 	async componentDidMount() {
 		await this.initializeClassSearch();
 		this.initializeExtendedOptions();
+		const expanded = this.props.selectedClass
+			? [this.props.selectedClass]
+			: [];
 		this.updateClasses(
 			this.props.roots,
 			this.props.package,
 			this.props.category,
-			this.props.selectedClass
+			this.props.selectedClass,
+			expanded
 		);
 	}
 
@@ -58,7 +62,8 @@ class ClassTree extends Component {
 				this.props.roots,
 				this.props.package,
 				this.props.category,
-				selected
+				selected,
+				this.state.expandedClasses
 			);
 		}
 		if (prevProps.selectedClass !== this.props.selectedClass) {
@@ -71,7 +76,10 @@ class ClassTree extends Component {
 	goToRoot = (name) => {
 		if (name) {
 			const target = { name: name };
-			this.updateClasses([target], null, target);
+			this.updateClasses([target], null, null, target, [
+				...this.state.expandedClasses,
+				target,
+			]);
 		}
 	};
 
@@ -113,7 +121,13 @@ class ClassTree extends Component {
 		});
 	}
 
-	updateClasses = async (roots, pack, category, selectedClass) => {
+	updateClasses = async (
+		roots,
+		pack,
+		category,
+		selectedClass,
+		expandedClasses
+	) => {
 		this.setState({ loading: true });
 		let trees = await this.fetchClasses(roots, pack, category);
 		let selected;
@@ -127,7 +141,7 @@ class ClassTree extends Component {
 			this.props.onClassSelect(selected);
 		let expanded = [];
 		let found;
-		this.state.expandedClasses.forEach((c) => {
+		expandedClasses.forEach((c) => {
 			found = trees.forEach((root) => {
 				found = this.findSubclass(c.name, root);
 				if (found) expanded.push(found);
@@ -480,7 +494,8 @@ class ClassTree extends Component {
 					this.state.roots,
 					this.props.package,
 					this.props.category,
-					this.state.selectedClass
+					this.state.selectedClass,
+					this.state.expandedClasses
 			  );
 	}
 
