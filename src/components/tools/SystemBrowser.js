@@ -107,12 +107,6 @@ class SystemBrowser extends Tool {
 	packageSelected = async (pack) => {
 		this.updateLabel(pack.name);
 		await this.updatePackage(pack);
-		let selectedClassCategory;
-		if (pack.categories && this.state.selectedClassCategory) {
-			selectedClassCategory = pack.categories.find(
-				(c) => c.name === this.state.selectedClassCategory.name
-			);
-		}
 		let {
 			selectedClass,
 			selectedCategory,
@@ -128,7 +122,7 @@ class SystemBrowser extends Tool {
 		}
 		this.setState({
 			selectedPackage: pack,
-			selectedClassCategory: selectedClassCategory,
+			selectedClassCategory: null,
 			selectedClass: selectedClass,
 			selectedCategory: selectedCategory,
 			selectedVariable: selectedVariable,
