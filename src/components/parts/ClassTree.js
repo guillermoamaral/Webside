@@ -147,7 +147,6 @@ class ClassTree extends Component {
 				if (found) expanded.push(found);
 			});
 		});
-		console.log(expanded);
 		this.setState({
 			roots: trees,
 			expandedClasses: expanded,
@@ -174,7 +173,11 @@ class ClassTree extends Component {
 		let trees = [];
 		if (!pack) return trees;
 		try {
-			trees = await ide.backend.packageClasses(pack.name, true, category);
+			trees = await ide.backend.packageClasses(
+				pack.name,
+				true,
+				category?.name
+			);
 		} catch (error) {
 			ide.reportError(error);
 		}
