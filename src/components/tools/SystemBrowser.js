@@ -107,26 +107,60 @@ class SystemBrowser extends Tool {
 	packageSelected = async (pack) => {
 		this.updateLabel(pack.name);
 		await this.updatePackage(pack);
-		let category;
-		if (pack.categories && this.state.selectedCategory) {
-			category = pack.categories.find(
-				(c) => c.name === this.state.selectedCategory.name
+		let selectedClassCategory;
+		if (pack.categories && this.state.selectedClassCategory) {
+			selectedClassCategory = pack.categories.find(
+				(c) => c.name === this.state.selectedClassCategory.name
 			);
+		}
+		let {
+			selectedClass,
+			selectedCategory,
+			selectedVariable,
+			selectedMethod,
+		} = this.state;
+		if (selectedClass && selectedClass.package !== pack.name) {
+			selectedClass =
+				selectedCategory =
+				selectedVariable =
+				selectedMethod =
+					null;
 		}
 		this.setState({
 			selectedPackage: pack,
-			selectedClassCategory: category,
-			selectedClass: null,
-			selectedCategory: null,
-			selectedVariable: null,
-			selectedMethod: null,
+			selectedClassCategory: selectedClassCategory,
+			selectedClass: selectedClass,
+			selectedCategory: selectedCategory,
+			selectedVariable: selectedVariable,
+			selectedMethod: selectedMethod,
 		});
 	};
 
 	classCategorySelected = async (category, pack) => {
+		let {
+			selectedClass,
+			selectedCategory,
+			selectedVariable,
+			selectedMethod,
+		} = this.state;
+		if (
+			selectedClass &&
+			(selectedClass.package !== pack.name ||
+				selectedClass.category !== category.name)
+		) {
+			selectedClass =
+				selectedCategory =
+				selectedVariable =
+				selectedMethod =
+					null;
+		}
 		this.setState({
 			selectedPackage: pack,
 			selectedClassCategory: category,
+			selectedClass: selectedClass,
+			selectedCategory: selectedCategory,
+			selectedVariable: selectedVariable,
+			selectedMethod: selectedMethod,
 		});
 	};
 
