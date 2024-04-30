@@ -102,7 +102,7 @@ class PackageTree extends Component {
 		} else {
 			if (this.props.onCategorySelect) {
 				const pack = this.packageNamed(node.package);
-				this.props.onCategorySelect(node.name, pack);
+				this.props.onCategorySelect(node, pack);
 			}
 		}
 	};
