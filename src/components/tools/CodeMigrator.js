@@ -192,6 +192,7 @@ class CodeMigrator extends Tool {
 				</Grid>
 				<Grid item xs={12} md={12} lg={12}>
 					<TextField
+						size="small"
 						value={targetURL}
 						onChange={(event) =>
 							this.setState({ targetURL: event.target.value })
