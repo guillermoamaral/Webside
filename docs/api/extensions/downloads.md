@@ -8,11 +8,11 @@ As change extensions, a download extension is applicable over a given meta-model
 
 # Specification
 
-The structure of a change specification must have this structure:
+The structure of a download specification must have this structure:
 
 ```json
 {
-	"extensionType": "string",
+	"extensionType": "download",
 	"elementType": "string",
 	"label": "string",
 	"get": "string",

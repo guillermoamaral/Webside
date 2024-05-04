@@ -16,7 +16,7 @@ The structure of a change specification must have this structure:
 
 ```json
 {
-	"extensionType": "string",
+	"extensionType": "change",
 	"elementType": "string",
 	"label": "string",
 	"description": "string",
