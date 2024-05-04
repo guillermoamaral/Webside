@@ -168,6 +168,7 @@ class CodeAssistantChat extends Component {
 		const messages = this.messages();
 		const developer = ide.currentDeveloper();
 		const showButtons = false;
+		const showContextOption = false;
 		return (
 			<Box
 				display="flex"
@@ -279,34 +280,36 @@ class CodeAssistantChat extends Component {
 						</IconButton>
 					</Box>
 				</Box>
-				{/* <Box
+				<Box
 					display="flex"
 					flexDirection="row"
 					alignContent="space-between"
 				>
-					<Box flexGrow={1}>
-						<FormGroup>
-							<FormControlLabel
-								control={
-									<Checkbox
-										size="small"
-										checked={useClassContext}
-										color="primary"
-										onChange={(event) =>
-											this.useClassContext(
-												event.target.checked
-											)
-										}
-									/>
-								}
-								label={
-									<Typography variant="caption">
-										Use class context
-									</Typography>
-								}
-							/>
-						</FormGroup>
-					</Box>
+					{showContextOption && (
+						<Box flexGrow={1}>
+							<FormGroup>
+								<FormControlLabel
+									control={
+										<Checkbox
+											size="small"
+											checked={useClassContext}
+											color="primary"
+											onChange={(event) =>
+												this.useClassContext(
+													event.target.checked
+												)
+											}
+										/>
+									}
+									label={
+										<Typography variant="caption">
+											Use class context
+										</Typography>
+									}
+								/>
+							</FormGroup>
+						</Box>
+					)}
 					<Box display="flex" flexDirection="row">
 						<Box
 							display="flex"
@@ -324,7 +327,7 @@ class CodeAssistantChat extends Component {
 							</Link>
 						</Box>
 					</Box>
-				</Box> */}
+				</Box>
 			</Box>
 		);
 	}
