@@ -100,13 +100,22 @@ class CustomList extends Component {
 		return null;
 	}
 
+	componentDidMount() {
+		const selected = this.props.selectedItem;
+		if (!selected) return;
+		const selectedIndex = this.state.filteredItems.indexOf(selected);
+		if (selectedIndex < 0) return;
+		this.forceUpdate();
+	}
+
 	componentDidUpdate() {
 		const selected = this.props.selectedItem;
 		if (!selected) return;
-		const index = this.state.filteredItems.indexOf(selected);
-		if (index < 0) return;
+		const selectedIndex = this.state.filteredItems.indexOf(selected);
+		if (selectedIndex < 0) return;
 		if (listRef && listRef.current) {
-			listRef.current.scrollToItem(index);
+			//console.log("about to scroll to index " + selectedIndex, selected);
+			listRef.current.scrollToItem(selectedIndex);
 		}
 	}
 
