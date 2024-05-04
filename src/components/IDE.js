@@ -6,7 +6,15 @@ import {
 	Dialog,
 	DialogTitle,
 	DialogContent,
+	Popper,
+	Card,
+	CardContent,
+	CardHeader,
+	IconButton,
+	Fab,
 } from "@mui/material";
+import CodeAssistantChat from "./parts/CodeAssistantChat";
+import MinimizeIcon from "@mui/icons-material/Minimize";
 import ToolContainer from "./ToolContainer";
 import { withNavigation } from "./withNavigation";
 import { withDialog } from "./dialogs/index";
@@ -24,6 +32,8 @@ import CodeAssistant from "./CodeAssistant";
 import { v4 as uuidv4 } from "uuid";
 import CustomSplit from "./controls/CustomSplit";
 import QuickSearch from "./tools/QuickSearch";
+import OpenAIAPI from "./OpenAIAPI";
+import AssistantIcon from "@mui/icons-material/Assistant";
 
 var ide = null;
 var MaxExtraContainers = 3;
@@ -46,7 +56,10 @@ class IDE extends Component {
 			quickSearchOpen: false,
 			quickSearchOptions: {},
 			activeContainer: null,
+			assistantOpened: false,
 		};
+		this.codeAssistant = null;
+		this.codeAssistantChatRef = React.createRef();
 	}
 
 	componentDidMount() {
@@ -183,8 +196,15 @@ class IDE extends Component {
 		shortcuts.addShortcut("browseImplementors", "Alt+m");
 		shortcuts.addShortcut("browseClassReferences", "Alt+r");
 
-		const openAI = settings.addSection("openAI", "OpenAI API");
+		const assistant = settings.addSection("codeAssistant");
+		assistant.addBoolean("enabled", false, "Use code aassistant");
+		const openAI = assistant.addSection("openAI", "OpenAI API");
 		openAI.addText("apiKey");
+		openAI.addOptions(
+			"model",
+			["gpt-3.5-turbo", "gpt-4-turbo"],
+			"gpt-4-turbo"
+		);
 		return settings;
 	}
 
@@ -268,7 +288,7 @@ class IDE extends Component {
 		} catch (error) {}
 		document.title = dialect;
 		this.settings.section("connection").set("dialect", dialect);
-		var autocompletion;
+		let autocompletion;
 		try {
 			await ide.backend.autocompletions("Object", "m\r Objec", 8);
 			autocompletion = true;
@@ -279,6 +299,7 @@ class IDE extends Component {
 		await this.updateColorsSettings();
 		this.updateTheme();
 		this.initializeMessageChannel();
+		this.initializeCodeAssistant();
 	}
 
 	async updateColorsSettings() {
@@ -308,12 +329,19 @@ class IDE extends Component {
 	}
 
 	usesCodeAssistant() {
-		const key = ide.settings.section("openAI").get("apiKey");
-		return key !== undefined && key !== "";
+		return this.codeAssistant !== null;
 	}
 
-	codeAssistant() {
-		return new CodeAssistant();
+	initializeCodeAssistant() {
+		this.codeAssistant = null;
+		const section = this.settings.section("codeAssistant");
+		if (!section.get("enabled")) return;
+		const openAI = section.section("openAI");
+		const key = openAI.get("apiKey") || "";
+		if (key === "") return;
+		const model = openAI.get("model");
+		const api = new OpenAIAPI(key, model);
+		this.codeAssistant = new CodeAssistant(api);
 	}
 
 	initializeBackend() {
@@ -361,22 +389,32 @@ class IDE extends Component {
 	}
 
 	welcomeMessage() {
-		const connection = this.settings.section("connection");
-		const backend =
-			connection.get("dialect") !== "undefined"
-				? connection.get("dialect")
-				: "It looks like the Smalltalk system could not be determined";
 		return (
 			'"Welcome to Webside ' +
-			connection.get("developer") +
+			this.currentDeveloper() +
 			"!\rA Smalltalk IDE for the web.\r\r" +
 			"Backend: " +
-			backend +
+			this.currentDialect() +
 			"\r" +
 			"URL: " +
-			connection.get("backend") +
+			this.currentBackend() +
 			'"'
 		);
+	}
+
+	currentDeveloper() {
+		const connection = this.settings.section("connection");
+		return connection.get("developer");
+	}
+
+	currentDialect() {
+		const connection = this.settings.section("connection");
+		return connection.get("dialect");
+	}
+
+	currentBackend() {
+		const connection = this.settings.section("connection");
+		return connection.get("backend");
 	}
 
 	transcriptText() {
@@ -982,6 +1020,27 @@ class IDE extends Component {
 		}
 	}
 
+	explainCode = async (code) => {
+		this.codeAssistant.explainCode(code).then(this.updateCodeAssistantChat);
+		this.setState({ assistantOpened: true }, this.updateCodeAssistantChat);
+	};
+
+	testCode = async (code) => {
+		this.codeAssistant.testCode(code).then(this.updateCodeAssistantChat);
+		this.setState({ assistantOpened: true }, this.updateCodeAssistantChat);
+	};
+
+	improveCode = async (code) => {
+		this.codeAssistant.improveCode(code).then(this.updateCodeAssistantChat);
+		this.setState({ assistantOpened: true }, this.updateCodeAssistantChat);
+	};
+
+	updateCodeAssistantChat = () => {
+		if (this.codeAssistantChatRef && this.codeAssistantChatRef.current) {
+			this.codeAssistantChatRef.current.forceUpdate();
+		}
+	};
+
 	render() {
 		console.log("rendering IDE");
 		const {
@@ -993,11 +1052,13 @@ class IDE extends Component {
 			waiting,
 			quickSearchOpen,
 			quickSearchOptions,
+			assistantOpened,
 		} = this.state;
 		const extraContainersWidth =
 			Math.round(100 / (extraContainers.length + 1)) + "%";
 		const extraContainersMinWidth = "10%";
 		const shortcuts = this.settings.section("shortcuts");
+		const showsAssistant = this.usesCodeAssistant();
 		return (
 			<Hotkeys
 				keyName={
@@ -1020,12 +1081,8 @@ class IDE extends Component {
 				<DialogProvider>
 					<Box display="flex" sx={{ height: "95vh" }}>
 						<Titlebar
-							developer={this.settings
-								.section("connection")
-								.get("developer")}
-							dialect={this.settings
-								.section("connection")
-								.get("dialect")}
+							developer={this.currentDeveloper()}
+							dialect={this.currentDialect()}
 							logo={this.logo}
 							sidebarExpanded={sidebarExpanded}
 							onSidebarExpand={this.expandSidebar}
@@ -1064,8 +1121,8 @@ class IDE extends Component {
 							component="main"
 							mt={6}
 							//disableGutters
+							flexGrow={1}
 							sx={{
-								flexGrow: 1,
 								height: "95vh",
 								width: "100vw",
 								maxWidth: "95vw",
@@ -1104,6 +1161,79 @@ class IDE extends Component {
 									</Box>
 								))}
 							</CustomSplit>
+							{showsAssistant && (
+								<Fab
+									id="assitantLocation"
+									sx={{
+										position: "fixed",
+										bottom: (theme) => theme.spacing(2),
+										right: (theme) => theme.spacing(2),
+									}}
+									onClick={() => {
+										this.setState({
+											assistantOpened: !assistantOpened,
+										});
+									}}
+									color="primary"
+								>
+									<AssistantIcon />
+								</Fab>
+							)}
+							{showsAssistant && (
+								<Popper
+									open={assistantOpened}
+									//placement="left-end"
+									anchorEl={document.getElementById(
+										"assitantLocation"
+									)}
+								>
+									<Card variant="outlined">
+										<CardHeader
+											disableTypography
+											action={
+												<IconButton
+													onClick={() => {
+														this.setState({
+															assistantOpened: false,
+														});
+													}}
+												>
+													<MinimizeIcon fontSize="small" />
+												</IconButton>
+											}
+											title="Code assistant"
+											style={{
+												paddingTop: 8,
+												paddingBottom: 5,
+											}}
+										/>
+										<CardContent
+											style={{
+												paddingTop: 5,
+												paddingBottom: 5,
+											}}
+										>
+											<Box
+												display="flex"
+												sx={{
+													height: 400,
+													minWidth: 400,
+												}}
+											>
+												<CodeAssistantChat
+													ref={
+														this
+															.codeAssistantChatRef
+													}
+													developer="guillote"
+													source="x ^x"
+													class={{ name: "Point" }}
+												/>
+											</Box>
+										</CardContent>
+									</Card>
+								</Popper>
+							)}
 						</Box>
 					</Box>
 					<Backdrop

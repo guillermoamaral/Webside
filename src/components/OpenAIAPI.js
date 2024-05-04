@@ -3,30 +3,68 @@ import axios from "axios";
 const FakeAPI = false;
 
 class OpenAIAPI {
-	constructor(apiKey) {
+	constructor(apiKey, model) {
+		this.url = "https://api.openai.com/v1";
 		this.apiKey = apiKey;
+		this.model = model || "gpt-3.5-turbo";
+		this.maxTokens = 3500;
+		this.temperature = 0;
 	}
 
-	async sendMessage(text) {
+	async get(uri) {
+		const headers = {
+			Authorization: `Bearer ${this.apiKey}`,
+		};
+		try {
+			const response = await axios.get(this.url + uri, {
+				headers: headers,
+			});
+			return response.data;
+		} catch (error) {
+			this.handleError(error);
+		}
+	}
+
+	async post(uri, payload) {
+		const headers = {
+			Authorization: `Bearer ${this.apiKey}`,
+		};
+		try {
+			const response = await axios.post(this.url + uri, payload, {
+				headers: headers,
+			});
+			return response.data;
+		} catch (error) {
+			this.handleError(error);
+		}
+	}
+
+	async getModels() {
+		const data = await this.get("/models");
+		return data.data.map((m) => m.id);
+	}
+
+	async sendSystemMessage(text) {
+		return await this.sendMessage(text, "system");
+	}
+
+	async sendMessage(text, role = "user") {
+		return await this.sendMessages([{ role: role, content: text }]);
+	}
+
+	async sendMessages(messages) {
 		if (FakeAPI) {
-			return "blah blah bla";
+			return "This is a fake answer for testing purposes";
 		}
 		try {
-			const headers = {
-				Authorization: `Bearer ${this.apiKey}`,
-			};
 			const body = {
-				model: "gpt-3.5-turbo",
-				messages: [{ role: "user", content: text }],
-				temperature: 1,
-				max_tokens: 3500,
+				model: this.model,
+				messages: messages,
+				temperature: this.temperature,
+				max_tokens: this.maxTokens,
 			};
-			const response = await axios.post(
-				"https://api.openai.com/v1/chat/completions",
-				body,
-				{ headers: headers }
-			);
-			return response.data.choices[0].message.content;
+			const data = await this.post("/chat/completions", body);
+			return data.choices[0].message.content;
 		} catch (error) {
 			return this.handleError(error);
 		}

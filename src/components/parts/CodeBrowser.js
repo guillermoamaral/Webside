@@ -90,9 +90,7 @@ class CodeBrowser extends Component {
 	};
 
 	commentClass = async (comment) => {
-		if (!this.props.class) {
-			return;
-		}
+		if (!this.props.class) return;
 		try {
 			await ide.backend.commentClass(this.props.class.name, comment);
 			const species = await ide.backend.classNamed(this.props.class.name);
@@ -144,9 +142,7 @@ class CodeBrowser extends Component {
 
 	async handleCompilationError(error, source) {
 		const method = this.props.method;
-		if (!method) {
-			return;
-		}
+		if (!method) return;
 		method.source = source;
 		const data = error.data;
 		if (data && data.suggestions && data.suggestions.length > 0) {

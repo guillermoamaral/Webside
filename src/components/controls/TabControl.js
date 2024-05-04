@@ -136,7 +136,6 @@ class TabControl extends Component {
 								<AddIcon />
 							</IconButton>
 							<Menu
-								//id={"addTab" + id}
 								anchorEl={document.getElementById(
 									"addTab" + id
 								)}
@@ -190,7 +189,6 @@ class TabControl extends Component {
 							<SelectIcon />
 						</IconButton>
 						<Menu
-							//id={"addTab" + id}
 							anchorEl={document.getElementById("selectTab" + id)}
 							keepMounted
 							open={selectMenuOpen}

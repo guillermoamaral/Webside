@@ -1,13 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom/client";
-import {
-	Grid,
-	Box,
-	IconButton,
-	LinearProgress,
-	SpeedDial,
-	SpeedDialAction,
-} from "@mui/material";
+import { Box, IconButton, LinearProgress, Tooltip } from "@mui/material";
 import AcceptIcon from "@mui/icons-material/CheckCircle";
 import PopupMenu from "../controls/PopupMenu";
 import { ide } from "../IDE";
@@ -33,7 +26,6 @@ import {
 } from "@codemirror/autocomplete";
 import { hoverTooltip } from "@codemirror/view";
 import CodeTooltip from "./CodeTooltip";
-import ChatGPTIcon from "../icons/ChatGPTIcon";
 import ImproveIcon from "@mui/icons-material/AutoFixHigh";
 import TestRunnerIcon from "../icons/TestRunnerIcon";
 import DescriptionIcon from "@mui/icons-material/Description";
@@ -869,6 +861,7 @@ class CodeEditor extends Component {
 		return createTheme({
 			theme: appearance.get("mode"),
 			settings: {
+				fontSize: this.props.fontSize,
 				fontFamily: appearance.get("fontFamily"),
 				background: background,
 				foreground: "#75baff",
@@ -1013,58 +1006,16 @@ class CodeEditor extends Component {
 		);
 	}
 
-	assistantActions() {
-		if (!ide.usesCodeAssistant()) return [];
-		return [
-			{
-				icon: <ImproveIcon />,
-				name: "Improve",
-				handler: this.improveSource,
-			},
-			{
-				icon: <TestRunnerIcon />,
-				name: "Suggest a test",
-				handler: this.testSource,
-			},
-			{
-				icon: <DescriptionIcon />,
-				name: "Explain",
-				handler: this.explainSource,
-			},
-		];
-	}
-
-	improveSource = async () => {
-		const source = this.state.source;
-		const assistant = ide.codeAssistant();
-		this.setState({ progress: true });
-		const improved = await assistant.improveCode(source);
-		this.setState({
-			source: source + '\r\r"Improved version"\r' + improved,
-			progress: false,
-		});
+	explainCode = async () => {
+		ide.explainCode(this.state.source);
 	};
 
-	explainSource = async () => {
-		const source = this.state.source;
-		const assistant = ide.codeAssistant();
-		this.setState({ progress: true });
-		const description = await assistant.explainCode(source);
-		this.setState({
-			source: source + '\r\r"Explanation"\r"' + description + '"',
-			progress: false,
-		});
+	testCode = async () => {
+		ide.testCode(this.state.source);
 	};
 
-	testSource = async () => {
-		const source = this.state.source;
-		const assistant = ide.codeAssistant();
-		this.setState({ progress: true });
-		const test = await assistant.testCode(source);
-		this.setState({
-			source: source + '\r\r"Possible unit test"\r' + test,
-			progress: false,
-		});
+	improveCode = async () => {
+		ide.improveCode(this.state.source);
 	};
 
 	completionSource = async (context) => {
@@ -1147,13 +1098,12 @@ class CodeEditor extends Component {
 			/>
 		);
 		return (
-			<Grid container spacing={0} style={{ height: "100%" }}>
-				<Grid
-					item
-					xs={11}
-					md={showAccept ? 11 : 12}
-					lg={showAccept ? 11 : 12}
-				>
+			<Box
+				display="flex"
+				flexDirection="row"
+				style={{ width: "100%", height: "100%" }}
+			>
+				<Box flexGrow={1}>
 					<Scrollable>
 						<CodeMirror
 							ref={this.editorRef}
@@ -1200,51 +1150,52 @@ class CodeEditor extends Component {
 					{(evaluating || progress) && (
 						<LinearProgress variant="indeterminate" />
 					)}
-				</Grid>
+				</Box>
 				{showButtons && (
-					<Grid item xs={1} md={1} lg={1}>
-						<Box
-							display="flex"
-							justifyContent="space-between"
-							flexDirection="column"
-							sx={{ height: "100%" }}
-						>
-							{showAccept && (
-								<Box display="flex" justifyContent="center">
+					<Box
+						display="flex"
+						flexDirection="column"
+						sx={{ height: "100%" }}
+					>
+						{showAccept && (
+							<Box display="flex" justifyContent="center">
+								<IconButton
+									color="inherit"
+									onClick={this.acceptClicked}
+								>
+									{acceptIcon}
+								</IconButton>
+							</Box>
+						)}
+						{showCodeAssistant && (
+							<Box mb={1} display="flex" flexDirection="column">
+								<Tooltip title="Explain code" placement="top">
 									<IconButton
 										color="inherit"
-										onClick={this.acceptClicked}
+										onClick={this.explainCode}
 									>
-										{acceptIcon}
+										<DescriptionIcon />
 									</IconButton>
-								</Box>
-							)}
-							{showCodeAssistant && (
-								<Box mb={1}>
-									<SpeedDial
-										ariaLabel="CodeAssistant actions"
-										icon={<ChatGPTIcon />}
-										direction="up"
-										FabProps={{
-											color: "inherited",
-											size: "small",
-										}}
+								</Tooltip>
+								<Tooltip title="Test code" placement="top">
+									<IconButton
+										color="inherit"
+										onClick={this.testCode}
 									>
-										{this.assistantActions().map(
-											(action) => (
-												<SpeedDialAction
-													key={action.name}
-													icon={action.icon}
-													tooltipTitle={action.name}
-													onClick={action.handler}
-												/>
-											)
-										)}
-									</SpeedDial>
-								</Box>
-							)}
-						</Box>
-					</Grid>
+										<TestRunnerIcon />
+									</IconButton>
+								</Tooltip>
+								<Tooltip title="Improve code" placement="top">
+									<IconButton
+										color="inherit"
+										onClick={this.improveCode}
+									>
+										<ImproveIcon />
+									</IconButton>
+								</Tooltip>
+							</Box>
+						)}
+					</Box>
 				)}
 				<PopupMenu
 					options={this.menuOptions()}
@@ -1252,7 +1203,7 @@ class CodeEditor extends Component {
 					position={menuPosition}
 					onClose={this.closeMenu}
 				/>
-			</Grid>
+			</Box>
 		);
 	}
 }
