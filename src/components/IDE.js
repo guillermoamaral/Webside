@@ -205,6 +205,12 @@ class IDE extends Component {
 			["gpt-3.5-turbo", "gpt-4-turbo"],
 			"gpt-4-turbo"
 		);
+		openAI.addParagraph(
+			"systemMessage",
+			"You are an expert Smalltalk programmer.\n\
+When I ask for help to analyze, explain or write Smalltalk code, you will reply accordingly.\n\
+In your response you will avoid using the words 'Smalltalk' and 'snippet'."
+		);
 		return settings;
 	}
 
@@ -341,7 +347,11 @@ class IDE extends Component {
 		if (key === "") return;
 		const model = openAI.get("model");
 		const api = new OpenAIAPI(key, model);
-		this.codeAssistant = new CodeAssistant(api);
+		let context = openAI.get("systemMessage");
+		const dialect = this.currentDialect();
+		if (dialect)
+			context += "\nWe are working in " + dialect + " Smalltalk.\n";
+		this.codeAssistant = new CodeAssistant(api, context);
 	}
 
 	initializeBackend() {

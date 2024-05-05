@@ -1,37 +1,23 @@
 import { ide } from "./IDE";
 
 class CodeAssistant {
-	constructor(api) {
+	constructor(api, context) {
 		this.api = api;
 		this.aiCodeOpeningTag = "<assistantcode>";
 		this.aiCodeClosingTag = "</assistantcode>";
 		this.userCodeOpeningTag = "<usercode>";
 		this.userCodeClosingTag = "</usercode>";
 		this.localContext = "";
-		this.messages = [];
 		this.includeHistory = true;
-		this.setupGeneralContext();
+		this.messages = [];
+		this.setupGeneralContext(context);
 	}
 
 	deleteMessageHistory() {
 		this.messages = [this.messages[0]];
 	}
 
-	setupGeneralContext() {
-		let context = "We are in the context of Smalltalk.\n";
-		const dialect = ide.currentDialect();
-		if (dialect) context += "Specifically, " + dialect + " Smalltalk.\n";
-		context +=
-			"Thus, when I ask for help to analyze, explain or write code, you will reply as experimented Smalltalk programmer.\n";
-		context += "In your response:\n";
-		context +=
-			"1. You will not include the words 'Smalltalk' and 'snippet'.\n";
-		context +=
-			"2. You will enclose any piece of Smalltalk code between " +
-			this.aiCodeOpeningTag +
-			" and " +
-			this.aiCodeClosingTag +
-			" tags.\r";
+	setupGeneralContext(context) {
 		const message = {
 			role: "system",
 			rawContent: context,
@@ -105,8 +91,14 @@ class CodeAssistant {
 		return parts;
 	}
 
-	decorateContent(text) {
-		return this.localContext + text;
+	addLocalContext(text) {
+		let context =
+			"\nIn your response you will enclose any piece of Smalltalk code between " +
+			this.aiCodeOpeningTag +
+			" and " +
+			this.aiCodeClosingTag +
+			" tags.\n";
+		return this.localContext + context + text;
 	}
 
 	encloseCode(code) {
@@ -119,7 +111,7 @@ class CodeAssistant {
 				role: "assistant",
 				parts: [{ type: "text", content: "No code provided" }],
 			};
-		const raw = this.decorateContent(
+		const raw = this.addLocalContext(
 			prompt + "\n" + this.encloseCode(code)
 		);
 		const message = {

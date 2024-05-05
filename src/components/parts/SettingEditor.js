@@ -16,7 +16,9 @@ class SettingEditor extends Component {
 	constructor(props) {
 		super(props);
 		let value = this.props.setting.value;
-		if (value === null) { value = this.props.setting.default }
+		if (value === null) {
+			value = this.props.setting.default;
+		}
 		this.state = { value: value };
 	}
 
@@ -27,7 +29,8 @@ class SettingEditor extends Component {
 
 	render() {
 		const value = this.state.value;
-		const setting = this.props.setting;
+		const { type, name, label, description, editable, options } =
+			this.props.setting;
 		return (
 			<Box
 				mt={1}
@@ -36,30 +39,33 @@ class SettingEditor extends Component {
 				flexDirection="row"
 				alignItems="center"
 			>
-				<Typography mr={2}>{setting.label}</Typography>
-				{(setting.type === "text" ||
-					setting.type === "number" ||
-					setting.type === "color" ||
-					setting.type === "url") && (
-						<TextField
-							sx={{ minWidth: 50 }}
-							size="small"
-							id={setting.name}
-							type={setting.type}
-							placeholder={setting.description}
-							margin="dense"
-							name={setting.name}
-							variant="outlined"
-							value={value}
-							inputProps={{ id: setting.name + "key" }}
-							onChange={(event) => {
-								this.valueChanged(event.target.value);
-							}}
-							required
-							disabled={!setting.editable}
-						/>
-					)}
-				{setting.type === "boolean" && (
+				<Typography mr={2}>{label}</Typography>
+				{(type === "text" ||
+					type === "paragraph" ||
+					type === "number" ||
+					type === "color" ||
+					type === "url") && (
+					<TextField
+						fullWidth={type === "paragraph"}
+						multiline={type === "paragraph"}
+						sx={{ minWidth: 50 }}
+						size="small"
+						id={name}
+						type={type}
+						placeholder={description}
+						margin="dense"
+						name={name}
+						variant="outlined"
+						value={value}
+						inputProps={{ id: name + "key" }}
+						onChange={(event) => {
+							this.valueChanged(event.target.value);
+						}}
+						required
+						disabled={!editable}
+					/>
+				)}
+				{type === "boolean" && (
 					<FormGroup>
 						<FormControlLabel
 							control={
@@ -68,19 +74,15 @@ class SettingEditor extends Component {
 									onChange={(event) =>
 										this.valueChanged(event.target.checked)
 									}
-									disabled={!setting.editable}
+									disabled={!editable}
 								/>
 							}
-							label={
-								setting.label !== setting.description
-									? setting.description
-									: ""
-							}
+							label={label !== description ? description : ""}
 							size="small"
 						/>
 					</FormGroup>
 				)}
-				{setting.type === "options" && (
+				{type === "options" && (
 					<Select
 						size="small"
 						value={value}
@@ -88,16 +90,16 @@ class SettingEditor extends Component {
 						onChange={(event) => {
 							this.valueChanged(event.target.value);
 						}}
-						disabled={!setting.editable}
+						disabled={!editable}
 					>
-						{setting.options.map((option) => (
+						{options.map((option) => (
 							<MenuItem value={option} key={option}>
 								{option}
 							</MenuItem>
 						))}
 					</Select>
 				)}
-				{setting.type === "shortcut" && (
+				{type === "shortcut" && (
 					<ShortcutEditor
 						value={value}
 						onChange={(value) => this.valueChanged(value)}

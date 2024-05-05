@@ -37,6 +37,10 @@ class Setting extends Object {
 		return new Setting(name, "text", defaultValue, label);
 	}
 
+	static paragraph(name, defaultValue = "", label) {
+		return new Setting(name, "paragraph", defaultValue, label);
+	}
+
 	static url(name) {
 		return new Setting(name, "url", "http://server/site");
 	}
@@ -135,6 +139,10 @@ class Settings extends Object {
 
 	addText(name, defaultValue, label) {
 		return this.add(Setting.text(name, defaultValue, label));
+	}
+
+	addParagraph(name, defaultValue, label) {
+		return this.add(Setting.paragraph(name, defaultValue, label));
 	}
 
 	addUrl(name) {
