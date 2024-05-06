@@ -377,24 +377,22 @@ class TestRunner extends Tool {
 		const percent = total > 0 ? (summary.run / total) * 100 : 0;
 		const grouped = results.grouped;
 		return (
-			<Box
-			//sx={{ height: "100%" }}
-			>
-				<Grid container spacing={1} sx={{ height: "100%" }}>
-					<Grid item xs={12} md={12} lg={12}>
-						<Typography variant="h6" color="primary">
-							Suite: {status.name}
-						</Typography>
-					</Grid>
-					<Grid item xs={10} md={10} lg={10}>
+			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
+				<Box>
+					<Typography variant="h6" color="primary">
+						Suite: {status.name}
+					</Typography>
+				</Box>
+				<Box display="flex" flexDirection="row" alignItems="center">
+					<Box flexGrow={1}>
 						{running && (
 							<LinearProgress
 								variant="determinate"
 								value={percent}
 							/>
 						)}
-					</Grid>
-					<Grid item xs={1} md={1} lg={1}>
+					</Box>
+					<Box ml={1}>
 						{running && (
 							<Typography
 								variant="subtitle1"
@@ -403,8 +401,8 @@ class TestRunner extends Tool {
 								{summary.run} / {total}
 							</Typography>
 						)}
-					</Grid>
-					<Grid item xs={1} md={1} lg={1}>
+					</Box>
+					<Box ml={1}>
 						<Button
 							variant="outlined"
 							color={running ? "secondary" : "primary"}
@@ -414,207 +412,193 @@ class TestRunner extends Tool {
 						>
 							{running ? "Stop" : "Run"}
 						</Button>
-					</Grid>
-					<Grid item xs={12} md={12} lg={12}>
-						{running && (
-							<Typography
-								variant="subtitle1"
-								color="textSecondary"
-							>
-								Running:{" "}
-								{current
-									? current.class + ": " + current.selector
-									: ""}
-							</Typography>
-						)}
-					</Grid>
-					<Grid item xs={12} md={12} lg={12}>
-						<Grid
-							container
-							spacing={1}
-							justifyContent="space-around"
-							alignItems="flex-end"
-						>
-							{Object.keys(summary).map((type) => {
-								return (
-									<Grid
-										item
-										xs={2}
-										md={2}
-										lg={2}
-										key={"grid-" + type}
+					</Box>
+				</Box>
+				<Box>
+					{running && (
+						<Typography variant="subtitle1" color="textSecondary">
+							Running:{" "}
+							{current
+								? current.class + ": " + current.selector
+								: ""}
+						</Typography>
+					)}
+				</Box>
+				<Box mb={1}>
+					<Grid
+						container
+						spacing={1}
+						justifyContent="space-around"
+						alignItems="flex-end"
+					>
+						{Object.keys(summary).map((type) => {
+							return (
+								<Grid
+									item
+									xs={2}
+									md={2}
+									lg={2}
+									key={"grid-" + type}
+								>
+									<Card
+										id={"card-" + type}
+										sx={{
+											background: this.typeColor(type),
+										}}
 									>
-										<Card
-											id={"card-" + type}
-											sx={{
-												background:
-													this.typeColor(type),
-											}}
+										<CardActionArea
+											onClick={(event) =>
+												this.filterTests(type)
+											}
 										>
-											<CardActionArea
-												onClick={(event) =>
-													this.filterTests(type)
-												}
+											<CardContent
+												key={"card-content-" + type}
 											>
-												<CardContent
-													key={"card-content-" + type}
+												<Typography
+													variant={
+														type === "run"
+															? "h2"
+															: "h4"
+													}
+													sx={{
+														color: "white",
+													}}
 												>
-													<Typography
-														variant={
-															type === "run"
-																? "h2"
-																: "h4"
-														}
-														sx={{
-															color: "white",
-														}}
-													>
-														{summary[type] || 0}
-													</Typography>
-													<Typography
-														variant="button"
-														sx={{ color: "white" }}
-														align="right"
-													>
-														{type}
-													</Typography>
-												</CardContent>
-											</CardActionArea>
-										</Card>
-									</Grid>
-								);
-							})}
-						</Grid>
+													{summary[type] || 0}
+												</Typography>
+												<Typography
+													variant="button"
+													sx={{ color: "white" }}
+													align="right"
+												>
+													{type}
+												</Typography>
+											</CardContent>
+										</CardActionArea>
+									</Card>
+								</Grid>
+							);
+						})}
 					</Grid>
-					<Grid item xs={12} md={12} lg={12}>
+				</Box>
+				<Box>
+					<Box
+						display="flex"
+						flexDirection="row"
+						justifyContent="space-between"
+						alignContent="center"
+					>
 						<Box
 							display="flex"
 							flexDirection="row"
-							justifyContent="space-between"
+							justifyContent="center"
 							alignContent="center"
 						>
-							<Box
-								display="flex"
-								flexDirection="row"
-								justifyContent="center"
-								alignContent="center"
-							>
-								<Chip
-									label={"Showing: " + filterType}
-									sx={{
-										color: "white",
-										background: this.typeColor(filterType),
-									}}
-								/>
-							</Box>
-							<FormGroup>
-								<FormControlLabel
-									control={
-										<Checkbox
-											size="small"
-											checked={showGroups}
-											color="primary"
-											onChange={(event) =>
-												this.showGroups(
-													event.target.checked
-												)
-											}
-										/>
-									}
-									label="Group tests"
-								/>
-							</FormGroup>
+							<Chip
+								label={"Showing: " + filterType}
+								sx={{
+									color: "white",
+									background: this.typeColor(filterType),
+								}}
+							/>
 						</Box>
-					</Grid>
-					<Grid item xs={12} md={12} lg={12}>
-						{showGroups &&
-							this.sortedGroups()
-								.filter(
-									(group) =>
-										grouped[group].summary[filterType] > 0
-								)
-								.map((group) => {
-									const groupTests =
-										grouped[group][filterType];
-									const showBars = filterType === "run";
-									return (
-										<Accordion key={group}>
-											<AccordionSummary
-												sx={{ maxHeight: 15 }}
-												expandIcon={<ExpandMoreIcon />}
-												id={group}
+						<FormGroup>
+							<FormControlLabel
+								control={
+									<Checkbox
+										size="small"
+										checked={showGroups}
+										color="primary"
+										onChange={(event) =>
+											this.showGroups(
+												event.target.checked
+											)
+										}
+									/>
+								}
+								label="Group tests"
+							/>
+						</FormGroup>
+					</Box>
+				</Box>
+				<Box>
+					{showGroups &&
+						this.sortedGroups()
+							.filter(
+								(group) =>
+									grouped[group].summary[filterType] > 0
+							)
+							.map((group) => {
+								const groupTests = grouped[group][filterType];
+								const showBars = filterType === "run";
+								return (
+									<Accordion key={group}>
+										<AccordionSummary
+											sx={{ maxHeight: 15 }}
+											expandIcon={<ExpandMoreIcon />}
+											id={group}
+										>
+											<Box
+												display="flex"
+												flexDirection="row"
+												alignContent="center"
 											>
-												<Box
-													display="flex"
-													flexDirection="row"
-													alignContent="center"
-												>
-													{!showBars && group}
-													<Box>
-														{showBars && (
-															<Bar
-																height={60}
-																//width={"100%"}
-																data={this.barChartData(
-																	group,
-																	grouped[
-																		group
-																	].summary
-																)}
-																options={this.barChartOptions()}
-															/>
-														)}
-													</Box>
+												{!showBars && group}
+												<Box>
+													{showBars && (
+														<Bar
+															height={60}
+															//width={"100%"}
+															data={this.barChartData(
+																group,
+																grouped[group]
+																	.summary
+															)}
+															options={this.barChartOptions()}
+														/>
+													)}
 												</Box>
-											</AccordionSummary>
-											<Grid container>
-												<Grid
-													item
-													xs={1}
-													md={1}
-													lg={1}
-												/>
-												<Grid
-													item
-													xs={11}
-													md={11}
-													lg={11}
-													sx={{ minHeight: 300 }}
-												>
-													<CustomTable
-														columns={this.columns()}
-														rows={groupTests}
-														menuOptions={this.menuOptions()}
-														rowActions={this.rowActions()}
-														selectedRow={
-															selectedTest
-														}
-														onRowSelect={
-															this.testSelected
-														}
-													></CustomTable>
-												</Grid>
+											</Box>
+										</AccordionSummary>
+										<Grid container>
+											<Grid item xs={1} md={1} lg={1} />
+											<Grid
+												item
+												xs={11}
+												md={11}
+												lg={11}
+												sx={{ minHeight: 300 }}
+											>
+												<CustomTable
+													columns={this.columns()}
+													rows={groupTests}
+													menuOptions={this.menuOptions()}
+													rowActions={this.rowActions()}
+													selectedRow={selectedTest}
+													onRowSelect={
+														this.testSelected
+													}
+												></CustomTable>
 											</Grid>
-										</Accordion>
-									);
-								})}
-					</Grid>
-					<Grid item xs={12} md={12} lg={12} sx={{ height: 500 }}>
-						{!showGroups && (
-							<CustomTable
-								//sx={{ width: "100%", heigh: "100%" }}
-								columns={this.columns()}
-								rows={results[filterType]}
-								menuOptions={this.menuOptions()}
-								rowActions={this.rowActions()}
-								rowsPerPage={50}
-								usePagination
-								selectedRow={selectedTest}
-								onRowSelect={this.testSelected}
-							></CustomTable>
-						)}
-					</Grid>
-				</Grid>
+										</Grid>
+									</Accordion>
+								);
+							})}
+				</Box>
+				<Box flexGrow={1}>
+					{!showGroups && (
+						<CustomTable
+							columns={this.columns()}
+							rows={results[filterType]}
+							menuOptions={this.menuOptions()}
+							rowActions={this.rowActions()}
+							rowsPerPage={50}
+							usePagination
+							selectedRow={selectedTest}
+							onRowSelect={this.testSelected}
+						></CustomTable>
+					)}
+				</Box>
 			</Box>
 		);
 	}
