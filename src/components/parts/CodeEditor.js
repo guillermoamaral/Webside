@@ -613,6 +613,7 @@ class CodeEditor extends Component {
 	};
 
 	browseClass = (e, f) => {
+		f.stopPropagation();
 		const target = this.targetWord();
 		target
 			? this.context.browseClass(target)
