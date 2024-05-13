@@ -218,7 +218,7 @@ In your response you will avoid using the words 'Smalltalk' and 'snippet'."
 			"Evaluation polling frequency (ms)",
 			"Warning. This is used to poll the back-end for evaluation progress. \
 A high frequency might affect front-end performance. \
-On the other hand, a high frequency could introduce a huge delay to detecting evaluation finalization."
+On the other hand, a low frequency could introduce a huge delay to detecting evaluation finalization."
 		);
 		return settings;
 	}
