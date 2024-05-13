@@ -82,10 +82,6 @@ class StChange extends Object {
 		return json;
 	}
 
-	type() {
-		return this.constructor.name;
-	}
-
 	sourceCode() {
 		return this.source;
 	}
@@ -130,6 +126,10 @@ class MethodChange extends StChange {
 		this.selector = null;
 	}
 
+	type() {
+		return "MethodChange";
+	}
+
 	fromJson(json) {
 		super.fromJson(json);
 		this.className = json.className;
@@ -158,6 +158,10 @@ class AddMethod extends MethodChange {
 		this.category = null;
 	}
 
+	type() {
+		return "AddMethod";
+	}
+
 	fromJson(json) {
 		super.fromJson(json);
 		this.category = json.category;
@@ -174,12 +178,20 @@ class AddMethod extends MethodChange {
 	}
 }
 
-class RemoveMethod extends MethodChange {}
+class RemoveMethod extends MethodChange {
+	type() {
+		return "RemoveMethod";
+	}
+}
 
 class ClassifyMethod extends MethodChange {
 	constructor() {
 		super();
 		this.category = null;
+	}
+
+	type() {
+		return "ClassifyMethod";
 	}
 
 	fromJson(json) {
@@ -200,6 +212,10 @@ class RenameMethod extends MethodChange {
 		this.newSelector = null;
 	}
 
+	type() {
+		return "RenameMethod";
+	}
+
 	fromJson(json) {
 		super.fromJson(json);
 		this.newSelector = json.newSelector;
@@ -216,6 +232,10 @@ class ClassChange extends StChange {
 	constructor() {
 		super();
 		this.className = null;
+	}
+
+	type() {
+		return "ClassChange";
 	}
 
 	fromJson(json) {
@@ -244,6 +264,10 @@ class AddClass extends ClassChange {
 		this.definition = null;
 	}
 
+	type() {
+		return "AddClass";
+	}
+
 	fromJson(json) {
 		super.fromJson(json);
 		this.definition = json.definition;
@@ -266,6 +290,10 @@ class CommentClass extends ClassChange {
 		this.comment = null;
 	}
 
+	type() {
+		return "CommentClass";
+	}
+
 	fromJson(json) {
 		super.fromJson(json);
 		this.comment = json.comment;
@@ -282,12 +310,20 @@ class CommentClass extends ClassChange {
 	}
 }
 
-class RemoveClass extends ClassChange {}
+class RemoveClass extends ClassChange {
+	type() {
+		return "RemoveClass";
+	}
+}
 
 class RenameClass extends ClassChange {
 	constructor() {
 		super();
 		this.newName = null;
+	}
+
+	type() {
+		return "RenameClass";
 	}
 
 	fromJson(json) {
@@ -308,6 +344,10 @@ class VariableChange extends ClassChange {
 		this.variable = null;
 	}
 
+	type() {
+		return "VariableChange";
+	}
+
 	fromJson(json) {
 		super.fromJson(json);
 		this.variable = json.variable;
@@ -320,14 +360,26 @@ class VariableChange extends ClassChange {
 	}
 }
 
-class AddInstanceVariable extends VariableChange {}
+class AddInstanceVariable extends VariableChange {
+	type() {
+		return "AddInstanceVariable";
+	}
+}
 
-class RemoveInstanceVariable extends VariableChange {}
+class RemoveInstanceVariable extends VariableChange {
+	type() {
+		return "RemoveInstanceVariable";
+	}
+}
 
 class RenameInstanceVariable extends VariableChange {
 	constructor() {
 		super();
 		this.newName = null;
+	}
+
+	type() {
+		return "RenameInstanceVariable";
 	}
 
 	fromJson(json) {
@@ -342,12 +394,20 @@ class RenameInstanceVariable extends VariableChange {
 	}
 }
 
-class MoveUpInstanceVariable extends VariableChange {}
+class MoveUpInstanceVariable extends VariableChange {
+	type() {
+		return "MoveUpInstanceVariable";
+	}
+}
 
 class MoveDownInstanceVariable extends VariableChange {
 	constructor() {
 		super();
 		this.target = null;
+	}
+
+	type() {
+		return "MoveDownInstanceVariable";
 	}
 
 	fromJson(json) {
@@ -362,14 +422,26 @@ class MoveDownInstanceVariable extends VariableChange {
 	}
 }
 
-class AddClassVariable extends VariableChange {}
+class AddClassVariable extends VariableChange {
+	type() {
+		return "AddClassVariable";
+	}
+}
 
-class RemoveClassVariable extends VariableChange {}
+class RemoveClassVariable extends VariableChange {
+	type() {
+		return "RemoveClassVariable";
+	}
+}
 
 class RenameClassVariable extends VariableChange {
 	constructor() {
 		super();
 		this.newName = null;
+	}
+
+	type() {
+		return "RenameClassVariable";
 	}
 
 	fromJson(json) {
@@ -390,6 +462,10 @@ class CategoryChange extends ClassChange {
 		this.category = null;
 	}
 
+	type() {
+		return "CategoryChange";
+	}
+
 	fromJson(json) {
 		super.fromJson(json);
 		this.category = json.category;
@@ -408,6 +484,10 @@ class ClassCategorCategory extends CategoryChange {
 		this.package = null;
 	}
 
+	type() {
+		return "ClassCategorCategory";
+	}
+
 	fromJson(json) {
 		super.fromJson(json);
 		this.package = json.package;
@@ -420,7 +500,11 @@ class ClassCategorCategory extends CategoryChange {
 	}
 }
 
-class AddClassCategory extends ClassCategorCategory {}
+class AddClassCategory extends ClassCategorCategory {
+	type() {
+		return "AddClassCategory";
+	}
+}
 
 class RenameClassCategory extends ClassCategorCategory {
 	constructor() {
@@ -428,6 +512,10 @@ class RenameClassCategory extends ClassCategorCategory {
 		this.newName = null;
 	}
 
+	type() {
+		return "RenameClassCategory";
+	}
+
 	fromJson(json) {
 		super.fromJson(json);
 		this.newName = json.newName;
@@ -440,7 +528,11 @@ class RenameClassCategory extends ClassCategorCategory {
 	}
 }
 
-class RemoveClassCategory extends ClassCategorCategory {}
+class RemoveClassCategory extends ClassCategorCategory {
+	type() {
+		return "RemoveClassCategory";
+	}
+}
 
 class RenameCategory extends CategoryChange {
 	constructor() {
@@ -448,6 +540,10 @@ class RenameCategory extends CategoryChange {
 		this.newName = null;
 	}
 
+	type() {
+		return "RenameCategory";
+	}
+
 	fromJson(json) {
 		super.fromJson(json);
 		this.newName = json.newName;
@@ -460,12 +556,20 @@ class RenameCategory extends CategoryChange {
 	}
 }
 
-class RemoveCategory extends CategoryChange {}
+class RemoveCategory extends CategoryChange {
+	type() {
+		return "RemoveCategory";
+	}
+}
 
 class PackageChange extends StChange {
 	constructor() {
 		super();
 		this.name = null;
+	}
+
+	type() {
+		return "PackageChange";
 	}
 
 	fromJson(json) {
@@ -480,14 +584,26 @@ class PackageChange extends StChange {
 	}
 }
 
-class AddPackage extends PackageChange {}
+class AddPackage extends PackageChange {
+	type() {
+		return "AddPackage";
+	}
+}
 
-class RemovePackage extends PackageChange {}
+class RemovePackage extends PackageChange {
+	type() {
+		return "RemovePackage";
+	}
+}
 
 class RenamePackage extends PackageChange {
 	constructor() {
 		super();
 		this.newName = null;
+	}
+
+	type() {
+		return "RenamePackage";
 	}
 
 	fromJson(json) {

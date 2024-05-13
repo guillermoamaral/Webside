@@ -1,7 +1,6 @@
 import React from "react";
 import Tool from "./Tool";
 import {
-	Grid,
 	Paper,
 	Box,
 	Button,
@@ -171,6 +170,20 @@ class CodeMigrator extends Tool {
 		this.setState({ changes: this.state.changes });
 	};
 
+	downloadChanges = async () => {
+		try {
+			const ch = await ide.backend.downloadChanges(
+				this.state.changes.map((ch) => {
+					return ch.asJson();
+				})
+			);
+			const blob = new Blob([ch]);
+			ide.download(blob, this.sourceLabel() + " migration.ch");
+		} catch (error) {
+			ide.reportError();
+		}
+	};
+
 	render() {
 		const { targetURL, changes, selectedChange, generating, migrating } =
 			this.state;
@@ -179,18 +192,18 @@ class CodeMigrator extends Tool {
 				? selectedChange.error.description
 				: null;
 		return (
-			<Grid container spacing={1}>
-				<Grid item xs={12} md={12} lg={12}>
+			<Box display="flex" flexDirection="column">
+				<Box>
 					<Typography variant="h6">
 						Source: {this.sourceLabel()}
 					</Typography>
-				</Grid>
-				<Grid item xs={12} md={12} lg={12}>
+				</Box>
+				<Box>
 					{(generating || migrating) && (
 						<LinearProgress variant="indeterminate" />
 					)}
-				</Grid>
-				<Grid item xs={12} md={12} lg={12}>
+				</Box>
+				<Box>
 					<TextField
 						size="small"
 						value={targetURL}
@@ -206,8 +219,8 @@ class CodeMigrator extends Tool {
 						type="text"
 						disabled={migrating || generating}
 					/>
-				</Grid>
-				<Grid item xs={12} md={12} lg={12}>
+				</Box>
+				<Box flexGrow={1}>
 					<Paper variant="outlined" style={{ height: 400 }}>
 						<ChangesTable
 							style={{ height: "100%" }}
@@ -217,10 +230,11 @@ class CodeMigrator extends Tool {
 							}
 						/>
 					</Paper>
-				</Grid>
-				<Grid item xs={12} md={12} lg={12}>
+				</Box>
+				<Box>
 					<Box
 						display="flex"
+						flexDirection="row"
 						flexWrap="nowrap"
 						alignItems="right"
 						justifyContent="right"
@@ -230,7 +244,16 @@ class CodeMigrator extends Tool {
 							disabled={generating || migrating}
 							onClick={this.generateChanges}
 						>
-							Generate changes
+							Generate
+						</Button>
+						<Button
+							variant="outlined"
+							disabled={
+								generating || migrating || changes.length === 0
+							}
+							onClick={this.downloadChanges}
+						>
+							Download
 						</Button>
 						<Button
 							variant="outlined"
@@ -242,18 +265,18 @@ class CodeMigrator extends Tool {
 							}
 							onClick={this.applyChanges}
 						>
-							Apply changes
+							Apply
 						</Button>
 					</Box>
-				</Grid>
+				</Box>
 				{error && (
-					<Grid item xs={12} md={12} lg={12}>
+					<Box>
 						<Paper variant="outlined" style={{ minHeight: 200 }}>
 							{error}
 						</Paper>
-					</Grid>
+					</Box>
 				)}
-			</Grid>
+			</Box>
 		);
 	}
 }
