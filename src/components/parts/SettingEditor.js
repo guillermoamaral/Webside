@@ -9,8 +9,10 @@ import {
 	OutlinedInput,
 	FormGroup,
 	FormControlLabel,
+	Tooltip,
 } from "@mui/material";
 import ShortcutEditor from "./ShortcutEditor";
+import InfoIcon from "@mui/icons-material/InfoOutlined";
 
 class SettingEditor extends Component {
 	constructor(props) {
@@ -29,22 +31,24 @@ class SettingEditor extends Component {
 
 	render() {
 		const value = this.state.value;
-		const { type, name, label, description, editable, options } =
-			this.props.setting;
+		const { setting, showLabel = true } = this.props;
+		const { type, name, label, description, editable, options } = setting;
+		const alignment = type === "number" ? "right" : "left";
 		return (
-			<Box
-				mt={1}
-				mb={1}
-				display="flex"
-				flexDirection="row"
-				alignItems="center"
-			>
-				<Typography mr={2}>{label}</Typography>
-				{(type === "text" ||
-					type === "paragraph" ||
-					type === "number" ||
-					type === "color" ||
-					type === "url") && (
+			<Box display="flex" flexDirection="row" alignItems="center">
+				{description && (
+					<Tooltip key={label} title={description}>
+						<InfoIcon />
+					</Tooltip>
+				)}
+				{showLabel && type !== "boolean" && (
+					<Typography variant="body2" ml={1} mr={2}>
+						{label}
+					</Typography>
+				)}
+				{["text", "paragraph", "number", "color", "url"].includes(
+					type
+				) && (
 					<TextField
 						fullWidth={type === "paragraph"}
 						multiline={type === "paragraph"}
@@ -52,12 +56,15 @@ class SettingEditor extends Component {
 						size="small"
 						id={name}
 						type={type}
-						placeholder={description}
+						placeholder={"Enter " + label}
 						margin="dense"
 						name={name}
 						variant="outlined"
 						value={value}
-						inputProps={{ id: name + "key" }}
+						inputProps={{
+							id: name + "key",
+							style: { textAlign: alignment },
+						}}
 						onChange={(event) => {
 							this.valueChanged(event.target.value);
 						}}
@@ -77,7 +84,7 @@ class SettingEditor extends Component {
 									disabled={!editable}
 								/>
 							}
-							label={label !== description ? description : ""}
+							label={label}
 							size="small"
 						/>
 					</FormGroup>

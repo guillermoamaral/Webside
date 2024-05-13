@@ -9,7 +9,6 @@ import {
 	Box,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import PlayIcon from "@mui/icons-material/PlayArrow";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CodeEditor from "../parts/CodeEditor";
 import Inspector from "./Inspector";
@@ -23,8 +22,13 @@ class Workspace extends Tool {
 			source: this.props.source || "",
 			opensInspector: true,
 			inspectors: [],
-			evaluating: false,
 		};
+		this.editorRef = React.createRef();
+	}
+
+	aboutToSelect() {
+		if (this.editorRef && this.editorRef.current)
+			this.editorRef.current.updatePlay();
 	}
 
 	async aboutToClose() {
@@ -66,27 +70,8 @@ class Workspace extends Tool {
 		ide.backend.saveWorkspace({ id: this.props.id, source: source });
 	};
 
-	evaluateClicked = async () => {
-		try {
-			this.setState({ evaluating: true });
-			const object = await this.context.evaluateExpression(
-				this.state.source,
-				false,
-				true,
-				{ workspace: this.props.id }
-			);
-			if (this.state.opensInspector) {
-				this.setState({ evaluating: false });
-				this.openInspector(object);
-			} else {
-				this.setState({
-					source: this.state.source + " -> " + object.printString,
-					evaluating: false,
-				});
-			}
-		} catch (error) {
-			this.setState({ evaluating: false });
-		}
+	expressionEvaluated = (object) => {
+		if (this.state.opensInspector) this.openInspector(object);
 	};
 
 	evaluationContext() {
@@ -119,7 +104,7 @@ class Workspace extends Tool {
 	};
 
 	render() {
-		const { source, inspectors, evaluating } = this.state;
+		const { source, inspectors } = this.state;
 		return (
 			<Box display="flex" sx={{ height: "100%" }}>
 				<CustomSplit>
@@ -129,15 +114,13 @@ class Workspace extends Tool {
 							style={{ minHeight: 300, height: "100%" }}
 						>
 							<CodeEditor
+								ref={this.editorRef}
 								context={this.evaluationContext()}
 								source={source}
-								showAccept
-								acceptIcon={
-									<PlayIcon style={{ color: "#3bba5d" }} />
-								}
-								onAccept={this.evaluateClicked}
+								showAccept={false}
+								showPlay={true}
 								onChange={this.sourceChanged}
-								evaluating={evaluating}
+								onEvaluate={this.expressionEvaluated}
 								onTooltipShow={this.tooltipForBinding}
 								onTooltipClick={this.inspectBinding}
 							/>

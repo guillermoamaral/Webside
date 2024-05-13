@@ -244,7 +244,8 @@ class CustomTable extends Component {
 							action.visible(row));
 					return (
 						<Box
-							//Review these fixed sizes. They were fixed to avoid dynamic resizing when hovering
+							//Review these fixed sizes. They were fixed to avoid dynamic 
+							//resizing when hovering
 							style={{ width: 22, height: 22 }}
 							key={"box" + index + "action" + j}
 						>

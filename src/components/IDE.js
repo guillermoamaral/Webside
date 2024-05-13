@@ -197,7 +197,7 @@ class IDE extends Component {
 		shortcuts.addShortcut("browseClassReferences", "Alt+r");
 
 		const assistant = settings.addSection("codeAssistant");
-		assistant.addBoolean("enabled", false, "Use code aassistant");
+		assistant.addBoolean("enabled", false, "Use code assistant");
 		const openAI = assistant.addSection("openAI", "OpenAI API");
 		openAI.addText("apiKey");
 		openAI.addOptions(
@@ -210,6 +210,15 @@ class IDE extends Component {
 			"You are an expert Smalltalk programmer.\n\
 When I ask for help to analyze, explain or write Smalltalk code, you will reply accordingly.\n\
 In your response you will avoid using the words 'Smalltalk' and 'snippet'."
+		);
+		const advanced = settings.addSection("advanced");
+		advanced.addNumber(
+			"evaluationPollingFrequency",
+			300,
+			"Evaluation polling frequency (ms)",
+			"Warning. This is used to poll the back-end for evaluation progress.\
+A high frequency might affect front-end performance.\
+On the other hand, a high frequency could introduce a huge delay to detecting evaluation finalization."
 		);
 		return settings;
 	}
@@ -591,7 +600,7 @@ In your response you will avoid using the words 'Smalltalk' and 'snippet'."
 	async inspectExpression(expression) {
 		const object = await this.backend.evaluateExpression(
 			expression,
-			false,
+			true,
 			true
 		);
 		if (object) {
@@ -684,9 +693,7 @@ In your response you will avoid using the words 'Smalltalk' and 'snippet'."
 
 	reportError = (error) => {
 		console.log(error);
-		if (!error) {
-			return;
-		}
+		if (!error) return;
 		let description = error.toString();
 		let message = error.data
 			? typeof error.data === "string"

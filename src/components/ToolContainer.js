@@ -85,6 +85,8 @@ class ToolContainer extends Component {
 	}
 
 	selectPage = (page) => {
+		const previous = this.pageWithId(this.state.selectedPageId);
+		if (previous) this.aboutToDeselectPage(previous);
 		const state = { selectedPageId: page.id };
 		this.aboutToSelectPage(page);
 		this.setState(state);
@@ -94,6 +96,12 @@ class ToolContainer extends Component {
 	pageFocused = (page) => {
 		if (this.props.onPageFocus) this.props.onPageFocus(this, page);
 	};
+
+	aboutToDeselectPage(page) {
+		if (page && page.ref && page.ref.current) {
+			page.ref.current.aboutToDeselect();
+		}
+	}
 
 	aboutToSelectPage(page) {
 		if (page && page.ref && page.ref.current) {
@@ -737,21 +745,14 @@ class ToolContainer extends Component {
 		}
 	};
 
-	async canDebugError(error) {
-		if (!error.data || !error.data.evaluation) {
-			return false;
-		}
-		// Don't ask for confirmation by the moment
+	async debugsError(error) {
+		// Don't ask for confirmation by the moment...
 		const confirms = false;
-		if (!confirms) {
-			return true;
-		}
+		if (!confirms) return true;
 		return await ide.confirm({
-			title: error.data.description,
+			title: error.description,
 			message:
-				"Stack trace:\r" +
-				error.data.stack +
-				"\r\rDo you want to debug it?",
+				"Stack trace:\r" + error.stack + "\r\rDo you want to debug it?",
 			ok: { text: "Debug", variant: "outlined" },
 		});
 	}
@@ -759,23 +760,25 @@ class ToolContainer extends Component {
 	evaluateExpression = async (expression, sync, pin, context, assignee) => {
 		const evaluation = {
 			expression: expression,
-			context: context,
 			sync: sync,
 			pin: pin,
+			context: context,
 			assignee: assignee,
 		};
 		var result;
 		try {
 			result = await ide.backend.issueEvaluation(evaluation);
-			if (sync) {
-				return result;
-			}
+			if (sync) return result;
 		} catch (error) {
-			evaluation.id = error.evaluation;
-			return this.handleEvaluationError(error, evaluation);
+			if (error.data && error.data.evaluation) {
+				evaluation.id = error.evaluation;
+				return this.handleEvaluationError(error.data, evaluation);
+			} else {
+				return this.reportError(error);
+			}
 		}
 		evaluation.id = result.id;
-		const object = await this.getEvaluationResult(evaluation);
+		const object = await this.waitForEvaluationResult(evaluation);
 		if (!pin && !sync) {
 			try {
 				await ide.backend.unpinObject(object.id);
@@ -784,27 +787,55 @@ class ToolContainer extends Component {
 		return object;
 	};
 
-	async getEvaluationResult(evaluation) {
-		var object;
+	waitForEvaluationResult = async (evaluation) => {
+		let delay = ide.settings
+			.section("advanced")
+			.get("evaluationPollingFrequency");
+		let finalization;
+		const promise = new Promise((resolve, _) => {
+			finalization = resolve;
+		});
+		let retrieved;
+		const interval = setInterval(async () => {
+			try {
+				retrieved = await ide.backend.evaluation(evaluation.id);
+				evaluation.state = retrieved.state;
+				if (
+					["finished", "cancelled", "failed"].includes(
+						retrieved.state
+					)
+				)
+					finalization(retrieved.state);
+			} catch (error) {
+				if (error.status === 404) {
+					// Cancelling could result into this...
+					return finalization("cancelled");
+				}
+				this.reportError(error);
+			}
+		}, delay);
+		const final = await promise;
+		clearInterval(interval);
+		if (final === "cancelled") return null;
+		if (final === "failed")
+			return this.handleEvaluationError(retrieved.error, evaluation);
 		try {
-			object = await ide.backend.objectWithId(evaluation.id);
+			return await ide.backend.objectWithId(evaluation.id);
 		} catch (error) {
-			return await this.handleEvaluationError(error, evaluation);
+			this.reportError(error);
 		}
-		return object;
-	}
+	};
 
 	handleEvaluationError = async (error, evaluation) => {
-		const data = error.data;
-		if (data && data.suggestions && data.suggestions.length > 0) {
+		if (error.suggestions && error.suggestions.length > 0) {
 			const chosen = await ide.choose({
-				title: data.description,
+				title: error.description,
 				message: "What do you want to do?",
-				items: data.suggestions.map((s) => s.description),
-				defaultValue: data.suggestions[0].description,
+				items: error.suggestions.map((s) => s.description),
+				defaultValue: error.suggestions[0].description,
 			});
 			const suggestion = chosen
-				? data.suggestions.find((s) => s.description === chosen)
+				? error.suggestions.find((s) => s.description === chosen)
 				: null;
 			if (chosen) {
 				try {
@@ -824,11 +855,11 @@ class ToolContainer extends Component {
 				);
 			}
 		} else {
-			if (await this.canDebugError(error)) {
+			if (await this.debugsError(error)) {
 				var object;
-				await this.debugEvaluationError(error, evaluation).then(
+				await this.debugEvaluation(evaluation).then(
 					async () => {
-						object = await this.getEvaluationResult(evaluation);
+						object = await this.waitForEvaluationResult(evaluation);
 					},
 					() => {
 						console.log("nothing should happen from here");
@@ -841,7 +872,7 @@ class ToolContainer extends Component {
 		}
 	};
 
-	async debugEvaluationError(error, evaluation) {
+	async debugEvaluation(evaluation) {
 		const d = await ide.backend.createDebugger(evaluation.id);
 		return new Promise((resolve, reject) => {
 			this.openDebugger(d.id, d.description, resolve, reject);

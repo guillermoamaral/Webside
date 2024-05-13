@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom/client";
 import { Box, IconButton, LinearProgress, Tooltip } from "@mui/material";
 import AcceptIcon from "@mui/icons-material/CheckCircle";
+import PlayIcon from "@mui/icons-material/PlayArrow";
+import PauseIcon from "@mui/icons-material/Pause";
 import PopupMenu from "../controls/PopupMenu";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
@@ -89,8 +91,8 @@ class CodeEditor extends Component {
 			menuOpen: false,
 			menuPosition: { x: null, y: null },
 			evaluating: false,
-			progress: false,
 			extendedOptions: [],
+			currentEvaluation: null,
 		};
 	}
 
@@ -100,7 +102,6 @@ class CodeEditor extends Component {
 			selectedInterval,
 			selectedSelector,
 			selectedIdentifier,
-			evaluating,
 		} = props;
 		if (
 			//!state.dirty &&
@@ -128,13 +129,7 @@ class CodeEditor extends Component {
 				selectedIdentifier: selectedIdentifier,
 				source: source,
 				selectedRanges: ranges,
-				evaluating: evaluating,
 				dirty: false,
-			};
-		}
-		if (evaluating !== undefined && evaluating !== state.evaluating) {
-			return {
-				evaluating: evaluating,
 			};
 		}
 		return null;
@@ -168,9 +163,8 @@ class CodeEditor extends Component {
 			return true;
 		}
 		if (
-			nextState.progress !== this.state.progress ||
-			nextProps.evaluating !== this.props.evaluating ||
-			nextState.evaluating !== this.state.evaluating
+			nextState.evaluating !== this.state.evaluating ||
+			nextState.currentEvaluation !== this.state.currentEvaluation
 		) {
 			return true;
 		}
@@ -520,12 +514,8 @@ class CodeEditor extends Component {
 	};
 
 	acceptClicked = (editor, event) => {
-		if (event) {
-			event.preventDefault();
-		}
-		if (this.props.onAccept) {
-			this.props.onAccept(this.state.source);
-		}
+		if (event) event.preventDefault();
+		if (this.props.onAccept) this.props.onAccept(this.state.source);
 	};
 
 	wordUnderCursor() {
@@ -634,9 +624,7 @@ class CodeEditor extends Component {
 
 	selectedExpression() {
 		const expression = this.selectedText();
-		if (expression.length > 0) {
-			return expression;
-		}
+		if (expression.length > 0) return expression;
 		return this.currentLine();
 	}
 
@@ -664,38 +652,76 @@ class CodeEditor extends Component {
 		} catch (error) {}
 	};
 
-	evaluateExpression = async (expression, sync, pin) => {
-		var object;
+	playClicked = async (editor, event) => {
+		if (event) event.preventDefault();
+		const object = await this.evaluateExpression(this.state.source, true);
+		if (object && this.props.onEvaluate) this.props.onEvaluate(object);
+	};
+
+	pauseClicked = async (editor, event) => {
+		if (event) event.preventDefault();
+		const evaluation = this.state.currentEvaluation;
+		if (!evaluation) return;
 		try {
-			this.setState({ progress: true });
-			object = await this.context.evaluateExpression(
-				expression,
-				sync,
-				pin,
-				this.props.context
-			);
-			this.setState({ progress: false }, this.triggerOnEvaluate());
+			const paused = await ide.backend.pauseEvaluation(evaluation.id);
+			this.setState({
+				currentEvaluation: { ...evaluation, state: paused.state },
+			});
+			const d = await ide.backend.createDebugger(evaluation.id);
+			this.context.openDebugger(d.id, d.description);
+		} catch (error) {
+			ide.reportError(error);
+		}
+	};
+
+	updatePlay = async () => {
+		const evaluation = this.state.currentEvaluation;
+		if (!evaluation) return;
+		try {
+			const updated = await ide.backend.evaluation(evaluation.id);
+			this.setState({
+				currentEvaluation: { ...evaluation, state: updated.state },
+			});
+		} catch (ignored) {}
+	};
+
+	evaluateExpression = async (expression, pin) => {
+		let object;
+		try {
+			const evaluation = {
+				expression: expression,
+				sync: false,
+				pin: pin,
+				context: this.props.context,
+			};
+			let issued = await ide.backend.issueEvaluation(evaluation);
+			evaluation.id = issued.id;
+			evaluation.state = issued.state;
+			this.setState({ evaluating: true, currentEvaluation: evaluation });
+			object = await this.context.waitForEvaluationResult(evaluation);
+			if (!pin) {
+				try {
+					await ide.backend.unpinObject(object.id);
+				} catch (ignored) {}
+			}
+			this.setState({ evaluating: false, currentEvaluation: null });
 		} catch (error) {
 			object = null;
-			this.setState({ progress: false });
+			this.context.reportError(error);
+			this.setState({ evaluating: false, currentEvaluation: null });
 		}
 		return object;
 	};
 
 	evaluateSelection = async () => {
 		const expression = this.selectedExpression();
-		await this.evaluateExpression(expression, false, false);
-		this.triggerOnEvaluate();
+		await this.evaluateExpression(expression, false);
 	};
-
-	triggerOnEvaluate() {
-		if (this.props.onEvaluate) this.props.onEvaluate();
-	}
 
 	showEvaluation = async () => {
 		const range = this.currentSelectionRange();
 		const expression = this.selectedExpression();
-		const object = await this.evaluateExpression(expression, false, false);
+		const object = await this.evaluateExpression(expression, false);
 		const position = Math.max(range.head, range.anchor);
 		if (object) {
 			this.insertText(" " + object.printString, position);
@@ -710,7 +736,7 @@ class CodeEditor extends Component {
 
 	inspectEvaluation = async () => {
 		const expression = this.selectedExpression();
-		const object = await this.evaluateExpression(expression, false, true);
+		const object = await this.evaluateExpression(expression, true);
 		if (object) {
 			this.context.openInspector(object);
 		}
@@ -725,7 +751,7 @@ class CodeEditor extends Component {
 		if (species) {
 			return this.context.browseClass(species.name);
 		}
-		const object = await this.evaluateExpression(name, false, true);
+		const object = await this.evaluateExpression(name, true);
 		if (object) {
 			this.context.openInspector(object);
 		}
@@ -1083,20 +1109,21 @@ class CodeEditor extends Component {
 
 	render() {
 		console.log("rendering code editor");
-		const { source, evaluating, progress, dirty, menuOpen, menuPosition } =
-			this.state;
-		const { showAccept, showAssistant, readOnly } = this.props;
+		const {
+			source,
+			evaluating,
+			currentEvaluation,
+			dirty,
+			menuOpen,
+			menuPosition,
+		} = this.state;
+		const { showAccept, showPlay, showAssistant, readOnly } = this.props;
 		const showCodeAssistant = showAssistant && ide.usesCodeAssistant();
-		const showButtons = showAccept || showAssistant;
+		const showButtons = showAccept || showPlay || showAssistant;
 		const lineNumbers = this.props.lineNumbers === true;
-		const acceptIcon = this.props.acceptIcon ? (
-			React.cloneElement(this.props.acceptIcon)
-		) : (
-			<AcceptIcon
-				size="large"
-				color={dirty ? "primary" : "inherit"}
-				style={{ fontSize: 30 }}
-			/>
+		console.log(
+			evaluating,
+			currentEvaluation ? currentEvaluation.state : "none"
 		);
 		return (
 			<Box
@@ -1136,7 +1163,7 @@ class CodeEditor extends Component {
 							}}
 							onUpdate={(update) => this.editorUpdated(update)}
 							onDoubleClick={this.includeColonInSelection}
-							readOnly={readOnly || evaluating || progress}
+							readOnly={readOnly || evaluating}
 							basicSetup={{
 								lineNumbers: lineNumbers,
 								closeBrackets: true,
@@ -1148,9 +1175,7 @@ class CodeEditor extends Component {
 							}}
 						/>
 					</Scrollable>
-					{(evaluating || progress) && (
-						<LinearProgress variant="indeterminate" />
-					)}
+					{evaluating && <LinearProgress variant="indeterminate" />}
 				</Box>
 				{showButtons && (
 					<Box
@@ -1164,7 +1189,47 @@ class CodeEditor extends Component {
 									color="inherit"
 									onClick={this.acceptClicked}
 								>
-									{acceptIcon}
+									<AcceptIcon
+										size="large"
+										color={dirty ? "primary" : "inherit"}
+										style={{ fontSize: 30 }}
+									/>
+								</IconButton>
+							</Box>
+						)}
+						{showPlay && !evaluating && (
+							<Box display="flex" justifyContent="center">
+								<IconButton
+									color="inherit"
+									onClick={this.playClicked}
+								>
+									<PlayIcon
+										size="large"
+										color={dirty ? "primary" : "inherit"}
+										style={{ fontSize: 30 }}
+									/>
+								</IconButton>
+							</Box>
+						)}
+						{showPlay && evaluating && (
+							<Box display="flex" justifyContent="center">
+								<IconButton
+									color="inherit"
+									onClick={this.pauseClicked}
+									disabled={
+										!(
+											currentEvaluation &&
+											["pending", "evaluating"].includes(
+												currentEvaluation.state
+											)
+										)
+									}
+								>
+									<PauseIcon
+										size="large"
+										color={dirty ? "primary" : "inherit"}
+										style={{ fontSize: 30 }}
+									/>
 								</IconButton>
 							</Box>
 						)}

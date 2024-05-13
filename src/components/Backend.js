@@ -533,11 +533,11 @@ class Backend {
 		return applied;
 	}
 
-	async downloadChangeset(changes) {
+	async downloadChanges(changes) {
 		return await this.post(
 			"/changesets/download",
 			changes,
-			"download changeset"
+			"download changes"
 		);
 	}
 
@@ -858,6 +858,13 @@ class Backend {
 		return await this.delete(
 			"/evaluations/" + id,
 			"cancel evaluation with id " + id
+		);
+	}
+
+	async evaluation(id) {
+		return await this.get(
+			"/evaluations/" + id,
+			"retrieve evaluation with id " + id
 		);
 	}
 

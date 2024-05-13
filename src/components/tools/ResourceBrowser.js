@@ -1,7 +1,6 @@
 import React from "react";
 import Tool from "./Tool";
 import {
-	Grid,
 	Paper,
 	List,
 	ListItemButton,
@@ -9,6 +8,11 @@ import {
 	Box,
 	IconButton,
 	Tooltip,
+	FormGroup,
+	FormControlLabel,
+	Checkbox,
+	Typography,
+	TextField,
 } from "@mui/material";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
@@ -25,6 +29,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import StopIcon from "@mui/icons-material/Stop";
 import PauseIcon from "@mui/icons-material/Pause";
 import EditWorkspace from "@mui/icons-material/Edit";
+import CustomSplit from "../controls/CustomSplit";
 
 class ResourceBrowser extends Tool {
 	constructor(props) {
@@ -41,19 +46,52 @@ class ResourceBrowser extends Tool {
 			selectedType: null,
 			resources: [],
 			selectedResource: null,
+			automaticRefresh: false,
+			refreshFrequency: 1000,
 		};
 	}
 
 	aboutToSelect() {
-		this.refreshResources();
+		if (this.state.automaticRefresh) this.startRefreshInterval();
+	}
+
+	aboutToClose() {
+		this.stopRefreshInterval();
+	}
+
+	aboutToDeselect() {
+		this.stopRefreshInterval();
 	}
 
 	componentDidMount() {
 		this.typeSelected("Objects");
 	}
 
-	// Objects...
+	startRefreshInterval() {
+		if (this.refreshInterval) clearInterval(this.refreshInterval);
+		this.refreshInterval = setInterval(async () => {
+			try {
+				this.refreshResources();
+			} catch (ignored) {}
+		}, this.state.refreshFrequency);
+	}
 
+	stopRefreshInterval() {
+		clearInterval(this.refreshInterval);
+	}
+
+	automaticRefreshClicked(boolean) {
+		this.setState({ automaticRefresh: boolean });
+		boolean ? this.startRefreshInterval() : this.stopRefreshInterval();
+	}
+
+	refreshFrequencyChanged(frequency) {
+		this.setState({ refreshFrequency: frequency });
+		console.log(this.state.automaticRefresh);
+		if (this.state.automaticRefresh) this.startRefreshInterval();
+	}
+
+	// Objects...
 	objectColumns() {
 		return [
 			{
@@ -159,14 +197,20 @@ class ResourceBrowser extends Tool {
 				label: "Pause",
 				icon: <PauseIcon fontSize="small" />,
 				handler: this.pauseEvaluation,
+				visible: this.canPauseEvaluation,
 			},
 			{
 				label: "Stop",
 				icon: <StopIcon fontSize="small" />,
 				handler: this.cancelEvaluation,
+				visible: this.canCancelEvaluation,
 			},
 		];
 	}
+
+	canPauseEvaluation = async (evaluation) => {
+		return evaluation && evaluation.state === "evaluating";
+	};
 
 	pauseEvaluation = async (evaluation) => {
 		try {
@@ -176,6 +220,13 @@ class ResourceBrowser extends Tool {
 		} catch (error) {
 			ide.reportError(error);
 		}
+	};
+
+	canCancelEvaluation = async (evaluation) => {
+		return (
+			evaluation &&
+			(evaluation.state === "evaluating" || evaluation.state === "paused")
+		);
 	};
 
 	cancelEvaluation = async (evaluation) => {
@@ -503,96 +554,162 @@ class ResourceBrowser extends Tool {
 
 	render() {
 		console.log("rendering resource browser");
-		const { selectedType, resources, selectedResource } = this.state;
+		const {
+			selectedType,
+			resources,
+			selectedResource,
+			automaticRefresh,
+			refreshFrequency,
+		} = this.state;
 		return (
-			<Grid container spacing={1} style={{ height: "100%" }}>
-				<Grid item xs={2} md={2} lg={2}>
-					<List>
-						{this.types.map((type) => {
-							const color =
-								type === selectedType ? "primary" : "inherit";
-							return (
-								<ListItemButton
-									key={type}
-									selected={type === selectedType}
-									onClick={(event) => this.typeSelected(type)}
-								>
-									<Box pt={0.5}>
-										{this.resourceIcon(type, color)}
-									</Box>
-									<ListItemText
-										primaryTypographyProps={{
-											color: color,
-										}}
-										primary={<Box pl={1}>{type}</Box>}
-									/>
-								</ListItemButton>
-							);
-						})}
-					</List>
-				</Grid>
-				<Grid item xs={10} md={10} lg={10}>
-					<Grid container spacing={1}>
-						<Grid item xs={12} md={12} lg={12}>
-							<Box display="flex" justifyContent="flex-end">
-								{selectedType === "Objects" &&
-									resources &&
-									resources.length > 0 && (
+			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
+				<Box flexGrow={1}>
+					<CustomSplit>
+						<Box sx={{ width: "20%", minWidth: "15%" }}>
+							{" "}
+							<List>
+								{this.types.map((type) => {
+									const color =
+										type === selectedType
+											? "primary"
+											: "inherit";
+									return (
+										<ListItemButton
+											key={type}
+											selected={type === selectedType}
+											onClick={(event) =>
+												this.typeSelected(type)
+											}
+										>
+											<Box pt={0.5}>
+												{this.resourceIcon(type, color)}
+											</Box>
+											<ListItemText
+												primaryTypographyProps={{
+													color: color,
+												}}
+												primary={
+													<Box pl={1}>{type}</Box>
+												}
+											/>
+										</ListItemButton>
+									);
+								})}
+							</List>
+						</Box>
+						<Box
+							display="flex"
+							flexDirection="column"
+							sx={{ width: "80%" }}
+						>
+							<Box>
+								<Box display="flex" justifyContent="flex-end">
+									{selectedType === "Objects" &&
+										resources &&
+										resources.length > 0 && (
+											<Tooltip
+												title="Unpin all"
+												placement="top"
+											>
+												<span>
+													<IconButton
+														color="inherit"
+														onClick={
+															this.unpinAllObjects
+														}
+													>
+														<DeleteIcon fontSize="small" />
+													</IconButton>
+												</span>
+											</Tooltip>
+										)}
+									{!automaticRefresh && (
 										<Tooltip
-											title="Unpin all"
+											title="Refresh"
 											placement="top"
 										>
 											<span>
 												<IconButton
 													color="inherit"
 													onClick={
-														this.unpinAllObjects
+														this.refreshResources
 													}
 												>
-													<DeleteIcon fontSize="small" />
+													<RefreshIcon fontSize="small" />
 												</IconButton>
 											</span>
 										</Tooltip>
 									)}
-								<Tooltip title="Refresh" placement="top">
-									<span>
-										<IconButton
-											color="inherit"
-											onClick={this.refreshResources}
-										>
-											<RefreshIcon fontSize="small" />
-										</IconButton>
-									</span>
-								</Tooltip>
+								</Box>
 							</Box>
-						</Grid>
-						<Grid
-							item
-							xs={12}
-							md={12}
-							lg={12}
-							style={{ minHeight: 500 }}
-						>
-							{selectedType && selectedType !== "Memory" && (
-								<Paper
-									variant="outlined"
-									style={{ height: "100%" }}
-								>
-									<CustomTable
-										columns={this.columns()}
-										rows={resources}
-										onRowSelect={this.resourceSelected}
-										menuOptions={this.menuOptions()}
-										rowActions={this.rowActions()}
-										selectedRow={selectedResource}
-									/>
-								</Paper>
-							)}
-							{selectedType === "Memory" && <MemoryStats />}
-						</Grid>
-					</Grid>
-				</Grid>
-			</Grid>
+							<Box
+								flexGrow={1}
+								//style={{ minHeight: 500 }}
+							>
+								{selectedType && selectedType !== "Memory" && (
+									<Paper
+										variant="outlined"
+										style={{ height: "100%" }}
+									>
+										<CustomTable
+											columns={this.columns()}
+											rows={resources}
+											onRowSelect={this.resourceSelected}
+											menuOptions={this.menuOptions()}
+											rowActions={this.rowActions()}
+											selectedRow={selectedResource}
+										/>
+									</Paper>
+								)}
+								{selectedType === "Memory" && <MemoryStats />}
+							</Box>
+						</Box>
+					</CustomSplit>
+				</Box>
+				<Box display="flex" flexDirection="row" alignItems="center">
+					<FormGroup>
+						<FormControlLabel
+							control={
+								<Checkbox
+									checked={automaticRefresh}
+									onChange={(event) =>
+										this.automaticRefreshClicked(
+											event.target.checked
+										)
+									}
+								/>
+							}
+							label="Automatic refresh"
+							size="small"
+						/>
+					</FormGroup>
+					{automaticRefresh && (
+						<Typography ml={1} mr={2}>
+							Frequency (ms):
+						</Typography>
+					)}
+					{automaticRefresh && (
+						<TextField
+							sx={{ minWidth: 50 }}
+							size="small"
+							type="number"
+							margin="dense"
+							name="refreshFrequency"
+							variant="outlined"
+							value={refreshFrequency}
+							inputProps={{
+								style: { textAlign: "right" },
+							}}
+							onChange={(event) => {
+								this.refreshFrequencyChanged(
+									parseInt(event.target.value)
+								);
+							}}
+							required
+						/>
+					)}
+				</Box>
+			</Box>
 		);
 	}
 }

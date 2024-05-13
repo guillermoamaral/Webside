@@ -1,162 +1,155 @@
 import React from "react";
 import Tool from "./Tool";
 import {
-	Accordion,
-	AccordionSummary,
 	Typography,
 	Box,
 	Button,
-	Grid,
 	FormHelperText,
+	Divider,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SettingEditor from "../parts/SettingEditor";
+import FastTree from "../controls/FastTree";
+import CustomSplit from "../controls/CustomSplit";
+import CustomPaper from "../controls/CustomPaper";
 
 class SettingsEditor extends Tool {
 	constructor(props) {
 		super(props);
 		this.state = {
+			selectedSection: null,
+			expandedSections: [],
 			error: null,
 		};
 	}
 
 	apply = () => {
 		const handler = this.props.onApply;
-		if (handler) {
-			handler(this.props.settings);
-		}
+		if (handler) handler(this.props.settings);
 	};
 
 	resetSection = (name) => {
 		const handler = this.props.onResetSection;
-		if (handler) {
-			handler(name);
-		}
+		if (handler) handler(name);
+		this.forceUpdate();
+	};
+
+	sectionSelected = async (section) => {
+		this.setState({ selectedSection: section });
+	};
+
+	sectionExpanded = async (section) => {
+		this.setState({
+			expandedSections: [...this.state.expandedSections, section],
+		});
+	};
+
+	sectionCollapsed = (section) => {
+		const expanded = this.state.expandedSections;
+		expanded.splice(expanded.indexOf(section), 1);
+		this.setState({ expandedSections: expanded });
 	};
 
 	render() {
 		const settings = this.props.settings;
-		const error = this.state.error;
+		const { selectedSection, expandedSections, error } = this.state;
+		const selectedSettings = selectedSection
+			? selectedSection.plainSettings()
+			: [];
 		return (
-			<Grid container direction="column" justify="center" spacing={1}>
-				{error && (
-					<Grid item>
-						<FormHelperText>{error}</FormHelperText>
-					</Grid>
-				)}
-				<Grid item>
-					{settings.sections().map((section) => (
-						<Accordion key={section.name}>
-							<AccordionSummary expandIcon={<ExpandMoreIcon />}>
-								<Typography variant="body1">
-									{section.label}
-								</Typography>
-							</AccordionSummary>
-							<Box ml={10} mb={2}>
-								{section.plainSettings().map((setting) => (
-									<SettingEditor
-										setting={setting}
-										key={setting.name}
-									/>
-								))}
-								{section.sections().map((subsection) => (
-									<Accordion key={subsection.name}>
-										<AccordionSummary
-											expandIcon={<ExpandMoreIcon />}
-										>
-											<Typography variant="body2">
-												{subsection.label}
-											</Typography>
-										</AccordionSummary>
-										<Box ml={10} mb={2}>
-											{subsection
-												.plainSettings()
-												.map((subsetting) => (
-													<SettingEditor
-														setting={subsetting}
-														key={subsetting.name}
-													/>
-												))}
-											{subsection
-												.sections()
-												.map((subsubsection) => (
-													<Accordion
-														key={subsubsection.name}
-													>
-														<AccordionSummary
-															expandIcon={
-																<ExpandMoreIcon />
-															}
-														>
-															<Typography variant="body2">
-																{
-																	subsubsection.label
-																}
-															</Typography>
-														</AccordionSummary>
-														<Box ml={10} mb={2}>
-															{subsubsection
-																.plainSettings()
-																.map(
-																	(
-																		subsubsetting
-																	) => (
-																		<SettingEditor
-																			setting={
-																				subsubsetting
-																			}
-																			key={
-																				subsubsetting.name
-																			}
-																		/>
-																	)
-																)}
-														</Box>
-													</Accordion>
-												))}
-										</Box>
-									</Accordion>
-								))}
+			<Box
+				display="flex"
+				flexDirection="column"
+				sx={{ width: "100%", height: "100%" }}
+			>
+				<CustomSplit>
+					<Box sx={{ width: "20%" }}>
+						<CustomPaper>
+							<FastTree
+								nodes={settings.sections()}
+								nodeLabel="label"
+								nodeChildren={(s) => s.sections()}
+								selectedNode={selectedSection}
+								onNodeSelect={this.sectionSelected}
+								expandedNodes={expandedSections}
+								onNodeExpand={this.sectionExpanded}
+								onNodeCollapse={this.sectionCollapsed}
+							/>
+						</CustomPaper>
+					</Box>
+					{selectedSection && (
+						<Box
+							display="flex"
+							flexDirection="column"
+							ml={2}
+							flexGrow={1}
+							sx={{ width: "80%" }}
+						>
+							<Typography variant="h6">
+								{selectedSection.label}
+							</Typography>
+							<Divider />
+							<Box
+								m={3}
+								flexGrow={1}
+								display="flex"
+								flexDirection="row"
+							>
 								<Box
-									mt={1}
-									mr={2}
 									display="flex"
-									direction="row"
-									justifyContent="flex-end"
-									alignItems="center"
+									flexDirection="column"
+									sx={{ width: "100%" }}
 								>
-									<Button
-										variant="outlined"
-										type="submit"
-										size="small"
-										onClick={() =>
-											this.resetSection(section.name)
-										}
-									>
-										Reset
-									</Button>
+									{selectedSettings.map((setting) => (
+										<Box key={setting.name} mt={1}>
+											<SettingEditor
+												//showLabel={false}
+												setting={setting}
+											/>
+										</Box>
+									))}
 								</Box>
 							</Box>
-						</Accordion>
-					))}
-				</Grid>
-				<Grid item>
-					<Box
-						display="flex"
-						direction="row"
-						justifyContent="flex-end"
-						alignItems="center"
+							<Box
+								mt={1}
+								mr={1}
+								mb={1}
+								display="flex"
+								direction="row"
+								justifyContent="flex-end"
+								alignItems="center"
+							>
+								<Button
+									variant="outlined"
+									type="submit"
+									size="small"
+									onClick={() =>
+										this.resetSection(selectedSection.name)
+									}
+								>
+									{"Reset " +
+										selectedSection.label +
+										" settings"}
+								</Button>
+							</Box>
+						</Box>
+					)}
+				</CustomSplit>
+				<Divider />
+				<Box
+					display="flex"
+					direction="row"
+					justifyContent="flex-end"
+					mt={1}
+				>
+					<Button
+						variant="outlined"
+						type="submit"
+						onClick={this.apply}
 					>
-						<Button
-							variant="outlined"
-							type="submit"
-							onClick={this.apply}
-						>
-							Apply
-						</Button>
-					</Box>
-				</Grid>
-			</Grid>
+						Apply
+					</Button>
+				</Box>
+			</Box>
 		);
 	}
 }

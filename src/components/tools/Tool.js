@@ -8,6 +8,8 @@ class Tool extends Component {
 
 	aboutToSelect() {}
 
+	aboutToDeselect() {}
+
 	updateLabel(label) {
 		this.context.updatePageLabel(this.props.id, label);
 	}

@@ -12,7 +12,7 @@ class Setting extends Object {
 			const words = raw.match(/[A-Z][a-z]+|[0-9]+/g);
 			this.label = words ? words.join(" ") : raw;
 		}
-		this.description = description || this.label;
+		this.description = description || "";
 		this.editable = true;
 	}
 
@@ -49,8 +49,8 @@ class Setting extends Object {
 		return new Setting(name, "boolean", defaultValue, label, description);
 	}
 
-	static number(name) {
-		return new Setting(name, "number", 0);
+	static number(name, defaultValue = 0, label, description) {
+		return new Setting(name, "number", defaultValue, label, description);
 	}
 
 	static color(name, defaultValue) {
@@ -155,8 +155,8 @@ class Settings extends Object {
 		);
 	}
 
-	addNumber(name) {
-		return this.add(Setting.number(name));
+	addNumber(name, defaultValue, label, description) {
+		return this.add(Setting.number(name, defaultValue, label, description));
 	}
 
 	addColor(name, defaultValue) {

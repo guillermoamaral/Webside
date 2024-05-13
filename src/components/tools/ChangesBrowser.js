@@ -61,7 +61,7 @@ class ChangesBrowser extends Tool {
 	download = async (event) => {
 		event.preventDefault();
 		try {
-			const ch = await ide.backend.downloadChangeset(
+			const ch = await ide.backend.downloadChanges(
 				this.props.changeset.changes.map((ch) => {
 					return ch.asJson();
 				})
