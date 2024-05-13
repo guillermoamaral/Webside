@@ -237,6 +237,8 @@ class ClassTree extends Component {
 		try {
 			let retrieved = await ide.backend.classNamed(species.name);
 			Object.assign(species, retrieved);
+			if (species.subclasses)
+				species.subclasses.sort((a, b) => (a.name <= b.name ? -1 : 1));
 			species.metaclass = await ide.backend.classNamed(species.class);
 		} catch (error) {
 			ide.reportError(error);
