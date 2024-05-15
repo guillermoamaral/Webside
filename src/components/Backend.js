@@ -178,6 +178,13 @@ class Backend {
 		return await this.get("/classes/" + classname, "class " + classname);
 	}
 
+	async superclasses(classname) {
+		return await this.get(
+			"/classes/" + classname + "/superclasses",
+			"superclasses of class " + classname
+		);
+	}
+
 	async subclasses(classname) {
 		return await this.get(
 			"/classes/" + classname + "/subclasses",

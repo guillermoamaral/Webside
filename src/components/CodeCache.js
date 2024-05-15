@@ -29,6 +29,14 @@ class CodeCache {
 		delete this.cache[classname];
 	}
 
+	async superclasses(classname) {
+		const cached = this.classNamed(classname);
+		if (cached.superclasses) return cached.superclasses;
+		const retrieved = await this.backend.superclasses(classname);
+		cached.superclasses = retrieved;
+		return retrieved;
+	}
+
 	async subclasses(classname) {
 		const cached = this.classNamed(classname);
 		if (cached.subclasses) return cached.subclasses;
