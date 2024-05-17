@@ -87,7 +87,6 @@ class ResourceBrowser extends Tool {
 
 	refreshFrequencyChanged(frequency) {
 		this.setState({ refreshFrequency: frequency });
-		console.log(this.state.automaticRefresh);
 		if (this.state.automaticRefresh) this.startRefreshInterval();
 	}
 
