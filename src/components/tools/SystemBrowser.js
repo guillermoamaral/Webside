@@ -10,7 +10,6 @@ import {
 	Radio,
 } from "@mui/material";
 import CustomSplit from "../controls/CustomSplit";
-import CustomPaper from "../controls/CustomPaper";
 import { ide } from "../IDE";
 import PackageTree from "../parts/PackageTree";
 import ClassTree from "../parts/ClassTree";
@@ -499,26 +498,22 @@ class SystemBrowser extends Tool {
 								</Box>
 							</Box>
 							<Box sx={{ width: width }}>
-								<CustomPaper>
-									<MethodList
-										ref={this.methodListRef}
-										package={
-											showPackages
-												? selectedPackage
-												: null
-										}
-										class={targetClass}
-										category={selectedCategory}
-										access={selectedAccess}
-										variable={selectedVariable}
-										onMethodSelect={this.methodSelected}
-										onMethodRename={this.methodRenamed}
-										onMethodRemove={this.methodRemoved}
-										onMethodClassify={this.methodClassified}
-										onCategoryAdd={this.categoryAdded}
-										showNewOption
-									/>
-								</CustomPaper>
+								<MethodList
+									ref={this.methodListRef}
+									package={
+										showPackages ? selectedPackage : null
+									}
+									class={targetClass}
+									category={selectedCategory}
+									access={selectedAccess}
+									variable={selectedVariable}
+									onMethodSelect={this.methodSelected}
+									onMethodRename={this.methodRenamed}
+									onMethodRemove={this.methodRemoved}
+									onMethodClassify={this.methodClassified}
+									onCategoryAdd={this.categoryAdded}
+									showNewOption
+								/>
 							</Box>
 						</CustomSplit>
 					</Box>

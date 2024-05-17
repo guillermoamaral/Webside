@@ -8,7 +8,14 @@ import CustomList from "../controls/CustomList";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
-import { Typography } from "@mui/material";
+import {
+	Typography,
+	Box,
+	Select,
+	OutlinedInput,
+	MenuItem,
+} from "@mui/material";
+import CustomPaper from "../controls/CustomPaper";
 
 class MethodList extends Component {
 	static contextType = ToolContainerContext;
@@ -21,6 +28,8 @@ class MethodList extends Component {
 			loading: false,
 			categories: [],
 			extendedOptions: [],
+			scopes: [],
+			selectedScope: null,
 		};
 	}
 
@@ -29,7 +38,7 @@ class MethodList extends Component {
 		this.initializeExtendedOptions();
 	}
 
-	componentDidUpdate(prevProps) {
+	async componentDidUpdate(prevProps) {
 		const methods = this.props.methods;
 		let selected = this.props.selectedMethod || this.state.selectedMethod;
 		if (
@@ -54,7 +63,14 @@ class MethodList extends Component {
 			this.props.access !== prevProps.access ||
 			this.props.variable !== prevProps.variable
 		) {
-			return this.updateMethods(selected);
+			const scopes = await this.createScopes();
+			this.setState(
+				{
+					scopes: scopes,
+					selectedScope: scopes.length > 0 ? scopes[0] : null,
+				},
+				() => this.updateMethods(selected)
+			);
 		}
 		if (prevProps.selectedMethod !== this.props.selectedMethod) {
 			this.setState({
@@ -67,9 +83,39 @@ class MethodList extends Component {
 		this.updateMethods(method);
 	}
 
+	async createScopes() {
+		const species = this.props.class;
+		let scopes = [];
+		if (species) {
+			const pack = this.props.package;
+			if (pack && species.package !== pack.name) {
+				scopes = [{ name: pack.name, type: "package" }, ...scopes];
+			}
+			scopes.push({ name: species.name, type: "class" });
+			let superclasses = await this.fetchSuperclasses();
+			superclasses.forEach((c) => {
+				scopes.push({ name: c.name, type: "class" });
+			});
+		}
+		return scopes;
+	}
+
 	async updateMethods(selectedMethod) {
 		this.setState({ loading: true });
-		let methods = await this.fetchMethods();
+		const { scopes, selectedScope } = this.state;
+		let scope = scopes.includes(selectedScope)
+			? selectedScope
+			: scopes.length > 0
+			? scopes[0]
+			: null;
+		let start = scopes.findIndex((s) => s.type === "class");
+		let end =
+			scope && scope.type === "class" ? scopes.indexOf(scope) : start;
+		let classes = start >= 0 ? scopes.slice(start, end + 1) : [];
+		let methods = await this.fetchMethods(classes);
+		if (scope && scope.type === "package") {
+			methods = methods.filter((m) => m.package === scope.name);
+		}
 		let selected;
 		if (selectedMethod) {
 			selected = methods.find(
@@ -91,38 +137,49 @@ class MethodList extends Component {
 			methods: methods,
 			selectedMethod: selected,
 			categories: categories,
+			selectedScope: scope,
 		});
 	}
 
-	async fetchMethods() {
-		let methods = [];
-		let species = this.props.class;
+	async fetchMethods(classes) {
 		let { category, variable, access } = this.props;
-		if (!species || species.template) return methods;
-		try {
-			if (variable && access) {
-				methods = await ide.backend.accessors(
-					species.name,
-					variable.name,
-					access,
-					true
-				);
-			} else if (category) {
-				methods = await ide.backend.methodsInCategory(
-					species.name,
-					category,
-					true
-				);
-			} else {
-				methods = await ide.backend.methods(species.name, true);
-			}
-		} catch (error) {
-			ide.reportError(error);
-		}
-		if (category) {
-			methods = methods.filter((m) => m.category === category);
-		}
-		return methods;
+		let grouped = {};
+		await Promise.all(
+			classes.map(async (c) => {
+				let fetched;
+				try {
+					if (variable && access) {
+						fetched = await ide.backend.accessors(
+							c.name,
+							variable.name,
+							access
+						);
+					} else if (category) {
+						fetched = await ide.backend.methodsInCategory(
+							c.name,
+							category
+						);
+					} else {
+						fetched = await ide.backend.methods(c.name);
+					}
+				} catch (error) {
+					ide.reportError(error);
+				}
+				grouped[c.name] = fetched;
+			})
+		);
+		let selectors = {};
+		let methods = [];
+		classes.forEach((c) => {
+			grouped[c.name].forEach((m) => {
+				if (!selectors[m.selector]) {
+					methods.push(m);
+					selectors[m.selector] = true;
+				}
+			});
+		});
+		if (category) methods = methods.filter((m) => m.category === category);
+		return methods.sort((a, b) => (a.selector <= b.selector ? -1 : 1));
 	}
 
 	fetchCategories = async (method) => {
@@ -152,9 +209,27 @@ class MethodList extends Component {
 		return categories;
 	};
 
+	async fetchSuperclasses() {
+		let superclasses = [];
+		let species = this.props.class;
+		if (!species || species.template) return superclasses;
+		try {
+			superclasses = await ide.backend.superclasses(species.name);
+		} catch (error) {
+			ide.reportError(error);
+		}
+		return superclasses;
+	}
+
 	async initializeExtendedOptions() {
 		const extensions = await ide.backend.extensions("method");
 		this.setState({ extendedOptions: extensions });
+	}
+
+	scopeSelected(scope) {
+		this.setState({ selectedScope: scope }, () =>
+			this.updateMethods(this.state.selectedMethod)
+		);
 	}
 
 	methodSelected = async (method) => {
@@ -668,12 +743,14 @@ class MethodList extends Component {
 		const appearance = ide.settings.section("appearance");
 		const mode = appearance.section(appearance.get("mode"));
 		const disabled = mode.section("colors").get("disabledText");
-		const pack = this.props.package;
 		const species = this.props.class;
-		if (pack) {
-			return method.package !== pack.name ? disabled : null;
-		}
-		if (species && method.package !== species.package) return disabled;
+		if (species && method.methodClass !== species.name) return disabled;
+		const pack = this.props.package;
+		if (pack && method.package !== pack.name) return disabled;
+		return;
+		// Not sure whether to make them look differently when we are not in the context of a package
+		// const species = this.props.class;
+		// if (species && method.package !== species.package) return disabled;
 	};
 
 	evaluationContext() {
@@ -686,8 +763,11 @@ class MethodList extends Component {
 	}
 
 	render() {
-		const { methods, selectedMethod, loading } = this.state;
+		const { methods, selectedMethod, loading, scopes, selectedScope } =
+			this.state;
 		const { useTable, labelStyle } = this.props;
+		let selectedScopeIndex = scopes.indexOf(selectedScope);
+		if (selectedScopeIndex < 0) selectedScopeIndex = "";
 		if (useTable) {
 			return (
 				<CustomTable
@@ -706,18 +786,45 @@ class MethodList extends Component {
 			);
 		} else {
 			return (
-				<CustomList
-					loading={loading}
-					items={methods}
-					itemLabel={this.methodLabel}
-					itemStyle={labelStyle}
-					itemIcon={this.methodIcon}
-					itemColor={this.methodColor}
-					selectedItem={selectedMethod}
-					onItemSelect={this.methodSelected}
-					menuOptions={this.menuOptions()}
-					itemActions={this.methodActions}
-				/>
+				<Box
+					display="flex"
+					flexDirection="column"
+					style={{ height: "100%" }}
+				>
+					<Select
+						size="small"
+						value={selectedScopeIndex}
+						input={<OutlinedInput margin="dense" fullWidth />}
+						onChange={(event) => {
+							this.scopeSelected(scopes[event.target.value]);
+						}}
+					>
+						{scopes.map((scope, index) => (
+							<MenuItem value={index} key={index}>
+								{scope.name +
+									(scope.type === "package"
+										? " (package)"
+										: "")}
+							</MenuItem>
+						))}
+					</Select>
+					<Box mt={1} flexGrow={1}>
+						<CustomPaper>
+							<CustomList
+								loading={loading}
+								items={methods}
+								itemLabel={this.methodLabel}
+								itemStyle={labelStyle}
+								itemIcon={this.methodIcon}
+								itemColor={this.methodColor}
+								selectedItem={selectedMethod}
+								onItemSelect={this.methodSelected}
+								menuOptions={this.menuOptions()}
+								itemActions={this.methodActions}
+							/>
+						</CustomPaper>
+					</Box>
+				</Box>
 			);
 		}
 	}
