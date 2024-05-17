@@ -11,6 +11,7 @@ import Scrollable from "../controls/Scrollable";
 import CodeMirror from "@uiw/react-codemirror";
 import { EditorView, keymap } from "@codemirror/view";
 import { linter, lintGutter } from "@codemirror/lint";
+import { acceptCompletion } from "@codemirror/autocomplete";
 //import { material } from "@uiw/codemirror-theme-material";
 //import { LRLanguage, LanguageSupport } from "@codemirror/language";
 //import { styleTags, tags } from "@lezer/highlight";
@@ -876,6 +877,10 @@ class CodeEditor extends Component {
 				run: this.browseClassReferences,
 			},
 			{ key: "F2", run: this.renameTarget },
+			{
+				key: "Tab",
+				run: acceptCompletion,
+			},
 		];
 	}
 
@@ -1121,10 +1126,6 @@ class CodeEditor extends Component {
 		const showCodeAssistant = showAssistant && ide.usesCodeAssistant();
 		const showButtons = showAccept || showPlay || showAssistant;
 		const lineNumbers = this.props.lineNumbers === true;
-		console.log(
-			evaluating,
-			currentEvaluation ? currentEvaluation.state : "none"
-		);
 		return (
 			<Box
 				display="flex"
