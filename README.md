@@ -1,12 +1,12 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <img src="https://github.com/guillermoamaral/Webside/blob/master/docs/images/webSide.svg" width="400" height="200">
+  <img src="https://github.com/guillermoamaral/Webside/blob/main/docs/images/webSide.svg" width="400" height="200">
   <!-- <h1 align="center">webside</h1> -->
   <p align="center">
     Smalltalk IDE for the web
     <br />
-    <a href="https://github.com/guillermoamaral/Webside/blob/master/docs/README.md"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/guillermoamaral/Webside/blob/main/docs/README.md"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://webside-zglu.onrender.com">View Demo</a>
@@ -96,7 +96,7 @@ Project Link: [https://github.com/guillermoamaral/Webside](https://github.com/gu
 [issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=flat-square
 [issues-url]: https://github.com/othneildrew/Best-README-Template/issues
 [license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=flat-square
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
+[license-url]: https://github.com/othneildrew/Best-README-Template/blob/main/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/othneildrew
 [product-screenshot]: images/screenshot.png
