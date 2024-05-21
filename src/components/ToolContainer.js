@@ -520,8 +520,8 @@ class ToolContainer extends Component {
 		this.createPage(title, <TestRunnerIcon />, tool, null, ref, false);
 	};
 
-	openProfiler = (id, title = "Profiler") => {
-		const tool = <Profiler key={id} id={id} />;
+	openProfiler = (expression, context, title = "Profiler") => {
+		const tool = <Profiler expression={expression} context={context} />;
 		this.createPage(title, <TestRunnerIcon />, tool);
 	};
 
@@ -772,7 +772,8 @@ class ToolContainer extends Component {
 		} catch (error) {
 			if (error.data && error.data.evaluation) {
 				evaluation.id = error.evaluation;
-				return this.handleEvaluationError(error.data, evaluation);
+				evaluation.error = error.data;
+				return this.handleEvaluationError(evaluation);
 			} else {
 				return this.reportError(error);
 			}
@@ -787,7 +788,7 @@ class ToolContainer extends Component {
 		return object;
 	};
 
-	waitForEvaluationResult = async (evaluation) => {
+	waitForEvaluationFinalization = async (evaluation) => {
 		let delay = ide.settings
 			.section("advanced")
 			.get("evaluationPollingFrequency");
@@ -799,26 +800,30 @@ class ToolContainer extends Component {
 		const interval = setInterval(async () => {
 			try {
 				retrieved = await ide.backend.evaluation(evaluation.id);
-				evaluation.state = retrieved.state;
+				Object.assign(evaluation, retrieved);
 				if (
 					["finished", "cancelled", "failed"].includes(
-						retrieved.state
+						evaluation.state
 					)
 				)
-					finalization(retrieved.state);
+					finalization(evaluation);
 			} catch (error) {
 				if (error.status === 404) {
 					// Cancelling could result into this...
-					return finalization("cancelled");
+					return finalization({ ...evaluation, state: "cancelled" });
 				}
 				this.reportError(error);
 			}
 		}, delay);
 		const final = await promise;
 		clearInterval(interval);
-		if (final === "cancelled") return null;
-		if (final === "failed")
-			return this.handleEvaluationError(retrieved.error, evaluation);
+		return final;
+	};
+
+	waitForEvaluationResult = async (evaluation) => {
+		const final = await this.waitForEvaluationFinalization(evaluation);
+		if (final.state === "cancelled") return null;
+		if (final.state === "failed") return this.handleEvaluationError(final);
 		try {
 			return await ide.backend.objectWithId(evaluation.id);
 		} catch (error) {
@@ -826,7 +831,8 @@ class ToolContainer extends Component {
 		}
 	};
 
-	handleEvaluationError = async (error, evaluation) => {
+	handleEvaluationError = async (evaluation) => {
+		const error = evaluation.error;
 		if (error.suggestions && error.suggestions.length > 0) {
 			const chosen = await ide.choose({
 				title: error.description,
@@ -913,12 +919,7 @@ class ToolContainer extends Component {
 	};
 
 	profileExpression = async (expression, context) => {
-		try {
-			const id = await ide.backend.profileExpression(expression, context);
-			this.openProfiler(id);
-		} catch (error) {
-			this.reportError(error);
-		}
+		this.openProfiler(expression, context);
 	};
 
 	transcriptChanged = (text) => {

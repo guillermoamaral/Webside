@@ -2,6 +2,8 @@
 
 This endpoint allows to evaluate an expression, either **synchronous-** or **asynchronously**.
 
+*Note: Besides this dichotomy from the API consumer standpoint (the IDE for instance), the target Smalltalk system can manage this in different ways. Most likely, a Smalltalk process for evaluating the given expression is going to represent what we call an *evaluation* here.*
+
 **URL**: `/evaluations`
 
 **Method**: `POST`
@@ -31,7 +33,7 @@ Where
 
 -   `debug` forces the immediate suspension of the evaluation and creates a debugger on it, returing the ID of the created debugger.
 
--   `profile` creates a profiler and forces a synchronous profiling of the expression at hand and then returns the ID of the created profiler to fetch its results.
+-   `profile` creates a profiler and returns the ID of the created profiler to follow its progress and get its results when it finishes.
 
 -   `context` can be one of the following:
 
@@ -220,7 +222,7 @@ And the result:
 }
 ```
 
-## State check
+## Following evaluation progress
 
 With this ID, the client can send a request to see how the evaluation goes (`GET /evaluations/1` in the example) to obtain a response like this:
 

@@ -79,13 +79,14 @@ Endpoints to convert changesets to/from changes.
 
 Endpoints to evaluate expressions and manage active evaluations.
 
-| Method | Path                                             | Description                             | Parameters | Payload      |
-| :----: | ------------------------------------------------ | --------------------------------------- | :--------: | ------------ |
-|  POST  | [/evaluations](evaluations/post.md)              | Evaluate an expression                  |     -      | `evaluation` |
-|  GET   | [/evaluations](evaluations/get.md)               | Retrieve active evaluations             |     -      | -            |
-|  GET   | [/evaluations/id](evaluations/id/get.md)         | Retrieve the evaluation with a given ID |     -      | -            |
-| DELETE | [/evaluations/id](evaluations/id/delete.md)      | Cancel the evaluation with a given ID   |     -      | -            |
-|  POST  | [/evaluations/id/pause](evaluations/id/pause.md) | Pause the evaluation with a given ID    |     -      | -            |
+| Method | Path                                              | Description                             | Parameters | Payload      |
+| :----: | ------------------------------------------------- | --------------------------------------- | :--------: | ------------ |
+|  POST  | [/evaluations](evaluations/post.md)               | Evaluate an expression                  |     -      | `evaluation` |
+|  GET   | [/evaluations](evaluations/get.md)                | Retrieve active evaluations             |     -      | -            |
+|  GET   | [/evaluations/id](evaluations/id/get.md)          | Retrieve the evaluation with a given ID |     -      | -            |
+| DELETE | [/evaluations/id](evaluations/id/delete.md)       | Cancel the evaluation with a given ID   |     -      | -            |
+|  POST  | [/evaluations/id/pause](evaluations/id/pause.md)  | Pause the evaluation with a given ID    |     -      | -            |
+|  POST  | [/evaluations/id/resume](evaluations/id/resum.md) | Resume the evaluation with a given ID   |     -      | -            |
 
 ## [Objects](objects)
 
@@ -150,11 +151,14 @@ Endpoints to run tests and retrieve their results.
 
 Endpoints to manage profilers and access their results.
 
-| Method | Path                                                   | Description                                      | Parameters | Payload |
-| :----: | ------------------------------------------------------ | ------------------------------------------------ | :--------: | ------- |
-|  GET   | [/profilers/{id}/tree](profilers/id/tree/get.md)       | Retrieve a tree-like results of a given profiler |     -      | -       |
-|  GET   | [/profilers/{id}/ranking](profilers/id/ranking/get.md) | Retrieve ranked results of a given profiler      |     -      | -       |
-| DELETE | [/profilers/{id}](profilers/id/delete.md)              | Delete a given profiler                          |     -      | -       |
+| Method | Path                                                   | Description                                      | Parameters | Payload      |
+| :----: | ------------------------------------------------------ | ------------------------------------------------ | :--------: | ------------ |
+|  POST  | [/profilers](profilers/post.md)                        | Create a new profiler on a given expression      |     -      | `expression` |
+|  GET   | [/profilers](profilers/get.md)                         | Retrieve active profilers                        |     -      | -            |
+|  GET   | [/profilers/{id}](profilers/id/get.md)                 | Retrieve the profiler with a given ID            |     -      | -            |
+|  GET   | [/profilers/{id}/tree](profilers/id/tree/get.md)       | Retrieve a tree-like results of a given profiler |     -      | -            |
+|  GET   | [/profilers/{id}/ranking](profilers/id/ranking/get.md) | Retrieve ranked results of a given profiler      |     -      | -            |
+| DELETE | [/profilers/{id}](profilers/id/delete.md)              | Delete a given profiler                          |     -      | -            |
 
 ## [Extensions](extensions)
 
