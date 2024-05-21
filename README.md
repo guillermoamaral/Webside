@@ -4,9 +4,6 @@ description: Web Smalltalk IDE
 
 # Webside
 
-\
-
-
 <div align="center">
 
 <img src="docs/images/webSide.svg" alt="" height="200" width="400">
