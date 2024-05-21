@@ -2,7 +2,7 @@
 
 * [Webside](README.md)
 * [docs](docs/README.md)
-  * [api](docs/api/README.md)
+  * [API](docs/api/README.md)
     * [Changes](docs/api/changes/README.md)
       * [Retrieve changes](docs/api/changes/get.md)
       * [Apply a change](docs/api/changes/post.md)
