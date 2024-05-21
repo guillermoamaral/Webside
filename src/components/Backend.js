@@ -1061,6 +1061,10 @@ class Backend {
 		);
 	}
 
+	async deleteProfiler(id) {
+		return await this.delete("/profilers/" + id, "profiler " + id);
+	}
+
 	//Native debugging...
 	async nativeDebugger(id) {
 		return await this.get(
