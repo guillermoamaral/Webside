@@ -1,4 +1,4 @@
-# Unpin object
+# Step into debugger
 
 Step into the current sentence in the debugger with a given ID
 

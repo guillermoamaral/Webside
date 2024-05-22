@@ -1,4 +1,4 @@
-# Unpin object
+# Resume debugger
 
 Resume the process of the debugger with a given ID
 

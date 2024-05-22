@@ -1,4 +1,4 @@
-# Unpin object
+# Restart debugger
 
 Restart the debugger with a given ID
 

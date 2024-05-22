@@ -1,6 +1,6 @@
-# Unpin object
+# Delete debugger
 
-Unpin the debugger with a given ID.
+Delete the debugger with a given ID.
 
 **URL**: `/debuggers/{id}`
 
