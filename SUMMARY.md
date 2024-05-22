@@ -1,6 +1,7 @@
 # Table of contents
 
 * [Webside](README.md)
+  * [Overview](docs/README.md)
 * [API](docs/api/README.md)
   * [General](docs/api/general/README.md)
     * [Dialect](docs/api/general/dialect/get.md)
