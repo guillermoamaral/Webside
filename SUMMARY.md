@@ -40,7 +40,7 @@
     * [Search](docs/api/code/search/get.md)
     * [Selectors](docs/api/code/selectors/README.md)
       * [Find selector in source code](docs/api/code/selectors/post.md)
-    * [Templates]()
+    * [Templates](docs/api/code/classtemplate/README.md)
       * [Retrieve class template](docs/api/code/classtemplate/get.md)
       * [Retrieve method template](docs/api/code/methodtemplate/get.md)
   * [Debuggers](docs/api/debuggers/README.md)
