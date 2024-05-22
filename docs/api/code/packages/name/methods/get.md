@@ -1,4 +1,4 @@
-# Retrieve a package
+# Retrieve package methods
 
 Retrieve extended methods of a given package.
 

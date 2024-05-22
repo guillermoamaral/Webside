@@ -1,4 +1,4 @@
-# Retrieve categories
+# Retrieve used categories
 
 Retrieve categories used throughout the hierarchy of a given class.
 

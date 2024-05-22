@@ -1,4 +1,4 @@
-# Unpin object
+# Unpin all objects
 
 Unpin all pinned objects.
 

@@ -1,4 +1,4 @@
-# JSON changes to chunk-formatted file
+# Convert JSON changes to chunks
 
 This is a handy service to transform a file in chunk format specific of the dialect at hand to a set of changes in JSON.
 

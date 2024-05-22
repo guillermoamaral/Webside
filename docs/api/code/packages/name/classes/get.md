@@ -1,4 +1,4 @@
-# Retrieve a package
+# Retrieve package classes
 
 Retrieve classes of a given package.
 

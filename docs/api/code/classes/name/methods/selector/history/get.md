@@ -1,4 +1,4 @@
-# Retrieve changes
+# Retrieve method history
 
 Retrieve historical changes on a given method.
 

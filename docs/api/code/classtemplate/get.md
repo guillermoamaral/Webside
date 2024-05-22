@@ -1,4 +1,4 @@
-# Provide a class template
+# Retrieve class template
 
 Provide a template for creating a class. This relies on the back-end as different dialect might have different templates.
 This template is not but a class as specified in [classses/{name}](../classes/name/get.md), with an extra property `template` indicating that is not an actual class.

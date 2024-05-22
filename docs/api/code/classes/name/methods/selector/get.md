@@ -1,4 +1,4 @@
-# Retrieve methods
+# Retrieve method
 Retrieve the method with the given selector in the given class.
 
 **URL**: `classes/{name}/methods/{selector}`

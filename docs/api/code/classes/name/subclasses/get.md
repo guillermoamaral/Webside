@@ -1,4 +1,4 @@
-# Retrieve categories
+# Retrieve subclasses
 
 Retrieve subclasses of a given class.
 

@@ -1,4 +1,4 @@
-# Retrieve categories
+# Retrieve catesuperclassesgories
 
 Retrieve superclasses of a given class.
 

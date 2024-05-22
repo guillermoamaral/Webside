@@ -1,4 +1,4 @@
-# Retrieve categories
+# Retrieve usual categories
 
 Retrieve popular categories used throughout the system.
 
