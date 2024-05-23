@@ -121,7 +121,7 @@ class IDE extends Component {
 			[8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
 			14
 		);
-		appearance.addOptions("mode", ["dark", "light"]);
+		appearance.addOptions("mode", ["dark", "light"], "light");
 
 		const light = appearance.addSection("light", "Light Settings");
 		const lightColors = light.addSection("colors", "Dialect Colors");
@@ -261,7 +261,7 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 		this.storeSettings();
 		this.updateTheme();
 		this.forceUpdate();
-		this.colorModeChangeHandlers.forEach((h) => h());
+		this.colorModeChanged();
 	};
 
 	onColorModeChange = (handler) => {
@@ -337,6 +337,11 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 		light.set("primaryColor", Setting.adjustColor(primary, -40));
 		light.set("secondaryColor", secondary);
 		light.set("appliedChange", Setting.adjustColor(primary, -60));
+		this.colorModeChanged();
+	}
+
+	colorModeChanged() {
+		this.colorModeChangeHandlers.forEach((h) => h());
 	}
 
 	updateTheme() {
