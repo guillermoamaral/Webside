@@ -23,7 +23,7 @@ class ObjectTree extends Component {
 		}
 	};
 
-	browseReferences = (object) => { };
+	browseReferences = (object) => {};
 
 	menuOptions() {
 		return [
@@ -46,7 +46,14 @@ class ObjectTree extends Component {
 	};
 
 	render() {
-		const { roots, onSlotSelect, onSlotExpand, selectedObject } = this.props;
+		const {
+			roots,
+			onSlotSelect,
+			onSlotExpand,
+			onSlotCollapse,
+			selectedObject,
+			expandedSlots,
+		} = this.props;
 		return (
 			<FastTree
 				nodes={roots ? roots : []}
@@ -54,8 +61,10 @@ class ObjectTree extends Component {
 				nodeChildren="slots"
 				onNodeSelect={onSlotSelect}
 				onNodeExpand={onSlotExpand}
+				onNodeCollapse={onSlotCollapse}
 				menuOptions={this.menuOptions()}
 				selectedNode={selectedObject}
+				expandedNodes={expandedSlots}
 			/>
 		);
 	}
