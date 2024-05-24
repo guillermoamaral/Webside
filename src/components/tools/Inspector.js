@@ -18,6 +18,7 @@ class Inspector extends Tool {
 		this.state = {
 			objectTree: !root ? [] : [root],
 			selectedObject: !root ? null : root,
+			expandedSlots: root ? [root] : [],
 		};
 	}
 
@@ -138,12 +139,15 @@ class Inspector extends Tool {
 		}
 	};
 
-	selectSlot = (path) => {
+	selectSlotAtPath = async (path) => {
 		let object = this.props.root;
-		path.forEach(
-			(name) => (object = object.slots.find((s) => s.slot === name))
-		);
-		this.setState({ selectedObject: object });
+		let expanded = this.state.expandedSlots;
+		path.forEach((name) => {
+			if (!expanded.includes(object)) expanded.push(object);
+			object = object.slots.find((s) => s.slot === name);
+		});
+		await this.updateObject(object);
+		this.setState({ expandedSlots: expanded, selectedObject: object });
 	};
 
 	slotSelected = async (object) => {
@@ -154,7 +158,13 @@ class Inspector extends Tool {
 	slotExpanded = async (object) => {
 		if (!object) return;
 		await this.updateObject(object);
-		this.setState({ objectTree: this.state.objectTree });
+		this.setState({ expandedSlots: [...this.state.expandedSlots, object] });
+	};
+
+	slotCollapsed = (object) => {
+		const expanded = this.state.expandedSlots;
+		expanded.splice(expanded.indexOf(object), 1);
+		this.setState({ expandedSlots: expanded });
 	};
 
 	browseClass = (classname) => {
@@ -208,7 +218,7 @@ class Inspector extends Tool {
 	};
 
 	render() {
-		const { objectTree, selectedObject } = this.state;
+		const { objectTree, selectedObject, expandedSlots } = this.state;
 		const { showWorkspace } = this.props;
 		const minHeight = this.props.embedded ? 200 : 600;
 		const path = selectedObject ? selectedObject.path : [];
@@ -234,7 +244,7 @@ class Inspector extends Tool {
 									color={color}
 									key={label}
 									onClick={(event) => {
-										this.selectSlot(subpath);
+										this.selectSlotAtPath(subpath);
 									}}
 								>
 									{label}
@@ -275,8 +285,10 @@ class Inspector extends Tool {
 								<ObjectTree
 									roots={objectTree}
 									selectedObject={selectedObject}
-									onSlotExpand={this.slotExpanded}
 									onSlotSelect={this.slotSelected}
+									onSlotExpand={this.slotExpanded}
+									onSlotCollapse={this.slotCollapsed}
+									expandedSlots={expandedSlots}
 								/>
 							</Paper>
 						</Box>
@@ -287,6 +299,9 @@ class Inspector extends Tool {
 										context={this.evaluationContext()}
 										object={selectedObject}
 										onAccept={this.assignEvaluation}
+										onSlotSelect={(o) =>
+											this.selectSlotAtPath(o.path)
+										}
 									/>
 								</Box>
 								<Box sx={{ height: "20%" }}>

@@ -59,9 +59,36 @@ class ObjectPresenter extends Component {
 				),
 			},
 		];
-		(object.presentations || []).forEach((p) => {
+		if (object.hasIndexedSlots && object.slots) {
+			pages.push({
+				id: "items",
+				label: "Items",
+				component: (
+					<CustomTable
+						columns={[
+							{
+								field: "slot",
+								label: "#",
+								align: "left",
+								link: this.indexedSlotSelected,
+							},
+							{
+								field: "printString",
+								label: "Value",
+								align: "left",
+								link: this.indexedSlotSelected,
+							},
+						]}
+						rows={object.slots}
+						rowsPerPage={50}
+						usePagination
+					/>
+				),
+			});
+		}
+		(object.presentations || []).forEach((p, i) => {
 			const page = {
-				id: p.title,
+				id: p.title + i,
 				label: p.title,
 				component: (
 					<Paper variant="outlined" style={{ height: "100%" }}>
@@ -102,6 +129,10 @@ class ObjectPresenter extends Component {
 		});
 		return pages;
 	}
+
+	indexedSlotSelected = (object) => {
+		if (this.props.onSlotSelect) this.props.onSlotSelect(object);
+	};
 
 	render() {
 		const { object, context } = this.props;
