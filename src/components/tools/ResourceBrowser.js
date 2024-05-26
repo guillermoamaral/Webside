@@ -22,8 +22,8 @@ import ObjectsIcon from "../icons/ObjectsIcon";
 import WorkspaceIcon from "../icons/WorkspaceIcon";
 import DebuggerIcon from "../icons/DebuggerIcon";
 import TestRunnerIcon from "../icons/TestRunnerIcon";
-import MemoryIcon from "../icons/MemoryIcon";
-import MemoryStats from "./MemoryStats";
+import StatsIcon from "@mui/icons-material/Troubleshoot";
+import SystemStats from "./SystemStats";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import DeleteIcon from "@mui/icons-material/Delete";
 import StopIcon from "@mui/icons-material/Stop";
@@ -40,7 +40,7 @@ class ResourceBrowser extends Tool {
 			"Workspaces",
 			"Debuggers",
 			"Test Runs",
-			"Memory",
+			"Stats",
 		];
 		this.state = {
 			selectedType: null,
@@ -48,6 +48,7 @@ class ResourceBrowser extends Tool {
 			selectedResource: null,
 			automaticRefresh: false,
 			refreshFrequency: 1000,
+			stats: [],
 		};
 	}
 
@@ -68,7 +69,7 @@ class ResourceBrowser extends Tool {
 	}
 
 	startRefreshInterval() {
-		if (this.refreshInterval) clearInterval(this.refreshInterval);
+		this.stopRefreshInterval();
 		this.refreshInterval = setInterval(async () => {
 			try {
 				this.refreshResources();
@@ -77,20 +78,23 @@ class ResourceBrowser extends Tool {
 	}
 
 	stopRefreshInterval() {
+		if (!this.refreshInterval) return;
 		clearInterval(this.refreshInterval);
+		this.refreshInterval = null;
 	}
 
 	automaticRefreshClicked(boolean) {
-		this.setState({ automaticRefresh: boolean });
 		boolean ? this.startRefreshInterval() : this.stopRefreshInterval();
+		this.setState({ automaticRefresh: boolean });
 	}
 
 	refreshFrequencyChanged(frequency) {
-		this.setState({ refreshFrequency: frequency });
 		if (this.state.automaticRefresh) this.startRefreshInterval();
+		this.setState({ refreshFrequency: frequency });
 	}
 
 	// Objects...
+	
 	objectColumns() {
 		return [
 			{
@@ -418,9 +422,27 @@ class ResourceBrowser extends Tool {
 		}
 	};
 
+	// Stats...
+
+	statsColumns() {
+		return [
+			{
+				field: "label",
+				label: "Label",
+				align: "left",
+			},
+			{
+				field: (s) => parseFloat(s.value.toFixed(2)),
+				label: "Value",
+				align: "right",
+			},
+			{ field: "unit", label: "Unit", align: "left" },
+		];
+	}
+
 	// Common...
 
-	typeSelected = async (type) => {
+	updateResources = async (type) => {
 		var resources;
 		try {
 			switch (type) {
@@ -439,12 +461,21 @@ class ResourceBrowser extends Tool {
 				case "Test Runs":
 					resources = await ide.backend.testRuns();
 					break;
+				case "Stats":
+					resources = await ide.backend.systemStats();
+					break;
 				default:
 			}
 		} catch (error) {
 			ide.reportError(error);
 		}
-		this.setState({ selectedType: type, resources: resources });
+		const stats = this.state.stats;
+		if (type === "Stats") stats.push(...resources);
+		this.setState({
+			selectedType: type,
+			resources: resources,
+			stats: stats,
+		});
 	};
 
 	resourceIcon(type, color) {
@@ -465,8 +496,8 @@ class ResourceBrowser extends Tool {
 			case "Test Runs":
 				icon = <TestRunnerIcon color={color} />;
 				break;
-			case "Memory":
-				icon = <MemoryIcon color={color} />;
+			case "Stats":
+				icon = <StatsIcon color={color} />;
 				break;
 			default:
 				icon = <InspectorIcon color={color} />;
@@ -474,8 +505,12 @@ class ResourceBrowser extends Tool {
 		return icon;
 	}
 
+	typeSelected = (type) => {
+		this.updateResources(type);
+	};
+
 	refreshResources = () => {
-		this.typeSelected(this.state.selectedType);
+		this.updateResources(this.state.selectedType);
 	};
 
 	resourceSelected = (resource) => {
@@ -499,6 +534,9 @@ class ResourceBrowser extends Tool {
 				break;
 			case "Test Runs":
 				columns = this.testRunColumns();
+				break;
+			case "Stats":
+				columns = this.statsColumns();
 				break;
 			default:
 		}
@@ -559,6 +597,7 @@ class ResourceBrowser extends Tool {
 			selectedResource,
 			automaticRefresh,
 			refreshFrequency,
+			stats,
 		} = this.state;
 		return (
 			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
@@ -645,22 +684,29 @@ class ResourceBrowser extends Tool {
 								flexGrow={1}
 								//style={{ minHeight: 500 }}
 							>
-								{selectedType && selectedType !== "Memory" && (
-									<Paper
-										variant="outlined"
-										style={{ height: "100%" }}
-									>
-										<CustomTable
-											columns={this.columns()}
-											rows={resources}
-											onRowSelect={this.resourceSelected}
-											menuOptions={this.menuOptions()}
-											rowActions={this.rowActions()}
-											selectedRow={selectedResource}
-										/>
-									</Paper>
-								)}
-								{selectedType === "Memory" && <MemoryStats />}
+								{selectedType &&
+									(selectedType !== "Stats" ||
+										!automaticRefresh) && (
+										<Paper
+											variant="outlined"
+											style={{ height: "100%" }}
+										>
+											<CustomTable
+												columns={this.columns()}
+												rows={resources}
+												onRowSelect={
+													this.resourceSelected
+												}
+												menuOptions={this.menuOptions()}
+												rowActions={this.rowActions()}
+												selectedRow={selectedResource}
+											/>
+										</Paper>
+									)}
+								{selectedType === "Stats" &&
+									automaticRefresh && (
+										<SystemStats stats={stats} />
+									)}
 							</Box>
 						</Box>
 					</CustomSplit>
@@ -695,6 +741,9 @@ class ResourceBrowser extends Tool {
 							margin="dense"
 							name="refreshFrequency"
 							variant="outlined"
+							InputProps={{
+								inputProps: { min: 300, max: 10000 },
+							}}
 							value={refreshFrequency}
 							inputProps={{
 								style: { textAlign: "right" },

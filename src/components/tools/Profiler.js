@@ -260,13 +260,11 @@ class Profiler extends Tool {
 													},
 												]}
 												layout="horizontal"
-												{...{
-													xAxis: [
-														{
-															label: "time (ms)",
-														},
-													],
-												}}
+												xAxis={[
+													{
+														label: "time (ms)",
+													},
+												]}
 											/>
 										)}
 								</Box>

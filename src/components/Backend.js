@@ -116,6 +116,10 @@ class Backend {
 		return await this.post("/save", null, "save image");
 	}
 
+	async systemStats() {
+		return await this.get("/stats", "system stats");
+	}
+
 	// Code...
 	async packageNames() {
 		return await this.get("/packages?names=true", "package names");
@@ -1126,12 +1130,6 @@ class Backend {
 				" of native debugger " +
 				id
 		);
-	}
-
-	//Memory stats...
-	async memoryStats(last) {
-		const query = last ? "?last=" + last : "";
-		return await this.get("/memory-stats" + query, "memory stats");
 	}
 }
 

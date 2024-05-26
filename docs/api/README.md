@@ -23,8 +23,11 @@ These are general endpoints that apply to the system as a whole.
 
 | Method | Path                               | Description                    | Parameters | Payload |
 | :----: | ---------------------------------- | ------------------------------ | :--------: | ------- |
-|  GET   | [/dialect](general/dialect/get.md) | Retrieve the Smalltalk dialect |     -      | -       |
-|  POST  | [/save](general/save/post.md)      | Save the image                 |     -      | -       |
+|  GET   | [/dialect](general/dialect/get.md) | Retrieve the Smalltalk dialect |            | -       |
+|  GET   | [/colors](general/colors/get.md)   | Retrieve system colors         |            | -       |
+|  GET   | [/logo](general/logo/get.md)       | Retrieve system logo           |            | -       |
+|  GET   | [/stats](general/stats/get.md)     | Retrieve ststem stats          |            | -       |
+|  POST  | [/save](general/save/post.md)      | Save the image                 |            | -       |
 
 ## [Code](code)
 
