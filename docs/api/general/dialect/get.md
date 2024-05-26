@@ -14,6 +14,6 @@ This a simple endpoint to retrieve the Smalltalk dialect behind the scenes (Phar
 
 **Example:**: Pharo dialect `GET /dialect`.
 
-```
+```json
 "Pharo"
 ```

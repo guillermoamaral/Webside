@@ -5,6 +5,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import {
 	Accordion,
 	AccordionSummary,
+	AccordionDetails,
 	Typography,
 	Grid,
 	Button,
@@ -19,24 +20,8 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CustomTable from "../controls/CustomTable";
-import {
-	Chart as ChartJS,
-	CategoryScale,
-	LinearScale,
-	BarElement,
-	Tooltip,
-} from "chart.js";
-import { Bar } from "react-chartjs-2";
-import ChartDataLabels from "chartjs-plugin-datalabels";
+import { BarChart } from "@mui/x-charts/BarChart";
 import DebuggerIcon from "../icons/DebuggerIcon";
-
-ChartJS.register(
-	CategoryScale,
-	LinearScale,
-	BarElement,
-	Tooltip,
-	ChartDataLabels
-);
 
 class TestRunner extends Tool {
 	constructor(props) {
@@ -274,7 +259,7 @@ class TestRunner extends Tool {
 			},
 			{
 				field: "class",
-				label: "Clas",
+				label: "Class",
 				minWidth: 100,
 				align: "left",
 			},
@@ -318,50 +303,20 @@ class TestRunner extends Tool {
 		this.setState({ showGroups: show });
 	}
 
-	barChartData(label, summary) {
-		return {
-			labels: [label],
-			datasets: Object.keys(summary)
-				.filter((type) => {
-					return type !== "run" && summary[type] > 0;
-				})
-				.map((type) => {
-					return {
-						label: type,
-						backgroundColor: this.typeColor(type),
-						borderWidth: 0,
-						data: [summary[type] || 0],
-					};
-				}),
-		};
-	}
-
-	barChartOptions() {
-		return {
-			indexAxis: "y",
-			scales: {
-				x: {
-					stacked: true,
-					display: false,
-				},
-				y: {
-					stacked: true,
-					display: true,
-				},
-			},
-			plugins: {
-				legend: {
-					display: false,
-				},
-				title: {
-					display: false,
-				},
-				datalabels: {
-					display: true,
-					color: "white",
-				},
-			},
-		};
+	barChartSeries(group, summary) {
+		console.log(group, summary);
+		return Object.keys(summary)
+			.filter((type) => {
+				return type !== "run" && summary[type] > 0;
+			})
+			.map((type) => {
+				return {
+					stack: group,
+					label: type,
+					color: this.typeColor(type),
+					data: [summary[type] || 0],
+				};
+			});
 	}
 
 	testSelected = (test) => {
@@ -369,7 +324,7 @@ class TestRunner extends Tool {
 	};
 
 	render() {
-		console.log("rendering test runer");
+		console.log("rendering test runner");
 		const { status, results, filterType, showGroups, selectedTest } =
 			this.state;
 		const { total, running, current } = status;
@@ -427,7 +382,7 @@ class TestRunner extends Tool {
 				<Box mb={1}>
 					<Grid
 						container
-						spacing={1}
+						spacing={0}
 						justifyContent="space-around"
 						alignItems="flex-end"
 					>
@@ -540,34 +495,60 @@ class TestRunner extends Tool {
 										>
 											<Box
 												display="flex"
-												flexDirection="row"
+												flexDirection="column"
 												alignContent="center"
+												width="100%"
+												height="100%"
 											>
-												{!showBars && group}
-												<Box>
+												<Box>{group}</Box>
+												<Box
+													flexGrow={1}
+													ml={1}
+													height="100%"
+												>
 													{showBars && (
-														<Bar
-															height={60}
-															//width={"100%"}
-															data={this.barChartData(
+														<BarChart
+															margin={{
+																top: 0,
+																left: 0,
+																bottom: 0,
+																right: 0,
+															}}
+															slotProps={{
+																legend: {
+																	hidden: true,
+																},
+															}}
+															layout="horizontal"
+															series={this.barChartSeries(
 																group,
 																grouped[group]
 																	.summary
 															)}
-															options={this.barChartOptions()}
+															barLabel="value"
+															yAxis={[
+																{
+																	scaleType:
+																		"band",
+																	data: [
+																		group,
+																	],
+																},
+															]}
+															leftAxis={null}
+															bottomAxis={null}
+															height={30}
 														/>
 													)}
 												</Box>
 											</Box>
 										</AccordionSummary>
-										<Grid container>
-											<Grid item xs={1} md={1} lg={1} />
-											<Grid
-												item
-												xs={11}
-												md={11}
-												lg={11}
-												sx={{ minHeight: 300 }}
+										<AccordionDetails>
+											<Box
+												ml={3}
+												style={{
+													height: 300,
+												}}
 											>
 												<CustomTable
 													columns={this.columns()}
@@ -579,8 +560,8 @@ class TestRunner extends Tool {
 														this.testSelected
 													}
 												></CustomTable>
-											</Grid>
-										</Grid>
+											</Box>
+										</AccordionDetails>
 									</Accordion>
 								);
 							})}
