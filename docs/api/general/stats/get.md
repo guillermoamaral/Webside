@@ -17,24 +17,24 @@ This endpoint provides system stats, usually related to the VM such as GC spaces
 ```json
 [
     {
-        "label": "oldSpace",
-        "value": 173088768,
-        "unit": "bytes"
+        "label": "Old Space",
+        "value": 149.0703125,
+        "unit": "mb"
     },
     {
-        "label": "youngSpaceSize",
-        "value": 9047464,
-        "unit": "bytes"
+        "label": "Young Space",
+        "value": 2.9942855834960938,
+        "unit": "mb"
     },
     {
-        "label": "memorySize",
-        "value": 196124672,
-        "unit": "bytes"
+        "label": "Total Space",
+        "value": 171.0390625,
+        "unit": "mb"
     },
     {
-        "label": "freeSize",
-        "value": 29363720,
-        "unit": "bytes"
+        "label": "Free Space",
+        "value": 29.71562957763672,
+        "unit": "mb"
     }
 ]
 ```
