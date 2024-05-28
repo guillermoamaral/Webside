@@ -105,13 +105,13 @@ class Inspector extends Tool {
 		var slots;
 		try {
 			slots = [];
-			if (object.hasIndexedSlots) {
-				const indexed = await ide.backend.objectIndexedSlots(id, path);
-				slots = slots.concat(indexed);
-			}
 			if (object.hasNamedSlots) {
 				const named = await ide.backend.objectNamedSlots(id, path);
 				slots = slots.concat(named);
+			}
+			if (object.hasIndexedSlots) {
+				const indexed = await ide.backend.objectIndexedSlots(id, path);
+				slots = slots.concat(indexed);
 			}
 		} catch (error) {
 			slots = [];

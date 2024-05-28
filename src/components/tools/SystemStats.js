@@ -21,7 +21,6 @@ class SystemStats extends Tool {
 			}
 			series.data.push(stat.value);
 		});
-		console.log(groups);
 		return Object.values(groups);
 	}
 
@@ -38,7 +37,7 @@ class SystemStats extends Tool {
 			>
 				{rows.map((r) => {
 					return (
-						<Box display="flex" flexDirection="row">
+						<Box display="flex" flexDirection="row" key={"row" + r}>
 							{[0, 1]
 								.filter((c) => groups[r * 2 + c])
 								.map((c) => {
