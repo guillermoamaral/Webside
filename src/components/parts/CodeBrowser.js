@@ -47,9 +47,9 @@ class CodeBrowser extends Component {
 	}
 
 	defineClass = async (definition) => {
-		// if (!this.props.class) {
-		// 	return;
-		// }
+		if (!this.props.class) {
+			return;
+		}
 		const pack = this.props.package;
 		const species = this.props.class;
 		const classname = species ? species.name : null;
