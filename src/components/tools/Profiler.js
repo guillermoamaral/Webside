@@ -216,7 +216,7 @@ class Profiler extends Tool {
 									{!profiling && selectedMode === "tree" && (
 										<FastTree
 											nodes={tree ? [tree] : []}
-											nodeLabel="name"
+											nodeLabel="label"
 											nodeChildren="children"
 											onNodeSelect={this.treeNodeSelected}
 											onNodeExpand={this.treeNodeExpanded}
