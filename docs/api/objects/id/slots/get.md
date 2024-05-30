@@ -147,7 +147,7 @@ Note the `slot` property in each object.
 
 # Custom presentations
 
-Webside supports different view types to show custom presentations. At the moment of this writing they are `list`, `table`, `tree`, `source` and `html`.
+Webside supports different view types to show custom presentations. At the moment of this writing they are `list`, `table`, `tree`, `source`, `html` and `markdown`.
 
 Specific objects can take advantage of this UI hook to produce one or more visualizations in Webside inspectors.
 

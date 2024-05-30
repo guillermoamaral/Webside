@@ -5,11 +5,15 @@ import {
 	Link,
 	ToggleButton,
 	ToggleButtonGroup,
+	FormGroup,
+	FormControlLabel,
+	Checkbox,
+	Typography,
 } from "@mui/material";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 import CodeEditor from "./CodeEditor";
-//import clsx from "clsx";
+import MarkdownPreview from "@uiw/react-markdown-preview";
 
 class CodeBrowser extends Component {
 	static contextType = ToolContainerContext;
@@ -19,6 +23,7 @@ class CodeBrowser extends Component {
 		this.state = {
 			method: null,
 			selectedMode: "source",
+			previewMarkdown: true,
 		};
 	}
 
@@ -344,7 +349,7 @@ class CodeBrowser extends Component {
 	};
 
 	render() {
-		const mode = this.state.selectedMode;
+		const { selectedMode, previewMarkdown } = this.state;
 		const author = this.currentAuthor();
 		const timestamp = this.currentTimestamp();
 		const packagename = this.currentPackageName();
@@ -357,51 +362,85 @@ class CodeBrowser extends Component {
 		} = this.props;
 		return (
 			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
-				<Box>
-					<ToggleButtonGroup
-						label="primary"
-						value={mode}
-						exclusive
-						onChange={this.modeChanged}
-					>
-						{this.availableModes().map((m) => (
-							<ToggleButton
-								value={m.mode}
-								variant="outlined"
-								size="small"
-								key={m.mode}
-							>
-								{m.label}
-							</ToggleButton>
-						))}
-					</ToggleButtonGroup>
+				<Box display="flex" flexDirection="row">
+					<Box flexGrow={1}>
+						<ToggleButtonGroup
+							label="primary"
+							value={selectedMode}
+							exclusive
+							onChange={this.modeChanged}
+						>
+							{this.availableModes().map((m) => (
+								<ToggleButton
+									value={m.mode}
+									variant="outlined"
+									size="small"
+									key={m.mode}
+								>
+									{m.label}
+								</ToggleButton>
+							))}
+						</ToggleButtonGroup>
+					</Box>
+					{selectedMode === "comment" && (
+						<FormGroup>
+							<FormControlLabel
+								control={
+									<Checkbox
+										size="small"
+										checked={previewMarkdown}
+										color="primary"
+										onChange={(event) =>
+											this.setState({
+												previewMarkdown:
+													event.target.checked,
+											})
+										}
+									/>
+								}
+								label={
+									<Typography variant="caption">
+										Markdown view
+									</Typography>
+								}
+							/>
+						</FormGroup>
+					)}
 				</Box>
 				<Box flexGrow={1}>
 					<Paper
 						variant="outlined"
 						sx={{ height: "100%", minHeight: 300 }}
 					>
-						<CodeEditor
-							context={this.props.context}
-							class={this.props.class}
-							method={this.props.method}
-							source={this.currentSource()}
-							mode={this.currentCodeMode()}
-							ast={this.currentAst()}
-							annotations={this.currentAnnotations()}
-							selectedInterval={selectedInterval}
-							selectedSelector={selectedSelector}
-							selectedIdentifier={selectedIdentifier}
-							showAccept
-							onAccept={this.acceptClicked}
-							onRename={(target) => this.renameClass(target)}
-							onTooltipShow={onTooltipShow}
-							onTooltipClick={onTooltipClick}
-							showAssistant
-							onExtendedOptionPerform={
-								this.extendedOptionPerformed
-							}
-						/>
+						{(selectedMode !== "comment" || !previewMarkdown) && (
+							<CodeEditor
+								context={this.props.context}
+								class={this.props.class}
+								method={this.props.method}
+								source={this.currentSource()}
+								mode={this.currentCodeMode()}
+								ast={this.currentAst()}
+								annotations={this.currentAnnotations()}
+								selectedInterval={selectedInterval}
+								selectedSelector={selectedSelector}
+								selectedIdentifier={selectedIdentifier}
+								showAccept
+								onAccept={this.acceptClicked}
+								onRename={(target) => this.renameClass(target)}
+								onTooltipShow={onTooltipShow}
+								onTooltipClick={onTooltipClick}
+								showAssistant
+								onExtendedOptionPerform={
+									this.extendedOptionPerformed
+								}
+							/>
+						)}
+						{selectedMode === "comment" && previewMarkdown && (
+							<MarkdownPreview
+								source={this.currentSource()}
+								style={{ padding: 16 }}
+							/>
+						)}
 					</Paper>
 				</Box>
 				<Box>

@@ -4,6 +4,7 @@ import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";
 import TabControl from "../controls/TabControl";
 import FastTree from "../controls/FastTree";
+import MarkdownPreview from "@uiw/react-markdown-preview";
 
 class ObjectPresenter extends Component {
 	constructor(props) {
@@ -94,6 +95,12 @@ class ObjectPresenter extends Component {
 					<Paper variant="outlined" style={{ height: "100%" }}>
 						{p.type === "source" && (
 							<CodeEditor source={p.code} showAccept={false} />
+						)}
+						{p.type === "markdown" && (
+							<MarkdownPreview
+								source={p.code}
+								style={{ padding: 16 }}
+							/>
 						)}
 						{p.type === "tree" && (
 							<FastTree
