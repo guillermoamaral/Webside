@@ -198,6 +198,10 @@ class SystemBrowser extends Tool {
 		this.setState({ selectedClass: species });
 	};
 
+	classCommented = async (species) => {
+		this.setState({ selectedClass: species });
+	};
+
 	classRenamed = async (species) => {
 		this.classDefined(species);
 		const ref = this.methodListRef;
