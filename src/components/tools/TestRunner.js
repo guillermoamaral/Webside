@@ -304,7 +304,6 @@ class TestRunner extends Tool {
 	}
 
 	barChartSeries(group, summary) {
-		console.log(group, summary);
 		return Object.keys(summary)
 			.filter((type) => {
 				return type !== "run" && summary[type] > 0;

@@ -13,7 +13,7 @@ import {
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 import CodeEditor from "./CodeEditor";
-import MarkdownPreview from "@uiw/react-markdown-preview";
+import MarkdownView from "./MarkdownView";
 
 class CodeBrowser extends Component {
 	static contextType = ToolContainerContext;
@@ -436,10 +436,7 @@ class CodeBrowser extends Component {
 							/>
 						)}
 						{selectedMode === "comment" && previewMarkdown && (
-							<MarkdownPreview
-								source={this.currentSource()}
-								style={{ padding: 16 }}
-							/>
+							<MarkdownView source={this.currentSource()} />
 						)}
 					</Paper>
 				</Box>

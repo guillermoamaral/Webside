@@ -117,6 +117,10 @@ class StChange extends Object {
 		]);
 		this.fromJson(updated[0]);
 	}
+
+	type() {
+		return "Change";
+	}
 }
 
 class MethodChange extends StChange {
