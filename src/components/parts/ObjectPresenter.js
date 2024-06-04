@@ -4,7 +4,8 @@ import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";
 import TabControl from "../controls/TabControl";
 import FastTree from "../controls/FastTree";
-import MarkdownPreview from "@uiw/react-markdown-preview";
+import MarkdownView from "./MarkdownView";
+import JSONView from "./JSONView";
 
 class ObjectPresenter extends Component {
 	constructor(props) {
@@ -97,10 +98,10 @@ class ObjectPresenter extends Component {
 							<CodeEditor source={p.code} showAccept={false} />
 						)}
 						{p.type === "markdown" && (
-							<MarkdownPreview
-								source={p.code}
-								style={{ padding: 16 }}
-							/>
+							<MarkdownView source={p.code} />
+						)}
+						{p.type === "json" && (
+							<JSONView source={JSON.parse(p.code)} />
 						)}
 						{p.type === "tree" && (
 							<FastTree
