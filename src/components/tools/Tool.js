@@ -6,7 +6,11 @@ class Tool extends Component {
 
 	aboutToClose() {}
 
-	aboutToSelect() {}
+	aboutToSelect() {
+		this.updateCodeAssistantContext();
+	}
+
+	updateCodeAssistantContext() {}
 
 	aboutToDeselect() {}
 

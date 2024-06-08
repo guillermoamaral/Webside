@@ -27,6 +27,7 @@ class Workspace extends Tool {
 	}
 
 	aboutToSelect() {
+		super.aboutToSelect();
 		if (this.editorRef && this.editorRef.current)
 			this.editorRef.current.updatePlay();
 	}

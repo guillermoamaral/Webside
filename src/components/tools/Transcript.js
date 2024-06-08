@@ -6,6 +6,7 @@ import { ide } from "../IDE";
 
 class Transcript extends Tool {
 	aboutToSelect() {
+		super.aboutToSelect();
 		ide.resetUnredErrorCount();
 		this.forceUpdate();
 	}

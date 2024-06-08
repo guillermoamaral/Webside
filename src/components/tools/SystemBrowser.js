@@ -87,6 +87,16 @@ class SystemBrowser extends Tool {
 		}
 	}
 
+	updateCodeAssistantContext = () => {
+		if (ide.usesCodeAssistant()) {
+			const { selectedMethod, selectedClass } = this.state;
+			if (selectedMethod)
+				return ide.useMethodAsCodeAssistantContext(selectedMethod);
+			if (selectedClass)
+				ide.useClassAsCodeAssistantContext(selectedClass);
+		}
+	};
+
 	targetClass() {
 		let { selectedSide, selectedClass } = this.state;
 		return selectedClass
@@ -175,12 +185,15 @@ class SystemBrowser extends Tool {
 	classSelected = async (species) => {
 		this.updateLabel(species.name);
 		await this.updateClass(species);
-		this.setState({
-			selectedClass: species,
-			selectedCategory: null,
-			selectedVariable: null,
-			selectedMethod: null,
-		});
+		this.setState(
+			{
+				selectedClass: species,
+				selectedCategory: null,
+				selectedVariable: null,
+				selectedMethod: null,
+			},
+			this.updateCodeAssistantContext
+		);
 	};
 
 	classDefined = async (species) => {
@@ -298,11 +311,13 @@ class SystemBrowser extends Tool {
 	methodSelected = async (method) => {
 		if (method) {
 			this.updateLabel(method.methodClass + ">>" + method.selector);
+
+			if (!method.template) await this.updateMethod(method);
 		}
-		if (!method.template) {
-			await this.updateMethod(method);
-		}
-		this.setState({ selectedMethod: method });
+		this.setState(
+			{ selectedMethod: method },
+			this.updateCodeAssistantContext
+		);
 	};
 
 	methodRenamed = async (method) => {

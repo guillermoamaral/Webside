@@ -12,9 +12,11 @@ import {
 	CardHeader,
 	IconButton,
 	Fab,
+	Typography,
 } from "@mui/material";
-import CodeAssistantChat from "./parts/CodeAssistantChat";
+import CodeAssistantChat from "./tools/CodeAssistantChat";
 import MinimizeIcon from "@mui/icons-material/Minimize";
+import MaximizeIcon from "@mui/icons-material/Maximize";
 import ToolContainer from "./ToolContainer";
 import { withNavigation } from "./withNavigation";
 import { withDialog } from "./dialogs/index";
@@ -56,10 +58,11 @@ class IDE extends Component {
 			quickSearchOpen: false,
 			quickSearchOptions: {},
 			activeContainer: null,
-			assistantOpened: false,
+			assistantChatOpened: false,
+			assistantChatMaximized: false,
 		};
 		this.codeAssistant = null;
-		this.codeAssistantChatRef = React.createRef();
+		this.assistantChatRef = React.createRef();
 	}
 
 	componentDidMount() {
@@ -1042,25 +1045,65 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 		}
 	}
 
+	// Code assistant chat...
+
+	updateAssistantChat = () => {
+		if (!this.assistantChatRef) return;
+		const chat = this.assistantChatRef.current;
+		if (chat) {
+			chat.forceUpdate();
+			chat.scrollToLastMessage();
+		}
+	};
+
+	closeAssistantChat = () => {
+		this.setState({ assistantChatOpened: false });
+	};
+
+	toggleOpenAssistantChat = () => {
+		this.setState(
+			{ assistantChatOpened: !this.state.assistantChatOpened },
+			this.updateAssistantChat
+		);
+	};
+
+	minimizeAssistantChat = () => {
+		this.setState({
+			assistantChatOpened: false,
+			assistantChatMaximized: false,
+		});
+	};
+
+	maximizeAssistantChat = () => {
+		this.setState(
+			{ assistantChatMaximized: true },
+			this.updateAssistantChat
+		);
+	};
+
+	useClassAsCodeAssistantContext(species, useMethods) {
+		this.codeAssistant.useClassContext(species, useMethods);
+		this.updateAssistantChat();
+	}
+
+	useMethodAsCodeAssistantContext(method) {
+		this.codeAssistant.useMethodContext(method);
+		this.updateAssistantChat();
+	}
+
 	explainCode = async (code) => {
-		this.codeAssistant.explainCode(code).then(this.updateCodeAssistantChat);
-		this.setState({ assistantOpened: true }, this.updateCodeAssistantChat);
+		this.codeAssistant.explainCode(code).then(this.updateAssistantChat);
+		this.setState({ assistantChatOpened: true }, this.updateAssistantChat);
 	};
 
 	testCode = async (code) => {
-		this.codeAssistant.testCode(code).then(this.updateCodeAssistantChat);
-		this.setState({ assistantOpened: true }, this.updateCodeAssistantChat);
+		this.codeAssistant.testCode(code).then(this.updateAssistantChat);
+		this.setState({ assistantChatOpened: true }, this.updateAssistantChat);
 	};
 
 	improveCode = async (code) => {
-		this.codeAssistant.improveCode(code).then(this.updateCodeAssistantChat);
-		this.setState({ assistantOpened: true }, this.updateCodeAssistantChat);
-	};
-
-	updateCodeAssistantChat = () => {
-		if (this.codeAssistantChatRef && this.codeAssistantChatRef.current) {
-			this.codeAssistantChatRef.current.forceUpdate();
-		}
+		this.codeAssistant.improveCode(code).then(this.updateAssistantChat);
+		this.setState({ assistantChatOpened: true }, this.updateAssistantChat);
 	};
 
 	render() {
@@ -1074,7 +1117,8 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 			waiting,
 			quickSearchOpen,
 			quickSearchOptions,
-			assistantOpened,
+			assistantChatOpened,
+			assistantChatMaximized,
 		} = this.state;
 		const extraContainersWidth =
 			Math.round(100 / (extraContainers.length + 1)) + "%";
@@ -1152,38 +1196,78 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 							}}
 						>
 							<CustomSplit>
-								<Box
-									key="mainContainerBox"
-									flex={1}
-									sx={{
-										minWidth: extraContainersMinWidth,
-										width: extraContainersWidth,
-									}}
-								>
-									<ToolContainer
-										id={99999}
-										key="mainContainer"
-										ref={this.mainContainerRef}
-										onPageFocus={
-											this.pageFocusedInContainer
-										}
-										//onSplit={this.splitContainer} //disabled for the moment
-										showClose={false}
-									/>
+								<Box flex={1}>
+									<CustomSplit>
+										<Box
+											key="mainContainerBox"
+											flex={1}
+											sx={{
+												minWidth:
+													extraContainersMinWidth,
+												width: extraContainersWidth,
+											}}
+										>
+											<ToolContainer
+												id={99999}
+												key="mainContainer"
+												ref={this.mainContainerRef}
+												onPageFocus={
+													this.pageFocusedInContainer
+												}
+												//onSplit={this.splitContainer} //disabled for the moment
+												showClose={false}
+											/>
+										</Box>
+										{extraContainers.map(
+											(container, index) => (
+												<Box
+													key={
+														"container" +
+														index +
+														"Box"
+													}
+													sx={{
+														minWidth:
+															extraContainersMinWidth,
+														width: extraContainersWidth,
+													}}
+												>
+													{container.component}
+												</Box>
+											)
+										)}
+									</CustomSplit>
 								</Box>
-								{extraContainers.map((container, index) => (
+								{showsAssistant && assistantChatMaximized && (
 									<Box
-										key={"container" + index + "Box"}
-										sx={{
-											minWidth: extraContainersMinWidth,
-											width: extraContainersWidth,
-										}}
+										width="35%"
+										display="flex"
+										flexDirection="column"
 									>
-										{container.component}
+										<Box display="flex" flexDirection="row">
+											<Box flexGrow={1} mt={1}>
+												<Typography variant="body1">
+													Code assistant
+												</Typography>
+											</Box>
+											<IconButton
+												onClick={
+													this.minimizeAssistantChat
+												}
+												size="small"
+											>
+												<MinimizeIcon fontSize="small" />
+											</IconButton>
+										</Box>
+										<Box flexGrow={1} mt={1}>
+											<CodeAssistantChat
+												ref={this.assistantChatRef}
+											/>
+										</Box>
 									</Box>
-								))}
+								)}
 							</CustomSplit>
-							{showsAssistant && (
+							{showsAssistant && !assistantChatMaximized && (
 								<Fab
 									id="assitantLocation"
 									sx={{
@@ -1191,19 +1275,15 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 										bottom: (theme) => theme.spacing(2),
 										right: (theme) => theme.spacing(2),
 									}}
-									onClick={() => {
-										this.setState({
-											assistantOpened: !assistantOpened,
-										});
-									}}
+									onClick={this.toggleOpenAssistantChat}
 									color="primary"
 								>
 									<AssistantIcon />
 								</Fab>
 							)}
-							{showsAssistant && (
+							{showsAssistant && !assistantChatMaximized && (
 								<Popper
-									open={assistantOpened}
+									open={assistantChatOpened}
 									//placement="left-end"
 									anchorEl={document.getElementById(
 										"assitantLocation"
@@ -1213,15 +1293,24 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 										<CardHeader
 											disableTypography
 											action={
-												<IconButton
-													onClick={() => {
-														this.setState({
-															assistantOpened: false,
-														});
-													}}
-												>
-													<MinimizeIcon fontSize="small" />
-												</IconButton>
+												<Box>
+													<IconButton
+														onClick={
+															this
+																.closeAssistantChat
+														}
+													>
+														<MinimizeIcon fontSize="small" />
+													</IconButton>
+													<IconButton
+														onClick={
+															this
+																.maximizeAssistantChat
+														}
+													>
+														<MaximizeIcon fontSize="small" />
+													</IconButton>
+												</Box>
 											}
 											title="Code assistant"
 											style={{
@@ -1243,13 +1332,7 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 												}}
 											>
 												<CodeAssistantChat
-													ref={
-														this
-															.codeAssistantChatRef
-													}
-													developer="guillote"
-													source="x ^x"
-													class={{ name: "Point" }}
+													ref={this.assistantChatRef}
 												/>
 											</Box>
 										</CardContent>

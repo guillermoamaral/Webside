@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React from "react";
+import Tool from "./Tool";
 import {
 	Box,
 	TextField,
@@ -15,9 +16,10 @@ import {
 	Link,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import CodeEditor from "./CodeEditor";
+import CodeEditor from "../parts/CodeEditor";
 import Scrollable from "../controls/Scrollable";
 import { ide } from "../IDE";
+import MarkdownView from "../parts/MarkdownView";
 
 const MessageItem = ({ imageSrc, role, parts }) => (
 	<Box display="flex" flexDirection="column" sx={{ width: "100%" }}>
@@ -34,7 +36,7 @@ const MessageItem = ({ imageSrc, role, parts }) => (
 				{parts.map((part, index) => {
 					if (part.type === "code") {
 						const height = Math.min(
-							part.content.split("\r").length * 18,
+							part.content.split("\n").length * 18,
 							400
 						);
 						return (
@@ -65,11 +67,11 @@ const MessageItem = ({ imageSrc, role, parts }) => (
 							</Box>
 						);
 					}
-					// part.type === "text")
 					return (
-						<Typography key={index} variant="body2">
-							{part.content}
-						</Typography>
+						<MarkdownView
+							key={"markdown" + index}
+							source={part.content}
+						/>
 					);
 				})}
 			</Box>
@@ -77,21 +79,20 @@ const MessageItem = ({ imageSrc, role, parts }) => (
 	</Box>
 );
 
-class CodeAssistantChat extends Component {
+class CodeAssistantChat extends Tool {
 	constructor(props) {
 		super(props);
 		this.assistant = ide.codeAssistant;
 		this.state = {
 			prompt: "",
 			processing: false,
-			useClassContext: true,
+			useContext: false,
 		};
 		this.messagesRef = React.createRef();
 		this.lastItemRef = React.createRef();
 	}
 
 	componentDidUpdate() {
-		console.log("updated");
 		this.scrollToLastMessage();
 	}
 
@@ -136,20 +137,20 @@ class CodeAssistantChat extends Component {
 		this.updateState(true);
 	};
 
-	prompt = () => {
-		this.assistant.sendPrompt(this.state.prompt).then(() => {
+	sendPrompt = () => {
+		const { prompt, useContext } = this.state;
+		this.assistant.sendPrompt(prompt, useContext).then(() => {
 			this.updateState(false);
 		});
 		this.updateState(true);
 	};
 
-	async useClassContext(boolean) {
-		if (boolean && this.props.class) {
-			await this.assistant.useClassContext(this.props.class.name);
-		} else {
-			this.assistant.clearLocalContext();
-		}
-		this.setState({ useClassContext: boolean });
+	async useContext(boolean) {
+		this.setState({ useContext: boolean });
+	}
+
+	contextDescription() {
+		return this.assistant.localContextDescription;
 	}
 
 	messages() {
@@ -164,11 +165,11 @@ class CodeAssistantChat extends Component {
 
 	render() {
 		console.log("rendering CAC");
-		const { prompt, processing, useClassContext } = this.state;
+		const { prompt, processing, useContext } = this.state;
 		const messages = this.messages();
 		const developer = ide.currentDeveloper();
 		const showButtons = false;
-		const showContextOption = false;
+		const showContextOption = true;
 		return (
 			<Box
 				display="flex"
@@ -265,7 +266,7 @@ class CodeAssistantChat extends Component {
 							type="text"
 							onKeyDown={(event) => {
 								if (event.key === "Enter") {
-									this.prompt();
+									this.sendPrompt();
 								}
 							}}
 							disabled={processing}
@@ -273,7 +274,7 @@ class CodeAssistantChat extends Component {
 					</Box>
 					<Box display="flex" justifyContent="center">
 						<IconButton
-							onClick={this.prompt}
+							onClick={this.sendPrompt}
 							disabled={prompt === ""}
 						>
 							<SendIcon size="small" />
@@ -292,10 +293,10 @@ class CodeAssistantChat extends Component {
 									control={
 										<Checkbox
 											size="small"
-											checked={useClassContext}
+											checked={useContext}
 											color="primary"
 											onChange={(event) =>
-												this.useClassContext(
+												this.useContext(
 													event.target.checked
 												)
 											}
@@ -303,7 +304,9 @@ class CodeAssistantChat extends Component {
 									}
 									label={
 										<Typography variant="caption">
-											Use class context
+											{"Use " +
+												this.contextDescription() +
+												" context"}
 										</Typography>
 									}
 								/>

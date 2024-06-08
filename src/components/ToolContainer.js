@@ -290,8 +290,10 @@ class ToolContainer extends Component {
 				pack = await ide.backend.packageNamed(packagename);
 			} catch (error) {}
 		}
+		const ref = React.createRef();
 		const browser = (
 			<SystemBrowser
+				ref={ref}
 				showPackages={true}
 				preselectedPackage={pack}
 				id={pageId}
@@ -301,7 +303,8 @@ class ToolContainer extends Component {
 			"Package Browser",
 			<PackageBrowserIcon />,
 			browser,
-			pageId
+			pageId,
+			ref
 		);
 	};
 
@@ -339,15 +342,21 @@ class ToolContainer extends Component {
 				ide.reportError(error);
 			}
 		}
+		const ref = React.createRef();
 		browser = (
-			<SystemBrowser preselectedClass={species} side={side} id={pageId} />
+			<SystemBrowser
+				ref={ref}
+				preselectedClass={species}
+				side={side}
+				id={pageId}
+			/>
 		);
 		this.createPage(
 			classname || "Class Browser",
 			<ClassBrowserIcon />,
 			browser,
 			pageId,
-			null,
+			ref,
 			nextToSelected
 		);
 	};
@@ -363,8 +372,10 @@ class ToolContainer extends Component {
 			? methods.sort((a, b) => (a[sortedBy] <= b[sortedBy] ? -1 : 1))
 			: methods;
 		const pageId = this.newPageId();
+		const ref = React.createRef();
 		const browser = (
 			<MethodBrowser
+				ref={ref}
 				methods={sorted}
 				selectedSelector={selectedSelector}
 				selectedIdentifier={selectedIdentifier}
@@ -377,7 +388,7 @@ class ToolContainer extends Component {
 			<MethodBrowserIcon />,
 			browser,
 			null,
-			null,
+			ref,
 			true
 		);
 	};
