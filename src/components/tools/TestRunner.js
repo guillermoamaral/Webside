@@ -37,6 +37,7 @@ class TestRunner extends Tool {
 	}
 
 	aboutToSelect() {
+		super.aboutToSelect();
 		this.updateStatus(true);
 	}
 

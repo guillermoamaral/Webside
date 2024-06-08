@@ -7,17 +7,25 @@ class CodeAssistant {
 		this.aiCodeClosingTag = "</assistantcode>";
 		this.userCodeOpeningTag = "<usercode>";
 		this.userCodeClosingTag = "</usercode>";
-		this.localContext = "";
 		this.includeHistory = true;
 		this.messages = [];
 		this.setupGeneralContext(context);
+		this.localContext = "";
+		this.localContextDescription = "";
 	}
 
 	deleteMessageHistory() {
 		this.messages = [this.messages[0]];
 	}
 
-	setupGeneralContext(context) {
+	setupGeneralContext(text) {
+		let context = text;
+		// context +=
+		// 	"\nIn your response you must enclose any piece of code you provide between " +
+		// 	this.aiCodeOpeningTag +
+		// 	" and " +
+		// 	this.aiCodeClosingTag +
+		// 	" tags.\n";
 		const message = {
 			role: "system",
 			rawContent: context,
@@ -26,28 +34,49 @@ class CodeAssistant {
 	}
 
 	clearLocalContext() {
-		this.localContext = "";
+		this.localContext = this.localContextDescription = "";
 	}
 
-	async useClassContext(classname, useMethods = false) {
+	useCodeContext(code) {
+		this.localContext = "Consider a the follwing piece of code:\n";
+		this.localContext += this.encloseCode(code);
+		this.localContextDescription = "code";
+	}
+
+	useMethodContext(method) {
+		this.localContext =
+			"Consider a method in a class named " +
+			method.methodClass +
+			" with selector " +
+			method.selector +
+			" and with the follwing source code:\n";
+		this.localContext += this.encloseCode(method.source);
+		this.localContextDescription =
+			method.methodClass + ">>#" + method.selector;
+	}
+
+	async useClassContext(species, useMethods = false) {
 		this.localContext = "";
-		const species = await ide.backend.classNamed(classname);
-		if (species) {
-			this.localContext += "We have a class named " + classname;
-			if (species.comment && species.comment.length > 0)
+		const updated = await ide.backend.classNamed(species.name);
+		if (updated) {
+			this.localContext += "Consider a class named " + species.name;
+			if (updated.comment && updated.comment.length > 0)
 				this.localContext +=
 					' whose comment is the following:\n"' +
-					species.comment +
+					updated.comment +
 					'".\n';
 		}
+		this.localContextDescription = species.name;
 		if (useMethods) {
-			const methods = await ide.backend.methods(classname);
+			const methods = await ide.backend.methods(species);
 			if (methods.length > 0) {
 				this.localContext +=
-					"The class defines the following methods. ";
+					"The class defines the following methods\n";
+				this.localContext += this.userCodeOpeningTag;
 				methods.forEach((m) => {
 					this.localContext += "\n\n" + m.source;
 				});
+				this.localContext += "\n" + this.userCodeClosingTag;
 			}
 		}
 	}
@@ -63,7 +92,7 @@ class CodeAssistant {
 			: [message];
 		this.messages.push(response);
 		response.rawContent = await this.sendMessages(conversation);
-		response.parts = this.breakResponse(response.rawContent);
+		response.parts = this.breakResponse_(response.rawContent);
 		return response;
 	}
 
@@ -75,7 +104,7 @@ class CodeAssistant {
 	}
 
 	breakResponse(text) {
-		const parts = [];
+				const parts = [];
 		text.replaceAll("\n", "\r")
 			.split(this.aiCodeOpeningTag)
 			.forEach((p) => {
@@ -91,9 +120,41 @@ class CodeAssistant {
 		return parts;
 	}
 
+	breakResponse_(text) {
+		const pattern =
+			/^([A-Za-z \t]*)```([A-Za-z]*)?\n([\s\S]*?)```([A-Za-z \t]*)*$/gm;
+		let parts = [];
+		let matches;
+		let i = 0;
+		while ((matches = pattern.exec(text)) !== null) {
+			if (matches.index === pattern.lastIndex) {
+				pattern.lastIndex++;
+			}
+			if (i < matches.index) {
+				parts.push({
+					type: "text",
+					content: text.substring(i, matches.index),
+				});
+			}
+			parts.push({
+				type: "code",
+				content: matches[3],
+				syntax: matches[2],
+			});
+			i = matches.index + matches[0].length;
+		}
+		if (i < text.length) {
+			parts.push({
+				type: "text",
+				content: text.substring(i, text.length),
+			});
+		}
+		return parts;
+	}
+
 	addLocalContext(text) {
 		let context =
-			"\nIn your response you will enclose any piece of Smalltalk code between " +
+			"\nIn your response you should enclose any piece of code between " +
 			this.aiCodeOpeningTag +
 			" and " +
 			this.aiCodeClosingTag +
@@ -127,21 +188,24 @@ class CodeAssistant {
 
 	// Services...
 	async explainCode(code) {
-		return await this.sendCodePrompt(
-			"Explain the following code, without giving me back the code, only the plain explanation, without using more than 200 characters:",
-			code
+		this.useCodeContext(code);
+		return await this.sendPrompt(
+			"Explain the given code, without giving me back the code, only the plain explanation, without using more than 200 characters.",
+			true
 		);
 	}
 
 	async testCode(code) {
-		return await this.sendCodePrompt(
-			"Write a unit test for the following code:",
-			code
+		this.useCodeContext(code);
+		return await this.sendPrompt(
+			"Write a unit test for the given code.",
+			true
 		);
 	}
 
 	async improveCode(code) {
-		return await this.sendCodePrompt("Improve the following code:", code);
+		this.useCodeContext(code);
+		return await this.sendPrompt("Improve the given code.", true);
 	}
 
 	async categorizeMethod(method) {
@@ -150,10 +214,14 @@ class CodeAssistant {
 		);
 	}
 
-	async sendPrompt(prompt) {
+	async sendPrompt(prompt, useLocalContext = false) {
+		let raw = prompt;
+		if (useLocalContext) {
+			raw = this.localContext + "\n" + prompt;
+		}
 		const message = {
 			role: "user",
-			rawContent: prompt,
+			rawContent: raw,
 			parts: [{ type: "text", content: prompt }],
 		};
 		return await this.sendMessage(message);

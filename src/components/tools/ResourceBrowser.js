@@ -53,6 +53,7 @@ class ResourceBrowser extends Tool {
 	}
 
 	aboutToSelect() {
+		super.aboutToSelect();
 		if (this.state.automaticRefresh) this.startRefreshInterval();
 	}
 
@@ -94,7 +95,7 @@ class ResourceBrowser extends Tool {
 	}
 
 	// Objects...
-	
+
 	objectColumns() {
 		return [
 			{
