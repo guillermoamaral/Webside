@@ -2,7 +2,6 @@ import React from "react";
 import Tool from "./Tool";
 import {
 	Box,
-	TextField,
 	List,
 	ListItem,
 	Avatar,
@@ -10,16 +9,15 @@ import {
 	IconButton,
 	Paper,
 	Button,
-	FormGroup,
-	FormControlLabel,
-	Checkbox,
 	Link,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CodeEditor from "../parts/CodeEditor";
+import PromptEditor from "../parts/PromptEditor";
 import Scrollable from "../controls/Scrollable";
 import { ide } from "../IDE";
 import MarkdownView from "../parts/MarkdownView";
+import CustomSplit from "../controls/CustomSplit";
 
 const MessageItem = ({ imageSrc, role, parts }) => (
 	<Box display="flex" flexDirection="column" sx={{ width: "100%" }}>
@@ -86,7 +84,6 @@ class CodeAssistantChat extends Tool {
 		this.state = {
 			prompt: "",
 			processing: false,
-			useContext: false,
 		};
 		this.messagesRef = React.createRef();
 		this.lastItemRef = React.createRef();
@@ -138,20 +135,12 @@ class CodeAssistantChat extends Tool {
 	};
 
 	sendPrompt = () => {
-		const { prompt, useContext } = this.state;
-		this.assistant.sendPrompt(prompt, useContext).then(() => {
+		const { prompt } = this.state;
+		this.assistant.sendPrompt(prompt).then(() => {
 			this.updateState(false);
 		});
 		this.updateState(true);
 	};
-
-	async useContext(boolean) {
-		this.setState({ useContext: boolean });
-	}
-
-	contextDescription() {
-		return this.assistant.localContextDescription;
-	}
 
 	messages() {
 		return this.assistant.messages.filter((m) => m.parts);
@@ -163,13 +152,23 @@ class CodeAssistantChat extends Tool {
 		this.forceUpdate();
 	};
 
+	promptChanged = (text) => {
+		this.setState({ prompt: text });
+	};
+
+	keyPressed = (event) => {
+		event.stopPropagation();
+		if (event.key === "Enter" && !event.ctrlKey && !event.shiftKey) {
+			this.sendPrompt();
+		}
+	};
+
 	render() {
 		console.log("rendering CAC");
-		const { prompt, processing, useContext } = this.state;
+		const { prompt, processing } = this.state;
 		const messages = this.messages();
 		const developer = ide.currentDeveloper();
 		const showButtons = false;
-		const showContextOption = true;
 		return (
 			<Box
 				display="flex"
@@ -177,142 +176,124 @@ class CodeAssistantChat extends Tool {
 				sx={{ height: "100%", width: "100%" }}
 			>
 				<Box flexGrow={1}>
-					<Paper variant="outlined" sx={{ height: "100%" }}>
-						<Scrollable>
-							<List
-								ref={this.messagesRef}
-								sx={{ height: "100%" }}
+					<CustomSplit mode="vertical">
+						<Box height={"90%"}>
+							<Paper variant="outlined" sx={{ height: "100%" }}>
+								<Scrollable>
+									<List
+										ref={this.messagesRef}
+										sx={{ height: "100%" }}
+									>
+										{messages.map((m, i) => {
+											const ref =
+												i === messages.length - 1
+													? this.lastItemRef
+													: null;
+											const role =
+												m.role === "user"
+													? developer
+													: m.role;
+											return (
+												<ListItem
+													key={i}
+													ref={ref}
+													sx={{
+														flexDirection: "column",
+														alignItems:
+															"flex-start",
+														//padding: 2,
+													}}
+												>
+													<MessageItem
+														//imageSrc="https://example.com/avatar1.png"
+														role={role}
+														parts={m.parts}
+													/>
+												</ListItem>
+											);
+										})}
+									</List>
+								</Scrollable>
+							</Paper>
+						</Box>
+						<Box height={"10%"}>
+							{showButtons && (
+								<Box display="flex" flexDirection="row" mt={1}>
+									<Button
+										size="small"
+										variant="outlined"
+										//tabIndex={-1}
+										//startIcon={<DescriptionIcon />}
+										sx={{ flexGrow: 1 }}
+										onClick={this.explain}
+										disabled={processing}
+									>
+										Explain
+									</Button>
+									<Button
+										size="small"
+										variant="outlined"
+										//tabIndex={-1}
+										//startIcon={<TestRunnerIcon />}
+										sx={{
+											flexGrow: 1,
+											marginLeft: 1,
+											marginRight: 1,
+										}}
+										onClick={this.writeTest}
+										disabled={processing}
+									>
+										Write test
+									</Button>
+									<Button
+										size="small"
+										variant="outlined"
+										//tabIndex={-1}
+										//startIcon={<ImproveIcon />}
+										sx={{ flexGrow: 1 }}
+										onClick={this.improve}
+										disabled={processing}
+									>
+										Improve
+									</Button>
+								</Box>
+							)}
+							<Box
+								display="flex"
+								flexDirection="row"
+								alignItems="center"
+								style={{ width: "100%", height: "100%" }}
 							>
-								{messages.map((m, i) => {
-									const ref =
-										i === messages.length - 1
-											? this.lastItemRef
-											: null;
-									const role =
-										m.role === "user" ? developer : m.role;
-									return (
-										<ListItem
-											key={i}
-											ref={ref}
-											sx={{
-												flexDirection: "column",
-												alignItems: "flex-start",
-												//padding: 2,
-											}}
-										>
-											<MessageItem
-												//imageSrc="https://example.com/avatar1.png"
-												role={role}
-												parts={m.parts}
-											/>
-										</ListItem>
-									);
-								})}
-							</List>
-						</Scrollable>
-					</Paper>
-				</Box>
-				{showButtons && (
-					<Box display="flex" flexDirection="row" mt={1}>
-						<Button
-							size="small"
-							variant="outlined"
-							//tabIndex={-1}
-							//startIcon={<DescriptionIcon />}
-							sx={{ flexGrow: 1 }}
-							onClick={this.explain}
-							disabled={processing}
-						>
-							Explain
-						</Button>
-						<Button
-							size="small"
-							variant="outlined"
-							//tabIndex={-1}
-							//startIcon={<TestRunnerIcon />}
-							sx={{ flexGrow: 1, marginLeft: 1, marginRight: 1 }}
-							onClick={this.writeTest}
-							disabled={processing}
-						>
-							Write test
-						</Button>
-						<Button
-							size="small"
-							variant="outlined"
-							//tabIndex={-1}
-							//startIcon={<ImproveIcon />}
-							sx={{ flexGrow: 1 }}
-							onClick={this.improve}
-							disabled={processing}
-						>
-							Improve
-						</Button>
-					</Box>
-				)}
-				<Box display="flex" flexDirection="row" alignItems="center">
-					<Box flexGrow={1}>
-						<TextField
-							size="small"
-							value={prompt}
-							onChange={(event) =>
-								this.setState({ prompt: event.target.value })
-							}
-							placeholder="Ask something..."
-							name="text"
-							variant="outlined"
-							fullWidth
-							margin="dense"
-							autoFocus
-							type="text"
-							onKeyDown={(event) => {
-								if (event.key === "Enter") {
-									this.sendPrompt();
-								}
-							}}
-							disabled={processing}
-						/>
-					</Box>
-					<Box display="flex" justifyContent="center">
-						<IconButton
-							onClick={this.sendPrompt}
-							disabled={prompt === ""}
-						>
-							<SendIcon size="small" />
-						</IconButton>
-					</Box>
+								<Paper
+									variant="outlined"
+									style={{ width: "100%", height: "100%" }}
+								>
+									<PromptEditor
+										//source={this.currentSource()}
+										onChange={this.promptChanged}
+									/>
+								</Paper>
+								<IconButton
+									onClick={this.sendPrompt}
+									disabled={prompt === ""}
+								>
+									<SendIcon size="small" />
+								</IconButton>
+							</Box>
+						</Box>
+					</CustomSplit>
 				</Box>
 				<Box
 					display="flex"
 					flexDirection="row"
 					alignContent="space-between"
 				>
-					{showContextOption && (
-						<Box flexGrow={1}>
-							<FormGroup>
-								<FormControlLabel
-									control={
-										<Checkbox
-											size="small"
-											checked={useContext}
-											color="primary"
-											onChange={(event) =>
-												this.useContext(
-													event.target.checked
-												)
-											}
-										/>
-									}
-									label={
-										<Typography variant="caption">
-											{"Use " +
-												this.contextDescription() +
-												" context"}
-										</Typography>
-									}
-								/>
-							</FormGroup>
-						</Box>
-					)}
+					<Box flexGrow={1}>
+						<Typography variant="caption">
+							Use @ to include a class and # to include a method
+							in a given class
+						</Typography>
+					</Box>
 					<Box display="flex" flexDirection="row">
 						<Box
 							display="flex"

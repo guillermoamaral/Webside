@@ -11,7 +11,6 @@ class CodeAssistant {
 		this.messages = [];
 		this.setupGeneralContext(context);
 		this.localContext = "";
-		this.localContextDescription = "";
 	}
 
 	deleteMessageHistory() {
@@ -33,50 +32,85 @@ class CodeAssistant {
 		this.messages.push(message);
 	}
 
+	encloseCode(code) {
+		return this.userCodeOpeningTag + code + this.userCodeClosingTag;
+	}
+
 	clearLocalContext() {
-		this.localContext = this.localContextDescription = "";
-	}
-
-	useCodeContext(code) {
-		this.localContext = "Consider a the follwing piece of code:\n";
-		this.localContext += this.encloseCode(code);
-		this.localContextDescription = "code";
-	}
-
-	useMethodContext(method) {
-		this.localContext =
-			"Consider a method in a class named " +
-			method.methodClass +
-			" with selector " +
-			method.selector +
-			" and with the follwing source code:\n";
-		this.localContext += this.encloseCode(method.source);
-		this.localContextDescription =
-			method.methodClass + ">>#" + method.selector;
-	}
-
-	async useClassContext(species, useMethods = false) {
 		this.localContext = "";
-		const updated = await ide.backend.classNamed(species.name);
-		if (updated) {
-			this.localContext += "Consider a class named " + species.name;
-			if (updated.comment && updated.comment.length > 0)
-				this.localContext +=
-					' whose comment is the following:\n"' +
-					updated.comment +
-					'".\n';
+	}
+
+	useCodeContext(text) {
+		this.clearLocalContext();
+		this.addLocalContext(text);
+	}
+
+	addLocalContext(text) {
+		this.localContext += "\n" + text;
+	}
+
+	addCodeContext(code) {
+		this.addLocalContext(
+			"Consider a the follwing code:\n" + this.encloseCode(code)
+		);
+	}
+
+	async addMethodContext(classname, selector) {
+		let method;
+		try {
+			method = await ide.backend.method(classname, selector);
+		} catch (ignored) {}
+		if (!method) return;
+		const context =
+			"Consider a method in a class " +
+			method.methodClass +
+			" with selector #" +
+			method.selector +
+			" and with the follwing code:\n" +
+			this.encloseCode(method.source);
+		this.addLocalContext(context);
+	}
+
+	async addClassContext(classname, includeMethods = false) {
+		let context = "";
+		let species;
+		try {
+			species = await ide.backend.classNamed(classname);
+		} catch (ignored) {}
+		if (!species) return;
+		context += "Consider a class named " + classname;
+		if (species.comment && species.comment.length > 0)
+			context += ' with this comment:\n"' + species.comment + '".\n';
+		this.addLocalContext(context);
+		if (includeMethods) {
+			context = "";
+			let methods;
+			try {
+				methods = await ide.backend.methods(classname);
+			} catch (ignored) {}
+			if (!methods || methods.length === 0) return;
+			context += "This class defines the following methods\n";
+			context += this.userCodeOpeningTag;
+			methods.forEach((m) => {
+				context += "\n\n" + m.source;
+			});
+			context += "\n" + this.userCodeClosingTag;
+			this.addLocalContext(context);
 		}
-		this.localContextDescription = species.name;
-		if (useMethods) {
-			const methods = await ide.backend.methods(species);
-			if (methods.length > 0) {
-				this.localContext +=
-					"The class defines the following methods\n";
-				this.localContext += this.userCodeOpeningTag;
-				methods.forEach((m) => {
-					this.localContext += "\n\n" + m.source;
-				});
-				this.localContext += "\n" + this.userCodeClosingTag;
+	}
+
+	async addContextsFrom(text) {
+		const pattern = /@([a-zA-Z0-9]+)(#[a-zA-Z0-9:]+)?/g;
+		let match;
+		while ((match = pattern.exec(text)) !== null) {
+			const classname = match[1];
+			const selector = match[2]
+				? match[2].substring(1, match[2].length)
+				: null;
+			if (selector) {
+				await this.addMethodContext(classname, selector);
+			} else {
+				await this.addClassContext(classname);
 			}
 		}
 	}
@@ -92,7 +126,7 @@ class CodeAssistant {
 			: [message];
 		this.messages.push(response);
 		response.rawContent = await this.sendMessages(conversation);
-		response.parts = this.breakResponse_(response.rawContent);
+		response.parts = this.breakResponse(response.rawContent);
 		return response;
 	}
 
@@ -104,23 +138,6 @@ class CodeAssistant {
 	}
 
 	breakResponse(text) {
-				const parts = [];
-		text.replaceAll("\n", "\r")
-			.split(this.aiCodeOpeningTag)
-			.forEach((p) => {
-				const i = p.indexOf(this.aiCodeClosingTag);
-				if (i > 0) {
-					parts.push({ type: "code", content: p.substring(0, i) });
-				}
-				const offset = i > 0 ? this.aiCodeClosingTag.length : 1;
-				const text = p.substring(i + offset, p.length);
-				if (text.length > 0)
-					parts.push({ type: "text", content: text });
-			});
-		return parts;
-	}
-
-	breakResponse_(text) {
 		const pattern =
 			/^([A-Za-z \t]*)```([A-Za-z]*)?\n([\s\S]*?)```([A-Za-z \t]*)*$/gm;
 		let parts = [];
@@ -152,32 +169,15 @@ class CodeAssistant {
 		return parts;
 	}
 
-	addLocalContext(text) {
-		let context =
-			"\nIn your response you should enclose any piece of code between " +
-			this.aiCodeOpeningTag +
-			" and " +
-			this.aiCodeClosingTag +
-			" tags.\n";
-		return this.localContext + context + text;
-	}
-
-	encloseCode(code) {
-		return this.userCodeOpeningTag + code + this.userCodeClosingTag;
-	}
-
 	async sendCodePrompt(prompt, code) {
 		if (!code || code === "")
 			return {
 				role: "assistant",
 				parts: [{ type: "text", content: "No code provided" }],
 			};
-		const raw = this.addLocalContext(
-			prompt + "\n" + this.encloseCode(code)
-		);
 		const message = {
 			role: "user",
-			rawContent: raw,
+			rawContent: prompt + "\n" + this.encloseCode(code),
 			parts: [
 				{ type: "text", content: prompt },
 				{ type: "code", content: code },
@@ -214,11 +214,10 @@ class CodeAssistant {
 		);
 	}
 
-	async sendPrompt(prompt, useLocalContext = false) {
+	async sendPrompt(prompt) {
 		let raw = prompt;
-		if (useLocalContext) {
-			raw = this.localContext + "\n" + prompt;
-		}
+		await this.addContextsFrom(prompt);
+		raw = this.localContext + "\n" + prompt;
 		const message = {
 			role: "user",
 			rawContent: raw,
