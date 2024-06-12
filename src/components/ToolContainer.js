@@ -36,6 +36,7 @@ import POC from "./tools/POC";
 import SystemBrowser from "./tools/SystemBrowser";
 import { v4 as uuidv4 } from "uuid";
 import MethodHistoryBrowser from "./tools/MethodHistoryBrowser";
+import BackendTester from "./tools/BackendTester";
 
 class ToolContainer extends Component {
 	constructor(props) {
@@ -981,6 +982,11 @@ class ToolContainer extends Component {
 			},
 		];
 	}
+
+	openBackendTester = () => {
+		const page = <BackendTester url="http://localhost:9000/bee" />;
+		this.createPage("Backend Tester", <SettingsIcon />, page);
+	};
 
 	render() {
 		const showClose = this.props.showClose;

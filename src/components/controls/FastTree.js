@@ -87,7 +87,7 @@ const drawNode = memo(({ data, index, style }) => {
 				onContextMenu={menuHandler}
 			>
 				<Box display="flex" alignItems="center">
-					<Box p={0} style={{ width: 20 }}>
+					<Box p={0} style={{ width: 20, height: ITEM_SIZE }}>
 						{icon && (
 							<ListItemIcon
 								style={{ minWidth: 0 }}
@@ -100,6 +100,12 @@ const drawNode = memo(({ data, index, style }) => {
 						)}
 					</Box>
 					<ListItemText
+						style={{
+							marginLeft: 0,
+							marginBottom: 1,
+							marginRight: 0,
+							marginTop: 1,
+						}}
 						primary={
 							<Typography
 								noWrap
