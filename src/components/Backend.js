@@ -23,14 +23,6 @@ class Backend {
 		this.author = author;
 	}
 
-	setURL(url) {
-		this.url = url;
-	}
-
-	author(author) {
-		this.author = author;
-	}
-
 	async get(uri, description) {
 		try {
 			const response = await axios.get(this.url + uri);
@@ -233,6 +225,17 @@ class Backend {
 			"/usual-categories?meta=" + meta,
 			"usual categories "
 		);
+	}
+
+	async selectors(classname, sorted = false) {
+		const selectors = await this.get(
+			"/classes/" + classname + "/selectors",
+			"selectors of class " + classname
+		);
+		if (sorted) {
+			selectors.sort((a, b) => (a <= b ? -1 : 1));
+		}
+		return selectors;
 	}
 
 	async methods(classname, sorted = false) {

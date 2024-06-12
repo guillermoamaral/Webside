@@ -28,6 +28,7 @@
       * [Retrieve variables](docs/api/code/classes/name/variables/get.md)
       * [Retrieve class variables](docs/api/code/classes/name/class-variables/get.md)
       * [Retrieve instance variables](docs/api/code/classes/name/instance-variables/get.md)
+      * [Retrieve selectors](docs/api/code/classes/name/selectors/get.md)
       * [Retrieve methods](docs/api/code/classes/name/methods/get.md)
       * [Retrieve method](docs/api/code/classes/name/methods/selector/get.md)
       * [Retrieve method history](docs/api/code/classes/name/methods/selector/history/get.md)
