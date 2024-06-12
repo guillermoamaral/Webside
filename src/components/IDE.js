@@ -69,7 +69,6 @@ class IDE extends Component {
 		const container = this.mainContainer();
 		container.openTranscript();
 		//container.openPOC();
-		//container.openCoderLikeBrowser("Magnitude");
 		const options = this.queryOptions();
 		if (options.classname) {
 			container.openClassBrowser(options.classname);
@@ -1081,16 +1080,6 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 		);
 	};
 
-	useClassAsCodeAssistantContext(species, useMethods) {
-		this.codeAssistant.useClassContext(species, useMethods);
-		this.updateAssistantChat();
-	}
-
-	useMethodAsCodeAssistantContext(method) {
-		this.codeAssistant.useMethodContext(method);
-		this.updateAssistantChat();
-	}
-
 	explainCode = async (code) => {
 		this.codeAssistant.explainCode(code).then(this.updateAssistantChat);
 		this.setState({ assistantChatOpened: true }, this.updateAssistantChat);
@@ -1241,6 +1230,7 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 								{showsAssistant && assistantChatMaximized && (
 									<Box
 										width="35%"
+										minWidth="15%"
 										display="flex"
 										flexDirection="column"
 									>
