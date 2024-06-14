@@ -2396,6 +2396,70 @@ class BackendTest {
 		);
 	}
 
+	async testTemporaryVariableInDebuggerContext() {
+		this.section = "Evaluations";
+		let change = {
+			type: "AddClass",
+			className: "TestTemporaryVariableInDebuggerContext",
+			superclass: "Object",
+			author: "Webside",
+		};
+		await this.post("/changes", change);
+		change = {
+			type: "AddMethod",
+			className: "TestTemporaryVariableInDebuggerContext",
+			sourceCode:
+				"testTemporaryVariableInDebuggerContext  | temp | temp := 26. self halt",
+			author: "Webside",
+		};
+		await this.post("/changes", change);
+		let payload = {
+			expression:
+				"TestTemporaryVariableInDebuggerContext new testTemporaryVariableInDebuggerContext",
+			sync: true,
+			pin: true,
+		};
+		let error;
+		try {
+			await this.post("/evaluations", payload);
+		} catch (e) {
+			error = e.error.response.data;
+			this.assertNotNull(error.evaluation, "error.evaluation");
+		}
+		payload = { evaluation: error.evaluation };
+		const _debugger = await this.post("/debuggers", payload);
+		try {
+			payload = {
+				expression: "temp",
+				sync: true,
+				pin: false,
+				context: {
+					debugger: _debugger.id,
+					frame: 1,
+				},
+			};
+			const receiver = await this.post("/evaluations", payload);
+			this.assertEquals(
+				receiver.printString,
+				"26",
+				"receiver.printString"
+			);
+		} finally {
+			await this.delete("/debuggers/" + _debugger.id);
+			change = {
+				type: "RemoveMethod",
+				className: "TestTemporaryVariableInDebuggerContext",
+				selector: "testTemporaryVariableInDebuggerContext",
+			};
+			await this.post("/changes", change);
+			change = {
+				type: "RemoveClass",
+				className: "TestTemporaryVariableInDebuggerContext",
+			};
+			await this.post("/changes", change);
+		}
+	}
+
 	// Object tests...
 
 	async testPinObjectSlot() {
