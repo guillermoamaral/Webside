@@ -172,7 +172,11 @@ class CodeMigrator extends Tool {
 
 	downloadChanges = async () => {
 		try {
-			const ch = await ide.backend.downloadChanges(
+			const target = new Backend(
+				this.state.targetURL,
+				ide.backend.author
+			);
+			const ch = await target.downloadChanges(
 				this.state.changes.map((ch) => {
 					return ch.asJson();
 				})
@@ -185,6 +189,7 @@ class CodeMigrator extends Tool {
 	};
 
 	render() {
+		console.log("rendering CodeMigrator");
 		const { targetURL, changes, selectedChange, generating, migrating } =
 			this.state;
 		const error =
@@ -249,7 +254,10 @@ class CodeMigrator extends Tool {
 						<Button
 							variant="outlined"
 							disabled={
-								generating || migrating || changes.length === 0
+								generating ||
+								migrating ||
+								changes.length === 0 ||
+								!targetURL
 							}
 							onClick={this.downloadChanges}
 						>
