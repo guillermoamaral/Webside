@@ -87,6 +87,7 @@ class CodeAssistantChat extends Tool {
 		};
 		this.messagesRef = React.createRef();
 		this.lastItemRef = React.createRef();
+		this.editorRef = React.createRef();
 	}
 
 	componentDidUpdate() {
@@ -135,12 +136,18 @@ class CodeAssistantChat extends Tool {
 	};
 
 	sendPrompt = () => {
-		const { prompt } = this.state;
+		const prompt = this.state.prompt;
 		this.assistant.sendPrompt(prompt).then(() => {
 			this.updateState(false);
 		});
 		this.updateState(true);
+		this.clearEditor();
 	};
+
+	clearEditor() {
+		const ref = this.editorRef;
+		if (ref && ref.current) ref.current.clear();
+	}
 
 	messages() {
 		return this.assistant.messages.filter((m) => m.parts);
@@ -269,8 +276,9 @@ class CodeAssistantChat extends Tool {
 									style={{ width: "100%", height: "100%" }}
 								>
 									<PromptEditor
-										//source={this.currentSource()}
+										ref={this.editorRef}
 										onChange={this.promptChanged}
+										onAccept={this.sendPrompt}
 									/>
 								</Paper>
 								<IconButton
