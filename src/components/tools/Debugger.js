@@ -373,9 +373,6 @@ class Debugger extends Tool {
 						</Box>
 					</CustomSplit>
 				</Box>
-				<Box>
-					{stepping && <LinearProgress variant="indeterminate" />}
-				</Box>
 			</Box>
 		);
 	}
