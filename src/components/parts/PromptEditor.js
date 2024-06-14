@@ -34,7 +34,7 @@ class PromptEditor extends Component {
 		this.typingTimer = null;
 		this.autocompletionTimer = null;
 		this.state = {
-			source: "",
+			prompt: "",
 			dirty: false,
 		};
 	}
@@ -49,10 +49,10 @@ class PromptEditor extends Component {
 		}
 	}
 
-	sourceChanged = (source) => {
+	promptChanged = (prompt) => {
 		this.setState(
 			{
-				source: source,
+				prompt: prompt,
 				dirty: true,
 			},
 			this.triggerOnChange
@@ -61,10 +61,7 @@ class PromptEditor extends Component {
 
 	triggerOnChange = () => {
 		if (this.props.onChange) {
-			clearTimeout(this.typingTimer);
-			this.typingTimer = setTimeout(() => {
-				this.props.onChange(this.state.source);
-			}, 500);
+			this.props.onChange(this.state.prompt);
 		}
 	};
 
@@ -193,12 +190,48 @@ class PromptEditor extends Component {
 				key: "Tab",
 				run: acceptCompletion,
 			},
+			{
+				key: "Enter",
+				run: this.enterPressed,
+			},
+			{
+				key: "Shift-Enter",
+				run: this.enterPressed,
+			},
+			{
+				key: "Ctrl-Enter",
+				run: this.enterPressed,
+			},
 		];
 	}
 
+	enterPressed = (editor, event) => {
+		if (event.shiftKey || event.altKey) {
+			event.stopPropagation();
+			return;
+		}
+		event.preventDefault();
+		if (this.props.onAccept) this.props.onAccept();
+		this.clear();
+		return true;
+	};
+
+	clear = () => {
+		this.editorView.dispatch({
+			selection: { anchor: 0, head: 0 },
+		});
+		this.editorView.dispatch({
+			changes: {
+				from: 0,
+				to: this.editorView.state.doc.toString().length,
+				insert: "",
+			},
+		});
+	};
+
 	render() {
 		console.log("rendering prompt editor");
-		const { source } = this.state;
+		const prompt = this.state.prompt;
 		return (
 			<Box style={{ width: "100%", height: "100%" }}>
 				<Scrollable>
@@ -217,23 +250,20 @@ class PromptEditor extends Component {
 							this.customCompletionDisplay(),
 						]}
 						theme={this.theme()}
-						value={source}
-						//selection={EditorSelection.cursor(source.length)}
-						onChange={this.sourceChanged}
+						value={prompt}
+						onChange={this.promptChanged}
 						// onContextMenu={(event) => {
 						// 	this.openMenu(event);
 						// }}
 						onCreateEditor={(view, state) => {
 							this.editorView = view;
 						}}
-						//onUpdate={(update) => this.editorUpdated(update)}
 						basicSetup={{
 							lineNumbers: false,
 							closeBrackets: false,
 							bracketMatching: false,
 							highlightActiveLine: false,
 							drawSelection: false,
-							//autocompletion: true,
 						}}
 					/>
 				</Scrollable>
