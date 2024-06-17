@@ -46,13 +46,21 @@ class Sidebar extends Component {
 				</DrawerHeader>
 				<Divider />
 				<List>
-					<ListItemButton onClick={onSaveImageClick}>
+					{/* <ListItemButton onClick={onSaveImageClick}>
 						<ListItemIcon>
 							<Tooltip title="Save image" placement="top">
 								<SaveImageIcon />
 							</Tooltip>
 						</ListItemIcon>
 						<ListItemText primary="Save image" />
+					</ListItemButton> */}
+					<ListItemButton onClick={onSearchClick}>
+						<ListItemIcon>
+							<Tooltip title="Search" placement="top">
+								<SearchIcon />
+							</Tooltip>
+						</ListItemIcon>
+						<ListItemText primary="Search" />
 					</ListItemButton>
 					<ListItemButton onClick={onTranscriptClick}>
 						<ListItemIcon>
@@ -66,14 +74,6 @@ class Sidebar extends Component {
 							</Tooltip>
 						</ListItemIcon>
 						<ListItemText primary="Transcript" />
-					</ListItemButton>
-					<ListItemButton onClick={onSearchClick}>
-						<ListItemIcon>
-							<Tooltip title="Search" placement="top">
-								<SearchIcon />
-							</Tooltip>
-						</ListItemIcon>
-						<ListItemText primary="Search" />
 					</ListItemButton>
 					<ListItemButton onClick={onChangesClick}>
 						<ListItemIcon>
@@ -96,19 +96,21 @@ class Sidebar extends Component {
 						</Tooltip>
 						<ListItemText primary="Resources" />
 					</ListItemButton>
-					<ListItemButton onClick={onPeersClick}>
-						<ListItemIcon>
-							<Tooltip title="Chat" placement="top">
-								<Badge
-									badgeContent={unreadMessages}
-									color="secondary"
-								>
-									<ChatIcon />
-								</Badge>
-							</Tooltip>
-						</ListItemIcon>
-						<ListItemText primary="Chat" />
-					</ListItemButton>
+					{onPeersClick && (
+						<ListItemButton onClick={onPeersClick}>
+							<ListItemIcon>
+								<Tooltip title="Chat" placement="top">
+									<Badge
+										badgeContent={unreadMessages}
+										color="secondary"
+									>
+										<ChatIcon />
+									</Badge>
+								</Tooltip>
+							</ListItemIcon>
+							<ListItemText primary="Chat" />
+						</ListItemButton>
+					)}
 					<ListItemButton onClick={onSettingsClick}>
 						<Tooltip title="Settings" placement="top">
 							<ListItemIcon>
