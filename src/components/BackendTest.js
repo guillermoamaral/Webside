@@ -1636,11 +1636,13 @@ class BackendTest {
 			let species;
 			try {
 				species = await this.get("/classes/TestRemoveClass");
-			} catch (error) {}
+			} catch (ignored) {}
 			this.assert(!species);
 		} finally {
 			change = { type: "RemoveClass", className: "TestRemoveClass" };
-			await this.post("/changes", change);
+			try {
+				await this.post("/changes", change);
+			} catch (ignored) {}
 		}
 	}
 

@@ -1,16 +1,11 @@
 import React from "react";
 import Tool from "./Tool";
-import {
-	Typography,
-	Box,
-	Button,
-	FormHelperText,
-	Divider,
-} from "@mui/material";
+import { Typography, Box, Button, Link, Divider } from "@mui/material";
 import SettingEditor from "../parts/SettingEditor";
 import FastTree from "../controls/FastTree";
 import CustomSplit from "../controls/CustomSplit";
 import CustomPaper from "../controls/CustomPaper";
+import BackendTester from "./BackendTester";
 
 class SettingsEditor extends Tool {
 	constructor(props) {
@@ -27,9 +22,10 @@ class SettingsEditor extends Tool {
 		if (handler) handler(this.props.settings);
 	};
 
-	resetSection = (name) => {
+	resetSelectedSection = () => {
+		const section = this.state.selectedSection;
 		const handler = this.props.onResetSection;
-		if (handler) handler(name);
+		if (handler) handler(section);
 		this.forceUpdate();
 	};
 
@@ -55,6 +51,10 @@ class SettingsEditor extends Tool {
 		const selectedSettings = selectedSection
 			? selectedSection.plainSettings()
 			: [];
+		const backendUrl =
+			selectedSection && selectedSection.name === "connection"
+				? selectedSection.get("backend")
+				: null;
 		return (
 			<Box
 				display="flex"
@@ -89,6 +89,25 @@ class SettingsEditor extends Tool {
 							</Typography>
 							<Divider />
 							<Box
+								mt={1}
+								display="flex"
+								direction="row"
+								justifyContent="flex-end"
+								alignItems="center"
+							>
+								<Link
+									variant="caption"
+									onClick={this.resetSelectedSection}
+									color="inherit"
+									underline="hover"
+									href="#"
+								>
+									{"Reset " +
+										selectedSection.label +
+										" settings"}
+								</Link>
+							</Box>
+							<Box
 								m={3}
 								flexGrow={1}
 								display="flex"
@@ -97,39 +116,22 @@ class SettingsEditor extends Tool {
 								<Box
 									display="flex"
 									flexDirection="column"
-									sx={{ width: "100%" }}
+									sx={{ width: "100%", height: "90%" }}
 								>
 									{selectedSettings.map((setting) => (
-										<Box key={setting.name} mt={1}>
+										<Box key={setting.name} mb={1}>
 											<SettingEditor
 												//showLabel={false}
 												setting={setting}
 											/>
 										</Box>
 									))}
+									{backendUrl && (
+										<Box flexGrow={1} mt={2}>
+											<BackendTester url={backendUrl} />
+										</Box>
+									)}
 								</Box>
-							</Box>
-							<Box
-								mt={1}
-								mr={1}
-								mb={1}
-								display="flex"
-								direction="row"
-								justifyContent="flex-end"
-								alignItems="center"
-							>
-								<Button
-									variant="outlined"
-									type="submit"
-									size="small"
-									onClick={() =>
-										this.resetSection(selectedSection.name)
-									}
-								>
-									{"Reset " +
-										selectedSection.label +
-										" settings"}
-								</Button>
 							</Box>
 						</Box>
 					)}

@@ -147,7 +147,7 @@ class BackendTester extends Tool {
 								running ? this.stopClicked() : this.runClicked()
 							}
 						>
-							{running ? "Stop" : "Run"}
+							{running ? "Stop" : "Test"}
 						</Button>
 					</Box>
 					<Box ml={1} flexGrow={1}>
