@@ -966,14 +966,14 @@ class ToolContainer extends Component {
 				handler: this.addWorkspaceClicked,
 			},
 			{
+				label: "System Browser",
+				icon: <PackageBrowserIcon />,
+				handler: this.addPackageBrowserClicked,
+			},
+			{
 				label: "Class Browser",
 				icon: <ClassBrowserIcon />,
 				handler: this.addClassBrowserClicked,
-			},
-			{
-				label: "Package Browser",
-				icon: <PackageBrowserIcon />,
-				handler: this.addPackageBrowserClicked,
 			},
 			{
 				label: "Changes Browser",
@@ -983,8 +983,8 @@ class ToolContainer extends Component {
 		];
 	}
 
-	openBackendTester = () => {
-		const page = <BackendTester url="http://localhost:9000/bee" />;
+	openBackendTester = (url) => {
+		const page = <BackendTester url={url} />;
 		this.createPage("Backend Tester", <SettingsIcon />, page);
 	};
 

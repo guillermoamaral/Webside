@@ -96,7 +96,7 @@ class IDE extends Component {
 	defaultSettings() {
 		const settings = new Settings("settings");
 		const connection = settings.addSection("connection");
-		connection.addUrl("backend");
+		connection.addUrl("backend").readOnly();
 		connection.addText("developer");
 		connection.addText("dialect").readOnly();
 
@@ -1167,7 +1167,7 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 							onSearchClick={this.openSearch}
 							onChangesClick={this.browseLastChanges}
 							onResourcesClick={this.openResources}
-							onPeersClick={this.openChat}
+							onPeersClick={this.messageChannel && this.openChat}
 							onSettingsClick={this.openSettings}
 							onCollapse={this.collapseSidebar}
 						/>
