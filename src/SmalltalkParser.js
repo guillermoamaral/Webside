@@ -5,57 +5,51 @@
 var binary = /[+\-/\\*~<>=@%|&?!,]/;
 var reserved = /true|false|nil|self|super|thisContext/;
 
-class Context {
-	constructor(tokenizer, parent) {
-		this.next = tokenizer;
-		this.parent = parent;
-	}
-}
+var Context = function (tokenizer, parent) {
+	this.next = tokenizer;
+	this.parent = parent;
+};
 
-class Token {
-	constructor(type, context) {
-		this.type = type;
-		this.context = context;
-	}
-}
+var Token = function (type, context) {
+	this.type = type;
+	this.context = context;
+};
 
-class State {
-	constructor() {
-		this.context = new Context(next, null);
-		this.first = true;
-		this.withinSelector = true;
-		this.expected = ["selector"];
-		this.expects = (t) => {
-			return this.expected.includes(t);
-		};
-		this.expect = (t) => {
-			this.expected = typeof t === "string" ? [t] : t;
-		};
-		this.isArgument = (v) => {
-			return this.arguments.includes(v);
-		};
-		this.isTemporary = (v) => {
-			return this.temporaries.includes(v);
-		};
-		this.addArgument = (v) => {
-			this.arguments.push(v);
-		};
-		this.addTemporary = (v) => {
-			this.temporaries.push(v);
-		};
-		this.arguments = [];
-		this.temporaries = [];
-		this.indentation = 0;
-		this.userIndentationDelta = 0;
-	}
-	userIndent(indentation, indentUnit) {
-		this.userIndentationDelta =
-			indentation > 0 ? indentation / indentUnit - this.indentation : 0;
-	}
-}
+var State = function () {
+	this.context = new Context(next, null);
+	this.first = true;
+	this.withinSelector = true;
+	this.expected = ["selector"];
+	this.expects = (t) => {
+		return this.expected.includes(t);
+	};
+	this.expect = (t) => {
+		this.expected = typeof t === "string" ? [t] : t;
+	};
+	this.isArgument = (v) => {
+		return this.arguments.includes(v);
+	};
+	this.isTemporary = (v) => {
+		return this.temporaries.includes(v);
+	};
+	this.addArgument = (v) => {
+		this.arguments.push(v);
+	};
+	this.addTemporary = (v) => {
+		this.temporaries.push(v);
+	};
+	this.arguments = [];
+	this.temporaries = [];
+	this.indentation = 0;
+	this.userIndentationDelta = 0;
+};
 
+State.prototype.userIndent = function (indentation, indentUnit) {
+	this.userIndentationDelta =
+		indentation > 0 ? indentation / indentUnit - this.indentation : 0;
+};
 
-var next = (stream, context, state) => {
+var next = function (stream, context, state) {
 	var token = new Token(null, context);
 	var char = stream.next();
 	if (char === '"') {
@@ -155,8 +149,10 @@ var next = (stream, context, state) => {
 			state.withinSelector
 				? state.expect("argument")
 				: state.expect("variable");
-		} else if (state.expects("selector") &&
-			(state.first || !state.withinSelector)) {
+		} else if (
+			state.expects("selector") &&
+			(state.first || !state.withinSelector)
+		) {
 			token.type = "selector";
 			state.expect("selector");
 			state.withinSelector = false;
@@ -174,22 +170,22 @@ var next = (stream, context, state) => {
 	return token;
 };
 
-var nextComment = (stream, context) => {
+var nextComment = function (stream, context) {
 	stream.eatWhile(/[^"]/);
 	return new Token("comment", stream.eat('"') ? context.parent : context);
 };
 
-var nextString = (stream, context) => {
+var nextString = function (stream, context) {
 	stream.eatWhile(/[^']/);
 	return new Token("string", stream.eat("'") ? context.parent : context);
 };
 
-var nextSymbol = (stream, context) => {
+var nextSymbol = function (stream, context) {
 	stream.eatWhile(/[^']/);
 	return new Token("symbol", stream.eat("'") ? context.parent : context);
 };
 
-var nextTemporaries = (stream, context, state) => {
+var nextTemporaries = function (stream, context, state) {
 	var token = new Token(null, context);
 	var char = stream.next();
 	if (char === "|") {
@@ -208,8 +204,10 @@ var nextTemporaries = (stream, context, state) => {
 
 export const SmalltalkParser = {
 	name: "smalltalk",
-	startState: () => new State(),
-	token: (stream, state) => {
+	startState: function () {
+		return new State();
+	},
+	token: function (stream, state) {
 		state.userIndent(stream.indentation());
 		if (stream.eatSpace()) {
 			return null;
@@ -220,15 +218,16 @@ export const SmalltalkParser = {
 		//console.log(token.value, token.type);
 		return token.type;
 	},
-	blankLine: (state) => {
+	blankLine: function (state) {
 		state.userIndent(0);
 	},
-	indent: (state, textAfter, cx) => {
-		var i = state.context.next === next &&
+	indent: function (state, textAfter, cx) {
+		var i =
+			state.context.next === next &&
 			textAfter &&
 			textAfter.charAt(0) === "]"
-			? -1
-			: state.userIndentationDelta;
+				? -1
+				: state.userIndentationDelta;
 		return (state.indentation + i) * cx.unit;
 	},
 	electricChars: "]",
