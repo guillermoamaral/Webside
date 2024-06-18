@@ -1,20 +1,21 @@
 # Download extensions
 
-This type of extension allows us to download an _exportable_ version of a given meta-model object. Like change extensions, specifications retrieved from this endpoint will enlarge the list of options available on the IDE.
+This type of extension allows us to download an _exportable_ version of a given meta-model object. Like other extensions, specifications retrieved from this endpoint will enlarge the list of options available on the IDE.
 
 ## Target object
 
-As change extensions, a download extension is applicable over a given meta-model object. Namely, a package, a class, a variable, a category, or a method (plus a special element named _code_). Each of these elements has its corresponding `elementType`: `package`, `class`, `variable`, `category`, `method` and `code`, respectively.
+A download extension is applicable to a given meta-model object (package, class, method, etc.). See below accepted element types.
 
 # Specification
 
-The structure of a download specification must have this structure:
+The structure of a download specification must be like this:
 
 ```json
 {
 	"extensionType": "download",
 	"elementType": "string",
 	"label": "string",
+	"description": "string",
 	"get": "string",
 	"defaultFilename": "boolean",
 	"section": "string"
@@ -26,7 +27,7 @@ Where:
 -   `extensionType` as these are download extensions this property is `download`.
 -   `elementType` represents the meta-model object over which the change applies. It can be `package`, `class`, `variable`, `category`, `method` or `code`.
 -   `label` a text that will be used by the IDE to present the option.
--   `description` (optional) a description of the change (it might be used as a tip text or help).
+-   `description` (optional) a description of the download (it might be used as a tip text or help).
 -   `get` a string specifying the way the content to be downloaded will be obtained (see below).
 -   `defaultFilename` (optional) the default file name.
 -   `section` (optional) is used by the IDE to place the option under a submenu. By default no submenu is used (i.e., the option is just appended to the corresponding menu)
@@ -40,7 +41,7 @@ We could specify our extension like this:
 {
 	"extensionType": "download",
 	"elementType": "class",
-	"label": "My own file out",
+	"label": "File out",
 	"get": "/classes/{element.name}/exports/chunks",
 	"defaultFilename": "{element.name}.ch"
 }
@@ -74,4 +75,4 @@ myMethod
   ^1! !
 ```
 
-A file dialong will be opened and once the user confirms a file name, such contents will be saved.
+A file dialog will be opened and once the user confirms a file name, such contents will be saved.

@@ -1,10 +1,10 @@
 # Retrieve extensions
 
-Retrieve IDE extensions defined by the back-end.
+These are extensions that apply or are meant to be used specifically by the IDE. The gaining here is that each especific backend (dialect) can benefit from this endpoint to populate the IDE with the options they are used to offer in its native IDE.
 
-| Method | Path                  | Description                        | Parameters | Payload |
-| :----: | --------------------- | ---------------------------------- | :--------: | ------- |
-|  GET   | [/extensions](get.md) | Retrieve list of change defintions |     -      | -       |
+| Method | Path                  | Description                           | Parameters | Payload |
+| :----: | --------------------- | ------------------------------------- | :--------: | ------- |
+|  GET   | [/extensions](get.md) | Retrieve list of extension defintions |     -      | -       |
 
 **URL**: `/extensions`
 
@@ -14,7 +14,8 @@ Retrieve IDE extensions defined by the back-end.
 
 **Code** : `200 OK`
 
-By the moment, there are two types of extensions:
+By the moment, the following types are available:
 
--   [**Change**](changes.md)
--   [**Download**](downloads.md)
+-   [**Change extensions**](changes.md)
+-   [**Download extensions**](downloads.md)
+-   [**Search extensions**](searches.md)

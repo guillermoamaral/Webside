@@ -2,17 +2,17 @@
 
 This type of extension allows us to extend the set of changes that the API specifies (and that the IDE will expect to be present). Hence, specifications retrieved from this endpoint will enlarge the list of options available on the IDE.
 
-Of course, every change defined as an extension must be supported by the system.
+Of course, every change defined as an extension must be supported by the target system.
 
 As in the case of pre-defined changes, they might result in errors. These will provide the same information explained [here](../changes/post.md#errors).
 
 ## Target object
 
-First of all, a change _refers_ or is applicable over a given meta-model object. Namely, a package, a class, a variable, a category, or a method (plus a special element named _code_). Each of these elements has its corresponding `elementType` here: `package`, `class`, and so on.
+A change extension is applicable to a given meta-model object (package, class, method, etc.). See below accepted element types.
 
 # Specification
 
-The structure of a change specification must have this structure:
+The structure of a change specification must be like this:
 
 ```json
 {
@@ -57,7 +57,7 @@ As detailed [here](../changes/post.md), this change must look like the following
 
 Here, the meta-model object to which the change refers is a class named `MyClass`, and to which the change aims at renaming it as `OurClass`, renaming also all references (i.e., methods referencing `MyClass`).
 
-Now, lets express our pre-defined class rename change as the definition of a new extended one, using a different change type.
+Now, lets express our pre-defined class rename change as the definition of a new extended one, using a different change type and making `renameReferences` modifiable by the user through another parameter (with `true` as a default value).
 
 ```json
 {
@@ -67,7 +67,7 @@ Now, lets express our pre-defined class rename change as the definition of a new
 	"properties": {
 		"type": "RenameClass",
 		"className": "{element.name}",
-		"renameReferences": true,
+		"renameReferences": "{parameters.renameReferences}",
 		"newName": "{parameters.newName}"
 	},
 	"parameters": [
@@ -75,6 +75,12 @@ Now, lets express our pre-defined class rename change as the definition of a new
 			"name": "newName",
 			"label": "New name",
 			"defaultValue": "{element.name}",
+			"type": "input"
+		},
+		{
+			"name": "renameReferences",
+			"label": "Rename references?",
+			"defaultValue": true,
 			"type": "input"
 		}
 	]
@@ -120,19 +126,19 @@ As shown in our example, a parameter has the following form:
 
 Where,
 
-- `type` specifies how the parameter will be prompted to the user. At the moment of writing this document it can be `text`, `number` or `boolean`.
-- `options` (optional) provides a list of alternatives. This can be either a fixed list, or a *dynamic* one. By the moment, there are only two possibilities for the latter: `packages` or `classes`, to provide the user with the list of the names of existing packages and classes, respectively.
-- `label` will be used to prompt the user for a value.
-- `defaultValue` (optional) is the default value presented to the user. In the case of a string, it can contain zero or more attribute expressions ({`element.xxx`}). (In our example, the default value is the current name of the class, and so it is defined as `{element.name}`).
+-   `type` specifies how the parameter will be prompted to the user. At the moment of writing this document it can be `text`, `number` or `boolean`.
+-   `options` (optional) provides a list of alternatives. This can be either a fixed list, or a _dynamic_ one. By the moment, there are only two possibilities for the latter: `packages` or `classes`, to provide the user with the list of the names of existing packages and classes, respectively.
+-   `label` will be used to prompt the user for a value.
+-   `defaultValue` (optional) is the default value presented to the user. In the case of a string, it can contain zero or more attribute expressions ({`element.xxx`}). (In our example, the default value is the current name of the class, and so it is defined as `{element.name}`).
 
-With this specification, users will find an option _My own class renaming_ withing the class menu options, and when they hit it, they will be prompted for _New name_, with the curren name as the default value. Should they accept the prompt, the IDE will post the following change:
+With this specification, users will find an option _My own class renaming_ withing the class menu options, and when they hit it, they will be prompted for _New name_, with the current name as the default value, and whether they want to rename references or not. Should they accept the prompt with the option "Rename references" unselected, the IDE will post the following change:
 
 ```json
 {
 	"type": "RenameClass",
 	"className": "MyClass",
 	"newName": "OurClass",
-	"renameReferences": true
+	"renameReferences": false
 }
 ```
 
@@ -143,7 +149,8 @@ We should include the following extension:
 
 ```json
 {
-	"type": "MethodChange",
+	"extensionType": "change",
+	"elementType": "method",
 	"label": "Move to superclass",
 	"properties": {
 		"type": "MoveUpMethod",

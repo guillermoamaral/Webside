@@ -687,6 +687,7 @@ class CodeEditor extends Component {
 	};
 
 	evaluateExpression = async (expression, pin) => {
+		if (!expression || expression.length === 0) return;
 		let object;
 		try {
 			const evaluation = {

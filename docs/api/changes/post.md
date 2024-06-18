@@ -64,8 +64,8 @@ There are some special cases like the `selector` property in a `AddMethod`. This
 
 ## Errors
 
-Whenever a change cannot be appplied, the back-end should respond with an client error code (typically `409`), indicating what went wrong with the requeted change by means the `description` property.\
-Also, the back-end might provide one or more _suggestions_ on how to carry on the intended chagne. These are variations of the original change, together with a description that will be used by the IDE to propmt the user what they want to do.
+Whenever a change cannot be appplied, the backend should respond with an client error code (typically `409`), indicating what went wrong with the requeted change by means the `description` property.\
+Also, the backend might provide one or more _suggestions_ on how to carry on the intended chagne. These are variations of the original change, together with a description that will be used by the IDE to propmt the user what they want to do.
 This is the aspect of an error response data.
 
 ```json
@@ -214,4 +214,4 @@ And once the user choses the suggestion, a new error is generated indicating `t2
 
 Notice that this mechanism can be use to just confirm a change on the server side: by just providing a suggestion with the original change (plus a flag with the confirmation) and a description like `Are you sure?`.
 
-This differs from any confirmation on the IDE side as the back-end might have (and surely has) a richer context.
+This differs from any confirmation on the IDE side as the backend might have (and surely has) a richer context.

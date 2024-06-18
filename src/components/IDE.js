@@ -218,8 +218,8 @@ In your response you will avoid using the words 'Smalltalk' and 'snippet'."
 			"evaluationPollingFrequency",
 			300,
 			"Evaluation polling frequency (ms)",
-			"Warning. This is used to poll the back-end for evaluation progress. \
-A high frequency might affect front-end performance. \
+			"Warning. This is used to poll the backend for evaluation progress. \
+A high frequency might affect frontend performance. \
 On the other hand, a low frequency could introduce a huge delay to detecting evaluation finalization."
 		);
 		return settings;
@@ -857,6 +857,9 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 		if (specification.extensionType === "download") {
 			await this.performDownload(specification, element);
 		}
+		if (specification.extensionType === "search") {
+			await this.performExtendedSearch(specification, element);
+		}
 	};
 
 	performDownload = async (specification, element) => {
@@ -919,6 +922,28 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 			this.handleChangeError(error);
 		}
 		return result;
+	};
+
+	performExtendedSearch = async (specification, element) => {
+		const uri = this.resolveDotExpressions(
+			specification.get,
+			"element",
+			element
+		);
+		const result = await this.searchMethods(() => {
+			return this.backend.get(uri);
+		}, specification.label);
+		if (!result)
+			return this.inform(
+				"No results for " + specification.label.toLowerCase()
+			);
+		this.mainContainer().openMethodBrowser(
+			result,
+			specification.label,
+			null,
+			null,
+			"methodClass"
+		);
 	};
 
 	async promptChangeParameters(specification, element) {

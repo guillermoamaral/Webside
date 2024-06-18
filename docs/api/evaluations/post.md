@@ -28,7 +28,7 @@ Where
     -   (`sync=true`) the request is blocked until the evaluation finishes, and the response contains the object resulting from the evaluation, or,
     -   (`sync=false`) the request is immediately responded with the ID of the new evaluation, so the client can follow its progress (see below). This mode allows the IDE to have control over the evaluation, and offer the user the chance to interrupt it (for debugging), or even terminate it.
 
--   `pin` makes the resulting object to be either pinned (i.e., make sure the back-end keeps a reference to the object, with the same ID as the evaluation that generated it), or discarded.\
+-   `pin` makes the resulting object to be either pinned (i.e., make sure the backend keeps a reference to the object, with the same ID as the evaluation that generated it), or discarded.\
     Note that an asynchronous evaluations will forcely pin the resulting object. Otherwise, it might be collected by the GC before the client requests it.
 
 -   `debug` forces the immediate suspension of the evaluation and creates a debugger on it, returing the ID of the created debugger.
@@ -136,7 +136,7 @@ For example, the following error is returned after trying to evaluate `1 + `:
 
 ### Suggestions
 
-There might be cases where the back-end is able to suggest some ways to overcome a given evaluation error. For instance, lets suppose
+There might be cases where the backend is able to suggest some ways to overcome a given evaluation error. For instance, lets suppose
 we send the following evaluation request:
 
 ```json
@@ -145,7 +145,7 @@ we send the following evaluation request:
 }
 ```
 
-Lets suppose that `NonExistingGlobal` does not exist in the system but `ExistingGlobal1` and `ExistingGlobal2` do. The back-end could return the following suggestions:
+Lets suppose that `NonExistingGlobal` does not exist in the system but `ExistingGlobal1` and `ExistingGlobal2` do. The backend could return the following suggestions:
 
 ```json
 {
@@ -183,7 +183,7 @@ The second and third suggestions are to use different globals, taken from a list
 
 # Asyncrhonous evaluations
 
-In this case, an immediate response with the ID of the new evaluation is returned. The client can follow the progress of the evaluation by polling the back-end using such ID.
+In this case, an immediate response with the ID of the new evaluation is returned. The client can follow the progress of the evaluation by polling the backend using such ID.
 
 ## Success Responses
 
@@ -233,7 +233,7 @@ With this ID, the client can send a request to see how the evaluation goes (`GET
 }
 ```
 
-Alternatively, there could be several checks with either `pending` or `evaluating` states. That will depend on when the back-end starts the evaluation and how long it takes to it to finish.
+Alternatively, there could be several checks with either `pending` or `evaluating` states. That will depend on when the backend starts the evaluation and how long it takes to it to finish.
 
 ## Errors
 
