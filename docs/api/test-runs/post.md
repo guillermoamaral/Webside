@@ -37,7 +37,7 @@ These options can be combined in any way. For example, one single package, class
 }
 ```
 
-Where the `name` is the one given to the run by the back-end and can be determined by the created suite (for example, the name of a test class).
+Where the `name` is the one given to the run by the backend and can be determined by the created suite (for example, the name of a test class).
 
 **Example:**: running `testAddDays` from `DateTest` class:
 `POST /evaluations`

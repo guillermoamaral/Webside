@@ -8,7 +8,7 @@ The implementation of API calls, including helper services, is centralized in a 
 
 # IDs
 
-Resources are identified by a unique ID. The production of these IDs rely on the back-end implementation and may vary from dialect to dialect. The only requirement is that they should be unique.
+Resources are identified by a unique ID. The production of these IDs rely on the backend implementation and may vary from dialect to dialect. The only requirement is that they should be unique.
 For the sake of simplicity, they will be `1`, `2`, etc. along this documentation.
 
 # Sections
@@ -166,7 +166,7 @@ Endpoints to manage profilers and access their results.
 
 ## [Extensions](extensions)
 
-Retrieve IDE extensions defined by the back-end.
+Retrieve IDE extensions defined by the backend.
 
 | Method | Path                             | Description                        | Parameters | Payload |
 | :----: | -------------------------------- | ---------------------------------- | :--------: | ------- |

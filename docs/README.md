@@ -21,7 +21,7 @@
 
 ## About the project
 
-Webside is both the specification of an API to interact with an Smalltalk system as a back-end and a web IDE built on top of such API as the front-end.
+Webside is both the specification of an API to interact with an Smalltalk system as a backend and a web IDE built on top of such API as the frontend.
 
 The [API](api) can be divided into two conceptually different subsets of endpoints:
 
@@ -33,7 +33,7 @@ The [API](api) can be divided into two conceptually different subsets of endpoin
 This project started as a personal training with the aim of learning React in particular, and improving my JavaScript skills in general.
 As a passionate smalltalker and having implemented several web APIs in Smalltalk for different purposes and domains, I decided to expose Smalltalk itself thru a web API and see how far I could go implementing the classical Smalltalk IDE tools using React.
 
-Being the dialect I use for my daily duties, I started by Bee Smalltalk as the back-end (porting the API to [Pharo](https://github.com/guillermoamaral/Pharo-Webside) afterwards\*). Naturally, the API evolved as I progressed at the front-end side, starting by the static part and then moving to the dynamic one.
+Being the dialect I use for my daily duties, I started by Bee Smalltalk as the backend (porting the API to [Pharo](https://github.com/guillermoamaral/Pharo-Webside) afterwards\*). Naturally, the API evolved as I progressed at the frontend side, starting by the static part and then moving to the dynamic one.
 
 \*_Not finished at the moment of writing this document._
 
@@ -83,7 +83,7 @@ Having these basic tools implemented, it is possible to try new presentation alt
 
 Again, the key point here is to keep the required API as simple as possible to ease its porting to an specific Smalltalk system, and then innovate on the presentation layer a much as the imagination flies.
 
-\*_This transcript is used to emit notifications from the front-end side, such as API errors, but it is not connected to the Transcript global in the back-end. To do that, the server should send notifications to the client, but it is not implemented at the moment of writing this documentation._
+\*_This transcript is used to emit notifications from the frontend side, such as API errors, but it is not connected to the Transcript global in the backend. To do that, the server should send notifications to the client, but it is not implemented at the moment of writing this documentation._
 
 #### Class browser
 

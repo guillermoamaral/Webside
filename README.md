@@ -15,7 +15,7 @@ Smalltalk IDE for the web\
 \
 [View Demo](https://webside-zglu.onrender.com) · [Report defect](https://github.com/guillermoamaral/Webside/issues/new?labels=Type%3A+Defect) · [Request feature](https://github.com/guillermoamaral/Webside/issues/new?labels=Type%3A+Feature)
 
-Webside is both the specification of an [API](docs/api/) to interact with an Smalltalk system (back-end), and a web [IDE](docs/) (front-end) built on top of such API.
+Webside is both the specification of an [API](docs/api/) to interact with an Smalltalk system (backend), and a web [IDE](docs/) (frontend) built on top of such API.
 
 The API definition follows this principle: _assume as less as possible from the underlying Smalltalk system_. This leads to keep a healthy distance from the particularities of a given dialect and its tooling, in favor of enabling the implementation of a common, yet useful set of tools (IDE) for every Smalltalk implementation.\
 Of course, some assumptions are made and these impose some degree of _adaptation_ in the implementation of the API for a particular Smallalk.
@@ -34,7 +34,7 @@ Read more [here](docs/).
 
 #### Prerequisites (for development)
 
-The following steps will demand both time and space, and are only intended to recreate the development environment in your local machine. In case you only want to use Webside to connect to some Smalltalk back-end, you can skip these steps and go directly to [Usage](./#usage).
+The following steps will demand both time and space, and are only intended to recreate the development environment in your local machine. In case you only want to use Webside to connect to some Smalltalk backend, you can skip these steps and go directly to [Usage](./#usage).
 
 * npm
 
