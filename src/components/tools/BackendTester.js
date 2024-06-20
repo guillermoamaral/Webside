@@ -31,7 +31,7 @@ class BackendTester extends Tool {
 	columns() {
 		return [
 			{
-				field: "section",
+				field: (t) => t.section(),
 				label: "Section",
 				align: "left",
 			},
