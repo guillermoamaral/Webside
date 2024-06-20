@@ -143,6 +143,11 @@ class BackendTest {
 		return data;
 	}
 
+	section() {
+		const prefix = this.name.split("_")[0];
+		return prefix.substring(4, prefix.length);
+	}
+
 	description() {
 		let description = "Test";
 		this.name
@@ -245,10 +250,16 @@ class BackendTest {
 		);
 	}
 
+	// General tests...
+
+	async testGeneral_Dialect() {
+		const dialect = await this.get("/dialect");
+		this.assertIsString(dialect);
+	}
+
 	// Code tests...
 
-	async testAccessors() {
-		this.section = "Code";
+	async testCode_Accessors() {
 		let change = {
 			type: "AddClass",
 			className: "TestAccessors",
@@ -315,8 +326,7 @@ class BackendTest {
 		}
 	}
 
-	async testAst() {
-		this.section = "Code";
+	async testCode_Ast() {
 		let change = {
 			type: "AddClass",
 			className: "TestAst",
@@ -370,8 +380,7 @@ class BackendTest {
 		}
 	}
 
-	async testCategories() {
-		this.section = "Code";
+	async testCode_Categories() {
 		let change = {
 			type: "AddClass",
 			className: "TestCategories",
@@ -410,8 +419,7 @@ class BackendTest {
 		}
 	}
 
-	async testClass() {
-		this.section = "Code";
+	async testCode_Class() {
 		let change = {
 			type: "AddClass",
 			className: "TestClass",
@@ -443,8 +451,7 @@ class BackendTest {
 		}
 	}
 
-	async testClasses() {
-		this.section = "Code";
+	async testCode_Classes() {
 		let change = {
 			type: "AddClass",
 			className: "TestClasses",
@@ -506,8 +513,7 @@ class BackendTest {
 		}
 	}
 
-	async testClassVariables() {
-		this.section = "Code";
+	async testCode_ClassVariables() {
 		let change = {
 			type: "AddClass",
 			className: "TestClassVariables",
@@ -532,14 +538,7 @@ class BackendTest {
 		}
 	}
 
-	async testDialect() {
-		this.section = "Code";
-		const dialect = await this.get("/dialect");
-		this.assertIsString(dialect);
-	}
-
-	async testImplementors() {
-		this.section = "Code";
+	async testCode_Implementors() {
 		let change = {
 			type: "AddClass",
 			className: "TestImplementors",
@@ -628,8 +627,7 @@ class BackendTest {
 		}
 	}
 
-	async testInstanceVariables() {
-		this.section = "Code";
+	async testCode_InstanceVariables() {
 		let change = {
 			type: "AddClass",
 			className: "TestInstanceVariables",
@@ -656,8 +654,7 @@ class BackendTest {
 		}
 	}
 
-	async testMatchingSelectors() {
-		this.section = "Code";
+	async testCode_MatchingSelectors() {
 		let change = {
 			type: "AddClass",
 			className: "TestMatchingSelectors",
@@ -698,8 +695,7 @@ class BackendTest {
 		}
 	}
 
-	async testMethod() {
-		this.section = "Code";
+	async testCode_Method() {
 		let change = {
 			type: "AddClass",
 			className: "TestMethod",
@@ -739,8 +735,7 @@ class BackendTest {
 		}
 	}
 
-	async testMethodCount() {
-		this.section = "Code";
+	async testCode_MethodCount() {
 		let change = {
 			type: "AddClass",
 			className: "TestMethodCount",
@@ -779,8 +774,7 @@ class BackendTest {
 		}
 	}
 
-	async testMethods() {
-		this.section = "Code";
+	async testCode_Methods() {
 		let change = {
 			type: "AddClass",
 			className: "TestMethods",
@@ -823,8 +817,15 @@ class BackendTest {
 		}
 	}
 
-	async testPackage() {
-		this.section = "Code";
+	async testCode_MethodTemplate() {
+		const template = await this.get("/methodtemplate");
+		this.assertNotNull(template, "template");
+		this.assert(template.template, "template.template should be true");
+		this.assertNotNull(template.selector, "template.selector");
+		this.assertNotNull(template.source, "template.source");
+	}
+
+	async testCode_Package() {
 		let change = {
 			type: "AddPackage",
 			name: "TestPackage",
@@ -865,8 +866,7 @@ class BackendTest {
 		}
 	}
 
-	async testPackageNames() {
-		this.section = "Code";
+	async testCode_PackageNames() {
 		let change = {
 			type: "AddPackage",
 			name: "TestPackageNames",
@@ -896,8 +896,7 @@ class BackendTest {
 		}
 	}
 
-	async testPackages() {
-		this.section = "Code";
+	async testCode_Packages() {
 		let change = {
 			type: "AddPackage",
 			name: "TestPackages",
@@ -936,8 +935,7 @@ class BackendTest {
 		}
 	}
 
-	async testSelectors() {
-		this.section = "Code";
+	async testCode_Selectors() {
 		let change = {
 			type: "AddClass",
 			className: "TestSelectors",
@@ -982,8 +980,7 @@ class BackendTest {
 		}
 	}
 
-	async testSenders() {
-		this.section = "Code";
+	async testCode_Senders() {
 		let change = {
 			type: "AddClass",
 			className: "TestSenders",
@@ -1077,8 +1074,7 @@ class BackendTest {
 		}
 	}
 
-	async testSubclasses() {
-		this.section = "Code";
+	async testCode_Subclasses() {
 		let change = {
 			type: "AddClass",
 			className: "TestSubclasses",
@@ -1115,8 +1111,44 @@ class BackendTest {
 		}
 	}
 
-	async testVariables() {
-		this.section = "Code";
+	async testCode_Superclasses() {
+		let change = {
+			type: "AddClass",
+			className: "TestSuperclasses",
+			superclass: "Object",
+		};
+		await this.post("/changes", change);
+		change = {
+			type: "AddClass",
+			className: "TestSuperclasses2",
+			superclass: "TestSuperclasses",
+		};
+		await this.post("/changes", change);
+		try {
+			const subclasses = await this.get(
+				"/classes/TestSuperclasses2/superclasses"
+			);
+			this.assertIsArray(subclasses);
+			this.assertAnySatisfy(
+				subclasses,
+				(c) => c.name === "TestSuperclasses",
+				"class.name equals 'TestSuperclasses'"
+			);
+		} finally {
+			change = {
+				type: "RemoveClass",
+				className: "TestSuperclasses2",
+			};
+			await this.post("/changes", change);
+			change = {
+				type: "RemoveClass",
+				className: "TestSuperclasses",
+			};
+			await this.post("/changes", change);
+		}
+	}
+
+	async testCode_Variables() {
 		let change = {
 			type: "AddClass",
 			className: "TestVariables",
@@ -1149,10 +1181,64 @@ class BackendTest {
 		}
 	}
 
+	async testCode_UsedCategories() {
+		let change = {
+			type: "AddClass",
+			className: "TestUsedCategories",
+			superclass: "Object",
+			author: "Webside",
+		};
+		await this.post("/changes", change);
+		change = {
+			type: "AddMethod",
+			className: "TestUsedCategories",
+			category: "testUsedCategories",
+			sourceCode: "a",
+			author: "Webside",
+		};
+		await this.post("/changes", change);
+		change = {
+			type: "AddClass",
+			className: "TestUsedCategories2",
+			superclass: "TestUsedCategories",
+			author: "Webside",
+		};
+		await this.post("/changes", change);
+		try {
+			const categories = await this.get(
+				"/classes/TestUsedCategories2/used-categories"
+			);
+			this.assertIsArray(categories);
+			this.assertNotEmpty(categories);
+			categories.forEach((c) => this.assertIsString(c, "category"));
+			this.assertIncludes(
+				categories,
+				"testUsedCategories",
+				"used categories"
+			);
+		} finally {
+			change = {
+				type: "RemoveClass",
+				className: "TestUsedCategories2",
+			};
+			await this.post("/changes", change);
+			change = {
+				type: "RemoveMethod",
+				className: "TestUsedCategories",
+				selector: "a",
+			};
+			await this.post("/changes", change);
+			change = {
+				type: "RemoveClass",
+				className: "TestUsedCategories",
+			};
+			await this.post("/changes", change);
+		}
+	}
+
 	// Changes tests...
 
-	async testAddClass() {
-		this.section = "Changes";
+	async testChanges_AddClass() {
 		let change = {
 			type: "AddClass",
 			className: "TestAddClass",
@@ -1173,8 +1259,7 @@ class BackendTest {
 		}
 	}
 
-	async testAddClassVariable() {
-		this.section = "Changes";
+	async testChanges_AddClassVariable() {
 		let change = {
 			type: "AddClass",
 			className: "TestAddClassVariable",
@@ -1206,8 +1291,7 @@ class BackendTest {
 		}
 	}
 
-	async testAddInstanceVariable() {
-		this.section = "Changes";
+	async testChanges_AddInstanceVariable() {
 		let change = {
 			type: "AddClass",
 			className: "TestAddInstanceVariable",
@@ -1236,8 +1320,7 @@ class BackendTest {
 		}
 	}
 
-	async testAddMethod() {
-		this.section = "Changes";
+	async testChanges_AddMethod() {
 		let change = {
 			type: "AddClass",
 			className: "TestAddMethod",
@@ -1290,8 +1373,7 @@ class BackendTest {
 		}
 	}
 
-	async testAddPackage() {
-		this.section = "Changes";
+	async testChanges_AddPackage() {
 		let change = {
 			type: "AddPackage",
 			name: "TestAddPackage",
@@ -1311,8 +1393,7 @@ class BackendTest {
 		}
 	}
 
-	async testChanges() {
-		this.section = "Changes";
+	async testChanges_Changes() {
 		let change = {
 			type: "AddClass",
 			className: "TestChanges",
@@ -1338,8 +1419,7 @@ class BackendTest {
 		}
 	}
 
-	async testClassifyMethod() {
-		this.section = "Changes";
+	async testChanges_ClassifyMethod() {
 		let change = {
 			type: "AddClass",
 			className: "TestClassifyMethod",
@@ -1392,8 +1472,7 @@ class BackendTest {
 		}
 	}
 
-	async testCodeSuggestion() {
-		this.section = "Changes";
+	async testChanges_CodeSuggestion() {
 		let change = {
 			type: "AddClass",
 			className: "TestCodeSuggestion",
@@ -1448,8 +1527,7 @@ class BackendTest {
 		}
 	}
 
-	async testCommentClass() {
-		this.section = "Changes";
+	async testChanges_CommentClass() {
 		let change = {
 			type: "AddClass",
 			className: "TestCommentClass",
@@ -1475,8 +1553,7 @@ class BackendTest {
 		}
 	}
 
-	async testMoveDownInstanceVariable() {
-		this.section = "Changes";
+	async testChanges_MoveDownInstanceVariable() {
 		let change = {
 			type: "AddClass",
 			className: "TestMoveDownInstanceVariable",
@@ -1523,8 +1600,7 @@ class BackendTest {
 		}
 	}
 
-	async testMoveUpInstanceVariable() {
-		this.section = "Changes";
+	async testChanges_MoveUpInstanceVariable() {
 		let change = {
 			type: "AddClass",
 			className: "testMoveUpInstanceVariable",
@@ -1571,8 +1647,7 @@ class BackendTest {
 		}
 	}
 
-	async testRemoveCategory() {
-		this.section = "Changes";
+	async testChanges_RemoveCategory() {
 		let change = {
 			type: "AddClass",
 			className: "TestRemoveCategory",
@@ -1621,8 +1696,7 @@ class BackendTest {
 		}
 	}
 
-	async testRemoveClass() {
-		this.section = "Changes";
+	async testChanges_RemoveClass() {
 		let change = {
 			type: "AddClass",
 			className: "TestRemoveClass",
@@ -1646,8 +1720,7 @@ class BackendTest {
 		}
 	}
 
-	async testRemoveInstanceVariable() {
-		this.section = "Changes";
+	async testChanges_RemoveInstanceVariable() {
 		let change = {
 			type: "AddClass",
 			className: "TestRemoveInstanceVariable",
@@ -1676,8 +1749,7 @@ class BackendTest {
 		}
 	}
 
-	async testRemoveMethod() {
-		this.section = "Changes";
+	async testChanges_RemoveMethod() {
 		let change = {
 			type: "AddClass",
 			className: "TestRemoveMethod",
@@ -1710,8 +1782,7 @@ class BackendTest {
 		}
 	}
 
-	async testRenameCategory() {
-		this.section = "Changes";
+	async testChanges_RenameCategory() {
 		let change = {
 			type: "AddClass",
 			className: "TestRenameCategory",
@@ -1752,8 +1823,7 @@ class BackendTest {
 		}
 	}
 
-	async testRenameClass() {
-		this.section = "Changes";
+	async testChanges_RenameClass() {
 		let change = {
 			type: "AddClass",
 			className: "TestRenameClass",
@@ -1790,8 +1860,7 @@ class BackendTest {
 		}
 	}
 
-	async testRenameInstanceVariable() {
-		this.section = "Changes";
+	async testChanges_RenameInstanceVariable() {
 		let change = {
 			type: "AddClass",
 			className: "TestRenameInstanceVariable",
@@ -1822,8 +1891,7 @@ class BackendTest {
 		}
 	}
 
-	async testRenamePackage() {
-		this.section = "Changes";
+	async testChanges_RenamePackage() {
 		let change = {
 			type: "AddPackage",
 			name: "TestRenamePackage",
@@ -1852,8 +1920,7 @@ class BackendTest {
 
 	// Evaluation tests...
 
-	async testActiveEvaluations() {
-		this.section = "Evaluations";
+	async testEvaluations_ActiveEvaluations() {
 		let evaluation = {
 			expression: "(Delay forSeconds: 1000) wait. 26",
 			sync: false,
@@ -1872,8 +1939,7 @@ class BackendTest {
 		}
 	}
 
-	async testAsynchronousEvaluation() {
-		this.section = "Evaluations";
+	async testEvaluations_AsynchronousEvaluation() {
 		let payload = {
 			expression: "3 + 4",
 			sync: false,
@@ -1886,8 +1952,8 @@ class BackendTest {
 				201,
 				"HTTP response code"
 			);
-			this.assertEquals(evaluation.state, "pending", "evaluation.state");
 			id = evaluation.id;
+			this.assertEquals(evaluation.state, "pending", "evaluation.state");
 			let attempts = 0;
 			do {
 				evaluation = await this.get("/evaluations/" + id);
@@ -1916,8 +1982,7 @@ class BackendTest {
 		}
 	}
 
-	async testAsynchronousEvaluationError() {
-		this.section = "Evaluations";
+	async testEvaluations_AsynchronousEvaluationError() {
 		let payload = {
 			expression: "3 + ",
 			sync: false,
@@ -1967,8 +2032,7 @@ class BackendTest {
 		}
 	}
 
-	async testCancelAsynchronousEvaluation() {
-		this.section = "Evaluations";
+	async testEvaluations_CancelAsynchronousEvaluation() {
 		let payload = {
 			expression: "(Delay forSeconds: 10) wait",
 			sync: false,
@@ -1983,8 +2047,7 @@ class BackendTest {
 		);
 	}
 
-	async testDebugExpression() {
-		this.section = "Evaluations";
+	async testEvaluations_DebugExpression() {
 		let evaluation = {
 			expression: "3 factorial",
 			debug: true,
@@ -2003,8 +2066,7 @@ class BackendTest {
 		}
 	}
 
-	async testDebuggerContext() {
-		this.section = "Evaluations";
+	async testEvaluations_DebuggerContext() {
 		let payload = {
 			expression: "3 halt factorial",
 			sync: true,
@@ -2035,8 +2097,7 @@ class BackendTest {
 		await this.delete("/debuggers/" + id);
 	}
 
-	async testClassVariableInDebuggerContext() {
-		this.section = "Evaluations";
+	async testEvaluations_ClassVariableInDebuggerContext() {
 		let change = {
 			type: "AddClass",
 			className: "TestClassVariableInDebuggerContext",
@@ -2099,8 +2160,7 @@ class BackendTest {
 		}
 	}
 
-	async testObjectContext() {
-		this.section = "Evaluations";
+	async testEvaluations_ObjectContext() {
 		let change = {
 			type: "AddClass",
 			className: "TestObjectContext",
@@ -2152,8 +2212,7 @@ class BackendTest {
 		}
 	}
 
-	async testObjectSlotContext() {
-		this.section = "Evaluations";
+	async testEvaluations_ObjectSlotContext() {
 		let change = {
 			type: "AddClass",
 			className: "TestObjectSlotContext",
@@ -2205,8 +2264,7 @@ class BackendTest {
 		}
 	}
 
-	async testPauseAndDebugAsynchronousEvaluation() {
-		this.section = "Evaluations";
+	async testEvaluations_PauseAndDebugAsynchronousEvaluation() {
 		let payload = {
 			expression: "(Delay forSeconds: 30) wait",
 			sync: false,
@@ -2236,8 +2294,7 @@ class BackendTest {
 		} catch (ignored) {}
 	}
 
-	async testPauseAndResumeAsynchronousEvaluation() {
-		this.section = "Evaluations";
+	async testEvaluations_PauseAndResumeAsynchronousEvaluation() {
 		let payload = {
 			expression: "(Delay forSeconds: 30) wait",
 			sync: false,
@@ -2268,8 +2325,7 @@ class BackendTest {
 		} catch (ignored) {}
 	}
 
-	async testPauseDebugAndResumeAsynchronousEvaluation() {
-		this.section = "Evaluations";
+	async testEvaluations_PauseDebugAndResumeAsynchronousEvaluation() {
 		let payload = {
 			expression:
 				"| m | m := 0. [m < 180] whileTrue: [(Delay forSeconds: 1) wait. m := m + 1]",
@@ -2300,8 +2356,7 @@ class BackendTest {
 		} catch (ignored) {}
 	}
 
-	async testPauseDebugAndTerminateAsynchronousEvaluation() {
-		this.section = "Evaluations";
+	async testEvaluations_PauseDebugAndTerminateAsynchronousEvaluation() {
 		let payload = {
 			expression:
 				"| m | m := 0. [m < 180] whileTrue: [(Delay forSeconds: 1) wait. m := m + 1]",
@@ -2336,8 +2391,7 @@ class BackendTest {
 		} catch (ignored) {}
 	}
 
-	async testPinEvaluationResult() {
-		this.section = "Evaluations";
+	async testEvaluations_PinEvaluationResult() {
 		let payload = {
 			expression: "3 + 4",
 			sync: true,
@@ -2362,8 +2416,7 @@ class BackendTest {
 		}
 	}
 
-	async testSynchronousEvaluation() {
-		this.section = "Evaluations";
+	async testEvaluations_SynchronousEvaluation() {
 		let payload = {
 			expression: "3 + 4",
 			sync: true,
@@ -2377,8 +2430,7 @@ class BackendTest {
 		);
 	}
 
-	async testSynchronousEvaluationError() {
-		this.section = "Evaluations";
+	async testEvaluations_SynchronousEvaluationError() {
 		let payload = {
 			expression: "3 + ",
 			sync: true,
@@ -2398,8 +2450,7 @@ class BackendTest {
 		);
 	}
 
-	async testTemporaryVariableInDebuggerContext() {
-		this.section = "Evaluations";
+	async testEvaluations_TemporaryVariableInDebuggerContext() {
 		let change = {
 			type: "AddClass",
 			className: "TestTemporaryVariableInDebuggerContext",
@@ -2464,8 +2515,7 @@ class BackendTest {
 
 	// Object tests...
 
-	async testPinObjectSlot() {
-		this.section = "Objects";
+	async testObjects_PinObjectSlot() {
 		let change = {
 			type: "AddClass",
 			className: "TestPinObjectSlot",
@@ -2516,8 +2566,7 @@ class BackendTest {
 		}
 	}
 
-	async testPinnedObject() {
-		this.section = "Objects";
+	async testObjects_PinnedObject() {
 		let evaluation = {
 			expression: "3 + 4",
 			sync: true,
@@ -2534,8 +2583,7 @@ class BackendTest {
 		}
 	}
 
-	async testPinnedObjectIndexedSlots() {
-		this.section = "Objects";
+	async testObjects_PinnedObjectIndexedSlots() {
 		let evaluation = {
 			expression: "#(true 2 nil)",
 			sync: true,
@@ -2579,8 +2627,7 @@ class BackendTest {
 		}
 	}
 
-	async testPinnedObjectInstanceVariables() {
-		this.section = "Objects";
+	async testObjects_PinnedObjectInstanceVariables() {
 		let change = {
 			type: "AddClass",
 			className: "TestPinnedObjectInstanceVariables",
@@ -2631,8 +2678,7 @@ class BackendTest {
 		}
 	}
 
-	async testPinnedObjectNamedSlots() {
-		this.section = "Objects";
+	async testObjects_PinnedObjectNamedSlots() {
 		let change = {
 			type: "AddClass",
 			className: "TestPinnedObjectNamedSlots",
@@ -2690,8 +2736,7 @@ class BackendTest {
 		}
 	}
 
-	async testPinnedObjectSlot() {
-		this.section = "Objects";
+	async testObjects_PinnedObjectSlot() {
 		let change = {
 			type: "AddClass",
 			className: "TestPinnedObjectSlot",
@@ -2740,8 +2785,7 @@ class BackendTest {
 		}
 	}
 
-	async testPinnedObjects() {
-		this.section = "Objects";
+	async testObjects_PinnedObjects() {
 		let evaluation = {
 			expression: "3 + 4",
 			sync: true,
@@ -2763,8 +2807,7 @@ class BackendTest {
 		}
 	}
 
-	async testUnpinObject() {
-		this.section = "Objects";
+	async testObjects_UnpinObject() {
 		let evaluation = {
 			expression: "3 + 4",
 			sync: true,
@@ -2782,8 +2825,7 @@ class BackendTest {
 
 	// Debugger tests...
 
-	async testCreateDebugger() {
-		this.section = "Debuggers";
+	async testDebuggers_CreateDebugger() {
 		let evaluation = {
 			expression: "1 halt factorial",
 			sync: true,
@@ -2818,8 +2860,7 @@ class BackendTest {
 		}
 	}
 
-	async testDebuggerFrames() {
-		this.section = "Debuggers";
+	async testDebuggers_DebuggerFrames() {
 		let evaluation = {
 			expression: "1 halt factorial",
 			sync: true,
@@ -2850,8 +2891,7 @@ class BackendTest {
 		await this.delete("/debuggers/" + _debugger.id);
 	}
 
-	async testFrameBindings() {
-		this.section = "Debuggers";
+	async testDebuggers_FrameBindings() {
 		let evaluation = {
 			expression: "1 halt factorial",
 			sync: true,
@@ -2886,8 +2926,7 @@ class BackendTest {
 		await this.delete("/debuggers/" + _debugger.id);
 	}
 
-	async testStepInto() {
-		this.section = "Debuggers";
+	async testDebuggers_StepInto() {
 		let evaluation = {
 			expression: "1 halt factorial",
 			sync: true,
@@ -2924,8 +2963,7 @@ class BackendTest {
 
 	// Testing tests...
 
-	async testRunTests() {
-		this.section = "Testing";
+	async testTesting_RunTests() {
 		let change = {
 			type: "AddClass",
 			className: "TestRunTests",
@@ -2988,8 +3026,7 @@ class BackendTest {
 
 	// Workspace tests...
 
-	async testWorkspace() {
-		this.section = "Workspaces";
+	async testWorkspaces_Workspace() {
 		let workspace = await this.post("/workspaces");
 		try {
 			let context = { workspace: workspace.id };
@@ -3008,8 +3045,7 @@ class BackendTest {
 		}
 	}
 
-	async testWorkspaceBindings() {
-		this.section = "Workspaces";
+	async testWorkspaces_WorkspaceBindings() {
 		let workspace = await this.post("/workspaces");
 		try {
 			let context = { workspace: workspace.id };
@@ -3030,8 +3066,7 @@ class BackendTest {
 		}
 	}
 
-	async testWorkspaceEvaluationError() {
-		this.section = "Workspaces";
+	async testWorkspaces_WorkspaceEvaluationError() {
 		let workspace = await this.post("/workspaces");
 		try {
 			let context = { workspace: workspace.id };
@@ -3058,8 +3093,7 @@ class BackendTest {
 		}
 	}
 
-	async testWorkspaces() {
-		this.section = "Workspaces";
+	async testWorkspaces_Workspaces() {
 		const workspace = await this.post("/workspaces");
 		try {
 			const workspaces = await this.get("/workspaces");
