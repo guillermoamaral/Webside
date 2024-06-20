@@ -22,10 +22,11 @@ class SettingsEditor extends Tool {
 		if (handler) handler(this.props.settings);
 	};
 
-	resetSelectedSection = () => {
+	resetSelectedSection = (event) => {
+		event.preventDefault();
 		const section = this.state.selectedSection;
 		const handler = this.props.onResetSection;
-		if (handler) handler(section);
+		if (handler) handler(section.name);
 		this.forceUpdate();
 	};
 
@@ -46,6 +47,7 @@ class SettingsEditor extends Tool {
 	};
 
 	render() {
+		console.log("render settings editor")
 		const settings = this.props.settings;
 		const { selectedSection, expandedSections, error } = this.state;
 		const selectedSettings = selectedSection

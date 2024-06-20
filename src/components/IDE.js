@@ -136,13 +136,13 @@ class IDE extends Component {
 		lightColors.addColor("appliedChange", "green");
 		lightColors.addColor("unappliedChange", "#969696");
 		const lightCode = light.addSection("code", "Code Colors");
-		lightCode.addColor("selector", "black");
+		lightCode.addColor("selector", "#000000");
 		lightCode.addColor("symbol", "#2aa9b2");
 		lightCode.addColor("argument", "#f06520");
 		lightCode.addColor("temporary", "#28739f");
 		lightCode.addColor("assignment", "#000000");
 		lightCode.addColor("string", "#00b32d");
-		lightCode.addColor("variable", "#268bd2");
+		lightCode.addColor("variable", "#4fc1ff");
 		lightCode.addColor("meta", "#ffcb6b");
 		lightCode.addColor("bracket", "#9b9b9b");
 		lightCode.addColor("reserved", "#c792ea");
@@ -157,7 +157,7 @@ class IDE extends Component {
 		const darkColors = dark.addSection("colors", "Dialect Colors");
 		darkColors.addColor("primaryColor", "#ffffff").readOnly();
 		darkColors.addColor("secondaryColor", "#cccccc").readOnly();
-		darkColors.addColor("background", "#303030").readOnly();
+		darkColors.addColor("background", "#1f1f1f").readOnly();
 		darkColors.addColor("primaryText", "#aaaaaa").readOnly();
 		darkColors.addColor("secondaryText", "#00000").readOnly();
 		darkColors.addColor("disabledText", "#aaaaaa80").readOnly();
@@ -170,7 +170,7 @@ class IDE extends Component {
 		darkCode.addColor("temporary", "#81c9f3");
 		darkCode.addColor("assignment", "#ffffff");
 		darkCode.addColor("string", "#c3e88d");
-		darkCode.addColor("variable", "#268bd2");
+		darkCode.addColor("variable", "#4fc1ff");
 		darkCode.addColor("meta", "#ffcb6b");
 		darkCode.addColor("bracket", "#9b9b9b");
 		darkCode.addColor("reserved", "#c792ea");
@@ -251,6 +251,7 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 	};
 
 	resetSettingsSection(name) {
+		console.log(name)
 		const section = this.defaultSettings().section(name);
 		this.settings.setSection(name, section);
 		this.applySettings(this.settings);

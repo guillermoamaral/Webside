@@ -72,6 +72,7 @@
     * [Retrieve extensions](docs/api/extensions/get.md)
     * [Changes extensions](docs/api/extensions/changes.md)
     * [Download extensions](docs/api/extensions/downloads.md)
+    * [Search extensions](docs/api/extensions/searches.md)
   * [Objects](docs/api/objects/README.md)
     * [Retrieve pinned objects](docs/api/objects/get.md) 
     * [Pin object](docs/api/objects/post.md)
