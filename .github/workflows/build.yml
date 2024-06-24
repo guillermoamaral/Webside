@@ -19,6 +19,9 @@ jobs:
         with:
           node-version: 20
 
+      - name: Set CI to false
+        run: echo "CI=false" >> $GITHUB_ENV
+
       - name: Build/release Electron app
         uses: Yan-Jobs/action-electron-builder@v1.7.0
         with:
