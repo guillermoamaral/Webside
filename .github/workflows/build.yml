@@ -38,6 +38,6 @@ jobs:
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.snapcraft_token }}
         with:
-          snap: ${{ steps.build.outputs.snap }}
+          snap: webside
           release: edge
 
