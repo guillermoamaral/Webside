@@ -43,6 +43,6 @@ jobs:
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.snapcraft_token }}
         with:
-          snap: dist/webside_${VERSION}_amd64.snap
+          snap: dist/webside_${{env.VERSION}}_amd64.snap
           release: edge
 
