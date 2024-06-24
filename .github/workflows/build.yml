@@ -1,6 +1,9 @@
 name: Build/release
 
-on: push
+on:
+  push:
+    tags:
+      - 'v*' # Trigger on tags starting with 'v'
 
 jobs:
   release:
@@ -29,15 +32,11 @@ jobs:
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.github_token }}
 
-          # If the commit is tagged with a version (e.g. "v1.0.0"),
-          # release the app after building
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
-
       - name: Extract version from tag
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
-
+          
       - name: Publish Snap
         uses: snapcore/action-publish@v1
         env:
