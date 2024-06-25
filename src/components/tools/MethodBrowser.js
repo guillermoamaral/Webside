@@ -159,8 +159,17 @@ class MethodBrowser extends Tool {
 		const { selectedMethod, selectedClass, showTests } = this.state;
 		const { selectedSelector, selectedIdentifier } = this.props;
 		const methods = this.currentMethods();
+		const background = ide.colorSetting("methodBrowserColor");
 		return (
-			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
+			<Box
+				display="flex"
+				flexDirection="column"
+				sx={{
+					height: "100%",
+					background: background,
+					padding: 1,
+				}}
+			>
 				<Box>
 					<Box display="flex" justifyContent="flex-end">
 						<FormGroup>

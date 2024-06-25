@@ -112,6 +112,10 @@ class Backend {
 		return await this.get("/stats", "system stats");
 	}
 
+	async themes() {
+		return await this.get("/themes", "themes");
+	}
+
 	// Code...
 	async packageNames() {
 		return await this.get("/packages?names=true", "package names");

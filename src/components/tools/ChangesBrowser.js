@@ -159,8 +159,17 @@ class ChangesBrowser extends Tool {
 	render() {
 		const { changes, selectedChange, highlightChanges } = this.state;
 		console.log("rendering changes browser");
+		const background = ide.colorSetting("changesBrowserColor");
 		return (
-			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
+			<Box
+				display="flex"
+				flexDirection="column"
+				sx={{
+					height: "100%",
+					background: background,
+					padding: 1,
+				}}
+			>
 				<Box>
 					<Box display="flex" justifyContent="flex-end">
 						<Tooltip title="Apply change" placement="top">

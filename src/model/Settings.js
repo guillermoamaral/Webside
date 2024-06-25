@@ -53,8 +53,8 @@ class Setting extends Object {
 		return new Setting(name, "number", defaultValue, label, description);
 	}
 
-	static color(name, defaultValue) {
-		return new Setting(name, "color", defaultValue);
+	static color(name, defaultValue, description) {
+		return new Setting(name, "color", defaultValue, null, description);
 	}
 
 	static options(name, options, defaultValue) {
@@ -70,6 +70,82 @@ class Setting extends Object {
 
 	readOnly() {
 		this.editable = false;
+	}
+
+	copyFrom(setting) {
+		this.type = setting.type;
+		this.default = setting.defaultValue;
+		this.value = setting.value;
+		this.label = setting.label;
+		this.description = setting.description;
+		this.editable = setting.editable;
+	}
+
+	copy() {
+		const copy = new Setting();
+		copy.name = this.name;
+		copy.type = this.type;
+		copy.default = this.default;
+		copy.value = this.value;
+		copy.label = this.label;
+		copy.description = this.description;
+		copy.editable = this.editable;
+		return copy;
+	}
+
+	fromJson(value) {
+		this.value = value;
+	}
+
+	toJson() {
+		return this.value;
+	}
+}
+
+class TextStyleSetting extends Setting {
+	constructor(
+		name,
+		color = "#00000000",
+		italic = false,
+		bold = false,
+		label,
+		description
+	) {
+		super(name, "textStyle", null, label, description);
+		this.italic = italic;
+		this.bold = bold;
+		this.color = color;
+	}
+
+	copy() {
+		const copy = new TextStyleSetting();
+		copy.name = this.name;
+		copy.color = this.color;
+		copy.italic = this.italic;
+		copy.bold = this.bold;
+		copy.label = this.label;
+		copy.description = this.description;
+		copy.editable = this.editable;
+		return copy;
+	}
+
+	copyFrom(setting) {
+		this.color = setting.color;
+		this.italic = setting.italic;
+		this.bold = setting.bold;
+		this.label = setting.label;
+		this.description = setting.description;
+		this.editable = setting.editable;
+	}
+
+	fromJson(json) {
+		this.color = json.color;
+		this.italic = json.italic;
+		this.bold = json.bold;
+	}
+
+	toJson() {
+		return { color: this.color, italic: this.italic, bold: this.bold };
 	}
 }
 
@@ -114,9 +190,7 @@ class Settings extends Object {
 
 	set(name, value) {
 		const setting = this.setting(name);
-		if (setting) {
-			setting.value = value;
-		}
+		if (setting) setting.value = value;
 	}
 
 	add(setting) {
@@ -159,8 +233,20 @@ class Settings extends Object {
 		return this.add(Setting.number(name, defaultValue, label, description));
 	}
 
-	addColor(name, defaultValue) {
-		return this.add(Setting.color(name, defaultValue));
+	addColor(name, defaultValue, description) {
+		return this.add(Setting.color(name, defaultValue, description));
+	}
+
+	addTextStyle(name, color, label, description) {
+		const setting = new TextStyleSetting(
+			name,
+			color,
+			false,
+			false,
+			label,
+			description
+		);
+		return this.add(setting);
 	}
 
 	addOptions(name, options, defaultValue) {
@@ -174,13 +260,7 @@ class Settings extends Object {
 	toJson() {
 		var json = {};
 		this.settings.forEach((s) => {
-			if (s instanceof Settings) {
-				json[s.name] = s.toJson();
-			} else {
-				if (s.editable) {
-					json[s.name] = s.value;
-				}
-			}
+			json[s.name] = s.toJson();
 		});
 		return json;
 	}
@@ -191,13 +271,27 @@ class Settings extends Object {
 			if (section) {
 				section.fromJson(e[1]);
 			} else {
-				this.set(e[0], e[1]);
+				const setting = this.setting(e[0]);
+				if (setting) setting.fromJson(e[1]);
 			}
 		});
 	}
 
 	readOnly() {
 		this.settings.forEach((s) => s.readOnly());
+	}
+
+	copyFrom(settings) {
+		settings.settings.forEach((s) => {
+			const local = this.settings.find((t) => t.name === s.name);
+			if (local) local.copyFrom(s);
+		});
+	}
+
+	copy() {
+		const copy = new Settings(this.name, this.label);
+		copy.settings = this.settings.map((s) => s.copy());
+		return copy;
 	}
 }
 

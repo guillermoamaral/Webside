@@ -223,8 +223,17 @@ class Inspector extends Tool {
 		const minHeight = this.props.embedded ? 200 : 600;
 		const path = selectedObject ? selectedObject.path : [];
 		const subpaths = this.subpaths(path);
+		const background = ide.colorSetting("inspectorColor");
 		return (
-			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
+			<Box
+				display="flex"
+				flexDirection="column"
+				sx={{
+					height: "100%",
+					background: background,
+					padding: 1,
+				}}
+			>
 				<Box ml={2} display="flex" alignItems="center">
 					<Breadcrumbs>
 						{subpaths.map((subpath) => {

@@ -742,7 +742,7 @@ class MethodList extends Component {
 		if (method.needsRecompilation) return "red";
 		const appearance = ide.settings.section("appearance");
 		const mode = appearance.section(appearance.get("mode"));
-		const disabled = mode.section("colors").get("disabledText");
+		const disabled = mode.get("disabledText");
 		const species = this.props.class;
 		if (species && method.methodClass !== species.name) return disabled;
 		const pack = this.props.package;

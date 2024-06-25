@@ -64,6 +64,12 @@ const newTags = {
 	meta: Tag.define(),
 	bracket: Tag.define(),
 	reserved: Tag.define(),
+	self: Tag.define(),
+	super: Tag.define(),
+	true: Tag.define(),
+	false: Tag.define(),
+	nil: Tag.define(),
+	thisContext: Tag.define(),
 	return: Tag.define(),
 	global: Tag.define(),
 	number: Tag.define(),
@@ -888,10 +894,29 @@ class CodeEditor extends Component {
 	theme() {
 		const appearance = ide.settings.section("appearance");
 		const mode = appearance.section(appearance.get("mode"));
-		const colors = mode.section("colors");
-		const code = mode.section("code");
-		const background = colors.get("background");
-		return createTheme({
+		const background = mode.get("background");
+		const styles = [
+			"selectorStyle",
+			"symbolStyle",
+			"argumentStyle",
+			"temporaryStyle",
+			"assignmentStyle",
+			"stringStyle",
+			"variableStyle",
+			"metaStyle",
+			"bracketStyle",
+			"selfStyle",
+			"superStyle",
+			"trueStyle",
+			"falseStyle",
+			"nilStyle",
+			"thisContextStyle",
+			"returnStyle",
+			"globalStyle",
+			"numberStyle",
+			"commentStyle",
+		];
+		const params = {
 			theme: appearance.get("mode"),
 			settings: {
 				fontSize: this.props.fontSize,
@@ -899,39 +924,32 @@ class CodeEditor extends Component {
 				background: background,
 				foreground: "#75baff",
 				caret:
-					mode.name === "light"
-						? "black"
-						: colors.get("primaryColor"),
-				selection: code.get("selection"),
+					mode.name === "light" ? "black" : mode.get("primaryColor"),
+				selection: mode.get("selectionColor"),
 				selectionMatch: "#cccccc50",
 				lineHighlight: "#8a91991a",
 				gutterBackground: background,
 				gutterBorder: background,
 				gutterForeground: "#8a919966",
 			},
-			styles: [
-				{ tag: newTags.selector, color: code.get("selector") },
-				{ tag: newTags.symbol, color: code.get("symbol") },
-				{ tag: newTags.argument, color: code.get("argument") },
-				{ tag: newTags.temporary, color: code.get("temporary") },
-				{ tag: newTags.assignment, color: code.get("assignment") },
-				{ tag: newTags.string, color: code.get("string") },
-				{ tag: newTags.variable, color: code.get("variable") },
-				{ tag: newTags.var, color: code.get("variable") },
-				{ tag: newTags.meta, color: code.get("meta") },
-				{ tag: newTags.bracket, color: code.get("bracket") },
-				{ tag: newTags.reserved, color: code.get("reserved") },
-				{ tag: newTags.return, color: code.get("return") },
-				{ tag: newTags.global, color: code.get("global") },
-				{ tag: newTags.number, color: code.get("number") },
-				{
-					tag: newTags.comment,
-					color: code.get("comment"),
-					fontStyle: "italic",
-				},
-				{ tag: newTags.separator, color: code.get("separator") },
-			],
+			styles: [],
+		};
+		styles.forEach((s) => {
+			const setting = mode.setting(s);
+			params.styles.push({
+				tag: newTags[s.replace("Style", "")],
+				color: setting.color,
+				fontStyle: setting.italic ? "italic" : "normal",
+				fontWeight: setting.bold ? "bold" : "normal",
+			});
 		});
+		// Check whether this is necessary...
+		params.styles.push({
+			tag: newTags.var,
+			color: mode.setting("variableStyle").color,
+			fontStyle: mode.setting("variableStyle").style,
+		});
+		return createTheme(params);
 	}
 
 	defaultTooltipSpecFor = async (word, position) => {

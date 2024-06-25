@@ -47,7 +47,7 @@ class SettingsEditor extends Tool {
 	};
 
 	render() {
-		console.log("render settings editor")
+		console.log("render settings editor");
 		const settings = this.props.settings;
 		const { selectedSection, expandedSections, error } = this.state;
 		const selectedSettings = selectedSection

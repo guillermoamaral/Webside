@@ -21,10 +21,7 @@ class JSONView extends Component {
 		const source = this.props.source;
 		const appearance = ide.settings.section("appearance");
 		const mode = appearance.get("mode");
-		const background = appearance
-			.section(mode)
-			.section("colors")
-			.get("background");
+		const background = appearance.section(mode).get("background");
 		const theme = mode === "dark" ? darkTheme : lightTheme;
 		return (
 			<JsonView

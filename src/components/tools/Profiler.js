@@ -137,7 +137,6 @@ class Profiler extends Tool {
 		const evaluationContext = this.props.context;
 		const appearance = ide.settings.section("appearance");
 		const mode = appearance.section(appearance.get("mode"));
-		const colors = mode.section("colors");
 		return (
 			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
 				<CustomSplit mode="vertical">
@@ -253,7 +252,7 @@ class Profiler extends Tool {
 												series={[
 													{
 														dataKey: "value",
-														color: colors.get(
+														color: mode.get(
 															"primaryColor"
 														),
 														label: "Time",

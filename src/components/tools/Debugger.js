@@ -1,13 +1,6 @@
 import React from "react";
 import Tool from "./Tool";
-import {
-	Grid,
-	Typography,
-	LinearProgress,
-	Tabs,
-	Tab,
-	Box,
-} from "@mui/material";
+import { Grid, Typography, Tabs, Tab, Box } from "@mui/material";
 import { ide } from "../IDE";
 import FrameList from "../parts/FrameList";
 import BindingTable from "../parts/BindingTable";
@@ -262,11 +255,16 @@ class Debugger extends Tool {
 		if (title.length > 100) title = title.slice(0, 50) + "...";
 		const { frames, selectedFrame, stepping, showBindings, expressions } =
 			this.state;
+		const background = ide.colorSetting("debuggerColor");
 		return (
 			<Box
 				display="flex"
 				flexDirection="column"
-				style={{ height: "100%" }}
+				style={{
+					height: "100%",
+					background: background,
+					padding: 5,
+				}}
 			>
 				<Box>
 					<Grid

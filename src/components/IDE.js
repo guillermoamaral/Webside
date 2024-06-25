@@ -44,6 +44,7 @@ class IDE extends Component {
 	constructor(props) {
 		super(props);
 		ide = this;
+		this.initializeThemes();
 		this.initializeSettings();
 		this.mainContainerRef = React.createRef();
 		this.colorModeChangeHandlers = [];
@@ -93,6 +94,160 @@ class IDE extends Component {
 		connection.set("developer", options.developer);
 	}
 
+	initializeThemes() {
+		this.themes = [this.defaultTheme()];
+	}
+
+	newTheme() {
+		const settings = new Settings("theme");
+		const dark = settings.addSection("dark", "Dark Colors");
+		dark.addColor("background", "#ffffff");
+		const light = settings.addSection("light", "Light Colors");
+		light.addColor("background", "#000000");
+		[
+			[
+				"primaryColor",
+				"Main distinctive color of determined by target system",
+			],
+			[
+				"secondaryColor",
+				"Secondary distinctive color determined by the target system",
+			],
+			["primaryText", "Color used for labels"],
+			["secondaryText", ""],
+			["disabledText", ""],
+			["appliedChange", ""],
+			["unappliedChange", ""],
+			["separatorColor", ""],
+			["selectionColor", ""],
+			["systemBrowserColor", "System browser background color"],
+			["classBrowserColor", "Class browser background color"],
+			["debuggerColor", "Debugger background color"],
+			["inspectorColor", "Inspector background color"],
+			["workspaceColor", "Workspace background color"],
+			["transcriptColor", "Transcript background color"],
+			["methodBrowserColor", "Method browser background color"],
+			["changesBrowserColor", "Changes browser background color"],
+			["historyBrowserColor", "History browser background color"],
+		].forEach((s) => {
+			dark.addColor(s[0], "#000000", s[1]);
+			light.addColor(s[0], "#ffffff", s[1]);
+		});
+		[
+			"selectorStyle",
+			"symbolStyle",
+			"argumentStyle",
+			"temporaryStyle",
+			"assignmentStyle",
+			"stringStyle",
+			"variableStyle",
+			"metaStyle",
+			"bracketStyle",
+			"selfStyle",
+			"superStyle",
+			"trueStyle",
+			"falseStyle",
+			"nilStyle",
+			"thisContextStyle",
+			"returnStyle",
+			"globalStyle",
+			"numberStyle",
+			"commentStyle",
+		].forEach((s) => {
+			dark.addTextStyle(s, "#000000");
+			light.addTextStyle(s, "#ffffff");
+		});
+		dark.setting("primaryColor").readOnly();
+		dark.setting("secondaryColor").readOnly();
+		light.setting("primaryColor").readOnly();
+		light.setting("secondaryColor").readOnly();
+		return settings;
+	}
+
+	defaultTheme() {
+		const theme = this.newTheme();
+		theme.name = "Default";
+		const light = theme.section("light");
+		light.set("primaryColor", "#cccccc");
+		light.set("secondaryColor", "#cccccc");
+		light.set("background", "#ffffff");
+		light.set("systemBrowserColor", "#ffffff");
+		light.set("classBrowserColor", "#ffffff");
+		light.set("debuggerColor", "#ffffff");
+		light.set("inspectorColor", "#ffffff");
+		light.set("workspaceColor", "#ffffff");
+		light.set("transcriptColor", "#ffffff");
+		light.set("methodBrowserColor", "#ffffff");
+		light.set("changesBrowserColor", "#ffffff");
+		light.set("historyBrowserColor", "#ffffff");
+		light.set("primaryText", "#000000");
+		light.set("secondaryText", "#808080");
+		light.set("disabledText", "#00000080");
+		light.set("appliedChange", "green");
+		light.set("unappliedChange", "#969696");
+		light.set("separatorColor", "#b3bab6");
+		light.set("selectionColor", "#9bcaef64");
+		light.setting("selectorStyle").color = "#000000";
+		light.setting("symbolStyle").color = "#2aa9b2";
+		light.setting("argumentStyle").color = "#f06520";
+		light.setting("temporaryStyle").color = "#28739f";
+		light.setting("assignmentStyle").color = "#000000";
+		light.setting("stringStyle").color = "#00b32d";
+		light.setting("variableStyle").color = "#4fc1ff";
+		light.setting("metaStyle").color = "#ffcb6b";
+		light.setting("bracketStyle").color = "#9b9b9b";
+		light.setting("selfStyle").color = "#c792ea";
+		light.setting("superStyle").color = "#c792ea";
+		light.setting("trueStyle").color = "#c792ea";
+		light.setting("falseStyle").color = "#c792ea";
+		light.setting("nilStyle").color = "#c792ea";
+		light.setting("thisContextStyle").color = "#c792ea";
+		light.setting("returnStyle").color = "#72bb19";
+		light.setting("globalStyle").color = "#a22598";
+		light.setting("numberStyle").color = "#65a14e";
+		light.setting("commentStyle").color = "#586e75";
+		const dark = theme.section("dark");
+		dark.set("primaryColor", "#ffffff");
+		dark.set("secondaryColor", "#cccccc");
+		dark.set("background", "#1f1f1f");
+		dark.set("systemBrowserColor", "#1f1f1f");
+		dark.set("classBrowserColor", "#1f1f1f");
+		dark.set("debuggerColor", "#1f1f1f");
+		dark.set("inspectorColor", "#1f1f1f");
+		dark.set("workspaceColor", "#1f1f1f");
+		dark.set("transcriptColor", "#1f1f1f");
+		dark.set("methodBrowserColor", "#1f1f1f");
+		dark.set("changesBrowserColor", "#1f1f1f");
+		dark.set("historyBrowserColor", "#1f1f1f");
+		dark.set("primaryText", "#aaaaaa");
+		dark.set("secondaryText", "#808080");
+		dark.set("disabledText", "#aaaaaa80");
+		dark.set("appliedChange", "#c0ff61");
+		dark.set("unappliedChange", "#c8c8c8");
+		dark.set("separatorColor", "#b3bab6");
+		dark.set("selectionColor", "#9bcaef50");
+		dark.setting("selectorStyle").color = "#d3dddd";
+		dark.setting("symbolStyle").color = "#3cd2dd";
+		dark.setting("argumentStyle").color = "#f06520";
+		dark.setting("temporaryStyle").color = "#81c9f3";
+		dark.setting("assignmentStyle").color = "#ffffff";
+		dark.setting("stringStyle").color = "#c3e88d";
+		dark.setting("variableStyle").color = "#4fc1ff";
+		dark.setting("metaStyle").color = "#ffcb6b";
+		dark.setting("bracketStyle").color = "#9b9b9b";
+		dark.setting("selfStyle").color = "#c792ea";
+		dark.setting("superStyle").color = "#c792ea";
+		dark.setting("trueStyle").color = "#c792ea";
+		dark.setting("falseStyle").color = "#c792ea";
+		dark.setting("nilStyle").color = "#c792ea";
+		dark.setting("thisContextStyle").color = "#c792ea";
+		dark.setting("returnStyle").color = "#72bb19";
+		dark.setting("globalStyle").color = "#bb73b5";
+		dark.setting("numberStyle").color = "#65a14e";
+		dark.setting("commentStyle").color = "#586e75";
+		return theme;
+	}
+
 	defaultSettings() {
 		const settings = new Settings("settings");
 		const connection = settings.addSection("connection");
@@ -123,63 +278,15 @@ class IDE extends Component {
 			[8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
 			14
 		);
-		appearance.addOptions("mode", ["dark", "light"], "light");
 
-		const light = appearance.addSection("light", "Light Settings");
-		const lightColors = light.addSection("colors", "Dialect Colors");
-		lightColors.addColor("primaryColor", "#cccccc").readOnly();
-		lightColors.addColor("secondaryColor", "#cccccc").readOnly();
-		lightColors.addColor("background", "#ffffff").readOnly();
-		lightColors.addColor("primaryText", "#000000").readOnly();
-		lightColors.addColor("secondaryText", "#808080").readOnly();
-		lightColors.addColor("disabledText", "#00000080").readOnly();
-		lightColors.addColor("appliedChange", "green");
-		lightColors.addColor("unappliedChange", "#969696");
-		const lightCode = light.addSection("code", "Code Colors");
-		lightCode.addColor("selector", "#000000");
-		lightCode.addColor("symbol", "#2aa9b2");
-		lightCode.addColor("argument", "#f06520");
-		lightCode.addColor("temporary", "#28739f");
-		lightCode.addColor("assignment", "#000000");
-		lightCode.addColor("string", "#00b32d");
-		lightCode.addColor("variable", "#4fc1ff");
-		lightCode.addColor("meta", "#ffcb6b");
-		lightCode.addColor("bracket", "#9b9b9b");
-		lightCode.addColor("reserved", "#c792ea");
-		lightCode.addColor("return", "#72bb19");
-		lightCode.addColor("global", "#a22598");
-		lightCode.addColor("number", "#65a14e");
-		lightCode.addColor("comment", "#586e75");
-		lightCode.addColor("separator", "#b3bab6");
-		lightCode.addColor("selection", "#9bcaef64");
-
-		const dark = appearance.addSection("dark", "Dark Settings");
-		const darkColors = dark.addSection("colors", "Dialect Colors");
-		darkColors.addColor("primaryColor", "#ffffff").readOnly();
-		darkColors.addColor("secondaryColor", "#cccccc").readOnly();
-		darkColors.addColor("background", "#1f1f1f").readOnly();
-		darkColors.addColor("primaryText", "#aaaaaa").readOnly();
-		darkColors.addColor("secondaryText", "#00000").readOnly();
-		darkColors.addColor("disabledText", "#aaaaaa80").readOnly();
-		darkColors.addColor("appliedChange", "#c0ff61");
-		darkColors.addColor("unappliedChange", "#c8c8c8");
-		const darkCode = dark.addSection("code", "Code Colors");
-		darkCode.addColor("selector", "#d3dddd");
-		darkCode.addColor("symbol", "#3cd2dd");
-		darkCode.addColor("argument", "#f06520");
-		darkCode.addColor("temporary", "#81c9f3");
-		darkCode.addColor("assignment", "#ffffff");
-		darkCode.addColor("string", "#c3e88d");
-		darkCode.addColor("variable", "#4fc1ff");
-		darkCode.addColor("meta", "#ffcb6b");
-		darkCode.addColor("bracket", "#9b9b9b");
-		darkCode.addColor("reserved", "#c792ea");
-		darkCode.addColor("return", "#72bb19");
-		darkCode.addColor("global", "#bb73b5");
-		darkCode.addColor("number", "#65a14e");
-		darkCode.addColor("comment", "#586e75");
-		darkCode.addColor("separator", "#b3bab6");
-		darkCode.addColor("selection", "#9bcaef50");
+		const theme = this.themes[0].copy();
+		appearance.addOptions(
+			"theme",
+			this.themes.map((t) => t.name),
+			theme.name
+		);
+		appearance.addOptions("mode", ["dark", "light"], theme.mode);
+		theme.settings.forEach((s) => appearance.add(s));
 
 		const shortcuts = settings.addSection("shortcuts");
 		shortcuts.addShortcut("quickSearch", "Shift+Enter");
@@ -209,40 +316,35 @@ class IDE extends Component {
 		);
 		openAI.addParagraph(
 			"systemMessage",
-			"You are an expert Smalltalk programmer.\n\
-When I ask for help to analyze, explain or write Smalltalk code, you will reply accordingly.\n\
-In your response you will avoid using the words 'Smalltalk' and 'snippet'."
+			"You are an expert Smalltalk programmer.\nWhen I ask for help to analyze, explain or write Smalltalk code, you will reply accordingly.\nIn your response you will avoid using the words 'Smalltalk' and 'snippet'."
 		);
 		const advanced = settings.addSection("advanced");
 		advanced.addNumber(
 			"evaluationPollingFrequency",
 			300,
 			"Evaluation polling frequency (ms)",
-			"Warning. This is used to poll the backend for evaluation progress. \
-A high frequency might affect frontend performance. \
-On the other hand, a low frequency could introduce a huge delay to detecting evaluation finalization."
+			"Warning. This is used to poll the backend for evaluation progress. A high frequency might affect frontend performance. On the other hand, a low frequency could introduce a huge delay to detecting evaluation finalization."
 		);
 		return settings;
 	}
 
+	colorSetting(name) {
+		const appearance = this.settings.section("appearance");
+		const mode = appearance.get("mode");
+		return appearance.section(mode).get(name);
+	}
+
+	applyTheme(name) {
+		const theme = this.themes.find((t) => t.name === name);
+		if (!theme) return;
+		const appearance = this.settings.section("appearance");
+		appearance.copyFrom(theme);
+	}
+
 	applySettings(settings) {
-		const hard =
-			this.settings.section("connection").get("backend") !==
-				settings.section("connection").get("backend") ||
-			this.settings.section("connection").get("developer") !==
-				settings.section("connection").get("developer");
 		this.settings = settings;
+		this.applyTheme(settings.section("appearance").get("theme"));
 		this.storeSettings();
-		const connection = this.settings.section("connection");
-		if (hard) {
-			this.props.navigate(
-				"/ide?backend=" +
-					connection.get("backend") +
-					"&developer=" +
-					connection.get("developer")
-			);
-			this.removeExtraContainers();
-		}
 		this.updateSettings();
 	}
 
@@ -251,7 +353,6 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 	};
 
 	resetSettingsSection(name) {
-		console.log(name)
 		const section = this.defaultSettings().section(name);
 		this.settings.setSection(name, section);
 		this.applySettings(this.settings);
@@ -262,7 +363,7 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 		const mode = appearance.get("mode") === "dark" ? "light" : "dark";
 		appearance.set("mode", mode);
 		this.storeSettings();
-		this.updateTheme();
+		this.updateAppTheme();
 		this.forceUpdate();
 		this.colorModeChanged();
 	};
@@ -306,21 +407,38 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 		} catch (error) {}
 		document.title = dialect;
 		this.settings.section("connection").set("dialect", dialect);
-		let autocompletion;
+		let autocompletion = false;
 		try {
 			await ide.backend.autocompletions("Object", "m\r Objec", 8);
 			autocompletion = true;
-		} catch (error) {
-			autocompletion = false;
-		}
+		} catch (ignored) {}
 		this.settings.section("code").set("autocompletion", autocompletion);
-		await this.updateColorsSettings();
-		this.updateTheme();
+		await this.fetchThemes();
+		await this.updateDialectColorSettings();
+		this.updateAppTheme();
 		this.initializeMessageChannel();
 		this.initializeCodeAssistant();
 	}
 
-	async updateColorsSettings() {
+	async fetchThemes() {
+		try {
+			const json = await ide.backend.themes();
+			json.forEach((j) => {
+				if (!this.themes.find((t) => t.name === j.name)) {
+					const theme = this.defaultTheme();
+					theme.name = j.name;
+					theme.fromJson(j);
+					this.themes.push(theme);
+				}
+			});
+			this.settings.section("appearance").setting("theme").options =
+				this.themes.map((t) => t.name);
+		} catch (ignored) {
+			console.log(ignored);
+		}
+	}
+
+	async updateDialectColorSettings() {
 		let primary;
 		let secondary;
 		try {
@@ -328,15 +446,15 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 			primary = colors.primary;
 			secondary = colors.secondary;
 		} catch (error) {
-			primary = "#00000";
-			secondary = "#00000";
+			primary = "#000000";
+			secondary = "#000000";
 		}
 		const appearance = this.settings.section("appearance");
-		const dark = appearance.section("dark").section("colors");
+		const dark = appearance.section("dark");
 		dark.set("primaryColor", primary);
 		dark.set("secondaryColor", secondary);
 		dark.set("appliedChange", primary);
-		const light = appearance.section("light").section("colors");
+		const light = appearance.section("light");
 		light.set("primaryColor", Setting.adjustColor(primary, -40));
 		light.set("secondaryColor", secondary);
 		light.set("appliedChange", Setting.adjustColor(primary, -60));
@@ -347,7 +465,7 @@ On the other hand, a low frequency could introduce a huge delay to detecting eva
 		this.colorModeChangeHandlers.forEach((h) => h());
 	}
 
-	updateTheme() {
+	updateAppTheme() {
 		mainApp.updateTheme(this.settings);
 	}
 
