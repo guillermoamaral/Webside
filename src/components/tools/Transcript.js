@@ -12,8 +12,16 @@ class Transcript extends Tool {
 	}
 
 	render() {
+		const background = ide.colorSetting("transcriptColor");
 		return (
-			<Box sx={{ minHeight: 100, height: "100%" }}>
+			<Box
+				sx={{
+					minHeight: 100,
+					height: "100%",
+					padding: 1,
+					background: background,
+				}}
+			>
 				<CodeEditor
 					source={ide.transcriptText()}
 					onChange={this.props.onChange}

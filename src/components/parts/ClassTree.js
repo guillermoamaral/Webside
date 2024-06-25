@@ -516,7 +516,7 @@ class ClassTree extends Component {
 		}
 		const appearance = ide.settings.section("appearance");
 		const mode = appearance.section(appearance.get("mode"));
-		return mode.section("colors").get("disabledText");
+		return mode.get("disabledText");
 	};
 
 	render() {
@@ -524,7 +524,7 @@ class ClassTree extends Component {
 			this.state;
 		const appearance = ide.settings.section("appearance");
 		const mode = appearance.section(appearance.get("mode"));
-		const background = mode.section("colors").get("background");
+		const background = mode.get("background");
 		const root = roots.length === 1 ? roots[0] : null;
 		return (
 			<Box display="flex" flexDirection="column" height="100%">

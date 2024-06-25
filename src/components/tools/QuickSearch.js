@@ -148,7 +148,6 @@ class QuickSearch extends Tool {
 		const appearance = ide.settings.section("appearance");
 		const color = appearance
 			.section(appearance.get("mode"))
-			.section("colors")
 			.get("primaryColor");
 		return (
 			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>

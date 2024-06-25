@@ -15,8 +15,8 @@ class CodeTooltip extends Component {
 	render() {
 		const appearance = ide.settings.section("appearance");
 		const mode = appearance.section(appearance.get("mode"));
-		const color = mode.section("colors").get("primaryText");
-		const background = mode.section("colors").get("background");
+		const color = mode.get("primaryText");
+		const background = mode.get("background");
 		const { title, titleAction, description, code, actions } = this.props;
 		return (
 			<Card

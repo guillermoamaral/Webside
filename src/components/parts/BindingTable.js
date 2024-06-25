@@ -63,8 +63,7 @@ class BindingTable extends PureComponent {
 	bindingColor(binding) {
 		const appearance = ide.settings.section("appearance");
 		const mode = appearance.section(appearance.get("mode"));
-		const code = mode.section("code");
-		return code.get(binding.type) || "#268bd2";
+		return mode.get(binding.type) || "#268bd2";
 	}
 
 	bindingValue(binding) {

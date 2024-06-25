@@ -106,8 +106,12 @@ class Workspace extends Tool {
 
 	render() {
 		const { source, inspectors } = this.state;
+		const background = ide.colorSetting("workspaceColor");
 		return (
-			<Box display="flex" sx={{ height: "100%" }}>
+			<Box
+				display="flex"
+				sx={{ height: "100%", padding: 1, background: background }}
+			>
 				<CustomSplit>
 					<Box flexGrow={1} sx={{ width: "50%" }}>
 						<Paper

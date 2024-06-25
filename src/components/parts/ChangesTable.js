@@ -243,8 +243,7 @@ class ChangesTable extends Component {
 	changeColor(change) {
 		if (change.color) return change.color;
 		const appearance = ide.settings.section("appearance");
-		const mode = appearance.section(appearance.get("mode"));
-		const colors = mode.section("colors");
+		const colors = appearance.section(appearance.get("mode"));
 		return change.isUpToDate()
 			? colors.get("appliedChange")
 			: colors.get("unappliedChange");

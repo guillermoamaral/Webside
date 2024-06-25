@@ -15,7 +15,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import ObjectsIcon from "../icons/ObjectsIcon";
 import ChangesBrowserIcon from "../icons/ChangesBrowserIcon";
 import ChatIcon from "@mui/icons-material/Chat";
-import SaveImageIcon from "@mui/icons-material/Save";
+//import SaveImageIcon from "@mui/icons-material/Save";
 import { withDialog } from "../dialogs/index";
 import DrawerHeader from "./DrawerHeader";
 import StyledDrawer from "./StyledDrawer";
@@ -26,7 +26,7 @@ class Sidebar extends Component {
 		const {
 			expanded,
 			onCollapse,
-			onSaveImageClick,
+			//onSaveImageClick,
 			onTranscriptClick,
 			unreadErrorsCount,
 			onSearchClick,

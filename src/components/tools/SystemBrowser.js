@@ -363,181 +363,212 @@ class SystemBrowser extends Tool {
 		const targetClass = this.targetClass();
 		const showPackages = this.props.showPackages;
 		const width = showPackages ? "20%" : "25%";
+		const background = showPackages
+			? ide.colorSetting("systemBrowserColor")
+			: ide.colorSetting("classBrowserColor");
 		return (
-			<CustomSplit mode="vertical">
-				<Box sx={{ minHeight: 50, height: "35%" }}>
-					<Box
-						display="flex"
-						flexDirection="row"
-						width="100%"
-						height="100%"
-					>
-						<CustomSplit>
-							{showPackages && (
+			<Box
+				sx={{
+					height: "100%",
+					background: background,
+					padding: 1,
+				}}
+			>
+				<CustomSplit mode="vertical">
+					<Box sx={{ minHeight: 50, height: "35%" }}>
+						<Box
+							display="flex"
+							flexDirection="row"
+							width="100%"
+							height="100%"
+						>
+							<CustomSplit>
+								{showPackages && (
+									<Box sx={{ width: width }}>
+										<PackageTree
+											onPackageSelect={
+												this.packageSelected
+											}
+											onPackageCreate={
+												this.packageCreated
+											}
+											selectedPackage={preselectedPackage}
+											onCategorySelect={
+												this.classCategorySelected
+											}
+										/>
+									</Box>
+								)}
 								<Box sx={{ width: width }}>
-									<PackageTree
-										onPackageSelect={this.packageSelected}
-										onPackageCreate={this.packageCreated}
-										selectedPackage={preselectedPackage}
-										onCategorySelect={
-											this.classCategorySelected
-										}
-									/>
-								</Box>
-							)}
-							<Box sx={{ width: width }}>
-								<ClassTree
-									ref={this.classTreeRef}
-									roots={!showPackages ? roots : null}
-									package={
-										showPackages ? selectedPackage : null
-									}
-									category={
-										showPackages
-											? selectedClassCategory
-											: null
-									}
-									onClassSelect={this.classSelected}
-									onClassDefine={this.classDefined}
-									onClassRename={this.classRenamed}
-									onClassRemove={this.classRemoved}
-									labelColor={this.classLabelColor}
-									selectedClass={preselectedClass}
-								/>
-							</Box>
-							<Box
-								display="flex"
-								flexDirection="column"
-								sx={{ height: "100%", width: width }}
-							>
-								<Box>
-									<Select
-										size="small"
-										value={selectedAccess}
-										input={
-											<OutlinedInput
-												margin="dense"
-												fullWidth
-											/>
-										}
-										onChange={(event) => {
-											this.accessSelected(
-												event.target.value
-											);
-										}}
-									>
-										<MenuItem value={"using"}>
-											using
-										</MenuItem>
-										<MenuItem value={"assigning"}>
-											assigning
-										</MenuItem>
-										<MenuItem value={"accessing"}>
-											referencing
-										</MenuItem>
-									</Select>
-								</Box>
-								<Box mt={1} flexGrow={1}>
-									<VariableList
-										class={targetClass}
-										onVariableSelect={this.variableSelected}
-										onVariableAdd={this.variableAdded}
-										onVariableRename={this.variableRenamed}
-										onVariableRemove={this.variableRemoved}
-									/>
-								</Box>
-							</Box>
-							<Box
-								display="flex"
-								flexDirection="column"
-								sx={{ height: "100%", width: width }}
-							>
-								<Box display="flex" justifyContent="center">
-									<RadioGroup
-										name="side"
-										value={selectedSide}
-										onChange={(event, side) =>
-											this.sideSelected(side)
-										}
-										defaultValue="instance"
-										row
-									>
-										<FormControlLabel
-											value="instance"
-											control={
-												<Radio
-													size="small"
-													color="primary"
-												/>
-											}
-											label="Instance"
-										/>
-										<FormControlLabel
-											value="class"
-											control={
-												<Radio
-													size="small"
-													color="primary"
-												/>
-											}
-											label="Class"
-										/>
-									</RadioGroup>
-								</Box>
-								<Box mt={1} flexGrow={1}>
-									<CategoryList
-										ref={this.categoryListRef}
-										class={targetClass}
-										onCategorySelect={this.categorySelected}
-										highlightedCategory={
-											selectedMethod
-												? selectedMethod.category
+									<ClassTree
+										ref={this.classTreeRef}
+										roots={!showPackages ? roots : null}
+										package={
+											showPackages
+												? selectedPackage
 												: null
 										}
-										onCategoryAdd={this.categoryAdded}
-										onCategoryRename={this.categoryRenamed}
-										onCategoryRemove={this.categoryRemoved}
+										category={
+											showPackages
+												? selectedClassCategory
+												: null
+										}
+										onClassSelect={this.classSelected}
+										onClassDefine={this.classDefined}
+										onClassRename={this.classRenamed}
+										onClassRemove={this.classRemoved}
+										labelColor={this.classLabelColor}
+										selectedClass={preselectedClass}
 									/>
 								</Box>
-							</Box>
-							<Box sx={{ width: width }}>
-								<MethodList
-									ref={this.methodListRef}
-									package={
-										showPackages ? selectedPackage : null
-									}
-									class={targetClass}
-									category={selectedCategory}
-									access={selectedAccess}
-									variable={selectedVariable}
-									onMethodSelect={this.methodSelected}
-									onMethodRename={this.methodRenamed}
-									onMethodRemove={this.methodRemoved}
-									onMethodClassify={this.methodClassified}
-									onCategoryAdd={this.categoryAdded}
-									showNewOption
-								/>
-							</Box>
-						</CustomSplit>
+								<Box
+									display="flex"
+									flexDirection="column"
+									sx={{ height: "100%", width: width }}
+								>
+									<Box>
+										<Select
+											size="small"
+											value={selectedAccess}
+											input={
+												<OutlinedInput
+													margin="dense"
+													fullWidth
+												/>
+											}
+											onChange={(event) => {
+												this.accessSelected(
+													event.target.value
+												);
+											}}
+										>
+											<MenuItem value={"using"}>
+												using
+											</MenuItem>
+											<MenuItem value={"assigning"}>
+												assigning
+											</MenuItem>
+											<MenuItem value={"accessing"}>
+												referencing
+											</MenuItem>
+										</Select>
+									</Box>
+									<Box mt={1} flexGrow={1}>
+										<VariableList
+											class={targetClass}
+											onVariableSelect={
+												this.variableSelected
+											}
+											onVariableAdd={this.variableAdded}
+											onVariableRename={
+												this.variableRenamed
+											}
+											onVariableRemove={
+												this.variableRemoved
+											}
+										/>
+									</Box>
+								</Box>
+								<Box
+									display="flex"
+									flexDirection="column"
+									sx={{ height: "100%", width: width }}
+								>
+									<Box display="flex" justifyContent="center">
+										<RadioGroup
+											name="side"
+											value={selectedSide}
+											onChange={(event, side) =>
+												this.sideSelected(side)
+											}
+											defaultValue="instance"
+											row
+										>
+											<FormControlLabel
+												value="instance"
+												control={
+													<Radio
+														size="small"
+														color="primary"
+													/>
+												}
+												label="Instance"
+											/>
+											<FormControlLabel
+												value="class"
+												control={
+													<Radio
+														size="small"
+														color="primary"
+													/>
+												}
+												label="Class"
+											/>
+										</RadioGroup>
+									</Box>
+									<Box mt={1.2} flexGrow={1}>
+										<CategoryList
+											ref={this.categoryListRef}
+											class={targetClass}
+											onCategorySelect={
+												this.categorySelected
+											}
+											highlightedCategory={
+												selectedMethod
+													? selectedMethod.category
+													: null
+											}
+											onCategoryAdd={this.categoryAdded}
+											onCategoryRename={
+												this.categoryRenamed
+											}
+											onCategoryRemove={
+												this.categoryRemoved
+											}
+										/>
+									</Box>
+								</Box>
+								<Box sx={{ width: width }}>
+									<MethodList
+										ref={this.methodListRef}
+										package={
+											showPackages
+												? selectedPackage
+												: null
+										}
+										class={targetClass}
+										category={selectedCategory}
+										access={selectedAccess}
+										variable={selectedVariable}
+										onMethodSelect={this.methodSelected}
+										onMethodRename={this.methodRenamed}
+										onMethodRemove={this.methodRemoved}
+										onMethodClassify={this.methodClassified}
+										onCategoryAdd={this.categoryAdded}
+										showNewOption
+									/>
+								</Box>
+							</CustomSplit>
+						</Box>
 					</Box>
-				</Box>
-				<Box sx={{ height: "60%" }}>
-					<CodeBrowser
-						context={this.evaluationContext()}
-						category={selectedCategory}
-						package={showPackages ? selectedPackage : null}
-						class={targetClass}
-						method={selectedMethod}
-						onMethodCompile={this.methodCompiled}
-						onClassDefine={this.classDefined}
-						onClassComment={this.classCommented}
-						onExtendedOptionPerform={
-							this.codeExtendedOptionPerformed
-						}
-						sx={{ height: "100%" }}
-					/>
-				</Box>
-			</CustomSplit>
+					<Box sx={{ height: "60%" }}>
+						<CodeBrowser
+							context={this.evaluationContext()}
+							category={selectedCategory}
+							package={showPackages ? selectedPackage : null}
+							class={targetClass}
+							method={selectedMethod}
+							onMethodCompile={this.methodCompiled}
+							onClassDefine={this.classDefined}
+							onClassComment={this.classCommented}
+							onExtendedOptionPerform={
+								this.codeExtendedOptionPerformed
+							}
+							sx={{ height: "100%" }}
+						/>
+					</Box>
+				</CustomSplit>
+			</Box>
 		);
 	}
 }

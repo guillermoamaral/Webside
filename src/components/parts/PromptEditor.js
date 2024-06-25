@@ -68,9 +68,7 @@ class PromptEditor extends Component {
 	theme() {
 		const appearance = ide.settings.section("appearance");
 		const mode = appearance.section(appearance.get("mode"));
-		const colors = mode.section("colors");
-		const code = mode.section("code");
-		const background = colors.get("background");
+		const background = mode.get("background");
 		const tokens = PromptParser.tokenTable;
 		return createTheme({
 			theme: appearance.get("mode"),
@@ -80,10 +78,8 @@ class PromptEditor extends Component {
 				background: background,
 				foreground: "#75baff",
 				caret:
-					mode.name === "light"
-						? "black"
-						: colors.get("primaryColor"),
-				selection: code.get("selection"),
+					mode.name === "light" ? "black" : mode.get("primaryColor"),
+				selection: mode.get("selectionColor"),
 				selectionMatch: "#cccccc50",
 				lineHighlight: "#8a91991a",
 				gutterBackground: background,
@@ -93,19 +89,19 @@ class PromptEditor extends Component {
 			styles: [
 				{
 					tag: tokens.selector,
-					color: code.get("selector"),
+					color: mode.setting("selectorStyle").color,
 				},
 				{
 					tag: tokens.class,
-					color: code.get("global"),
+					color: mode.setting("globalStyle").color,
 				},
 				{
 					tag: tokens.at,
-					color: code.get("number"),
+					color: mode.setting("numberStyle").color,
 				},
 				{
 					tag: tokens.text,
-					color: code.get("selector"),
+					color: mode.setting("selectorStyle").color,
 				},
 			],
 		});
