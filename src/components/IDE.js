@@ -973,15 +973,15 @@ class IDE extends Component {
 		if (specification.extensionType === "change") {
 			await this.performExtendedChange(specification, element);
 		}
-		if (specification.extensionType === "download") {
-			await this.performDownload(specification, element);
+		if (specification.extensionType === "export") {
+			await this.performExport(specification, element);
 		}
 		if (specification.extensionType === "search") {
 			await this.performExtendedSearch(specification, element);
 		}
 	};
 
-	performDownload = async (specification, element) => {
+	performExport = async (specification, element) => {
 		const get = this.resolveDotExpressions(
 			specification.get,
 			"element",
