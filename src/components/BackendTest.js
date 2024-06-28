@@ -149,10 +149,11 @@ class BackendTest {
 	}
 
 	description() {
+		const suffix = this.name.split("_")[1];
 		let description = "Test";
-		this.name
-			.match(/[A-Z][a-z]+/g)
-			.forEach((w) => (description += " " + w));
+		suffix.match(/[A-Z][a-z]+/g).forEach((w) => {
+			description += " " + w;
+		});
 		return description;
 	}
 
@@ -265,7 +266,8 @@ class BackendTest {
 			className: "TestAccessors",
 			instanceVariables: ["xxx"],
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
@@ -273,7 +275,8 @@ class BackendTest {
 			className: "TestAccessors",
 			category: "WebsideTest",
 			sourceCode: "a xxx + 1",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
@@ -281,7 +284,8 @@ class BackendTest {
 			className: "TestAccessors",
 			category: "WebsideTest",
 			sourceCode: "b xxx := 2",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -310,17 +314,23 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestAccessors",
 				selector: "a",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveMethod",
 				className: "TestAccessors",
 				selector: "b",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestAccessors",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -332,7 +342,8 @@ class BackendTest {
 			className: "TestAst",
 			instanceVariables: ["a"],
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
@@ -340,7 +351,8 @@ class BackendTest {
 			className: "TestAst",
 			category: "WebsideTest",
 			sourceCode: "a ^a",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -370,11 +382,15 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestAst",
 				selector: "a",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestAst",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -385,7 +401,8 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestCategories",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
@@ -393,7 +410,8 @@ class BackendTest {
 			className: "TestCategories",
 			category: "testCategories",
 			sourceCode: "a",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -409,11 +427,15 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestCategories",
 				selector: "a",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestCategories",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -426,7 +448,8 @@ class BackendTest {
 			instanceVariables: ["xxx"],
 			classVariables: ["AAA"],
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -446,6 +469,8 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestClass",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -456,21 +481,24 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestClasses",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddClass",
 			className: "TestClasses2",
 			superclass: "TestClasses",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddClass",
 			className: "TestClasses3",
 			superclass: "TestClasses2",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -519,7 +547,8 @@ class BackendTest {
 			className: "TestClassVariables",
 			classVariables: ["Aaa"],
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -533,6 +562,8 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestClassVariables",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -543,28 +574,32 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestImplementors",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestImplementors",
 			sourceCode: "testImplementors",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddClass",
 			className: "TestImplementors2",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestImplementors2",
 			sourceCode: "testImplementors",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -606,22 +641,30 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestImplementors",
 				selector: "testImplementors",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveMethod",
 				className: "TestImplementors2",
 				selector: "testImplementors",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestImplementors",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestImplementors2",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -633,7 +676,8 @@ class BackendTest {
 			className: "TestInstanceVariables",
 			instanceVariables: ["x"],
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -649,6 +693,8 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestInstanceVariables",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -659,14 +705,16 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestMatchingSelectors",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestMatchingSelectors",
 			sourceCode: "testMatchingSelectors",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -685,11 +733,15 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestMatchingSelectors",
 				selector: "testMatchingSelectors",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestMatchingSelectors",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -700,14 +752,16 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestMethod",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestMethod",
 			sourceCode: "testMethod ^'this is testMethod'",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -725,11 +779,15 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestMethod",
 				selector: "testMethod",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestMethod",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -740,7 +798,8 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestMethodCount",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		for (let i = 1; i <= 3; i++) {
@@ -748,7 +807,8 @@ class BackendTest {
 				type: "AddMethod",
 				className: "TestMethodCount",
 				sourceCode: "testMethodCount" + i + " ^" + i,
-				author: "Webside",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -763,12 +823,16 @@ class BackendTest {
 					type: "RemoveMethod",
 					className: "TestMethodCount",
 					selector: "testMethodCount" + i,
+					author: "Webside_BackendTest",
+					package: "Webside_BackendTest",
 				};
 				await this.post("/changes", change);
 			}
 			change = {
 				type: "RemoveClass",
 				className: "TestMethodCount",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -779,7 +843,8 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestMethods",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		for (let i = 1; i <= 2; i++) {
@@ -787,7 +852,8 @@ class BackendTest {
 				type: "AddMethod",
 				className: "TestMethods",
 				sourceCode: "testMethods" + i + " ^" + i,
-				author: "Webside",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -806,12 +872,16 @@ class BackendTest {
 					type: "RemoveMethod",
 					className: "TestMethods",
 					selector: "testMethods" + i,
+					author: "Webside_BackendTest",
+					package: "Webside_BackendTest",
 				};
 				await this.post("/changes", change);
 			}
 			change = {
 				type: "RemoveClass",
 				className: "TestMethods",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -829,7 +899,7 @@ class BackendTest {
 		let change = {
 			type: "AddPackage",
 			name: "TestPackage",
-			author: "Webside",
+			author: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
@@ -837,7 +907,7 @@ class BackendTest {
 			className: "TestPackage",
 			superclass: "Object",
 			package: "TestPackage",
-			author: "Webside",
+			author: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -856,11 +926,14 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestPackage",
+				author: "Webside_BackendTest",
+				package: "TestPackage",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemovePackage",
 				name: "TestPackage",
+				author: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -870,7 +943,7 @@ class BackendTest {
 		let change = {
 			type: "AddPackage",
 			name: "TestPackageNames",
-			author: "Webside",
+			author: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -891,6 +964,7 @@ class BackendTest {
 			change = {
 				type: "RemovePackage",
 				name: "TestPackageNames",
+				author: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -900,7 +974,7 @@ class BackendTest {
 		let change = {
 			type: "AddPackage",
 			name: "TestPackages",
-			author: "Webside",
+			author: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
@@ -908,7 +982,7 @@ class BackendTest {
 			className: "TestPackages",
 			superclass: "Object",
 			package: "TestPackages",
-			author: "Webside",
+			author: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -925,11 +999,14 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestPackages",
+				author: "Webside_BackendTest",
+				package: "TestPackages",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemovePackage",
 				name: "TestPackages",
+				author: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -940,7 +1017,8 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestSelectors",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		for (let i = 1; i <= 2; i++) {
@@ -948,7 +1026,8 @@ class BackendTest {
 				type: "AddMethod",
 				className: "TestSelectors",
 				sourceCode: "testSelectors" + i + " ^" + i,
-				author: "Webside",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -969,12 +1048,16 @@ class BackendTest {
 					type: "RemoveMethod",
 					className: "TestSelectors",
 					selector: "testSelectors" + i,
+					author: "Webside_BackendTest",
+					package: "Webside_BackendTest",
 				};
 				await this.post("/changes", change);
 			}
 			change = {
 				type: "RemoveClass",
 				className: "TestSelectors",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -985,35 +1068,40 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestSenders",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestSenders",
 			sourceCode: "testSenders",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestSenders",
 			sourceCode: "testSenders2 self testSenders",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddClass",
 			className: "TestSenders2",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestSenders2",
 			sourceCode: "testSenders TestSenders new testSenders",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -1047,28 +1135,38 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestSenders",
 				selector: "testSenders",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveMethod",
 				className: "TestSenders",
 				selector: "testSenders2",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveMethod",
 				className: "TestSenders2",
 				selector: "testSenders",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestSenders",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestSenders2",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1079,12 +1177,16 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestSubclasses",
 			superclass: "Object",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddClass",
 			className: "TestSubclasses2",
 			superclass: "TestSubclasses",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -1101,11 +1203,15 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestSubclasses2",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestSubclasses",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1116,12 +1222,16 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestSuperclasses",
 			superclass: "Object",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddClass",
 			className: "TestSuperclasses2",
 			superclass: "TestSuperclasses",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -1138,11 +1248,15 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestSuperclasses2",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestSuperclasses",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1155,7 +1269,8 @@ class BackendTest {
 			instanceVariables: ["abc"],
 			classVariables: ["Xyz"],
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -1176,6 +1291,8 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestVariables",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1186,7 +1303,8 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestUsedCategories",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
@@ -1194,14 +1312,16 @@ class BackendTest {
 			className: "TestUsedCategories",
 			category: "testUsedCategories",
 			sourceCode: "a",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddClass",
 			className: "TestUsedCategories2",
 			superclass: "TestUsedCategories",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -1220,17 +1340,23 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestUsedCategories2",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveMethod",
 				className: "TestUsedCategories",
 				selector: "a",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestUsedCategories",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1243,7 +1369,8 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestAddClass",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -1254,6 +1381,8 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestAddClass",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1264,13 +1393,16 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestAddClassVariable",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddClassVariable",
 			className: "TestAddClassVariable",
 			variable: "X",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -1286,6 +1418,8 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestAddClassVariable",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1296,13 +1430,16 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestAddInstanceVariable",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddInstanceVariable",
 			className: "TestAddInstanceVariable",
 			variable: "xxx",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -1315,6 +1452,8 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestAddInstanceVariable",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1326,7 +1465,8 @@ class BackendTest {
 			className: "TestAddMethod",
 			instanceVariables: ["a"],
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
@@ -1334,7 +1474,8 @@ class BackendTest {
 			className: "TestAddMethod",
 			category: "WebsideTest",
 			sourceCode: "testAddMethod\n^a + 1",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -1363,11 +1504,15 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestAddMethod",
 				selector: "testAddMethod",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestAddMethod",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1398,7 +1543,8 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestChanges",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -1414,6 +1560,8 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestChanges",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1424,14 +1572,16 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestClassifyMethod",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestClassifyMethod",
 			sourceCode: "testClassifyMethod",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
@@ -1439,7 +1589,8 @@ class BackendTest {
 			className: "TestClassifyMethod",
 			selector: "testClassifyMethod",
 			category: "testClassifyMethod",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -1456,17 +1607,23 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestClassifyMethod",
 				selector: "testClassifyMethod",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveCategory",
 				className: "TestClassifyMethod",
 				category: "testClassifyMethod",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestClassifyMethod",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1477,14 +1634,16 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestCodeSuggestion",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestCodeSuggestion",
 			sourceCode: "testCodeSuggestion\n^t + 1",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		let error;
 		try {
@@ -1517,11 +1676,15 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestCodeSuggestion",
 				selector: "testCodeSuggestion",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestCodeSuggestion",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1532,7 +1695,8 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestCommentClass",
 			superclass: "Object",
-			author: this.className,
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
@@ -1548,6 +1712,8 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestCommentClass",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1559,14 +1725,16 @@ class BackendTest {
 			className: "TestMoveDownInstanceVariable",
 			superclass: "Object",
 			instanceVariables: ["x"],
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddClass",
 			className: "TestMoveDownInstanceVariable2",
 			superclass: "TestMoveDownInstanceVariable",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
@@ -1590,11 +1758,15 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestMoveDownInstanceVariable2",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestMoveDownInstanceVariable",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1603,45 +1775,61 @@ class BackendTest {
 	async testChanges_MoveUpInstanceVariable() {
 		let change = {
 			type: "AddClass",
-			className: "testMoveUpInstanceVariable",
+			className: "TestMoveUpInstanceVariable",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddClass",
-			className: "testMoveUpInstanceVariable2",
-			superclass: "testMoveUpInstanceVariable",
+			className: "TestMoveUpInstanceVariable2",
+			superclass: "TestMoveUpInstanceVariable",
 			instanceVariables: ["x"],
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
-			type: "MoveDownInstanceVariable",
-			className: "testMoveUpInstanceVariable2",
+			type: "MoveUpInstanceVariable",
+			className: "TestMoveUpInstanceVariable2",
 			variable: "x",
-			target: "testMoveUpInstanceVariable",
+			target: "TestMoveUpInstanceVariable",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
 			let variables = await this.get(
-				"/classes/testMoveUpInstanceVariable2/instance-variables"
+				"/classes/TestMoveUpInstanceVariable2/instance-variables"
 			);
-			this.assertIsEmpty(variables);
+			this.assertAllSatisfy(
+				variables,
+				(v) => v.class !== "TestMoveUpInstanceVariable2",
+				"v.class"
+			);
 			variables = await this.get(
-				"/classes/testMoveUpInstanceVariable/instance-variables"
+				"/classes/TestMoveUpInstanceVariable/instance-variables"
 			);
-			this.assertEquals(variables.length, 1);
-			this.assertEquals(variables[0].name, "x", "variable.name");
+			this.assertAnySatisfy(
+				variables,
+				(v) =>
+					v.class === "TestMoveUpInstanceVariable" && v.name === "x",
+				"v.class equals 'TestMoveUpInstanceVariable' and v.name equals 'x'"
+			);
 		} finally {
 			change = {
 				type: "RemoveClass",
-				className: "testMoveUpInstanceVariable2",
+				className: "TestMoveUpInstanceVariable2",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
-				className: "testMoveUpInstanceVariable",
+				className: "TestMoveUpInstanceVariable",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1652,7 +1840,8 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestRemoveCategory",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
@@ -1660,7 +1849,8 @@ class BackendTest {
 			className: "TestRemoveCategory",
 			category: "testRemoveCategory",
 			sourceCode: "testRemoveCategory",
-			author: this.constructor.name,
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -1672,12 +1862,16 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestRemoveCategory",
 				selector: "testRemoveCategory",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveCategory",
 				className: "TestRemoveCategory",
 				category: "testRemoveCategory",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			categories = await this.get(
@@ -1691,6 +1885,8 @@ class BackendTest {
 			let remotion = {
 				type: "RemoveClass",
 				className: "TestRemoveCategory",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", remotion);
 		}
@@ -1701,7 +1897,8 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestRemoveClass",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		this.post("/changes", change);
 		try {
@@ -1713,7 +1910,12 @@ class BackendTest {
 			} catch (ignored) {}
 			this.assert(!species);
 		} finally {
-			change = { type: "RemoveClass", className: "TestRemoveClass" };
+			change = {
+				type: "RemoveClass",
+				className: "TestRemoveClass",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
+			};
 			try {
 				await this.post("/changes", change);
 			} catch (ignored) {}
@@ -1726,7 +1928,8 @@ class BackendTest {
 			className: "TestRemoveInstanceVariable",
 			superclass: "Object",
 			instanceVariables: ["x"],
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
@@ -1744,6 +1947,8 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestRemoveInstanceVariable",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			this.post("/changes", change);
 		}
@@ -1754,20 +1959,24 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestRemoveMethod",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestRemoveMethod",
 			sourceCode: "testRemoveMethod",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "RemoveMethod",
 			className: "TestRemoveMethod",
 			selector: "testRemoveMethod",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		this.post("/changes", change);
 		try {
@@ -1777,6 +1986,8 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestRemoveMethod",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			this.post("/changes", change);
 		}
@@ -1787,7 +1998,8 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestRenameCategory",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
@@ -1795,7 +2007,8 @@ class BackendTest {
 			className: "TestRenameCategory",
 			category: "testRenameCategory",
 			sourceCode: "testRenameCategory",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
@@ -1803,6 +2016,8 @@ class BackendTest {
 			className: "TestRenameCategory",
 			category: "testRenameCategory",
 			newName: "testRenameCategory2",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -1818,6 +2033,8 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestRenameCategory",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1828,13 +2045,16 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestRenameClass",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "RenameClass",
 			className: "TestRenameClass",
 			newName: "TestRenameClass2",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -1855,6 +2075,8 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestRenameClass2",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1866,7 +2088,8 @@ class BackendTest {
 			className: "TestRenameInstanceVariable",
 			superclass: "Object",
 			instanceVariables: ["x"],
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
@@ -1874,6 +2097,8 @@ class BackendTest {
 			className: "TestRenameInstanceVariable",
 			variable: "x",
 			newName: "y",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -1886,6 +2111,8 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestRenameInstanceVariable",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -1895,14 +2122,14 @@ class BackendTest {
 		let change = {
 			type: "AddPackage",
 			name: "TestRenamePackage",
-			author: "Webside",
+			author: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "RenamePackage",
 			name: "TestRenamePackage",
 			newName: "TestRenamePackage2",
-			author: "Webside",
+			author: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		try {
@@ -1913,6 +2140,7 @@ class BackendTest {
 			change = {
 				type: "RemovePackage",
 				name: "TestRenamePackage2",
+				author: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -2103,14 +2331,16 @@ class BackendTest {
 			className: "TestClassVariableInDebuggerContext",
 			classVariables: ["Abc"],
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestClassVariableInDebuggerContext",
 			sourceCode: "abc Abc",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		let payload = {
@@ -2150,11 +2380,15 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestClassVariableInDebuggerContext",
 				selector: "abc",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestClassVariableInDebuggerContext",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -2166,14 +2400,16 @@ class BackendTest {
 			className: "TestObjectContext",
 			instanceVariables: ["abc"],
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestObjectContext",
 			sourceCode: "abc: value abc := value",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		let payload = {
@@ -2202,11 +2438,15 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestObjectContext",
 				selector: "abc:",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestObjectContext",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -2218,14 +2458,16 @@ class BackendTest {
 			className: "TestObjectSlotContext",
 			instanceVariables: ["abc"],
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestObjectSlotContext",
 			sourceCode: "abc: value abc := value",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		let payload = {
@@ -2254,11 +2496,15 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestObjectSlotContext",
 				selector: "abc:",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestObjectSlotContext",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -2455,7 +2701,8 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestTemporaryVariableInDebuggerContext",
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
@@ -2463,7 +2710,8 @@ class BackendTest {
 			className: "TestTemporaryVariableInDebuggerContext",
 			sourceCode:
 				"testTemporaryVariableInDebuggerContext  | temp | temp := 26. self halt",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		let payload = {
@@ -2503,11 +2751,15 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestTemporaryVariableInDebuggerContext",
 				selector: "testTemporaryVariableInDebuggerContext",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestTemporaryVariableInDebuggerContext",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -2521,14 +2773,16 @@ class BackendTest {
 			className: "TestPinObjectSlot",
 			instanceVariables: ["v"],
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestPinObjectSlot",
 			sourceCode: "v: value v := value",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		let evaluation = {
@@ -2556,11 +2810,15 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestPinObjectSlot",
 				selector: "v:",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestPinObjectSlot",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -2633,14 +2891,16 @@ class BackendTest {
 			className: "TestPinnedObjectInstanceVariables",
 			instanceVariables: ["v"],
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestPinnedObjectInstanceVariables",
 			sourceCode: "v: value v := value",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		let evaluation = {
@@ -2668,11 +2928,15 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestPinnedObjectInstanceVariables",
 				selector: "v:",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestPinnedObjectInstanceVariables",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -2684,14 +2948,16 @@ class BackendTest {
 			className: "TestPinnedObjectNamedSlots",
 			instanceVariables: ["v"],
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestPinnedObjectNamedSlots",
 			sourceCode: "v: value v := value",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		let evaluation = {
@@ -2726,11 +2992,15 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestPinnedObjectNamedSlots",
 				selector: "v:",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestPinnedObjectNamedSlots",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -2742,14 +3012,16 @@ class BackendTest {
 			className: "TestPinnedObjectSlot",
 			instanceVariables: ["v"],
 			superclass: "Object",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestPinnedObjectSlot",
 			sourceCode: "v: value v := value",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		let evaluation = {
@@ -2775,11 +3047,15 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestPinnedObjectSlot",
 				selector: "v:",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestPinnedObjectSlot",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
@@ -2968,14 +3244,16 @@ class BackendTest {
 			type: "AddClass",
 			className: "TestRunTests",
 			superclass: "TestCase",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		change = {
 			type: "AddMethod",
 			className: "TestRunTests",
 			sourceCode: "testRunTests self assert: true",
-			author: "Webside",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
 		};
 		await this.post("/changes", change);
 		let test = {
@@ -3014,11 +3292,15 @@ class BackendTest {
 				type: "RemoveMethod",
 				className: "TestRunTests",
 				selector: "testRunTests",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 			change = {
 				type: "RemoveClass",
 				className: "TestRunTests",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
 			};
 			await this.post("/changes", change);
 		}
