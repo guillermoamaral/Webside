@@ -15,7 +15,7 @@ class CodeTooltip extends Component {
 	render() {
 		const appearance = ide.settings.section("appearance");
 		const mode = appearance.section(appearance.get("mode"));
-		const color = mode.get("primaryText");
+		const color = mode.get("primaryColor");
 		const background = mode.get("background");
 		const { title, titleAction, description, code, actions } = this.props;
 		return (
@@ -35,11 +35,15 @@ class CodeTooltip extends Component {
 						onClick={(e) => {
 							if (titleAction) titleAction(title);
 						}}
+						color={color}
 					>
 						{title}
 					</Link>
 					{description && (
-						<Typography variant="body2" sx={{ color: color }}>
+						<Typography
+							variant="body2"
+							color={mode.get("primaryText")}
+						>
 							{description || ""}
 						</Typography>
 					)}
@@ -70,6 +74,7 @@ class CodeTooltip extends Component {
 									size="small"
 									sx={{
 										textTransform: "none",
+										color: color,
 									}}
 									key={"tipAction" + i}
 									onClick={() => action.handler(title)}
