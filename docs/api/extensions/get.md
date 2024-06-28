@@ -17,5 +17,5 @@ These are extensions that apply or are meant to be used specifically by the IDE.
 By the moment, the following types are available:
 
 -   [**Change extensions**](changes.md)
--   [**Download extensions**](downloads.md)
+-   [**Export extensions**](exports.md)
 -   [**Search extensions**](searches.md)
