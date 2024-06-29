@@ -23,8 +23,8 @@ class App extends Component {
 					secondary: "#00000",
 				},
 				background: {
-					main: "#303030",
-					default: "#303030",
+					main: "#1f1f1f",
+					default: "#1f1f1f",
 				},
 			},
 		});
