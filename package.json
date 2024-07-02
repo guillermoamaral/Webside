@@ -6,7 +6,7 @@
 	"build": {
 		"appId": "web.s.ide",
 		"win": {
-			"icon": "src/resources/S.png",
+			"icon": "src/resources/SmallLogo.png",
 			"target": "msi"
 		}
 	},
