@@ -3,7 +3,7 @@
 // nodes like temporaries
 
 var binary = /[+\-/\\*~<>=@%|&?!,]/;
-var reserved = /true|false|nil|self|super|thisContext/;
+var reserved = ["true", "false", "nil", "self", "super", "thisContext"];
 
 var Context = function (tokenizer, parent) {
 	this.next = tokenizer;
@@ -127,7 +127,7 @@ var next = function (stream, context, state) {
 		stream.eatWhile(/[\w\d_]/);
 		const identifier = stream.current();
 		token.value = identifier;
-		if (reserved.test(identifier)) {
+		if (reserved.includes(identifier)) {
 			token.type = identifier;
 			state.expect("selector");
 			state.withinSelector = false;

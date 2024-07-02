@@ -92,155 +92,117 @@ class Login extends Component {
 			this.state;
 		const buttonLabel = connecting ? "Connecting" : "Connect";
 		return (
-			<div
-				sx={{
-					display: "flex",
-				}}
+			<Box
+				display="flex"
+				flexDirection="column"
+				alignItems="center"
+				justifyContent="center"
+				style={{ minHeight: "80vh" }}
 			>
-				<Grid
-					container
-					direction="column"
-					justifyContent="center"
-					alignContent="center"
-					alignItems="center"
-					spacing={0}
-					style={{ minHeight: "80vh" }}
-				>
-					<Grid item>
-						<img
-							alt="Webside"
-							src={require("../resources/webSide.png")}
-							width={200}
-							height={100}
+				<Box>
+					<img
+						alt="Webside"
+						src={require("../resources/Logo.png")}
+						//width={200}
+						//height={100}
+					/>
+				</Box>
+				<Box display="flex" flexDirection="column" alignItems="center">
+					<form onSubmit={this.connectClicked}>
+						<TextField
+							size="small"
+							id="backend"
+							label="Target Smalltalk URL"
+							type="url"
+							placeholder="URL"
+							margin="dense"
+							name="backend"
+							variant="outlined"
+							value={backend || ""}
+							onChange={(event) =>
+								this.backendChanged(event.target.value)
+							}
+							required
+							autoFocus
+							disabled={connecting}
 						/>
-					</Grid>
-					<Grid item>
-						<form onSubmit={this.connectClicked}>
-							<Grid
-								container
-								direction="column"
-								spacing={1}
-								alignItems="flex-end"
+						<Box
+							display="flex"
+							flexDirection="column"
+							alignItems="flex-end"
+						>
+							<TextField
+								size="small"
+								id="developer"
+								label="Developer"
+								type="text"
+								placeholder="developer"
+								margin="dense"
+								name="developer"
+								variant="outlined"
+								value={developer || ""}
+								onChange={(event) =>
+									this.developerChanged(event.target.value)
+								}
+								required
+								disabled={connecting}
+							/>
+							<Button
+								variant="outlined"
+								sx={{ textTransform: "none" }}
+								type="submit"
+								disabled={connecting}
 							>
-								<Grid item>
-									<TextField
-										size="small"
-										id="backend"
-										label="Target Smalltalk URL"
-										type="url"
-										placeholder="URL"
-										margin="dense"
-										fullWidth
-										name="backend"
-										variant="outlined"
-										value={backend || ""}
-										onChange={(event) =>
-											this.backendChanged(
-												event.target.value
-											)
-										}
-										required
-										autoFocus
-										disabled={connecting}
+								{buttonLabel}
+							</Button>
+						</Box>
+						{error && <FormHelperText>{error}</FormHelperText>}
+					</form>
+				</Box>
+				{recentConnections.length > 0 && (
+					<Box
+						display="flex"
+						flexDirection="column"
+						alignContent="center"
+						justifyContent="center"
+					>
+						<Typography variant="subtitle1">
+							Recent connections:
+						</Typography>
+						{recentConnections.map((c) => (
+							<Box
+								p={1}
+								key={c.backend + c.developer}
+								display="flex"
+								flexDirection="row"
+							>
+								{c.logo && (
+									<img
+										src={"data:image/png;base64," + c.logo}
+										width={20}
+										height={20}
+										alt={c.backend}
 									/>
-								</Grid>
-								<Grid item>
-									<TextField
-										size="small"
-										id="developer"
-										label="Developer"
-										type="text"
-										placeholder="developer"
-										margin="dense"
-										fullWidth
-										name="developer"
-										variant="outlined"
-										value={developer || ""}
-										onChange={(event) =>
-											this.developerChanged(
-												event.target.value
-											)
-										}
-										required
-										disabled={connecting}
-									/>
-								</Grid>
-								<Grid item>
-									<Button
-										variant="outlined"
-										sx={{ textTransform: "none" }}
-										type="submit"
-										disabled={connecting}
-									>
-										{buttonLabel}
-									</Button>
-								</Grid>
-								{error && (
-									<Grid item>
-										<FormHelperText>{error}</FormHelperText>
-									</Grid>
 								)}
-								{recentConnections.length > 0 && (
-									<Grid item>
-										<Box
-											display="flex"
-											flexDirection="column"
-											alignContent="center"
-											justifyContent="center"
-										>
-											<Typography variant="subtitle1">
-												Recent connections:
-											</Typography>
-											{recentConnections.map((c) => (
-												<Box
-													p={1}
-													key={
-														c.backend + c.developer
-													}
-													display="flex"
-													flexDirection="row"
-												>
-													{c.logo && (
-														<img
-															src={
-																"data:image/png;base64," +
-																c.logo
-															}
-															width={20}
-															height={20}
-															alt={c.backend}
-														/>
-													)}
-													<Link
-														ml={1}
-														key={c.backend}
-														color="inherit"
-														underline="hover"
-														variant="body2"
-														href="#"
-														onClick={(event) => {
-															event.preventDefault();
-															this.connect(
-																c.backend,
-																c.developer
-															);
-														}}
-													>
-														{c.backend +
-															" (" +
-															c.developer +
-															")"}
-													</Link>
-												</Box>
-											))}
-										</Box>
-									</Grid>
-								)}
-							</Grid>
-						</form>
-					</Grid>
-				</Grid>
-			</div>
+								<Link
+									ml={1}
+									key={c.backend}
+									color="inherit"
+									underline="hover"
+									variant="body2"
+									href="#"
+									onClick={(event) => {
+										event.preventDefault();
+										this.connect(c.backend, c.developer);
+									}}
+								>
+									{c.backend + " (" + c.developer + ")"}
+								</Link>
+							</Box>
+						))}
+					</Box>
+				)}
+			</Box>
 		);
 	}
 }

@@ -1,19 +1,12 @@
----
-description: Web Smalltalk IDE
----
-
-# Webside
-
 <div align="center">
 
-<img src="docs/images/webSide.svg" alt="" height="200" width="400">
+<img src="docs/images/Logo.svg" alt="" height="200" width="400">
 
 </div>
 
-Smalltalk IDE for the web\
 [**Explore the docs »**](docs/)\
 \
-[View Demo](https://webside-zglu.onrender.com) · [Report defect](https://github.com/guillermoamaral/Webside/issues/new?labels=Type%3A+Defect) · [Request feature](https://github.com/guillermoamaral/Webside/issues/new?labels=Type%3A+Feature)
+[View Demo](https://ide.webside.app) · [Report defect](https://github.com/guillermoamaral/Webside/issues/new?labels=Type%3A+Defect) · [Request feature](https://github.com/guillermoamaral/Webside/issues/new?labels=Type%3A+Feature)
 
 Webside is both the specification of an [API](docs/api/) to interact with an Smalltalk system (backend), and a web [IDE](docs/) (frontend) built on top of such API.
 
@@ -36,13 +29,13 @@ Read more [here](docs/).
 
 The following steps will demand both time and space, and are only intended to recreate the development environment in your local machine. In case you only want to use Webside to connect to some Smalltalk backend, you can skip these steps and go directly to [Usage](./#usage).
 
-* npm
+-   npm
 
 ```sh
 npm install npm@latest -g
 ```
 
-* Your Smalltalk image implementing the [API](docs/api/)
+-   Your Smalltalk image implementing the [API](docs/api/)
 
 #### Installation
 
@@ -75,12 +68,12 @@ The URL (port and base URI) will correspond to the one chosen by the web server 
 
 ### Demo
 
-There is an online version available [here](https://webside-zglu.onrender.com). As mentioned above, it will prompt the URL where a Smalltalk system is listening. You can setup and launch Webside in Pharo as described in [Pharo-Webside](https://github.com/guillermoamaral/Pharo-Webside).
+There is an online version available [here](https://ide.webside.app). As mentioned above, it will prompt the URL where a Smalltalk system is listening. You can setup and launch Webside in Pharo as described in [Pharo-Webside](https://github.com/guillermoamaral/Pharo-Webside).
 
 Also, here are a couple of talks I gave about this project:
 
-* [FAST 2021](https://www.youtube.com/live/tM4mcTtajGQ?feature=share)
-* [ESUG 2022](https://youtu.be/Q4gmWTTFoww)
+-   [FAST 2021](https://www.youtube.com/live/tM4mcTtajGQ?feature=share)
+-   [ESUG 2022](https://youtu.be/Q4gmWTTFoww)
 
 ### License
 

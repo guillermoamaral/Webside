@@ -15,7 +15,8 @@ Retrieve active evaluations, i.e., evaluations initiated as explained [here](pos
 ```json
 {
 	"id": "string",
-	"expression": "string"
+	"expression": "string",
+	"state": "string"
 }
 ```
 
@@ -25,7 +26,8 @@ Retrieve active evaluations, i.e., evaluations initiated as explained [here](pos
 [
 	{
 		"id": "1",
-		"expression": "Delay wait: 10000"
+		"expression": "Delay wait: 10000",
+		"state": "pending"
 	}
 ]
 ```
