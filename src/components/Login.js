@@ -101,9 +101,9 @@ class Login extends Component {
 				<Box>
 					<img
 						alt="Webside"
-						src={require("../resources/webSide.png")}
-						width={200}
-						height={100}
+						src={require("../resources/Logo.png")}
+						//width={200}
+						//height={100}
 					/>
 				</Box>
 				<Box display="flex" flexDirection="column" alignItems="center">

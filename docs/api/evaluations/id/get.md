@@ -15,15 +15,21 @@ Retrieve the active evaluation with a given ID.
 ```json
 {
 	"id": "string",
-	"expression": "string"
+	"expression": "string",
+	"state": "string"
 }
 ```
+
+Where
+
+-   `state` is any of these: `pending`, `evaluating`, `paused`, `failed`, `cancelled` or `finished`.
 
 **Example:**: `GET /evaluations/1`
 
 ```json
 {
 	"id": "1",
-	"expression": "1000000 factorial"
+	"expression": "1000000 factorial",
+	"state": "pending"
 }
 ```

@@ -132,6 +132,10 @@ class BackendTester extends Tool {
 		];
 	}
 
+	menuOptions() {
+		return [{ label: "Run", action: this.runTest }];
+	}
+
 	render() {
 		const { tests, selectedTest, running, progress, showTestLog } =
 			this.state;
@@ -233,6 +237,7 @@ class BackendTester extends Tool {
 							selectedRow={selectedTest}
 							rowColor={(r) => this.stateColor(r.state())}
 							rowActions={this.rowActions()}
+							menuOptions={this.menuOptions()}
 						/>
 					</Box>
 					{showLog && (

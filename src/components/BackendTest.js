@@ -251,6 +251,15 @@ class BackendTest {
 		);
 	}
 
+	assertNoneSatisfy(data, condition, description) {
+		data.forEach((element) =>
+			this.assert(
+				!condition(element),
+				"no element should satisfy that " + description
+			)
+		);
+	}
+
 	// General tests...
 
 	async testGeneral_Dialect() {
@@ -1612,14 +1621,6 @@ class BackendTest {
 			};
 			await this.post("/changes", change);
 			change = {
-				type: "RemoveCategory",
-				className: "TestClassifyMethod",
-				category: "testClassifyMethod",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
 				type: "RemoveClass",
 				className: "TestClassifyMethod",
 				author: "Webside_BackendTest",
@@ -1900,7 +1901,7 @@ class BackendTest {
 			author: "Webside_BackendTest",
 			package: "Webside_BackendTest",
 		};
-		this.post("/changes", change);
+		await this.post("/changes", change);
 		try {
 			change = { type: "RemoveClass", className: "TestRemoveClass" };
 			await this.post("/changes", change);
@@ -1978,7 +1979,7 @@ class BackendTest {
 			author: "Webside_BackendTest",
 			package: "Webside_BackendTest",
 		};
-		this.post("/changes", change);
+		await this.post("/changes", change);
 		try {
 			const methods = await this.get("/classes/TestRemoveMethod/methods");
 			this.assertIsEmpty(methods);
@@ -1989,7 +1990,7 @@ class BackendTest {
 				author: "Webside_BackendTest",
 				package: "Webside_BackendTest",
 			};
-			this.post("/changes", change);
+			await this.post("/changes", change);
 		}
 	}
 
@@ -2111,6 +2112,63 @@ class BackendTest {
 			change = {
 				type: "RemoveClass",
 				className: "TestRenameInstanceVariable",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
+			};
+			await this.post("/changes", change);
+		}
+	}
+
+	async testChanges_RenameMethod() {
+		let change = {
+			type: "AddClass",
+			className: "TestRenameMethod",
+			superclass: "Object",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
+		};
+		await this.post("/changes", change);
+		change = {
+			type: "AddMethod",
+			className: "TestRenameMethod",
+			sourceCode: "testRenameMethod",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
+		};
+		await this.post("/changes", change);
+		change = {
+			type: "RenameMethod",
+			className: "TestRenameMethod",
+			selector: "testRenameMethod",
+			newSelector: "testRenameMethod2",
+			author: "Webside_BackendTest",
+			package: "Webside_BackendTest",
+		};
+		await this.post("/changes", change);
+		try {
+			const methods = await this.get("/classes/TestRenameMethod/methods");
+			this.assertNoneSatisfy(
+				methods,
+				(m) => m.selector === "testRenameMethod",
+				"m.selector equals 'testRenameMethod'"
+			);
+			this.assertAnySatisfy(
+				methods,
+				(m) => m.selector === "testRenameMethod2",
+				"m.selector equals 'testRenameMethod2'"
+			);
+		} finally {
+			change = {
+				type: "RemoveMethod",
+				className: "TestRenameMethod",
+				selector: "testRenameMethod2",
+				author: "Webside_BackendTest",
+				package: "Webside_BackendTest",
+			};
+			await this.post("/changes", change);
+			change = {
+				type: "RemoveClass",
+				className: "TestRenameMethod",
 				author: "Webside_BackendTest",
 				package: "Webside_BackendTest",
 			};
