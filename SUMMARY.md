@@ -1,6 +1,6 @@
 # Table of contents
 
-* [Webside](README.md)
+* [webside](README.md)
   * [Overview](docs/README.md)
 * [API](docs/api/README.md)
   * [General](docs/api/general/README.md)
@@ -74,7 +74,7 @@
     * [Export extensions](docs/api/extensions/exports.md)
     * [Search extensions](docs/api/extensions/searches.md)
   * [Objects](docs/api/objects/README.md)
-    * [Retrieve pinned objects](docs/api/objects/get.md) 
+    * [Retrieve pinned objects](docs/api/objects/get.md)
     * [Pin object](docs/api/objects/post.md)
     * [Retrieve pinned object](docs/api/objects/id/get.md)
     * [Retrieve pinned object slots](docs/api/objects/id/slots/get.md)
