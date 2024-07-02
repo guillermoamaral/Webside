@@ -102,7 +102,7 @@ class Login extends Component {
 					<img
 						alt="Webside"
 						src={require("../resources/Logo.png")}
-						//width={200}
+						width={200}
 						//height={100}
 					/>
 				</Box>

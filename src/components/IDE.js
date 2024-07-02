@@ -120,18 +120,18 @@ class IDE extends Component {
 			["unappliedChange", ""],
 			["separatorColor", ""],
 			["selectionColor", ""],
-			["systemBrowserColor", "System browser background color"],
-			["classBrowserColor", "Class browser background color"],
-			["debuggerColor", "Debugger background color"],
-			["inspectorColor", "Inspector background color"],
-			["workspaceColor", "Workspace background color"],
-			["transcriptColor", "Transcript background color"],
-			["methodBrowserColor", "Method browser background color"],
-			["changesBrowserColor", "Changes browser background color"],
-			["historyBrowserColor", "History browser background color"],
-		].forEach((s) => {
-			dark.addColor(s[0], "#000000", s[1]);
-			light.addColor(s[0], "#ffffff", s[1]);
+			["systemBrowserColor", "System browser background color", false],
+			["classBrowserColor", "Class browser background color", false],
+			["debuggerColor", "Debugger background color", false],
+			["inspectorColor", "Inspector background color", false],
+			["workspaceColor", "Workspace background color", false],
+			["transcriptColor", "Transcript background color", false],
+			["methodBrowserColor", "Method browser background color", false],
+			["changesBrowserColor", "Changes browser background color", false],
+			["historyBrowserColor", "History browser background color", false],
+		].forEach((a) => {
+			dark.addColor(a[0], "#000000", a[1]).active = a[2] !== false;
+			light.addColor(a[0], "#ffffff", a[1]).active = a[2] !== false;
 		});
 		[
 			"selectorStyle",
@@ -331,7 +331,8 @@ class IDE extends Component {
 	colorSetting(name) {
 		const appearance = this.settings.section("appearance");
 		const mode = appearance.get("mode");
-		return appearance.section(mode).get(name);
+		const setting = appearance.section(mode).setting(name);
+		return setting.active ? setting.value : "inherit";
 	}
 
 	applyTheme(name) {
@@ -339,6 +340,7 @@ class IDE extends Component {
 		if (!theme) return;
 		const appearance = this.settings.section("appearance");
 		appearance.copyFrom(theme);
+		console.log(appearance)
 	}
 
 	applySettings(settings) {

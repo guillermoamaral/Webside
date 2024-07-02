@@ -14,6 +14,7 @@ class Setting extends Object {
 		}
 		this.description = description || "";
 		this.editable = true;
+		this.active = true;
 	}
 
 	static adjustColor(color, amount) {
@@ -72,6 +73,14 @@ class Setting extends Object {
 		this.editable = false;
 	}
 
+	deactivate() {
+		this.active = false;
+	}
+
+	activate() {
+		this.active = true;
+	}
+
 	copyFrom(setting) {
 		this.type = setting.type;
 		this.default = setting.defaultValue;
@@ -79,6 +88,7 @@ class Setting extends Object {
 		this.label = setting.label;
 		this.description = setting.description;
 		this.editable = setting.editable;
+		this.active = setting.active !== false;
 	}
 
 	copy() {
@@ -90,11 +100,13 @@ class Setting extends Object {
 		copy.label = this.label;
 		copy.description = this.description;
 		copy.editable = this.editable;
+		copy.active = this.active;
 		return copy;
 	}
 
 	fromJson(value) {
 		this.value = value;
+		this.active = true; // if a value comes from JSON, it implies an active setting...
 	}
 
 	toJson() {
@@ -126,6 +138,7 @@ class TextStyleSetting extends Setting {
 		copy.label = this.label;
 		copy.description = this.description;
 		copy.editable = this.editable;
+		copy.active = this.active;
 		return copy;
 	}
 
@@ -136,12 +149,14 @@ class TextStyleSetting extends Setting {
 		this.label = setting.label;
 		this.description = setting.description;
 		this.editable = setting.editable;
+		this.active = setting.active !== false;
 	}
 
 	fromJson(json) {
 		this.color = json.color;
 		this.italic = json.italic;
 		this.bold = json.bold;
+		this.active = true; // if a value comes from JSON, it implies an active setting...
 	}
 
 	toJson() {
