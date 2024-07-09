@@ -956,11 +956,8 @@ class Backend {
 		return response;
 	}
 
-	async objectPresentations(id, path) {
-		const response = await this.objectSlot(
-			id,
-			path + "/custom-presentations"
-		);
+	async objectViews(id, path) {
+		const response = await this.objectSlot(id, path + "/custom-views");
 		return response;
 	}
 

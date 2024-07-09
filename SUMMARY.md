@@ -78,7 +78,7 @@
     * [Pin object](docs/api/objects/post.md)
     * [Retrieve pinned object](docs/api/objects/id/get.md)
     * [Retrieve pinned object slots](docs/api/objects/id/slots/get.md)
-      * [Custom presentations](docs/api/objects/id/slots/get.md#custom-presentations)
+      * [Custom views](docs/api/objects/id/slots/get.md#custom-views)
     * [Unpin an object](docs/api/objects/id/delete.md)
     * [Unpin all objects](docs/api/objects/delete.md)
   * [Processes](docs/api/processes/README.md)
