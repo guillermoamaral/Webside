@@ -25,7 +25,7 @@ class ClassTree extends Component {
 
 	async componentDidMount() {
 		await this.initializeClassSearch();
-		this.initializeExtendedOptions();
+		this.updateExtendedOptions();
 		const expanded = this.props.selectedClass
 			? [this.props.selectedClass]
 			: [];
@@ -203,9 +203,8 @@ class ClassTree extends Component {
 		return trees;
 	}
 
-	async initializeExtendedOptions() {
-		const extensions = await ide.backend.extensions("class");
-		this.setState({ extendedOptions: extensions });
+	async fetchExtendedOptions() {
+		return await ide.backend.extensions("class");
 	}
 
 	findSubclass(name, root) {
@@ -245,6 +244,11 @@ class ClassTree extends Component {
 		}
 	}
 
+	async updateExtendedOptions() {
+		const options = await this.fetchExtendedOptions();
+		this.setState({ extendedOptions: options });
+	}
+
 	searchClass = async (text) => {
 		let names;
 		try {
@@ -257,6 +261,7 @@ class ClassTree extends Component {
 		await this.updateClass(species);
 		this.setState({ selectedClass: species });
 		if (this.props.onClassSelect) this.props.onClassSelect(species);
+		this.updateExtendedOptions();
 	};
 
 	classExpanded = async (species) => {

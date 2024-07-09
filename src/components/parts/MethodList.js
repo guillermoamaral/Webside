@@ -35,7 +35,7 @@ class MethodList extends Component {
 
 	async componentDidMount() {
 		this.updateMethods();
-		this.initializeExtendedOptions();
+		this.updateExtendedOptions();
 	}
 
 	async componentDidUpdate(prevProps) {
@@ -221,9 +221,13 @@ class MethodList extends Component {
 		return superclasses;
 	}
 
-	async initializeExtendedOptions() {
-		const extensions = await ide.backend.extensions("method");
-		this.setState({ extendedOptions: extensions });
+	async fetchExtendedOptions() {
+		return await ide.backend.extensions("method");
+	}
+
+	async updateExtendedOptions() {
+		const options = await this.fetchExtendedOptions();
+		this.setState({ extendedOptions: options });
 	}
 
 	scopeSelected(scope) {
@@ -234,10 +238,14 @@ class MethodList extends Component {
 
 	methodSelected = async (method) => {
 		let categories = await this.fetchCategories(method);
-		this.setState({ selectedMethod: method, categories: categories });
+		this.setState({
+			selectedMethod: method,
+			categories: categories,
+		});
 		if (this.props.onMethodSelect) {
 			this.props.onMethodSelect(method);
 		}
+		this.updateExtendedOptions();
 	};
 
 	renameMethod = async (method) => {

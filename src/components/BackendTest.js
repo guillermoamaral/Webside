@@ -2243,7 +2243,7 @@ class BackendTest {
 			let attempts = 0;
 			do {
 				evaluation = await this.get("/evaluations/" + id);
-				if (attempts <= 3 && evaluation.state !== "finished") {
+				if (attempts <= 5 && evaluation.state !== "finished") {
 					this.assertEquals(
 						evaluation.state,
 						"evaluating",

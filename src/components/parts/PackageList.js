@@ -18,7 +18,7 @@ class PackageList extends Component {
 
 	componentDidMount() {
 		this.updatePackages(this.props.selectedPackage);
-		this.initializeExtendedOptions();
+		this.updateExtendedOptions();
 	}
 
 	componentDidUpdate(prevProps) {
@@ -53,9 +53,13 @@ class PackageList extends Component {
 		return packages;
 	}
 
-	async initializeExtendedOptions() {
-		const extensions = await ide.backend.extensions("package");
-		this.setState({ extendedOptions: extensions });
+	async fetchExtendedOptions() {
+		return await ide.backend.extensions("package");
+	}
+
+	async updateExtendedOptions() {
+		const options = await this.fetchExtendedOptions();
+		this.setState({ extendedOptions: options });
 	}
 
 	packageSelected = (pack) => {
@@ -63,6 +67,7 @@ class PackageList extends Component {
 		if (this.props.onPackageSelect) {
 			this.props.onPackageSelect(pack);
 		}
+		this.updateExtendedOptions();
 	};
 
 	createPackage = async () => {

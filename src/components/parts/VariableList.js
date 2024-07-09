@@ -20,7 +20,7 @@ class VariableList extends Component {
 
 	componentDidMount() {
 		this.updateVariables();
-		this.initializeExtendedOptions();
+		this.updateExtendedOptions();
 	}
 
 	componentDidUpdate(prevProps) {
@@ -52,9 +52,13 @@ class VariableList extends Component {
 		return variables;
 	}
 
-	async initializeExtendedOptions() {
-		const extensions = await ide.backend.extensions("variable");
-		this.setState({ extendedOptions: extensions });
+	async fetchExtendedOptions() {
+		return await ide.backend.extensions("variable");
+	}
+
+	async updateExtendedOptions() {
+		const options = await this.fetchExtendedOptions();
+		this.setState({ extendedOptions: options });
 	}
 
 	extendedVariables(variables) {
@@ -81,6 +85,7 @@ class VariableList extends Component {
 		if (this.props.onVariableSelect) {
 			this.props.onVariableSelect(selected);
 		}
+		this.updateExtendedOptions();
 	};
 
 	addVariable = async () => {
