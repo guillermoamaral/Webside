@@ -88,7 +88,7 @@ class ObjectPresenter extends Component {
 				),
 			});
 		}
-		(object.presentations || []).forEach((p, i) => {
+		(object.views || []).forEach((p, i) => {
 			const page = {
 				id: p.title + i,
 				label: p.title,

@@ -274,9 +274,11 @@ class Settings extends Object {
 
 	toJson() {
 		var json = {};
-		this.settings.forEach((s) => {
-			json[s.name] = s.toJson();
-		});
+		this.settings
+			.filter((s) => s instanceof Settings || s.active)
+			.forEach((s) => {
+				json[s.name] = s.toJson();
+			});
 		return json;
 	}
 

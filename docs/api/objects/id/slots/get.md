@@ -8,7 +8,7 @@ Slots might be named or indexed depending on the object class. In the former cas
 
 It should be also possible to get the list of both named or indexed slots at once by means `named-slots` or `indexed-slots`, respectively. See examples below.
 
-Finally, custom object presentations could be available from `custom-presentations` segment. See [Custom Presentations](#custom-presentations) below.
+Finally, custom object views could be available from `custom-views` segment. See [Custom Views](#custom-views) below.
 
 **URL**: `/objects/{id}/*`
 
@@ -145,15 +145,15 @@ Note the `slot` property in each object.
 }
 ```
 
-# Custom presentations
+# Custom views
 
-Custom presentations give the chance to specify special ways of viewing an object. The consumer of the API can take advantage of these specifications and display different views accordingly.\
+Custom views give the chance to specify special ways of viewing an object. The consumer of the API can take advantage of these specifications and display different views accordingly.\
 For example, at the moment of writing this documentation, the IDE supports the following views `list`, `table`, `tree`, `source`, `html` and `markdown`. These views are available in the Inspector.
 
-Custom presentations should be accessible through `/custom-presentations` segment.
+Custom views should be accessible through `/custom-views` segment.
 
 For example, lets suppose there is a instance of a tree-like object in your system pinned with the ID 3.
-Responding to `GET /objects/2/custom-presentations` with the following specification will enable a tree titled `"Tree View"`.
+Responding to `GET /objects/2/custom-views` with the following specification will enable a tree titled `"Tree View"`.
 
 ```json
 [

@@ -32,7 +32,7 @@ class Inspector extends Tool {
 
 	async componentDidMount() {
 		const root = this.props.root;
-		await this.updatePresentations(root);
+		await this.updateViews(root);
 		await this.updateSlots(root);
 		this.setState({ objectTree: [root], selectedObject: root });
 	}
@@ -66,18 +66,18 @@ class Inspector extends Tool {
 			const path = this.objectURIPath(object);
 			const retrieved = await ide.backend.objectSlot(id, path);
 			Object.assign(object, retrieved);
-			await this.updatePresentations(object);
+			await this.updateViews(object);
 			await this.updateSlots(object);
 		} catch (error) {
 			ide.reportError(error);
 		}
 	};
 
-	updatePresentations = async (object) => {
+	updateViews = async (object) => {
 		try {
 			const id = this.props.root.id;
 			const path = this.objectURIPath(object);
-			object.presentations = await ide.backend.objectPresentations(
+			object.views = await ide.backend.objectViews(
 				id,
 				path
 			);
