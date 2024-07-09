@@ -23,7 +23,7 @@ class CategoryList extends Component {
 
 	componentDidMount() {
 		this.updateCategories();
-		this.initializeExtendedOptions();
+		this.updateExtendedOptions();
 	}
 
 	componentDidUpdate(prevProps) {
@@ -69,17 +69,22 @@ class CategoryList extends Component {
 		return categories;
 	}
 
-	async initializeExtendedOptions() {
-		const extensions = await ide.backend.extensions("category");
-		this.setState({ extendedOptions: extensions });
+	async fetchExtendedOptions() {
+		return await ide.backend.extensions("category");
 	}
 
-	categorySelected = (category) => {
+	async updateExtendedOptions() {
+		const options = await this.fetchExtendedOptions();
+		this.setState({ extendedOptions: options });
+	}
+
+	categorySelected = async (category) => {
 		const selected = category === this.all ? null : category;
 		this.setState({ selectedCategory: selected });
 		if (this.props.onCategorySelect) {
 			this.props.onCategorySelect(selected);
 		}
+		this.updateExtendedOptions();
 	};
 
 	addNewCategory = async () => {
