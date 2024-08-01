@@ -8,9 +8,12 @@ import {
 	Typography,
 	CircularProgress,
 	Tooltip,
+	IconButton,
 } from "@mui/material";
 import { ide } from "../IDE";
 import CustomList from "../controls/CustomList";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 class QuickSearch extends Tool {
 	constructor(props) {
@@ -26,6 +29,7 @@ class QuickSearch extends Tool {
 			matchCase: options.matchCase || false,
 			condition: options.condition || "beginning",
 			type: "all",
+			sortOrder: options.sortOrder || "ascending",
 		};
 		if (options.text) {
 			this.scheduleSearch();
@@ -87,8 +91,13 @@ class QuickSearch extends Tool {
 			ide.inspectExpression(text);
 		}
 		if (this.props.onResultSelect) {
-			const { text, matchCase, condition } = this.state;
-			this.props.onResultSelect(result, { text, matchCase, condition });
+			const { text, matchCase, condition, sortOrder } = this.state;
+			this.props.onResultSelect(result, {
+				text,
+				matchCase,
+				condition,
+				sortOrder,
+			});
 		}
 	};
 
@@ -121,10 +130,19 @@ class QuickSearch extends Tool {
 				const title =
 					this.titleForType(type) + " (" + group.length + ")";
 				extended.push({ type: "separator", text: title });
-				group.forEach((result) => extended.push(result));
+				extended.push(...this.sortResults(group));
 			}
 		});
 		return extended;
+	}
+
+	sortResults(results) {
+		const order = this.state.sortOrder;
+		if (order === "none") return results;
+		const copy = [...results];
+		if (order === "ascending")
+			return copy.sort((a, b) => (a.text <= b.text ? -1 : 1));
+		return copy.sort((a, b) => (a.text <= b.text ? 1 : -1));
 	}
 
 	toggleMatchCase = () => {
@@ -141,9 +159,25 @@ class QuickSearch extends Tool {
 		this.setState({ condition: value }, () => this.search());
 	};
 
+	toggleSortOrder = () => {
+		this.setState({
+			sortOrder:
+				this.state.sortOrder === "ascending"
+					? "descending"
+					: "ascending",
+		});
+	};
+
 	render() {
-		const { text, searching, selectedResult, matchCase, condition, type } =
-			this.state;
+		const {
+			text,
+			searching,
+			selectedResult,
+			matchCase,
+			condition,
+			type,
+			sortOrder,
+		} = this.state;
 		const results = this.extendedResults();
 		const appearance = ide.settings.section("appearance");
 		const color = appearance
@@ -193,64 +227,104 @@ class QuickSearch extends Tool {
 								this.setCondition(event.target.value)
 							}
 						>
-							<ToggleButton value={"beginning"}>a*</ToggleButton>
-							<ToggleButton value={"including"}>*a*</ToggleButton>
-							<ToggleButton value={"ending"}>*a</ToggleButton>
-							<ToggleButton value={"similar"}>~</ToggleButton>
+							<Tooltip
+								title="Elements beginning with..."
+								placement="top"
+							>
+								<ToggleButton value={"beginning"}>
+									a*
+								</ToggleButton>
+							</Tooltip>
+							<Tooltip
+								title="Elements including..."
+								placement="top"
+							>
+								<ToggleButton value={"including"}>
+									*a*
+								</ToggleButton>
+							</Tooltip>
+							<Tooltip
+								title="Elements ending with..."
+								placement="top"
+							>
+								<ToggleButton value={"ending"}>*a</ToggleButton>
+							</Tooltip>
+							<Tooltip
+								title="Elements similar to..."
+								placement="top"
+							>
+								<ToggleButton value={"similar"}>~</ToggleButton>
+							</Tooltip>
 						</ToggleButtonGroup>
 					</Box>
 				</Box>
 				<Box display="flex" flexDirection="row">
-					<ToggleButton
-						selected={type === "all"}
-						onChange={() => this.searchIn("all")}
-						size="small"
-						value="shift"
-						sx={{ minWidth: 50, borderRadius: 28 }}
-						mr={1}
-					>
-						All
-					</ToggleButton>
-					<ToggleButton
-						selected={type === "class"}
-						onChange={() => this.searchIn("class")}
-						size="small"
-						value="shift"
-						sx={{ borderRadius: 28 }}
-						mr={1}
-					>
-						Classes
-					</ToggleButton>
-					<ToggleButton
-						selected={type === "selector"}
-						onChange={() => this.searchIn("selector")}
-						size="small"
-						value="shift"
-						sx={{ borderRadius: 28 }}
-						mr={1}
-					>
-						Selectors
-					</ToggleButton>
-					<ToggleButton
-						selected={type === "package"}
-						onChange={() => this.searchIn("package")}
-						size="small"
-						value="shift"
-						sx={{ borderRadius: 28 }}
-						mr={1}
-					>
-						Packages
-					</ToggleButton>
-					<ToggleButton
-						selected={type === "pool"}
-						onChange={() => this.searchIn("pool")}
-						size="small"
-						value="shift"
-						sx={{ borderRadius: 28 }}
-						mr={1}
-					>
-						Pools
-					</ToggleButton>
+					<Box display="flex" flexDirection="row" flexGrow={1}>
+						<ToggleButton
+							selected={type === "all"}
+							onChange={() => this.searchIn("all")}
+							size="small"
+							value="shift"
+							sx={{ minWidth: 50, borderRadius: 28 }}
+							mr={1}
+						>
+							All
+						</ToggleButton>
+						<ToggleButton
+							selected={type === "class"}
+							onChange={() => this.searchIn("class")}
+							size="small"
+							value="shift"
+							sx={{ borderRadius: 28 }}
+							mr={1}
+						>
+							Classes
+						</ToggleButton>
+						<ToggleButton
+							selected={type === "selector"}
+							onChange={() => this.searchIn("selector")}
+							size="small"
+							value="shift"
+							sx={{ borderRadius: 28 }}
+							mr={1}
+						>
+							Selectors
+						</ToggleButton>
+						<ToggleButton
+							selected={type === "package"}
+							onChange={() => this.searchIn("package")}
+							size="small"
+							value="shift"
+							sx={{ borderRadius: 28 }}
+							mr={1}
+						>
+							Packages
+						</ToggleButton>
+						<ToggleButton
+							selected={type === "pool"}
+							onChange={() => this.searchIn("pool")}
+							size="small"
+							value="shift"
+							sx={{ borderRadius: 28 }}
+							mr={1}
+						>
+							Pools
+						</ToggleButton>
+					</Box>
+					<Box ml={1}>
+						<Tooltip title="Sort order" placement="top">
+							<IconButton
+								size="small"
+								onClick={this.toggleSortOrder}
+							>
+								{sortOrder === "ascending" ? (
+									<ArrowUpwardIcon fontSize="small" />
+								) : (
+									<ArrowDownwardIcon fontSize="small" />
+								)}
+							</IconButton>
+						</Tooltip>
+					</Box>
 				</Box>
 				{!searching && results.length === 0 && (
 					<Typography variant="body">No results</Typography>
