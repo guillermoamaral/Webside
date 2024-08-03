@@ -106,8 +106,13 @@ class Login extends Component {
 						//height={100}
 					/>
 				</Box>
-				<Box display="flex" flexDirection="column" alignItems="center">
-					<form onSubmit={this.connectClicked}>
+
+				<form onSubmit={this.connectClicked}>
+					<Box
+						display="flex"
+						flexDirection="column"
+						alignItems="flex-end"
+					>
 						<TextField
 							size="small"
 							id="backend"
@@ -125,39 +130,34 @@ class Login extends Component {
 							autoFocus
 							disabled={connecting}
 						/>
-						<Box
-							display="flex"
-							flexDirection="column"
-							alignItems="flex-end"
+
+						<TextField
+							size="small"
+							id="developer"
+							label="Developer"
+							type="text"
+							placeholder="developer"
+							margin="dense"
+							name="developer"
+							variant="outlined"
+							value={developer || ""}
+							onChange={(event) =>
+								this.developerChanged(event.target.value)
+							}
+							required
+							disabled={connecting}
+						/>
+						<Button
+							variant="outlined"
+							sx={{ textTransform: "none" }}
+							type="submit"
+							disabled={connecting}
 						>
-							<TextField
-								size="small"
-								id="developer"
-								label="Developer"
-								type="text"
-								placeholder="developer"
-								margin="dense"
-								name="developer"
-								variant="outlined"
-								value={developer || ""}
-								onChange={(event) =>
-									this.developerChanged(event.target.value)
-								}
-								required
-								disabled={connecting}
-							/>
-							<Button
-								variant="outlined"
-								sx={{ textTransform: "none" }}
-								type="submit"
-								disabled={connecting}
-							>
-								{buttonLabel}
-							</Button>
-						</Box>
-						{error && <FormHelperText>{error}</FormHelperText>}
-					</form>
-				</Box>
+							{buttonLabel}
+						</Button>
+					</Box>
+				</form>
+				{error && <FormHelperText>{error}</FormHelperText>}
 				{recentConnections.length > 0 && (
 					<Box
 						display="flex"
