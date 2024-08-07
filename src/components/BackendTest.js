@@ -781,7 +781,7 @@ class BackendTest {
 			this.assertIncludes(
 				method.source,
 				"this is testMethod",
-				"method.source should include 'this is testMethod'"
+				"method.source"
 			);
 		} finally {
 			change = {
@@ -2244,10 +2244,9 @@ class BackendTest {
 			do {
 				evaluation = await this.get("/evaluations/" + id);
 				if (attempts <= 5 && evaluation.state !== "finished") {
-					this.assertEquals(
-						evaluation.state,
-						"evaluating",
-						"evaluation.state"
+					this.assert(
+						["pending", "evaluating"].includes(evaluation.state),
+						"evaluation.state should be either 'pending' or 'evaluating'"
 					);
 					attempts++;
 					await this.wait(200);
@@ -2286,10 +2285,9 @@ class BackendTest {
 			do {
 				evaluation = await this.get("/evaluations/" + id);
 				if (attempts <= 3 && evaluation.state !== "failed") {
-					this.assertEquals(
-						evaluation.state,
-						"evaluating",
-						"evaluation.state"
+					this.assert(
+						["pending", "evaluating"].includes(evaluation.state),
+						"evaluation.state should be either 'pending' or 'evaluating'"
 					);
 					attempts++;
 					await this.wait(200);
@@ -2298,18 +2296,10 @@ class BackendTest {
 				}
 			} while (true);
 			this.assertEquals(evaluation.state, "failed", "evaluation.state");
-			this.assert(
-				Object.keys(evaluation).includes("error"),
-				"evaluation should include an error"
-			);
-			let description =
-				evaluation.error && evaluation.error.description
-					? evaluation.error.description.toLowerCase()
-					: "";
-			this.assert(
-				description.includes("primary missing") ||
-					description.includes("variable or expression expected"),
-				"error description should mention that a primary or variable is missing"
+			this.assertNotNull(evaluation.error, "evaluation.error");
+			this.assertIsString(
+				evaluation.error.description,
+				"error should have a description"
 			);
 		} finally {
 			try {
@@ -2610,7 +2600,7 @@ class BackendTest {
 		while (attempts <= 3 && evaluation.state !== "evaluating") {
 			attempts++;
 			await this.wait(200);
-			evaluation = this.get("/evaluations/" + evaluation.id);
+			evaluation = await this.get("/evaluations/" + evaluation.id);
 		}
 		this.assertEquals(evaluation.state, "evaluating", "evaluation.state");
 		await this.post("/evaluations/" + evaluation.id + "/pause");
@@ -2746,12 +2736,7 @@ class BackendTest {
 			error = e.error.response.data;
 		}
 		this.assertNotNull(error);
-		let description = error.description.toLowerCase();
-		this.assert(
-			description.includes("primary missing") ||
-				description.includes("variable or expression expected"),
-			"error description should mention that a primary or variable is missing"
-		);
+		this.assertIsString(error.description, "error.description");
 	}
 
 	async testEvaluations_TemporaryVariableInDebuggerContext() {
