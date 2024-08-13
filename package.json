@@ -1,6 +1,6 @@
 {
 	"name": "webside",
-	"version": "2.5.0",
+	"version": "2.5.1",
 	"description": "Smalltalk Web IDE",
 	"author": "guille amaral",
 	"build": {
