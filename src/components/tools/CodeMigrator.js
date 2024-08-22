@@ -52,10 +52,12 @@ class CodeMigrator extends Tool {
 		this.setState({ changes: [], generating: true });
 		const packages = await this.sourcePackages();
 		const classes = await this.sourceClasses(packages);
-		classes.forEach((species) => {
-			const change = this.classDefinition(species);
-			changes.push(change);
-		});
+		await Promise.all(
+			classes.map(async (species) => {
+				const change = await this.classDefinition(species);
+				changes.push(change);
+			})
+		);
 		const methods = await this.sourceMethods(packages, classes);
 		methods.forEach((method) => {
 			const change = this.methodDefinition(method);
@@ -129,13 +131,22 @@ class CodeMigrator extends Tool {
 		return methods;
 	}
 
-	classDefinition(species) {
+	async classDefinition(species) {
 		const change = new AddClass();
 		change.author = ide.backend.author;
 		change.className = species.name;
 		change.label = species.name;
 		change.package = species.package;
-		change.definition = species.definition;
+		change.superclass = species.superclass;
+		let variables = await ide.backend.instanceVariables(species.name);
+		change.instanceVariables = variables
+			.filter((v) => v.class === species.name)
+			.map((v) => v.name);
+		variables = await ide.backend.classVariables(species.name);
+		change.classVariables = variables
+			.filter((v) => v.class.includes(species.name))
+			.map((v) => v.name);
+		// change.poolDictionaries = species.poolDictionaries; Add when an endpoint to retrieve pools is available
 		return change;
 	}
 
