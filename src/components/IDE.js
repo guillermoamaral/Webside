@@ -271,7 +271,7 @@ class IDE extends Component {
 				"Roboto",
 				"Tahoma",
 			],
-			"Tahoma"
+			"Roboto"
 		);
 		appearance.addOptions(
 			"fontSize",

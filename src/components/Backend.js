@@ -199,6 +199,13 @@ class Backend {
 		);
 	}
 
+	async classVariables(classname) {
+		return await this.get(
+			"/classes/" + classname + "/class-variables",
+			"class variables of class " + classname
+		);
+	}
+
 	async variables(classname) {
 		return await this.get(
 			"/classes/" + classname + "/variables",

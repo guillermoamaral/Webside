@@ -265,6 +265,10 @@ class ClassChange extends StChange {
 class AddClass extends ClassChange {
 	constructor() {
 		super();
+		this.superclass = null;
+		this.instanceVariables = [];
+		this.classVariables = [];
+		this.poolDictionaries = [];
 		this.definition = null;
 	}
 
@@ -274,11 +278,19 @@ class AddClass extends ClassChange {
 
 	fromJson(json) {
 		super.fromJson(json);
+		this.superclass = json.superclass;
+		this.instanceVariables = json.instanceVariables;
+		this.classVariables = json.classVariables;
+		this.poolDictionaries = json.poolDictionaries;
 		this.definition = json.definition;
 	}
 
 	asJson() {
 		var json = super.asJson();
+		json.superclass = this.superclass;
+		json.instanceVariables = this.instanceVariables;
+		json.classVariables = this.classVariables;
+		json.poolDictionaries = this.poolDictionaries;
 		json.definition = this.definition;
 		return json;
 	}
