@@ -184,6 +184,7 @@ class SystemBrowser extends Tool {
 	};
 
 	classDefined = async (species) => {
+		await this.updateClass(species);
 		this.updateLabel(species.name);
 		if (this.props.showPackages) {
 			const pack = this.state.selectedPackage;
