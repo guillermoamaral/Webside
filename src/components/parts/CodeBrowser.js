@@ -47,9 +47,7 @@ class CodeBrowser extends Component {
 	}
 
 	defineClass = async (definition) => {
-		if (!this.props.class) {
-			return;
-		}
+		if (!this.props.class) return;
 		const pack = this.props.package;
 		const species = this.props.class;
 		const classname = species ? species.name : null;
@@ -62,7 +60,11 @@ class CodeBrowser extends Component {
 				packagename,
 				definition
 			);
-			const species = await ide.backend.classNamed(change.className);
+			let name = change.className;
+			if (name.endsWith(" class")) {
+				name = name.slice(0, name.length - 6);
+			}
+			const species = await ide.backend.classNamed(name);
 			if (this.props.onClassDefine) {
 				this.props.onClassDefine(species);
 			}
