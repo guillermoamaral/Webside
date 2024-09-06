@@ -6,7 +6,7 @@ This endpoint allows to find a selector in a given pice of source code.
 
 **Method**: `POST`
 
-**Body**:
+**Payload**:
 
 ```json
 {

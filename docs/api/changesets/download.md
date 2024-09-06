@@ -8,7 +8,7 @@ Note: the use of `/download` in the URI comes from the fact that this endpoint i
 
 **Method**: `POST`
 
-**Body**: `[change]`
+**Payload**: `[change]`
 
 Where change corresponds to the ones defined [here](../changes/post.md)
 

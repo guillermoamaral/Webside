@@ -6,7 +6,7 @@ Create a debugger on a given process. The process is identified thru the evaluat
 
 **Method**: `POST`
 
-**Body**: an `evaluation` (the ID obtained when creating the evaluation):
+**Payload**: an `evaluation` (the ID obtained when creating the evaluation):
 
 ```json
 {
@@ -18,7 +18,7 @@ Create a debugger on a given process. The process is identified thru the evaluat
 
 **Code** : `200 OK`
 
-**Content**:
+**Payload**:
 
 ```json
 {

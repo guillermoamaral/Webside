@@ -21,6 +21,7 @@ class Backend {
 		this.reportError = reportError ? reportError.bind() : null;
 		this.reportChange = reportChange ? reportChange.bind() : null;
 		this.author = author;
+		this.useChanges = null;
 	}
 
 	async get(uri, description) {
@@ -539,6 +540,19 @@ class Backend {
 	}
 
 	// Changes...
+	async usesChanges() {
+		if (this.useChanges === null) {
+			try {
+				await axios.get(this.url + "/changes");
+				this.useChanges = true;
+			} catch (error) {
+				this.useChanges =
+					!error.response || error.response.status !== 404;
+			}
+		}
+		return this.useChanges;
+	}
+
 	async lastChanges() {
 		return await this.get("/changes", "changes");
 	}
@@ -551,6 +565,18 @@ class Backend {
 	}
 
 	async postChange(change, description) {
+		const changes = await this.usesChanges();
+		if (!changes) {
+			const exception = new BackendError(
+				"Changes not supported",
+				this.url + "/changes",
+				null,
+				null,
+				null,
+				null
+			);
+			throw exception;
+		}
 		const applied = await this.post("/changes", change, description);
 		if (this.reportChange) {
 			this.reportChange(applied);
@@ -593,15 +619,27 @@ class Backend {
 
 	// Change helpers...
 	async createPackage(packagename) {
+		const description = "create package " + packagename;
 		const change = this.newChange("AddPackage");
 		change.name = packagename;
-		return await this.postChange(change, "create package " + packagename);
+		const changes = await this.usesChanges();
+		if (!changes) {
+			await this.post("/packages/", change, description);
+			return change;
+		}
+		return await this.postChange(change, description);
 	}
 
 	async removePackage(packagename) {
 		const change = this.newChange("RemovePackage");
+		const description = "remove package " + packagename;
 		change.name = packagename;
-		return await this.postChange(change, "remove package " + packagename);
+		const changes = await this.usesChanges();
+		if (!changes) {
+			await this.delete("/packages/" + packagename, description);
+			return change;
+		}
+		return await this.postChange(change, description);
 	}
 
 	async renamePackage(packagename, newName) {
@@ -612,12 +650,20 @@ class Backend {
 	}
 
 	async defineClass(classname, superclassname, packagename, definition) {
+		const description = "define class " + classname;
 		const change = this.newChange("AddClass");
 		change.className = classname;
 		change.superclass = superclassname;
 		change.package = packagename;
 		change.definition = definition;
-		return await this.postChange(change, "define class " + classname);
+		const changes = await this.usesChanges();
+		if (!changes) {
+			const species = await this.post("/classes/", change, description);
+			change.className = species.name;
+			change.definition = species.definition;
+			return change;
+		}
+		return await this.postChange(change, description);
 	}
 
 	async commentClass(classname, comment) {
@@ -628,9 +674,15 @@ class Backend {
 	}
 
 	async removeClass(classname) {
+		const description = "remove class " + classname;
 		const change = this.newChange("RemoveClass");
 		change.className = classname;
-		return await this.postChange(change, "remove class " + classname);
+		const changes = await this.usesChanges();
+		if (!changes) {
+			await this.delete("/classes/" + classname, description);
+			return change;
+		}
+		return await this.postChange(change, description);
 	}
 
 	async renameClass(classname, newName, renameReferences = true) {
@@ -761,25 +813,40 @@ class Backend {
 	}
 
 	async compileMethod(classname, packagename, category, source) {
+		const description = "compile " + source + " in " + classname;
 		const change = this.newChange("AddMethod");
 		change.className = classname;
 		change.package = packagename;
 		change.category = category;
 		change.sourceCode = source;
-		return await this.postChange(
-			change,
-			"compile " + source + " in " + classname
-		);
+		const changes = await this.usesChanges();
+		if (!changes) {
+			const method = await this.post(
+				"/classes/" + classname + "/methods",
+				change,
+				description
+			);
+			change.selector = method.selector;
+			change.sourceCode = method.source;
+			return change;
+		}
+		return await this.postChange(change, description);
 	}
 
 	async removeMethod(classname, selector) {
+		const description = "remove methodd " + classname + ">>#" + selector;
 		const change = this.newChange("RemoveMethod");
 		change.className = classname;
 		change.selector = selector;
-		return await this.postChange(
-			change,
-			"remove methodd " + classname + ">>#" + selector
-		);
+		const changes = await this.usesChanges();
+		if (!changes) {
+			await this.delete(
+				"/classes/" + classname + "/methods/" + selector,
+				description
+			);
+			return change;
+		}
+		return await this.postChange(change, description);
 	}
 
 	async classifyMethod(classname, selector, category) {
