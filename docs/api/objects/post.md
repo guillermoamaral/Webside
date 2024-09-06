@@ -12,7 +12,7 @@ See [GET](get.md) for details on how to form this URI.
 
 **Code** : `200 OK`
 
-**Content**: `object` defined as:
+**Payload**: `object` defined as:
 
 ```json
 {

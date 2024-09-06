@@ -8,7 +8,7 @@ Note: the use of `/upload` in the URI comes from the fact that this endpoint is 
 
 **Method**: `POST`
 
-**Body**: `string` corresponding to the contents of a chunk formatted file.
+**Payload**: `string` corresponding to the contents of a chunk formatted file.
 
 ## Success Responses
 

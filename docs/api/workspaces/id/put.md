@@ -12,7 +12,7 @@ Update the workspace with a given ID.
 
 **Example:**: `GET /workspaces/1`
 
-**Body**: a `workspace` with the following properties:
+**Payload**: a `workspace` with the following properties:
 
 ```json
 {

@@ -6,7 +6,7 @@ Create and run a test suite.
 
 **Method**: `POST`
 
-**Body**: a `suite` given by:
+**Payload**: a `suite` given by:
 
 ```json
 {
@@ -28,7 +28,7 @@ These options can be combined in any way. For example, one single package, class
 
 **Code** : `200 OK`
 
-**Content**: even when the object representing the test run might vary from dialect to dialect, the response should contain the `ID` of the created run in order to follow its progress and request its results:
+**Payload**: even when the object representing the test run might vary from dialect to dialect, the response should contain the `ID` of the created run in order to follow its progress and request its results:
 
 ```json
 {

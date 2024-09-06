@@ -70,9 +70,25 @@ Endpoints to apply changes and retrieve changes made to the system.
 |  POST  | [/changes](changes/post.md)                                                                     | Apply a change to the system                  |     -      | `change` |
 |  GET   | [/classes/{name}/methods/{selector}/history](code/classes/name/methods/selector/history/get.md) | Retrieve historical changes on a given method |     -      |    -     |
 
+### [Basic CRUD operations](changes/crud/README.md)
+
+For the sake of simplicity, the API encourages the use of a single endpoint `/changes` for applying any change to the system.\
+However, as this may imply to count on some implementation of _refactoring changes_ on the backend (and might not be the case),
+a basic set of CRUD operations on main meta-model objects should be provided.
+The data required for these operations should be the same as the one provided for the corresponding changes.
+
+| Method | Path                                                                                       | Description                                                     | Parameters | Payload   |
+| :----: | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------- | :--------: | --------- |
+|  POST  | [/packages](changes/crud/packages/post.md)                                                 | Add a new package                                               |     -      | `package` |
+| DELETE | [/packages/{name}](changes/crud/packages/name/delete.md)                                   | Remove a given package.                                         |     -      | -         |
+|  POST  | [/classes](changes/crud/classes/post.md)                                                   | Define a new class or change the definition of an existing one. |     -      | `class`   |
+| DELETE | [/classes/{name}](changes/crud/classes/name/delete.md)                                     | Remove a given class.                                           |     -      | -         |
+|  POST  | [/classes/{name}/methods](changes/crud/classes/name/methods/post.md)                       | Compile a method in a given class.                              |     -      | `method`  |
+| DELETE | [/classes/{name}/methods/{selector}](changes/crud/classes/name/methods/selector/delete.md) | Remove a given method.                                          |     -      | -         |
+
 ## [Changesets](changesets)
 
-Endpoints to convert changesets to/from changes.
+Endpoints to convert changesets (chunks file) to/from changes.
 
 | Method | Path                                           | Description                                                 | Parameters |  Payload   |
 | :----: | ---------------------------------------------- | ----------------------------------------------------------- | :--------: | :--------: |

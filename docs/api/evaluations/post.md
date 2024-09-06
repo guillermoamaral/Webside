@@ -8,7 +8,7 @@ This endpoint allows to evaluate an expression, either **synchronous-** or **asy
 
 **Method**: `POST`
 
-**Body**:
+**Payload**:
 
 ```json
 {
@@ -189,7 +189,7 @@ In this case, an immediate response with the ID of the new evaluation is returne
 
 **Code** : `201 Created`
 
-**Content**: the response of an asynchronous evaluation looks like this:
+**Payload**: the response of an asynchronous evaluation looks like this:
 
 ```json
 {

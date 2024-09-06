@@ -6,7 +6,7 @@ This endpoint is aim to provide a list of completion entries for given a piece o
 
 **Method**: `POST`
 
-**Body**: The payload should specify this information like this:
+**Payload**: The payload should specify this information like this:
 
 ```json
 {

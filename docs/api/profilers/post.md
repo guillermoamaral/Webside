@@ -4,7 +4,7 @@
 
 **Method**: `POST`
 
-**Body**:
+**Payload**:
 
 ```json
 {
