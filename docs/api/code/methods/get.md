@@ -89,13 +89,14 @@ In case the option is provided by the backend Smalltalk, the expected structure 
 ```json
 {
 	"type": "string",
+	"label": "string",
 	"start": "number",
 	"end": "number",
 	"children": ["node"]
 }
 ```
 
-Where `start` and `end` represent the span of the node over the source code.
+Where `type` corresponds to the node type, and `start`-`end` represent the span of the node over the source code.
 Also, some leaf nodes should contain a `value` property with their corresponding value.
 The following table lists possible types properties whenever it applies.
 
@@ -110,7 +111,9 @@ The following table lists possible types properties whenever it applies.
 | Identifier | value (string)        |
 |  Literal   | value (string)        |
 
-Note that this structure corresponds to a rather simplified AST, which might be richer in some implementations. This is due to the _unification_ spirit of Webside, conceived to support different Smmaltalk dialects.
+Note that `type` property depends on the target system and thus may vary from one dialect to another. However, in order to take advantage of it, it is expected to include these ones `Selector`, `Identifier` and `Literal`.
+
+**Note that this structure corresponds to a rather simplified AST, which might be richer in some implementations. This is due to the _unification_ spirit of Webside, conceived to support different Smmaltalk dialects.**
 
 ## Method Annotations
 
