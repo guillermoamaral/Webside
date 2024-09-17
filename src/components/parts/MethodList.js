@@ -16,6 +16,7 @@ import {
 	MenuItem,
 } from "@mui/material";
 import CustomPaper from "../controls/CustomPaper";
+import StAST from "../../model/StAST";
 
 class MethodList extends Component {
 	static contextType = ToolContainerContext;
@@ -391,34 +392,22 @@ class MethodList extends Component {
 		}
 	};
 
-	browseSenders = (method) => {
-		if (method) {
-			this.context.browseSenders(method.selector);
-		}
+	browseSenders = (selector) => {
+		if (selector) this.context.browseSenders(selector);
 	};
 
-	browseLocalSenders = (method) => {
-		if (method) {
-			this.context.browseLocalSenders(
-				method.selector,
-				method.methodClass
-			);
-		}
+	browseLocalSenders = (selector, classname) => {
+		if (selector && classname)
+			this.context.browseLocalSenders(selector, classname);
 	};
 
-	browseImplementors = (method) => {
-		if (method) {
-			this.context.browseImplementors(method.selector);
-		}
+	browseImplementors = (selector) => {
+		if (selector) this.context.browseImplementors(selector);
 	};
 
-	browseLocalImplementors = (method) => {
-		if (method) {
-			this.context.browseLocalImplementors(
-				method.selector,
-				method.methodClass
-			);
-		}
+	browseLocalImplementors = (selector, classname) => {
+		if (selector && classname)
+			this.context.browseLocalImplementors(selector, classname);
 	};
 
 	browseClassReferences = (method) => {
@@ -487,7 +476,19 @@ class MethodList extends Component {
 		return method || this.props.class;
 	};
 
-	menuOptions() {
+	allSelectorsIn(method) {
+		if (!method) return [];
+		const selectors = [method.selector];
+		if (method.ast) {
+			const ast = new StAST();
+			ast.fromJson(method.ast);
+			const sent = ast.selectors().filter((s) => s !== method.selector);
+			selectors.push(...sent);
+		}
+		return selectors;
+	}
+
+	menuOptions = (method) => {
 		const options = [];
 		if (this.props.showNewOption) {
 			options.push({
@@ -554,26 +555,96 @@ class MethodList extends Component {
 					action: this.browseClass,
 					enabled: (m) => m != null,
 				},
-				{
-					label: "Browse senders",
-					action: this.browseSenders,
-					enabled: (m) => m != null,
-				},
-				{
-					label: "Browse local senders",
-					action: this.browseLocalSenders,
-					enabled: (m) => m != null,
-				},
-				{
-					label: "Browse implementors",
-					action: this.browseImplementors,
-					enabled: (m) => m != null,
-				},
-				{
-					label: "Browse local implementors",
-					action: this.browseLocalImplementors,
-					enabled: (m) => m != null,
-				},
+			]
+		);
+		const selectors = this.allSelectorsIn(method);
+		if (selectors.length > 1) {
+			options.push(
+				...[
+					{
+						label: "Browse senders...",
+						suboptions: selectors.map((s, i) => {
+							return {
+								label: s,
+								action: (m) => this.browseSenders(s),
+								enabled: (m) => m != null,
+								weight: i === 0 ? "bold" : "normal",
+							};
+						}),
+					},
+					{
+						label: "Browse local senders...",
+						suboptions: selectors.map((s, i) => {
+							return {
+								label: s,
+								action: (m) =>
+									this.browseLocalSenders(s, m.methodClass),
+								enabled: (m) => m != null,
+								weight: i === 0 ? "bold" : "normal",
+							};
+						}),
+					},
+					{
+						label: "Browse implementors...",
+						suboptions: selectors.map((s, i) => {
+							return {
+								label: s,
+								action: (m) => this.browseImplementors(s),
+								enabled: (m) => m != null,
+								weight: i === 0 ? "bold" : "normal",
+							};
+						}),
+					},
+					{
+						label: "Browse local implementors...",
+						suboptions: selectors.map((s, i) => {
+							return {
+								label: s,
+								action: (m) =>
+									this.browseLocalImplementors(
+										s,
+										m.methodClass
+									),
+								enabled: (m) => m != null,
+								weight: i === 0 ? "bold" : "normal",
+							};
+						}),
+					},
+				]
+			);
+		} else {
+			options.push(
+				...[
+					{
+						label: "Browse senders",
+						action: (m) => this.browseSenders(m.selector),
+						enabled: (m) => m != null,
+					},
+					{
+						label: "Browse local senders",
+						action: (m) =>
+							this.browseLocalSenders(m.selector, m.methodClass),
+						enabled: (m) => m != null,
+					},
+					{
+						label: "Browse implementors",
+						action: (m) => this.browseImplementors(m.selector),
+						enabled: (m) => m != null,
+					},
+					{
+						label: "Browse local implementors",
+						action: (m) =>
+							this.browseLocalImplementors(
+								m.selector,
+								m.methodClass
+							),
+						enabled: (m) => m != null,
+					},
+				]
+			);
+		}
+		options.push(
+			...[
 				{
 					label: "Browse class references",
 					action: this.browseClassReferences,
@@ -609,7 +680,7 @@ class MethodList extends Component {
 			this.performExtendedOption
 		);
 		return options.concat(extended);
-	}
+	};
 
 	performExtendedOption = async (option, method) => {
 		await ide.performExtendedOption(option, method);
@@ -782,7 +853,7 @@ class MethodList extends Component {
 					columns={this.methodColumns()}
 					rows={methods}
 					onRowSelect={this.methodSelected}
-					menuOptions={this.menuOptions()}
+					menuOptions={this.menuOptions}
 					hideRowBorder
 					rowsPerPage={50}
 					usePagination
@@ -827,7 +898,7 @@ class MethodList extends Component {
 								itemColor={this.methodColor}
 								selectedItem={selectedMethod}
 								onItemSelect={this.methodSelected}
-								menuOptions={this.menuOptions()}
+								menuOptions={this.menuOptions}
 								itemActions={this.methodActions}
 							/>
 						</CustomPaper>

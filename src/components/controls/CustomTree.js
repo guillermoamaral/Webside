@@ -149,6 +149,13 @@ class CustomTree extends Component {
 		}
 	};
 
+	menuOptions = () => {
+		const options = this.props.menuOptions;
+		return typeof options === "function"
+			? options(this.state.selectedItem)
+			: options;
+	};
+
 	openMenu = (event) => {
 		event.preventDefault();
 		this.setState({
@@ -202,7 +209,7 @@ class CustomTree extends Component {
 					{this.createItems(items)}
 				</TreeView>
 				<PopupMenu
-					options={this.props.menuOptions}
+					options={this.menuOptions()}
 					open={menuOpen}
 					position={menuPosition}
 					onOptionClick={this.menuOptionClicked}
