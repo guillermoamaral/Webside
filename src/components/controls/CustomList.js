@@ -234,6 +234,13 @@ class CustomList extends Component {
 		return actions || [];
 	};
 
+	menuOptions = () => {
+		const options = this.props.menuOptions;
+		return typeof options === "function"
+			? options(this.props.selectedItem)
+			: options;
+	};
+
 	openMenu = (event) => {
 		event.preventDefault();
 		this.setState({
@@ -565,7 +572,7 @@ class CustomList extends Component {
 					</Box>
 				)}
 				<PopupMenu
-					options={this.props.menuOptions}
+					options={this.menuOptions()}
 					open={menuOpen}
 					position={menuPosition}
 					onOptionClick={this.menuOptionClicked}

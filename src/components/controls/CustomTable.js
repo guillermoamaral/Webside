@@ -82,6 +82,13 @@ class CustomTable extends Component {
 		}
 	};
 
+	menuOptions = () => {
+		const options = this.props.menuOptions;
+		return typeof options === "function"
+			? options(this.state.selectedRow)
+			: options;
+	};
+
 	openMenu = (event) => {
 		event.preventDefault();
 		this.setState({
@@ -244,7 +251,7 @@ class CustomTable extends Component {
 							action.visible(row));
 					return (
 						<Box
-							//Review these fixed sizes. They were fixed to avoid dynamic 
+							//Review these fixed sizes. They were fixed to avoid dynamic
 							//resizing when hovering
 							style={{ width: 22, height: 22 }}
 							key={"box" + index + "action" + j}
@@ -490,7 +497,7 @@ class CustomTable extends Component {
 						</Scrollable>
 					</TableContainer>
 					<PopupMenu
-						options={this.props.menuOptions}
+						options={this.menuOptions()}
 						open={menuOpen}
 						position={menuPosition}
 						onOptionClick={this.menuOptionClicked}

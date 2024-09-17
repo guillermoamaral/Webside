@@ -32,6 +32,7 @@ import CodeTooltip from "./CodeTooltip";
 import ImproveIcon from "@mui/icons-material/AutoFixHigh";
 import TestRunnerIcon from "../icons/TestRunnerIcon";
 import DescriptionIcon from "@mui/icons-material/Description";
+import StAST from "../../model/StAST";
 
 // import {
 // 	hyperLinkExtension,
@@ -263,18 +264,19 @@ class CodeEditor extends Component {
 		});
 	}
 
+	ast() {
+		const json = this.props.ast;
+		if (!json) return;
+		const ast = new StAST();
+		return ast.fromJson(json);
+	}
+
 	astRangesSatisfying(condition) {
-		const ranges = [];
-		const ast = this.props.ast;
-		if (!ast) {
-			return ranges;
-		}
-		this.traverseAst(ast, (node) => {
-			if (condition(node)) {
-				ranges.push({ anchor: node.start - 1, head: node.end });
-			}
+		const ast = this.ast();
+		if (!ast) return [];
+		return ast.nodesSatisfying(condition).map((node) => {
+			return { anchor: node.start - 1, head: node.end };
 		});
-		return ranges;
 	}
 
 	rangesContainingSelector(selector) {
@@ -328,48 +330,10 @@ class CodeEditor extends Component {
 		);
 	}
 
-	traverseAst(node, block) {
-		block(node);
-		if (node.children) {
-			node.children.forEach((n) => {
-				this.traverseAst(n, block);
-			});
-		}
-	}
-
-	astSelectorInRage(range) {
-		const ast = this.props.ast;
-		var node;
-		if (ast) {
-			this.traverseAst(ast, (n) => {
-				if (
-					n.type === "Selector" &&
-					range.from <= n.start &&
-					n.end <= range.to &&
-					(!node || (n.start <= node.start && node.end <= n.end))
-				) {
-					node = n;
-				}
-			});
-		}
-		return node;
-	}
-
 	astNodeAtOffset(offset) {
-		const ast = this.props.ast;
-		var node;
-		if (ast) {
-			this.traverseAst(ast, (n) => {
-				if (
-					n.start <= offset &&
-					offset <= n.end &&
-					(!node || (node.start <= n.start && n.end <= node.end))
-				) {
-					node = n;
-				}
-			});
-		}
-		return node;
+		const ast = this.ast();
+		if (!ast) return;
+		return ast.nodeAt(offset);
 	}
 
 	openMenu = (event) => {
@@ -539,9 +503,7 @@ class CodeEditor extends Component {
 
 	targetWord() {
 		const selected = this.selectedText();
-		if (selected.length > 0) {
-			return selected;
-		}
+		if (selected && selected.length > 0) return selected;
 		return this.wordUnderCursor();
 	}
 
@@ -551,15 +513,15 @@ class CodeEditor extends Component {
 	}
 
 	async targetSelector() {
-		if (!this.state.dirty && this.props.ast) {
+		const ast = this.ast();
+		if (!this.state.dirty && ast) {
 			const range = this.currentSelectionRange();
 			const node =
 				range && range.from < range.to
-					? this.astSelectorInRage(range)
+					? ast.selectorInRage(range)
 					: this.targetAstNode();
-			if (node && (node.type === "Selector" || node.type === "Literal")) {
+			if (node && (node.type === "Selector" || node.type === "Literal"))
 				return node.value;
-			}
 		}
 		try {
 			let selector;

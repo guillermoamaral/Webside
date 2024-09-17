@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Menu, MenuItem, Divider } from "@mui/material";
+import { Menu, MenuItem, Divider, Box } from "@mui/material";
 import { NestedMenuItem } from "mui-nested-menu";
 
 class PopupMenu extends Component {
@@ -24,6 +24,8 @@ class PopupMenu extends Component {
 					);
 				} else {
 					const enabled = this.getItemEnabled(option);
+					const style = this.getItemStyle(option);
+					const weight = this.getItemWeight(option);
 					return (
 						<MenuItem
 							key={option.label}
@@ -32,7 +34,9 @@ class PopupMenu extends Component {
 							style={{ paddingTop: 0, paddingBottom: 0 }}
 							disabled={!enabled}
 						>
-							{option.label}
+							<Box fontStyle={style} fontWeight={weight}>
+								{option.label}
+							</Box>
 						</MenuItem>
 					);
 				}
@@ -66,14 +70,24 @@ class PopupMenu extends Component {
 
 	getItemEnabled(option) {
 		const enabled = this.props.onOptionEnable;
-		if (typeof enabled === "boolean") {
-			return enabled;
-		}
-		if (enabled) {
-			return enabled(option);
-		}
+		if (typeof enabled === "boolean") return enabled;
+		if (enabled) return enabled(option);
 		return true;
 	}
+
+	getItemStyle = (option) => {
+		const style = option.style;
+		if (!style) return "normal";
+		if (typeof style === "string") return style;
+		return style(option);
+	};
+
+	getItemWeight = (option) => {
+		const weight = option.weight;
+		if (!weight) return "normal";
+		if (typeof weight === "string") return weight;
+		return weight(option);
+	};
 
 	close = () => {
 		const handler = this.props.onClose;
