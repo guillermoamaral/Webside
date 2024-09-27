@@ -44,6 +44,7 @@ class IDE extends Component {
 	constructor(props) {
 		super(props);
 		ide = this;
+		this.backend = props.backend;
 		this.initializeThemes();
 		this.initializeSettings();
 		this.mainContainerRef = React.createRef();
@@ -83,15 +84,24 @@ class IDE extends Component {
 	initializeSettings = () => {
 		this.settings = this.defaultSettings();
 		this.loadSettings();
-		this.updateConnectionSettings();
+		this.setConnectionSettings();
 		this.updateSettings();
 	};
 
-	updateConnectionSettings() {
-		const options = this.queryOptions();
+	setConnectionSettings() {
+		let url, developer;
+		if (this.backend) {
+			// Backend provided externally
+			url = this.backend.url;
+			developer = this.backend.author;
+		} else {
+			const options = this.queryOptions();
+			url = options.backend;
+			developer = options.developer;
+		}
 		const connection = this.settings.section("connection");
-		connection.set("backend", options.backend);
-		connection.set("developer", options.developer);
+		connection.set("backend", url);
+		connection.set("developer", developer);
 	}
 
 	initializeThemes() {
@@ -340,7 +350,6 @@ class IDE extends Component {
 		if (!theme) return;
 		const appearance = this.settings.section("appearance");
 		appearance.copyFrom(theme);
-		console.log(appearance)
 	}
 
 	applySettings(settings) {
@@ -493,12 +502,14 @@ class IDE extends Component {
 
 	initializeBackend() {
 		const connection = this.settings.section("connection");
-		this.backend = new Backend(
-			connection.get("backend"),
-			connection.get("developer"),
-			this.reportError,
-			this.reportChange
-		);
+		if (!this.backend) {
+			this.backend = new Backend(
+				connection.get("backend"),
+				connection.get("developer"),
+				this.reportError,
+				this.reportChange
+			);
+		}
 	}
 
 	initializeMessageChannel() {
