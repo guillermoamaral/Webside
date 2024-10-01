@@ -87,6 +87,7 @@ class Login extends Component {
 	}
 
 	render() {
+		console.log("rendering Login");
 		const { backend, developer, error, connecting, recentConnections } =
 			this.state;
 		const buttonLabel = connecting ? "Connecting" : "Connect";
