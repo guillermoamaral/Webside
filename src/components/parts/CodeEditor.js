@@ -268,7 +268,8 @@ class CodeEditor extends Component {
 		const json = this.props.ast;
 		if (!json) return;
 		const ast = new StAST();
-		return ast.fromJson(json);
+		ast.fromJson(json);
+		return ast;
 	}
 
 	astRangesSatisfying(condition) {
