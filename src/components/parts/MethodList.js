@@ -406,6 +406,7 @@ class MethodList extends Component {
 	};
 
 	browseLocalImplementors = (selector, classname) => {
+		console.log(selector, classname);
 		if (selector && classname)
 			this.context.browseLocalImplementors(selector, classname);
 	};
@@ -710,7 +711,12 @@ class MethodList extends Component {
 				<OverridingOverridenIcon
 					color="primary"
 					style={{ fontSize: size }}
-					onClick={(event) => this.browseLocalImplementors(method)}
+					onClick={(event) =>
+						this.browseLocalImplementors(
+							method.selector,
+							method.methodClass
+						)
+					}
 				/>
 			);
 		}
@@ -719,7 +725,12 @@ class MethodList extends Component {
 				<OverridingIcon
 					color="primary"
 					style={{ fontSize: size }}
-					onClick={(event) => this.browseLocalImplementors(method)}
+					onClick={(event) =>
+						this.browseLocalImplementors(
+							method.selector,
+							method.methodClass
+						)
+					}
 				/>
 			);
 		}
@@ -728,7 +739,12 @@ class MethodList extends Component {
 				<OverridenIcon
 					color="primary"
 					style={{ fontSize: size }}
-					onClick={(event) => this.browseLocalImplementors(method)}
+					onClick={(event) =>
+						this.browseLocalImplementors(
+							method.selector,
+							method.methodClass
+						)
+					}
 				/>
 			);
 		}
@@ -786,13 +802,13 @@ class MethodList extends Component {
 			//icon: <ImplementorsIcon style={{ fontSize: 14 }} />,
 			icon: <Typography color="primary">i</Typography>,
 			label: "Implementors",
-			handler: this.browseImplementors,
+			handler: (m) => this.browseImplementors(m.selector),
 		});
 		actions.push({
 			//icon: <SendersIcon style={{ fontSize: 14 }} />,
 			icon: <Typography color="primary">s</Typography>,
 			label: "Senders",
-			handler: this.browseSenders,
+			handler: (m) => this.browseSenders(m.selector),
 		});
 		return actions;
 	};

@@ -652,8 +652,8 @@ class Backend {
 	async defineClass(classname, superclassname, packagename, definition) {
 		const description = "define class " + classname;
 		const change = this.newChange("AddClass");
-		change.className = classname;
-		change.superclass = superclassname;
+		if (classname) change.className = classname;
+		if (superclassname) change.superclass = superclassname;
 		change.package = packagename;
 		change.definition = definition;
 		const changes = await this.usesChanges();

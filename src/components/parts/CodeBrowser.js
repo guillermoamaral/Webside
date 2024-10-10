@@ -50,13 +50,11 @@ class CodeBrowser extends Component {
 		if (!this.props.class) return;
 		const pack = this.props.package;
 		const species = this.props.class;
-		const classname = species ? species.name : null;
-		const superclass = species ? species.superclass : null;
 		const packagename = pack ? pack.name : species ? species.package : null;
 		try {
 			const change = await ide.backend.defineClass(
-				classname,
-				superclass,
+				null,
+				null,
 				packagename,
 				definition
 			);
