@@ -18,64 +18,122 @@ import Scrollable from "../controls/Scrollable";
 import { ide } from "../IDE";
 import MarkdownView from "../parts/MarkdownView";
 import CustomSplit from "../controls/CustomSplit";
+import CopyIcon from "@mui/icons-material/ContentCopy";
+import AssistantIcon from "@mui/icons-material/Assistant";
+//import ChangesBrowserIcon from "../icons/ChangesBrowserIcon";
 
-const MessageItem = ({ imageSrc, role, parts }) => (
-	<Box display="flex" flexDirection="column" sx={{ width: "100%" }}>
-		<Box display="flex" alignItems="center" mb={1}>
-			<Avatar
-				src={imageSrc}
-				alt={role}
-				sx={{ width: 26, height: 26, marginRight: 1 }}
-			/>
-			<Typography>{role}</Typography>
-		</Box>
-		{parts && (
-			<Box ml={5} mb={1}>
-				{parts.map((part, index) => {
-					if (part.type === "code") {
-						const height = Math.min(
-							part.content.split("\n").length * 18,
-							400
-						);
-						return (
-							<Box
-								key={index}
-								display="flex"
-								variant="outlined"
-								ml={2}
-								mt={1}
-								sx={{
-									//width: 600,
-									height: height,
-								}}
-							>
-								<CodeEditor
-									source={part.content}
-									readOnly
-									//noTooltips
-									showAccept={false}
-									fontSize={
-										ide.settings
-											.section("appearance")
-											.get("fontSize") -
-										1 +
-										"px"
-									}
-								/>
-							</Box>
-						);
-					}
-					return (
-						<MarkdownView
-							key={"markdown" + index}
-							source={part.content}
-						/>
-					);
-				})}
+const MessageItem = ({ message }) => {
+	console.log(message);
+	const parts = message ? message.parts : [];
+	const who = message.role === "user" ? ide.currentDeveloper() : message.role;
+	const photo = ide.settings.section("general").get("photo");
+	return (
+		<Box display="flex" flexDirection="column" sx={{ width: "100%" }}>
+			<Box display="flex" alignItems="center">
+				{message.role === "user" && (
+					<Avatar
+						alt={who}
+						sx={{
+							width: 26,
+							height: 26,
+							marginRight: 1,
+						}}
+						src={photo}
+					/>
+				)}
+				{message.role === "assistant" && (
+					<Avatar
+						alt={who}
+						sx={{
+							width: 26,
+							height: 26,
+							marginRight: 1,
+						}}
+					>
+						<AssistantIcon fontSize="small" />
+					</Avatar>
+				)}
+				<Typography>{who}</Typography>
 			</Box>
-		)}
-	</Box>
-);
+			{parts && (
+				<Box ml={5}>
+					{parts.map((part, index) => {
+						if (part.type === "code") {
+							const height = Math.min(
+								part.content.split("\n").length * 20 + 40,
+								400
+							);
+							return (
+								<Paper variant="outlined" key={"code" + index}>
+									<Box
+										display="flex"
+										flexDirection="row"
+										justifyContent="flex-end"
+									>
+										<IconButton
+											size="small"
+											key={"copyCode" + index}
+											color="primary"
+											onClick={() =>
+												navigator.clipboard.writeText(
+													part.content
+												)
+											}
+										>
+											<CopyIcon fontSize="small" />
+										</IconButton>
+										{/* {part.code && (
+											<IconButton
+												size="small"
+												key={"browseCode" + index}
+												color="primary"
+												onClick={() =>
+													ide.browseChanges(
+														part.code.changeset()
+													)
+												}
+											>
+												<ChangesBrowserIcon fontSize="small" />
+											</IconButton>
+										)} */}
+									</Box>
+									<Box
+										key={index}
+										display="flex"
+										variant="outlined"
+										ml={2}
+										mt={1}
+										sx={{ height: height }}
+									>
+										<CodeEditor
+											source={part.content}
+											readOnly
+											showAccept={false}
+											fontSize={
+												ide.settings
+													.section("appearance")
+													.get("fontSize") -
+												1 +
+												"px"
+											}
+											noTooltips
+										/>
+									</Box>
+								</Paper>
+							);
+						}
+						return (
+							<MarkdownView
+								key={"markdown" + index}
+								source={part.content}
+							/>
+						);
+					})}
+				</Box>
+			)}
+		</Box>
+	);
+};
 
 class CodeAssistantChat extends Tool {
 	constructor(props) {
@@ -137,7 +195,7 @@ class CodeAssistantChat extends Tool {
 
 	sendPrompt = () => {
 		const prompt = this.state.prompt;
-		this.assistant.sendPrompt(prompt).then(() => {
+		this.assistant.freePrompt(prompt).then(() => {
 			this.updateState(false);
 		});
 		this.updateState(true);
@@ -150,12 +208,12 @@ class CodeAssistantChat extends Tool {
 	}
 
 	messages() {
-		return this.assistant.messages.filter((m) => m.parts);
+		return this.assistant.messages.filter((m) => !m.isSystemMessage());
 	}
 
 	deleteMessageHistory = (event) => {
 		event.preventDefault();
-		this.assistant.deleteMessageHistory();
+		this.assistant.clearHistory();
 		this.forceUpdate();
 	};
 
@@ -174,7 +232,6 @@ class CodeAssistantChat extends Tool {
 		console.log("rendering CAC");
 		const { prompt, processing } = this.state;
 		const messages = this.messages();
-		const developer = ide.currentDeveloper();
 		const showButtons = false;
 		return (
 			<Box
@@ -196,10 +253,6 @@ class CodeAssistantChat extends Tool {
 												i === messages.length - 1
 													? this.lastItemRef
 													: null;
-											const role =
-												m.role === "user"
-													? developer
-													: m.role;
 											return (
 												<ListItem
 													key={i}
@@ -211,11 +264,7 @@ class CodeAssistantChat extends Tool {
 														//padding: 2,
 													}}
 												>
-													<MessageItem
-														//imageSrc="https://example.com/avatar1.png"
-														role={role}
-														parts={m.parts}
-													/>
+													<MessageItem message={m} />
 												</ListItem>
 											);
 										})}
@@ -315,7 +364,7 @@ class CodeAssistantChat extends Tool {
 								underline="hover"
 								href="#"
 							>
-								Delete history
+								Clear history
 							</Link>
 						</Box>
 					</Box>

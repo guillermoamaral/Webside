@@ -37,6 +37,7 @@ class Titlebar extends Component {
 			onSearchClick,
 			searchPlaceholder,
 			onSplit,
+			photo,
 		} = this.props;
 		const developerMenuOpen = this.state.developerMenuOpen;
 		return (
@@ -119,7 +120,7 @@ class Titlebar extends Component {
 								});
 							}}
 						>
-							<Avatar alt={developer} />
+							<Avatar alt={developer} src={photo} />
 						</IconButton>
 						<Menu
 							sx={{ mt: "45px" }}

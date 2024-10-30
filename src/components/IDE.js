@@ -30,12 +30,12 @@ import Hotkeys from "react-hot-keys";
 //import DrawerHeader from "./layout/DrawerHeader";
 import { Settings, Setting } from "../model/Settings";
 import { app as mainApp } from "../App";
-import CodeAssistant from "./CodeAssistant";
 import { v4 as uuidv4 } from "uuid";
 import CustomSplit from "./controls/CustomSplit";
 import QuickSearch from "./tools/QuickSearch";
-import OpenAIAPI from "./OpenAIAPI";
 import AssistantIcon from "@mui/icons-material/Assistant";
+import { AIInterface } from "./ai/AIInterface";
+import AICodeAssistant from "./ai/AICodeAssistant";
 
 var ide = null;
 var MaxExtraContainers = 3;
@@ -61,9 +61,9 @@ class IDE extends Component {
 			quickSearchOptions: {},
 			activeContainer: null,
 			assistantChatOpened: false,
-			assistantChatMaximized: false,
+			assistantChatMaximized: true,
 		};
-		this.codeAssistant = null;
+		this.codeAssistant = new AICodeAssistant();
 		this.assistantChatRef = React.createRef();
 	}
 
@@ -260,15 +260,19 @@ class IDE extends Component {
 
 	defaultSettings() {
 		const settings = new Settings("settings");
+		// General...
+		const general = settings.addSection("general");
+		general.addImage("photo").description = "Your photo";
+		// Connection...
 		const connection = settings.addSection("connection");
 		connection.addUrl("backend").readOnly();
 		connection.addText("developer");
 		connection.addText("dialect").readOnly();
-
-		const general = settings.addSection("code");
-		general.addBoolean("autocompletion", false, "Use autocompletion");
-		general.addBoolean("tooltips", true, "Show tooltips");
-
+		// Code...
+		const code = settings.addSection("code");
+		code.addBoolean("autocompletion", false, "Use autocompletion");
+		code.addBoolean("tooltips", true, "Show tooltips");
+		// Appearance...
 		const appearance = settings.addSection("appearance");
 		appearance.addOptions(
 			"fontFamily",
@@ -288,7 +292,6 @@ class IDE extends Component {
 			[8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
 			14
 		);
-
 		const theme = this.themes[0].copy();
 		appearance.addOptions(
 			"theme",
@@ -297,14 +300,13 @@ class IDE extends Component {
 		);
 		appearance.addOptions("mode", ["dark", "light"], theme.mode);
 		theme.settings.forEach((s) => appearance.add(s));
-
+		// Shortcuts...
 		const shortcuts = settings.addSection("shortcuts");
 		shortcuts.addShortcut("quickSearch", "Shift+Enter");
 		shortcuts.addShortcut("openClassBrowser", "Ctrl+b");
 		shortcuts.addShortcut("newWorkspace", "Ctrl+Alt+w");
 		shortcuts.addShortcut("moveToLeftTab", "Ctrl+Alt+Left");
 		shortcuts.addShortcut("moveToRightTab", "Ctrl+Alt+Right");
-
 		shortcuts.addShortcut("evaluateExpression", "Ctrl+d");
 		shortcuts.addShortcut("inspectEvaluation", "Ctrl+i");
 		shortcuts.addShortcut("showEvaluation", "Ctrl+p");
@@ -314,20 +316,23 @@ class IDE extends Component {
 		shortcuts.addShortcut("browseSenders", "Alt+n");
 		shortcuts.addShortcut("browseImplementors", "Alt+m");
 		shortcuts.addShortcut("browseClassReferences", "Alt+r");
-
+		// Code assistant...
 		const assistant = settings.addSection("codeAssistant");
 		assistant.addBoolean("enabled", false, "Use code assistant");
-		const openAI = assistant.addSection("openAI", "OpenAI API");
-		openAI.addText("apiKey");
-		openAI.addOptions(
-			"model",
-			["gpt-3.5-turbo", "gpt-4-turbo"],
-			"gpt-4-turbo"
-		);
-		openAI.addParagraph(
+		const types = AIInterface.availableTypes();
+		if (types.length > 0) {
+			assistant.addOptions(
+				"interface",
+				types.map((t) => t.displayName()),
+				types[0].displayName()
+			);
+		}
+		assistant.addText("apiKey");
+		assistant.addParagraph(
 			"systemMessage",
 			"You are an expert Smalltalk programmer.\nWhen I ask for help to analyze, explain or write Smalltalk code, you will reply accordingly.\nIn your response you will avoid using the words 'Smalltalk' and 'snippet'."
 		);
+		// Advanced...
 		const advanced = settings.addSection("advanced");
 		advanced.addNumber(
 			"evaluationPollingFrequency",
@@ -481,23 +486,18 @@ class IDE extends Component {
 	}
 
 	usesCodeAssistant() {
-		return this.codeAssistant !== null;
+		return this.codeAssistant.active;
 	}
 
 	initializeCodeAssistant() {
-		this.codeAssistant = null;
 		const section = this.settings.section("codeAssistant");
-		if (!section.get("enabled")) return;
-		const openAI = section.section("openAI");
-		const key = openAI.get("apiKey") || "";
-		if (key === "") return;
-		const model = openAI.get("model");
-		const api = new OpenAIAPI(key, model);
-		let context = openAI.get("systemMessage");
-		const dialect = this.currentDialect();
-		if (dialect)
-			context += "\nWe are working in " + dialect + " Smalltalk.\n";
-		this.codeAssistant = new CodeAssistant(api, context);
+		const enabled = section.get("enabled");
+		this.codeAssistant.active = enabled;
+		if (!enabled) return;
+		this.codeAssistant.interface = AIInterface.newNamed(
+			section.get("interface")
+		);
+		this.codeAssistant.interface.key = section.get("apiKey") || "";
 	}
 
 	initializeBackend() {
@@ -714,6 +714,10 @@ class IDE extends Component {
 
 	browseLastChanges = () => {
 		this.mainContainer().browseLastChanges();
+	};
+
+	browseChanges = (changes) => {
+		this.mainContainer().browseChanges(changes);
 	};
 
 	browsePackage = (packname) => {
@@ -1243,7 +1247,9 @@ class IDE extends Component {
 	};
 
 	testCode = async (code) => {
-		this.codeAssistant.testCode(code).then(this.updateAssistantChat);
+		this.codeAssistant
+			.writeTestForCode(code)
+			.then(this.updateAssistantChat);
 		this.setState({ assistantChatOpened: true }, this.updateAssistantChat);
 	};
 
@@ -1271,6 +1277,7 @@ class IDE extends Component {
 		const extraContainersMinWidth = "10%";
 		const shortcuts = this.settings.section("shortcuts");
 		const showsAssistant = this.usesCodeAssistant();
+		const photo = this.settings.section("general").get("photo");
 		return (
 			<Hotkeys
 				keyName={
@@ -1314,6 +1321,7 @@ class IDE extends Component {
 									? this.splitContainer
 									: null
 							}
+							photo={photo}
 						/>
 						<Sidebar
 							expanded={sidebarExpanded}
@@ -1386,7 +1394,7 @@ class IDE extends Component {
 								</Box>
 								{showsAssistant && assistantChatMaximized && (
 									<Box
-										width="35%"
+										width="25%"
 										minWidth="15%"
 										display="flex"
 										flexDirection="column"

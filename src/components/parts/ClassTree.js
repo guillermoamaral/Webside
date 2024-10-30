@@ -428,6 +428,34 @@ class ClassTree extends Component {
 		return species; //|| this.props.package;
 	};
 
+	generateCodePassingTests = async (species) => {
+		const methods = await ide.backend.methods(species.name);
+		const tests = methods.filter((m) => this.isTestMethod(m));
+		let answer;
+		await ide.waitFor(async () => {
+			answer = await ide.codeAssistant.writeCodeFromTests(tests);
+		});
+		if (!answer || !answer.parts)
+			return ide.reportError("Could not generate code");
+		const code = answer.parts.find((p) => p.code)?.code;
+		if (!code) return ide.reportError("Could not generate code");
+		const changeset = code.changeset();
+		await changeset.update();
+		//ide.browseChanges(changeset);
+		ide.updateAssistantChat();
+	};
+
+	isTestMethod = (method) => {
+		// This is meant to be removed when StMethod is used
+		return method && method.selector.startsWith("test");
+	};
+
+	isTestClass = (species) => {
+		// This is meant to be removed when StClass is used
+		console.log(species);
+		return species && species.name.endsWith("Test");
+	};
+
 	menuOptions() {
 		let options = [];
 		let pack = this.props.package;
@@ -484,6 +512,13 @@ class ClassTree extends Component {
 				},
 			]
 		);
+		if (ide.usesCodeAssistant()) {
+			options.push({
+				label: "AI - Generate code that passes tests",
+				action: this.generateCodePassingTests,
+				enabled: this.isTestClass,
+			});
+		}
 		const extended = ide.extensionMenuOptions(
 			this.state.extendedOptions,
 			this.performExtendedOption
