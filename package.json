@@ -1,6 +1,6 @@
 {
 	"name": "webside",
-	"version": "2.5.2",
+	"version": "2.6.1",
 	"description": "Smalltalk Web IDE",
 	"author": "guille amaral",
 	"build": {
@@ -85,6 +85,7 @@
 		"cross-env": "^7.0.3",
 		"electron": "^29.1.5",
 		"electron-builder": "^24.13.3",
-		"wait-on": "^7.2.0"
+		"wait-on": "^7.2.0",
+		"@babel/plugin-proposal-private-property-in-object": "^7.21.11"
 	}
 }
