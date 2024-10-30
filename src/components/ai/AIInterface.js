@@ -11,10 +11,6 @@ class AIInterface {
 		this.key = "";
 	}
 
-	static displayName() {
-		return this.name.replace("Interface", "");
-	}
-
 	static availableTypes() {
 		return [OpenAIInterface, GroqInterface, MistralInterface];
 	}
@@ -129,6 +125,10 @@ class GroqInterface extends AIInterface {
 	defaultModel() {
 		return "llama-3.1-70b-versatile";
 	}
+
+	static displayName() {
+		return "Groq";
+	}
 }
 
 class MistralInterface extends AIInterface {
@@ -139,6 +139,10 @@ class MistralInterface extends AIInterface {
 	defaultModel() {
 		return "pixtral-12b-latest";
 	}
+
+	static displayName() {
+		return "Mistral";
+	}
 }
 
 class OpenAIInterface extends AIInterface {
@@ -148,6 +152,10 @@ class OpenAIInterface extends AIInterface {
 
 	defaultModel() {
 		return "chatgpt-4o-latest";
+	}
+
+	static displayName() {
+		return "OpenAI";
 	}
 }
 
