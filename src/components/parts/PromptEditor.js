@@ -192,21 +192,18 @@ class PromptEditor extends Component {
 			},
 			{
 				key: "Shift-Enter",
-				run: this.enterPressed,
+				run: this.combinedEnterPressed,
 			},
 			{
 				key: "Ctrl-Enter",
-				run: this.enterPressed,
+				run: this.combinedEnterPressed,
 			},
 		];
 	}
 
-	enterPressed = (editor, event) => {
-		if (event.shiftKey || event.altKey) {
-			event.stopPropagation();
-			return;
-		}
-		event.preventDefault();
+	combinedEnterPressed = () => {};
+
+	enterPressed = () => {
 		if (this.props.onAccept) this.props.onAccept();
 		this.clear();
 		return true;
