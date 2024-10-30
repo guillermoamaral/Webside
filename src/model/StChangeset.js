@@ -1,9 +1,9 @@
 import { StChange } from "./StChange";
 
 class StChangeset extends Object {
-	constructor() {
+	constructor(backend) {
 		super();
-		this.system = null;
+		this.backend = backend;
 		this.changes = [];
 	}
 
@@ -18,11 +18,20 @@ class StChangeset extends Object {
 	}
 
 	fromJson(json) {
-		this.changes = json.map((j) => {
+		this.changes = [];
+		json.forEach((j) => {
 			const change = StChange.fromJson(j);
-			change.changeset = this;
-			return change;
+			this.addChange(change);
 		});
+	}
+
+	addChange(change) {
+		change.changeset = this;
+		this.changes.push(change);
+	}
+
+	addChanges(changes) {
+		changes.forEach((ch) => this.addChange(ch));
 	}
 
 	size() {
@@ -30,7 +39,7 @@ class StChangeset extends Object {
 	}
 
 	on(system) {
-		this.system = system;
+		this.backend = system;
 	}
 
 	rejectChange(change) {
@@ -44,12 +53,12 @@ class StChangeset extends Object {
 		if (!this.originalChanges) {
 			this.originalChanges = this.changes;
 		}
-		const compressed = await this.system.compressChanges(this.asJson());
+		const compressed = await this.backend.compressChanges(this.asJson());
 		this.fromJson(compressed);
 	}
 
 	async update() {
-		const updated = await this.system.updateChanges(this.asJson());
+		const updated = await this.backend.updateChanges(this.asJson());
 		this.fromJson(updated);
 	}
 
@@ -70,6 +79,16 @@ class StChangeset extends Object {
 		var filtered = [...this.changes];
 		filters.forEach((f) => (filtered = filtered.filter(f.function)));
 		this.changes = filtered;
+	}
+
+	async applyChange(change) {
+		const applied = await this.backend.postChange(change.asJson());
+		change.fromJson(applied);
+	}
+
+	async updateChange(change) {
+		const updated = await this.backend.updateChanges([change.asJson()]);
+		change.fromJson(updated[0]);
 	}
 }
 

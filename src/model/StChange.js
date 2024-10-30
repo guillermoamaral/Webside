@@ -107,15 +107,11 @@ class StChange extends Object {
 	}
 
 	async apply() {
-		const applied = await this.changeset.system.postChange(this.asJson());
-		this.fromJson(applied);
+		await this.changeset.applyChange(this);
 	}
 
 	async update() {
-		const updated = await this.changeset.system.updateChanges([
-			this.asJson(),
-		]);
-		this.fromJson(updated[0]);
+		await this.changeset.updateChange(this);
 	}
 
 	type() {

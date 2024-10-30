@@ -1,11 +1,6 @@
 import React from "react";
 import Tool from "./Tool";
-import {
-	Grid,
-	Paper,
-	Box,
-	Tab,
-} from "@mui/material";
+import { Grid, Paper, Box, Tab } from "@mui/material";
 import CodeMerge from "../parts/CodeMerge";
 import MethodVersionTable from "../parts/MethodVersionTable";
 import CustomSplit from "../controls/CustomSplit";
@@ -28,12 +23,16 @@ class MethodHistoryBrowser extends Tool {
 	async updateChanges() {
 		try {
 			let method = this.props.method;
-			let changes = await ide.backend.methodHistory(method.methodClass, method.selector);
-			let changeset = Changeset.fromJson(changes);
-			changeset.on(ide.backend);
+			let changes = await ide.backend.methodHistory(
+				method.methodClass,
+				method.selector
+			);
+			let changeset = new Changeset(ide.backend);
+			changeset.fromJson(changes);
 			this.setState({
 				changes: changeset.changes,
-				selectedChange: changeset.changes.length > 0 ? changeset.changes[0] : null,
+				selectedChange:
+					changeset.changes.length > 0 ? changeset.changes[0] : null,
 			});
 		} catch (error) {
 			ide.reportError(error);
@@ -53,7 +52,10 @@ class MethodHistoryBrowser extends Tool {
 		try {
 			await change.apply();
 			let method = this.props.method;
-			method = await ide.backend.method(method.methodClass, method.selector);
+			method = await ide.backend.method(
+				method.methodClass,
+				method.selector
+			);
 			this.props.method.source = method.source;
 		} catch (error) {
 			ide.reportError(error);
@@ -85,11 +87,7 @@ class MethodHistoryBrowser extends Tool {
 						sx={{ height: "60%" }}
 					>
 						<Box>
-							<Grid
-								container
-								spacing={1}
-								sx={{ height: "100%" }}
-							>
+							<Grid container spacing={1} sx={{ height: "100%" }}>
 								<Grid item xs={6} md={6} lg={6}>
 									<Box
 										display="flex"
@@ -123,11 +121,7 @@ class MethodHistoryBrowser extends Tool {
 											? selectedChange.sourceCode()
 											: ""
 									}
-									rightCode={
-										method
-											? method.source
-											: ""
-									}
+									rightCode={method ? method.source : ""}
 								/>
 							</Paper>
 						</Box>

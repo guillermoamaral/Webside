@@ -46,6 +46,10 @@ class Setting extends Object {
 		return new Setting(name, "url", "http://server/site");
 	}
 
+	static image(name) {
+		return new Setting(name, "image");
+	}
+
 	static boolean(name, defaultValue = false, label, description) {
 		return new Setting(name, "boolean", defaultValue, label, description);
 	}
@@ -236,6 +240,10 @@ class Settings extends Object {
 
 	addUrl(name) {
 		return this.add(Setting.url(name));
+	}
+
+	addImage(name) {
+		return this.add(Setting.image(name));
 	}
 
 	addBoolean(name, defaultValue, label, description) {

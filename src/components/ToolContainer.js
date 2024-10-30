@@ -704,8 +704,8 @@ class ToolContainer extends Component {
 		} else {
 			try {
 				const changes = await ide.backend.lastChanges();
-				const changeset = Changeset.fromJson(changes);
-				changeset.on(ide.backend);
+				const changeset = new Changeset(ide.backend)
+				changeset.fromJson(changes);;
 				this.browseChanges(changeset, "Last changes");
 			} catch (error) {
 				this.reportError(error);
@@ -724,14 +724,14 @@ class ToolContainer extends Component {
 					const ch = reader.result;
 					try {
 						const changes = await ide.backend.uploadChangeset(ch);
-						const changeset = Changeset.fromJson(changes);
-						changeset.on(ide.backend);
+						const changeset = new Changeset(ide.backend);
+						changeset.fromJson(changes);
 						this.browseChanges(changeset, file.name);
 					} catch (error) {
 						this.reportError(error);
 					}
 				};
-				reader.readAsBinaryString(file);
+				reader.readAsArrayBuffer(file);
 			}
 		};
 		input.click();

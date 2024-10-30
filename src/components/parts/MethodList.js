@@ -326,8 +326,9 @@ class MethodList extends Component {
 	};
 
 	suggestCategory = async (method) => {
-		const assistant = ide.codeAssistant();
-		const suggested = await assistant.categorizeMethod(method);
+		const suggested = await ide.codeAssistant.suggestCategoryForMethod(
+			method
+		);
 		try {
 			const category = await ide.prompt({
 				title: "Confirm category",
@@ -539,7 +540,7 @@ class MethodList extends Component {
 		});
 		if (ide.usesCodeAssistant()) {
 			suboptions.push({
-				label: "AI suggested..",
+				label: "AI - Suggest category",
 				action: (m) => this.suggestCategory(m),
 				enabled: this.canClassifyMethod,
 			});

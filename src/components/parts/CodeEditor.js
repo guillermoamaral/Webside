@@ -30,8 +30,8 @@ import {
 import { hoverTooltip } from "@codemirror/view";
 import CodeTooltip from "./CodeTooltip";
 import ImproveIcon from "@mui/icons-material/AutoFixHigh";
-import TestRunnerIcon from "../icons/TestRunnerIcon";
-import DescriptionIcon from "@mui/icons-material/Description";
+import TestIcon from "../icons/TestRunnerIcon";
+import ExplainIcon from "@mui/icons-material/QuestionMark";
 import StAST from "../../model/StAST";
 
 // import {
@@ -1218,23 +1218,32 @@ class CodeEditor extends Component {
 						)}
 						{showCodeAssistant && (
 							<Box mb={1} display="flex" flexDirection="column">
-								<Tooltip title="Explain code" placement="top">
+								<Tooltip
+									title="Explain this code"
+									placement="top"
+								>
 									<IconButton
 										color="inherit"
 										onClick={this.explainCode}
 									>
-										<DescriptionIcon />
+										<ExplainIcon />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Test code" placement="top">
+								<Tooltip
+									title="Write test for this code"
+									placement="top"
+								>
 									<IconButton
 										color="inherit"
 										onClick={this.testCode}
 									>
-										<TestRunnerIcon />
+										<TestIcon />
 									</IconButton>
 								</Tooltip>
-								<Tooltip title="Improve code" placement="top">
+								<Tooltip
+									title="Improve this code"
+									placement="top"
+								>
 									<IconButton
 										color="inherit"
 										onClick={this.improveCode}

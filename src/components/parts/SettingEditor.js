@@ -12,6 +12,8 @@ import {
 	Tooltip,
 	ToggleButton,
 	ToggleButtonGroup,
+	IconButton,
+	Avatar,
 } from "@mui/material";
 import ShortcutEditor from "./ShortcutEditor";
 import InfoIcon from "@mui/icons-material/InfoOutlined";
@@ -32,6 +34,18 @@ class SettingEditor extends Component {
 	valueChanged = (value) => {
 		this.props.setting.value = value;
 		this.setState({ value: value });
+	};
+
+	loadImage = (e) => {
+		const file = e.target.files[0];
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = () => {
+				const result = reader.result;
+				this.valueChanged(result);
+			};
+			reader.readAsDataURL(file);
+		}
 	};
 
 	render() {
@@ -156,6 +170,21 @@ class SettingEditor extends Component {
 							</ToggleButton>
 						</ToggleButtonGroup>
 					</Box>
+				)}
+				{type === "image" && (
+					<IconButton component="label">
+						<Avatar
+							alt={description}
+							src={value}
+							sx={{ width: 56, height: 56 }}
+						/>
+						<input
+							type="file"
+							accept="image/*"
+							style={{ display: "none" }}
+							onChange={this.loadImage}
+						/>
+					</IconButton>
 				)}
 			</Box>
 		);
