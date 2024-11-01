@@ -70,10 +70,11 @@ The URL (port and base URI) will correspond to the one chosen by the web server 
 
 There is an online version available [here](https://ide.webside.app). As mentioned above, it will prompt the URL where a Smalltalk system is listening. You can setup and launch Webside in Pharo as described in [Pharo-Webside](https://github.com/guillermoamaral/Pharo-Webside).
 
-Also, here are a couple of talks I gave about this project:
+Also, here are some talks I gave about this project:
 
--   [FAST 2021](https://www.youtube.com/live/tM4mcTtajGQ?feature=share)
+-   [ESUG 2024](https://youtu.be/OGQYdKu4kvI?si=EGNSW0FINCKA6s7B)
 -   [ESUG 2022](https://youtu.be/Q4gmWTTFoww)
+-   [FAST 2021](https://www.youtube.com/live/tM4mcTtajGQ?feature=share)
 
 ### License
 
