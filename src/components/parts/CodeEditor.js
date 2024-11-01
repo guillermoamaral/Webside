@@ -208,7 +208,12 @@ class CodeEditor extends Component {
 	}
 
 	async initializeExtendedOptions() {
-		const extensions = await ide.backend.extensions("code");
+		let extensions;
+		try {
+			extensions = await ide.backend.extensions("code");
+		} catch (ignored) {
+			extensions = [];
+		}
 		this.setState({ extendedOptions: extensions });
 	}
 
@@ -485,8 +490,7 @@ class CodeEditor extends Component {
 		);
 	};
 
-	acceptClicked = (editor, event) => {
-		if (event) event.preventDefault();
+	acceptClicked = () => {
 		if (this.props.onAccept) this.props.onAccept(this.state.source);
 	};
 
@@ -572,8 +576,7 @@ class CodeEditor extends Component {
 		this.context.browseLocalImplementors(selector, this.props.class.name);
 	};
 
-	browseClass = (e, f) => {
-		f.stopPropagation();
+	browseClass = () => {
 		const target = this.targetWord();
 		target
 			? this.context.browseClass(target)
@@ -829,10 +832,12 @@ class CodeEditor extends Component {
 			{
 				key: this.adaptShortcut(shortcuts.get("acceptCode")),
 				run: this.acceptClicked,
+				preventDefault: true,
 			},
 			{
 				key: this.adaptShortcut(shortcuts.get("browseClass")),
 				run: this.browseClass,
+				preventDefault: true,
 			},
 			{
 				key: this.adaptShortcut(shortcuts.get("browseSenders")),

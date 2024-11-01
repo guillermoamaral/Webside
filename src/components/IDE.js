@@ -417,7 +417,12 @@ class IDE extends Component {
 
 	async updateSettings() {
 		this.initializeBackend();
-		const dialect = await this.backend.dialect();
+		let dialect;
+		try {
+			dialect = await this.backend.dialect();
+		} catch (error) {
+			this.reportError(error);
+		}
 		try {
 			this.logo = await this.backend.logo();
 		} catch (error) {}
