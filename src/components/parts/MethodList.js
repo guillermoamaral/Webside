@@ -166,7 +166,7 @@ class MethodList extends Component {
 				} catch (error) {
 					ide.reportError(error);
 				}
-				grouped[c.name] = fetched;
+				grouped[c.name] = fetched || [];
 			})
 		);
 		let selectors = {};
@@ -816,7 +816,16 @@ class MethodList extends Component {
 
 	newMethod = async () => {
 		const selected = this.state.selectedMethod;
-		const template = await ide.backend.methodTemplate();
+		let template;
+		try {
+			template = await ide.backend.methodTemplate();
+		} catch (ignored) {
+			template = {
+				selector: "newMethod",
+				source: "newMethod",
+				template: true,
+			};
+		}
 		template.methodClass = selected
 			? selected.methodClass
 			: this.props.class

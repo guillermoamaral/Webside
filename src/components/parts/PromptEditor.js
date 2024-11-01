@@ -185,18 +185,22 @@ class PromptEditor extends Component {
 			{
 				key: "Tab",
 				run: acceptCompletion,
+				preventDefault: true,
 			},
 			{
 				key: "Enter",
 				run: this.enterPressed,
+				preventDefault: true,
 			},
 			{
 				key: "Shift-Enter",
 				run: this.combinedEnterPressed,
+				preventDefault: true,
 			},
 			{
 				key: "Ctrl-Enter",
 				run: this.combinedEnterPressed,
+				preventDefault: true,
 			},
 		];
 	}
