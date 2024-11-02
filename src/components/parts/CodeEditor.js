@@ -598,14 +598,13 @@ class CodeEditor extends Component {
 	selectedExpression() {
 		const expression = this.selectedText();
 		if (expression.length > 0) return expression;
-		return this.currentLine();
+		const line = this.currentLine();
+		if (line) return line.text;
 	}
 
 	currentLine() {
 		const range = this.currentSelectionRange();
-		if (range) {
-			return this.currentState().doc.lineAt(range.head).text;
-		}
+		if (range) return this.currentState().doc.lineAt(range.head);
 	}
 
 	debugExpression = async () => {
@@ -694,9 +693,15 @@ class CodeEditor extends Component {
 
 	showEvaluation = async () => {
 		const range = this.currentSelectionRange();
+		let position;
+		if (range && range.from < range.to) {
+			position = Math.max(range.head, range.anchor);
+		} else {
+			const line = this.currentLine();
+			position = line ? line.to : 0;
+		}
 		const expression = this.selectedExpression();
 		const object = await this.evaluateExpression(expression, false);
-		const position = Math.max(range.head, range.anchor);
 		if (object) {
 			this.insertText(" " + object.printString, position);
 			this.selectRanges([
