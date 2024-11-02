@@ -32,15 +32,15 @@ Note that `className` property is not necessary as it is redundant with the clas
 }
 ```
 
-Response:
+The response should contain the compiled method:
 
 ```json
 {
-	"className": "Point",
-	"category": "examples",
-	"package": "Webside",
 	"selector": "xy",
-	"sourceCode": "xy ^x * y"
+	"methodClass": "Point",
+	"category": "examples",
+	"source": "xy\r\t^x * y",
+	"package": "Webside"
 }
 ```
 
