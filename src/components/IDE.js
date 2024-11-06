@@ -269,7 +269,8 @@ class IDE extends Component {
 		connection.addText("developer");
 		connection.addText("dialect").readOnly();
 		// Code...
-		const code = settings.addSection("code");
+		const code = settings.addSection("editor");
+		code.addBoolean("lineNumbers", false, "Show line numbers");
 		code.addBoolean("autocompletion", false, "Use autocompletion");
 		code.addBoolean("tooltips", true, "Show tooltips");
 		// Appearance...
@@ -433,7 +434,7 @@ class IDE extends Component {
 			await ide.backend.autocompletions("Object", "m\r Objec", 8);
 			autocompletion = true;
 		} catch (ignored) {}
-		this.settings.section("code").set("autocompletion", autocompletion);
+		this.settings.section("editor").set("autocompletion", autocompletion);
 		await this.fetchThemes();
 		await this.updateDialectColorSettings();
 		this.updateAppTheme();

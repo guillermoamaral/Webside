@@ -995,7 +995,7 @@ class CodeEditor extends Component {
 	};
 
 	showsTooltip() {
-		let show = ide.settings.section("code").get("tooltips");
+		let show = ide.settings.section("editor").get("tooltips");
 		return show && !this.props.noTooltips;
 	}
 
@@ -1043,7 +1043,7 @@ class CodeEditor extends Component {
 	};
 
 	completionSource = async (context) => {
-		if (!ide.settings.section("code").get("autocompletion")) return null;
+		if (!ide.settings.section("editor").get("autocompletion")) return null;
 		const word = context.matchBefore(/[^\s]*/);
 		if (!word || word.from === word.to || word.text.trim().length <= 0)
 			return null;
@@ -1117,7 +1117,7 @@ class CodeEditor extends Component {
 		const { showAccept, showPlay, showAssistant, readOnly } = this.props;
 		const showCodeAssistant = showAssistant && ide.usesCodeAssistant();
 		const showButtons = showAccept || showPlay || showAssistant;
-		const lineNumbers = this.props.lineNumbers === true;
+		const lineNumbers = ide.settings.section("editor").get("lineNumbers");
 		return (
 			<Box
 				display="flex"
