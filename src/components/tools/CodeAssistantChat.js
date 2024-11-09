@@ -10,6 +10,7 @@ import {
 	Paper,
 	Button,
 	Link,
+	CircularProgress,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import CodeEditor from "../parts/CodeEditor";
@@ -23,8 +24,7 @@ import AssistantIcon from "@mui/icons-material/Assistant";
 //import ChangesBrowserIcon from "../icons/ChangesBrowserIcon";
 
 const MessageItem = ({ message }) => {
-	console.log(message);
-	const parts = message ? message.parts : [];
+	const parts = message.parts || [];
 	const who = message.role === "user" ? ide.currentDeveloper() : message.role;
 	const photo = ide.settings.section("general").get("photo");
 	return (
@@ -55,82 +55,85 @@ const MessageItem = ({ message }) => {
 				)}
 				<Typography>{who}</Typography>
 			</Box>
-			{parts && (
-				<Box ml={5}>
-					{parts.map((part, index) => {
-						if (part.type === "code") {
-							const height = Math.min(
-								part.content.split("\n").length * 20 + 40,
-								400
-							);
-							return (
-								<Paper variant="outlined" key={"code" + index}>
-									<Box
-										display="flex"
-										flexDirection="row"
-										justifyContent="flex-end"
+			<Box ml={5}>
+				{message.processing && (
+					<Box mt={2}>
+						<CircularProgress size={16} />
+					</Box>
+				)}
+				{parts.map((part, index) => {
+					if (part.type === "code") {
+						const height = Math.min(
+							part.content.split("\n").length * 20 + 40,
+							400
+						);
+						return (
+							<Paper variant="outlined" key={"code" + index}>
+								<Box
+									display="flex"
+									flexDirection="row"
+									justifyContent="flex-end"
+								>
+									<IconButton
+										size="small"
+										key={"copyCode" + index}
+										color="primary"
+										onClick={() =>
+											navigator.clipboard.writeText(
+												part.content
+											)
+										}
 									>
-										<IconButton
-											size="small"
-											key={"copyCode" + index}
-											color="primary"
-											onClick={() =>
-												navigator.clipboard.writeText(
-													part.content
-												)
-											}
-										>
-											<CopyIcon fontSize="small" />
-										</IconButton>
-										{/* {part.code && (
+										<CopyIcon fontSize="small" />
+									</IconButton>
+									{/* {part.code && (
 											<IconButton
 												size="small"
 												key={"browseCode" + index}
 												color="primary"
 												onClick={() =>
 													ide.browseChanges(
-														part.code.changeset()
+														part.code.changeset(ide.backend)
 													)
 												}
 											>
 												<ChangesBrowserIcon fontSize="small" />
 											</IconButton>
 										)} */}
-									</Box>
-									<Box
-										key={index}
-										display="flex"
-										variant="outlined"
-										ml={2}
-										mt={1}
-										sx={{ height: height }}
-									>
-										<CodeEditor
-											source={part.content}
-											readOnly
-											showAccept={false}
-											fontSize={
-												ide.settings
-													.section("appearance")
-													.get("fontSize") -
-												1 +
-												"px"
-											}
-											noTooltips
-										/>
-									</Box>
-								</Paper>
-							);
-						}
-						return (
-							<MarkdownView
-								key={"markdown" + index}
-								source={part.content}
-							/>
+								</Box>
+								<Box
+									key={index}
+									display="flex"
+									variant="outlined"
+									ml={2}
+									mt={1}
+									sx={{ height: height }}
+								>
+									<CodeEditor
+										source={part.content}
+										readOnly
+										showAccept={false}
+										fontSize={
+											ide.settings
+												.section("appearance")
+												.get("fontSize") -
+											1 +
+											"px"
+										}
+										noTooltips
+									/>
+								</Box>
+							</Paper>
 						);
-					})}
-				</Box>
-			)}
+					}
+					return (
+						<MarkdownView
+							key={"markdown" + index}
+							source={part.content}
+						/>
+					);
+				})}
+			</Box>
 		</Box>
 	);
 };
@@ -164,7 +167,6 @@ class CodeAssistantChat extends Tool {
 	updateState(processing) {
 		this.setState(
 			{
-				messages: this.messages(),
 				prompt: "",
 				processing: processing,
 			},
@@ -208,7 +210,13 @@ class CodeAssistantChat extends Tool {
 	}
 
 	messages() {
-		return this.assistant.messages.filter((m) => !m.isSystemMessage());
+		const messages = this.assistant.messages.filter(
+			(m) => (m.role === "user" || m.role === "assistant") && !m.toolCall
+		);
+		if (this.state.processing) {
+			messages.push({ role: "assistant", processing: true });
+		}
+		return messages;
 	}
 
 	deleteMessageHistory = (event) => {

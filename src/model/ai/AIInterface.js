@@ -43,6 +43,10 @@ class AIInterface {
 		return this.sendPromptAs(text, "user");
 	}
 
+	availableModels() {
+		return [this.defaultModel()];
+	}
+
 	async sendMessages(messages) {
 		const body = {};
 		body.model = this.model;
@@ -50,7 +54,7 @@ class AIInterface {
 		body.temperature = this.temperature;
 		body.max_tokens = this.maxTokens;
 		if (this.tools.length > 0) {
-			body.tools = this.tools.map((tool) => tool.asJsonObject());
+			body.tools = this.tools.map((tool) => tool.asJson());
 		}
 		let answer;
 		try {
@@ -77,12 +81,15 @@ class AIInterface {
 		return response;
 	}
 
-	async models() {
+	async getModels() {
+		let models = [];
 		try {
-			return await this.get("/models");
+			const response = await this.get("/models");
+			models = response.data;
 		} catch (error) {
 			console.log(error);
 		}
+		return models;
 	}
 
 	async sendPromptAs(text, role) {
@@ -151,7 +158,7 @@ class OpenAIInterface extends AIInterface {
 	}
 
 	defaultModel() {
-		return "chatgpt-4o-latest";
+		return "gpt-4o"; //"chatgpt-4o-latest";
 	}
 
 	static displayName() {

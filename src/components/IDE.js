@@ -34,8 +34,8 @@ import { v4 as uuidv4 } from "uuid";
 import CustomSplit from "./controls/CustomSplit";
 import QuickSearch from "./tools/QuickSearch";
 import AssistantIcon from "@mui/icons-material/Assistant";
-import { AIInterface } from "./ai/AIInterface";
-import AICodeAssistant from "./ai/AICodeAssistant";
+import { AIInterface } from "../model/ai/AIInterface";
+import AICodeAssistant from "../model/ai/AICodeAssistant";
 
 var ide = null;
 var MaxExtraContainers = 3;
@@ -63,7 +63,7 @@ class IDE extends Component {
 			assistantChatOpened: false,
 			assistantChatMaximized: true,
 		};
-		this.codeAssistant = new AICodeAssistant();
+		this.codeAssistant = new AICodeAssistant(this.backend);
 		this.assistantChatRef = React.createRef();
 	}
 
@@ -329,6 +329,22 @@ class IDE extends Component {
 			);
 		}
 		assistant.addText("apiKey");
+		if (types.length > 0) {
+			const model = assistant.addOptions(
+				"model",
+				[],
+				AIInterface.newNamed(types[0].displayName()).defaultModel()
+			);
+			model.refreshHandler = async () => {
+				const aiInterface = AIInterface.newNamed(
+					assistant.get("interface")
+				);
+				aiInterface.key = assistant.get("apiKey") || "";
+				const models = await aiInterface.getModels();
+				return models.map((m) => m.id).sort();
+			};
+		}
+		assistant.addNumber("temperature", 0);
 		assistant.addParagraph(
 			"systemMessage",
 			"You are an expert Smalltalk programmer.\nWhen I ask for help to analyze, explain or write Smalltalk code, you will reply accordingly.\nIn your response you will avoid using the words 'Smalltalk' and 'snippet'."
@@ -453,8 +469,10 @@ class IDE extends Component {
 					this.themes.push(theme);
 				}
 			});
-			this.settings.section("appearance").setting("theme").options =
-				this.themes.map((t) => t.name);
+			this.settings
+				.section("appearance")
+				.setting("theme")
+				.setOptions(this.themes.map((t) => t.name));
 		} catch (ignored) {
 			console.log(ignored);
 		}
@@ -500,10 +518,10 @@ class IDE extends Component {
 		const enabled = section.get("enabled");
 		this.codeAssistant.active = enabled;
 		if (!enabled) return;
-		this.codeAssistant.interface = AIInterface.newNamed(
-			section.get("interface")
-		);
-		this.codeAssistant.interface.key = section.get("apiKey") || "";
+		const aiInterface = AIInterface.newNamed(section.get("interface"));
+		aiInterface.key = section.get("apiKey") || "";
+		aiInterface.temperature = section.get("temperature");
+		this.codeAssistant.useInterface(aiInterface);
 	}
 
 	initializeBackend() {
@@ -1093,7 +1111,7 @@ class IDE extends Component {
 		let options = {};
 		await Promise.all(
 			parameters.map(async (p) => {
-				let list = await this.resolveOptions(p.options);
+				let list = await this.resolveChangeParameterOptions(p.options);
 				options[p.name] = list;
 			})
 		);
@@ -1137,7 +1155,7 @@ class IDE extends Component {
 		return result;
 	}
 
-	async resolveOptions(options) {
+	async resolveChangeParameterOptions(options) {
 		if (options === "{packages}") return await this.backend.packageNames();
 		if (options === "{classes}") return await this.backend.classNames();
 		return options;

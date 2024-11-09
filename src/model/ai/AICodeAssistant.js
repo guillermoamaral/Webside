@@ -1,15 +1,17 @@
 import AICodeAssistantMessage from "./AICodeAssistantMessage";
 import { OpenAIInterface } from "./AIInterface";
-import { ide } from "../IDE";
+import { AIFunction } from "./AIInterfaceTool";
 
 class AICodeAssistant {
-	constructor() {
+	constructor(backend) {
+		this.backend = backend;
 		this.active = false;
 		this.interface = this.defaultInterface();
 		this.systemPrompt = this.defaultSystemPrompt();
 		this.messages = [];
 		this.promptContext = "";
 		this.initializeMessages();
+		this.initializeTools();
 	}
 
 	defaultInterface() {
@@ -82,6 +84,121 @@ ${this.codeFormatSpecification()}`;
 		If there is more than one test, enclose each of them between <method> and </method>.`;
 	}
 
+	initializeTools() {
+		this.tools = [];
+		this.tools.push(this.searchImplementorsTool());
+		this.tools.push(this.searchSendersTool());
+		this.tools.push(this.classDefinitionTool());
+		this.tools.push(this.classProtocolTool());
+	}
+
+	searchImplementorsTool() {
+		const tool = new AIFunction(
+			"search_implementors",
+			'Search implementors of a given selector. Call this whenever you need to know what are the methods implementing a given message, for example, when the user asks "What are the implementors of <selector>"'
+		);
+		tool.addStringParameter(
+			"selector",
+			"The selector that the user would like to search implementors for",
+			true
+		);
+		tool.handler = async (args) => {
+			const selector = args.selector;
+			if (!selector) return "Selector is missing";
+			let implementors = [];
+			try {
+				implementors = await this.backend.implementors(selector);
+			} catch (ignored) {}
+			if (implementors.length === 0)
+				return `There are no implementors of ${selector}`;
+			let result = "";
+			implementors.forEach(
+				(m) =>
+					(result += `\n\n${m.methodClass}>>${m.selector}\n${m.source}`)
+			);
+			return result;
+		};
+		return tool;
+	}
+
+	searchSendersTool() {
+		const tool = new AIFunction(
+			"search_senders",
+			'Search senders of a given selector. Call this whenever you need to know what are the methods sending a given message, for example, when the user asks "What are the senders of <selector>"'
+		);
+		tool.addStringParameter(
+			"selector",
+			"The selector that the user would like to search senders for",
+			true
+		);
+		tool.handler = async (args) => {
+			const selector = args.selector;
+			if (!selector) return "Selector is missing";
+			let senders = [];
+			try {
+				senders = await this.backend.senders(selector);
+			} catch (ignored) {}
+			if (senders.length === 0)
+				return `There are no senders of ${selector}`;
+			let result = "";
+			senders.forEach(
+				(m) =>
+					(result += `\n\n${m.methodClass}>>${m.selector}\n${m.source}`)
+			);
+			return result;
+		};
+		return tool;
+	}
+
+	classDefinitionTool() {
+		const tool = new AIFunction(
+			"class_definition",
+			'Search the definition of a given class name. Call this whenever you need to know what is the definition of a given class, for example, when the user asks "What is the definition of <classname>"'
+		);
+		tool.addStringParameter(
+			"classname",
+			"The name of the class that the user would like to know its definition",
+			true
+		);
+		tool.handler = async (args) => {
+			const classname = args.classname;
+			if (!classname) return "Class name is missing";
+			let species;
+			try {
+				species = await this.backend.classNamed(classname);
+			} catch (ignored) {}
+			if (!species) return `There is no class named ${classname}`;
+			return species.definition;
+		};
+		return tool;
+	}
+
+	classProtocolTool() {
+		const tool = new AIFunction(
+			"class_protocol",
+			'Search the list of messages that are understood by instances of a given class name. Call this whenever you need to know what is the set of messages (protocol) of a given class, for example, when the user asks "What are the messages an instance of <classname> understands" or "What services does <classname> implements"'
+		);
+		tool.addStringParameter(
+			"classname",
+			"The name of the class that the user would like to know its protocol",
+			true
+		);
+		tool.handler = async (args) => {
+			const classname = args.classname;
+			if (!classname) return "Class name is missing";
+			let methods = [];
+			try {
+				methods = await this.backend.methods(classname);
+			} catch (ignored) {}
+			if (methods.length === 0)
+				return `Class named ${classname} has no methods`;
+			let result = "This are the methods implemented by the class:";
+			methods.forEach((m) => (result += `\n${m.selector}`));
+			return result;
+		};
+		return tool;
+	}
+
 	// Basic
 
 	async sendPrompt(text, visibleText) {
@@ -94,8 +211,9 @@ ${this.codeFormatSpecification()}`;
 		return this.interface.name();
 	}
 
-	useTool(tool) {
-		this.interface.addTool(tool);
+	useInterface(aiInterface) {
+		this.interface = aiInterface;
+		if (this.interface) this.interface.tools = this.tools;
 	}
 
 	lastMessage() {
@@ -122,15 +240,13 @@ ${this.codeFormatSpecification()}`;
 	}
 
 	async addMethodsContext(species) {
-		console.log(species);
 		let context = `Consider the class ${species.name} which defines the following class methods:\n`;
-		let methods = await ide.backend.methods(species.class);
+		let methods = await this.backend.methods(species.class);
 		methods.forEach((m) => {
 			context += `${m.source}\n`;
 		});
 		context += "and the following instance methods:\n";
-		methods = await ide.backend.methods(species.name);
-		console.log(methods);
+		methods = await this.backend.methods(species.name);
 		methods.forEach((m) => {
 			context += `${m.source}\n`;
 		});
@@ -147,14 +263,14 @@ ${this.codeFormatSpecification()}`;
 				: null;
 			if (selector) {
 				if (selector === "*") {
-					let species = await ide.backend.classNamed(classname);
+					let species = await this.backend.classNamed(classname);
 					this.addMethodsContext(species);
 				} else {
-					let method = await ide.backend.method(classname, selector);
+					let method = await this.backend.method(classname, selector);
 					this.addMethodContext(method);
 				}
 			} else {
-				let species = await ide.backend.classNamed(classname);
+				let species = await this.backend.classNamed(classname);
 				this.addClassContext(species);
 			}
 		}
@@ -315,10 +431,9 @@ ${this.codeFormatSpecification()}`;
 		let response = await this.interface.sendMessages(this.messages);
 		this.messages.push(response);
 		if (response.hasToolCall()) {
-			let result = AICodeAssistantMessage.toolResult(
-				response.invokeTool()
-			);
-			result.toolCall(response.toolCall());
+			const data = await response.invokeTool();
+			let result = AICodeAssistantMessage.toolResult(data);
+			result.toolCall = response.toolCall;
 			this.messages.push(result);
 			response = await this.interface.sendMessages(this.messages);
 			this.messages.push(response);
