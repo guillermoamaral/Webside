@@ -14,9 +14,7 @@ class DialogProvider extends React.PureComponent {
 	handleClose = (value) => {
 		const { dialog } = this.state;
 		this.setState({ dialog: { ...dialog, open: false } });
-		return dialog.type === "alert" || value
-			? dialog.resolve(value)
-			: dialog.reject();
+		return dialog.resolve(value);
 	};
 
 	alert = (options) => {
