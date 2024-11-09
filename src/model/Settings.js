@@ -63,7 +63,10 @@ class Setting extends Object {
 	}
 
 	static options(name, options, defaultValue) {
-		const df = defaultValue || (options.length > 0 ? options[0] : null);
+		const alternatives =
+			typeof options === "function" ? options() : options;
+		const df =
+			defaultValue || (alternatives.length > 0 ? alternatives[0] : null);
 		const setting = new Setting(name, "options", df);
 		setting.options = options;
 		return setting;
@@ -83,6 +86,16 @@ class Setting extends Object {
 
 	activate() {
 		this.active = true;
+	}
+
+	setOptions(options) {
+		this.options = options;
+	}
+
+	getOptions() {
+		return typeof this.options === "function"
+			? this.options()
+			: this.options || [];
 	}
 
 	copyFrom(setting) {

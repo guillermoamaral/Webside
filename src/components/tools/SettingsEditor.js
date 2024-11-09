@@ -57,6 +57,10 @@ class SettingsEditor extends Tool {
 			selectedSection && selectedSection.name === "connection"
 				? selectedSection.get("backend")
 				: null;
+		const maxLabelLength = selectedSettings.reduce(
+			(max, s) => Math.max(max, s.label.length),
+			0
+		);
 		return (
 			<Box
 				display="flex"
@@ -125,6 +129,13 @@ class SettingsEditor extends Tool {
 											<SettingEditor
 												//showLabel={false}
 												setting={setting}
+												onValueChange={() =>
+													this.forceUpdate()
+												}
+												minLabelWidth={Math.min(
+													maxLabelLength * 10,
+													200
+												)}
 											/>
 										</Box>
 									))}

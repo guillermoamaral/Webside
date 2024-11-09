@@ -20,6 +20,7 @@ import InfoIcon from "@mui/icons-material/InfoOutlined";
 import ColorEditor from "./ColorEditor";
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 class SettingEditor extends Component {
 	constructor(props) {
@@ -32,8 +33,11 @@ class SettingEditor extends Component {
 	}
 
 	valueChanged = (value) => {
-		this.props.setting.value = value;
-		this.setState({ value: value });
+		const setting = this.props.setting;
+		const actual = setting.type === "number" ? Number(value) : value;
+		setting.value = actual;
+		this.setState({ value: actual });
+		if (this.props.onValueChange) this.props.onValueChange();
 	};
 
 	loadImage = (e) => {
@@ -48,10 +52,29 @@ class SettingEditor extends Component {
 		}
 	};
 
+	settingOptions() {
+		const setting = this.props.setting;
+		let options = [];
+		if (setting.type !== "options") return options;
+		options = setting.getOptions();
+		if (!options.includes(setting.value))
+			options = [setting.value, ...options];
+		return options;
+	}
+
+	refreshSettingOptions = async () => {
+		const setting = this.props.setting;
+		if (setting && setting.refreshHandler) {
+			const options = await setting.refreshHandler();
+			setting.setOptions(options);
+		}
+		this.forceUpdate();
+	};
+
 	render() {
 		const value = this.state.value;
-		const { setting, showLabel = true } = this.props;
-		const { type, name, label, description, editable, options } = setting;
+		const { setting, showLabel = true, minLabelWidth = 150 } = this.props;
+		const { type, name, label, description, editable } = setting;
 		const alignment = type === "number" ? "right" : "left";
 		const textStyleBoldItalic = [];
 		if (type === "textStyle") {
@@ -60,21 +83,28 @@ class SettingEditor extends Component {
 		}
 		return (
 			<Box display="flex" flexDirection="row" alignItems="center">
-				{description && (
-					<Tooltip key={label} title={description}>
-						<InfoIcon />
-					</Tooltip>
-				)}
-				{showLabel && type !== "boolean" && (
-					<Typography variant="body2" ml={1} mr={2}>
-						{label}
-					</Typography>
-				)}
+				<Box
+					display="flex"
+					flexDirection="row"
+					mr={2}
+					sx={{ minWidth: minLabelWidth }}
+				>
+					{description && (
+						<Tooltip key={label} title={description}>
+							<InfoIcon />
+						</Tooltip>
+					)}
+					<Box flexGrow={1} ml={1}>
+						{showLabel && (
+							<Typography variant="body2">{label}</Typography>
+						)}
+					</Box>
+				</Box>
 				{["text", "paragraph", "number", "url"].includes(type) && (
 					<TextField
 						fullWidth={type === "paragraph"}
 						multiline={type === "paragraph"}
-						sx={{ minWidth: 50 }}
+						sx={{ minWidth: 250 }}
 						size="small"
 						id={name}
 						type={type}
@@ -106,27 +136,35 @@ class SettingEditor extends Component {
 									disabled={!editable}
 								/>
 							}
-							label={label}
+							//label={label}
 							size="small"
 						/>
 					</FormGroup>
 				)}
 				{type === "options" && (
-					<Select
-						size="small"
-						value={value}
-						input={<OutlinedInput margin="dense" />}
-						onChange={(event) => {
-							this.valueChanged(event.target.value);
-						}}
-						disabled={!editable}
-					>
-						{options.map((option) => (
-							<MenuItem value={option} key={option}>
-								{option}
-							</MenuItem>
-						))}
-					</Select>
+					<Box display="flex" flexDirection="row">
+						<Select
+							size="small"
+							value={value}
+							input={<OutlinedInput margin="dense" />}
+							onChange={(event) => {
+								this.valueChanged(event.target.value);
+							}}
+							disabled={!editable}
+							sx={{ minWidth: 250 }}
+						>
+							{this.settingOptions().map((option) => (
+								<MenuItem value={option} key={option}>
+									{option}
+								</MenuItem>
+							))}
+						</Select>
+						{setting.refreshHandler && (
+							<IconButton onClick={this.refreshSettingOptions}>
+								<RefreshIcon fontSize="small" />
+							</IconButton>
+						)}
+					</Box>
 				)}
 				{type === "shortcut" && (
 					<ShortcutEditor
