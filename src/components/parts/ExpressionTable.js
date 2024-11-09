@@ -39,14 +39,13 @@ class ExpressionTable extends Component {
 			const source = await ide.prompt({
 				title: "Expression",
 			});
-			if (source) {
-				const expression = {
-					id: this.newExpressionId(),
-					sourceCode: source,
-				};
-				await this.evaluateExpression(expression);
-				this.props.onExpressionAdd(expression);
-			}
+			if (!source) return;
+			const expression = {
+				id: this.newExpressionId(),
+				sourceCode: source,
+			};
+			await this.evaluateExpression(expression);
+			this.props.onExpressionAdd(expression);
 		} catch (error) {}
 	};
 

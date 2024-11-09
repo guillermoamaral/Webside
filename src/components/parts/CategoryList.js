@@ -70,7 +70,11 @@ class CategoryList extends Component {
 	}
 
 	async fetchExtendedOptions() {
-		return await ide.backend.extensions("category");
+		let extensions = [];
+		try {
+			extensions = await ide.backend.extensions("category");
+		} catch (ignored) {}
+		return extensions;
 	}
 
 	async updateExtendedOptions() {
@@ -92,9 +96,7 @@ class CategoryList extends Component {
 			const category = await ide.prompt({
 				title: "New category",
 			});
-			if (category) {
-				this.addCategory(category);
-			}
+			if (category) this.addCategory(category);
 		} catch (error) {}
 	};
 
@@ -113,6 +115,7 @@ class CategoryList extends Component {
 				title: "Rename category",
 				defaultValue: category,
 			});
+			if (!name) return;
 			await ide.backend.renameCategory(
 				this.props.class.name,
 				category,

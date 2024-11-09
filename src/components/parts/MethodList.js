@@ -223,7 +223,11 @@ class MethodList extends Component {
 	}
 
 	async fetchExtendedOptions() {
-		return await ide.backend.extensions("method");
+		let extensions = [];
+		try {
+			extensions = await ide.backend.extensions("method");
+		} catch (ignored) {}
+		return extensions;
 	}
 
 	async updateExtendedOptions() {
@@ -250,15 +254,14 @@ class MethodList extends Component {
 	};
 
 	renameMethod = async (method) => {
-		if (!method) {
-			return;
-		}
+		if (!method) return;
 		try {
 			const newSelector = await ide.prompt({
 				title: "Rename selector",
 				defaultValue: method.selector,
 				required: true,
 			});
+			if (!newSelector) return;
 			await ide.waitFor(() =>
 				ide.backend.renameSelector(
 					method.methodClass,
@@ -344,11 +347,9 @@ class MethodList extends Component {
 	classifyMethod = async (method, category) => {
 		var target = category;
 		if (!target) {
-			try {
-				target = await ide.prompt({
-					title: "New category",
-				});
-			} catch (error) {}
+			target = await ide.prompt({
+				title: "New category",
+			});
 		}
 		if (!target) return;
 		try {
@@ -367,15 +368,12 @@ class MethodList extends Component {
 	};
 
 	chooseCategoryForMethod = async (method) => {
-		var category;
-		try {
-			category = await ide.choose({
-				title: "Category",
-				message: "Select a category",
-				items: this.state.categories,
-				filter: true,
-			});
-		} catch (error) {}
+		const category = await ide.choose({
+			title: "Category",
+			message: "Select a category",
+			items: this.state.categories,
+			filter: true,
+		});
 		if (category) {
 			this.classifyMethod(method, category);
 		}
@@ -471,7 +469,7 @@ class MethodList extends Component {
 	};
 
 	isTestMethod = (method) => {
-		return method && method.selector.startsWith("test");
+		return method && method.selector && method.selector.startsWith("test");
 	};
 
 	canAddMethod = (method) => {

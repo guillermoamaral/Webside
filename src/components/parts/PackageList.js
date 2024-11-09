@@ -54,7 +54,11 @@ class PackageList extends Component {
 	}
 
 	async fetchExtendedOptions() {
-		return await ide.backend.extensions("package");
+		let extensions = [];
+		try {
+			extensions = await ide.backend.extensions("package");
+		} catch (ignored) {}
+		return extensions;
 	}
 
 	async updateExtendedOptions() {
@@ -76,6 +80,7 @@ class PackageList extends Component {
 				title: "New package",
 				required: true,
 			});
+			if (!name) return;
 			await ide.backend.createPackage(name);
 			let pack = await ide.backend.packageNamed(name);
 			let packages = this.state.packages;
@@ -100,6 +105,7 @@ class PackageList extends Component {
 				defaultValue: pack.name,
 				required: true,
 			});
+			if (!newName) return;
 			await ide.backend.renamePackage(pack.name, newName);
 			pack.name = newName;
 			let packages = this.state.packages;
