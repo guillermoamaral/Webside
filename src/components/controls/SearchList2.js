@@ -73,12 +73,13 @@ class SearchList2 extends React.Component {
 	};
 
 	renderInput = (inputProps) => {
-		const { ref, ...other } = inputProps;
+		const { ref, key, ...other } = inputProps;
 		return (
 			<TextField
 				fullWidth
 				size="small"
 				variant="outlined"
+				key={key}
 				InputProps={{ inputRef: ref, ...other }}
 				autoFocus
 				onKeyDown={(event) => {
@@ -96,8 +97,9 @@ class SearchList2 extends React.Component {
 
 	renderSuggestionsContainer = (options) => {
 		const { containerProps, children } = options;
+		const { key, ...other } = containerProps;
 		return (
-			<Box {...containerProps} zIndex="tooltip">
+			<Box key={key} {...other} zIndex="tooltip">
 				{children}
 			</Box>
 		);
