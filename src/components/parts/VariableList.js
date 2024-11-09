@@ -53,7 +53,11 @@ class VariableList extends Component {
 	}
 
 	async fetchExtendedOptions() {
-		return await ide.backend.extensions("variable");
+		let extensions = [];
+		try {
+			extensions = await ide.backend.extensions("variable");
+		} catch (ignored) {}
+		return extensions;
 	}
 
 	async updateExtendedOptions() {
@@ -94,6 +98,7 @@ class VariableList extends Component {
 				title: "New instance variable",
 				required: true,
 			});
+			if (!name) return;
 			await ide.backend.addInstanceVariable(this.props.class.name, name);
 			let variables = await this.fetchVariables();
 			let variable = variables.find((v) => v.name === name);
@@ -116,6 +121,7 @@ class VariableList extends Component {
 				defaultValue: variable.name,
 				required: true,
 			});
+			if (!newName) return;
 			if (variable.type === "instance") {
 				await ide.backend.renameInstanceVariable(
 					this.props.class.name,

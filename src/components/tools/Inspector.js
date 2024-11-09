@@ -74,16 +74,13 @@ class Inspector extends Tool {
 	};
 
 	updateViews = async (object) => {
+		let views = [];
 		try {
 			const id = this.props.root.id;
 			const path = this.objectURIPath(object);
-			object.views = await ide.backend.objectViews(
-				id,
-				path
-			);
-		} catch (error) {
-			ide.reportError(error);
-		}
+			views = await ide.backend.objectViews(id, path);
+		} catch (ignored) {}
+		object.views = views;
 	};
 
 	selfSlot(object) {

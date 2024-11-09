@@ -300,16 +300,11 @@ class CodeEditor extends Component {
 	}
 
 	renameIdentifier = async (identifier) => {
-		var replacement;
-		try {
-			replacement = await ide.prompt({
-				title: "Replacement",
-				defaultValue: identifier,
-			});
-		} catch (error) {}
-		if (!replacement) {
-			return;
-		}
+		const replacement = await ide.prompt({
+			title: "Replacement",
+			defaultValue: identifier,
+		});
+		if (!replacement) return;
 		const changes = this.rangesContainingIdentifier(identifier).map(
 			(range) => {
 				return {
@@ -1048,7 +1043,7 @@ class CodeEditor extends Component {
 		if (!word || word.from === word.to || word.text.trim().length <= 0)
 			return null;
 		const classname = this.props.class ? this.props.class.name : null;
-		var options;
+		let options;
 		try {
 			options = await ide.backend.autocompletions(
 				classname,

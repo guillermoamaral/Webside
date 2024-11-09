@@ -84,6 +84,7 @@ class CodeBrowser extends Component {
 				defaultValue: target,
 				required: true,
 			});
+			if (!newName) return;
 			await ide.backend.renameClass(target, newName);
 			this.props.class.name = newName;
 			if (this.props.onRenameClass) {

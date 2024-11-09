@@ -72,7 +72,11 @@ class PackageTree extends Component {
 	}
 
 	async fetchExtendedOptions() {
-		return await ide.backend.extensions("package");
+		let extensions = [];
+		try {
+			extensions = await ide.backend.extensions("package");
+		} catch (ignored) {}
+		return extensions;
 	}
 
 	async updateExtendedOptions() {
@@ -135,6 +139,7 @@ class PackageTree extends Component {
 				title: "New package",
 				required: true,
 			});
+			if (!name) return;
 			await ide.backend.createPackage(name);
 			let pack = { name: name };
 			await this.updatePackage(pack);
@@ -158,6 +163,7 @@ class PackageTree extends Component {
 				defaultValue: pack.name,
 				required: true,
 			});
+			if (!newName) return;
 			await ide.backend.renamePackage(pack.name, newName);
 			pack.name = newName;
 			let packages = this.state.packages;
@@ -213,6 +219,7 @@ class PackageTree extends Component {
 				title: "New category",
 				required: true,
 			});
+			if (!name) return;
 			await ide.backend.addClassCategory(pack.name, name);
 			await this.updatePackage(pack);
 			let expanded = this.state.expandedNodes;
@@ -236,6 +243,7 @@ class PackageTree extends Component {
 				title: "Rename category",
 				defaultValue: category.name,
 			});
+			if (!name) return;
 			await ide.backend.renameClassCategory(
 				category.package,
 				category.name,

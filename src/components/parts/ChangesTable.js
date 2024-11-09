@@ -88,6 +88,7 @@ class ChangesTable extends Component {
 		const target = await ide.prompt({
 			title: "Enter " + property,
 		});
+		if (!target) return;
 		this.addFilter(property + " = " + target, (ch) => {
 			const source = property === "type" ? ch.type() : ch[property];
 			return source === target;
@@ -106,6 +107,7 @@ class ChangesTable extends Component {
 		const target = await ide.prompt({
 			title: "Enter " + property,
 		});
+		if (!target) return;
 		this.addFilter(property + " != " + target, (ch) => {
 			const source = property === "type" ? ch.type() : ch[property];
 			return source !== target;

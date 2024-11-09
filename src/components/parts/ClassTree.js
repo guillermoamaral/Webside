@@ -47,7 +47,11 @@ class ClassTree extends Component {
 		} catch (error) {
 			//In case there is no /search endpoint, we keep the list of class names
 			//in the system (at the moment of initialization).
-			this.classSearch = await ide.backend.classNames();
+			try {
+				this.classSearch = await ide.backend.classNames();
+			} catch (ignored) {
+				this.classSearch = [];
+			}
 		}
 	}
 
@@ -204,7 +208,11 @@ class ClassTree extends Component {
 	}
 
 	async fetchExtendedOptions() {
-		return await ide.backend.extensions("class");
+		let extensions = [];
+		try {
+			extensions = await ide.backend.extensions("class");
+		} catch (ignored) {}
+		return extensions;
 	}
 
 	findSubclass(name, root) {
@@ -299,6 +307,7 @@ class ClassTree extends Component {
 				title: "New " + superclass.name + " subclass",
 				required: true,
 			});
+			if (!name) return;
 			const packagename = this.props.package
 				? this.props.package.name
 				: superclass.package;
@@ -330,6 +339,7 @@ class ClassTree extends Component {
 				defaultValue: species.name,
 				required: true,
 			});
+			if (!newName) return;
 			await ide.waitFor(() =>
 				ide.backend.renameClass(species.name, newName)
 			);
@@ -439,20 +449,19 @@ class ClassTree extends Component {
 			return ide.reportError("Could not generate code");
 		const code = answer.parts.find((p) => p.code)?.code;
 		if (!code) return ide.reportError("Could not generate code");
-		const changeset = code.changeset();
-		await changeset.update();
+		//const changeset = code.changeset(ide.backend);
+		//await changeset.update();
 		//ide.browseChanges(changeset);
 		ide.updateAssistantChat();
 	};
 
 	isTestMethod = (method) => {
 		// This is meant to be removed when StMethod is used
-		return method && method.selector.startsWith("test");
+		return method && method.selector && method.selector.startsWith("test");
 	};
 
 	isTestClass = (species) => {
 		// This is meant to be removed when StClass is used
-		console.log(species);
 		return species && species.name.endsWith("Test");
 	};
 

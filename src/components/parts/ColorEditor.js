@@ -42,7 +42,9 @@ class ColorEditor extends Component {
 		const { name, editable } = this.props;
 		return (
 			<Box display="flex" flexDirection="row" alignItems="center">
-				<Typography mr={2}>{this.rgba()}</Typography>
+				<Typography mr={2} sx={{ minWidth: 100 }}>
+					{this.rgba()}
+				</Typography>
 				<TextField
 					sx={{ minWidth: 50 }}
 					size="small"
