@@ -44,10 +44,12 @@ const CustomScrollbars = ({
 					const {
 						elementRef,
 						onScroll: rscOnScroll,
+						key,
 						...restProps
 					} = props;
 					return (
 						<span
+							key={key}
 							{...restProps}
 							onScroll={(e) => {
 								onScroll(e);
