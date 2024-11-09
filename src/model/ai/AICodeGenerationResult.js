@@ -1,5 +1,4 @@
 import StChangeset from "../../model/StChangeset";
-import { ide } from "../IDE";
 
 class AICodeGenerationResult {
 	constructor() {
@@ -57,8 +56,8 @@ class AICodeGenerationResult {
 		return changes;
 	}
 
-	changeset() {
-		const changeset = new StChangeset(ide.backend);
+	changeset(backend) {
+		const changeset = new StChangeset(backend);
 		changeset.addChanges(this.changes());
 		return changeset;
 	}

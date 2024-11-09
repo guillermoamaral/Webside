@@ -49,16 +49,12 @@ class AICodeAssistantMessage {
 		return this.rawContent;
 	}
 
-	invokeTool() {
-		return this.toolCall.invoke();
+	async invokeTool() {
+		return await this.toolCall.invoke();
 	}
 
 	hasToolCall() {
 		return this.toolCall !== null;
-	}
-
-	isSystemMessage() {
-		return this.role === "system";
 	}
 
 	extractMethodFrom(xmlNode) {
@@ -123,18 +119,17 @@ class AICodeAssistantMessage {
 		const regex = /<(code|thinking|issue)>([\s\S]*?)<\/\1>/g;
 		let lastIndex = 0;
 		let match, part;
-		while ((match = regex.exec(this.rawContent)) !== null) {
+		const raw = this.rawContent || "";
+		while ((match = regex.exec(raw)) !== null) {
 			if (lastIndex < match.index) {
 				part = {
 					type: "text",
-					content: this.rawContent
-						.slice(lastIndex, match.index)
-						.trim(),
+					content: raw.slice(lastIndex, match.index).trim(),
 				};
 				this.parts.push(part);
 			}
 			const type = match[1];
-			let content = match[2].trim();
+			let content = match[2].trim() || "";
 			if (content.length > 0) {
 				part = {
 					type: "text",
@@ -152,7 +147,6 @@ class AICodeAssistantMessage {
 					part.type = "code";
 					part.code = code;
 					part.content = code.codeChunk();
-					console.log(code);
 				}
 				if (
 					part.type === "text" &&
@@ -168,10 +162,10 @@ class AICodeAssistantMessage {
 			}
 			lastIndex = regex.lastIndex;
 		}
-		if (lastIndex < this.rawContent.length) {
+		if (lastIndex < raw.length) {
 			part = {
 				type: "text",
-				content: this.rawContent.slice(lastIndex).trim(),
+				content: raw.slice(lastIndex).trim(),
 			};
 			this.parts.push(part);
 		}
