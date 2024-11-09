@@ -10,7 +10,14 @@ import {
 } from "@mui/material";
 
 function ConfirmDialog(props, context) {
-	const { open, onClose, title, message, ok, cancel } = props;
+	const {
+		open = false,
+		onClose,
+		title = "Confirm",
+		message,
+		ok = {},
+		cancel = {},
+	} = props;
 	return (
 		<Dialog
 			fullWidth
@@ -32,22 +39,22 @@ function ConfirmDialog(props, context) {
 			<DialogActions>
 				<Button
 					onClick={() => onClose(true)}
-					color={ok.color}
-					variant={ok.variant}
+					color={ok.color || "primary"}
+					variant="outlined"
 					startIcon={ok.startIcon}
 					endIcon={ok.endIcon}
 					autoFocus
 				>
-					{ok.text}
+					{ok.text || "Yes"}
 				</Button>
 				<Button
 					onClick={() => onClose(false)}
-					color={cancel.color}
-					variant={cancel.variant}
+					color={cancel.color || "inherit"}
+					variant="outlined"
 					startIcon={cancel.startIcon}
 					endIcon={cancel.endIcon}
 				>
-					{cancel.text}
+					{cancel.text || "No"}
 				</Button>
 			</DialogActions>
 		</Dialog>
@@ -73,21 +80,6 @@ ConfirmDialog.propTypes = {
 		startIcon: PropTypes.element,
 		endIcon: PropTypes.element,
 	}),
-};
-
-ConfirmDialog.defaultProps = {
-	open: false,
-	title: "Confirm",
-	ok: {
-		text: "Yes",
-		color: "primary",
-		variant: "outlined",
-	},
-	cancel: {
-		text: "No",
-		color: "inherit",
-		variant: "outlined",
-	},
 };
 
 export default ConfirmDialog;

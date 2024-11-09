@@ -11,8 +11,15 @@ import {
 import CustomInput from "../controls/CustomInput";
 
 function FormDialog(props, context) {
-	const { open, onClose, title, message, inputs, ok, cancel } = props;
-
+	const {
+		open = false,
+		onClose,
+		title = "Form",
+		message,
+		inputs,
+		ok = {},
+		cancel = {},
+	} = props;
 	const initialValues = {};
 	const initialErrors = {};
 	inputs.forEach((i) => {
@@ -111,21 +118,21 @@ function FormDialog(props, context) {
 				<Button
 					type="submit"
 					onClick={submit}
-					color={ok.color}
-					variant={ok.variant}
+					color={ok.color || "primary"}
+					variant="outlined"
 					startIcon={ok.startIcon}
 					endIcon={ok.endIcon}
 				>
-					{ok.text}
+					{ok.text || "Ok"}
 				</Button>
 				<Button
 					onClick={() => onClose(null)}
-					color={cancel.color}
-					variant={cancel.variant}
+					color={cancel.color || "inherit"}
+					variant="outlined"
 					startIcon={cancel.startIcon}
 					endIcon={cancel.endIcon}
 				>
-					{cancel.text}
+					{cancel.text || "Cancel"}
 				</Button>
 			</DialogActions>
 		</Dialog>
@@ -151,21 +158,6 @@ FormDialog.propTypes = {
 		startIcon: PropTypes.element,
 		endIcon: PropTypes.element,
 	}),
-};
-
-FormDialog.defaultProps = {
-	open: false,
-	title: "Form",
-	ok: {
-		text: "OK",
-		color: "primary",
-		variant: "outlined",
-	},
-	cancel: {
-		text: "Cancel",
-		color: "inherit",
-		variant: "outlined",
-	},
 };
 
 export default FormDialog;

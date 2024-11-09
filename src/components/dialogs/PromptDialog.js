@@ -12,14 +12,14 @@ import {
 
 function PromptDialog(props, context) {
 	const {
-		open,
+		open = "false",
 		onClose,
-		title,
+		title = "Enter",
 		message,
-		placeholder,
-		ok,
-		cancel,
-		required,
+		placeholder = "",
+		ok = {},
+		cancel = {},
+		required = false,
 		defaultValue,
 	} = props;
 	const [value, setValue] = useState(defaultValue);
@@ -64,22 +64,22 @@ function PromptDialog(props, context) {
 				<Button
 					type="submit"
 					onClick={() => onClose(value)}
-					color={ok.color}
-					variant={ok.variant}
+					color={ok.color || "primary"}
+					variant="outlined"
 					disabled={required && !value}
 					startIcon={ok.startIcon}
 					endIcon={ok.endIcon}
 				>
-					{ok.text}
+					{ok.text || "Ok"}
 				</Button>
 				<Button
 					onClick={() => onClose(null)}
-					color={cancel.color}
-					variant={cancel.variant}
+					color={cancel.color || "inherit"}
+					variant="outlined"
 					startIcon={cancel.startIcon}
 					endIcon={cancel.endIcon}
 				>
-					{cancel.text}
+					{cancel.text || "Cancel"}
 				</Button>
 			</DialogActions>
 		</Dialog>
@@ -109,23 +109,6 @@ PromptDialog.propTypes = {
 	required: PropTypes.bool,
 	defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	value: PropTypes.string,
-};
-
-PromptDialog.defaultProps = {
-	open: false,
-	title: "Enter",
-	placeholder: "",
-	ok: {
-		text: "OK",
-		color: "primary",
-		variant: "outlined",
-	},
-	cancel: {
-		text: "Cancel",
-		color: "inherit",
-		variant: "outlined",
-	},
-	required: false,
 };
 
 export default PromptDialog;

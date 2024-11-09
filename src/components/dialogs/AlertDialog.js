@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 
 function AlertDialog(props, context) {
-	const { open, onClose, title, message, ok } = props;
+	const { open = false, onClose, title = "Alert", message, ok = {} } = props;
 	return (
 		<Dialog
 			fullWidth
@@ -32,13 +32,13 @@ function AlertDialog(props, context) {
 			<DialogActions>
 				<Button
 					onClick={() => onClose()}
-					color={ok.color}
-					variant={ok.variant}
+					color={ok.color || "primary"}
+					variant="outlined"
 					startIcon={ok.startIcon}
 					endIcon={ok.endIcon}
 					autoFocus
 				>
-					{ok.text}
+					{ok.text || "OK"}
 				</Button>
 			</DialogActions>
 		</Dialog>
@@ -57,16 +57,6 @@ AlertDialog.propTypes = {
 		startIcon: PropTypes.element,
 		endIcon: PropTypes.element,
 	}),
-};
-
-AlertDialog.defaultProps = {
-	open: false,
-	title: "Alert",
-	ok: {
-		text: "OK",
-		color: "primary",
-		variant: "outlined",
-	},
 };
 
 export default AlertDialog;
