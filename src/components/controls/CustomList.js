@@ -28,50 +28,42 @@ const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
 
 const ITEM_SIZE = 24;
 
-const CustomScrollbars = ({
-	children,
-	forwardedRef,
-	onScroll,
-	style,
-	className,
-}) => {
-	return (
-		<RSC
-			className={className}
-			style={style}
-			scrollerProps={{
-				renderer: (props) => {
-					const {
-						elementRef,
-						onScroll: rscOnScroll,
-						key,
-						...restProps
-					} = props;
-					return (
-						<span
-							key={key}
-							{...restProps}
-							onScroll={(e) => {
-								onScroll(e);
-								rscOnScroll(e);
-							}}
-							ref={(ref) => {
-								forwardedRef(ref);
-								elementRef(ref);
-							}}
-						/>
-					);
-				},
-			}}
-		>
-			{children}
-		</RSC>
-	);
-};
-
-const CustomScrollbarsVirtualList = React.forwardRef((props, ref) => (
-	<CustomScrollbars {...props} forwardedRef={ref} />
-));
+const CustomScrollbars = React.forwardRef(
+	({ children, onScroll, style, className }, forwardedRef) => {
+		return (
+			<RSC
+				className={className}
+				style={style}
+				scrollerProps={{
+					renderer: (props) => {
+						const {
+							elementRef,
+							onScroll: rscOnScroll,
+							key,
+							...other
+						} = props;
+						return (
+							<span
+								key={key}
+								{...other}
+								onScroll={(e) => {
+									onScroll(e);
+									rscOnScroll(e);
+								}}
+								ref={(ref) => {
+									forwardedRef(ref);
+									elementRef(ref);
+								}}
+							/>
+						);
+					},
+				}}
+			>
+				{children}
+			</RSC>
+		);
+	}
+);
 
 const listRef = React.createRef();
 const outerRef = React.createRef();
@@ -116,8 +108,9 @@ class CustomList extends Component {
 		const selectedIndex = this.state.filteredItems.indexOf(selected);
 		if (selectedIndex < 0) return;
 		if (listRef && listRef.current) {
-			//console.log("about to scroll to index " + selectedIndex, selected);
-			listRef.current.scrollToItem(selectedIndex);
+			setTimeout(() => {
+				listRef.current.scrollToItem(selectedIndex);
+			}, 50);
 		}
 	}
 
@@ -414,6 +407,7 @@ class CustomList extends Component {
 										<Tooltip
 											title={action.label}
 											placement="top"
+											className="actionButtons"
 										>
 											<IconButton
 												style={{
@@ -526,9 +520,7 @@ class CustomList extends Component {
 									overscanCount={5}
 									onKeyDown={this.keyDown}
 									style={{ paddingTop: 0, paddingBottom: 0 }}
-									outerElementType={
-										CustomScrollbarsVirtualList
-									}
+									outerElementType={CustomScrollbars}
 									outerRef={outerRef}
 									onScroll={({
 										scrollOffset,

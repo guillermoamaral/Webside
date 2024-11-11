@@ -1,4 +1,4 @@
-import React, { useState, memo } from "react";
+import React, { useState, memo, useRef, useEffect } from "react";
 import { FixedSizeList as List, areEqual } from "react-window";
 import {
 	Box,
@@ -17,50 +17,42 @@ import PopupMenu from "./PopupMenu";
 
 const ITEM_SIZE = 26;
 
-const CustomScrollbars = ({
-	children,
-	forwardedRef,
-	onScroll,
-	style,
-	className,
-}) => {
-	return (
-		<RSC
-			className={className}
-			style={style}
-			scrollerProps={{
-				renderer: (props) => {
-					const {
-						elementRef,
-						onScroll: rscOnScroll,
-						key,
-						...restProps
-					} = props;
-					return (
-						<span
-							key={key}
-							{...restProps}
-							onScroll={(e) => {
-								onScroll(e);
-								rscOnScroll(e);
-							}}
-							ref={(ref) => {
-								forwardedRef(ref);
-								elementRef(ref);
-							}}
-						/>
-					);
-				},
-			}}
-		>
-			{children}
-		</RSC>
-	);
-};
-
-const CustomScrollbarsVirtualList = React.forwardRef((props, ref) => (
-	<CustomScrollbars {...props} forwardedRef={ref} />
-));
+const CustomScrollbars = React.forwardRef(
+	({ children, onScroll, style, className }, forwardedRef) => {
+		return (
+			<RSC
+				className={className}
+				style={style}
+				scrollerProps={{
+					renderer: (props) => {
+						const {
+							elementRef,
+							onScroll: rscOnScroll,
+							key,
+							...other
+						} = props;
+						return (
+							<span
+								key={key}
+								{...other}
+								onScroll={(e) => {
+									onScroll(e);
+									rscOnScroll(e);
+								}}
+								ref={(ref) => {
+									forwardedRef(ref);
+									elementRef(ref);
+								}}
+							/>
+						);
+					},
+				}}
+			>
+				{children}
+			</RSC>
+		);
+	}
+);
 
 const drawNode = memo(({ data, index, style }) => {
 	const { flattenedData, toggleHandler, selectHandler, menuHandler } = data;
@@ -304,7 +296,8 @@ const FastTree = ({
 		menuHandler
 	);
 
-	const listRef = React.createRef();
+	//const listRef = React.createRef();
+	const listRef = useRef();
 
 	if (selected) {
 		let ids = flattenedData.map((n) => n.id);
@@ -312,6 +305,18 @@ const FastTree = ({
 			setSelected(null);
 		}
 	}
+
+	useEffect(() => {
+		const index = selectedNode
+			? flattenedData.findIndex((n) => n.node === selectedNode)
+			: flattenedData.findIndex((n) => n.id === selected?.id);
+		if (index >= 0 && listRef.current) {
+			setTimeout(() => {
+				listRef.current.scrollToItem(index, "center");
+			}, 50);
+			listRef.current.scrollToItem(index, "center");
+		}
+	}, [selected, selectedNode, flattenedData]);
 
 	return (
 		<Box
@@ -345,7 +350,7 @@ const FastTree = ({
 							itemSize={ITEM_SIZE}
 							itemKey={(index) => flattenedData[index].id}
 							itemData={itemData}
-							outerElementType={CustomScrollbarsVirtualList}
+							outerElementType={CustomScrollbars}
 						>
 							{drawNode}
 						</List>
