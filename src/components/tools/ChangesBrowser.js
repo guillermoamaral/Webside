@@ -32,7 +32,9 @@ class ChangesBrowser extends Tool {
 	}
 
 	changeSelected = async (change) => {
-		await change.update();
+		try {
+			await change.update();
+		} catch (ignored) {}
 		this.setState({ selectedChange: change });
 	};
 
