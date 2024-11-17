@@ -310,11 +310,11 @@ const FastTree = ({
 		const index = selectedNode
 			? flattenedData.findIndex((n) => n.node === selectedNode)
 			: flattenedData.findIndex((n) => n.id === selected?.id);
-		if (index >= 0 && listRef.current) {
+		if (index >= 0 && listRef && listRef.current) {
 			setTimeout(() => {
-				listRef.current.scrollToItem(index, "center");
+				if (listRef.current)
+					listRef.current.scrollToItem(index, "center");
 			}, 50);
-			listRef.current.scrollToItem(index, "center");
 		}
 	}, [selected, selectedNode, flattenedData]);
 
