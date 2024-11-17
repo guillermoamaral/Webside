@@ -21,6 +21,7 @@ import ColorEditor from "./ColorEditor";
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { ide } from "../IDE";
 
 class SettingEditor extends Component {
 	constructor(props) {
@@ -42,14 +43,23 @@ class SettingEditor extends Component {
 
 	loadImage = (e) => {
 		const file = e.target.files[0];
-		if (file) {
-			const reader = new FileReader();
-			reader.onload = () => {
-				const result = reader.result;
-				this.valueChanged(result);
-			};
-			reader.readAsDataURL(file);
+		if (!file) return;
+		const maxSize = 1024 * 200;
+		if (file.size > maxSize) {
+			ide.inform(
+				`File size exceeds ${
+					maxSize / 1024
+				} KB. Please select a smaller file.`
+			);
+			e.target.value = "";
+			return;
 		}
+		const reader = new FileReader();
+		reader.onload = () => {
+			const result = reader.result;
+			this.valueChanged(result);
+		};
+		reader.readAsDataURL(file);
 	};
 
 	settingOptions() {
