@@ -36,7 +36,7 @@ class AISuggestedClass {
 	}
 
 	codeChunk() {
-		let chunk = `${this.superclassName || "Object"} subclass: ${
+		let chunk = `${this.superclassName || "Object"}\n\tsubclass: #${
 			this.name
 		}\n\tinstanceVariableNames:'`;
 		this.instanceVariableNames.forEach((v, i) => {
@@ -44,7 +44,7 @@ class AISuggestedClass {
 			chunk += v;
 		});
 		chunk += `'\n\tclassVariableNames:'`;
-		this.instanceVariableNames.forEach((v, i) => {
+		this.classVariableNames.forEach((v, i) => {
 			if (i !== 0) chunk += " ";
 			chunk += v;
 		});
@@ -54,6 +54,10 @@ class AISuggestedClass {
 			chunk += m.sourceCode;
 		});
 		return chunk;
+	}
+
+	codeChunks() {
+		return [this.codeChunk(), ...this.methods.map((m) => m.codeChunk())];
 	}
 
 	changes() {

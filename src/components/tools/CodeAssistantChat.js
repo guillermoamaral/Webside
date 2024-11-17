@@ -27,6 +27,9 @@ const MessageItem = ({ message }) => {
 	const parts = message.parts || [];
 	const who = message.role === "user" ? ide.currentDeveloper() : message.role;
 	const photo = ide.settings.section("general").get("photo");
+	const codeFontSize =
+		ide.settings.section("appearance").get("fontSize") - 1 + "px";
+	const showSeparatedChunks = false;
 	return (
 		<Box display="flex" flexDirection="column" sx={{ width: "100%" }}>
 			<Box display="flex" alignItems="center">
@@ -67,26 +70,35 @@ const MessageItem = ({ message }) => {
 							part.content.split("\n").length * 20 + 40,
 							400
 						);
+						const chunks =
+							part.code && showSeparatedChunks
+								? part.code.codeChunks()
+								: [part.content];
 						return (
-							<Paper variant="outlined" key={"code" + index}>
-								<Box
-									display="flex"
-									flexDirection="row"
-									justifyContent="flex-end"
-								>
-									<IconButton
-										size="small"
-										key={"copyCode" + index}
-										color="primary"
-										onClick={() =>
-											navigator.clipboard.writeText(
-												part.content
-											)
-										}
+							<Box>
+								{chunks.map((chunk) => (
+									<Paper
+										variant="outlined"
+										key={"code" + index}
 									>
-										<CopyIcon fontSize="small" />
-									</IconButton>
-									{/* {part.code && (
+										<Box
+											display="flex"
+											flexDirection="row"
+											justifyContent="flex-end"
+										>
+											<IconButton
+												size="small"
+												key={"copyCode" + index}
+												color="primary"
+												onClick={() =>
+													navigator.clipboard.writeText(
+														chunk
+													)
+												}
+											>
+												<CopyIcon fontSize="small" />
+											</IconButton>
+											{/* {part.code && (
 											<IconButton
 												size="small"
 												key={"browseCode" + index}
@@ -100,30 +112,26 @@ const MessageItem = ({ message }) => {
 												<ChangesBrowserIcon fontSize="small" />
 											</IconButton>
 										)} */}
-								</Box>
-								<Box
-									key={index}
-									display="flex"
-									variant="outlined"
-									ml={2}
-									mt={1}
-									sx={{ height: height }}
-								>
-									<CodeEditor
-										source={part.content}
-										readOnly
-										showAccept={false}
-										fontSize={
-											ide.settings
-												.section("appearance")
-												.get("fontSize") -
-											1 +
-											"px"
-										}
-										noTooltips
-									/>
-								</Box>
-							</Paper>
+										</Box>
+										<Box
+											key={index}
+											display="flex"
+											variant="outlined"
+											ml={2}
+											mt={1}
+											sx={{ height: height }}
+										>
+											<CodeEditor
+												source={chunk}
+												readOnly
+												showAccept={false}
+												fontSize={codeFontSize}
+												noTooltips
+											/>
+										</Box>
+									</Paper>
+								))}
+							</Box>
 						);
 					}
 					return (

@@ -49,6 +49,14 @@ class AICodeGenerationResult {
 		return chunk;
 	}
 
+	codeChunks() {
+		const chunks = [];
+		this.classes.forEach((c) => chunks.push(...c.codeChunks()));
+		this.methods.forEach((m) => chunks.push(m.codeChunk()));
+		this.scripts.forEach((s) => chunks.push(s.codeChunk()));
+		return chunks;
+	}
+
 	changes() {
 		const changes = [];
 		this.classes.forEach((c) => changes.push(...c.changes()));
