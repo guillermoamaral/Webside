@@ -105,11 +105,10 @@ class CustomList extends Component {
 	componentDidUpdate() {
 		const selected = this.props.selectedItem;
 		if (!selected) return;
-		const selectedIndex = this.state.filteredItems.indexOf(selected);
-		if (selectedIndex < 0) return;
-		if (listRef && listRef.current) {
+		const index = this.state.filteredItems.indexOf(selected);
+		if (index >= 0 && listRef && listRef.current) {
 			setTimeout(() => {
-				listRef.current.scrollToItem(selectedIndex);
+				if (listRef.current) listRef.current.scrollToItem(index);
 			}, 50);
 		}
 	}

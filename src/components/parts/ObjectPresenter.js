@@ -88,54 +88,76 @@ class ObjectPresenter extends Component {
 				),
 			});
 		}
-		(object.views || []).forEach((p, i) => {
-			const page = {
-				id: p.title + i,
-				label: p.title,
-				component: (
-					<Paper variant="outlined" style={{ height: "100%" }}>
-						{p.type === "source" && (
-							<CodeEditor source={p.code} showAccept={false} />
-						)}
-						{p.type === "markdown" && (
-							<MarkdownView source={p.code} />
-						)}
-						{p.type === "json" && (
-							<JSONView source={JSON.parse(p.code)} />
-						)}
-						{p.type === "tree" && (
-							<FastTree
-								nodes={p.roots}
-								selectedNode={p.roots[0]}
-								nodeLabel={p.nodeLabel}
-								nodeChildren={p.nodeChildren}
-							/>
-						)}
-						{p.type === "table" && p.rows.length > 100 && (
-							<CustomTable
-								columns={p.columns}
-								rows={p.rows}
-								rowsPerPage={50}
-								usePagination
-							/>
-						)}
-						{p.type === "table" && p.rows.length <= 100 && (
-							<CustomTable columns={p.columns} rows={p.rows} />
-						)}
-						{p.type === "html" && (
-							<iframe
-								title={p.title}
-								srcDoc={p.code}
-								height="100%"
-								width="100%"
-							/>
-						)}
-					</Paper>
-				),
-			};
-			pages.push(page);
+		(object.views || []).forEach((v, i) => {
+			const component = this.customView(v);
+			if (component) {
+				const title = v.title || `View-${i}`;
+				const page = {
+					id: title + i,
+					label: title,
+					component: component,
+				};
+				pages.push(page);
+			}
 		});
 		return pages;
+	}
+
+	customView(view) {
+		let component;
+		let code;
+		switch (view.type) {
+			case "source":
+				code = view.code || `"no code provided"`;
+				component = <CodeEditor source={code} showAccept={false} />;
+				break;
+			case "markdown":
+				code = view.code || `"no markdown provided"`;
+				component = <MarkdownView source={code} />;
+				break;
+			case "json":
+				code = view.code || "{}";
+				component = <JSONView source={JSON.parse(code)} />;
+				break;
+			case "tree":
+				component = (
+					<FastTree
+						nodes={view.roots || []}
+						selectedNode={view.roots ? view.roots[0] : []}
+						nodeLabel={view.nodeLabel}
+						nodeChildren={view.nodeChildren}
+					/>
+				);
+				break;
+			case "table":
+				const rows = view.rows || [];
+				const columns = view.columns || [];
+				component =
+					rows.length > 100 ? (
+						<CustomTable
+							columns={columns}
+							rows={rows}
+							rowsPerPage={50}
+							usePagination
+						/>
+					) : (
+						<CustomTable columns={columns} rows={rows} />
+					);
+				break;
+			case "html":
+				code = view.code || "";
+				component = (
+					<iframe
+						title={view.title}
+						srcDoc={code}
+						height="100%"
+						width="100%"
+					/>
+				);
+				break;
+			default:
+		}
+		return component;
 	}
 
 	indexedSlotSelected = (object) => {
