@@ -175,11 +175,40 @@ class SystemBrowser extends Tool {
 	classSelected = async (species) => {
 		this.updateLabel(species.name);
 		await this.updateClass(species);
+		const { selectedMethod, selectedCategory, selectedVariable } =
+			this.state;
+		let method;
+		if (selectedMethod) {
+			try {
+				method = await ide.backend.method(
+					species.name,
+					selectedMethod.selector
+				);
+			} catch (ignored) {}
+		}
+		let category;
+		if (selectedCategory) {
+			try {
+				const categories = await ide.backend.categories(species.name);
+				category = categories.find((c) => c === selectedCategory);
+			} catch (ignored) {}
+		}
+		let variable;
+		if (selectedVariable) {
+			try {
+				const variables = await ide.backend.variables(species.name);
+				variable = variables.find(
+					(v) =>
+						v.name === selectedVariable.name &&
+						v.type === selectedVariable.type
+				);
+			} catch (ignored) {}
+		}
 		this.setState({
 			selectedClass: species,
-			selectedCategory: null,
-			selectedVariable: null,
-			selectedMethod: null,
+			selectedCategory: category,
+			selectedVariable: variable,
+			selectedMethod: method,
 		});
 	};
 
@@ -283,7 +312,6 @@ class SystemBrowser extends Tool {
 				method.methodClass,
 				method.selector
 			);
-
 			if (retrieved) {
 				Object.assign(method, retrieved);
 			} else {
