@@ -28,7 +28,7 @@ class CategoryList extends Component {
 
 	componentDidUpdate(prevProps) {
 		if (this.props.class !== prevProps.class) {
-			this.updateCategories();
+			this.updateCategories(this.state.selectedCategory);
 		}
 	}
 
@@ -38,8 +38,8 @@ class CategoryList extends Component {
 
 	async updateCategories(selectedCategory) {
 		this.setState({ loading: true });
-		let categories = await this.fetchCategories();
-		let selected = categories.defined.find((c) => c === selectedCategory);
+		const categories = await this.fetchCategories();
+		const selected = categories.defined.find((c) => c === selectedCategory);
 		this.setState({
 			loading: false,
 			categories: categories.defined,

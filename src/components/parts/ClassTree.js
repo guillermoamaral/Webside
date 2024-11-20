@@ -261,7 +261,7 @@ class ClassTree extends Component {
 		let names;
 		try {
 			names = ide.backend.searchClassNames(text);
-		} catch (error) {}
+		} catch (ignored) {}
 		return names;
 	};
 

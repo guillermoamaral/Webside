@@ -120,9 +120,7 @@ class MethodList extends Component {
 		let selected;
 		if (selectedMethod) {
 			selected = methods.find(
-				(m) =>
-					m.methodClass === selectedMethod.methodClass &&
-					m.selector === selectedMethod.selector
+				(m) => m.selector === selectedMethod.selector //&& m.methodClass === selectedMethod.methodClass
 			);
 		}
 		let categories = await this.fetchCategories(selected);

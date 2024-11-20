@@ -25,17 +25,25 @@ class VariableList extends Component {
 
 	componentDidUpdate(prevProps) {
 		if (this.props.class !== prevProps.class) {
-			this.updateVariables();
+			this.updateVariables(this.state.selectedVariable);
 		}
 	}
 
-	async updateVariables() {
+	async updateVariables(selectedVariable) {
 		this.setState({ loading: true });
-		let variables = await this.fetchVariables();
+		const variables = await this.fetchVariables();
+		let selected;
+		if (selectedVariable) {
+			selected = variables.find(
+				(v) =>
+					v.name === selectedVariable.name &&
+					v.type === selectedVariable.type
+			);
+		}
 		this.setState({
 			loading: false,
 			variables: variables,
-			selectedVariable: null,
+			selectedVariable: selected,
 		});
 	}
 

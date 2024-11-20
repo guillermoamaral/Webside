@@ -252,7 +252,7 @@ class Backend {
 
 	async methods(classname, sorted = false) {
 		const methods = await this.get(
-			"/classes/" + classname + "/methods?marks=true",
+			"/classes/" + classname + "/methods",
 			"methods of class " + classname
 		);
 		if (sorted) {
