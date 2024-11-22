@@ -585,7 +585,7 @@ class ResourceBrowser extends Tool {
 			case "Test Runs":
 				options = this.testRunActions();
 				break;
-			default:
+			default: 
 		}
 		return options;
 	}

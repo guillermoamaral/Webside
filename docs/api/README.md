@@ -4,7 +4,7 @@ Webside is based on a Smalltalk system implementing the following web API.
 
 It's worth mentioning that this API is not "pure" REST at the moment of writing this documentation. However, extending it to be a REST-full API could bring some benefits to both Webside and other potential consumers interested in inspecting or controlling a Smalltalk system through HTTP. Of course, such a change would require upgrading Webside and this documentation accordingly.
 
-The implementation of API calls, including helper services, is centralized in a class called [API](../../client/src/components/API.js).
+The implementation of API calls, including helper services, is centralized in a class called [API](../../src/components/Backend.js).
 
 # IDs
 

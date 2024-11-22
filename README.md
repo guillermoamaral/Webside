@@ -45,14 +45,13 @@ npm install npm@latest -g
 git clone https://github.com/guillermoamaral/Webside.git
 ```
 
-2. Install npm packages under `client` folder
+1. Install dependencies
 
 ```sh
-cd client
 npm install
 ```
 
-3. Launch Webside client
+1. Launch Webside
 
 ```sh
 npm start
