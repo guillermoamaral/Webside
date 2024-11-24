@@ -57,12 +57,7 @@ class CodeTooltip extends Component {
 								background: background,
 							}}
 						>
-							<CodeEditor
-								source={code}
-								readOnly
-								noTooltips
-								showAccept={false}
-							/>
+							<CodeEditor source={code} readOnly noTooltips />
 						</Paper>
 					)}
 				</CardContent>

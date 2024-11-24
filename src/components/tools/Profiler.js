@@ -153,8 +153,6 @@ class Profiler extends Tool {
 								<CodeEditor
 									context={evaluationContext}
 									source={expression}
-									showAccept={false}
-									showPlay={false}
 									onChange={this.expressionChanged}
 									readOnly={profiling}
 								/>
@@ -279,7 +277,6 @@ class Profiler extends Tool {
 														? ""
 														: selectedMethod.source
 												}
-												showAccept={false}
 												readOnly
 											/>
 										</Paper>

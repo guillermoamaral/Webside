@@ -859,7 +859,6 @@ class IDE extends Component {
 	//Services...
 
 	reportError = (error) => {
-		console.log(error);
 		if (!error) return;
 		let description = error.toString();
 		let message = error.data
