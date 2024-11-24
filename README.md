@@ -45,13 +45,13 @@ npm install npm@latest -g
 git clone https://github.com/guillermoamaral/Webside.git
 ```
 
-1. Install dependencies
+2. Install dependencies
 
 ```sh
 npm install
 ```
 
-1. Launch Webside
+3. Launch Webside
 
 ```sh
 npm start
