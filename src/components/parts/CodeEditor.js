@@ -51,7 +51,7 @@ import StAST from "../../model/StAST";
 // const language = LRLanguage.define({ parser: parser });
 // const smalltalk = new LanguageSupport(smalltalk);
 
-// This code makes use of a CodeMirror 5-like parser and should be replaced in the future by the Lezer grammar option abvove.
+// This code makes use of a CodeMirror5-like parser and should be replaced in the future by the Lezer grammar option abvove.
 
 const newTags = {
 	selector: Tag.define(),
@@ -157,9 +157,7 @@ class CodeEditor extends Component {
 	};
 
 	shouldComponentUpdate(nextProps, nextState) {
-		// if (this.state.dirty) {
-		// 	return false;
-		// }
+		if (this.state.dirty !== nextState.dirty) return true;
 		if (
 			nextProps.source !== this.props.source ||
 			JSON.stringify(nextProps.selectedInterval) !==
@@ -182,21 +180,11 @@ class CodeEditor extends Component {
 	}
 
 	componentDidUpdate() {
-		if (!this.selectsRanges) {
-			//const source = this.state.source;
-			// this.selectRanges([
-			// 	{
-			// 		anchor: source.length - 1,
-			// 		head: source.length - 1,
-			// 	},
-			// ]);
-			return;
-		}
+		if (this.state.dirty) return;
+		if (!this.selectsRanges) return;
 		const { selectedRanges, selectedSelector, selectedIdentifier } =
 			this.state;
-		if (selectedRanges) {
-			this.selectRanges(selectedRanges);
-		}
+		if (selectedRanges) this.selectRanges(selectedRanges);
 		if (selectedSelector) {
 			const ranges = this.rangesContainingSelector(selectedSelector);
 			this.selectRanges(ranges);
@@ -238,7 +226,7 @@ class CodeEditor extends Component {
 	}
 
 	textInRange(range) {
-		let source = this.state.source;
+		let source = this.currentSource();
 		if (source) return source.slice(range.from, range.to);
 	}
 
@@ -358,7 +346,7 @@ class CodeEditor extends Component {
 			{ label: "Paste (Ctrl+v)", action: this.pasteFromClipboard },
 			null,
 		];
-		if (this.state.source === this.state.originalSource) {
+		if (this.currentSource() === this.state.originalSource) {
 			const node = this.targetAstNode();
 			if (node && node.type === "Identifier") {
 				options.push({
@@ -486,7 +474,7 @@ class CodeEditor extends Component {
 	};
 
 	acceptClicked = () => {
-		if (this.props.onAccept) this.props.onAccept(this.state.source);
+		if (this.props.onAccept) this.props.onAccept(this.currentSource());
 	};
 
 	wordUnderCursor() {
@@ -530,7 +518,7 @@ class CodeEditor extends Component {
 				selector = await ide.backend.selectorInSource(selection);
 			} else {
 				selector = await ide.backend.selectorInSource(
-					this.state.source,
+					this.currentSource(),
 					this.currentPosition()
 				);
 			}
@@ -621,7 +609,10 @@ class CodeEditor extends Component {
 
 	playClicked = async (editor, event) => {
 		if (event) event.preventDefault();
-		const object = await this.evaluateExpression(this.state.source, true);
+		const object = await this.evaluateExpression(
+			this.currentSource(),
+			true
+		);
 		if (object && this.props.onEvaluate) this.props.onEvaluate(object);
 	};
 
@@ -773,30 +764,28 @@ class CodeEditor extends Component {
 		}
 	};
 
+	currentSource() {
+		return this.state.source.replace(/(?<!\r)\n|\r(?!\n)/g, "\r");
+	}
+
 	triggerOnChange = () => {
 		if (this.props.onChange) {
 			clearTimeout(this.typingTimer);
 			this.typingTimer = setTimeout(() => {
-				this.props.onChange(this.state.source);
+				this.props.onChange(this.currentSource());
 			}, 2000);
 		}
 	};
 
 	sourceChanged = (source) => {
-		const adapted = source.replace(/(?<!\r)\n|\r(?!\n)/g, "\r");
 		this.selectsRanges = false;
-		const changed = !this.state.dirty;
 		this.setState(
 			{
-				source: adapted,
+				source: source,
 				dirty: true,
 			},
 			this.triggerOnChange
 		);
-		if (changed) {
-			//this.forceUpdate();
-			// Check this according to the default response in shouldComponentUpdate()
-		}
 	};
 
 	editorUpdated = (update) => {
@@ -1026,15 +1015,15 @@ class CodeEditor extends Component {
 	}
 
 	explainCode = async () => {
-		ide.explainCode(this.state.source);
+		ide.explainCode(this.currentSource());
 	};
 
 	testCode = async () => {
-		ide.testCode(this.state.source);
+		ide.testCode(this.currentSource());
 	};
 
 	improveCode = async () => {
-		ide.improveCode(this.state.source);
+		ide.improveCode(this.currentSource());
 	};
 
 	completionSource = async (context) => {
@@ -1047,7 +1036,7 @@ class CodeEditor extends Component {
 		try {
 			options = await ide.backend.autocompletions(
 				classname,
-				this.state.source,
+				this.currentSource(),
 				word.to
 			);
 		} catch (error) {
