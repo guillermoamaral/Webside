@@ -68,7 +68,11 @@ class Workspace extends Tool {
 
 	sourceChanged = (source) => {
 		this.setState({ source: source });
-		ide.backend.saveWorkspace({ id: this.props.id, source: source });
+		try {
+			ide.backend.saveWorkspace({ id: this.props.id, source: source });
+		} catch (error) {
+			ide.reportError(error);
+		}
 	};
 
 	expressionEvaluated = (object) => {
@@ -100,7 +104,7 @@ class Workspace extends Tool {
 			);
 			this.context.openInspector(object);
 		} catch (error) {
-			this.context.reportError(error);
+			ide.reportError(error);
 		}
 	};
 
@@ -122,7 +126,6 @@ class Workspace extends Tool {
 								ref={this.editorRef}
 								context={this.evaluationContext()}
 								source={source}
-								showAccept={false}
 								showPlay={true}
 								onChange={this.sourceChanged}
 								onEvaluate={this.expressionEvaluated}

@@ -124,7 +124,6 @@ const MessageItem = ({ message }) => {
 											<CodeEditor
 												source={chunk}
 												readOnly
-												showAccept={false}
 												fontSize={codeFontSize}
 												noTooltips
 											/>

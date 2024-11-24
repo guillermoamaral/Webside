@@ -25,7 +25,6 @@ class Transcript extends Tool {
 				<CodeEditor
 					source={ide.transcriptText()}
 					onChange={this.props.onChange}
-					showAccept={false}
 				/>
 			</Box>
 		);
