@@ -466,10 +466,12 @@ class ResourceBrowser extends Tool {
 					resources = await ide.backend.systemStats();
 					break;
 				default:
+					resources = [];
 			}
 		} catch (error) {
 			ide.reportError(error);
 		}
+		resources = resources || [];
 		const stats = this.state.stats;
 		if (type === "Stats") stats.push(...resources);
 		this.setState({
@@ -585,7 +587,7 @@ class ResourceBrowser extends Tool {
 			case "Test Runs":
 				options = this.testRunActions();
 				break;
-			default: 
+			default:
 		}
 		return options;
 	}
