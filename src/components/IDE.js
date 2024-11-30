@@ -62,6 +62,8 @@ class IDE extends Component {
 			activeContainer: null,
 			assistantChatOpened: false,
 			assistantChatMaximized: true,
+			searchOpened: false,
+			searchOptions: {},
 		};
 		this.codeAssistant = new AICodeAssistant(this.backend);
 		this.assistantChatRef = React.createRef();
@@ -725,7 +727,8 @@ class IDE extends Component {
 
 	openSearch = () => {
 		//this.mainContainer().openSearch();
-		this.openQuickSearch();
+		//this.openQuickSearch();
+		this.setState({ searchOpened: !this.state.searchOpened });
 	};
 
 	openQuickSearch = () => {
@@ -1294,6 +1297,8 @@ class IDE extends Component {
 			quickSearchOptions,
 			assistantChatOpened,
 			assistantChatMaximized,
+			searchOpened,
+			searchOptions,
 		} = this.state;
 		const extraContainersWidth =
 			Math.round(100 / (extraContainers.length + 1)) + "%";
@@ -1359,7 +1364,6 @@ class IDE extends Component {
 							onSettingsClick={this.openSettings}
 							onCollapse={this.collapseSidebar}
 						/>
-
 						<Box
 							component="main"
 							mt={6}
@@ -1373,6 +1377,26 @@ class IDE extends Component {
 							}}
 						>
 							<CustomSplit>
+								{searchOpened ? (
+									<Box
+										width="25%"
+										minWidth="15%"
+										display="flex"
+										flexDirection="column"
+										key="search"
+									>
+										<QuickSearch
+											initialOptions={searchOptions}
+											onResultSelect={(result, options) =>
+												this.setState({
+													searchOptions: options,
+												})
+											}
+										/>
+									</Box>
+								) : (
+									<React.Fragment key="search" />
+								)}
 								<Box flex={1}>
 									<CustomSplit>
 										<Box

@@ -765,7 +765,8 @@ class CodeEditor extends Component {
 	};
 
 	currentSource() {
-		return this.state.source.replace(/(?<!\r)\n|\r(?!\n)/g, "\r");
+		const source = this.state.source || "";
+		return source.replace(/(?<!\r)\n|\r(?!\n)/g, "\r");
 	}
 
 	triggerOnChange = () => {

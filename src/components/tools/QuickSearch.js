@@ -14,6 +14,7 @@ import { ide } from "../IDE";
 import CustomList from "../controls/CustomList";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import axios from "axios";
 
 class QuickSearch extends Tool {
 	constructor(props) {
@@ -34,6 +35,7 @@ class QuickSearch extends Tool {
 		if (options.text) {
 			this.scheduleSearch();
 		}
+		this.controllerRef = React.createRef();
 	}
 
 	textChanged = (text) => {
@@ -49,30 +51,52 @@ class QuickSearch extends Tool {
 
 	search = async () => {
 		const { text, matchCase, condition, type } = this.state;
-		this.setState({ searching: true });
 		var results = [];
 		try {
 			if (text.trim().length > 0) {
-				results = await ide.backend.search(
-					text,
-					!matchCase,
-					condition,
-					type
-				);
+				if (this.controllerRef.current) {
+					console.log("aborting search");
+					this.controllerRef.current.abort();
+				}
+				const controller = new AbortController();
+				this.controllerRef.current = controller;
+				const url = `${
+					ide.backend.url
+				}/search?text=${text}&ignoreCase=${!matchCase}&condition=${condition}&type=${type}`;
+				console.log("setting searching to true to search", text);
+				this.setState({ searching: true });
+				const response = await axios.get(url, {
+					signal: controller.signal,
+				});
+				results = response.data;
 			}
 		} catch (error) {
-			ide.reportError(error);
+			if (!axios.isCancel(error)) ide.reportError(error);
+		} finally {
+			console.log("setting searching to false");
+			this.setState(
+				{
+					results: results,
+					searching: false,
+					selectedResult: null,
+				},
+				() => {
+					this.inputRef.current.focus();
+				}
+			);
 		}
-		this.setState(
-			{
-				results: results,
-				searching: false,
-				selectedResult: null,
-			},
-			() => {
-				this.inputRef.current.focus();
-			}
-		);
+	};
+
+	cancelSearch = () => {
+		if (this.controllerRef.current) {
+			this.controllerRef.current.abort();
+			this.controllerRef.current = null;
+		}
+		this.setState({
+			results: [],
+			searching: false,
+			selectedResult: null,
+		});
 	};
 
 	goToResult = (result) => {
@@ -178,6 +202,7 @@ class QuickSearch extends Tool {
 			type,
 			sortOrder,
 		} = this.state;
+		console.log("rendering with searching in " + searching);
 		const results = this.extendedResults();
 		const appearance = ide.settings.section("appearance");
 		const color = appearance
@@ -201,7 +226,7 @@ class QuickSearch extends Tool {
 							margin="dense"
 							autoFocus
 							type="text"
-							disabled={searching}
+							//disabled={searching}
 						/>
 					</Box>
 					<Box>
@@ -326,22 +351,21 @@ class QuickSearch extends Tool {
 						</Tooltip>
 					</Box>
 				</Box>
-				{!searching && results.length === 0 && (
-					<Typography variant="body">No results</Typography>
-				)}
 				{searching && (
-					<Box
-						flexGrow={1}
-						display="flex"
-						flexDirection="column"
-						justifyItems="center"
-						alignItems="center"
-					>
+					<Box mt={1} display="flex" flexDirection="row">
 						<CircularProgress size={20} />
+						<Box ml={1} flexGrow={1}>
+							<Typography variant="body">Searching...</Typography>
+						</Box>
 					</Box>
 				)}
+				{!searching && results.length === 0 && (
+					<Typography mt={1} variant="body">
+						No results
+					</Typography>
+				)}
 				{!searching && results.length > 0 && (
-					<Box flexGrow={1}>
+					<Box mt={1} flexGrow={1}>
 						<CustomList
 							enableFilter={false}
 							items={results}
