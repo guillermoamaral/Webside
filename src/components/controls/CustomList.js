@@ -467,6 +467,7 @@ class CustomList extends Component {
 			typeof enableFilter == "boolean" ? enableFilter : true;
 		const showFilter =
 			!loading && (filterAlwaysPresent || (showsFilter && filterEnabled));
+		const menuOptions = this.menuOptions();
 		return (
 			<Box
 				display="flex"
@@ -564,14 +565,16 @@ class CustomList extends Component {
 						/>
 					</Box>
 				)}
-				<PopupMenu
-					options={this.menuOptions()}
-					open={menuOpen}
-					position={menuPosition}
-					onOptionClick={this.menuOptionClicked}
-					onOptionEnable={this.getMenuOptionEnabled}
-					onClose={this.closeMenu}
-				/>
+				{menuOptions && menuOptions.length > 0 && (
+					<PopupMenu
+						options={menuOptions}
+						open={menuOpen}
+						position={menuPosition}
+						onOptionClick={this.menuOptionClicked}
+						onOptionEnable={this.getMenuOptionEnabled}
+						onClose={this.closeMenu}
+					/>
+				)}
 			</Box>
 		);
 	}

@@ -372,6 +372,7 @@ class CustomTable extends Component {
 		const columns = this.columns();
 		const rows = this.pageRows() || [];
 		const border = this.props.hideRowBorder ? "none" : "";
+		const menuOptions = this.menuOptions();
 		return (
 			<Box
 				p={0}
@@ -496,14 +497,16 @@ class CustomTable extends Component {
 							</Table>
 						</Scrollable>
 					</TableContainer>
-					<PopupMenu
-						options={this.menuOptions()}
-						open={menuOpen}
-						position={menuPosition}
-						onOptionClick={this.menuOptionClicked}
-						onOptionEnable={this.getMenuOptionEnabled}
-						onClose={this.closeMenu}
-					/>
+					{menuOptions && menuOptions.length > 0 && (
+						<PopupMenu
+							options={menuOptions}
+							open={menuOpen}
+							position={menuPosition}
+							onOptionClick={this.menuOptionClicked}
+							onOptionEnable={this.getMenuOptionEnabled}
+							onClose={this.closeMenu}
+						/>
+					)}
 				</Box>
 				{(usePagination || useFilter) && (
 					<Box display="flex" flexDirection="row">
