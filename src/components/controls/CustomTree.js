@@ -191,6 +191,7 @@ class CustomTree extends Component {
 			return this.getItemId(i);
 		});
 		this.initializeItemsByIdFrom(items);
+		const menuOptions = this.menuOptions();
 		return (
 			<Scrollable>
 				<TreeView
@@ -208,14 +209,16 @@ class CustomTree extends Component {
 				>
 					{this.createItems(items)}
 				</TreeView>
-				<PopupMenu
-					options={this.menuOptions()}
-					open={menuOpen}
-					position={menuPosition}
-					onOptionClick={this.menuOptionClicked}
-					onOptionEnable={this.getMenuOptionEnabled}
-					onClose={this.closeMenu}
-				/>
+				{menuOptions && menuOptions.length > 0 && (
+					<PopupMenu
+						options={menuOptions}
+						open={menuOpen}
+						position={menuPosition}
+						onOptionClick={this.menuOptionClicked}
+						onOptionEnable={this.getMenuOptionEnabled}
+						onClose={this.closeMenu}
+					/>
+				)}
 			</Scrollable>
 		);
 	}
