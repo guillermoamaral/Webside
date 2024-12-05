@@ -1384,7 +1384,14 @@ class IDE extends Component {
 										display="flex"
 										flexDirection="column"
 										key="search"
+										mt={1}
 									>
+										<Typography
+											color="primary"
+											variant="h6"
+										>
+											Search
+										</Typography>
 										<QuickSearch
 											initialOptions={searchOptions}
 											onResultSelect={(result, options) =>
