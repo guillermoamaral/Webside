@@ -61,7 +61,13 @@ class TabControl extends Component {
 
 	render() {
 		const { addMenuOpen, selectMenuOpen } = this.state;
-		const { id, pages, selectedPage, showTabClose, showClose } = this.props;
+		const {
+			id,
+			pages,
+			selectedPage,
+			canCloseTabs = true,
+			showClose,
+		} = this.props;
 		const addOptions = this.props.addOptions || [];
 		const selectedIndex = pages.findIndex(
 			(p) => p && selectedPage && p.id === selectedPage.id
@@ -114,7 +120,7 @@ class TabControl extends Component {
 													this.closeOtherTabs
 												}
 												//onSplit={this.splitTab} //disabled for the moment
-												showClose={showTabClose}
+												showCloseOptions={canCloseTabs}
 											/>
 										}
 									/>
@@ -231,22 +237,24 @@ class TabControl extends Component {
 												</Box>
 												<Box>{page.label}</Box>
 											</Box>
-											<Box>
-												<IconButton
-													onClick={(event) => {
-														this.closeTab(
-															event,
-															index
-														);
-														this.setState({
-															selectMenuOpen: false,
-														});
-													}}
-													size="small"
-												>
-													<CloseIcon fontSize="small" />
-												</IconButton>
-											</Box>
+											{canCloseTabs && (
+												<Box>
+													<IconButton
+														onClick={(event) => {
+															this.closeTab(
+																event,
+																index
+															);
+															this.setState({
+																selectMenuOpen: false,
+															});
+														}}
+														size="small"
+													>
+														<CloseIcon fontSize="small" />
+													</IconButton>
+												</Box>
+											)}
 										</Box>
 									</MenuItem>
 								);
