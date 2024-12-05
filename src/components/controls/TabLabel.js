@@ -30,24 +30,34 @@ class TabLabel extends Component {
 	};
 
 	menuOptions() {
-		return [
-			{
-				label: "Close",
-				action: this.closeTab,
-			},
-			{
-				label: "Close all",
-				action: this.closeAllTabs,
-			},
-			{
-				label: "Close others",
-				action: this.closeOtherTabs,
-			},
-			// {	//disabled for the moment
-			// 	label: "Split",
-			// 	action: this.splitTab,
-			// },
-		];
+		const options = [];
+		const showCloseOptions =
+			this.props.showCloseOptions === undefined
+				? true
+				: this.props.showCloseOptions;
+		if (showCloseOptions) {
+			options.push(
+				...[
+					{
+						label: "Close",
+						action: this.closeTab,
+					},
+					{
+						label: "Close all",
+						action: this.closeAllTabs,
+					},
+					{
+						label: "Close others",
+						action: this.closeOtherTabs,
+					},
+				]
+			);
+		}
+		// {	//disabled for the moment
+		// 	label: "Split",
+		// 	action: this.splitTab,
+		// },
+		return options;
 	}
 
 	splitTab = () => {
@@ -73,11 +83,10 @@ class TabLabel extends Component {
 	}
 
 	render() {
-		const { index, icon, onClose } = this.props;
-		let showClose =
-			this.props.showClose === undefined ? true : this.props.showClose;
+		const { index, icon, onClose, showCloseOptions = true } = this.props;
 		const { menuOpen, menuPosition } = this.state;
 		const text = this.visibleLabel();
+		const menuOptions = this.menuOptions();
 		return (
 			<Box
 				display="flex"
@@ -93,7 +102,7 @@ class TabLabel extends Component {
 					{text}
 				</Box>
 				<Box pt={1}>
-					{showClose && (
+					{showCloseOptions && (
 						<IconButton
 							onClick={(event) => {
 								onClose(event, index);
@@ -110,12 +119,14 @@ class TabLabel extends Component {
 						</IconButton>
 					)}
 				</Box>
-				<PopupMenu
-					options={this.menuOptions()}
-					open={menuOpen}
-					position={menuPosition}
-					onClose={this.closeMenu}
-				/>
+				{menuOptions && menuOptions.length > 0 && (
+					<PopupMenu
+						options={menuOptions}
+						open={menuOpen}
+						position={menuPosition}
+						onClose={this.closeMenu}
+					/>
+				)}
 			</Box>
 		);
 	}
