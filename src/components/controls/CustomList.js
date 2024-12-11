@@ -160,14 +160,13 @@ class CustomList extends Component {
 
 	getItemValue = (item) => {
 		const label = this.getItemLabel(item);
-		if (!this.props.itemLink) {
-			return label;
-		}
+		const link = this.props.itemLink;
+		if (!link) return label;
 		const color = this.getItemColor(item);
 		return (
 			<Link
 				href="#"
-				onClick={() => this.props.itemLink(item)}
+				onClick={() => link(item)}
 				color="textPrimary"
 				style={{ color: color }}
 			>

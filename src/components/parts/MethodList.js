@@ -143,6 +143,9 @@ class MethodList extends Component {
 	async fetchMethods(classes) {
 		let { category, variable, access } = this.props;
 		let grouped = {};
+		const settings = ide.settings.section("advance");
+		const basic =
+			settings && settings.get("useBasicOptionInMethodRequests");
 		await Promise.all(
 			classes.map(async (c) => {
 				let fetched;
@@ -159,7 +162,11 @@ class MethodList extends Component {
 							category
 						);
 					} else {
-						fetched = await ide.backend.methods(c.name);
+						fetched = await ide.backend.methods(
+							c.name,
+							false,
+							basic
+						);
 					}
 				} catch (error) {
 					ide.reportError(error);

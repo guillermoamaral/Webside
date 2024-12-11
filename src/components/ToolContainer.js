@@ -704,8 +704,8 @@ class ToolContainer extends Component {
 		} else {
 			try {
 				const changes = await ide.backend.lastChanges();
-				const changeset = new Changeset(ide.backend)
-				changeset.fromJson(changes);;
+				const changeset = new Changeset(ide.backend);
+				changeset.fromJson(changes);
 				this.browseChanges(changeset, "Last changes");
 			} catch (error) {
 				this.reportError(error);
