@@ -28,12 +28,13 @@ The `class`, `hierarchy` and `package` options can be used in conjunction with o
 
 **Decoration Query Options**
 
-|   Option    |  Type   | Description                                                    |
-| :---------: | :-----: | -------------------------------------------------------------- |
-|     ast     | boolean | to get methods' AST ([see below](#method-ast))                 |
-| annotations | boolean | to get methods' annotations ([see below](#method-annotations)) |
-|  bytecodes  | boolean | to get methods' bytecodes                                      |
-| disassembly | boolean | to get methods' disassembly                                    |
+|   Option    |  Type   | Description                                                                         |
+| :---------: | :-----: | ----------------------------------------------------------------------------------- |
+|     ast     | boolean | to get methods' AST ([see below](#method-ast))                                      |
+| annotations | boolean | to get methods' annotations ([see below](#method-annotations))                      |
+|  bytecodes  | boolean | to get methods' bytecodes                                                           |
+| disassembly | boolean | to get methods' disassembly                                                         |
+|    basic    | boolean | to get a basic set of properties, avoiding time-consuming ones such as `overriding` |
 
 ## Success Responses
 

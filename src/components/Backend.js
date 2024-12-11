@@ -250,22 +250,10 @@ class Backend {
 		return selectors;
 	}
 
-	async methods(classname, sorted = false) {
-		const methods = await this.get(
-			"/classes/" + classname + "/methods",
-			"methods of class " + classname
-		);
-		if (sorted) {
-			methods.sort((a, b) => (a.selector <= b.selector ? -1 : 1));
-		}
-		return methods;
-	}
-
-	async accessors(classname, variable, type, sorted = false) {
-		const methods = await this.get(
-			"/classes/" + classname + "/methods?" + type + "=" + variable,
-			"methods of class " + classname + " using " + variable
-		);
+	async methods(classname, sorted = false, basic = false) {
+		let uri = "/classes/" + classname + "/methods";
+		if (basic) uri += "?basic=true";
+		const methods = await this.get(uri, "methods of class " + classname);
 		if (sorted) {
 			methods.sort((a, b) => (a.selector <= b.selector ? -1 : 1));
 		}
@@ -338,11 +326,23 @@ class Backend {
 	}
 
 	// Method queries...
-	async senders(selector) {
-		return await this.get(
-			"/methods?sending=" + selector,
-			"senders of " + selector
+	async senders(selector, basic = false) {
+		let uri = "/methods?sending=" + selector;
+		if (basic) uri += "&basic=true";
+		return await this.get(uri, "senders of " + selector);
+	}
+
+	async accessors(classname, variable, type, sorted = false, basic = false) {
+		let uri = "/classes/" + classname + "/methods?" + type + "=" + variable;
+		if (basic) uri += "&basic=true";
+		const methods = await this.get(
+			uri,
+			"methods of class " + classname + " using " + variable
 		);
+		if (sorted) {
+			methods.sort((a, b) => (a.selector <= b.selector ? -1 : 1));
+		}
+		return methods;
 	}
 
 	async sendersCount(selector) {
@@ -354,46 +354,46 @@ class Backend {
 		return result;
 	}
 
-	async localSenders(selector, classname) {
+	async localSenders(selector, classname, basic = false) {
+		let uri = "/methods?sending=" + selector + "&hierarchy=" + classname;
+		if (basic) uri += "&basic=true";
 		return await this.get(
-			"/methods?sending=" + selector + "&hierarchy=" + classname,
+			uri,
 			"senders of " + selector + " in class " + classname
 		);
 	}
 
-	async classReferences(classname) {
-		return await this.get(
-			"/methods?referencingClass=" + classname,
-			"references to class " + classname
-		);
+	async classReferences(classname, basic = false) {
+		let uri = "/methods?referencingClass=" + classname;
+		if (basic) uri += "&basic=true";
+		return await this.get(uri, "references to class " + classname);
 	}
 
-	async stringReferences(string) {
-		return await this.get(
-			"/methods?referencingString=" + string,
-			"references to string " + string
-		);
+	async stringReferences(string, basic = false) {
+		let uri = "/methods?referencingString=" + string;
+		if (basic) uri += "&basic=true";
+		return await this.get(uri, "references to string " + string);
 	}
 
-	async implementors(selector) {
-		return await this.get(
-			"/methods?selector=" + selector,
-			"implementors of " + selector
-		);
+	async implementors(selector, basic = false) {
+		let uri = "/methods?selector=" + selector;
+		if (basic) uri += "&basic=true";
+		return await this.get(uri, "implementors of " + selector);
 	}
 
-	async localImplementors(selector, classname) {
+	async localImplementors(selector, classname, basic = false) {
+		let uri = "/methods?selector=" + selector + "&hierarchy=" + classname;
+		if (basic) uri += "&basic=true";
 		return await this.get(
-			"/methods?selector=" + selector + "&hierarchy=" + classname,
+			uri,
 			"local implementors of " + selector + " in class " + classname
 		);
 	}
 
-	async methodsMatching(pattern) {
-		return await this.get(
-			"/methods?selectorMatching=" + pattern,
-			"methods with selector matching " + pattern
-		);
+	async methodsMatching(pattern, basic = false) {
+		let uri = "/methods?selectorMatching=" + pattern;
+		if (basic) uri += "&basic=true";
+		return await this.get(uri, "methods with selector matching " + pattern);
 	}
 
 	async methodTemplate() {
@@ -407,9 +407,16 @@ class Backend {
 		);
 	}
 
-	async methodsInCategory(classname, category, sorted = false) {
+	async methodsInCategory(
+		classname,
+		category,
+		sorted = false,
+		basic = false
+	) {
+		let uri = "/classes/" + classname + "/methods?category=" + category;
+		if (basic) uri += "&basic=true";
 		const methods = await this.get(
-			"/classes/" + classname + "/methods?category=" + category,
+			uri,
 			"methods of class " + classname + " in category " + category
 		);
 

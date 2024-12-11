@@ -327,7 +327,6 @@ class SystemBrowser extends Tool {
 	methodSelected = async (method) => {
 		if (method) {
 			this.updateLabel(method.methodClass + ">>" + method.selector);
-
 			if (!method.template) await this.updateMethod(method);
 		}
 		this.setState({ selectedMethod: method });

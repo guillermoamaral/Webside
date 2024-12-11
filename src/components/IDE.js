@@ -359,6 +359,12 @@ class IDE extends Component {
 			"Evaluation polling frequency (ms)",
 			"Warning. This is used to poll the backend for evaluation progress. A high frequency might affect frontend performance. On the other hand, a low frequency could introduce a huge delay to detecting evaluation finalization."
 		);
+		advanced.addBoolean(
+			"useBasicOptionInMethodRequests",
+			true,
+			"Use 'basic' option when requesting methods to optimize performace.",
+			"Event when this can speed up response times due to the potential cost of properties such as 'overriding' or 'overriding', this may imply the lose of some visual decorations like the up/down arrows for overriding/overriden properties."
+		);
 		return settings;
 	}
 
