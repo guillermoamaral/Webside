@@ -568,6 +568,20 @@ class ClassTree extends Component {
 		return mode.get("disabledText");
 	};
 
+	classIcon = (species) => {
+		if (!species || !species.iconName) return;
+		const icon = ide.iconNamed(species.iconName);
+		if (!icon) return;
+		return (
+			<img
+				src={"data:image/png;base64," + icon.data}
+				width={16}
+				height={16}
+				alt={species.name}
+			/>
+		);
+	};
+
 	render() {
 		const { roots, selectedClass, expandedClasses, loading, showSearch } =
 			this.state;
@@ -618,6 +632,7 @@ class ClassTree extends Component {
 							nodeId="name"
 							nodeLabel={this.classLabel}
 							nodeColor={this.classColor}
+							nodeIcon={this.classIcon}
 							nodeChildren="subclasses"
 							selectedNode={selectedClass}
 							onNodeSelect={this.classSelected}

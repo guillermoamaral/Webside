@@ -459,11 +459,29 @@ class IDE extends Component {
 			autocompletion = true;
 		} catch (ignored) {}
 		this.settings.section("editor").set("autocompletion", autocompletion);
+		await this.fetchIcons();
 		await this.fetchThemes();
 		await this.updateDialectColorSettings();
 		this.updateAppTheme();
 		this.initializeMessageChannel();
 		this.initializeCodeAssistant();
+	}
+
+	async fetchIcons() {
+		this.icons = {};
+		try {
+			const json = await ide.backend.icons();
+			json.forEach((j) => {
+				this.icons[j.name] = j;
+			});
+		} catch (ignored) {
+			console.log(ignored);
+		}
+	}
+
+	iconNamed(name) {
+		if (!this.icons) return;
+		return this.icons[name];
 	}
 
 	async fetchThemes() {

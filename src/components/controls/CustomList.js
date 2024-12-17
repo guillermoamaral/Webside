@@ -127,34 +127,22 @@ class CustomList extends Component {
 
 	getItemDivider = (item) => {
 		const getter = this.props.itemDivider;
-		if (!getter) {
-			return false;
-		}
-		if (typeof getter === "string") {
-			return item[getter];
-		}
+		if (!getter) return false;
+		if (typeof getter === "string") return item[getter];
 		return getter(item);
 	};
 
 	getItemLabel = (item) => {
 		const getter = this.props.itemLabel;
-		if (!getter) {
-			return item;
-		}
-		if (typeof getter === "string") {
-			return item[getter];
-		}
+		if (!getter) return item;
+		if (typeof getter === "string") return item[getter];
 		return getter(item);
 	};
 
 	getItemColor = (item) => {
 		const color = this.props.itemColor;
-		if (typeof color === "function") {
-			return color(item);
-		}
-		if (typeof color === "string") {
-			return color;
-		}
+		if (typeof color === "function") return color(item);
+		if (typeof color === "string") return color;
 		return item.color ? item.color : "default";
 	};
 
@@ -177,53 +165,35 @@ class CustomList extends Component {
 
 	getItemIcon = (item) => {
 		const icon = this.props.itemIcon;
-		if (!icon) {
-			return null;
-		}
-		if (typeof icon === "function") {
-			return icon(item);
-		}
+		if (!icon) return null;
+		if (typeof icon === "function") return icon(item);
 		return icon;
 	};
 
 	getItemStyle = (item) => {
 		const style = this.props.itemStyle;
-		if (!style) {
-			return "normal";
-		}
-		if (typeof style === "string") {
-			return style;
-		}
+		if (!style) return "normal";
+		if (typeof style === "string") return style;
 		return style(item);
 	};
 
 	getItemAlignment = (item) => {
 		const alignment = this.props.labelAlignment;
-		if (!alignment) {
-			return "left";
-		}
-		if (typeof alignment === "string") {
-			return alignment;
-		}
+		if (!alignment) return "left";
+		if (typeof alignment === "string") return alignment;
 		return alignment(item);
 	};
 
 	getItemSize = (item) => {
 		const size = this.props.labelSize;
-		if (!size) {
-			return "normal";
-		}
-		if (typeof size === "string") {
-			return size;
-		}
+		if (!size) return "normal";
+		if (typeof size === "string") return size;
 		return size(item);
 	};
 
 	getItemActions = (item) => {
 		const actions = this.props.itemActions;
-		if (typeof actions === "function") {
-			return actions(item);
-		}
+		if (typeof actions === "function") return actions(item);
 		return actions || [];
 	};
 
