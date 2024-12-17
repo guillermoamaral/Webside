@@ -8,6 +8,8 @@
     * [Colors](docs/api/general/colors/get.md)
     * [Logo](docs/api/general/logo/get.md)
     * [Stats](docs/api/general/stats/get.md)
+    * [Themes](docs/api/general/themes/get.md)
+    * [Icons](docs/api/general/icons/get.md)
     * [Save Image](docs/api/general/save/post.md)
   * [Changes](docs/api/changes/README.md)
     * [Retrieve changes](docs/api/changes/get.md)

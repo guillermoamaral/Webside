@@ -117,6 +117,10 @@ class Backend {
 		return await this.get("/themes", "themes");
 	}
 
+	async icons() {
+		return await this.get("/icons", "icons");
+	}
+
 	// Code...
 	async packageNames() {
 		return await this.get("/packages?names=true", "package names");

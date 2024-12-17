@@ -26,7 +26,9 @@ These are general endpoints that apply to the system as a whole.
 |  GET   | [/dialect](general/dialect/get.md) | Retrieve the Smalltalk dialect |            | -       |
 |  GET   | [/colors](general/colors/get.md)   | Retrieve system colors         |            | -       |
 |  GET   | [/logo](general/logo/get.md)       | Retrieve system logo           |            | -       |
-|  GET   | [/stats](general/stats/get.md)     | Retrieve ststem stats          |            | -       |
+|  GET   | [/stats](general/stats/get.md)     | Retrieve system stats          |            | -       |
+|  GET   | [/themes](general/themes/get.md)   | Retrieve custom themes         |            | -       |
+|  GET   | [/icons](general/icons/get.md)     | Retrieve system icons          |            | -       |
 |  POST  | [/save](general/save/post.md)      | Save the image                 |            | -       |
 
 ## [Code](code)

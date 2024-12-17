@@ -328,6 +328,20 @@ class PackageTree extends Component {
 		this.setState({ packageFilter: text });
 	}
 
+	packageIcon = (pack) => {
+		if (!pack || !pack.iconName) return;
+		const icon = ide.iconNamed(pack.iconName);
+		if (!icon) return;
+		return (
+			<img
+				src={"data:image/png;base64," + icon.data}
+				width={16}
+				height={16}
+				alt={pack.name}
+			/>
+		);
+	};
+
 	render() {
 		const {
 			selectedNode,
@@ -378,6 +392,7 @@ class PackageTree extends Component {
 							nodeId="name"
 							nodeLabel={"name"}
 							nodeChildren="categories"
+							nodeIcon={this.packageIcon}
 							selectedNode={selectedNode}
 							onNodeSelect={this.nodeSelected}
 							expandedNodes={expandedNodes}
