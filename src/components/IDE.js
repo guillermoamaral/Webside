@@ -1324,9 +1324,8 @@ class IDE extends Component {
 			searchOpened,
 			searchOptions,
 		} = this.state;
-		const extraContainersWidth =
-			Math.round(100 / (extraContainers.length + 1)) + "%";
-		const extraContainersMinWidth = "10%";
+		const extraWidth = Math.round(100 / (extraContainers.length + 1)) + "%";
+		const extraMinWidth = "10%";
 		const shortcuts = this.settings.section("shortcuts");
 		const showsAssistant = this.usesCodeAssistant();
 		const photo = this.settings.section("general").get("photo");
@@ -1428,15 +1427,14 @@ class IDE extends Component {
 								) : (
 									<React.Fragment key="search" />
 								)}
-								<Box flex={1}>
+								<Box flex={1} width="50%" minWidth="15%">
 									<CustomSplit>
 										<Box
 											key="mainContainerBox"
 											flex={1}
 											sx={{
-												minWidth:
-													extraContainersMinWidth,
-												width: extraContainersWidth,
+												minWidth: extraMinWidth,
+												width: extraWidth,
 											}}
 										>
 											<ToolContainer
@@ -1459,9 +1457,8 @@ class IDE extends Component {
 														"Box"
 													}
 													sx={{
-														minWidth:
-															extraContainersMinWidth,
-														width: extraContainersWidth,
+														minWidth: extraMinWidth,
+														width: extraWidth,
 													}}
 												>
 													{container.component}
