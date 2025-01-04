@@ -6,13 +6,9 @@ Of course, every change defined as an extension must be supported by the target 
 
 As in the case of pre-defined changes, they might result in errors. These will provide the same information explained [here](../changes/post.md#errors).
 
-## Target object
+## Specification
 
-A change extension is applicable to a given meta-model object (package, class, method, etc.). See below accepted element types.
-
-# Specification
-
-The structure of a change specification must be like this:
+A change extension must be like this:
 
 ```json
 {
@@ -32,14 +28,12 @@ The structure of a change specification must be like this:
 
 Where:
 
--   `extensionType` as these are extensions aimed at extending the built-in set of changes, this property is `change`.
--   `elementType` represents the meta-model object over which the change applies. It can be `package`, `class`, `variable`, `category`, `method` or `code`.
--   `label` a text that will be used by the IDE to present the option.
--   `description` (optional) a description of the change (it might be used as a tip text or help).
+-   `extensionType` as these are change extensions this property is `change`.
 -   `properties` contains the actual properties of the change to be posted.
 -   `parameters` (optional) describe what would be prompted to the user to fill some of the change properties (see below).
--   `section` (optional) is used by the IDE to place the option under a submenu. By default no submenu is used (i.e., the option is just appended to the corresponding menu)
 -   `needsConfirmation` (optional) specifies whether the change should be confirmed by the user. By default is `false.`.
+
+For basic properties refer to [basic extension properties](./get.md#specification).
 
 ## Example 1: our own class renaming
 

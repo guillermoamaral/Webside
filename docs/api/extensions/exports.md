@@ -2,13 +2,9 @@
 
 This type of extension allows us to retrieve an _exportable version_ of a given meta-model object. Like other extensions, specifications retrieved from this endpoint will enlarge the list of options available on the IDE.
 
-## Target object
+## Specification
 
-An export extension is applicable to a given meta-model object (package, class, method, etc.). See below accepted element types.
-
-# Specification
-
-The structure of a export specification must be like this:
+An export extension must be like this:
 
 ```json
 {
@@ -25,12 +21,10 @@ The structure of a export specification must be like this:
 Where:
 
 -   `extensionType` as these are export extensions this property is `export`.
--   `elementType` represents the meta-model object over which the change applies. It can be `package`, `class`, `variable`, `category`, `method` or `code`.
--   `label` a text that will be used by the IDE to present the option.
--   `description` (optional) a description of the exoirt (it might be used as a tip text or help).
 -   `get` a string specifying the way the export content will be obtained (see below).
 -   `defaultFilename` (optional) the default file name.
--   `section` (optional) is used by the IDE to place the option under a submenu. By default no submenu is used (i.e., the option is just appended to the corresponding menu)
+
+For basic properties refer to [basic extension properties](./get.md#specification).
 
 ## Example
 

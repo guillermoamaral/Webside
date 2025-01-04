@@ -91,6 +91,7 @@ class CustomTable extends Component {
 
 	openMenu = (event) => {
 		event.preventDefault();
+		event.stopPropagation();
 		this.setState({
 			menuOpen: true,
 			menuPosition: { x: event.clientX - 2, y: event.clientY - 4 },

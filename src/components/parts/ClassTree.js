@@ -207,14 +207,6 @@ class ClassTree extends Component {
 		return trees;
 	}
 
-	async fetchExtendedOptions() {
-		let extensions = [];
-		try {
-			extensions = await ide.backend.extensions("class");
-		} catch (ignored) {}
-		return extensions;
-	}
-
 	findSubclass(name, root) {
 		let found;
 		if (!root) {
@@ -253,7 +245,7 @@ class ClassTree extends Component {
 	}
 
 	async updateExtendedOptions() {
-		const options = await this.fetchExtendedOptions();
+		const options = await ide.fetchExtendedOptions("class");
 		this.setState({ extendedOptions: options });
 	}
 

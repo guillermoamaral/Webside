@@ -69,16 +69,8 @@ class CategoryList extends Component {
 		return categories;
 	}
 
-	async fetchExtendedOptions() {
-		let extensions = [];
-		try {
-			extensions = await ide.backend.extensions("category");
-		} catch (ignored) {}
-		return extensions;
-	}
-
 	async updateExtendedOptions() {
-		const options = await this.fetchExtendedOptions();
+		const options = await ide.fetchExtendedOptions("category");
 		this.setState({ extendedOptions: options });
 	}
 

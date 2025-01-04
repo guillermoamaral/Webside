@@ -60,16 +60,8 @@ class VariableList extends Component {
 		return variables;
 	}
 
-	async fetchExtendedOptions() {
-		let extensions = [];
-		try {
-			extensions = await ide.backend.extensions("variable");
-		} catch (ignored) {}
-		return extensions;
-	}
-
 	async updateExtendedOptions() {
-		const options = await this.fetchExtendedOptions();
+		const options = await ide.fetchExtendedOptions("variable");
 		this.setState({ extendedOptions: options });
 	}
 

@@ -64,6 +64,7 @@ class CodeMerge extends CodeEditor {
 		const { leftCode, rightCode, menuOpen, menuPosition } = this.state;
 		const highlightChanges = this.props.highlightChanges;
 		const theme = this.theme();
+		const menuOptions = this.menuOptions();
 		return (
 			<Box
 				display="flex"
@@ -108,12 +109,14 @@ class CodeMerge extends CodeEditor {
 							}}
 						/>
 					</CodeMirrorMerge>
-					<PopupMenu
-						options={this.menuOptions()}
-						open={menuOpen}
-						position={menuPosition}
-						onClose={this.closeMenu}
-					/>
+					{menuOptions && menuOptions.length > 0 && (
+						<PopupMenu
+							options={menuOptions}
+							open={menuOpen}
+							position={menuPosition}
+							onClose={this.closeMenu}
+						/>
+					)}
 				</Scrollable>
 			</Box>
 		);
