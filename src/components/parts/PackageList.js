@@ -53,16 +53,8 @@ class PackageList extends Component {
 		return packages;
 	}
 
-	async fetchExtendedOptions() {
-		let extensions = [];
-		try {
-			extensions = await ide.backend.extensions("package");
-		} catch (ignored) {}
-		return extensions;
-	}
-
 	async updateExtendedOptions() {
-		const options = await this.fetchExtendedOptions();
+		const options = await ide.fetchExtendedOptions("package");
 		this.setState({ extendedOptions: options });
 	}
 

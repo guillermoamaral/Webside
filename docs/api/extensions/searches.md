@@ -2,13 +2,9 @@
 
 This type of extension allows us to define and perform specific searches (method searches by the moment) on the backend. Like other extensions, these ones will enlarge the list of options available on the IDE.
 
-## Target object
+## Specification
 
-A search extension is applicable to a given meta-model object (package, class, method, etc.). See below accepted element types.
-
-# Specification
-
-The structure of a search specification must be like this:
+A search extension must be like this:
 
 ```json
 {
@@ -24,11 +20,9 @@ The structure of a search specification must be like this:
 Where:
 
 -   `extensionType` this property should be `search`.
--   `elementType` represents the meta-model object over which the change applies. It can be `package`, `class`, `variable`, `category`, `method` or `code`.
--   `label` a text that will be used by the IDE to present the option.
--   `description` (optional) a description of the search (it might be used as a tip text or help).
 -   `get` the URI to perform the actual search (see below).
--   `section` (optional) is used by the IDE to place the option under a submenu. By default no submenu is used (i.e., the option is just appended to the corresponding menu)
+
+For basic properties refer to [basic extension properties](./get.md#specification).
 
 ## Example
 

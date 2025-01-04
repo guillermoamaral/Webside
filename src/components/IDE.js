@@ -36,6 +36,7 @@ import QuickSearch from "./tools/QuickSearch";
 import AssistantIcon from "@mui/icons-material/Assistant";
 import { AIInterface } from "../model/ai/AIInterface";
 import AICodeAssistant from "../model/ai/AICodeAssistant";
+import PopupMenu from "./controls/PopupMenu";
 
 var ide = null;
 var MaxExtraContainers = 3;
@@ -64,6 +65,9 @@ class IDE extends Component {
 			assistantChatMaximized: true,
 			searchOpened: false,
 			searchOptions: {},
+			menuOpen: false,
+			menuPosition: { x: null, y: null },
+			extendedOptions: [],
 		};
 		this.codeAssistant = new AICodeAssistant(this.backend);
 		this.assistantChatRef = React.createRef();
@@ -450,7 +454,7 @@ class IDE extends Component {
 		}
 		try {
 			this.logo = await this.backend.logo();
-		} catch (error) {}
+		} catch (ignored) {}
 		document.title = dialect;
 		this.settings.section("connection").set("dialect", dialect);
 		let autocompletion = false;
@@ -465,6 +469,12 @@ class IDE extends Component {
 		this.updateAppTheme();
 		this.initializeMessageChannel();
 		this.initializeCodeAssistant();
+		this.initializeExtendedOptions();
+	}
+
+	async initializeExtendedOptions() {
+		let extensions = await ide.fetchExtendedOptions("system");
+		this.setState({ extendedOptions: extensions });
 	}
 
 	async fetchIcons() {
@@ -997,6 +1007,14 @@ class IDE extends Component {
 		}
 	};
 
+	async fetchExtendedOptions(type) {
+		let extensions = [];
+		try {
+			extensions = await ide.backend.extensions(type);
+		} catch (ignored) {}
+		return extensions;
+	}
+
 	extensionMenuOptions(definitions, handler) {
 		if (!definitions || definitions.length === 0) return [];
 		let options = [null];
@@ -1167,6 +1185,7 @@ class IDE extends Component {
 	}
 
 	resolveDotExpressions(string, variable, target) {
+		if (!target) return string;
 		if (typeof string !== "string") return string;
 		const parts = string.split(/{([^}]+)}/g).filter((p) => p.length > 0);
 		if (parts.length === 1 && parts[0].startsWith(variable + ".")) {
@@ -1308,6 +1327,27 @@ class IDE extends Component {
 		this.setState({ assistantChatOpened: true }, this.updateAssistantChat);
 	};
 
+	openMenu = (event) => {
+		event.preventDefault();
+		this.setState({
+			menuOpen: true,
+			menuPosition: { x: event.clientX - 2, y: event.clientY - 4 },
+		});
+	};
+
+	closeMenu = () => {
+		this.setState({ menuOpen: false });
+	};
+
+	menuOptions() {
+		const options = [];
+		const extended = this.extensionMenuOptions(
+			this.state.extendedOptions,
+			this.performExtendedOption
+		);
+		return options.concat(extended);
+	}
+
 	render() {
 		console.log("rendering IDE");
 		const {
@@ -1323,7 +1363,10 @@ class IDE extends Component {
 			assistantChatMaximized,
 			searchOpened,
 			searchOptions,
+			menuOpen,
+			menuPosition,
 		} = this.state;
+		const menuOptions = this.menuOptions();
 		const extraWidth = Math.round(100 / (extraContainers.length + 1)) + "%";
 		const extraMinWidth = "10%";
 		const shortcuts = this.settings.section("shortcuts");
@@ -1398,6 +1441,7 @@ class IDE extends Component {
 								maxWidth: "95vw",
 								padding: 1,
 							}}
+							onContextMenu={this.openMenu}
 						>
 							<CustomSplit>
 								{searchOpened ? (
@@ -1568,6 +1612,14 @@ class IDE extends Component {
 										</CardContent>
 									</Card>
 								</Popper>
+							)}
+							{menuOptions && menuOptions.length > 0 && (
+								<PopupMenu
+									options={menuOptions}
+									open={menuOpen}
+									position={menuPosition}
+									onClose={this.closeMenu}
+								/>
 							)}
 						</Box>
 					</Box>

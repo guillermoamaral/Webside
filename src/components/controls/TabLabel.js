@@ -19,6 +19,7 @@ class TabLabel extends Component {
 
 	openMenu = (event) => {
 		event.preventDefault();
+		event.stopPropagation();
 		this.setState({
 			menuOpen: true,
 			menuPosition: { x: event.clientX - 2, y: event.clientY - 4 },
@@ -93,9 +94,7 @@ class TabLabel extends Component {
 				flexWrap="nowrap"
 				alignItems="center"
 				justifyContent="center"
-				onContextMenu={(event) => {
-					this.openMenu(event);
-				}}
+				onContextMenu={this.openMenu}
 			>
 				<Box pt={1}>{icon}</Box>
 				<Box pl={1} pr={1} pt={1}>

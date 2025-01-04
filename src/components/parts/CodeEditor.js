@@ -196,12 +196,7 @@ class CodeEditor extends Component {
 	}
 
 	async initializeExtendedOptions() {
-		let extensions;
-		try {
-			extensions = await ide.backend.extensions("code");
-		} catch (ignored) {
-			extensions = [];
-		}
+		let extensions = await ide.fetchExtendedOptions("code");
 		this.setState({ extendedOptions: extensions });
 	}
 
@@ -327,6 +322,7 @@ class CodeEditor extends Component {
 
 	openMenu = (event) => {
 		event.preventDefault();
+		event.stopPropagation();
 		this.setState({
 			menuOpen: true,
 			menuPosition: { x: event.clientX - 2, y: event.clientY - 4 },
@@ -1103,6 +1099,7 @@ class CodeEditor extends Component {
 		const showCodeAssistant = showAssistant && ide.usesCodeAssistant();
 		const showButtons = showAccept || showPlay || showAssistant;
 		const lineNumbers = ide.settings.section("editor").get("lineNumbers");
+		const menuOptions = this.menuOptions();
 		return (
 			<Box
 				display="flex"
@@ -1133,9 +1130,7 @@ class CodeEditor extends Component {
 							value={source}
 							//selection={EditorSelection.cursor(source.length)}
 							onChange={this.sourceChanged}
-							onContextMenu={(event) => {
-								this.openMenu(event);
-							}}
+							onContextMenu={this.openMenu}
 							onCreateEditor={(view, state) => {
 								this.editorView = view;
 							}}
@@ -1250,12 +1245,14 @@ class CodeEditor extends Component {
 						)}
 					</Box>
 				)}
-				<PopupMenu
-					options={this.menuOptions()}
-					open={menuOpen}
-					position={menuPosition}
-					onClose={this.closeMenu}
-				/>
+				{menuOptions && menuOptions.length > 0 && (
+					<PopupMenu
+						options={menuOptions}
+						open={menuOpen}
+						position={menuPosition}
+						onClose={this.closeMenu}
+					/>
+				)}
 			</Box>
 		);
 	}

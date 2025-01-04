@@ -227,16 +227,8 @@ class MethodList extends Component {
 		return superclasses;
 	}
 
-	async fetchExtendedOptions() {
-		let extensions = [];
-		try {
-			extensions = await ide.backend.extensions("method");
-		} catch (ignored) {}
-		return extensions;
-	}
-
 	async updateExtendedOptions() {
-		const options = await this.fetchExtendedOptions();
+		const options = await ide.fetchExtendedOptions("method");
 		this.setState({ extendedOptions: options });
 	}
 
