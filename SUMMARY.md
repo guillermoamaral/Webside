@@ -5,6 +5,7 @@
 * [API](docs/api/README.md)
   * [General](docs/api/general/README.md)
     * [Dialect](docs/api/general/dialect/get.md)
+    * [Version](docs/api/general/version/get.md)
     * [Colors](docs/api/general/colors/get.md)
     * [Logo](docs/api/general/logo/get.md)
     * [Stats](docs/api/general/stats/get.md)

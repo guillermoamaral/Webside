@@ -25,6 +25,7 @@ class Titlebar extends Component {
 	render() {
 		const {
 			dialect,
+			version,
 			logo,
 			backend,
 			developer,
@@ -71,19 +72,33 @@ class Titlebar extends Component {
 							</Link>
 						)}
 					</Box>
-					<Typography
-						variant="h6"
-						color="inherit"
-						display="inline"
-						noWrap
-					>
-						{dialect}
-					</Typography>
+					<Box display="flex" flexDirection="row" alignItems="center">
+						<Typography
+							variant="h6"
+							color="inherit"
+							display="inline"
+							noWrap
+						>
+							{dialect}
+						</Typography>
+						{version && version !== "" && (
+							<Typography
+								variant="caption"
+								color="inherit"
+								display="inline"
+								noWrap
+								ml={1}
+							>
+								{`(version ${version})`}
+							</Typography>
+						)}
+					</Box>
 					<Box p={1}>
 						<Link
 							href="https://github.com/guillermoamaral/Webside"
 							variant="body2"
 							color="inherit"
+							target="_blank"
 						>
 							{"(Powered by Webside)"}
 						</Link>

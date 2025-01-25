@@ -10,4 +10,4 @@ This a simple endpoint to save the image.
 
 **Code** : `200 OK`
 
-**Example:**: Pharo dialect `POST /save`.
+**Example:**: `POST /save`.

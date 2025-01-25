@@ -274,6 +274,7 @@ class IDE extends Component {
 		connection.addUrl("backend").readOnly();
 		connection.addText("developer");
 		connection.addText("dialect").readOnly();
+		connection.addText("version").readOnly();
 		// Code...
 		const code = settings.addSection("editor");
 		code.addBoolean("lineNumbers", false, "Show line numbers");
@@ -447,16 +448,21 @@ class IDE extends Component {
 	async updateSettings() {
 		this.initializeBackend();
 		let dialect;
+		let version = "";
 		try {
 			dialect = await this.backend.dialect();
 		} catch (error) {
 			this.reportError(error);
 		}
 		try {
+			version = await this.backend.version();
+		} catch (ignored) {}
+		try {
 			this.logo = await this.backend.logo();
 		} catch (ignored) {}
 		document.title = dialect;
 		this.settings.section("connection").set("dialect", dialect);
+		this.settings.section("connection").set("version", version);
 		let autocompletion = false;
 		try {
 			await ide.backend.autocompletions("Object", "m\r Objec", 8);
@@ -613,6 +619,8 @@ class IDE extends Component {
 			"!\rA Smalltalk IDE for the web.\r\r" +
 			"Backend: " +
 			this.currentDialect() +
+			" " +
+			this.currentVersion() +
 			"\r" +
 			"URL: " +
 			this.currentBackend() +
@@ -628,6 +636,11 @@ class IDE extends Component {
 	currentDialect() {
 		const connection = this.settings.section("connection");
 		return connection.get("dialect");
+	}
+
+	currentVersion() {
+		const connection = this.settings.section("connection");
+		return connection.get("version");
 	}
 
 	currentBackend() {
@@ -1396,6 +1409,7 @@ class IDE extends Component {
 						<Titlebar
 							developer={this.currentDeveloper()}
 							dialect={this.currentDialect()}
+							version={this.currentVersion()}
 							logo={this.logo}
 							sidebarExpanded={sidebarExpanded}
 							onSidebarExpand={this.expandSidebar}

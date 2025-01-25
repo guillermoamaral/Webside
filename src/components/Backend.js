@@ -97,6 +97,10 @@ class Backend {
 		return await this.get("/dialect", "dialect");
 	}
 
+	async version() {
+		return await this.get("/version", "version");
+	}
+
 	async colors() {
 		return await this.get("/colors", "colors");
 	}

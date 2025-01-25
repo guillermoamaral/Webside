@@ -267,6 +267,11 @@ class BackendTest {
 		this.assertIsString(dialect);
 	}
 
+	async testGeneral_Version() {
+		const version = await this.get("/version");
+		this.assertIsString(version);
+	}
+
 	// Code tests...
 
 	async testCode_Accessors() {
