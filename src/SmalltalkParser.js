@@ -18,7 +18,7 @@ var Token = function (type, context) {
 var State = function () {
 	this.context = new Context(next, null);
 	this.first = true;
-	this.withinSelector = true;
+	this.inSelector = true;
 	this.expected = ["selector"];
 	this.expects = (t) => {
 		return this.expected.includes(t);
@@ -55,11 +55,11 @@ var next = function (stream, context, state) {
 	if (char === '"') {
 		token = nextComment(stream, new Context(nextComment, context));
 		state.expect("variable");
-		state.withinSelector = false;
+		state.inSelector = false;
 	} else if (char === "'") {
 		token = nextString(stream, new Context(nextString, context));
 		state.expect("selector");
-		state.withinSelector = false;
+		state.inSelector = false;
 	} else if (char === "#") {
 		if (stream.peek() === "'") {
 			stream.next();
@@ -71,27 +71,27 @@ var next = function (stream, context, state) {
 				token.type = "meta";
 			}
 			state.expect("selector");
-			state.withinSelector = false;
+			state.inSelector = false;
 		}
-	} else if (char === "<" && !state.withinSelector && false) {
+	} else if (char === "<" && !state.inSelector && false) {
 		stream.eatWhile(/[^\s>]/);
 		stream.next();
 		token.type = "pragma";
 		state.expect("variable");
-		state.withinSelector = false;
+		state.inSelector = false;
 	} else if (char === "$") {
 		stream.eatWhile(/[^\s>]/);
 		stream.next();
 		token.type = "string";
 		state.expect("selector");
-		state.withinSelector = false;
+		state.inSelector = false;
 	} else if (char === "|" && state.expects("variable")) {
 		token.context = new Context(nextTemporaries, context, state);
 		state.expect("variable");
-		state.withinSelector = false;
+		state.inSelector = false;
 	} else if (/[[\]{}()]/.test(char)) {
 		token.type = "bracket";
-		state.withinSelector = false;
+		state.inSelector = false;
 		/[[{(]/.test(char)
 			? state.expect("variable")
 			: state.expect("selector");
@@ -106,7 +106,7 @@ var next = function (stream, context, state) {
 	} else if (char === "^") {
 		token.type = "return";
 		state.expect("variable");
-		state.withinSelector = false;
+		state.inSelector = false;
 	} else if (char === ":") {
 		if (stream.peek() === "=") {
 			stream.next();
@@ -120,9 +120,7 @@ var next = function (stream, context, state) {
 	} else if (binary.test(char)) {
 		stream.eatWhile(binary);
 		token.type = "selector";
-		state.withinSelector
-			? state.expect("argument")
-			: state.expect("variable");
+		state.inSelector ? state.expect("argument") : state.expect("variable");
 	} else if (/[\w_]/.test(char)) {
 		stream.eatWhile(/[\w\d_]/);
 		const identifier = stream.current();
@@ -130,15 +128,15 @@ var next = function (stream, context, state) {
 		if (reserved.includes(identifier)) {
 			token.type = identifier;
 			state.expect("selector");
-			state.withinSelector = false;
+			state.inSelector = false;
 		} else if (state.expects("variable") && state.isArgument(identifier)) {
 			token.type = "argument";
 			state.expect("selector");
-			state.withinSelector = false;
+			state.inSelector = false;
 		} else if (state.expects("variable") && state.isTemporary(identifier)) {
 			token.type = "temporary";
 			state.expect("selector");
-			state.withinSelector = false;
+			state.inSelector = false;
 		} else if (state.expects("argument")) {
 			state.addArgument(identifier);
 			token.type = "argument";
@@ -146,23 +144,23 @@ var next = function (stream, context, state) {
 		} else if (state.expects("selector") && stream.peek() === ":") {
 			stream.next();
 			token.type = "selector";
-			state.withinSelector
+			state.inSelector
 				? state.expect("argument")
 				: state.expect("variable");
 		} else if (
 			state.expects("selector") &&
-			(state.first || !state.withinSelector)
+			(state.first || !state.inSelector)
 		) {
 			token.type = "selector";
-			state.expect("selector");
-			state.withinSelector = false;
+			state.first ? state.expect("variable") : state.expect("selector");
+			state.inSelector = false;
 		} else {
 			token.type =
 				identifier[0] === identifier[0].toUpperCase()
 					? "global"
 					: "var";
 			state.expect("selector");
-			state.withinSelector = false;
+			state.inSelector = false;
 		}
 	} else {
 		console.log("weird");
@@ -215,7 +213,7 @@ export const SmalltalkParser = {
 		var token = state.context.next(stream, state.context, state);
 		state.context = token.context;
 		state.first = false;
-		//console.log(token.value, token.type);
+		//console.log(token);
 		return token.type;
 	},
 	blankLine: function (state) {
