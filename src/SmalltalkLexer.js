@@ -15,11 +15,11 @@ var Token = function (type, context) {
 	this.context = context;
 };
 
-var State = function () {
+var State = function (inSelector) {
 	this.context = new Context(next, null);
 	this.first = true;
-	this.inSelector = true;
-	this.expected = ["selector"];
+	this.inSelector = inSelector;
+	this.expected = inSelector ? ["selector"] : ["variable"];
 	this.expects = (t) => {
 		return this.expected.includes(t);
 	};
@@ -143,6 +143,7 @@ var next = function (stream, context, state) {
 			state.expect(["selector", "variable"]);
 		} else if (state.expects("selector") && stream.peek() === ":") {
 			stream.next();
+			token.value = token.value + ":";
 			token.type = "selector";
 			state.inSelector
 				? state.expect("argument")
@@ -200,33 +201,35 @@ var nextTemporaries = function (stream, context, state) {
 	return token;
 };
 
-export const SmalltalkParser = {
-	name: "smalltalk",
-	startState: function () {
-		return new State();
-	},
-	token: function (stream, state) {
-		state.userIndent(stream.indentation());
-		if (stream.eatSpace()) {
-			return null;
-		}
-		var token = state.context.next(stream, state.context, state);
-		state.context = token.context;
-		state.first = false;
-		//console.log(token);
-		return token.type;
-	},
-	blankLine: function (state) {
-		state.userIndent(0);
-	},
-	indent: function (state, textAfter, cx) {
-		var i =
-			state.context.next === next &&
-			textAfter &&
-			textAfter.charAt(0) === "]"
-				? -1
-				: state.userIndentationDelta;
-		return (state.indentation + i) * cx.unit;
-	},
-	electricChars: "]",
+export const SmalltalkLexer = function (inSelector) {
+	return {
+		name: "smalltalk",
+		startState: function () {
+			return new State(inSelector);
+		},
+		token: function (stream, state) {
+			state.userIndent(stream.indentation());
+			if (stream.eatSpace()) {
+				return null;
+			}
+			var token = state.context.next(stream, state.context, state);
+			state.context = token.context;
+			state.first = false;
+			//console.log(token);
+			return token.type;
+		},
+		blankLine: function (state) {
+			state.userIndent(0);
+		},
+		indent: function (state, textAfter, cx) {
+			var i =
+				state.context.next === next &&
+				textAfter &&
+				textAfter.charAt(0) === "]"
+					? -1
+					: state.userIndentationDelta;
+			return (state.indentation + i) * cx.unit;
+		},
+		electricChars: "]",
+	};
 };

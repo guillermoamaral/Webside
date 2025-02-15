@@ -15,7 +15,7 @@ import { acceptCompletion } from "@codemirror/autocomplete";
 //import { material } from "@uiw/codemirror-theme-material";
 //import { LRLanguage, LanguageSupport } from "@codemirror/language";
 //import { styleTags, tags } from "@lezer/highlight";
-import { SmalltalkParser } from "../../SmalltalkParser";
+import { SmalltalkLexer } from "../../SmalltalkLexer";
 import { Tag } from "@lezer/highlight";
 import { createTheme } from "@uiw/codemirror-themes";
 import { StreamLanguage } from "@codemirror/language";
@@ -77,8 +77,6 @@ const newTags = {
 	comment: Tag.define(),
 	separator: Tag.define(),
 };
-SmalltalkParser.tokenTable = newTags;
-const smalltalk = StreamLanguage.define(SmalltalkParser);
 
 class CodeEditor extends Component {
 	static contextType = ToolContainerContext;
@@ -640,6 +638,7 @@ class CodeEditor extends Component {
 	};
 
 	evaluateExpression = async (expression, pin) => {
+		this.setState({ evaluating: true });
 		if (!expression || expression.length === 0) return;
 		let object;
 		try {
@@ -652,7 +651,7 @@ class CodeEditor extends Component {
 			let issued = await ide.backend.issueEvaluation(evaluation);
 			evaluation.id = issued.id;
 			evaluation.state = issued.state;
-			this.setState({ evaluating: true, currentEvaluation: evaluation });
+			this.setState({ currentEvaluation: evaluation });
 			object = await this.context.waitForEvaluationResult(evaluation);
 			if (!pin) {
 				try {
@@ -1085,6 +1084,12 @@ class CodeEditor extends Component {
 		}
 	};
 
+	lexer() {
+		const lexer = SmalltalkLexer(this.props.useMethodLexer);
+		lexer.tokenTable = newTags;
+		return StreamLanguage.define(lexer);
+	}
+
 	render() {
 		console.log("rendering code editor");
 		const {
@@ -1095,7 +1100,13 @@ class CodeEditor extends Component {
 			menuOpen,
 			menuPosition,
 		} = this.state;
-		const { showAccept, showPlay, showAssistant, readOnly } = this.props;
+		const {
+			showAccept,
+			showPlay,
+			showAssistant,
+			readOnly,
+			useMethodLexer = true,
+		} = this.props;
 		const showCodeAssistant = showAssistant && ide.usesCodeAssistant();
 		const showButtons = showAccept || showPlay || showAssistant;
 		const lineNumbers = ide.settings.section("editor").get("lineNumbers");
@@ -1113,7 +1124,7 @@ class CodeEditor extends Component {
 							width="100%"
 							height="100%"
 							extensions={[
-								smalltalk,
+								this.lexer(),
 								EditorView.lineWrapping,
 								//EditorState.lineSeparator.of("\r"),
 								lintGutter(),
@@ -1259,5 +1270,3 @@ class CodeEditor extends Component {
 }
 
 export default CodeEditor;
-
-export { smalltalk };
