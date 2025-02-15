@@ -561,6 +561,7 @@ class IDE extends Component {
 		this.codeAssistant.active = enabled;
 		if (!enabled) return;
 		const aiInterface = AIInterface.newNamed(section.get("interface"));
+		aiInterface.model = section.get("model");
 		aiInterface.key = section.get("apiKey") || "";
 		aiInterface.temperature = section.get("temperature");
 		this.codeAssistant.useInterface(aiInterface);
