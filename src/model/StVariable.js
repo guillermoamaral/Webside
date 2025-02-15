@@ -19,4 +19,4 @@ class StVariable extends Object {
 	}
 }
 
-export default Smalltalk;
+export default StVariable;

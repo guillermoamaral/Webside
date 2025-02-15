@@ -5,7 +5,6 @@ import PopupMenu from "../controls/PopupMenu";
 import CodeMirrorMerge from "react-codemirror-merge";
 import { EditorView, keymap } from "@codemirror/view";
 import CodeEditor from "./CodeEditor.js";
-import { smalltalk } from "./CodeEditor.js";
 import { lintGutter } from "@codemirror/lint";
 import { Box } from "@mui/material";
 import { Prec } from "@codemirror/state";
@@ -85,7 +84,7 @@ class CodeMerge extends CodeEditor {
 						<Original
 							value={leftCode}
 							extensions={[
-								smalltalk,
+								this.lexer(),
 								EditorView.lineWrapping,
 								lintGutter(),
 								theme,
@@ -98,7 +97,7 @@ class CodeMerge extends CodeEditor {
 						<Modified
 							value={rightCode}
 							extensions={[
-								smalltalk,
+								this.lexer(),
 								EditorView.lineWrapping,
 								lintGutter(),
 								theme,

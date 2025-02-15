@@ -434,6 +434,7 @@ class CodeBrowser extends Component {
 								onExtendedOptionPerform={
 									this.extendedOptionPerformed
 								}
+								useMethodLexer={selectedMode === "source"}
 							/>
 						)}
 						{selectedMode === "comment" && previewMarkdown && (
