@@ -60,8 +60,16 @@ class AIInterface {
 		try {
 			answer = await this.post("/chat/completions", body);
 		} catch (error) {
+			let description = error.message;
+			if (
+				error.response &&
+				error.response.data &&
+				error.response.data.error &&
+				error.response.data.error.message
+			)
+				description = error.response.data.error.message;
 			return AICodeAssistantMessage.assistantResponse(
-				`There was an error: ${error.message}`
+				`There was an error: ${description}`
 			);
 		}
 		const message = answer.choices[0].message;
@@ -130,7 +138,7 @@ class GroqInterface extends AIInterface {
 	}
 
 	defaultModel() {
-		return "llama-3.1-70b-versatile";
+		return "llama-3.3-70b-versatile";
 	}
 
 	static displayName() {
