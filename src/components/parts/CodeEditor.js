@@ -33,6 +33,8 @@ import ImproveIcon from "@mui/icons-material/AutoFixHigh";
 import TestIcon from "../icons/TestRunnerIcon";
 import ExplainIcon from "@mui/icons-material/QuestionMark";
 import StAST from "../../model/StAST";
+import { ThemeProvider } from "@mui/material/styles";
+import { withTheme } from "@emotion/react";
 
 // import {
 // 	hyperLinkExtension,
@@ -88,6 +90,7 @@ class CodeEditor extends Component {
 		this.selectsRanges = true;
 		this.typingTimer = null;
 		this.autocompletionTimer = null;
+		this.tooltipRoot = null;
 		this.state = {
 			originalSource: props.source,
 			source: props.source,
@@ -926,7 +929,7 @@ class CodeEditor extends Component {
 		var species;
 		try {
 			species = await ide.backend.classNamed(word);
-		} catch (error) {}
+		} catch (ignored) {}
 		if (species) {
 			const comment = species.comment || "";
 			return {
@@ -953,12 +956,8 @@ class CodeEditor extends Component {
 		if (!word) return;
 		var handler = this.props.onTooltipShow;
 		var tip;
-		if (handler) {
-			tip = await handler(word);
-		}
-		if (!tip) {
-			tip = await this.defaultTooltipSpecFor(word, position);
-		}
+		if (handler) tip = await handler(word);
+		if (!tip) tip = await this.defaultTooltipSpecFor(word, position);
 		if (!tip) return;
 		if (typeof tip == "string") {
 			tip = {
@@ -980,6 +979,8 @@ class CodeEditor extends Component {
 	}
 
 	tooltip() {
+		const { theme } = this.props;
+		const ref = React.createRef();
 		return hoverTooltip(
 			async (view, pos, side) => {
 				if (!this.showsTooltip()) return null;
@@ -990,19 +991,64 @@ class CodeEditor extends Component {
 					end: pos + spec.title.length - 1,
 					above: true,
 					arrow: true,
-					create(view) {
-						let dom = document.createElement("div");
-						const root = ReactDOM.createRoot(dom);
+					create: (view) => {
+						let container =
+							document.getElementById("tooltip-container");
+						if (!container) {
+							console.error(
+								"Tooltip container not found! Creating one..."
+							);
+							container = document.createElement("div");
+							container.id = "tooltip-container";
+							document.body.appendChild(container); // Ensure it exists
+						}
+						const dom = document.createElement("div");
+						container.appendChild(dom);
+						let root;
+						try {
+							root = ReactDOM.createRoot(dom);
+						} catch (error) {
+							console.error(
+								"Failed to create React root for tooltip:",
+								error
+							);
+							return { dom }; // Failsafe return
+						}
 						root.render(
-							<CodeTooltip
-								title={spec.title}
-								titleAction={spec.titleAction}
-								description={spec.description}
-								code={spec.code}
-								actions={spec.actions}
-							/>
+							<ThemeProvider theme={theme}>
+								<ToolContainerContext.Provider
+									value={this.context}
+								>
+									<CodeTooltip
+										title={spec.title}
+										titleAction={spec.titleAction}
+										description={spec.description}
+										code={spec.code}
+										object={spec.object}
+										actions={spec.actions}
+										inspectorRef={ref}
+									/>
+								</ToolContainerContext.Provider>
+							</ThemeProvider>
 						);
-						return { dom };
+						return {
+							dom,
+							destroy: () => {
+								if (root) {
+									try {
+										if (ref && ref.current)
+											ref.current.aboutToClose();
+										root.unmount();
+									} catch (error) {
+										console.warn(
+											"Tooltip unmount failed:",
+											error
+										);
+									}
+								}
+								dom.remove();
+							},
+						};
 					},
 				};
 			},
@@ -1100,13 +1146,7 @@ class CodeEditor extends Component {
 			menuOpen,
 			menuPosition,
 		} = this.state;
-		const {
-			showAccept,
-			showPlay,
-			showAssistant,
-			readOnly,
-			useMethodLexer = true,
-		} = this.props;
+		const { showAccept, showPlay, showAssistant, readOnly } = this.props;
 		const showCodeAssistant = showAssistant && ide.usesCodeAssistant();
 		const showButtons = showAccept || showPlay || showAssistant;
 		const lineNumbers = ide.settings.section("editor").get("lineNumbers");
@@ -1159,6 +1199,7 @@ class CodeEditor extends Component {
 							}}
 						/>
 					</Scrollable>
+					<div id="tooltip-container"></div>
 					{evaluating && <LinearProgress variant="indeterminate" />}
 				</Box>
 				{showButtons && (
@@ -1269,4 +1310,5 @@ class CodeEditor extends Component {
 	}
 }
 
-export default CodeEditor;
+export { CodeEditor };
+export default withTheme(CodeEditor);

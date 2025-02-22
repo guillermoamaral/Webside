@@ -94,14 +94,11 @@ class Inspector extends Tool {
 	}
 
 	updateSlots = async (object) => {
-		if (!object) {
-			return;
-		}
+		if (!object) return;
 		const id = this.props.root.id;
 		const path = this.objectURIPath(object);
-		var slots;
+		let slots = [];
 		try {
-			slots = [];
 			if (object.hasNamedSlots) {
 				const named = await ide.backend.objectNamedSlots(id, path);
 				slots = slots.concat(named);
@@ -111,7 +108,6 @@ class Inspector extends Tool {
 				slots = slots.concat(indexed);
 			}
 		} catch (error) {
-			slots = [];
 			ide.reportError(error);
 		}
 		const current = object.slots || [];
@@ -120,19 +116,20 @@ class Inspector extends Tool {
 				s.path = [...object.path, s.slot];
 				const existing = current.find((e) => e.slot === s.slot);
 				const slot = existing ? Object.assign(existing, s) : s;
-				if (!slot.slots || slot.slots.length === 0) {
-					s.slots = [this.selfSlot(s)];
-				}
+				// if (!slot.slots || slot.slots.length === 0) {
+				// 	s.slots = [this.selfSlot(s)];
+				// }
 				return slot;
 			});
 		} else {
-			const self = this.selfSlot(object);
-			const existing = current.find((e) => e.slot === "self");
-			if (existing) {
-				Object.assign(existing, self);
-			} else {
-				object.slots = [self];
-			}
+			// const self = this.selfSlot(object);
+			// const existing = current.find((e) => e.slot === "self");
+			// if (existing) {
+			// 	Object.assign(existing, self);
+			// } else {
+			// 	object.slots = [self];
+			// }
+			object.slots = [];
 		}
 	};
 
@@ -300,7 +297,11 @@ class Inspector extends Tool {
 						</Box>
 						<Box sx={{ width: "60%" }}>
 							<CustomSplit mode="vertical">
-								<Box sx={{ height: "80%" }}>
+								<Box
+									sx={{
+										height: showWorkspace ? "80%" : "100%",
+									}}
+								>
 									<ObjectPresenter
 										context={this.evaluationContext()}
 										object={selectedObject}
@@ -310,8 +311,8 @@ class Inspector extends Tool {
 										}
 									/>
 								</Box>
-								<Box sx={{ height: "20%" }}>
-									{showWorkspace && (
+								{showWorkspace && (
+									<Box sx={{ height: "20%" }}>
 										<Paper
 											variant="outlined"
 											sx={{ height: "100%" }}
@@ -324,8 +325,8 @@ class Inspector extends Tool {
 												onAccept={this.assignEvaluation}
 											/>
 										</Paper>
-									)}
-								</Box>
+									</Box>
+								)}
 							</CustomSplit>
 						</Box>
 					</CustomSplit>
