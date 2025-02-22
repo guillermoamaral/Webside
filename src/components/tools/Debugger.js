@@ -21,6 +21,7 @@ class Debugger extends Tool {
 			showBindings: true,
 			expressions: [],
 		};
+		this.tempObjects = [];
 	}
 
 	async aboutToClose() {
@@ -29,9 +30,8 @@ class Debugger extends Tool {
 		} catch (error) {
 			ide.reportError(error);
 		}
-		if (this.props.onTerminate) {
-			this.props.onTerminate();
-		}
+		this.unpinTempObjects();
+		if (this.props.onTerminate) this.props.onTerminate();
 	}
 
 	componentDidMount() {
@@ -172,13 +172,20 @@ class Debugger extends Tool {
 	terminateClicked = async () => {
 		try {
 			await ide.backend.terminateDebugger(this.props.id);
-			if (this.props.onTerminate) {
-				this.props.onTerminate();
-			}
+			this.unpinTempObjects();
+			if (this.props.onTerminate) this.props.onTerminate();
 		} catch (error) {
 			ide.reportError(error);
 		}
 	};
+
+	unpinTempObjects() {
+		this.tempObjects.forEach(async (object) => {
+			try {
+				await ide.backend.unpinObject(object.id);
+			} catch (ignore) {}
+		});
+	}
 
 	methodCompiled = async (method) => {
 		const selected = this.state.selectedFrame.method;
@@ -213,12 +220,36 @@ class Debugger extends Tool {
 			: {};
 	}
 
-	tooltipForBinding = (name) => {
+	tooltipForBinding = async (name) => {
 		const frame = this.state.selectedFrame;
 		if (!frame) return;
 		const binding = frame.bindings.find((b) => b.name === name);
 		if (!binding) return;
-		return binding.value;
+		let object;
+		try {
+			object = await this.context.evaluateExpression(
+				name,
+				false,
+				true,
+				this.evaluationContext()
+			);
+		} catch (error) {
+			this.context.reportError(error);
+		}
+		if (object) {
+			this.tempObjects.push(object);
+			return {
+				title: name,
+				titleAction: this.inspectBinding,
+				object: object,
+				actions: [
+					{
+						label: "Open in new tab",
+						handler: this.inspectBinding,
+					},
+				],
+			};
+		}
 	};
 
 	inspectBinding = async (name) => {
@@ -366,7 +397,6 @@ class Debugger extends Tool {
 								onClassDefine={this.classDefined}
 								onClassComment={this.classCommented}
 								onTooltipShow={this.tooltipForBinding}
-								onTooltipClick={this.inspectBinding}
 							/>
 						</Box>
 					</CustomSplit>

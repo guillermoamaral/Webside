@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { ide } from "../IDE";
 import CodeEditor from "./CodeEditor";
+import Inspector from "../tools/Inspector";
 
 class CodeTooltip extends Component {
 	render() {
@@ -17,7 +18,15 @@ class CodeTooltip extends Component {
 		const mode = appearance.section(appearance.get("mode"));
 		const color = mode.get("primaryColor");
 		const background = mode.get("background");
-		const { title, titleAction, description, code, actions } = this.props;
+		const {
+			title,
+			titleAction,
+			description,
+			code,
+			object,
+			actions,
+			inspectorRef,
+		} = this.props;
 		return (
 			<Card
 				sx={{
@@ -54,10 +63,27 @@ class CodeTooltip extends Component {
 								minWidth: 400,
 								width: "100%",
 								height: 150,
-								background: background,
 							}}
 						>
 							<CodeEditor source={code} readOnly noTooltips />
+						</Paper>
+					)}
+					{object && (
+						<Paper
+							variant="outlined"
+							sx={{
+								minWidth: 500,
+								width: "100%",
+								height: 400,
+							}}
+						>
+							<Inspector
+								key={object.id}
+								root={object}
+								showWorkspace={false}
+								embedded={true}
+								ref={inspectorRef}
+							/>
 						</Paper>
 					)}
 				</CardContent>

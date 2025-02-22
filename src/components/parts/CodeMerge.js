@@ -4,7 +4,7 @@ import PopupMenu from "../controls/PopupMenu";
 //import { ide } from "../IDE.js";
 import CodeMirrorMerge from "react-codemirror-merge";
 import { EditorView, keymap } from "@codemirror/view";
-import CodeEditor from "./CodeEditor.js";
+import { CodeEditor } from "./CodeEditor";
 import { lintGutter } from "@codemirror/lint";
 import { Box } from "@mui/material";
 import { Prec } from "@codemirror/state";
