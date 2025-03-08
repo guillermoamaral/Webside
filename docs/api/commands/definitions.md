@@ -14,7 +14,6 @@ A _command_ is any action defined by the backend and that can be exposed by the 
 
 ```json
 {
-	"type": "command",
 	"name": "string",
 	"elementType": "string",
 	"label": "string",
@@ -27,7 +26,6 @@ A _command_ is any action defined by the backend and that can be exposed by the 
 
 Where:
 -   `name` the name of the command used when submitting the command.
--   `type` is `command` as these are command definitions.
 -   `elementType` represents the meta-model object over which the command is applied. It can be `system`, `package`, `class`, `variable`, `category`, `method` or `code`.
 -   `label` a text that will be used by the IDE to present the command as an option.
 -   `description` (optional) a description of the command (it might be used as a tip text or help).
