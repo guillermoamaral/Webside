@@ -8,7 +8,7 @@ A search extension must be like this:
 
 ```json
 {
-	"extensionType": "search",
+	"type": "search",
 	"elementType": "string",
 	"label": "string",
 	"description": "string",
@@ -19,7 +19,7 @@ A search extension must be like this:
 
 Where:
 
--   `extensionType` this property should be `search`.
+-   `type` this property should be `search`.
 -   `get` the URI to perform the actual search (see below).
 
 For basic properties refer to [basic extension properties](./get.md#specification).
@@ -31,7 +31,7 @@ We could specify our extension like this:
 
 ```json
 {
-	"extensionType": "search",
+	"type": "search",
 	"elementType": "package",
 	"label": "Unary methods",
 	"get": "/packages/{element.name}/unaries"
@@ -41,7 +41,7 @@ We could specify our extension like this:
 ## Get mechanism
 
 `get` property should be the URI corresponding to the endpoint associated to the search of interest.
-The value might contain `{element.xxx}` expressions, where `element` represents the meta-model object for which the search is requested (most likely the object selected in IDE), and `xxx` is an valid attribute for such element. This expression will be replaced by the actual value element's attribute.\
+The value might contain `{element.xxxx}` expressions, where `element` represents the meta-model object for which the search is requested (most likely the object selected in IDE), and `xxxx` is an valid attribute for such element. This expression will be replaced by the actual value element's attribute.\
 
 In the example, assuming the action was triggered from the package `MyPackage`, the contents will be retrieved from the URI `/pacakges/MyPackage/unaries`.
 

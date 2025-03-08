@@ -599,6 +599,11 @@ class Backend {
 		return applied;
 	}
 
+	async postCommand(command, description) {
+		const applied = await this.post("/commands", command, description);
+		return applied;
+	}
+
 	async downloadChanges(changes) {
 		return await this.post(
 			"/changesets/download",
@@ -630,6 +635,14 @@ class Backend {
 	async extensions(elementType) {
 		let extensions = await this.get("/extensions", "extensions");
 		return extensions.filter((e) => e.elementType === elementType);
+	}
+
+	async commandDefinitions(elementType) {
+		let definitions = await this.get(
+			"/command-definitions",
+			"command definitions"
+		);
+		return definitions.filter((e) => e.elementType === elementType);
 	}
 
 	// Change helpers...

@@ -189,6 +189,7 @@ class CategoryList extends Component {
 	}
 
 	performExtendedOption = async (option, category) => {
+		if (!category) return;
 		await ide.performExtendedOption(option, category);
 		this.extendedOptionPerformed();
 	};

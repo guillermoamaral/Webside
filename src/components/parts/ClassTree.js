@@ -528,6 +528,7 @@ class ClassTree extends Component {
 	}
 
 	performExtendedOption = async (option, species) => {
+		if (!species) return;
 		await ide.performExtendedOption(option, species);
 		this.extendedOptionPerformed();
 	};

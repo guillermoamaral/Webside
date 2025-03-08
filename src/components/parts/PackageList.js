@@ -165,6 +165,7 @@ class PackageList extends Component {
 	}
 
 	performExtendedOption = async (option, pack) => {
+		if (!pack) return;
 		await ide.performExtendedOption(option, pack);
 		this.extendedOptionPerformed();
 	};

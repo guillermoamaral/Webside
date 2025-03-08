@@ -190,3 +190,12 @@ Retrieve IDE extensions defined by the backend.
 | Method | Path                             | Description                 | Parameters | Payload |
 | :----: | -------------------------------- | --------------------------- | :--------: | ------- |
 |  GET   | [/extensions](extensions/get.md) | Retrieve list of extensions |     -      | -       |
+
+## [Commands](commands)
+
+Retrieve definitions and process commands.
+
+| Method | Path                                            | Description                  | Parameters | Payload |
+| :----: | ----------------------------------------------- | ---------------------------- | :--------: | ------- |
+|  GET   | [/command-definitions](commands/definitions.md) | Retrieve command definitions |     -      | -       |
+|  POST  | [/commands](commands/post.md)                   | Process a command            | `command`  | -       |

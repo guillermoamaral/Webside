@@ -12,7 +12,7 @@ The basic structure of an extension specification must be like this:
 
 ```json
 {
-	"extensionType": "string",
+	"type": "string",
 	"elementType": "string",
 	"label": "string",
 	"description": "string",
@@ -22,10 +22,10 @@ The basic structure of an extension specification must be like this:
 
 Where:
 
--   `extensionType` this property can be `change`, `export` or `search`.
+-   `type` this property can be `change`, `export` or `search`.
 -   `elementType` represents the meta-model object over which the change applies. It can be `system`, `package`, `class`, `variable`, `category`, `method` or `code`.
 -   `label` a text that will be used by the IDE to present the option.
--   `description` (optional) a description of the search (it might be used as a tip text or help).
+-   `description` (optional) a description of the extension (it might be used as a tip text or help).
 -   `section` (optional) is used by the IDE to place the option under a submenu. By default no submenu is used (i.e., the option will be appended to the corresponding menu)
 
 Additionally, every type of extension might impose other particular properties.
@@ -42,4 +42,5 @@ There are the following types of extensions:
 
 -   [**Change extensions**](changes.md)
 -   [**Export extensions**](exports.md)
+-   [**Import extensions**](imports.md)
 -   [**Search extensions**](searches.md)
