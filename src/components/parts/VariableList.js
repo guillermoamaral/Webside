@@ -250,6 +250,7 @@ class VariableList extends Component {
 	}
 
 	performExtendedOption = async (option, variable) => {
+		if (!variable) return;
 		await ide.performExtendedOption(option, variable);
 		this.extendedOptionPerformed();
 	};

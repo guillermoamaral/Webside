@@ -479,7 +479,7 @@ class IDE extends Component {
 	}
 
 	async initializeExtendedOptions() {
-		let extensions = await ide.fetchExtendedOptions("system");
+		let extensions = await this.fetchExtendedOptions("system");
 		this.setState({ extendedOptions: extensions });
 	}
 
@@ -916,6 +916,8 @@ class IDE extends Component {
 			? typeof error.data === "string"
 				? error.data
 				: error.data.description
+				? error.data.description
+				: ""
 			: "";
 		if (message.length > 0)
 			description = description + "\rServer message: " + message;
@@ -1023,10 +1025,13 @@ class IDE extends Component {
 
 	async fetchExtendedOptions(type) {
 		let extensions = [];
+		let commands = [];
 		try {
 			extensions = await ide.backend.extensions(type);
+			commands = await ide.backend.commandDefinitions(type);
+			commands.forEach((c) => (c.type = "command"));
 		} catch (ignored) {}
-		return extensions;
+		return extensions.concat(commands);
 	}
 
 	extensionMenuOptions(definitions, handler) {
@@ -1069,18 +1074,24 @@ class IDE extends Component {
 	}
 
 	performExtendedOption = async (specification, element) => {
-		if (specification.extensionType === "change") {
+		if (specification.type === "export") {
+			await this.performExtendedExport(specification, element);
+		}
+		if (specification.type === "search") {
+			await this.performExtendedSearch(specification, element);
+		}
+		if (specification.type === "import") {
+			await this.performExtendedImport(specification, element);
+		}
+		if (specification.type === "change") {
 			await this.performExtendedChange(specification, element);
 		}
-		if (specification.extensionType === "export") {
-			await this.performExport(specification, element);
-		}
-		if (specification.extensionType === "search") {
-			await this.performExtendedSearch(specification, element);
+		if (specification.type === "command") {
+			await this.performCommand(specification, element);
 		}
 	};
 
-	performExport = async (specification, element) => {
+	performExtendedExport = async (specification, element) => {
 		const get = this.resolveDotExpressions(
 			specification.get,
 			"element",
@@ -1102,7 +1113,64 @@ class IDE extends Component {
 		this.download(blob, filename || "file");
 	};
 
+	performExtendedImport = async (specification) => {
+		var input = document.createElement("input");
+		input.type = "file";
+		input.onchange = (e) => {
+			var file = e.target.files[0];
+			if (file) {
+				var reader = new FileReader();
+				reader.onload = async () => {
+					try {
+						await ide.backend.post(
+							specification.post,
+							reader.result
+						);
+					} catch (error) {
+						this.reportError(error);
+					}
+				};
+				reader.readAsArrayBuffer(file);
+			}
+		};
+		input.click();
+	};
+
 	performExtendedChange = async (specification, element) => {
+		const change = await this.prepareExtensionPayload(
+			specification,
+			element
+		);
+		if (!change) return;
+		let result;
+		try {
+			result = await this.backend.postChange(
+				change,
+				specification.description || specification.label
+			);
+		} catch (error) {
+			this.handleChangeError(error);
+		}
+		return result;
+	};
+
+	performCommand = async (definition, element) => {
+		const command = await this.prepareExtensionPayload(definition, element);
+		if (!command) return;
+		command.command = definition.name;
+		let result;
+		try {
+			result = await this.backend.postCommand(
+				command,
+				definition.description || definition.label
+			);
+		} catch (error) {
+			this.reportError(error);
+		}
+		return result;
+	};
+
+	prepareExtensionPayload = async (specification, element) => {
 		const description = specification.label.toLowerCase();
 		if (specification.needsConfirmation) {
 			const proceed = await this.confirm(
@@ -1112,13 +1180,14 @@ class IDE extends Component {
 		}
 		let parameters;
 		if (specification.parameters && specification.parameters.length > 0) {
-			parameters = await this.promptChangeParameters(
+			parameters = await this.promptExtensionParameters(
 				specification,
 				element
 			);
 			if (!parameters) return;
 		}
-		let change = {};
+		if (specification.type === "command") return parameters;
+		const payload = {};
 		for (const [k, v] of Object.entries(specification.properties)) {
 			let value = v;
 			if (typeof value === "string") {
@@ -1131,15 +1200,9 @@ class IDE extends Component {
 					);
 				}
 			}
-			change[k] = value;
+			payload[k] = value;
 		}
-		let result;
-		try {
-			result = await this.backend.postChange(change, description);
-		} catch (error) {
-			this.handleChangeError(error);
-		}
-		return result;
+		return payload;
 	};
 
 	performExtendedSearch = async (specification, element) => {
@@ -1164,12 +1227,14 @@ class IDE extends Component {
 		);
 	};
 
-	async promptChangeParameters(specification, element) {
+	async promptExtensionParameters(specification, element) {
 		const parameters = specification.parameters;
 		let options = {};
 		await Promise.all(
 			parameters.map(async (p) => {
-				let list = await this.resolveChangeParameterOptions(p.options);
+				let list = await this.resolveExtensionParameterOptions(
+					p.options
+				);
 				options[p.name] = list;
 			})
 		);
@@ -1214,7 +1279,7 @@ class IDE extends Component {
 		return result;
 	}
 
-	async resolveChangeParameterOptions(options) {
+	async resolveExtensionParameterOptions(options) {
 		if (options === "{packages}") return await this.backend.packageNames();
 		if (options === "{classes}") return await this.backend.classNames();
 		return options;

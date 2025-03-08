@@ -12,7 +12,7 @@ A change extension must be like this:
 
 ```json
 {
-	"extensionType": "change",
+	"type": "change",
 	"elementType": "string",
 	"label": "string",
 	"description": "string",
@@ -28,12 +28,22 @@ A change extension must be like this:
 
 Where:
 
--   `extensionType` as these are change extensions this property is `change`.
+-   `type` as these are change extensions this property is `change`.
 -   `properties` contains the actual properties of the change to be posted.
--   `parameters` (optional) describe what would be prompted to the user to fill some of the change properties (see below).
+-   `parameters` (optional) a list of parameters that will be prompted to the user to fill some of the properties (see below). 
+    - A parameter is specified in the following way:
+		```json
+		{
+			"name": "string",
+			"label": "string",
+			"defaultValue": "string",
+			"type": "type"
+		}
+		```
+		where `type` is either `text`, `number`, `boolean` or `options` (this type should be accompanied with a property `optinos` with the options to provide). 
 -   `needsConfirmation` (optional) specifies whether the change should be confirmed by the user. By default is `false.`.
 
-For basic properties refer to [basic extension properties](./get.md#specification).
+The rest of the basic properties are described [here](./get.md#specification).
 
 ## Example 1: our own class renaming
 
@@ -55,7 +65,7 @@ Now, lets express our pre-defined class rename change as the definition of a new
 
 ```json
 {
-	"extensionType": "change",
+	"type": "change",
 	"elementType": "class",
 	"label": "My own class renaming",
 	"properties": {
@@ -87,7 +97,7 @@ As said above, `properties` represent the actual properties the change will have
 
 ### Element attributes
 
-If the value of a property contains `{element.xxx}`, the actual value will be extracted from the attribute corresponding to what follows the dot (`xxx`). Here, `element` represents the meta-model object from which the change is triggered (most likely the object selected in IDE).
+If the value of a property contains `{element.xxxx}`, the actual value will be extracted from the attribute corresponding to what follows the dot (`xxxx`). Here, `element` represents the meta-model object from which the change is triggered (most likely the object selected in IDE).
 In the example, the value for `className` property is `{element.name}`, meaning that the actual value will be extracted from the attribute `name` of the target element (lets asume `MyClass` is selected).
 Valid attributes can be extracted from the corresponding endpoints in the documentation ([pacakges](../code/packages/get.md), [classes](../code/classes/get.md), [variables](../code/classes/name/variables/get.md), [categories](../code/classes/name/categories/get.md), [methods](../code/methods/get.md)).
 
@@ -96,13 +106,13 @@ As a general rule, the property value will be the result of replacing every "dot
 
 ### Parameter values
 
-If the value contains `{parameters.xxx}`, the actual value will be extracted from the parameter with the name given by what follows the dot (`xxx`). In our example, the parameter named `newName` will be first prompted to the user, and once the user has provided a value for it, such value will be used for the property.
+If the value contains `{parameters.xxxx}`, the actual value will be extracted from the parameter with the name given by what follows the dot (`xxxx`). In our example, the parameter named `newName` will be first prompted to the user, and once the user has provided a value for it, such value will be used for the property.
 
 As in the case of element attributes, there might be more than one occurrence of such pattern, and those will be treated as explained above.
 
 ### Fixed values
 
-Finally, if none of the above conditions hold, the value of a property is treated as a fixed value. This is the case of the properties `type` and `renameReferences` for which the values ar `RenameClass` and `true` respectively.
+Finally, if none of the above conditions hold, the value of a property is treated as a fixed value. This is the case of the properties `type` and `renameReferences` for which the values are `RenameClass` and `true` respectively.
 
 ## Parameters
 
@@ -123,7 +133,7 @@ Where,
 -   `type` specifies how the parameter will be prompted to the user. At the moment of writing this document it can be `text`, `number` or `boolean`.
 -   `options` (optional) provides a list of alternatives. This can be either a fixed list, or a _dynamic_ one. By the moment, there are only two possibilities for the latter: `packages` or `classes`, to provide the user with the list of the names of existing packages and classes, respectively.
 -   `label` will be used to prompt the user for a value.
--   `defaultValue` (optional) is the default value presented to the user. In the case of a string, it can contain zero or more attribute expressions ({`element.xxx`}). (In our example, the default value is the current name of the class, and so it is defined as `{element.name}`).
+-   `defaultValue` (optional) is the default value presented to the user. In the case of a string, it can contain zero or more attribute expressions ({`element.xxxx`}). (In our example, the default value is the current name of the class, and so it is defined as `{element.name}`).
 
 With this specification, users will find an option _My own class renaming_ withing the class menu options, and when they hit it, they will be prompted for _New name_, with the current name as the default value, and whether they want to rename references or not. Should they accept the prompt with the option "Rename references" unselected, the IDE will post the following change:
 
@@ -143,7 +153,7 @@ We should include the following extension:
 
 ```json
 {
-	"extensionType": "change",
+	"type": "change",
 	"elementType": "method",
 	"label": "Move to superclass",
 	"properties": {

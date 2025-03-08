@@ -721,9 +721,10 @@ class ToolContainer extends Component {
 			if (file) {
 				var reader = new FileReader();
 				reader.onload = async () => {
-					const ch = reader.result;
 					try {
-						const changes = await ide.backend.uploadChangeset(ch);
+						const changes = await ide.backend.uploadChangeset(
+							reader.result
+						);
 						const changeset = new Changeset(ide.backend);
 						changeset.fromJson(changes);
 						this.browseChanges(changeset, file.name);

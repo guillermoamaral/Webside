@@ -680,6 +680,7 @@ class MethodList extends Component {
 	};
 
 	performExtendedOption = async (option, method) => {
+		if (!method) return;
 		await ide.performExtendedOption(option, method);
 		this.extendedOptionPerformed();
 	};
