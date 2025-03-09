@@ -19,16 +19,6 @@ Process a command.
 ```
 It can also contain more properties given by the parameters defined by the command ([see Command definitions](./definitions.md))
 
-**Example:**: Lets suppose there is a rectangle with ID `1`. Requesting a `POST /objects` with the following body, will pin the `x` coordinate of the rectangle's `origin`:
-
-**Payload**
-
-```json
-{
-	"uri": "/objects/1/origin/x"
-}
-```
-
 ## Example 1: Pharo image cleanup
 
 Taking the definition given in [Example 1: Pharo image cleanup](./definitions.md#example-1-pharo-image-cleanup), the payload the backend will receive should be like this:
