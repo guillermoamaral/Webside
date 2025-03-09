@@ -72,7 +72,6 @@ Lets suppose we are targeting Pharo and that we want to expose the option _Do im
 
 ```json
 {
-	"type": "command",
 	"name": "imageCleanup",
 	"elementType": "system",
 	"label": "Do image cleanup",
@@ -91,7 +90,6 @@ Now consider a command for saving the image but with a name provided by the user
 
 ```json
 {
-	"type": "command",
 	"name": "saveImageAs",
 	"elementType": "system",
 	"label": "Save image as",
