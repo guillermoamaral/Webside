@@ -36,6 +36,7 @@ class SystemBrowser extends Tool {
 			selectedMethod: null,
 			preselectedClass: null,
 			preselectedPackage: null,
+			editorFullView: false,
 		};
 	}
 
@@ -375,6 +376,10 @@ class SystemBrowser extends Tool {
 		this.setState({ selectedMethod: method });
 	};
 
+	toggleFullView = () => {
+		this.setState({ editorFullView: !this.state.editorFullView });
+	};
+
 	render() {
 		const {
 			roots,
@@ -387,6 +392,7 @@ class SystemBrowser extends Tool {
 			selectedMethod,
 			preselectedClass,
 			preselectedPackage,
+			editorFullView,
 		} = this.state;
 		const targetClass = this.targetClass();
 		const showPackages = this.props.showPackages;
@@ -403,7 +409,10 @@ class SystemBrowser extends Tool {
 				}}
 			>
 				<CustomSplit mode="vertical">
-					<Box sx={{ minHeight: 50, height: "35%" }}>
+					<Box
+						hidden={editorFullView}
+						sx={{ minHeight: 50, height: "35%" }}
+					>
 						<Box
 							display="flex"
 							flexDirection="row"
@@ -579,7 +588,7 @@ class SystemBrowser extends Tool {
 							</CustomSplit>
 						</Box>
 					</Box>
-					<Box sx={{ height: "60%" }}>
+					<Box sx={{ height: editorFullView ? "100%" : "60%" }}>
 						<CodeBrowser
 							context={this.evaluationContext()}
 							category={selectedCategory}
@@ -592,6 +601,7 @@ class SystemBrowser extends Tool {
 							onExtendedOptionPerform={
 								this.codeExtendedOptionPerformed
 							}
+							onFullViewToggle={this.toggleFullView}
 							sx={{ height: "100%" }}
 						/>
 					</Box>

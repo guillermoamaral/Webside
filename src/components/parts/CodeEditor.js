@@ -431,6 +431,14 @@ class CodeEditor extends Component {
 					label: "Search string references",
 					action: this.browseStringReferences,
 				},
+				null,
+				{
+					label:
+						"Toggle full view (" +
+						shortcuts.get("toggleEditorFullView") +
+						")",
+					action: this.toggleFullView,
+				},
 			]
 		);
 		const extended = ide.extensionMenuOptions(
@@ -844,6 +852,10 @@ class CodeEditor extends Component {
 				key: "Tab",
 				run: acceptCompletion,
 			},
+			{
+				key: this.adaptShortcut(shortcuts.get("toggleEditorFullView")),
+				run: this.toggleFullView,
+			},
 		];
 	}
 
@@ -1135,6 +1147,10 @@ class CodeEditor extends Component {
 		lexer.tokenTable = newTags;
 		return StreamLanguage.define(lexer);
 	}
+
+	toggleFullView = () => {
+		if (this.props.onFullViewToggle) this.props.onFullViewToggle();
+	};
 
 	render() {
 		console.log("rendering code editor");

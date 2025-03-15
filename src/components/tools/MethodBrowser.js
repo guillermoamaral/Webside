@@ -15,6 +15,7 @@ class MethodBrowser extends Tool {
 			selectedMethod: null,
 			selectedClass: null,
 			showTests: true,
+			editorFullView: false,
 		};
 	}
 
@@ -57,19 +58,28 @@ class MethodBrowser extends Tool {
 		}
 	};
 
-	methodSelected = async (method) => {
+	async updateMethod(method) {
 		try {
-			const species = await ide.backend.classNamed(method.methodClass);
 			const retrieved = await ide.backend.method(
 				method.methodClass,
 				method.selector
 			);
-			Object.assign(method, retrieved);
-			if (!retrieved) {
+			if (retrieved) {
+				Object.assign(method, retrieved);
+			} else {
 				method.source = "method cannot be found";
 				method.ast = null;
 				method.bytecodes = null;
 			}
+		} catch (error) {
+			ide.reportError(error);
+		}
+	}
+
+	methodSelected = async (method) => {
+		try {
+			const species = await ide.backend.classNamed(method.methodClass);
+			await this.updateMethod(method);
 			this.setState({ selectedMethod: method, selectedClass: species });
 		} catch (error) {
 			ide.reportError(error);
@@ -155,8 +165,13 @@ class MethodBrowser extends Tool {
 			: {};
 	}
 
+	toggleFullView = () => {
+		this.setState({ editorFullView: !this.state.editorFullView });
+	};
+
 	render() {
-		const { selectedMethod, selectedClass, showTests } = this.state;
+		const { selectedMethod, selectedClass, showTests, editorFullView } =
+			this.state;
 		const { selectedSelector, selectedIdentifier } = this.props;
 		const methods = this.currentMethods();
 		const background = ide.colorSetting("methodBrowserColor");
@@ -191,7 +206,7 @@ class MethodBrowser extends Tool {
 				</Box>
 				<Box flexGrow={1}>
 					<CustomSplit mode="vertical">
-						<Box sx={{ height: "45%" }}>
+						<Box hidden={editorFullView} sx={{ height: "45%" }}>
 							<CustomPaper>
 								<MethodList
 									useTable
@@ -202,7 +217,7 @@ class MethodBrowser extends Tool {
 								/>
 							</CustomPaper>
 						</Box>
-						<Box sx={{ height: "50%" }}>
+						<Box sx={{ height: editorFullView ? "100%" : "50%" }}>
 							<CodeBrowser
 								context={this.evaluationContext()}
 								class={selectedClass}
@@ -212,6 +227,7 @@ class MethodBrowser extends Tool {
 								onMethodCompile={this.methodCompiled}
 								onClassDefine={this.classDefined}
 								onClassComment={this.classCommented}
+								onFullViewToggle={this.toggleFullView}
 							/>
 						</Box>
 					</CustomSplit>
