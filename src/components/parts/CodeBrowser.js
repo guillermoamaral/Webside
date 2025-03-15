@@ -349,6 +349,10 @@ class CodeBrowser extends Component {
 			this.props.onExtendedOptionPerform();
 	};
 
+	toggleFullView = () => {
+		if (this.props.onFullViewToggle) this.props.onFullViewToggle();
+	};
+
 	render() {
 		const { selectedMode, previewMarkdown } = this.state;
 		const author = this.currentAuthor();
@@ -435,6 +439,7 @@ class CodeBrowser extends Component {
 									this.extendedOptionPerformed
 								}
 								useMethodLexer={selectedMode === "source"}
+								onFullViewToggle={this.toggleFullView}
 							/>
 						)}
 						{selectedMode === "comment" && previewMarkdown && (

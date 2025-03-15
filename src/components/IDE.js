@@ -324,6 +324,8 @@ class IDE extends Component {
 		shortcuts.addShortcut("browseSenders", "Alt+n");
 		shortcuts.addShortcut("browseImplementors", "Alt+m");
 		shortcuts.addShortcut("browseClassReferences", "Alt+r");
+		shortcuts.addShortcut("toggleEditorFullView", "Alt+z");
+		
 		// Code assistant...
 		const assistant = settings.addSection("codeAssistant");
 		assistant.addBoolean("enabled", false, "Use code assistant");

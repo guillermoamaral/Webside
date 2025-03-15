@@ -20,6 +20,7 @@ class Debugger extends Tool {
 			stepping: false,
 			showBindings: true,
 			expressions: [],
+			editorFullView: false,
 		};
 		this.tempObjects = [];
 	}
@@ -280,12 +281,22 @@ class Debugger extends Tool {
 		});
 	};
 
+	toggleFullView = () => {
+		this.setState({ editorFullView: !this.state.editorFullView });
+	};
+
 	render() {
 		const id = this.props.id;
 		var title = this.props.title || "";
 		if (title.length > 100) title = title.slice(0, 50) + "...";
-		const { frames, selectedFrame, stepping, showBindings, expressions } =
-			this.state;
+		const {
+			frames,
+			selectedFrame,
+			stepping,
+			showBindings,
+			expressions,
+			editorFullView,
+		} = this.state;
 		const background = ide.colorSetting("debuggerColor");
 		return (
 			<Box
@@ -344,7 +355,10 @@ class Debugger extends Tool {
 				</Box>
 				<Box flexGrow={1}>
 					<CustomSplit mode="vertical">
-						<Box sx={{ minHeight: 50, height: "35%" }}>
+						<Box
+							hidden={editorFullView}
+							sx={{ minHeight: 50, height: "35%" }}
+						>
 							<CustomSplit>
 								<Box sx={{ width: "70%" }}>
 									<CustomPaper>
@@ -379,7 +393,7 @@ class Debugger extends Tool {
 								</Box>
 							</CustomSplit>
 						</Box>
-						<Box sx={{ height: "60%" }}>
+						<Box sx={{ height: editorFullView ? "100%" : "60%" }}>
 							<CodeBrowser
 								context={this.evaluationContext()}
 								class={
@@ -397,6 +411,7 @@ class Debugger extends Tool {
 								onClassDefine={this.classDefined}
 								onClassComment={this.classCommented}
 								onTooltipShow={this.tooltipForBinding}
+								onFullViewToggle={this.toggleFullView}
 							/>
 						</Box>
 					</CustomSplit>
