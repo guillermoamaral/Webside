@@ -6,6 +6,7 @@ import AddIcon from "@mui/icons-material/Add";
 import SelectIcon from "@mui/icons-material/ExpandMore";
 import CloseIcon from "@mui/icons-material/Close";
 import { withTheme } from "@emotion/react";
+import { darken } from "@mui/system";
 
 class TabControl extends Component {
 	constructor(props) {
@@ -81,11 +82,18 @@ class TabControl extends Component {
 				flexDirection="column"
 				width="100%"
 				height="100%"
-				maxWidth="90vw"
+				maxWidth="95vw"
 				onClick={() => console.log("container " + id)}
 			>
 				<Box pt={0} display="flex" flexDirection="row">
-					<Box pt={0} flexGrow={1} sx={{ overflow: "hidden" }}>
+					<Box
+						pt={0}
+						flexGrow={1}
+						sx={{
+							overflow: "hidden",
+							boxShadow: "0px 0.5px 0px rgba(128, 128, 128, 0.3)",
+						}}
+					>
 						<Tabs
 							value={Math.max(selectedIndex, 0)}
 							onChange={this.tabChanged}
@@ -94,11 +102,11 @@ class TabControl extends Component {
 							variant="scrollable"
 							scrollButtons="auto"
 							sx={{
-								paddingLeft: 1,
 								paddingTop: 0,
 								paddingBotton: 0,
+								paddingLeft: 1,
 								paddingRight: 1,
-								//minHeight: 20,
+								minHeight: 20,
 							}}
 						>
 							{pages.map((page, index) => {
@@ -112,17 +120,10 @@ class TabControl extends Component {
 											paddingBottom: 0,
 											paddingLeft: 1,
 											paddingRight: 1,
-											// backgroundColor:
-											// 	index !== selectedIndex
-											// 		? theme.palette.augmentColor(
-											// 				{
-											// 					color: {
-											// 						main: background,
-											// 					},
-											// 				}
-											// 		  ).dark
-											// 		: background,
-											borderBottom: "1px solid grey",
+											backgroundColor:
+												index !== selectedIndex
+													? darken(background, 0.1)
+													: background,
 										}}
 										onFocus={this.tabFocused}
 										label={
