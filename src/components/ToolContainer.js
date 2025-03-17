@@ -599,7 +599,7 @@ class ToolContainer extends Component {
 		const senders = await ide.searchMethods(() => {
 			return ide.backend.senders(selector);
 		}, "senders of " + selector);
-		if (senders.length > 0) {
+		if (senders && senders.length > 0) {
 			this.openMethodBrowser(
 				senders,
 				"Senders of " + selector,
@@ -614,7 +614,7 @@ class ToolContainer extends Component {
 		const senders = await ide.searchMethods(() => {
 			return ide.backend.localSenders(selector, classname);
 		}, "local senders of " + selector);
-		if (senders.length > 0) {
+		if (senders && senders.length > 0) {
 			this.openMethodBrowser(
 				senders,
 				"Local senders of " + selector,
@@ -629,7 +629,7 @@ class ToolContainer extends Component {
 		const implementors = await ide.searchMethods(() => {
 			return ide.backend.implementors(selector);
 		}, "implementors of " + selector);
-		if (implementors.length > 0) {
+		if (implementors && implementors.length > 0) {
 			this.openMethodBrowser(
 				implementors,
 				"Implementors of " + selector,
@@ -644,7 +644,7 @@ class ToolContainer extends Component {
 		const implementors = await ide.searchMethods(() => {
 			return ide.backend.localImplementors(selector, classname);
 		}, "local implementors of " + selector);
-		if (implementors.length > 0) {
+		if (implementors && implementors.length > 0) {
 			this.openMethodBrowser(
 				implementors,
 				"Local implementors of " + selector
@@ -656,7 +656,7 @@ class ToolContainer extends Component {
 		const references = await ide.searchMethods(() => {
 			return ide.backend.classReferences(classname);
 		}, "references to " + classname);
-		if (references.length > 0) {
+		if (references && references.length > 0) {
 			this.openMethodBrowser(
 				references,
 				"References to " + classname,
@@ -671,7 +671,7 @@ class ToolContainer extends Component {
 		const references = await ide.searchMethods(() => {
 			return ide.backend.stringReferences(string);
 		}, "references to " + string);
-		if (references.length > 0) {
+		if (references && references.length > 0) {
 			this.openMethodBrowser(
 				references,
 				"References to '" + string + "'",
@@ -686,7 +686,7 @@ class ToolContainer extends Component {
 		const matching = await ide.searchMethods(() => {
 			return ide.backend.methodsMatching(pattern);
 		}, "methods with selector matching " + pattern);
-		if (matching.length > 0) {
+		if (matching && matching.length > 0) {
 			this.openMethodBrowser(
 				matching,
 				"Methods with selector matching " + pattern,

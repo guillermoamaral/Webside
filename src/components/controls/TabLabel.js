@@ -10,6 +10,7 @@ class TabLabel extends Component {
 			label: props.label,
 			menuOpen: false,
 			menuPosition: { x: null, y: null },
+			mouseHovering: false,
 		};
 	}
 
@@ -84,8 +85,14 @@ class TabLabel extends Component {
 	}
 
 	render() {
-		const { index, icon, onClose, showCloseOptions = true } = this.props;
-		const { menuOpen, menuPosition } = this.state;
+		const {
+			index,
+			icon,
+			onClose,
+			showCloseOptions = true,
+			selected = false,
+		} = this.props;
+		const { menuOpen, menuPosition, mouseHovering } = this.state;
 		const text = this.visibleLabel();
 		const menuOptions = this.menuOptions();
 		return (
@@ -95,12 +102,12 @@ class TabLabel extends Component {
 				alignItems="center"
 				justifyContent="center"
 				onContextMenu={this.openMenu}
+				onMouseEnter={() => this.setState({ mouseHovering: true })}
+				onMouseLeave={() => this.setState({ mouseHovering: false })}
 			>
-				<Box pt={1}>{icon}</Box>
-				<Box pl={1} pr={1} pt={1}>
-					{text}
-				</Box>
-				<Box pt={1}>
+				<Box>{icon}</Box>
+				<Box pl={1}>{text}</Box>
+				<Box>
 					{showCloseOptions && (
 						<IconButton
 							onClick={(event) => {
@@ -109,6 +116,14 @@ class TabLabel extends Component {
 							id={index}
 							value={index}
 							size="small"
+							sx={{
+								opacity: selected ? 1 : 0.5,
+								visibility:
+									mouseHovering || selected
+										? "visible"
+										: "hidden",
+								transition: "opacity 0.2s ease-in-out",
+							}}
 						>
 							<CloseIcon
 								fontSize="small"
