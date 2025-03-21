@@ -58,6 +58,7 @@ class IDE extends Component {
 			transcriptText: this.welcomeMessage(),
 			extraContainers: [],
 			waiting: false,
+			waitDescription: "",
 			quickSearchOpen: false,
 			quickSearchOptions: {},
 			activeContainer: null,
@@ -325,7 +326,7 @@ class IDE extends Component {
 		shortcuts.addShortcut("browseImplementors", "Alt+m");
 		shortcuts.addShortcut("browseClassReferences", "Alt+r");
 		shortcuts.addShortcut("toggleEditorFullView", "Alt+z");
-		
+
 		// Code assistant...
 		const assistant = settings.addSection("codeAssistant");
 		assistant.addBoolean("enabled", false, "Use code assistant");
@@ -471,13 +472,15 @@ class IDE extends Component {
 			autocompletion = true;
 		} catch (ignored) {}
 		this.settings.section("editor").set("autocompletion", autocompletion);
-		await this.fetchIcons();
-		await this.fetchThemes();
-		await this.updateDialectColorSettings();
-		this.updateAppTheme();
-		this.initializeMessageChannel();
-		this.initializeCodeAssistant();
-		this.initializeExtendedOptions();
+		this.waitFor(async () => {
+			await this.fetchIcons();
+			await this.fetchThemes();
+			await this.updateDialectColorSettings();
+			this.updateAppTheme();
+			this.initializeMessageChannel();
+			this.initializeCodeAssistant();
+			this.initializeExtendedOptions();
+		}, "Loading...");
 	}
 
 	async initializeExtendedOptions() {
@@ -998,15 +1001,15 @@ class IDE extends Component {
 		return await this.props.dialog.form(info);
 	}
 
-	waitFor = async (evaluation) => {
-		this.setState({ waiting: true });
+	waitFor = async (evaluation, description) => {
+		this.setState({ waiting: true, waitDescription: description });
 		let result;
 		try {
 			result = await evaluation();
 		} catch (error) {
 			this.reportError(error);
 		}
-		this.setState({ waiting: false });
+		this.setState({ waiting: false, waitDescription: "" });
 		return result;
 	};
 
@@ -1014,7 +1017,7 @@ class IDE extends Component {
 		try {
 			const methods = await this.waitFor(() => {
 				return search();
-			});
+			}, "Searching " + description);
 			if (methods.length === 0) {
 				this.inform("There are no " + description);
 				return [];
@@ -1438,6 +1441,7 @@ class IDE extends Component {
 			lastMessage,
 			extraContainers,
 			waiting,
+			waitDescription,
 			quickSearchOpen,
 			quickSearchOptions,
 			assistantChatOpened,
@@ -1710,6 +1714,9 @@ class IDE extends Component {
 						open={waiting}
 					>
 						<CircularProgress color="inherit" />
+						{waitDescription && waitDescription != "" && (
+							<Typography ml={2}>{waitDescription}</Typography>
+						)}
 					</Backdrop>
 					<CustomSnacks
 						open={lastMessage !== null}
