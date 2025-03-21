@@ -63,7 +63,6 @@ class QuickSearch extends Tool {
 				const url = `${
 					ide.backend.url
 				}/search?text=${text}&ignoreCase=${!matchCase}&condition=${condition}&type=${type}`;
-				console.log("setting searching to true to search", text);
 				this.setState({ searching: true });
 				const response = await axios.get(url, {
 					signal: controller.signal,
@@ -73,7 +72,6 @@ class QuickSearch extends Tool {
 		} catch (error) {
 			if (!axios.isCancel(error)) ide.reportError(error);
 		} finally {
-			console.log("setting searching to false");
 			this.setState(
 				{
 					results: results,
@@ -192,6 +190,20 @@ class QuickSearch extends Tool {
 		});
 	};
 
+	resultIcon = (result) => {
+		if (!result || !result.iconName) return;
+		const icon = ide.iconNamed(result.iconName);
+		if (!icon) return;
+		return (
+			<img
+				src={"data:image/png;base64," + icon.data}
+				width={16}
+				height={16}
+				alt={result.text}
+			/>
+		);
+	};
+
 	render() {
 		const {
 			text,
@@ -202,7 +214,6 @@ class QuickSearch extends Tool {
 			type,
 			sortOrder,
 		} = this.state;
-		console.log("rendering with searching in " + searching);
 		const results = this.extendedResults();
 		const appearance = ide.settings.section("appearance");
 		const color = appearance
@@ -376,13 +387,7 @@ class QuickSearch extends Tool {
 							labelSize={(result) =>
 								result.type === "separator" ? "large" : "small"
 							}
-							// itemIcon={(result) => {
-							// 	return result.type !== "separator" ? (
-							// 		<SubdirectoryArrowRightIcon
-							// 			style={{ fontSize: 12 }}
-							// 		/>
-							// 	) : null;
-							// }}
+							itemIcon={this.resultIcon}
 							selectedItem={selectedResult}
 							onItemSelect={(r) =>
 								this.setState({ selectedResult: r })

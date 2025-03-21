@@ -9,6 +9,7 @@ import {
 	Radio,
 	List,
 	ListItemButton,
+	ListItemIcon,
 	ListItemText,
 	Typography,
 	LinearProgress,
@@ -112,6 +113,20 @@ class Search extends Tool {
 		}
 	};
 
+	resultIcon = (result) => {
+		if (!result || !result.iconName) return;
+		const icon = ide.iconNamed(result.iconName);
+		if (!icon) return;
+		return (
+			<img
+				src={"data:image/png;base64," + icon.data}
+				width={16}
+				height={16}
+				alt={result.text}
+			/>
+		);
+	};
+
 	render() {
 		const { text, selectedType, results, searching, currentPage } =
 			this.state;
@@ -183,12 +198,16 @@ class Search extends Tool {
 				<Grid item xs={12} md={12} lg={12}>
 					<List>
 						{pageResults.map((result, index) => {
+							const icon = this.resultIcon(result);
 							return (
 								<ListItemButton
 									alignItems="flex-start"
 									key={index}
 									onClick={(event) => this.goToResult(result)}
 								>
+									{icon && (
+										<ListItemIcon>{icon}</ListItemIcon>
+									)}
 									<ListItemText
 										primary={result.title}
 										secondary={

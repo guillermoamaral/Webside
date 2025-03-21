@@ -2757,7 +2757,7 @@ class BackendTest {
 			type: "AddMethod",
 			className: "TestTemporaryVariableInDebuggerContext",
 			sourceCode:
-				"testTemporaryVariableInDebuggerContext  | temp | temp := 26. self halt",
+				"testTemporaryVariableInDebuggerContext  | temp | temp := 26. self _impossible_that_this_method_exist",
 			author: "Webside_BackendTest",
 			package: "Webside_BackendTest",
 		};
