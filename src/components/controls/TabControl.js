@@ -5,6 +5,8 @@ import TabLabel from "./TabLabel";
 import AddIcon from "@mui/icons-material/Add";
 import SelectIcon from "@mui/icons-material/ExpandMore";
 import CloseIcon from "@mui/icons-material/Close";
+import { withTheme } from "@emotion/react";
+import { darken } from "@mui/system";
 
 class TabControl extends Component {
 	constructor(props) {
@@ -72,6 +74,8 @@ class TabControl extends Component {
 		const selectedIndex = pages.findIndex(
 			(p) => p && selectedPage && p.id === selectedPage.id
 		);
+		const { theme } = this.props;
+		const background = theme.palette.background.default;
 		return (
 			<Box
 				display="flex"
@@ -79,9 +83,17 @@ class TabControl extends Component {
 				width="100%"
 				height="100%"
 				maxWidth="95vw"
+				onClick={() => console.log("container " + id)}
 			>
 				<Box pt={0} display="flex" flexDirection="row">
-					<Box pt={0} flexGrow={1} style={{ overflow: "hidden" }}>
+					<Box
+						pt={0}
+						flexGrow={1}
+						sx={{
+							overflow: "hidden",
+							boxShadow: "0px 0.5px 0px rgba(128, 128, 128, 0.3)",
+						}}
+					>
 						<Tabs
 							value={Math.max(selectedIndex, 0)}
 							onChange={this.tabChanged}
@@ -89,9 +101,11 @@ class TabControl extends Component {
 							textColor="primary"
 							variant="scrollable"
 							scrollButtons="auto"
-							style={{
-								paddingTop: 1,
+							sx={{
+								paddingTop: 0,
 								paddingBotton: 0,
+								paddingLeft: 1,
+								paddingRight: 1,
 								minHeight: 20,
 							}}
 						>
@@ -101,10 +115,15 @@ class TabControl extends Component {
 										component="div"
 										key={page.id}
 										id={page.id}
-										style={{
-											paddingTop: 1,
-											paddingBotton: 0,
-											minHeight: 20,
+										sx={{
+											paddingTop: 0,
+											paddingBottom: 0,
+											paddingLeft: 1,
+											paddingRight: 1,
+											backgroundColor:
+												index !== selectedIndex
+													? darken(background, 0.1)
+													: background,
 										}}
 										onFocus={this.tabFocused}
 										label={
@@ -121,6 +140,9 @@ class TabControl extends Component {
 												}
 												//onSplit={this.splitTab} //disabled for the moment
 												showCloseOptions={canCloseTabs}
+												selected={
+													index === selectedIndex
+												}
 											/>
 										}
 									/>
@@ -296,4 +318,4 @@ class TabControl extends Component {
 	}
 }
 
-export default TabControl;
+export default withTheme(TabControl);
