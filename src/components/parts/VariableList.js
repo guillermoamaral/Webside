@@ -260,6 +260,10 @@ class VariableList extends Component {
 		handler ? handler() : this.updateVariables();
 	}
 
+	variableIcon = (variable) => {
+		return ide.objectIcon(variable, variable.name);
+	};
+
 	render() {
 		let { variables, selectedVariable, loading } = this.state;
 		variables = this.extendedVariables(variables);
@@ -280,6 +284,7 @@ class VariableList extends Component {
 					selectedItem={selectedVariable}
 					onItemSelect={this.variableSelected}
 					menuOptions={this.menuOptions()}
+					itemIcon={this.variableIcon}
 				/>
 			</CustomPaper>
 		);

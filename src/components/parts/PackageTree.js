@@ -322,17 +322,7 @@ class PackageTree extends Component {
 	}
 
 	packageIcon = (pack) => {
-		if (!pack || !pack.iconName) return;
-		const icon = ide.iconNamed(pack.iconName);
-		if (!icon) return;
-		return (
-			<img
-				src={"data:image/png;base64," + icon.data}
-				width={16}
-				height={16}
-				alt={pack.name}
-			/>
-		);
+		return ide.objectIcon(pack, pack.name);
 	};
 
 	render() {
