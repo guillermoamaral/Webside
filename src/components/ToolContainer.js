@@ -770,7 +770,14 @@ class ToolContainer extends Component {
 		});
 	}
 
-	evaluateExpression = async (expression, sync, pin, context, assignee) => {
+	evaluateExpression = async (
+		expression,
+		sync,
+		pin,
+		context,
+		assignee,
+		silent = false
+	) => {
 		const evaluation = {
 			expression: expression,
 			sync: sync,
@@ -783,7 +790,7 @@ class ToolContainer extends Component {
 			result = await ide.backend.issueEvaluation(evaluation);
 			if (sync) return result;
 		} catch (error) {
-			if (error.data && error.data.evaluation) {
+			if (!silent && error.data && error.data.evaluation) {
 				evaluation.id = error.evaluation;
 				evaluation.error = error.data;
 				return this.handleEvaluationError(evaluation);
@@ -792,7 +799,7 @@ class ToolContainer extends Component {
 			}
 		}
 		evaluation.id = result.id;
-		const object = await this.waitForEvaluationResult(evaluation);
+		const object = await this.waitForEvaluationResult(evaluation, silent);
 		if (!pin && !sync) {
 			try {
 				await ide.backend.unpinObject(object.id);
@@ -809,10 +816,9 @@ class ToolContainer extends Component {
 		const promise = new Promise((resolve, _) => {
 			finalization = resolve;
 		});
-		let retrieved;
 		const interval = setInterval(async () => {
 			try {
-				retrieved = await ide.backend.evaluation(evaluation.id);
+				const retrieved = await ide.backend.evaluation(evaluation.id);
 				Object.assign(evaluation, retrieved);
 				if (
 					["finished", "cancelled", "failed"].includes(
@@ -833,10 +839,17 @@ class ToolContainer extends Component {
 		return final;
 	};
 
-	waitForEvaluationResult = async (evaluation) => {
+	waitForEvaluationResult = async (evaluation, silent) => {
 		const final = await this.waitForEvaluationFinalization(evaluation);
 		if (final.state === "cancelled") return null;
-		if (final.state === "failed") return this.handleEvaluationError(final);
+		if (final.state === "failed") {
+			return silent
+				? this.reportError(
+						evaluation.error.description ||
+							evaluation.error.toString()
+				  )
+				: this.handleEvaluationError(final);
+		}
 		try {
 			return await ide.backend.objectWithId(evaluation.id);
 		} catch (error) {
