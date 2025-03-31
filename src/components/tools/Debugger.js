@@ -232,7 +232,9 @@ class Debugger extends Tool {
 				name,
 				false,
 				true,
-				this.evaluationContext()
+				this.evaluationContext(),
+				null,
+				true
 			);
 		} catch (error) {
 			this.context.reportError(error);
