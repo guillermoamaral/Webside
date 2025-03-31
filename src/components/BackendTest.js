@@ -260,6 +260,12 @@ class BackendTest {
 		);
 	}
 
+	async postChange(change) {
+		change.author = change.author || "Webside_BackendTest";
+		change.package = change.package || "Webside_BackendTest";
+		return await this.post("/changes", change);
+	}
+
 	// General tests...
 
 	async testGeneral_Dialect() {
@@ -275,33 +281,24 @@ class BackendTest {
 	// Code tests...
 
 	async testCode_Accessors() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestAccessors",
 			instanceVariables: ["xxx"],
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestAccessors",
 			category: "WebsideTest",
 			sourceCode: "a xxx + 1",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestAccessors",
 			category: "WebsideTest",
 			sourceCode: "b xxx := 2",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const readers = await this.get(
 				"/methods?class=TestAccessors&accessing=xxx"
@@ -324,51 +321,36 @@ class BackendTest {
 				"method.source includes 'xxx :='"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestAccessors",
 				selector: "a",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestAccessors",
 				selector: "b",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestAccessors",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_Ast() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestAst",
 			instanceVariables: ["a"],
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestAst",
 			category: "WebsideTest",
 			sourceCode: "a ^a",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const method = await this.get(
 				"/classes/TestAst/methods/a?ast=true"
@@ -392,42 +374,30 @@ class BackendTest {
 			});
 			this.assert(x, "return node should include variable node for 'a'");
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestAst",
 				selector: "a",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestAst",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_Categories() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestCategories",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestCategories",
 			category: "testCategories",
 			sourceCode: "a",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const categories = await this.get(
 				"/classes/TestCategories/categories"
@@ -437,35 +407,26 @@ class BackendTest {
 			categories.forEach((c) => this.assertIsString(c, "category"));
 			this.assertIncludes(categories, "testCategories");
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestCategories",
 				selector: "a",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestCategories",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_Class() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestClass",
 			instanceVariables: ["xxx"],
 			classVariables: ["AAA"],
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			let definition = await this.get("/classes/TestClass");
 			this.assertEquals(definition.name, "TestClass", "class.name");
@@ -480,41 +441,29 @@ class BackendTest {
 				"class.definition"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestClass",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_Classes() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestClasses",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddClass",
 			className: "TestClasses2",
 			superclass: "TestClasses",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddClass",
 			className: "TestClasses3",
 			superclass: "TestClasses2",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const classes = await this.get("/classes?root=TestClasses");
 			this.assertIsArray(classes);
@@ -537,34 +486,28 @@ class BackendTest {
 				subclass.subclasses.find((c) => c.name === "TestClasses3")
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestClasses3",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestClasses2",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestClasses",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_ClassVariables() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestClassVariables",
 			classVariables: ["Aaa"],
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const variables = await this.get(
 				"/classes/TestClassVariables/class-variables"
@@ -573,49 +516,34 @@ class BackendTest {
 				variables.find((v) => v.name === "Aaa" && v.type === "class")
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestClassVariables",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_Implementors() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestImplementors",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestImplementors",
 			sourceCode: "testImplementors",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddClass",
 			className: "TestImplementors2",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestImplementors2",
 			sourceCode: "testImplementors",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const implementors = await this.get(
 				"/methods?selector=testImplementors"
@@ -651,49 +579,34 @@ class BackendTest {
 				"method.methodClass"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestImplementors",
 				selector: "testImplementors",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestImplementors2",
 				selector: "testImplementors",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestImplementors",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestImplementors2",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_InstanceVariables() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestInstanceVariables",
 			instanceVariables: ["x"],
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const variables = await this.get(
 				"/classes/TestInstanceVariables/instance-variables"
@@ -704,33 +617,24 @@ class BackendTest {
 				"variable.name equals 'x' and variable.type equals 'instance'"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestInstanceVariables",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_MatchingSelectors() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestMatchingSelectors",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestMatchingSelectors",
 			sourceCode: "testMatchingSelectors",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const matching = await this.get(
 				"/methods?selectorMatching=testMatchi"
@@ -743,41 +647,29 @@ class BackendTest {
 				"method.selector equals 'testMatchingSelectors'"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestMatchingSelectors",
 				selector: "testMatchingSelectors",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestMatchingSelectors",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_Method() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestMethod",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestMethod",
 			sourceCode: "testMethod ^'this is testMethod'",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const method = await this.get(
 				"/classes/TestMethod/methods/testMethod"
@@ -789,42 +681,30 @@ class BackendTest {
 				"method.source"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestMethod",
 				selector: "testMethod",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestMethod",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_MethodCount() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestMethodCount",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		for (let i = 1; i <= 3; i++) {
-			change = {
+			await this.postChange({
 				type: "AddMethod",
 				className: "TestMethodCount",
 				sourceCode: "testMethodCount" + i + " ^" + i,
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 		try {
 			const count = await this.get(
@@ -833,43 +713,31 @@ class BackendTest {
 			this.assertEquals(count, 3, "data.length");
 		} finally {
 			for (let i = 1; i <= 3; i++) {
-				change = {
+				await this.postChange({
 					type: "RemoveMethod",
 					className: "TestMethodCount",
 					selector: "testMethodCount" + i,
-					author: "Webside_BackendTest",
-					package: "Webside_BackendTest",
-				};
-				await this.post("/changes", change);
+				});
 			}
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestMethodCount",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_Methods() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestMethods",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		for (let i = 1; i <= 2; i++) {
-			change = {
+			await this.postChange({
 				type: "AddMethod",
 				className: "TestMethods",
 				sourceCode: "testMethods" + i + " ^" + i,
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 		try {
 			const methods = await this.get("/classes/TestMethods/methods");
@@ -882,22 +750,16 @@ class BackendTest {
 			);
 		} finally {
 			for (let i = 1; i <= 2; i++) {
-				change = {
+				await this.postChange({
 					type: "RemoveMethod",
 					className: "TestMethods",
 					selector: "testMethods" + i,
-					author: "Webside_BackendTest",
-					package: "Webside_BackendTest",
-				};
-				await this.post("/changes", change);
+				});
 			}
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestMethods",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
@@ -910,20 +772,16 @@ class BackendTest {
 	}
 
 	async testCode_Package() {
-		let change = {
+		await this.postChange({
 			type: "AddPackage",
 			name: "TestPackage",
-			author: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddClass",
 			className: "TestPackage",
 			superclass: "Object",
 			package: "TestPackage",
-			author: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const pack = await this.get("/packages/TestPackage");
 			this.assertNotNull(pack);
@@ -937,29 +795,23 @@ class BackendTest {
 			if (pack.categories)
 				this.assertIsArray(pack.categories, "package.categories");
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestPackage",
-				author: "Webside_BackendTest",
 				package: "TestPackage",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemovePackage",
 				name: "TestPackage",
-				author: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_PackageNames() {
-		let change = {
+		await this.postChange({
 			type: "AddPackage",
 			name: "TestPackageNames",
-			author: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const names = await this.get("/packages?names=true");
 			this.assertIsArray(names);
@@ -975,30 +827,24 @@ class BackendTest {
 				"it is 'TestPackageNames'"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemovePackage",
 				name: "TestPackageNames",
-				author: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_Packages() {
-		let change = {
+		await this.postChange({
 			type: "AddPackage",
 			name: "TestPackages",
-			author: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddClass",
 			className: "TestPackages",
 			superclass: "Object",
 			package: "TestPackages",
-			author: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const packages = await this.get("/packages");
 			this.assertIsArray(packages);
@@ -1010,40 +856,30 @@ class BackendTest {
 			if (pack.categories)
 				this.assertIsArray(pack.categories, "package.categories");
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestPackages",
-				author: "Webside_BackendTest",
 				package: "TestPackages",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemovePackage",
 				name: "TestPackages",
-				author: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_Selectors() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestSelectors",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		for (let i = 1; i <= 2; i++) {
-			change = {
+			await this.postChange({
 				type: "AddMethod",
 				className: "TestSelectors",
 				sourceCode: "testSelectors" + i + " ^" + i,
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 		try {
 			const selectors = await this.get(
@@ -1058,66 +894,45 @@ class BackendTest {
 			);
 		} finally {
 			for (let i = 1; i <= 2; i++) {
-				change = {
+				await this.postChange({
 					type: "RemoveMethod",
 					className: "TestSelectors",
 					selector: "testSelectors" + i,
-					author: "Webside_BackendTest",
-					package: "Webside_BackendTest",
-				};
-				await this.post("/changes", change);
+				});
 			}
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestSelectors",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_Senders() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestSenders",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestSenders",
 			sourceCode: "testSenders",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestSenders",
 			sourceCode: "testSenders2 self testSenders",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddClass",
 			className: "TestSenders2",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestSenders2",
 			sourceCode: "testSenders TestSenders new testSenders",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const senders = await this.get("/methods?sending=testSenders");
 			this.assertIsArray(senders);
@@ -1145,64 +960,43 @@ class BackendTest {
 				"method.source includes 'testSenders' and method.methodClass equals 'TestSenders'"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestSenders",
 				selector: "testSenders",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestSenders",
 				selector: "testSenders2",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestSenders2",
 				selector: "testSenders",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestSenders",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestSenders2",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_Subclasses() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestSubclasses",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddClass",
 			className: "TestSubclasses2",
 			superclass: "TestSubclasses",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const subclasses = await this.get(
 				"/classes/TestSubclasses/subclasses"
@@ -1214,40 +1008,28 @@ class BackendTest {
 				"class.name equals 'TestSubclasses2'"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestSubclasses2",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestSubclasses",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_Superclasses() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestSuperclasses",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddClass",
 			className: "TestSuperclasses2",
 			superclass: "TestSuperclasses",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const subclasses = await this.get(
 				"/classes/TestSuperclasses2/superclasses"
@@ -1259,34 +1041,25 @@ class BackendTest {
 				"class.name equals 'TestSuperclasses'"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestSuperclasses2",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestSuperclasses",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_Variables() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestVariables",
 			instanceVariables: ["abc"],
 			classVariables: ["Xyz"],
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const variables = await this.get(
 				"/classes/TestVariables/variables"
@@ -1302,42 +1075,30 @@ class BackendTest {
 				"variable.name equals 'Xyz' and variable.type equals 'class'"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestVariables",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testCode_UsedCategories() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestUsedCategories",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestUsedCategories",
 			category: "testUsedCategories",
 			sourceCode: "a",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddClass",
 			className: "TestUsedCategories2",
 			superclass: "TestUsedCategories",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const categories = await this.get(
 				"/classes/TestUsedCategories2/used-categories"
@@ -1351,74 +1112,53 @@ class BackendTest {
 				"used categories"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestUsedCategories2",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestUsedCategories",
 				selector: "a",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestUsedCategories",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	// Changes tests...
 
 	async testChanges_AddClass() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestAddClass",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			let species = await this.get("/classes/TestAddClass");
 			this.assertNotNull(species, "class not defined");
 			this.assertEquals(species.name, "TestAddClass", "class.name");
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestAddClass",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testChanges_AddClassVariable() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestAddClassVariable",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddClassVariable",
 			className: "TestAddClassVariable",
 			variable: "X",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			let variables = await this.get(
 				"/classes/TestAddClassVariable/class-variables"
@@ -1429,33 +1169,24 @@ class BackendTest {
 				"variable.name"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestAddClassVariable",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testChanges_AddInstanceVariable() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestAddInstanceVariable",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddInstanceVariable",
 			className: "TestAddInstanceVariable",
 			variable: "xxx",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			let variables = await this.get(
 				"/classes/TestAddInstanceVariable/instance-variables"
@@ -1463,35 +1194,26 @@ class BackendTest {
 			this.assertEquals(variables.length, 1, "data.length");
 			this.assertEquals(variables[0].name, "xxx", "variable.name");
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestAddInstanceVariable",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testChanges_AddMethod() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestAddMethod",
 			instanceVariables: ["a"],
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestAddMethod",
 			category: "WebsideTest",
 			sourceCode: "testAddMethod\n^a + 1",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			let method = await this.get(
 				"/classes/TestAddMethod/methods/testAddMethod"
@@ -1514,53 +1236,42 @@ class BackendTest {
 			);
 			this.assertIncludes(method.source, "a + 1", "method.source");
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestAddMethod",
 				selector: "testAddMethod",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestAddMethod",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testChanges_AddPackage() {
-		let change = {
+		await this.postChange({
 			type: "AddPackage",
 			name: "TestAddPackage",
 			author: "Webside",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			let pack = await this.get("/packages/TestAddPackage");
 			this.assertNotNull(pack);
 			this.assertEquals(pack.name, "TestAddPackage", "package.name");
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemovePackage",
 				name: "TestAddPackage",
-			};
-			this.post("/changes", change);
+			});
 		}
 	}
 
 	async testChanges_Changes() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestChanges",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const changes = await this.get("/changes");
 			this.assertNotEmpty(changes);
@@ -1571,42 +1282,30 @@ class BackendTest {
 				"change.type equals 'AddClass' and change.className equals 'TestChanges'"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestChanges",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testChanges_ClassifyMethod() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestClassifyMethod",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestClassifyMethod",
 			sourceCode: "testClassifyMethod",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "ClassifyMethod",
 			className: "TestClassifyMethod",
 			selector: "testClassifyMethod",
 			category: "testClassifyMethod",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const method = await this.get(
 				"/classes/TestClassifyMethod/methods/testClassifyMethod"
@@ -1617,44 +1316,32 @@ class BackendTest {
 				"method.category"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestClassifyMethod",
 				selector: "testClassifyMethod",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestClassifyMethod",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testChanges_CodeSuggestion() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestCodeSuggestion",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
-			type: "AddMethod",
-			className: "TestCodeSuggestion",
-			sourceCode: "testCodeSuggestion\n^t + 1",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		let error;
+		});
+		let error, method;
 		try {
 			try {
-				await this.post("/changes", change);
+				await this.postChange({
+					type: "AddMethod",
+					className: "TestCodeSuggestion",
+					sourceCode: "testCodeSuggestion\n^t + 1",
+				});
 			} catch (e) {
 				error = e.error;
 			}
@@ -1667,7 +1354,7 @@ class BackendTest {
 			this.assertIsArray(suggestions, "response.data.suggestions");
 			this.assertNotEmpty(suggestions, "response.data.suggestions");
 			await this.post("/changes", suggestions[0].changes[0]);
-			const method = await this.get(
+			method = await this.get(
 				"/classes/TestCodeSuggestion/methods/testCodeSuggestion"
 			);
 			this.assertNotNull(method);
@@ -1678,78 +1365,64 @@ class BackendTest {
 			);
 			this.assertIncludes(method.source, "| t |", "method.source");
 		} finally {
-			change = {
-				type: "RemoveMethod",
-				className: "TestCodeSuggestion",
-				selector: "testCodeSuggestion",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			if (method)
+				await this.postChange({
+					type: "RemoveMethod",
+					className: "TestCodeSuggestion",
+					selector: "testCodeSuggestion",
+				});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestCodeSuggestion",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testChanges_CommentClass() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestCommentClass",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "CommentClass",
 			className: "TestCommentClass",
 			comment: "Testing class comment",
-		};
-		await this.post("/changes", change);
+		});
 		try {
-			const species = this.get("/classes/TestCommentClass");
+			const species = await this.get("/classes/TestCommentClass");
 			this.assertNotNull(species);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestCommentClass",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testChanges_MoveDownInstanceVariable() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestMoveDownInstanceVariable",
 			superclass: "Object",
 			instanceVariables: ["x"],
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddClass",
 			className: "TestMoveDownInstanceVariable2",
 			superclass: "TestMoveDownInstanceVariable",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
+			type: "AddMethod",
+			className: "TestMoveDownInstanceVariable2",
+			sourceCode: "xAccessor\n^x + 1",
+		});
+		await this.postChange({
 			type: "MoveDownInstanceVariable",
 			className: "TestMoveDownInstanceVariable",
 			variable: "x",
 			target: "TestMoveDownInstanceVariable2",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			let variables = await this.get(
 				"/classes/TestMoveDownInstanceVariable/instance-variables"
@@ -1761,50 +1434,39 @@ class BackendTest {
 			this.assertEquals(variables.length, 1);
 			this.assertEquals(variables[0].name, "x", "variable.name");
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestMoveDownInstanceVariable2",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestMoveDownInstanceVariable",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testChanges_MoveUpInstanceVariable() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestMoveUpInstanceVariable",
 			superclass: "Object",
 			author: "Webside_BackendTest",
 			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddClass",
 			className: "TestMoveUpInstanceVariable2",
 			superclass: "TestMoveUpInstanceVariable",
 			instanceVariables: ["x"],
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "MoveUpInstanceVariable",
 			className: "TestMoveUpInstanceVariable2",
 			variable: "x",
 			target: "TestMoveUpInstanceVariable",
 			author: "Webside_BackendTest",
 			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			let variables = await this.get(
 				"/classes/TestMoveUpInstanceVariable2/instance-variables"
@@ -1824,62 +1486,44 @@ class BackendTest {
 				"v.class equals 'TestMoveUpInstanceVariable' and v.name equals 'x'"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestMoveUpInstanceVariable2",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestMoveUpInstanceVariable",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testChanges_RemoveCategory() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestRemoveCategory",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestRemoveCategory",
 			category: "testRemoveCategory",
 			sourceCode: "testRemoveCategory",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			let categories = await this.get(
 				"/classes/TestRemoveCategory/categories"
 			);
 			this.assertIncludes(categories, "testRemoveCategory");
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestRemoveCategory",
 				selector: "testRemoveCategory",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveCategory",
 				className: "TestRemoveCategory",
 				category: "testRemoveCategory",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 			categories = await this.get(
 				"/classes/TestRemoveCategory/categories"
 			);
@@ -1888,35 +1532,31 @@ class BackendTest {
 				"categories should not include deleted category"
 			);
 		} finally {
-			let remotion = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestRemoveCategory",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", remotion);
+			});
 		}
 	}
 
 	async testChanges_RemoveClass() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestRemoveClass",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
-			change = { type: "RemoveClass", className: "TestRemoveClass" };
-			await this.post("/changes", change);
+			await this.postChange({
+				type: "RemoveClass",
+				className: "TestRemoveClass",
+			});
 			let species;
 			try {
 				species = await this.get("/classes/TestRemoveClass");
 			} catch (ignored) {}
 			this.assert(!species);
 		} finally {
-			change = {
+			let change = {
 				type: "RemoveClass",
 				className: "TestRemoveClass",
 				author: "Webside_BackendTest",
@@ -1929,103 +1569,75 @@ class BackendTest {
 	}
 
 	async testChanges_RemoveInstanceVariable() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestRemoveInstanceVariable",
 			superclass: "Object",
 			instanceVariables: ["x"],
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "RemoveInstanceVariable",
 			className: "TestRemoveInstanceVariable",
 			variable: "x",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const variables = await this.get(
 				"/classes/TestRemoveInstanceVariable/instance-variables"
 			);
 			this.assertIsEmpty(variables);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestRemoveInstanceVariable",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			this.post("/changes", change);
+			});
 		}
 	}
 
 	async testChanges_RemoveMethod() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestRemoveMethod",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestRemoveMethod",
 			sourceCode: "testRemoveMethod",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "RemoveMethod",
 			className: "TestRemoveMethod",
 			selector: "testRemoveMethod",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const methods = await this.get("/classes/TestRemoveMethod/methods");
 			this.assertIsEmpty(methods);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestRemoveMethod",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testChanges_RenameCategory() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestRenameCategory",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestRenameCategory",
 			category: "testRenameCategory",
 			sourceCode: "testRenameCategory",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "RenameCategory",
 			className: "TestRenameCategory",
 			category: "testRenameCategory",
 			newName: "testRenameCategory2",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const categories = await this.get(
 				"/classes/TestRenameCategory/categories"
@@ -2036,33 +1648,24 @@ class BackendTest {
 				"categories should not include testRenameCategory"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestRenameCategory",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testChanges_RenameClass() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestRenameClass",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "RenameClass",
 			className: "TestRenameClass",
 			newName: "TestRenameClass2",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			let species, error;
 			try {
@@ -2078,35 +1681,26 @@ class BackendTest {
 			species = await this.get("/classes/TestRenameClass2");
 			this.assertNotNull(species, "TestRenameClass2 should be present");
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestRenameClass2",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testChanges_RenameInstanceVariable() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestRenameInstanceVariable",
 			superclass: "Object",
 			instanceVariables: ["x"],
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "RenameInstanceVariable",
 			className: "TestRenameInstanceVariable",
 			variable: "x",
 			newName: "y",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const variables = await this.get(
 				"/classes/TestRenameInstanceVariable/instance-variables"
@@ -2114,42 +1708,30 @@ class BackendTest {
 			this.assertEquals(variables.length, 1, "variables.length");
 			this.assertEquals(variables[0].name, "y", "variable.name");
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestRenameInstanceVariable",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testChanges_RenameMethod() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestRenameMethod",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestRenameMethod",
 			sourceCode: "testRenameMethod",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "RenameMethod",
 			className: "TestRenameMethod",
 			selector: "testRenameMethod",
 			newSelector: "testRenameMethod2",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const methods = await this.get("/classes/TestRenameMethod/methods");
 			this.assertNoneSatisfy(
@@ -2163,49 +1745,37 @@ class BackendTest {
 				"m.selector equals 'testRenameMethod2'"
 			);
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestRenameMethod",
 				selector: "testRenameMethod2",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestRenameMethod",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testChanges_RenamePackage() {
-		let change = {
+		await this.postChange({
 			type: "AddPackage",
 			name: "TestRenamePackage",
-			author: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "RenamePackage",
 			name: "TestRenamePackage",
 			newName: "TestRenamePackage2",
-			author: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		try {
 			const pack = await this.get("/packages/TestRenamePackage2");
 			this.assertNotNull(pack);
 			this.assertEquals(pack.name, "TestRenamePackage2", "pack.name");
 		} finally {
-			change = {
+			await this.postChange({
 				type: "RemovePackage",
 				name: "TestRenamePackage2",
-				author: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
@@ -2379,23 +1949,17 @@ class BackendTest {
 	}
 
 	async testEvaluations_ClassVariableInDebuggerContext() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestClassVariableInDebuggerContext",
 			classVariables: ["Abc"],
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestClassVariableInDebuggerContext",
 			sourceCode: "abc Abc",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		let payload = {
 			expression: "TestClassVariableInDebuggerContext new halt abc",
 			sync: true,
@@ -2429,42 +1993,30 @@ class BackendTest {
 			);
 		} finally {
 			await this.delete("/debuggers/" + _debugger.id);
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestClassVariableInDebuggerContext",
 				selector: "abc",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestClassVariableInDebuggerContext",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testEvaluations_ObjectContext() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestObjectContext",
 			instanceVariables: ["abc"],
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestObjectContext",
 			sourceCode: "abc: value abc := value",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		let payload = {
 			expression: "TestObjectContext new abc: 26",
 			sync: true,
@@ -2487,42 +2039,30 @@ class BackendTest {
 			try {
 				await this.delete("/objects/" + object.id);
 			} catch (ignored) {}
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestObjectContext",
 				selector: "abc:",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestObjectContext",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testEvaluations_ObjectSlotContext() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestObjectSlotContext",
 			instanceVariables: ["abc"],
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestObjectSlotContext",
 			sourceCode: "abc: value abc := value",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		let payload = {
 			expression: "TestObjectSlotContext new abc: 26",
 			sync: true,
@@ -2545,21 +2085,15 @@ class BackendTest {
 			try {
 				await this.delete("/objects/" + object.id);
 			} catch (ignored) {}
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestObjectSlotContext",
 				selector: "abc:",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestObjectSlotContext",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
@@ -2745,23 +2279,17 @@ class BackendTest {
 	}
 
 	async testEvaluations_TemporaryVariableInDebuggerContext() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestTemporaryVariableInDebuggerContext",
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestTemporaryVariableInDebuggerContext",
 			sourceCode:
 				"testTemporaryVariableInDebuggerContext  | temp | temp := 26. self _impossible_that_this_method_exist",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		let payload = {
 			expression:
 				"TestTemporaryVariableInDebuggerContext new testTemporaryVariableInDebuggerContext",
@@ -2795,44 +2323,32 @@ class BackendTest {
 			);
 		} finally {
 			await this.delete("/debuggers/" + _debugger.id);
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestTemporaryVariableInDebuggerContext",
 				selector: "testTemporaryVariableInDebuggerContext",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestTemporaryVariableInDebuggerContext",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	// Object tests...
 
 	async testObjects_PinObjectSlot() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestPinObjectSlot",
 			instanceVariables: ["v"],
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestPinObjectSlot",
 			sourceCode: "v: value v := value",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		let evaluation = {
 			expression: "TestPinObjectSlot new v: 26",
 			sync: true,
@@ -2854,21 +2370,15 @@ class BackendTest {
 				await this.delete("/objects/" + object.id);
 				await this.delete("/objects/" + pinned.id);
 			} catch (ignored) {}
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestPinObjectSlot",
 				selector: "v:",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestPinObjectSlot",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
@@ -2934,23 +2444,17 @@ class BackendTest {
 	}
 
 	async testObjects_PinnedObjectInstanceVariables() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestPinnedObjectInstanceVariables",
 			instanceVariables: ["v"],
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestPinnedObjectInstanceVariables",
 			sourceCode: "v: value v := value",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		let evaluation = {
 			expression: "TestPinnedObjectInstanceVariables new v: 26",
 			sync: true,
@@ -2972,42 +2476,30 @@ class BackendTest {
 			try {
 				await this.delete("/objects/" + object.id);
 			} catch (ignored) {}
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestPinnedObjectInstanceVariables",
 				selector: "v:",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestPinnedObjectInstanceVariables",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testObjects_PinnedObjectNamedSlots() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestPinnedObjectNamedSlots",
 			instanceVariables: ["v"],
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestPinnedObjectNamedSlots",
 			sourceCode: "v: value v := value",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		let evaluation = {
 			expression: "TestPinnedObjectNamedSlots new v: 26",
 			sync: true,
@@ -3036,42 +2528,30 @@ class BackendTest {
 			try {
 				await this.delete("/objects/" + object.id);
 			} catch (ignored) {}
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestPinnedObjectNamedSlots",
 				selector: "v:",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestPinnedObjectNamedSlots",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
 	async testObjects_PinnedObjectSlot() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestPinnedObjectSlot",
 			instanceVariables: ["v"],
 			superclass: "Object",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestPinnedObjectSlot",
 			sourceCode: "v: value v := value",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		let evaluation = {
 			expression: "TestPinnedObjectSlot new v: 26",
 			sync: true,
@@ -3091,21 +2571,15 @@ class BackendTest {
 			try {
 				await this.delete("/objects/" + object.id);
 			} catch (ignored) {}
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestPinnedObjectSlot",
 				selector: "v:",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestPinnedObjectSlot",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
@@ -3288,22 +2762,16 @@ class BackendTest {
 	// Testing tests...
 
 	async testTesting_RunTests() {
-		let change = {
+		await this.postChange({
 			type: "AddClass",
 			className: "TestRunTests",
 			superclass: "TestCase",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
-		change = {
+		});
+		await this.postChange({
 			type: "AddMethod",
 			className: "TestRunTests",
 			sourceCode: "testRunTests self assert: true",
-			author: "Webside_BackendTest",
-			package: "Webside_BackendTest",
-		};
-		await this.post("/changes", change);
+		});
 		let test = {
 			class: "TestRunTests",
 			selector: "testRunTests",
@@ -3336,21 +2804,15 @@ class BackendTest {
 			);
 		} finally {
 			await this.delete("/test-runs/" + run.id);
-			change = {
+			await this.postChange({
 				type: "RemoveMethod",
 				className: "TestRunTests",
 				selector: "testRunTests",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
-			change = {
+			});
+			await this.postChange({
 				type: "RemoveClass",
 				className: "TestRunTests",
-				author: "Webside_BackendTest",
-				package: "Webside_BackendTest",
-			};
-			await this.post("/changes", change);
+			});
 		}
 	}
 
