@@ -505,6 +505,20 @@ class IDE extends Component {
 		return this.icons[name];
 	}
 
+	objectIcon = (object, description) => {
+		if (!object || !object.iconName) return;
+		const icon = this.iconNamed(object.iconName);
+		if (!icon) return;
+		return (
+			<img
+				src={"data:image/png;base64," + icon.data}
+				width={16}
+				height={16}
+				alt={description}
+			/>
+		);
+	};
+
 	async fetchThemes() {
 		try {
 			const json = await ide.backend.themes();

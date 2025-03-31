@@ -562,17 +562,7 @@ class ClassTree extends Component {
 	};
 
 	classIcon = (species) => {
-		if (!species || !species.iconName) return;
-		const icon = ide.iconNamed(species.iconName);
-		if (!icon) return;
-		return (
-			<img
-				src={"data:image/png;base64," + icon.data}
-				width={16}
-				height={16}
-				alt={species.name}
-			/>
-		);
+		return ide.objectIcon(species, species.name);
 	};
 
 	render() {

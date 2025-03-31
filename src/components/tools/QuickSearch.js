@@ -191,17 +191,7 @@ class QuickSearch extends Tool {
 	};
 
 	resultIcon = (result) => {
-		if (!result || !result.iconName) return;
-		const icon = ide.iconNamed(result.iconName);
-		if (!icon) return;
-		return (
-			<img
-				src={"data:image/png;base64," + icon.data}
-				width={16}
-				height={16}
-				alt={result.text}
-			/>
-		);
+		return ide.objectIcon(result, result.text);
 	};
 
 	render() {

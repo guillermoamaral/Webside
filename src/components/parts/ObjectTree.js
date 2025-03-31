@@ -46,17 +46,7 @@ class ObjectTree extends Component {
 	};
 
 	slotIcon = (object) => {
-		if (!object || !object.iconName) return;
-		const icon = ide.iconNamed(object.iconName);
-		if (!icon) return;
-		return (
-			<img
-				src={"data:image/png;base64," + icon.data}
-				width={16}
-				height={16}
-				alt={this.objectId(object)}
-			/>
-		);
+		return ide.objectIcon(object, this.objectId(object));
 	};
 
 	render() {
