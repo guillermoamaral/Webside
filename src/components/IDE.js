@@ -1233,17 +1233,15 @@ class IDE extends Component {
 		const result = await this.searchMethods(() => {
 			return this.backend.get(uri);
 		}, specification.label);
-		if (!result)
-			return this.inform(
-				"No results for " + specification.label.toLowerCase()
+		if (result && result.length > 0) {
+			this.mainContainer().openMethodBrowser(
+				result,
+				specification.label,
+				null,
+				null,
+				"methodClass"
 			);
-		this.mainContainer().openMethodBrowser(
-			result,
-			specification.label,
-			null,
-			null,
-			"methodClass"
-		);
+		}
 	};
 
 	async promptExtensionParameters(specification, element) {

@@ -17,6 +17,8 @@ import PopupMenu from "./PopupMenu";
 import RSC from "react-scrollbars-custom";
 import { styled } from "@mui/material/styles";
 
+const ITEM_SIZE = 24;
+
 const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
 	"& .actionButtons": {
 		display: "none",
@@ -25,8 +27,6 @@ const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
 		display: "flex",
 	},
 }));
-
-const ITEM_SIZE = 24;
 
 const CustomScrollbars = React.forwardRef(
 	({ children, onScroll, style, className }, forwardedRef) => {
@@ -357,7 +357,7 @@ class CustomList extends Component {
 					<Box
 						display="flex"
 						alignItems="center"
-						key={"box" + index}
+						key={"actionsBox" + index}
 						className="actionButtons"
 						justifyContent="flex-end"
 						mr={2}
