@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
-import FastTree from "../controls/FastTree";
+import CustomTree from "../controls/CustomTree";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import SearchList2 from "../controls/SearchList2";
 import UpIcon from "@mui/icons-material/ArrowDropUp";
@@ -609,7 +609,7 @@ class ClassTree extends Component {
 				)}
 				<Box flexGrow={1}>
 					<CustomPaper>
-						<FastTree
+						<CustomTree
 							loading={loading}
 							nodes={roots}
 							nodeId="name"

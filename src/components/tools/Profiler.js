@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import CodeEditor from "../parts/CodeEditor";
 import CustomSplit from "../controls/CustomSplit";
-import FastTree from "../controls/FastTree";
+import CustomTree from "../controls/CustomTree";
 import { BarChart } from "@mui/x-charts/BarChart";
 
 class Profiler extends Tool {
@@ -211,7 +211,7 @@ class Profiler extends Tool {
 							<CustomSplit mode="vertical">
 								<Box sx={{ height: "80%" }}>
 									{!profiling && selectedMode === "tree" && (
-										<FastTree
+										<CustomTree
 											nodes={tree ? [tree] : []}
 											nodeLabel="label"
 											nodeChildren="children"
