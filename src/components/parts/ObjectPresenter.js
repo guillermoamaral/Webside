@@ -3,7 +3,7 @@ import { Paper } from "@mui/material";
 import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";
 import TabControl from "../controls/TabControl";
-import FastTree from "../controls/FastTree";
+import CustomTree from "../controls/CustomTree";
 import MarkdownView from "./MarkdownView";
 import JSONView from "./JSONView";
 
@@ -121,7 +121,7 @@ class ObjectPresenter extends Component {
 				break;
 			case "tree":
 				component = (
-					<FastTree
+					<CustomTree
 						nodes={view.roots || []}
 						selectedNode={view.roots ? view.roots[0] : []}
 						nodeLabel={view.nodeLabel}

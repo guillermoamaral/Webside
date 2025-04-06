@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import FastTree from "../controls/FastTree";
+import CustomTree from "../controls/CustomTree";
 import CustomPaper from "../controls/CustomPaper";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
@@ -369,7 +369,7 @@ class PackageTree extends Component {
 				</Box>
 				<Box flexGrow={1}>
 					<CustomPaper>
-						<FastTree
+						<CustomTree
 							loading={loading}
 							nodes={filteredPackages}
 							nodeId="name"

@@ -7,6 +7,9 @@ import {
 	ListItemIcon,
 	Typography,
 	Skeleton,
+	Link,
+	Tooltip,
+	IconButton,
 } from "@mui/material";
 import ArrowRight from "@mui/icons-material/ArrowRight";
 import ArrowDown from "@mui/icons-material/ArrowDropDown";
@@ -14,8 +17,18 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import memoizeOne from "memoize-one";
 import RSC from "react-scrollbars-custom";
 import PopupMenu from "./PopupMenu";
+import { styled } from "@mui/material/styles";
 
 const ITEM_SIZE = 26;
+
+const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
+	"& .actionButtons": {
+		display: "none",
+	},
+	"&:hover .actionButtons": {
+		display: "flex",
+	},
+}));
 
 const CustomScrollbars = React.forwardRef(
 	({ children, onScroll, style, className }, forwardedRef) => {
@@ -67,7 +80,7 @@ const drawNode = memo(({ data, index, style }) => {
 		) : null;
 	return (
 		<div style={style}>
-			<ListItemButton
+			<StyledListItemButton
 				style={{
 					paddingTop: 0,
 					paddingBottom: 0,
@@ -80,7 +93,7 @@ const drawNode = memo(({ data, index, style }) => {
 				onDoubleClick={(event) => toggleHandler(event, nodeInfo)}
 				onContextMenu={menuHandler}
 			>
-				<Box display="flex" alignItems="center">
+				<Box display="flex" alignItems="center" width="100%">
 					<Box p={0} style={{ width: 20, height: ITEM_SIZE }}>
 						{arrow && (
 							<ListItemIcon
@@ -131,8 +144,73 @@ const drawNode = memo(({ data, index, style }) => {
 							</Typography>
 						}
 					/>
+					<Box
+						display="flex"
+						alignItems="center"
+						key={"actionsBox" + index}
+						className="actionButtons"
+						justifyContent="flex-end"
+						mr={2}
+					>
+						{nodeInfo.actions.map((action, j) => {
+							const visible =
+								action.visible === undefined ||
+								(typeof action.visible == "boolean" &&
+									action.visible) ||
+								(typeof action.visible == "function" &&
+									action.visible(nodeInfo.node));
+							return (
+								<Box key={"box" + index + "action" + j}>
+									{visible && action.icon && (
+										<Tooltip
+											title={action.label}
+											placement="top"
+											className="actionButtons"
+										>
+											<IconButton
+												style={{
+													width: ITEM_SIZE,
+													height: ITEM_SIZE,
+												}}
+												key={
+													"button" +
+													index +
+													"action" +
+													j
+												}
+												color="inherit"
+												size="small"
+												onClick={(event) => {
+													event.stopPropagation();
+													action.handler(
+														nodeInfo.node
+													);
+												}}
+											>
+												{action.icon}
+											</IconButton>
+										</Tooltip>
+									)}
+									{visible && !action.icon && (
+										<Link
+											className="actionButton"
+											component="button"
+											variant="contained"
+											size="small"
+											sx={{ marginLeft: 1 }}
+											onClick={(e) => {
+												action.handler(nodeInfo.node);
+											}}
+										>
+											{action.label}
+										</Link>
+									)}
+								</Box>
+							);
+						})}
+					</Box>
 				</Box>
-			</ListItemButton>
+			</StyledListItemButton>
 		</div>
 	);
 }, areEqual);
@@ -146,7 +224,7 @@ const getNodeData = memoizeOne(
 	})
 );
 
-const FastTree = ({
+const CustomTree = ({
 	nodes,
 	nodeId,
 	nodeLabel,
@@ -161,6 +239,8 @@ const FastTree = ({
 	expandedNodes,
 	loading,
 	nodeIcon,
+	nodeActions,
+	onNodeDoubleClick,
 }) => {
 	const [expandedIds, setExpandedIds] = useState([]);
 	const [menuOpen, setMenuOpen] = useState(false);
@@ -206,6 +286,12 @@ const FastTree = ({
 		return icon;
 	};
 
+	const getNodeActions = (node) => {
+		const actions = nodeActions;
+		if (typeof actions === "function") return actions(node);
+		return actions || [];
+	};
+
 	const flattenNodes = (roots) => {
 		const flatten = [];
 		lastId = 0;
@@ -235,6 +321,7 @@ const FastTree = ({
 		info.selected = selectedNode
 			? selectedNode === node
 			: selected && selected.id === info.id;
+		info.actions = getNodeActions(node);
 		result.push(info);
 		if (info.expanded && info.children.length > 0) {
 			for (let child of info.children) {
@@ -245,25 +332,21 @@ const FastTree = ({
 
 	const toggleHandler = (event, nodeInfo) => {
 		event.stopPropagation();
+		if (onNodeDoubleClick) onNodeDoubleClick(nodeInfo.node);
+		if (!nodeInfo.children || nodeInfo.children.length === 0) return;
 		if (nodeInfo.expanded) {
 			setExpandedIds(expandedIds.filter((id) => id !== nodeInfo.id));
-			if (onNodeCollapse) {
-				onNodeCollapse(nodeInfo.node);
-			}
+			if (onNodeCollapse) onNodeCollapse(nodeInfo.node);
 		} else {
 			setExpandedIds([...expandedIds, nodeInfo.id]);
-			if (onNodeExpand) {
-				onNodeExpand(nodeInfo.node);
-			}
+			if (onNodeExpand) onNodeExpand(nodeInfo.node);
 		}
 	};
 
 	const selectHandler = (event, nodeInfo) => {
 		event.stopPropagation();
 		setSelected(nodeInfo);
-		if (onNodeSelect) {
-			onNodeSelect(nodeInfo.node);
-		}
+		if (onNodeSelect) onNodeSelect(nodeInfo.node);
 	};
 
 	const menuHandler = (event) => {
@@ -274,15 +357,11 @@ const FastTree = ({
 	};
 
 	const menuOptionClicked = (option) => {
-		if (option.action) {
-			option.action(selectedNode);
-		}
+		if (option.action) option.action(selectedNode);
 	};
 
 	const getMenuOptionEnabled = (option) => {
-		if (option.enabled) {
-			return option.enabled(selectedNode);
-		}
+		if (option.enabled) return option.enabled(selectedNode);
 		return true;
 	};
 
@@ -300,9 +379,7 @@ const FastTree = ({
 
 	if (selected) {
 		let ids = flattenedData.map((n) => n.id);
-		if (!ids.includes(getNodeId(selected.node))) {
-			setSelected(null);
-		}
+		if (!ids.includes(getNodeId(selected.node))) setSelected(null);
 	}
 
 	useEffect(() => {
@@ -370,4 +447,4 @@ const FastTree = ({
 	);
 };
 
-export default FastTree;
+export default CustomTree;

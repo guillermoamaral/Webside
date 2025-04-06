@@ -2,7 +2,7 @@ import React from "react";
 import Tool from "./Tool";
 import { Typography, Box, Button, Link, Divider } from "@mui/material";
 import SettingEditor from "../parts/SettingEditor";
-import FastTree from "../controls/FastTree";
+import CustomTree from "../controls/CustomTree";
 import CustomSplit from "../controls/CustomSplit";
 import CustomPaper from "../controls/CustomPaper";
 import BackendTester from "./BackendTester";
@@ -70,7 +70,7 @@ class SettingsEditor extends Tool {
 				<CustomSplit>
 					<Box sx={{ width: "20%" }}>
 						<CustomPaper>
-							<FastTree
+							<CustomTree
 								nodes={settings.sections()}
 								nodeLabel="label"
 								nodeChildren={(s) => s.sections()}
