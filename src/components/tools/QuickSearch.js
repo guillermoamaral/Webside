@@ -11,16 +11,18 @@ import {
 	IconButton,
 } from "@mui/material";
 import { ide } from "../IDE";
-import CustomList from "../controls/CustomList";
+import CustomTree from "../controls/CustomTree";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import axios from "axios";
+import GoIcon from "@mui/icons-material/Forward";
 
 class QuickSearch extends Tool {
 	constructor(props) {
 		super(props);
 		this.inputRef = React.createRef();
 		this.typingTimer = null;
+		this.types = ["class", "method", "selector", "package", "pool"];
 		const options = props.initialOptions || {};
 		this.state = {
 			text: options.text || "",
@@ -31,6 +33,7 @@ class QuickSearch extends Tool {
 			condition: options.condition || "beginning",
 			type: "all",
 			sortOrder: options.sortOrder || "ascending",
+			expandedTypes: [...this.types],
 		};
 		if (options.text) {
 			this.scheduleSearch();
@@ -77,6 +80,7 @@ class QuickSearch extends Tool {
 					results: results,
 					searching: false,
 					selectedResult: null,
+					exapndedTypes: [...this.types],
 				},
 				() => {
 					this.inputRef.current.focus();
@@ -98,8 +102,8 @@ class QuickSearch extends Tool {
 	};
 
 	goToResult = (result) => {
+		if (result.isGroup) return;
 		const { type, text } = result;
-		if (type === "separator") return;
 		if (type === "package") {
 			ide.browsePackage(text);
 		}
@@ -146,13 +150,17 @@ class QuickSearch extends Tool {
 	extendedResults() {
 		const grouped = this.groupedResults();
 		const extended = [];
-		["class", "method", "selector", "package", "pool"].forEach((type) => {
+		this.types.forEach((type) => {
 			const group = grouped[type];
 			if (group) {
 				const title =
 					this.titleForType(type) + " (" + group.length + ")";
-				extended.push({ type: "separator", text: title });
-				extended.push(...this.sortResults(group));
+				extended.push({
+					isGroup: true,
+					type: type,
+					text: title,
+					results: this.sortResults(group),
+				});
 			}
 		});
 		return extended;
@@ -194,6 +202,33 @@ class QuickSearch extends Tool {
 		return ide.objectIcon(result, result.text);
 	};
 
+	typeExpanded = (group) => {
+		this.setState({
+			expandedTypes: [...this.state.expandedTypes, group.type],
+		});
+	};
+
+	typeCollapsed = (group) => {
+		const expanded = this.state.expandedTypes;
+		expanded.splice(expanded.indexOf(group.type), 1);
+		this.setState({ expandedTypes: expanded });
+	};
+
+	resultSelected = (result) => {
+		this.setState({ selectedResult: result });
+	};
+
+	resultActions = (result) => {
+		const actions = [];
+		if (result.isGroup) return actions;
+		actions.push({
+			icon: <GoIcon color="primary" />,
+			label: "",
+			handler: this.goToResult,
+		});
+		return actions;
+	};
+
 	render() {
 		const {
 			text,
@@ -203,6 +238,7 @@ class QuickSearch extends Tool {
 			condition,
 			type,
 			sortOrder,
+			expandedTypes,
 		} = this.state;
 		const results = this.extendedResults();
 		const appearance = ide.settings.section("appearance");
@@ -362,27 +398,30 @@ class QuickSearch extends Tool {
 				)}
 				{!searching && results.length === 0 && (
 					<Typography mt={1} variant="body">
-						No results
+						{"No " +
+							(this.titleForType(type).toLowerCase() ||
+								"results") +
+							" found"}
 					</Typography>
 				)}
 				{!searching && results.length > 0 && (
 					<Box mt={1} flexGrow={1}>
-						<CustomList
-							enableFilter={false}
-							items={results}
-							itemLabel="text"
-							itemColor={(result) =>
-								result.type === "separator" ? color : "default"
-							}
-							labelSize={(result) =>
-								result.type === "separator" ? "large" : "small"
-							}
-							itemIcon={this.resultIcon}
-							selectedItem={selectedResult}
-							onItemSelect={(r) =>
-								this.setState({ selectedResult: r })
-							}
-							onItemDoubleClick={this.goToResult}
+						<CustomTree
+							nodes={results}
+							nodeId="name"
+							nodeLabel="text"
+							nodeColor={(r) => (r.isGroup ? color : "default")}
+							nodeIcon={this.resultIcon}
+							nodeChildren="results"
+							selectedNode={selectedResult}
+							onNodeSelect={this.resultSelected}
+							nodeActions={this.resultActions}
+							expandedNodes={results.filter((r) =>
+								expandedTypes.includes(r.type)
+							)}
+							onNodeExpand={this.typeExpanded}
+							onNodeCollapse={this.typeCollapsed}
+							onNodeDoubleClick={this.goToResult}
 						/>
 					</Box>
 				)}
