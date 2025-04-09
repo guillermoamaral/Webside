@@ -14,10 +14,12 @@ Retrieve active workspaces.
 [
 	{
 		"id": "1",
+		"name": "Unnamed",
 		"source": "3 + 4"
 	},
 	{
 		"id": "2",
+		"name": "Unnamed",
 		"source": "XYChart sample open"
 	}
 ]

@@ -104,16 +104,12 @@ class CustomTable extends Component {
 
 	menuOptionClicked = (option) => {
 		const selected = this.state.selectedRow;
-		if (option.action) {
-			option.action(selected);
-		}
+		if (option.action) option.action(selected);
 	};
 
 	getMenuOptionEnabled = (option) => {
 		const selected = this.state.selectedRow;
-		if (option.enabled) {
-			return option.enabled(selected);
-		}
+		if (option.enabled) return option.enabled(selected);
 		return true;
 	};
 
@@ -129,9 +125,7 @@ class CustomTable extends Component {
 	};
 
 	renderCell = (row, i, column, j) => {
-		if (column.field === "actions") {
-			return this.renderActionButtons(row, i);
-		}
+		if (column.field === "actions") return this.renderActionButtons(row, i);
 		const text = this.getCellText(row, column);
 		if (column.link) {
 			const color = this.getCellColor(row, column);
@@ -183,41 +177,29 @@ class CustomTable extends Component {
 
 	getCellColor = (row, column) => {
 		const color = this.props.rowColor || column.color || row.color;
-		if (typeof color == "function") {
-			return color(row);
-		}
-		if (typeof color == "string") {
-			return color;
-		}
+		if (typeof color == "function") return color(row);
+		if (typeof color == "string") return color;
 		return "default";
 	};
 
 	keyDown = (event) => {
 		event.preventDefault();
 		const key = event.key;
-		if (key === "ArrowUp") {
-			this.moveUp();
-		}
-		if (key === "ArrowDown") {
-			this.moveDown();
-		}
+		if (key === "ArrowUp") this.moveUp();
+		if (key === "ArrowDown") this.moveDown();
 		return true;
 	};
 
 	moveUp = () => {
 		const rows = this.pageRows();
 		const index = rows.indexOf(this.state.selectedRow);
-		if (index > 0) {
-			this.rowSelected(rows[index - 1]);
-		}
+		if (index > 0) this.rowSelected(rows[index - 1]);
 	};
 
 	moveDown = () => {
 		const rows = this.pageRows();
 		const index = rows.indexOf(this.state.selectedRow);
-		if (index < rows.length - 1) {
-			this.rowSelected(rows[index + 1]);
-		}
+		if (index < rows.length - 1) this.rowSelected(rows[index + 1]);
 	};
 
 	columns() {
@@ -233,9 +215,7 @@ class CustomTable extends Component {
 
 	getRowActions = (row) => {
 		const actions = this.props.rowActions;
-		if (typeof actions === "function") {
-			return actions(row);
-		}
+		if (typeof actions === "function") return actions(row);
 		return actions || [];
 	};
 
@@ -310,9 +290,7 @@ class CustomTable extends Component {
 	pageRows() {
 		const { usePagination, currentPage, rowsPerPage, filteredRows } =
 			this.state;
-		if (!usePagination) {
-			return filteredRows;
-		}
+		if (!usePagination) return filteredRows;
 		const begin = currentPage * rowsPerPage;
 		const end = begin + rowsPerPage;
 		return filteredRows.slice(begin, end);
@@ -332,12 +310,8 @@ class CustomTable extends Component {
 	sortComparator(a, b, column, direction) {
 		const av = this.getCellText(a, column);
 		const bv = this.getCellText(b, column);
-		if (av < bv) {
-			return direction === "asc" ? 1 : -1;
-		}
-		if (av > bv) {
-			return direction === "asc" ? -1 : 1;
-		}
+		if (av < bv) return direction === "asc" ? 1 : -1;
+		if (av > bv) return direction === "asc" ? -1 : 1;
 		return 0;
 	}
 

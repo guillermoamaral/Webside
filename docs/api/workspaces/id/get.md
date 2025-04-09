@@ -15,6 +15,7 @@ Retrieve the workspace with a given ID.
 ```json
 {
 	"id": "1",
+	"name": "Unnamed",
 	"source": "3 + 4"
 }
 ```
