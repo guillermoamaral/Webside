@@ -1,4 +1,3 @@
-
 # Create a new workspace
 
 **URL**: `/workspaces`
@@ -11,7 +10,8 @@
 
 ```json
 {
-    "id": "1",
-    "source": ""
+	"id": "1",
+	"name": "Unnamed",
+	"source": ""
 }
 ```

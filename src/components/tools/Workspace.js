@@ -66,10 +66,13 @@ class Workspace extends Tool {
 		}
 	};
 
-	sourceChanged = (source) => {
+	sourceChanged = async (source) => {
 		this.setState({ source: source });
 		try {
-			ide.backend.saveWorkspace({ id: this.props.id, source: source });
+			await ide.backend.saveWorkspace({
+				id: this.props.id,
+				source: source,
+			});
 		} catch (error) {
 			ide.reportError(error);
 		}

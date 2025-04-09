@@ -257,8 +257,14 @@ class ResourceBrowser extends Tool {
 				align: "left",
 			},
 			{
+				field: "name",
+				link: this.openWorkspace,
+				label: "Name",
+				align: "left",
+			},
+			{
 				field: (w) => {
-					const source = w.source.trim();
+					const source = (w.source || "").trim();
 					return source.length > 100
 						? source.substr(0, 99) + "…"
 						: source;

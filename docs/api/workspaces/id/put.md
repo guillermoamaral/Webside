@@ -16,6 +16,7 @@ Update the workspace with a given ID.
 
 ```json
 {
+	"name": "string",
 	"source": "string"
 }
 ```
@@ -33,6 +34,7 @@ Response:
 ```json
 {
 	"id": 1,
+	"name": "Unnamed",
 	"source": "4 + 5"
 }
 ```
