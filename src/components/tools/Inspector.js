@@ -23,8 +23,10 @@ class Inspector extends Tool {
 	}
 
 	async aboutToClose() {
+		const { root, preserveObject } = this.props;
+		if (!root || preserveObject) return;
 		try {
-			await ide.backend.unpinObject(this.props.root.id);
+			await ide.backend.unpinObject(root.id);
 		} catch (error) {
 			ide.reportError(error);
 		}
