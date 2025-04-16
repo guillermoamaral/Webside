@@ -137,9 +137,7 @@ class ResourceBrowser extends Tool {
 	}
 
 	openInspector = (object) => {
-		if (object) {
-			this.context.openInspector(object);
-		}
+		if (object) this.context.openInspector(object);
 	};
 
 	unpinObject = async (object) => {
@@ -613,7 +611,6 @@ class ResourceBrowser extends Tool {
 				<Box flexGrow={1}>
 					<CustomSplit>
 						<Box sx={{ width: "20%", minWidth: "15%" }}>
-							{" "}
 							<List>
 								{this.types.map((type) => {
 									const color =
@@ -627,6 +624,7 @@ class ResourceBrowser extends Tool {
 											onClick={(event) =>
 												this.typeSelected(type)
 											}
+											sx={{ py: 0.5 }}
 										>
 											<Box pt={0.5}>
 												{this.resourceIcon(type, color)}
