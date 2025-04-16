@@ -30,6 +30,18 @@ class MarkdownView extends Component {
 				wrapperElement={{
 					"data-color-mode": mode,
 				}}
+				components={{
+					a: ({ href, children }) => (
+						<a
+							href={href}
+							target="_blank"
+							rel="noopener noreferrer"
+							onClick={(event) => event.stopPropagation()}
+						>
+							{children}
+						</a>
+					),
+				}}
 			/>
 		);
 	}
