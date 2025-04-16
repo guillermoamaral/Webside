@@ -55,7 +55,8 @@ class TabLabel extends Component {
 				]
 			);
 		}
-		// {	//disabled for the moment
+		// Disabled for the moment
+		// {
 		// 	label: "Split",
 		// 	action: this.splitTab,
 		// },
@@ -105,8 +106,8 @@ class TabLabel extends Component {
 				onMouseEnter={() => this.setState({ mouseHovering: true })}
 				onMouseLeave={() => this.setState({ mouseHovering: false })}
 			>
-				<Box>{icon}</Box>
-				<Box pl={1}>{text}</Box>
+				{icon && <Box pr={1}>{icon}</Box>}
+				<Box>{text}</Box>
 				<Box>
 					{showCloseOptions && (
 						<IconButton

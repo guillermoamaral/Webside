@@ -69,6 +69,7 @@ class TabControl extends Component {
 			selectedPage,
 			canCloseTabs = true,
 			showClose,
+			showTabSelector = true,
 		} = this.props;
 		const addOptions = this.props.addOptions || [];
 		const selectedIndex = pages.findIndex(
@@ -85,15 +86,16 @@ class TabControl extends Component {
 				maxWidth="95vw"
 				onClick={() => console.log("container " + id)}
 			>
-				<Box pt={0} display="flex" flexDirection="row">
-					<Box
-						pt={0}
-						flexGrow={1}
-						sx={{
-							overflow: "hidden",
-							boxShadow: "0px 0.5px 0px rgba(128, 128, 128, 0.3)",
-						}}
-					>
+				<Box
+					pt={0}
+					display="flex"
+					flexDirection="row"
+					sx={{
+						overflow: "hidden",
+						boxShadow: "0px 0.5px 0px rgba(128, 128, 128, 0.3)",
+					}}
+				>
+					<Box pt={0} flexGrow={1}>
 						<Tabs
 							value={Math.max(selectedIndex, 0)}
 							onChange={this.tabChanged}
@@ -102,10 +104,8 @@ class TabControl extends Component {
 							variant="scrollable"
 							scrollButtons="auto"
 							sx={{
-								paddingTop: 0,
-								paddingBotton: 0,
-								paddingLeft: 1,
-								paddingRight: 1,
+								py: 0,
+								px: 1,
 								minHeight: 20,
 							}}
 						>
@@ -116,14 +116,15 @@ class TabControl extends Component {
 										key={page.id}
 										id={page.id}
 										sx={{
-											paddingTop: 0,
-											paddingBottom: 0,
-											paddingLeft: 1,
-											paddingRight: 1,
 											backgroundColor:
 												index !== selectedIndex
-													? darken(background, 0.1)
+													? darken(background, 0.05)
 													: background,
+											py: 0.5,
+											px: 1,
+											m: 0,
+											minHeight: 24,
+											minWidth: 32,
 										}}
 										onFocus={this.tabFocused}
 										label={
@@ -151,7 +152,7 @@ class TabControl extends Component {
 						</Tabs>
 					</Box>
 					{addOptions.length > 0 && (
-						<Box pt={1}>
+						<Box>
 							<IconButton
 								id={"addTab" + id}
 								onClick={() => {
@@ -161,7 +162,7 @@ class TabControl extends Component {
 								}}
 								size="medium"
 							>
-								<AddIcon />
+								<AddIcon fontSize="small" />
 							</IconButton>
 							<Menu
 								anchorEl={document.getElementById(
@@ -203,94 +204,101 @@ class TabControl extends Component {
 							</Menu>
 						</Box>
 					)}
-					<Box pt={1}>
-						<IconButton
-							id={"selectTab" + id}
-							onClick={() => {
-								this.setState({
-									selectMenuOpen: true,
-								});
-							}}
-							size="medium"
-							disabled={pages.length === 0}
-						>
-							<SelectIcon />
-						</IconButton>
-						<Menu
-							anchorEl={document.getElementById("selectTab" + id)}
-							keepMounted
-							open={selectMenuOpen}
-							onClose={() => {
-								this.setState({
-									selectMenuOpen: false,
-								});
-							}}
-						>
-							{pages.map((page, index) => {
-								return (
-									<MenuItem
-										key={"selectTab" + index}
-										onClick={(event) => {
-											this.setState(
-												{ selectMenuOpen: false },
-												() =>
-													this.tabChanged(
-														event,
-														index
-													)
-											);
-										}}
-									>
-										<Box
-											sx={{ width: "100%" }}
-											display="flex"
-											flexWrap="nowrap"
-											alignItems="center"
-											justifyContent="space-between"
+					{showTabSelector && (
+						<Box>
+							<IconButton
+								id={"selectTab" + id}
+								onClick={() => {
+									this.setState({
+										selectMenuOpen: true,
+									});
+								}}
+								size="medium"
+								disabled={pages.length === 0}
+							>
+								<SelectIcon fontSize="small" />
+							</IconButton>
+
+							<Menu
+								anchorEl={document.getElementById(
+									"selectTab" + id
+								)}
+								keepMounted
+								open={selectMenuOpen}
+								onClose={() => {
+									this.setState({
+										selectMenuOpen: false,
+									});
+								}}
+							>
+								{pages.map((page, index) => {
+									return (
+										<MenuItem
+											key={"selectTab" + index}
+											onClick={(event) => {
+												this.setState(
+													{ selectMenuOpen: false },
+													() =>
+														this.tabChanged(
+															event,
+															index
+														)
+												);
+											}}
 										>
 											<Box
+												sx={{ width: "100%" }}
 												display="flex"
 												flexWrap="nowrap"
 												alignItems="center"
-												justifyContent="flex-start"
+												justifyContent="space-between"
 											>
-												<Box pt={1} pr={1}>
-													{page.icon}
+												<Box
+													display="flex"
+													flexWrap="nowrap"
+													alignItems="center"
+													justifyContent="flex-start"
+												>
+													<Box pt={1} pr={1}>
+														{page.icon}
+													</Box>
+													<Box>{page.label}</Box>
 												</Box>
-												<Box>{page.label}</Box>
+												{canCloseTabs && (
+													<Box>
+														<IconButton
+															onClick={(
+																event
+															) => {
+																this.closeTab(
+																	event,
+																	index
+																);
+																this.setState({
+																	selectMenuOpen: false,
+																});
+															}}
+															size="small"
+														>
+															<CloseIcon fontSize="small" />
+														</IconButton>
+													</Box>
+												)}
 											</Box>
-											{canCloseTabs && (
-												<Box>
-													<IconButton
-														onClick={(event) => {
-															this.closeTab(
-																event,
-																index
-															);
-															this.setState({
-																selectMenuOpen: false,
-															});
-														}}
-														size="small"
-													>
-														<CloseIcon fontSize="small" />
-													</IconButton>
-												</Box>
-											)}
-										</Box>
-									</MenuItem>
-								);
-							})}
-						</Menu>
-					</Box>
+										</MenuItem>
+									);
+								})}
+							</Menu>
+						</Box>
+					)}
 					{showClose && (
-						<Box pt={1}>
+						<Box>
 							<IconButton
 								id={"closeAll"}
 								onClick={this.closeAllTabs}
 								size="medium"
 							>
-								<CloseIcon />
+								<CloseIcon fontSize="small" />
 							</IconButton>
 						</Box>
 					)}
