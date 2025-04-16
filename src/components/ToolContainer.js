@@ -413,10 +413,14 @@ class ToolContainer extends Component {
 			this.selectPage(existing);
 			return;
 		}
-		var source = "";
+		let source = "";
 		if (id) {
-			const workspace = await ide.backend.workspace(id);
-			source = workspace.source;
+			try {
+				const workspace = await ide.backend.workspace(id);
+				source = workspace.source;
+			} catch (error) {
+				this.reportError(error);
+			}
 		}
 		const ref = React.createRef();
 		const component = (
@@ -461,7 +465,7 @@ class ToolContainer extends Component {
 		this.createPage(title, <DebuggerIcon />, tool, pageId, ref, true);
 	};
 
-	openInspector = (object) => {
+	openInspector = (object, preserve = false) => {
 		const existing = this.state.pages.find((p) => {
 			return (
 				p.component.type === Inspector &&
@@ -480,6 +484,7 @@ class ToolContainer extends Component {
 				id={object.id}
 				root={object}
 				showWorkspace={true}
+				preserveObject={preserve}
 			/>
 		);
 		this.createPage(
