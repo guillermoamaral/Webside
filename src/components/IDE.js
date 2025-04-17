@@ -85,6 +85,9 @@ class IDE extends Component {
 		if (options.debugger) {
 			container.openDebugger(options.debugger);
 		}
+		if (options.workspace) {
+			container.openWorkspace(options.workspace);
+		}
 	}
 
 	// Settings
@@ -108,7 +111,7 @@ class IDE extends Component {
 		}
 		const connection = this.settings.section("connection");
 		connection.set("backend", url);
-		connection.set("developer", developer);
+		connection.set("developer", developer || "guest");
 	}
 
 	initializeThemes() {
@@ -1726,7 +1729,7 @@ class IDE extends Component {
 						open={waiting}
 					>
 						<CircularProgress color="inherit" />
-						{waitDescription && waitDescription != "" && (
+						{waitDescription && waitDescription !== "" && (
 							<Typography ml={2}>{waitDescription}</Typography>
 						)}
 					</Backdrop>
