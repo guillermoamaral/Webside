@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Paper } from "@mui/material";
+import { Paper, Box } from "@mui/material";
 import CustomTable from "../controls/CustomTable";
 import CodeEditor from "../parts/CodeEditor";
 import TabControl from "../controls/TabControl";
@@ -173,18 +173,26 @@ class ObjectPresenter extends Component {
 			: pages.length > 0
 			? pages[1]
 			: pages[0];
-		if (!selectedPage) {
-			selectedPage = pages[0];
-		}
+		if (!selectedPage) selectedPage = pages[0];
 		return (
-			<TabControl
-				id={object.id || context.object}
-				style={{ height: "100%" }}
-				selectedPage={selectedPage}
-				pages={pages}
-				onTabSelect={(p) => this.setState({ selectedId: p.id })}
-				canCloseTabs={false}
-			/>
+			<Box
+				sx={{
+					width: "100%",
+					height: "100%",
+					display: "flex",
+					flexDirection: "column",
+				}}
+			>
+				<TabControl
+					id={object.id || context.object}
+					sx={{ height: "100%" }}
+					selectedPage={selectedPage}
+					pages={pages}
+					onTabSelect={(p) => this.setState({ selectedId: p.id })}
+					canCloseTabs={false}
+					showTabSelector={false}
+				/>
+			</Box>
 		);
 	}
 }
