@@ -1,5 +1,6 @@
 import React from "react";
 import Scrollbar from "react-scrollbars-custom";
+import { Box } from "@mui/material";
 
 class Scrollable extends React.PureComponent {
 	// trackV = ({ style, ...props }) => (
@@ -22,9 +23,29 @@ class Scrollable extends React.PureComponent {
 		//     renderTrackVertical: this.trackV,
 		//     autoHide: false}
 		//return <Scrollbar {...sProps}>{this.props.children}</Scrollbar>;
+		const { disabled, children, ...rest } = this.props;
+		if (disabled) {
+			return (
+				<Box
+					sx={{
+						width: "100%",
+						height: "100%",
+						overflow: "hidden",
+					}}
+					{...rest}
+				>
+					{children}
+				</Box>
+			);
+		}
 		return (
-			<Scrollbar style={{ width: "100%", height: "100%"}}>
-				{this.props.children}
+			<Scrollbar
+				style={{ width: "100%", height: "100%" }}
+				contentProps={{ style: { padding: 0, margin: 0 } }}
+				wrapperProps={{ style: { padding: 0, margin: 0 } }}
+				{...rest}
+			>
+				{children}
 			</Scrollbar>
 		);
 	}
