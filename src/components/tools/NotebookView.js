@@ -117,7 +117,7 @@ class NotebookView extends Component {
 					display="flex"
 					alignItems="center"
 					justifyContent="space-between"
-					sx={{ px: 2, py: 1 }}
+					sx={{ px: 2, py: 0, maxHeight: 40 }}
 				>
 					<Box
 						display="flex"
