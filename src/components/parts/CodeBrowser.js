@@ -59,13 +59,9 @@ class CodeBrowser extends Component {
 				definition
 			);
 			let name = change.className;
-			if (name.endsWith(" class")) {
-				name = name.slice(0, name.length - 6);
-			}
+			if (name.endsWith(" class")) name = name.slice(0, name.length - 6);
 			const species = await ide.backend.classNamed(name);
-			if (this.props.onClassDefine) {
-				this.props.onClassDefine(species);
-			}
+			if (this.props.onClassDefine) this.props.onClassDefine(species);
 		} catch (error) {
 			ide.reportError(error);
 		}
@@ -87,9 +83,8 @@ class CodeBrowser extends Component {
 			if (!newName) return;
 			await ide.backend.renameClass(target, newName);
 			this.props.class.name = newName;
-			if (this.props.onRenameClass) {
+			if (this.props.onRenameClass)
 				this.props.onRenameClass(this.props.class);
-			}
 		} catch (error) {
 			ide.reportError(error);
 		}
@@ -100,9 +95,7 @@ class CodeBrowser extends Component {
 		try {
 			await ide.backend.commentClass(this.props.class.name, comment);
 			const species = await ide.backend.classNamed(this.props.class.name);
-			if (this.props.onClassComment) {
-				this.props.onClassComment(species);
-			}
+			if (this.props.onClassComment) this.props.onClassComment(species);
 		} catch (error) {
 			ide.reportError(error);
 		}
@@ -364,6 +357,8 @@ class CodeBrowser extends Component {
 			selectedIdentifier,
 			onTooltipShow,
 			onTooltipClick,
+			context,
+			method,
 		} = this.props;
 		return (
 			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
@@ -419,9 +414,9 @@ class CodeBrowser extends Component {
 					>
 						{(selectedMode !== "comment" || !previewMarkdown) && (
 							<CodeEditor
-								context={this.props.context}
+								context={context}
 								class={this.props.class}
-								method={this.props.method}
+								method={method}
 								source={this.currentSource()}
 								mode={this.currentCodeMode()}
 								ast={this.currentAst()}
