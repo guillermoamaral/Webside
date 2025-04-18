@@ -68,14 +68,12 @@ class BackendTestSuite {
 		this.state = "running";
 		this.ran = 0;
 		this.count = this.tests.length;
-		await Promise.all(
-			this.tests.map(async (test) => {
-				if (this.state !== "stopped") {
-					await this.runTest(test);
-					this.ran++;
-				}
-			})
-		);
+		this.tests.forEach(async (test) => {
+			if (this.state !== "stopped") {
+				await this.runTest(test);
+				this.ran++;
+			}
+		});
 		this.state = "stopped";
 	}
 
@@ -2288,7 +2286,7 @@ class BackendTest {
 			type: "AddMethod",
 			className: "TestTemporaryVariableInDebuggerContext",
 			sourceCode:
-				"testTemporaryVariableInDebuggerContext  | temp | temp := 26. self _impossible_that_this_method_exist",
+				"testTemporaryVariableInDebuggerContext  | temp | temp := 26. self __blah",
 		});
 		let payload = {
 			expression:
@@ -2322,6 +2320,7 @@ class BackendTest {
 				"receiver.printString"
 			);
 		} finally {
+			await this.delete("/evaluations/" + error.evaluation);
 			await this.delete("/debuggers/" + _debugger.id);
 			await this.postChange({
 				type: "RemoveMethod",
