@@ -9,10 +9,9 @@ import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 import Scrollable from "../controls/Scrollable";
 import CodeMirror from "@uiw/react-codemirror";
-import { EditorView, keymap } from "@codemirror/view";
-import { linter, lintGutter } from "@codemirror/lint";
+import { EditorView, keymap, lineNumbers } from "@codemirror/view";
+import { linter } from "@codemirror/lint";
 import { acceptCompletion } from "@codemirror/autocomplete";
-//import { material } from "@uiw/codemirror-theme-material";
 //import { LRLanguage, LanguageSupport } from "@codemirror/language";
 //import { styleTags, tags } from "@lezer/highlight";
 import { SmalltalkLexer } from "../../SmalltalkLexer";
@@ -21,7 +20,6 @@ import { createTheme } from "@uiw/codemirror-themes";
 import { StreamLanguage } from "@codemirror/language";
 //import { EditorSelection, EditorState, Prec } from "@codemirror/state";
 import { Prec } from "@codemirror/state";
-//import { throwStatement } from "@babel/types";
 import {
 	autocompletion,
 	closeCompletion,
@@ -35,6 +33,7 @@ import ExplainIcon from "@mui/icons-material/QuestionMark";
 import StAST from "../../model/StAST";
 import { ThemeProvider } from "@mui/material/styles";
 import { withTheme } from "@emotion/react";
+import { darken } from "@mui/system";
 
 // import {
 // 	hyperLinkExtension,
@@ -89,10 +88,11 @@ class CodeEditor extends Component {
 		this.editorView = null;
 		this.selectsRanges = true;
 		this.typingTimer = null;
+		this.changeEventFrequency = 500; // miliseconds
 		this.autocompletionTimer = null;
 		this.tooltipRoot = null;
 		this.state = {
-			originalSource: props.source,
+			originalSource: props.originalSource ?? props.source,
 			source: props.source,
 			selectedInterval: null,
 			dirty: false,
@@ -103,25 +103,35 @@ class CodeEditor extends Component {
 			extendedOptions: [],
 			currentEvaluation: null,
 		};
+		this.lastSelection = null;
+	}
+
+	static normalizeNewlines(source = "") {
+		return source.replace(/(?<!\r)\n|\r(?!\n)/g, "\r");
 	}
 
 	static getDerivedStateFromProps(props, state) {
 		const {
 			source,
+			originalSource = source,
 			selectedInterval,
 			selectedSelector,
 			selectedIdentifier,
 		} = props;
 		if (
 			//!state.dirty &&
-			source !== state.originalSource ||
+			CodeEditor.normalizeNewlines(originalSource) !==
+				CodeEditor.normalizeNewlines(state.originalSource) ||
 			JSON.stringify(selectedInterval) !==
 				JSON.stringify(state.selectedInterval) ||
 			selectedSelector !== state.selectedSelector ||
 			selectedIdentifier !== state.selectedIdentifier
 		) {
 			const ranges =
-				source && selectedInterval
+				source &&
+				selectedInterval &&
+				selectedInterval.start >= 1 &&
+				selectedInterval.end <= source.length
 					? [
 							{
 								from: selectedInterval.start - 1,
@@ -132,7 +142,7 @@ class CodeEditor extends Component {
 					  ]
 					: [];
 			return {
-				originalSource: source,
+				originalSource: originalSource ?? source,
 				selectedInterval: selectedInterval,
 				selectedSelector: selectedSelector,
 				selectedIdentifier: selectedIdentifier,
@@ -171,7 +181,11 @@ class CodeEditor extends Component {
 		}
 		if (
 			nextState.evaluating !== this.state.evaluating ||
-			nextState.currentEvaluation !== this.state.currentEvaluation
+			nextState.currentEvaluation !== this.state.currentEvaluation ||
+			(typeof nextProps.evaluating === "boolean" &&
+				nextProps.evaluating !== this.state.evaluating) ||
+			(typeof nextProps.readOnly === "boolean" &&
+				nextProps.readOnly !== this.props.readOnly)
 		) {
 			return true;
 		}
@@ -182,7 +196,7 @@ class CodeEditor extends Component {
 
 	componentDidUpdate() {
 		if (this.state.dirty) return;
-		if (!this.selectsRanges) return;
+		if (!this.selectsRanges || !this.editorView) return;
 		const { selectedRanges, selectedSelector, selectedIdentifier } =
 			this.state;
 		if (selectedRanges) this.selectRanges(selectedRanges);
@@ -193,6 +207,21 @@ class CodeEditor extends Component {
 		if (selectedIdentifier) {
 			const ranges = this.rangesContainingIdentifier(selectedIdentifier);
 			this.selectRanges(ranges);
+		}
+		const limit = this.editorView.state.doc.length;
+		const range = this.lastSelection;
+		if (
+			range &&
+			range.anchor >= 0 &&
+			range.head >= 0 &&
+			range.anchor <= limit &&
+			range.head <= limit
+		) {
+			this.editorView.dispatch({
+				selection: range,
+				scrollIntoView: true,
+			});
+			this.lastSelection = null;
 		}
 	}
 
@@ -222,7 +251,7 @@ class CodeEditor extends Component {
 	}
 
 	textInRange(range) {
-		let source = this.currentSource();
+		let source = this.normalizedSource();
 		if (source) return source.slice(range.from, range.to);
 	}
 
@@ -242,7 +271,7 @@ class CodeEditor extends Component {
 						},
 						scrollIntoView: true,
 					});
-				} catch (error) {}
+				} catch (ignored) {}
 			}, 200 * i);
 		}
 	}
@@ -343,7 +372,7 @@ class CodeEditor extends Component {
 			{ label: "Paste (Ctrl+v)", action: this.pasteFromClipboard },
 			null,
 		];
-		if (this.currentSource() === this.state.originalSource) {
+		if (this.normalizedSource() === this.normalizedOriginalSource()) {
 			const node = this.targetAstNode();
 			if (node && node.type === "Identifier") {
 				options.push({
@@ -479,7 +508,7 @@ class CodeEditor extends Component {
 	};
 
 	acceptClicked = () => {
-		if (this.props.onAccept) this.props.onAccept(this.currentSource());
+		if (this.props.onAccept) this.props.onAccept(this.normalizedSource());
 	};
 
 	wordUnderCursor() {
@@ -523,7 +552,7 @@ class CodeEditor extends Component {
 				selector = await ide.backend.selectorInSource(selection);
 			} else {
 				selector = await ide.backend.selectorInSource(
-					this.currentSource(),
+					this.normalizedSource(),
 					this.currentPosition()
 				);
 			}
@@ -615,7 +644,7 @@ class CodeEditor extends Component {
 	playClicked = async (editor, event) => {
 		if (event) event.preventDefault();
 		const object = await this.evaluateExpression(
-			this.currentSource(),
+			this.normalizedSource(),
 			true
 		);
 		if (object && this.props.onEvaluate) this.props.onEvaluate(object);
@@ -770,28 +799,34 @@ class CodeEditor extends Component {
 		}
 	};
 
-	currentSource() {
-		const source = this.state.source || "";
-		return source.replace(/(?<!\r)\n|\r(?!\n)/g, "\r");
+	normalizedSource() {
+		return CodeEditor.normalizeNewlines(this.state.source);
 	}
 
-	triggerOnChange = () => {
+	normalizedOriginalSource() {
+		return CodeEditor.normalizeNewlines(this.state.originalSource);
+	}
+
+	triggerOnChange = (source) => {
 		if (this.props.onChange) {
 			clearTimeout(this.typingTimer);
 			this.typingTimer = setTimeout(() => {
-				this.props.onChange(this.currentSource());
-			}, 2000);
+				this.props.onChange(CodeEditor.normalizeNewlines(source));
+			}, this.props.changeEventLaps || this.changeEventFrequency);
 		}
 	};
 
 	sourceChanged = (source) => {
 		this.selectsRanges = false;
+		if (this.editorView) {
+			this.lastSelection = this.editorView.state.selection.main;
+		}
 		this.setState(
 			{
 				source: source,
 				dirty: true,
 			},
-			this.triggerOnChange
+			this.triggerOnChange(source)
 		);
 	};
 
@@ -860,9 +895,11 @@ class CodeEditor extends Component {
 	}
 
 	theme() {
+		const { readOnly, fontSize } = this.props;
 		const appearance = ide.settings.section("appearance");
 		const mode = appearance.section(appearance.get("mode"));
-		const background = mode.get("background");
+		let background = mode.get("background");
+		if (readOnly) background = darken(background, 0.05);
 		const styles = [
 			"selectorStyle",
 			"symbolStyle",
@@ -887,7 +924,7 @@ class CodeEditor extends Component {
 		const params = {
 			theme: appearance.get("mode"),
 			settings: {
-				fontSize: this.props.fontSize,
+				fontSize: fontSize,
 				fontFamily: appearance.get("fontFamily"),
 				background: background,
 				foreground: "#75baff",
@@ -1069,19 +1106,24 @@ class CodeEditor extends Component {
 	}
 
 	explainCode = async () => {
-		ide.explainCode(this.currentSource());
+		ide.explainCode(this.normalizedSource());
 	};
 
 	testCode = async () => {
-		ide.testCode(this.currentSource());
+		ide.testCode(this.normalizedSource());
 	};
 
 	improveCode = async () => {
-		ide.improveCode(this.currentSource());
+		ide.improveCode(this.normalizedSource());
 	};
 
 	completionSource = async (context) => {
-		if (!ide.settings.section("editor").get("autocompletion")) return null;
+		const { enableAutocompletion } = this.props;
+		const enabled =
+			enableAutocompletion !== undefined
+				? enableAutocompletion
+				: ide.settings.section("editor").get("autocompletion");
+		if (!enabled) return null;
 		const word = context.matchBefore(/[^\s]*/);
 		if (!word || word.from === word.to || word.text.trim().length <= 0)
 			return null;
@@ -1090,7 +1132,7 @@ class CodeEditor extends Component {
 		try {
 			options = await ide.backend.autocompletions(
 				classname,
-				this.currentSource(),
+				this.normalizedSource(),
 				word.to
 			);
 		} catch (error) {
@@ -1152,6 +1194,27 @@ class CodeEditor extends Component {
 		if (this.props.onFullViewToggle) this.props.onFullViewToggle();
 	};
 
+	effectiveLineNumbers() {
+		const preference = this.props.showLineNumbers;
+		if (typeof preference === "boolean") return preference;
+		return ide.settings.section("editor").get("lineNumbers");
+	}
+
+	lineGutter = () => {
+		if (this.effectiveLineNumbers()) return lineNumbers();
+		return EditorView.theme({
+			".cm-gutters": {
+				display: "none",
+			},
+		});
+	};
+
+	focusEditor = () => {
+		if (this.editorView) {
+			this.editorView.focus();
+		}
+	};
+
 	render() {
 		console.log("rendering code editor");
 		const {
@@ -1162,10 +1225,11 @@ class CodeEditor extends Component {
 			menuOpen,
 			menuPosition,
 		} = this.state;
-		const { showAccept, showPlay, showAssistant, readOnly } = this.props;
+		const { showAccept, showPlay, showAssistant, readOnly, noScroll } =
+			this.props;
 		const showCodeAssistant = showAssistant && ide.usesCodeAssistant();
 		const showButtons = showAccept || showPlay || showAssistant;
-		const lineNumbers = ide.settings.section("editor").get("lineNumbers");
+		const lineNumbers = this.effectiveLineNumbers();
 		const menuOptions = this.menuOptions();
 		return (
 			<Box
@@ -1174,7 +1238,7 @@ class CodeEditor extends Component {
 				style={{ width: "100%", height: "100%" }}
 			>
 				<Box flexGrow={1}>
-					<Scrollable>
+					<Scrollable disabled={noScroll}>
 						<CodeMirror
 							ref={this.editorRef}
 							width="100%"
@@ -1182,9 +1246,10 @@ class CodeEditor extends Component {
 							extensions={[
 								this.lexer(),
 								EditorView.lineWrapping,
-								//EditorState.lineSeparator.of("\r"),
-								lintGutter(),
-								linter(this.annotations),
+								this.lineGutter(),
+								...(lineNumbers
+									? [linter(this.annotations)]
+									: []),
 								Prec.highest(keymap.of(this.extraKeys())),
 								this.tooltip(),
 								autocompletion({
@@ -1205,7 +1270,7 @@ class CodeEditor extends Component {
 							onDoubleClick={this.includeColonInSelection}
 							readOnly={readOnly || evaluating}
 							basicSetup={{
-								lineNumbers: lineNumbers,
+								lineNumbers: false, // controlled via extensions
 								closeBrackets: true,
 								bracketMatching: true,
 								highlightActiveLine: false,
@@ -1247,7 +1312,6 @@ class CodeEditor extends Component {
 									<PlayIcon
 										size="large"
 										color={dirty ? "primary" : "inherit"}
-										style={{ fontSize: 30 }}
 									/>
 								</IconButton>
 							</Box>
