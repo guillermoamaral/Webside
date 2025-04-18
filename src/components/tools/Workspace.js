@@ -7,6 +7,8 @@ import {
 	Typography,
 	IconButton,
 	Box,
+	Link,
+	TextField,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -14,17 +16,63 @@ import CodeEditor from "../parts/CodeEditor";
 import Inspector from "./Inspector";
 import { ide } from "../IDE";
 import CustomSplit from "../controls/CustomSplit";
+import NotebookView from "./NotebookView";
+import Notebook from "../../model/Notebook";
 
 class Workspace extends Tool {
 	constructor(props) {
 		super(props);
+		this.autoSaveFrequency = 5000;
 		this.state = {
-			source: this.props.source || "",
+			source: props.source || "",
 			opensInspector: true,
 			inspectors: [],
+			name: props.name || "",
+			editingName: false,
+			notebook: props.useNotebookView
+				? Notebook.fromSource(props.source || "")
+				: null,
+			useNotebookView:
+				typeof props.useNotebookView === "boolean"
+					? props.useNotebookView
+					: false,
 		};
 		this.editorRef = React.createRef();
+		this.pendingSave = false;
+		this.saveTimer = null;
 	}
+
+	componentDidMount() {
+		this.autoSaveInterval = setInterval(
+			this.autoSave,
+			this.autoSaveFrequency
+		);
+	}
+
+	componentWillUnmount() {
+		clearInterval(this.autoSaveInterval);
+	}
+
+	autoSave = async () => {
+		if (!this.pendingSave) return;
+		this.pendingSave = false;
+		this.save();
+	};
+
+	save = async () => {
+		const { source, name } = this.state;
+		console.log(name);
+		try {
+			await ide.backend.saveWorkspace({
+				id: this.props.id,
+				source: source,
+				name: name,
+			});
+			this.updateLabel(name);
+		} catch (error) {
+			ide.reportError(error);
+		}
+	};
 
 	aboutToSelect() {
 		super.aboutToSelect();
@@ -66,16 +114,14 @@ class Workspace extends Tool {
 		}
 	};
 
-	sourceChanged = async (source) => {
-		this.setState({ source: source });
-		try {
-			await ide.backend.saveWorkspace({
-				id: this.props.id,
-				source: source,
-			});
-		} catch (error) {
-			ide.reportError(error);
-		}
+	sourceChanged = (source) => {
+		if (source === this.state.source) return;
+		this.setState({ source });
+		this.pendingSave = true;
+	};
+
+	notebookChanged = (notebook) => {
+		this.sourceChanged(notebook.toSource());
 	};
 
 	expressionEvaluated = (object) => {
@@ -93,7 +139,9 @@ class Workspace extends Tool {
 		try {
 			const bindings = await ide.backend.workspaceBindings(this.props.id);
 			binding = bindings.find((b) => b.name === name);
-		} catch (error) {}
+		} catch (ignored) {
+			console.log(ignored);
+		}
 		if (binding) return binding.value;
 	};
 
@@ -111,80 +159,190 @@ class Workspace extends Tool {
 		}
 	};
 
+	toggleNotebookView = () => {
+		let { useNotebookView, notebook, source } = this.state;
+		if (!useNotebookView) notebook = Notebook.fromSource(source);
+		this.setState({
+			useNotebookView: !useNotebookView,
+			notebook: notebook,
+		});
+	};
+
+	nameChanged = (event) => {
+		this.setState({ name: event.target.value });
+	};
+
 	render() {
-		const { source, inspectors } = this.state;
+		const {
+			name,
+			source,
+			inspectors,
+			notebook,
+			useNotebookView,
+			editingName,
+		} = this.state;
 		const background = ide.colorSetting("workspaceColor");
 		return (
 			<Box
 				display="flex"
 				sx={{ height: "100%", padding: 1, background: background }}
+				flexDirection="column"
 			>
-				<CustomSplit>
-					<Box flexGrow={1} sx={{ width: "50%" }}>
-						<Paper
-							variant="outlined"
-							style={{ minHeight: 300, height: "100%" }}
-						>
-							<CodeEditor
-								ref={this.editorRef}
-								context={this.evaluationContext()}
-								source={source}
-								showPlay={true}
-								onChange={this.sourceChanged}
-								onEvaluate={this.expressionEvaluated}
-								onTooltipShow={this.tooltipForBinding}
-								onTooltipClick={this.inspectBinding}
+				<Box
+					sx={{
+						display: "flex",
+						justifyContent: "space-between",
+						alignItems: "center",
+						mb: 1,
+						ml: 1,
+					}}
+				>
+					<Box
+						onDoubleClick={() =>
+							this.setState({ editingName: true })
+						}
+						sx={{ minWidth: 150 }}
+					>
+						{editingName ? (
+							<TextField
+								variant="standard"
+								autoFocus
+								placeholder="[Unnamed]"
+								value={name}
+								onChange={this.nameChanged}
+								onBlur={() =>
+									this.setState(
+										{ editingName: false },
+										this.save
+									)
+								}
+								onKeyDown={(e) => {
+									if (e.key === "Enter") {
+										this.setState(
+											{ editingName: false },
+											this.save
+										);
+									}
+								}}
+								InputProps={{ disableUnderline: true }}
 							/>
-						</Paper>
+						) : (
+							<Typography
+								variant="normal"
+								fontWeight="fontWeightBold"
+								fontStyle="italic"
+								color="text.secondary"
+							>
+								{name || "[Unnamed]"}
+							</Typography>
+						)}
 					</Box>
-					{inspectors.length > 0 && (
-						<Box sx={{ width: "50%" }}>
-							{inspectors.map((inspector, index) => {
-								return (
-									<Accordion
-										key={inspector.key}
-										defaultExpanded
-									>
-										<AccordionSummary
-											expandIcon={<ExpandMoreIcon />}
-											iconbuttonprops={{ size: "small" }}
-										>
-											<Box
-												display="flex"
-												flexWrap="nowrap"
-												alignItems="center"
-												justifyContent="center"
-												mt={0}
-											>
-												<Box>
-													<IconButton
-														onClick={(event) => {
-															this.closeInspector(
-																event,
-																inspector.key
-															);
-														}}
-														size="small"
-													>
-														<CloseIcon fontSize="small" />
-													</IconButton>
-												</Box>
-												<Box>
-													<Typography>
-														{"Inspecting: " +
-															inspector.props.root
-																.class}
-													</Typography>
-												</Box>
-											</Box>
-										</AccordionSummary>
-										{inspector}
-									</Accordion>
-								);
-							})}
+					<Link
+						href="#"
+						onClick={() => this.toggleNotebookView()}
+						variant="caption"
+						sx={{ ml: 2 }}
+					>
+						{useNotebookView
+							? "Switch to standard Workspace"
+							: "Switch to Notebook View"}
+					</Link>
+				</Box>
+				{!useNotebookView && (
+					<CustomSplit>
+						<Box flexGrow={1} sx={{ width: "50%" }}>
+							<Paper
+								variant="outlined"
+								style={{ minHeight: 300, height: "100%" }}
+							>
+								<CodeEditor
+									ref={this.editorRef}
+									context={this.evaluationContext()}
+									source={source}
+									originalSource={""}
+									showPlay={true}
+									onChange={this.sourceChanged}
+									onEvaluate={this.expressionEvaluated}
+									onTooltipShow={this.tooltipForBinding}
+									onTooltipClick={this.inspectBinding}
+								/>
+							</Paper>
 						</Box>
-					)}
-				</CustomSplit>
+						{inspectors.length > 0 && (
+							<Box sx={{ width: "50%" }}>
+								{inspectors.map((inspector, index) => {
+									return (
+										<Accordion
+											key={inspector.key}
+											defaultExpanded
+										>
+											<AccordionSummary
+												expandIcon={
+													<ExpandMoreIcon fontSize="small" />
+												}
+												sx={{
+													minHeight: 28,
+													paddingY: 0.25,
+													"&.MuiAccordionSummary-root":
+														{
+															minHeight: 28,
+														},
+													"& .MuiAccordionSummary-content":
+														{
+															marginY: 0.25,
+														},
+													"& .MuiButtonBase-root": {
+														paddingY: 0.25,
+														minHeight: 28,
+													},
+												}}
+											>
+												<Box
+													display="flex"
+													flexWrap="nowrap"
+													alignItems="center"
+													justifyContent="center"
+													mt={0}
+												>
+													<Box>
+														<IconButton
+															onClick={(
+																event
+															) => {
+																this.closeInspector(
+																	event,
+																	inspector.key
+																);
+															}}
+															size="small"
+														>
+															<CloseIcon fontSize="small" />
+														</IconButton>
+													</Box>
+													<Box>
+														<Typography variant="body2">
+															{"Inspecting: " +
+																inspector.props
+																	.root.class}
+														</Typography>
+													</Box>
+												</Box>
+											</AccordionSummary>
+											{inspector}
+										</Accordion>
+									);
+								})}
+							</Box>
+						)}
+					</CustomSplit>
+				)}
+				{useNotebookView && (
+					<NotebookView
+						notebook={notebook}
+						onChange={this.notebookChanged}
+						evaluationContext={this.evaluationContext()}
+					/>
+				)}
 			</Box>
 		);
 	}

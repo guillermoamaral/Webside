@@ -414,23 +414,25 @@ class ToolContainer extends Component {
 			return;
 		}
 		let source = "";
+		let name;
 		if (id) {
 			try {
 				const workspace = await ide.backend.workspace(id);
 				source = workspace.source;
+				name = workspace.name;
 			} catch (error) {
 				this.reportError(error);
 			}
 		}
 		const ref = React.createRef();
 		const component = (
-			<Workspace ref={ref} key={id} id={id} source={source} />
+			<Workspace ref={ref} key={id} id={id} name={name} source={source} />
 		);
 		this.createPage(
-			"Workspace",
+			name || "Workspace",
 			<WorkspaceIcon />,
 			component,
-			null,
+			id,
 			ref,
 			nextToSelected
 		);
