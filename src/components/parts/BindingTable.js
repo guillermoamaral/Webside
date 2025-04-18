@@ -103,6 +103,7 @@ class BindingTable extends PureComponent {
 		const { frame } = this.props;
 		const bindings = frame ? frame.bindings : [];
 		const { selectedBinding } = this.state;
+		const source = selectedBinding ? selectedBinding.value : "";
 		return (
 			<Box
 				display="flex"
@@ -125,9 +126,7 @@ class BindingTable extends PureComponent {
 					<Box height={"20%"}>
 						<Paper variant="outlined" style={{ height: "100%" }}>
 							<CodeEditor
-								source={
-									selectedBinding ? selectedBinding.value : ""
-								}
+								source={source}
 								//onAccept={this.saveBinding}
 								context={this.evaluationContext()}
 							/>
