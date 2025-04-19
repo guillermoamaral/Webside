@@ -1,0 +1,943 @@
+[
+	{
+		"name": "Quiet Light",
+		"dark": {
+			"commentStyle": {
+				"color": "#6A9955",
+				"italic": true
+			},
+			"stringStyle": {
+				"color": "#CE9178"
+			},
+			"numberStyle": {
+				"color": "#B5CEA8"
+			},
+			"variableStyle": {
+				"color": "#F5F5F5"
+			},
+			"temporaryStyle": {
+				"color": "#4EC9B0"
+			},
+			"argumentStyle": {
+				"color": "#9CDCFE"
+			},
+			"symbolStyle": {
+				"color": "#569CD6"
+			},
+			"globalStyle": {
+				"color": "#4EC9B0"
+			},
+			"selfStyle": {
+				"color": "#569CD6"
+			},
+			"superStyle": {
+				"color": "#569CD6"
+			},
+			"trueStyle": {
+				"color": "#569CD6"
+			},
+			"falseStyle": {
+				"color": "#569CD6"
+			},
+			"nilStyle": {
+				"color": "#569CD6"
+			},
+			"thisContextStyle": {
+				"color": "#569CD6"
+			},
+			"primaryColor": "#F5F5F5",
+			"secondaryColor": "#6A9955",
+			"background": "#1E1E1E",
+			"systemBrowserColor": "#1E1E1E",
+			"classBrowserColor": "#1E1E1E",
+			"debuggerColor": "#1E1E1E",
+			"inspectorColor": "#1E1E1E",
+			"workspaceColor": "#1E1E1E",
+			"transcriptColor": "#1E1E1E",
+			"methodBrowserColor": "#1E1E1E",
+			"changesBrowserColor": "#1E1E1E",
+			"historyBrowserColor": "#1E1E1E",
+			"primaryText": "#F5F5F5",
+			"secondaryText": "#6A9955",
+			"disabledText": "#6A995580",
+			"appliedChange": "#267f99",
+			"unappliedChange": "#808080",
+			"separatorColor": "#3E3D32",
+			"selectionColor": "#264F78"
+		},
+		"light": {
+			"commentStyle": {
+				"color": "#008000",
+				"italic": true
+			},
+			"stringStyle": {
+				"color": "#A31515"
+			},
+			"numberStyle": {
+				"color": "#098658"
+			},
+			"variableStyle": {
+				"color": "#000000"
+			},
+			"temporaryStyle": {
+				"color": "#007ACC"
+			},
+			"argumentStyle": {
+				"color": "#0451A5"
+			},
+			"symbolStyle": {
+				"color": "#267f99"
+			},
+			"globalStyle": {
+				"color": "#007ACC"
+			},
+			"selfStyle": {
+				"color": "#267f99"
+			},
+			"superStyle": {
+				"color": "#267f99"
+			},
+			"trueStyle": {
+				"color": "#267f99"
+			},
+			"falseStyle": {
+				"color": "#267f99"
+			},
+			"nilStyle": {
+				"color": "#267f99"
+			},
+			"thisContextStyle": {
+				"color": "#267f99"
+			},
+			"primaryColor": "#000000",
+			"secondaryColor": "#6A9955",
+			"background": "#F5F5F5",
+			"systemBrowserColor": "#F5F5F5",
+			"classBrowserColor": "#F5F5F5",
+			"debuggerColor": "#F5F5F5",
+			"inspectorColor": "#F5F5F5",
+			"workspaceColor": "#F5F5F5",
+			"transcriptColor": "#F5F5F5",
+			"methodBrowserColor": "#F5F5F5",
+			"changesBrowserColor": "#F5F5F5",
+			"historyBrowserColor": "#F5F5F5",
+			"primaryText": "#000000",
+			"secondaryText": "#6A9955",
+			"disabledText": "#6A995580",
+			"appliedChange": "#267f99",
+			"unappliedChange": "#808080",
+			"separatorColor": "#CCCCCC",
+			"selectionColor": "#ADD6FF"
+		}
+	},
+	{
+		"name": "Abyss",
+		"dark": {
+			"commentStyle": {
+				"color": "#6a9955",
+				"italic": true
+			},
+			"stringStyle": {
+				"color": "#ce9178"
+			},
+			"numberStyle": {
+				"color": "#b5cea8"
+			},
+			"variableStyle": {
+				"color": "#d4d4d4"
+			},
+			"temporaryStyle": {
+				"color": "#4ec9b0"
+			},
+			"argumentStyle": {
+				"color": "#9cdcfe"
+			},
+			"symbolStyle": {
+				"color": "#569cd6"
+			},
+			"globalStyle": {
+				"color": "#4ec9b0"
+			},
+			"selfStyle": {
+				"color": "#569cd6"
+			},
+			"superStyle": {
+				"color": "#569cd6"
+			},
+			"trueStyle": {
+				"color": "#569cd6"
+			},
+			"falseStyle": {
+				"color": "#569cd6"
+			},
+			"nilStyle": {
+				"color": "#569cd6"
+			},
+			"thisContextStyle": {
+				"color": "#569cd6"
+			},
+			"primaryColor": "#ffffff",
+			"secondaryColor": "#cccccc",
+			"background": "#000c18",
+			"systemBrowserColor": "#000c18",
+			"classBrowserColor": "#000c18",
+			"debuggerColor": "#000c18",
+			"inspectorColor": "#000c18",
+			"workspaceColor": "#000c18",
+			"transcriptColor": "#000c18",
+			"methodBrowserColor": "#000c18",
+			"changesBrowserColor": "#000c18",
+			"historyBrowserColor": "#000c18",
+			"primaryText": "#d4d4d4",
+			"secondaryText": "#aaaaaa",
+			"disabledText": "#aaaaaa80",
+			"appliedChange": "#81d41a",
+			"unappliedChange": "#808080",
+			"separatorColor": "#2a2a2a",
+			"selectionColor": "#1D4A87"
+		},
+		"light": {
+			"commentStyle": {
+				"color": "#008000",
+				"italic": true
+			},
+			"stringStyle": {
+				"color": "#a31515"
+			},
+			"numberStyle": {
+				"color": "#098658"
+			},
+			"variableStyle": {
+				"color": "#000c18"
+			},
+			"temporaryStyle": {
+				"color": "#007acc"
+			},
+			"argumentStyle": {
+				"color": "#0451a5"
+			},
+			"symbolStyle": {
+				"color": "#267f99"
+			},
+			"globalStyle": {
+				"color": "#007acc"
+			},
+			"selfStyle": {
+				"color": "#267f99"
+			},
+			"superStyle": {
+				"color": "#267f99"
+			},
+			"trueStyle": {
+				"color": "#267f99"
+			},
+			"falseStyle": {
+				"color": "#267f99"
+			},
+			"nilStyle": {
+				"color": "#267f99"
+			},
+			"thisContextStyle": {
+				"color": "#267f99"
+			},
+			"primaryColor": "#000c18",
+			"secondaryColor": "#333333",
+			"background": "#ffffff",
+			"systemBrowserColor": "#ffffff",
+			"classBrowserColor": "#ffffff",
+			"debuggerColor": "#ffffff",
+			"inspectorColor": "#ffffff",
+			"workspaceColor": "#ffffff",
+			"transcriptColor": "#ffffff",
+			"methodBrowserColor": "#ffffff",
+			"changesBrowserColor": "#ffffff",
+			"historyBrowserColor": "#ffffff",
+			"primaryText": "#000c18",
+			"secondaryText": "#333333",
+			"disabledText": "#000c1880",
+			"appliedChange": "#81d41a",
+			"unappliedChange": "#808080",
+			"separatorColor": "#cccccc",
+			"selectionColor": "#cce3ff"
+		}
+	},
+	{
+		"name": "Monokai",
+		"dark": {
+			"commentStyle": {
+				"color": "#75715e",
+				"italic": true
+			},
+			"stringStyle": {
+				"color": "#e6db74"
+			},
+			"numberStyle": {
+				"color": "#ae81ff"
+			},
+			"variableStyle": {
+				"color": "#f8f8f2"
+			},
+			"temporaryStyle": {
+				"color": "#66d9ef"
+			},
+			"argumentStyle": {
+				"color": "#fd971f"
+			},
+			"symbolStyle": {
+				"color": "#f92672"
+			},
+			"globalStyle": {
+				"color": "#f8f8f2"
+			},
+			"selfStyle": {
+				"color": "#f92672"
+			},
+			"superStyle": {
+				"color": "#f92672"
+			},
+			"trueStyle": {
+				"color": "#ae81ff"
+			},
+			"falseStyle": {
+				"color": "#ae81ff"
+			},
+			"nilStyle": {
+				"color": "#ae81ff"
+			},
+			"thisContextStyle": {
+				"color": "#ae81ff"
+			},
+			"primaryColor": "#f8f8f2",
+			"secondaryColor": "#75715e",
+			"background": "#272822",
+			"systemBrowserColor": "#272822",
+			"classBrowserColor": "#272822",
+			"debuggerColor": "#272822",
+			"inspectorColor": "#272822",
+			"workspaceColor": "#272822",
+			"transcriptColor": "#272822",
+			"methodBrowserColor": "#272822",
+			"changesBrowserColor": "#272822",
+			"historyBrowserColor": "#272822",
+			"primaryText": "#f8f8f2",
+			"secondaryText": "#75715e",
+			"disabledText": "#75715e80",
+			"appliedChange": "#a6e22e",
+			"unappliedChange": "#f92672",
+			"separatorColor": "#3e3d32",
+			"selectionColor": "#49483e"
+		},
+		"light": {
+			"commentStyle": {
+				"color": "#75715e",
+				"italic": true
+			},
+			"stringStyle": {
+				"color": "#e6db74"
+			},
+			"numberStyle": {
+				"color": "#ae81ff"
+			},
+			"variableStyle": {
+				"color": "#1e1e1e"
+			},
+			"temporaryStyle": {
+				"color": "#66d9ef"
+			},
+			"argumentStyle": {
+				"color": "#fd971f"
+			},
+			"symbolStyle": {
+				"color": "#f92672"
+			},
+			"globalStyle": {
+				"color": "#1e1e1e"
+			},
+			"selfStyle": {
+				"color": "#f92672"
+			},
+			"superStyle": {
+				"color": "#f92672"
+			},
+			"trueStyle": {
+				"color": "#ae81ff"
+			},
+			"falseStyle": {
+				"color": "#ae81ff"
+			},
+			"nilStyle": {
+				"color": "#ae81ff"
+			},
+			"thisContextStyle": {
+				"color": "#ae81ff"
+			},
+			"primaryColor": "#1e1e1e",
+			"secondaryColor": "#75715e",
+			"background": "#f8f8f2",
+			"systemBrowserColor": "#f8f8f2",
+			"classBrowserColor": "#f8f8f2",
+			"debuggerColor": "#f8f8f2",
+			"inspectorColor": "#f8f8f2",
+			"workspaceColor": "#f8f8f2",
+			"transcriptColor": "#f8f8f2",
+			"methodBrowserColor": "#f8f8f2",
+			"changesBrowserColor": "#f8f8f2",
+			"historyBrowserColor": "#f8f8f2",
+			"primaryText": "#1e1e1e",
+			"secondaryText": "#75715e",
+			"disabledText": "#75715e80",
+			"appliedChange": "#a6e22e",
+			"unappliedChange": "#f92672",
+			"separatorColor": "#3e3d32",
+			"selectionColor": "#cce3ff"
+		}
+	},
+	{
+		"name": "Monokai Dimmed",
+		"dark": {
+			"commentStyle": {
+				"color": "#75715e",
+				"italic": true
+			},
+			"stringStyle": {
+				"color": "#e6db74"
+			},
+			"numberStyle": {
+				"color": "#ae81ff"
+			},
+			"variableStyle": {
+				"color": "#f8f8f2"
+			},
+			"temporaryStyle": {
+				"color": "#66d9ef"
+			},
+			"argumentStyle": {
+				"color": "#fd971f"
+			},
+			"symbolStyle": {
+				"color": "#f92672"
+			},
+			"globalStyle": {
+				"color": "#f8f8f2"
+			},
+			"selfStyle": {
+				"color": "#f92672"
+			},
+			"superStyle": {
+				"color": "#f92672"
+			},
+			"trueStyle": {
+				"color": "#ae81ff"
+			},
+			"falseStyle": {
+				"color": "#ae81ff"
+			},
+			"nilStyle": {
+				"color": "#ae81ff"
+			},
+			"thisContextStyle": {
+				"color": "#ae81ff"
+			},
+			"primaryColor": "#c5c8c6",
+			"secondaryColor": "#75715e",
+			"background": "#1e1e1e",
+			"systemBrowserColor": "#1e1e1e",
+			"classBrowserColor": "#1e1e1e",
+			"debuggerColor": "#1e1e1e",
+			"inspectorColor": "#1e1e1e",
+			"workspaceColor": "#1e1e1e",
+			"transcriptColor": "#1e1e1e",
+			"methodBrowserColor": "#1e1e1e",
+			"changesBrowserColor": "#1e1e1e",
+			"historyBrowserColor": "#1e1e1e",
+			"primaryText": "#c5c8c6",
+			"secondaryText": "#75715e",
+			"disabledText": "#75715e80",
+			"appliedChange": "#a6e22e",
+			"unappliedChange": "#f92672",
+			"separatorColor": "#3e3d32",
+			"selectionColor": "#49483e"
+		},
+		"light": {
+			"commentStyle": {
+				"color": "#75715e",
+				"italic": true
+			},
+			"stringStyle": {
+				"color": "#e6db74"
+			},
+			"numberStyle": {
+				"color": "#ae81ff"
+			},
+			"variableStyle": {
+				"color": "#1e1e1e"
+			},
+			"temporaryStyle": {
+				"color": "#66d9ef"
+			},
+			"argumentStyle": {
+				"color": "#fd971f"
+			},
+			"symbolStyle": {
+				"color": "#f92672"
+			},
+			"globalStyle": {
+				"color": "#1e1e1e"
+			},
+			"selfStyle": {
+				"color": "#f92672"
+			},
+			"superStyle": {
+				"color": "#f92672"
+			},
+			"trueStyle": {
+				"color": "#ae81ff"
+			},
+			"falseStyle": {
+				"color": "#ae81ff"
+			},
+			"nilStyle": {
+				"color": "#ae81ff"
+			},
+			"thisContextStyle": {
+				"color": "#ae81ff"
+			},
+			"primaryColor": "#1e1e1e",
+			"secondaryColor": "#75715e",
+			"background": "#f8f8f2",
+			"systemBrowserColor": "#f8f8f2",
+			"classBrowserColor": "#f8f8f2",
+			"debuggerColor": "#f8f8f2",
+			"inspectorColor": "#f8f8f2",
+			"workspaceColor": "#f8f8f2",
+			"transcriptColor": "#f8f8f2",
+			"methodBrowserColor": "#f8f8f2",
+			"changesBrowserColor": "#f8f8f2",
+			"historyBrowserColor": "#f8f8f2",
+			"primaryText": "#1e1e1e",
+			"secondaryText": "#75715e",
+			"disabledText": "#75715e80",
+			"appliedChange": "#a6e22e",
+			"unappliedChange": "#f92672",
+			"separatorColor": "#3e3d32",
+			"selectionColor": "#cce3ff"
+		}
+	},
+	{
+		"name": "Solarized",
+		"dark": {
+			"commentStyle": {
+				"color": "#586e75",
+				"italic": true
+			},
+			"stringStyle": {
+				"color": "#2aa198"
+			},
+			"numberStyle": {
+				"color": "#d33682"
+			},
+			"variableStyle": {
+				"color": "#839496"
+			},
+			"temporaryStyle": {
+				"color": "#6c71c4"
+			},
+			"argumentStyle": {
+				"color": "#b58900"
+			},
+			"symbolStyle": {
+				"color": "#2aa198"
+			},
+			"globalStyle": {
+				"color": "#6c71c4"
+			},
+			"selfStyle": {
+				"color": "#268bd2"
+			},
+			"superStyle": {
+				"color": "#268bd2"
+			},
+			"trueStyle": {
+				"color": "#268bd2"
+			},
+			"falseStyle": {
+				"color": "#268bd2"
+			},
+			"nilStyle": {
+				"color": "#268bd2"
+			},
+			"thisContextStyle": {
+				"color": "#268bd2"
+			},
+			"primaryColor": "#839496",
+			"secondaryColor": "#586e75",
+			"background": "#002b36",
+			"systemBrowserColor": "#002b36",
+			"classBrowserColor": "#002b36",
+			"debuggerColor": "#002b36",
+			"inspectorColor": "#002b36",
+			"workspaceColor": "#002b36",
+			"transcriptColor": "#002b36",
+			"methodBrowserColor": "#002b36",
+			"changesBrowserColor": "#002b36",
+			"historyBrowserColor": "#002b36",
+			"primaryText": "#839496",
+			"secondaryText": "#586e75",
+			"disabledText": "#586e7580",
+			"appliedChange": "#859900",
+			"unappliedChange": "#b58900",
+			"separatorColor": "#073642",
+			"selectionColor": "#073642"
+		},
+		"light": {
+			"commentStyle": {
+				"color": "#586e75",
+				"italic": true
+			},
+			"stringStyle": {
+				"color": "#2aa198"
+			},
+			"numberStyle": {
+				"color": "#d33682"
+			},
+			"variableStyle": {
+				"color": "#002b36"
+			},
+			"temporaryStyle": {
+				"color": "#6c71c4"
+			},
+			"argumentStyle": {
+				"color": "#b58900"
+			},
+			"symbolStyle": {
+				"color": "#2aa198"
+			},
+			"globalStyle": {
+				"color": "#6c71c4"
+			},
+			"selfStyle": {
+				"color": "#268bd2"
+			},
+			"superStyle": {
+				"color": "#268bd2"
+			},
+			"trueStyle": {
+				"color": "#268bd2"
+			},
+			"falseStyle": {
+				"color": "#268bd2"
+			},
+			"nilStyle": {
+				"color": "#268bd2"
+			},
+			"thisContextStyle": {
+				"color": "#268bd2"
+			},
+			"primaryColor": "#002b36",
+			"secondaryColor": "#586e75",
+			"background": "#fdf6e3",
+			"systemBrowserColor": "#fdf6e3",
+			"classBrowserColor": "#fdf6e3",
+			"debuggerColor": "#fdf6e3",
+			"inspectorColor": "#fdf6e3",
+			"workspaceColor": "#fdf6e3",
+			"transcriptColor": "#fdf6e3",
+			"methodBrowserColor": "#fdf6e3",
+			"changesBrowserColor": "#fdf6e3",
+			"historyBrowserColor": "#fdf6e3",
+			"primaryText": "#002b36",
+			"secondaryText": "#586e75",
+			"disabledText": "#586e7580",
+			"appliedChange": "#859900",
+			"unappliedChange": "#b58900",
+			"separatorColor": "#ccc7b6",
+			"selectionColor": "#e3e3d2"
+		}
+	},
+	{
+		"name": "Tomorrow Night Blue",
+		"dark": {
+			"commentStyle": {
+				"color": "#7285b7",
+				"italic": true
+			},
+			"stringStyle": {
+				"color": "#d1f1a9"
+			},
+			"numberStyle": {
+				"color": "#ffc58f"
+			},
+			"variableStyle": {
+				"color": "#ffffff"
+			},
+			"temporaryStyle": {
+				"color": "#ffeead"
+			},
+			"argumentStyle": {
+				"color": "#ffc58f"
+			},
+			"symbolStyle": {
+				"color": "#ff9da4"
+			},
+			"globalStyle": {
+				"color": "#ffeead"
+			},
+			"selfStyle": {
+				"color": "#ff9da4"
+			},
+			"superStyle": {
+				"color": "#ff9da4"
+			},
+			"trueStyle": {
+				"color": "#ff9da4"
+			},
+			"falseStyle": {
+				"color": "#ff9da4"
+			},
+			"nilStyle": {
+				"color": "#ff9da4"
+			},
+			"thisContextStyle": {
+				"color": "#ff9da4"
+			},
+			"primaryColor": "#ffffff",
+			"secondaryColor": "#7285b7",
+			"background": "#002451",
+			"systemBrowserColor": "#002451",
+			"classBrowserColor": "#002451",
+			"debuggerColor": "#002451",
+			"inspectorColor": "#002451",
+			"workspaceColor": "#002451",
+			"transcriptColor": "#002451",
+			"methodBrowserColor": "#002451",
+			"changesBrowserColor": "#002451",
+			"historyBrowserColor": "#002451",
+			"primaryText": "#ffffff",
+			"secondaryText": "#7285b7",
+			"disabledText": "#7285b780",
+			"appliedChange": "#d1f1a9",
+			"unappliedChange": "#ff9da4",
+			"separatorColor": "#00346e",
+			"selectionColor": "#003f8e"
+		},
+		"light": {
+			"commentStyle": {
+				"color": "#7285b7",
+				"italic": true
+			},
+			"stringStyle": {
+				"color": "#d1f1a9"
+			},
+			"numberStyle": {
+				"color": "#ffc58f"
+			},
+			"variableStyle": {
+				"color": "#002451"
+			},
+			"temporaryStyle": {
+				"color": "#ffeead"
+			},
+			"argumentStyle": {
+				"color": "#ffc58f"
+			},
+			"symbolStyle": {
+				"color": "#ff9da4"
+			},
+			"globalStyle": {
+				"color": "#ffeead"
+			},
+			"selfStyle": {
+				"color": "#ff9da4"
+			},
+			"superStyle": {
+				"color": "#ff9da4"
+			},
+			"trueStyle": {
+				"color": "#ff9da4"
+			},
+			"falseStyle": {
+				"color": "#ff9da4"
+			},
+			"nilStyle": {
+				"color": "#ff9da4"
+			},
+			"thisContextStyle": {
+				"color": "#ff9da4"
+			},
+			"primaryColor": "#002451",
+			"secondaryColor": "#7285b7",
+			"background": "#ffffff",
+			"systemBrowserColor": "#ffffff",
+			"classBrowserColor": "#ffffff",
+			"debuggerColor": "#ffffff",
+			"inspectorColor": "#ffffff",
+			"workspaceColor": "#ffffff",
+			"transcriptColor": "#ffffff",
+			"methodBrowserColor": "#ffffff",
+			"changesBrowserColor": "#ffffff",
+			"historyBrowserColor": "#ffffff",
+			"primaryText": "#002451",
+			"secondaryText": "#7285b7",
+			"disabledText": "#7285b780",
+			"appliedChange": "#d1f1a9",
+			"unappliedChange": "#ff9da4",
+			"separatorColor": "#cccccc",
+			"selectionColor": "#cce3ff"
+		}
+	},
+	{
+		"name": "Red",
+		"dark": {
+			"background": "#390000",
+			"primaryColor": "#ffffff",
+			"secondaryColor": "#ff4444",
+			"systemBrowserColor": "#390000",
+			"classBrowserColor": "#390000",
+			"debuggerColor": "#390000",
+			"inspectorColor": "#390000",
+			"workspaceColor": "#390000",
+			"transcriptColor": "#390000",
+			"methodBrowserColor": "#390000",
+			"changesBrowserColor": "#390000",
+			"historyBrowserColor": "#390000",
+			"primaryText": "#f8f8f8",
+			"secondaryText": "#ff8888",
+			"disabledText": "#ff888880",
+			"appliedChange": "#ff7777",
+			"unappliedChange": "#aa4444",
+			"separatorColor": "#660000",
+			"selectionColor": "#750000",
+			"commentStyle": {
+				"color": "#ff8888",
+				"italic": true
+			},
+			"stringStyle": {
+				"color": "#ffdd88"
+			},
+			"numberStyle": {
+				"color": "#ffaa88"
+			},
+			"variableStyle": {
+				"color": "#ffffff"
+			},
+			"temporaryStyle": {
+				"color": "#ffdd88"
+			},
+			"argumentStyle": {
+				"color": "#ffdd88"
+			},
+			"symbolStyle": {
+				"color": "#ff4444"
+			},
+			"globalStyle": {
+				"color": "#ffffff"
+			},
+			"selfStyle": {
+				"color": "#ff4444"
+			},
+			"superStyle": {
+				"color": "#ff4444"
+			},
+			"trueStyle": {
+				"color": "#ff4444"
+			},
+			"falseStyle": {
+				"color": "#ff4444"
+			},
+			"nilStyle": {
+				"color": "#ff4444"
+			},
+			"thisContextStyle": {
+				"color": "#ff4444"
+			},
+			"returnStyle": {
+				"color": "#ffcc88"
+			},
+			"bracketStyle": {
+				"color": "#f8f8f8"
+			},
+			"metaStyle": {
+				"color": "#ffaaaa"
+			},
+			"selectorStyle": {
+				"color": "#ffcc88"
+			}
+		},
+		"light": {
+			"background": "#fff0f0",
+			"primaryColor": "#000000",
+			"secondaryColor": "#cc3333",
+			"systemBrowserColor": "#fff0f0",
+			"classBrowserColor": "#fff0f0",
+			"debuggerColor": "#fff0f0",
+			"inspectorColor": "#fff0f0",
+			"workspaceColor": "#fff0f0",
+			"transcriptColor": "#fff0f0",
+			"methodBrowserColor": "#fff0f0",
+			"changesBrowserColor": "#fff0f0",
+			"historyBrowserColor": "#fff0f0",
+			"primaryText": "#000000",
+			"secondaryText": "#aa2222",
+			"disabledText": "#cc666680",
+			"appliedChange": "#ff9999",
+			"unappliedChange": "#cc6666",
+			"separatorColor": "#ddbbbb",
+			"selectionColor": "#ffd6d6",
+			"commentStyle": {
+				"color": "#aa4444",
+				"italic": true
+			},
+			"stringStyle": {
+				"color": "#aa6622"
+			},
+			"numberStyle": {
+				"color": "#aa4444"
+			},
+			"variableStyle": {
+				"color": "#000000"
+			},
+			"temporaryStyle": {
+				"color": "#aa6622"
+			},
+			"argumentStyle": {
+				"color": "#aa6622"
+			},
+			"symbolStyle": {
+				"color": "#aa2222"
+			},
+			"globalStyle": {
+				"color": "#000000"
+			},
+			"selfStyle": {
+				"color": "#aa2222"
+			},
+			"superStyle": {
+				"color": "#aa2222"
+			},
+			"trueStyle": {
+				"color": "#aa2222"
+			},
+			"falseStyle": {
+				"color": "#aa2222"
+			},
+			"nilStyle": {
+				"color": "#aa2222"
+			},
+			"thisContextStyle": {
+				"color": "#aa2222"
+			},
+			"returnStyle": {
+				"color": "#aa6622"
+			},
+			"bracketStyle": {
+				"color": "#000000"
+			},
+			"metaStyle": {
+				"color": "#aa4444"
+			},
+			"selectorStyle": {
+				"color": "#aa6622"
+			}
+		}
+	}
+]
