@@ -159,7 +159,8 @@ class Workspace extends Tool {
 		}
 	};
 
-	toggleNotebookView = () => {
+	toggleNotebookView = (event) => {
+		event.preventDefault();
 		let { useNotebookView, notebook, source } = this.state;
 		if (!useNotebookView) notebook = Notebook.fromSource(source);
 		this.setState({
@@ -239,7 +240,7 @@ class Workspace extends Tool {
 					</Box>
 					<Link
 						href="#"
-						onClick={() => this.toggleNotebookView()}
+						onClick={this.toggleNotebookView}
 						variant="caption"
 						sx={{ ml: 2 }}
 					>
