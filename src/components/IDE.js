@@ -116,6 +116,15 @@ class IDE extends Component {
 
 	initializeThemes() {
 		this.themes = [this.defaultTheme()];
+		const vscThemes = require("../resources/VSCThemes.json");
+		vscThemes.forEach((j) => {
+			if (!this.themes.find((t) => t.name === j.name)) {
+				const theme = this.defaultTheme();
+				theme.name = j.name + " (from VSC)";
+				theme.fromJson(j);
+				this.themes.push(theme);
+			}
+		});
 	}
 
 	newTheme() {
@@ -528,7 +537,11 @@ class IDE extends Component {
 			json.forEach((j) => {
 				if (!this.themes.find((t) => t.name === j.name)) {
 					const theme = this.defaultTheme();
-					theme.name = j.name;
+					theme.name =
+						j.name +
+						" (from " +
+						(this.currentDialect() || "backend") +
+						")";
 					theme.fromJson(j);
 					this.themes.push(theme);
 				}
