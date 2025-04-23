@@ -64,7 +64,7 @@ const DraggableReorderItem = ({
 	useEffect(() => {
 		if (lastDragging.current !== isDragging) {
 			lastDragging.current = isDragging;
-			onDraggingChange(isDragging); // ✅ sólo si cambia
+			onDraggingChange(isDragging);
 		}
 	}, [isDragging, onDraggingChange]);
 

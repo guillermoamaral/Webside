@@ -21,7 +21,7 @@ import { darken } from "@mui/system";
 import CollapsedIcon from "@mui/icons-material/ArrowRight";
 import ExpandedIcon from "@mui/icons-material/ArrowDropDown";
 
-class NotebookCell extends Component {
+class NotebookCellEditor extends Component {
 	static contextType = ToolContainerContext;
 
 	constructor(props) {
@@ -385,4 +385,4 @@ class NotebookCell extends Component {
 	}
 }
 
-export default NotebookCell;
+export default NotebookCellEditor;

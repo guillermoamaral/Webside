@@ -45,7 +45,7 @@ class Notebook extends Object {
 		];
 	};
 
-	reorderCells = (from, to) => {
+	moveCell = (from, to) => {
 		this.cells = [...this.cells];
 		const [moved] = this.cells.splice(from, 1);
 		this.cells.splice(to, 0, moved);
