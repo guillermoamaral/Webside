@@ -175,11 +175,17 @@ class ToolContainer extends Component {
 				pages: filtered,
 			},
 			() => {
-				if (this.props.onPagesRemove) {
-					this.props.onPagesRemove(this);
-				}
+				if (this.props.onPagesRemove) this.props.onPagesRemove(this);
 			}
 		);
+	};
+
+	reorderPages = (from, to) => {
+		if (from === to) return;
+		const pages = [...this.state.pages];
+		const moved = pages.splice(from, 1)[0];
+		pages.splice(to, 0, moved);
+		this.setState({ pages: pages });
 	};
 
 	removeAllPages = () => {
@@ -1026,6 +1032,7 @@ class ToolContainer extends Component {
 					onTabSplit={this.splitPage}
 					onTabFocus={this.pageFocused}
 					showClose={showClose}
+					onTabsReorder={this.reorderPages}
 				/>
 			</ToolContainerContext.Provider>
 		);
