@@ -7,6 +7,7 @@ import SelectIcon from "@mui/icons-material/ExpandMore";
 import CloseIcon from "@mui/icons-material/Close";
 import { withTheme } from "@emotion/react";
 import { darken } from "@mui/system";
+import DraggableReorderItem from "../controls/DraggableReorderItem";
 
 class TabControl extends Component {
 	constructor(props) {
@@ -61,6 +62,10 @@ class TabControl extends Component {
 		}
 	};
 
+	moveTab = (from, to) => {
+		if (this.props.onTabsReorder) this.props.onTabsReorder(from, to);
+	};
+
 	render() {
 		const { addMenuOpen, selectMenuOpen } = this.state;
 		const {
@@ -88,211 +93,113 @@ class TabControl extends Component {
 			>
 				<Box
 					pt={0}
-					display="flex"
-					flexDirection="row"
 					sx={{
-						overflow: "hidden",
 						boxShadow: "0px 0.5px 0px rgba(128, 128, 128, 0.3)",
+						minHeight: 32,
+						overflow: "hidden",
+						display: "flex",
+						alignItems: "center",
+						width: "100%",
+						flexDirection: "row",
 					}}
 				>
-					<Box pt={0} flexGrow={1}>
+					<Box sx={{ flexGrow: 1, minWidth: 0 }}>
 						<Tabs
 							value={Math.max(selectedIndex, 0)}
 							onChange={this.tabChanged}
-							indicatorColor="primary"
-							textColor="primary"
 							variant="scrollable"
 							scrollButtons="auto"
+							indicatorColor="primary"
+							textColor="primary"
 							sx={{
+								minHeight: 32,
 								py: 0,
 								px: 1,
-								minHeight: 20,
 							}}
 						>
-							{pages.map((page, index) => {
-								return (
-									<Tab
-										component="div"
-										key={page.id}
-										id={page.id}
-										sx={{
-											backgroundColor:
-												index !== selectedIndex
-													? darken(background, 0.05)
-													: background,
-											py: 0.5,
-											px: 1,
-											m: 0,
-											minHeight: 24,
-											minWidth: 32,
-										}}
-										onFocus={this.tabFocused}
-										label={
+							{pages.map((page, index) => (
+								<Tab
+									component="div"
+									key={page.id}
+									id={page.id}
+									sx={{
+										backgroundColor:
+											index !== selectedIndex
+												? darken(background, 0.05)
+												: background,
+										py: 0.5,
+										px: 1,
+										m: 0,
+										minHeight: 24,
+										minWidth: 32,
+									}}
+									onFocus={this.tabFocused}
+									label={
+										<DraggableReorderItem
+											key={page.id}
+											index={index}
+											type="TAB"
+											onMove={this.moveTab}
+											direction="horizontal"
+											sx={{
+												display: "inline-flex",
+												alignItems: "center",
+											}}
+										>
 											<TabLabel
 												index={index}
-												//id={"label" + page.id}
 												icon={page.icon}
 												label={page.label}
 												ref={page.labelRef}
 												onClose={this.closeTab}
 												onCloseAll={this.closeAllTabs}
-												onCloseOthers={
-													this.closeOtherTabs
+												onCloseOthers={() =>
+													this.closeOtherTabs(index)
 												}
-												//onSplit={this.splitTab} //disabled for the moment
 												showCloseOptions={canCloseTabs}
 												selected={
 													index === selectedIndex
 												}
 											/>
-										}
-									/>
-								);
-							})}
+										</DraggableReorderItem>
+									}
+								/>
+							))}
 						</Tabs>
 					</Box>
-					{addOptions.length > 0 && (
-						<Box>
+					<Box
+						sx={{
+							display: "flex",
+							flexShrink: 0,
+							alignItems: "center",
+							px: 1,
+							backgroundColor: background,
+						}}
+					>
+						{addOptions.length > 0 && (
 							<IconButton
 								id={"addTab" + id}
-								onClick={() => {
-									this.setState({
-										addMenuOpen: true,
-									});
-								}}
+								onClick={() =>
+									this.setState({ addMenuOpen: true })
+								}
 								size="medium"
 							>
 								<AddIcon fontSize="small" />
 							</IconButton>
-							<Menu
-								anchorEl={document.getElementById(
-									"addTab" + id
-								)}
-								keepMounted
-								open={addMenuOpen}
-								onClose={() => {
-									this.setState({
-										addMenuOpen: false,
-									});
-								}}
-							>
-								{addOptions.map((option, index) => {
-									return (
-										<MenuItem
-											key={"addOption" + index}
-											onClick={(event) => {
-												this.setState(
-													{ addMenuOpen: false },
-													() => option.handler()
-												);
-											}}
-										>
-											<Box
-												display="flex"
-												flexWrap="nowrap"
-												alignItems="center"
-												justifyContent="center"
-											>
-												<Box pt={1} pr={1}>
-													{option.icon}
-												</Box>
-												<Box>{option.label}</Box>
-											</Box>
-										</MenuItem>
-									);
-								})}
-							</Menu>
-						</Box>
-					)}
-					{showTabSelector && (
-						<Box>
+						)}
+						{showTabSelector && (
 							<IconButton
 								id={"selectTab" + id}
-								onClick={() => {
-									this.setState({
-										selectMenuOpen: true,
-									});
-								}}
+								onClick={() =>
+									this.setState({ selectMenuOpen: true })
+								}
 								size="medium"
 								disabled={pages.length === 0}
 							>
 								<SelectIcon fontSize="small" />
 							</IconButton>
-
-							<Menu
-								anchorEl={document.getElementById(
-									"selectTab" + id
-								)}
-								keepMounted
-								open={selectMenuOpen}
-								onClose={() => {
-									this.setState({
-										selectMenuOpen: false,
-									});
-								}}
-							>
-								{pages.map((page, index) => {
-									return (
-										<MenuItem
-											key={"selectTab" + index}
-											onClick={(event) => {
-												this.setState(
-													{ selectMenuOpen: false },
-													() =>
-														this.tabChanged(
-															event,
-															index
-														)
-												);
-											}}
-										>
-											<Box
-												sx={{ width: "100%" }}
-												display="flex"
-												flexWrap="nowrap"
-												alignItems="center"
-												justifyContent="space-between"
-											>
-												<Box
-													display="flex"
-													flexWrap="nowrap"
-													alignItems="center"
-													justifyContent="flex-start"
-												>
-													<Box pt={1} pr={1}>
-														{page.icon}
-													</Box>
-													<Box>{page.label}</Box>
-												</Box>
-												{canCloseTabs && (
-													<Box>
-														<IconButton
-															onClick={(
-																event
-															) => {
-																this.closeTab(
-																	event,
-																	index
-																);
-																this.setState({
-																	selectMenuOpen: false,
-																});
-															}}
-															size="small"
-														>
-															<CloseIcon fontSize="small" />
-														</IconButton>
-													</Box>
-												)}
-											</Box>
-										</MenuItem>
-									);
-								})}
-							</Menu>
-						</Box>
-					)}
-					{showClose && (
-						<Box>
+						)}
+						{showClose && (
 							<IconButton
 								id={"closeAll"}
 								onClick={this.closeAllTabs}
@@ -300,8 +207,77 @@ class TabControl extends Component {
 							>
 								<CloseIcon fontSize="small" />
 							</IconButton>
-						</Box>
-					)}
+						)}
+					</Box>
+					<Menu
+						anchorEl={document.getElementById("addTab" + id)}
+						keepMounted
+						open={addMenuOpen}
+						onClose={() => this.setState({ addMenuOpen: false })}
+					>
+						{addOptions.map((option, index) => (
+							<MenuItem
+								key={"addOption" + index}
+								onClick={() =>
+									this.setState({ addMenuOpen: false }, () =>
+										option.handler()
+									)
+								}
+							>
+								<Box display="flex" alignItems="center">
+									<Box pt={1} pr={1}>
+										{option.icon}
+									</Box>
+									<Box>{option.label}</Box>
+								</Box>
+							</MenuItem>
+						))}
+					</Menu>
+					<Menu
+						anchorEl={document.getElementById("selectTab" + id)}
+						keepMounted
+						open={selectMenuOpen}
+						onClose={() => this.setState({ selectMenuOpen: false })}
+					>
+						{pages.map((page, index) => (
+							<MenuItem
+								key={"selectTab" + index}
+								onClick={(event) =>
+									this.setState(
+										{ selectMenuOpen: false },
+										() => this.tabChanged(event, index)
+									)
+								}
+							>
+								<Box
+									sx={{ width: "100%" }}
+									display="flex"
+									alignItems="center"
+									justifyContent="space-between"
+								>
+									<Box display="flex" alignItems="center">
+										<Box pt={1} pr={1}>
+											{page.icon}
+										</Box>
+										<Box>{page.label}</Box>
+									</Box>
+									{canCloseTabs && (
+										<IconButton
+											onClick={(event) => {
+												this.closeTab(event, index);
+												this.setState({
+													selectMenuOpen: false,
+												});
+											}}
+											size="small"
+										>
+											<CloseIcon fontSize="small" />
+										</IconButton>
+									)}
+								</Box>
+							</MenuItem>
+						))}
+					</Menu>
 				</Box>
 				<Box pb={0} flexGrow={1}>
 					{pages.map((page, index) => {
