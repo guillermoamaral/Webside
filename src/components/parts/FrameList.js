@@ -6,51 +6,40 @@ class FrameList extends Component {
 	static contextType = ToolContainerContext;
 
 	frameSelected = (frame) => {
-		if (this.props.onFrameSelect) {
-			this.props.onFrameSelect(frame);
-		}
+		if (this.props.onFrameSelect) this.props.onFrameSelect(frame);
 	};
 
 	browseClass = (frame) => {
-		if (frame) {
-			this.context.browseClass(frame.class.name);
-		}
+		if (frame) this.context.browseClass(frame.class.name);
 	};
 
 	browseSenders = (frame) => {
-		if (frame) {
-			this.context.browseSenders(frame.method.selector);
-		}
+		if (frame) this.context.browseSenders(frame.method.selector);
 	};
 
 	browseLocalSenders = (frame) => {
-		if (frame) {
+		if (frame)
 			this.context.browseLocalSenders(
 				frame.method.selector,
 				frame.class.name
 			);
-		}
 	};
 
 	browseImplementors = (frame) => {
-		if (frame && frame.method && frame.method.selector) {
+		if (frame && frame.method && frame.method.selector)
 			this.context.browseImplementors(frame.method.selector);
-		}
 	};
 
 	browseLocalImplementors = (frame) => {
-		if (frame) {
+		if (frame)
 			this.context.browseLocalImplementors(
 				frame.method.selector,
 				frame.class.name
 			);
-		}
 	};
 
 	browseClassReferences = (frame) => {
-		if (frame) {
-			this.context.browseClassReferences(frame.class.name);
-		}
+		if (frame) this.context.browseClassReferences(frame.class.name);
 	};
 
 	menuOptions() {
@@ -79,6 +68,7 @@ class FrameList extends Component {
 				selectedItem={this.props.selectedFrame}
 				onItemSelect={this.frameSelected}
 				menuOptions={this.menuOptions()}
+				onItemDoubleClick={this.browseClass}
 			/>
 		);
 	}

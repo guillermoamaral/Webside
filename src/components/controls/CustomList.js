@@ -114,15 +114,11 @@ class CustomList extends Component {
 	}
 
 	itemDoubleClicked = (item) => {
-		if (this.props.onItemDoubleClick) {
-			this.props.onItemDoubleClick(item);
-		}
+		if (this.props.onItemDoubleClick) this.props.onItemDoubleClick(item);
 	};
 
 	itemSelected = (item) => {
-		if (this.props.onItemSelect) {
-			this.props.onItemSelect(item);
-		}
+		if (this.props.onItemSelect) this.props.onItemSelect(item);
 	};
 
 	getItemDivider = (item) => {
@@ -225,26 +221,20 @@ class CustomList extends Component {
 
 	getMenuOptionEnabled = (option) => {
 		const selected = this.props.selectedItem;
-		if (option.enabled) {
-			return option.enabled(selected);
-		}
+		if (option.enabled) return option.enabled(selected);
 		return true;
 	};
 
 	moveUp = () => {
 		const items = this.state.filteredItems;
 		const index = items.indexOf(this.props.selectedItem);
-		if (index > 0) {
-			this.itemSelected(items[index - 1]);
-		}
+		if (index > 0) this.itemSelected(items[index - 1]);
 	};
 
 	moveDown = () => {
 		const items = this.state.filteredItems;
 		const index = items.indexOf(this.props.selectedItem);
-		if (index < items.length - 1) {
-			this.itemSelected(items[index + 1]);
-		}
+		if (index < items.length - 1) this.itemSelected(items[index + 1]);
 	};
 
 	clearFilter() {
