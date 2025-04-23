@@ -37,6 +37,8 @@ import AssistantIcon from "@mui/icons-material/Assistant";
 import { AIInterface } from "../model/ai/AIInterface";
 import AICodeAssistant from "../model/ai/AICodeAssistant";
 import PopupMenu from "./controls/PopupMenu";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 var ide = null;
 var MaxExtraContainers = 3;
@@ -534,14 +536,12 @@ class IDE extends Component {
 	async fetchThemes() {
 		try {
 			const json = await ide.backend.themes();
+			const suffix =
+				" (from " + (this.currentDialect() || "backend") + ")";
 			json.forEach((j) => {
-				if (!this.themes.find((t) => t.name === j.name)) {
+				if (!this.themes.find((t) => t.name === j.name + suffix)) {
 					const theme = this.defaultTheme();
-					theme.name =
-						j.name +
-						" (from " +
-						(this.currentDialect() || "backend") +
-						")";
+					theme.name = j.name + suffix;
 					theme.fromJson(j);
 					this.themes.push(theme);
 				}
@@ -1486,292 +1486,321 @@ class IDE extends Component {
 		const showsAssistant = this.usesCodeAssistant();
 		const photo = this.settings.section("general").get("photo");
 		return (
-			<Hotkeys
-				keyName={
-					shortcuts.get("quickSearch") +
-					"," +
-					shortcuts.get("openClassBrowser") +
-					"," +
-					shortcuts.get("newWorkspace") +
-					"," +
-					shortcuts.get("moveToLeftTab") +
-					"," +
-					shortcuts.get("moveToRightTab")
-				}
-				filter={(event) => {
-					return true;
-				}}
-				allowRepeat={false}
-				onKeyDown={(hotkey, e, handle) => this.hotkeyPressed(hotkey)}
-			>
-				<DialogProvider>
-					<Box display="flex" sx={{ height: "95vh" }}>
-						<Titlebar
-							developer={this.currentDeveloper()}
-							dialect={this.currentDialect()}
-							version={this.currentVersion()}
-							logo={this.logo}
-							sidebarExpanded={sidebarExpanded}
-							onSidebarExpand={this.expandSidebar}
-							searchOptions={[]}
-							onSettingsClick={this.openSettings}
-							onDisconnectClick={this.disconnect}
-							colorMode={this.settings
-								.section("appearance")
-								.get("mode")}
-							onColorModeToggle={this.toggleColorMode}
-							onSearchClick={this.openQuickSearch}
-							searchPlaceholder={
-								"Use " + shortcuts.get("quickSearch")
-							}
-							onSplit={
-								extraContainers.length < MaxExtraContainers
-									? this.splitContainer
-									: null
-							}
-							photo={photo}
-						/>
-						<Sidebar
-							expanded={sidebarExpanded}
-							unreadErrorsCount={unreadErrorsCount}
-							unreadMessages={unreadMessages}
-							onSaveImageClick={this.saveImage}
-							onTranscriptClick={this.openTranscript}
-							onSearchClick={this.openSearch}
-							onChangesClick={this.browseLastChanges}
-							onResourcesClick={this.openResources}
-							onPeersClick={this.messageChannel && this.openChat}
-							onSettingsClick={this.openSettings}
-							onCollapse={this.collapseSidebar}
-						/>
-						<Box
-							component="main"
-							mt={6}
-							//disableGutters
-							flexGrow={1}
-							sx={{
-								height: "95vh",
-								width: "100vw",
-								maxWidth: "95vw",
-								padding: 1,
-							}}
-							onContextMenu={this.openMenu}
-						>
-							<CustomSplit>
-								{searchOpened ? (
-									<Box
-										width="25%"
-										minWidth="15%"
-										display="flex"
-										flexDirection="column"
-										key="search"
-										mt={1}
-									>
-										<Typography
-											color="primary"
-											variant="h6"
-										>
-											Search
-										</Typography>
-										<QuickSearch
-											initialOptions={searchOptions}
-											onResultSelect={(result, options) =>
-												this.setState({
-													searchOptions: options,
-												})
-											}
-										/>
-									</Box>
-								) : (
-									<React.Fragment key="search" />
-								)}
-								<Box flex={1} width="50%" minWidth="15%">
-									<CustomSplit>
+			<DndProvider backend={HTML5Backend}>
+				<Hotkeys
+					keyName={
+						shortcuts.get("quickSearch") +
+						"," +
+						shortcuts.get("openClassBrowser") +
+						"," +
+						shortcuts.get("newWorkspace") +
+						"," +
+						shortcuts.get("moveToLeftTab") +
+						"," +
+						shortcuts.get("moveToRightTab")
+					}
+					filter={(event) => {
+						return true;
+					}}
+					allowRepeat={false}
+					onKeyDown={(hotkey, e, handle) =>
+						this.hotkeyPressed(hotkey)
+					}
+				>
+					<DialogProvider>
+						<Box display="flex" sx={{ height: "95vh" }}>
+							<Titlebar
+								developer={this.currentDeveloper()}
+								dialect={this.currentDialect()}
+								version={this.currentVersion()}
+								logo={this.logo}
+								sidebarExpanded={sidebarExpanded}
+								onSidebarExpand={this.expandSidebar}
+								searchOptions={[]}
+								onSettingsClick={this.openSettings}
+								onDisconnectClick={this.disconnect}
+								colorMode={this.settings
+									.section("appearance")
+									.get("mode")}
+								onColorModeToggle={this.toggleColorMode}
+								onSearchClick={this.openQuickSearch}
+								searchPlaceholder={
+									"Use " + shortcuts.get("quickSearch")
+								}
+								onSplit={
+									extraContainers.length < MaxExtraContainers
+										? this.splitContainer
+										: null
+								}
+								photo={photo}
+							/>
+							<Sidebar
+								expanded={sidebarExpanded}
+								unreadErrorsCount={unreadErrorsCount}
+								unreadMessages={unreadMessages}
+								onSaveImageClick={this.saveImage}
+								onTranscriptClick={this.openTranscript}
+								onSearchClick={this.openSearch}
+								onChangesClick={this.browseLastChanges}
+								onResourcesClick={this.openResources}
+								onPeersClick={
+									this.messageChannel && this.openChat
+								}
+								onSettingsClick={this.openSettings}
+								onCollapse={this.collapseSidebar}
+							/>
+							<Box
+								component="main"
+								mt={6}
+								//disableGutters
+								flexGrow={1}
+								sx={{
+									height: "95vh",
+									width: "100vw",
+									maxWidth: "95vw",
+									padding: 1,
+								}}
+								onContextMenu={this.openMenu}
+							>
+								<CustomSplit>
+									{searchOpened ? (
 										<Box
-											key="mainContainerBox"
-											flex={1}
-											sx={{
-												minWidth: extraMinWidth,
-												width: extraWidth,
-											}}
+											width="25%"
+											minWidth="15%"
+											display="flex"
+											flexDirection="column"
+											key="search"
+											mt={1}
 										>
-											<ToolContainer
-												id={99999}
-												key="mainContainer"
-												ref={this.mainContainerRef}
-												onPageFocus={
-													this.pageFocusedInContainer
-												}
-												//onSplit={this.splitContainer} //disabled for the moment
-												showClose={false}
-											/>
-										</Box>
-										{extraContainers.map(
-											(container, index) => (
-												<Box
-													key={
-														"container" +
-														index +
-														"Box"
-													}
-													sx={{
-														minWidth: extraMinWidth,
-														width: extraWidth,
-													}}
-												>
-													{container.component}
-												</Box>
-											)
-										)}
-									</CustomSplit>
-								</Box>
-								{showsAssistant && assistantChatMaximized && (
-									<Box
-										width="25%"
-										minWidth="15%"
-										display="flex"
-										flexDirection="column"
-									>
-										<Box display="flex" flexDirection="row">
-											<Box flexGrow={1} mt={1}>
-												<Typography variant="body1">
-													Code assistant
-												</Typography>
-											</Box>
-											<IconButton
-												onClick={
-													this.minimizeAssistantChat
-												}
-												size="small"
+											<Typography
+												color="primary"
+												variant="h6"
 											>
-												<MinimizeIcon fontSize="small" />
-											</IconButton>
-										</Box>
-										<Box flexGrow={1} mt={1}>
-											<CodeAssistantChat
-												ref={this.assistantChatRef}
+												Search
+											</Typography>
+											<QuickSearch
+												initialOptions={searchOptions}
+												onResultSelect={(
+													result,
+													options
+												) =>
+													this.setState({
+														searchOptions: options,
+													})
+												}
 											/>
 										</Box>
-									</Box>
-								)}
-							</CustomSplit>
-							{showsAssistant && !assistantChatMaximized && (
-								<Fab
-									id="assitantLocation"
-									sx={{
-										position: "fixed",
-										bottom: (theme) => theme.spacing(2),
-										right: (theme) => theme.spacing(2),
-									}}
-									onClick={this.toggleOpenAssistantChat}
-									color="primary"
-								>
-									<AssistantIcon />
-								</Fab>
-							)}
-							{showsAssistant && !assistantChatMaximized && (
-								<Popper
-									open={assistantChatOpened}
-									//placement="left-end"
-									anchorEl={document.getElementById(
-										"assitantLocation"
+									) : (
+										<React.Fragment key="search" />
 									)}
-								>
-									<Card variant="outlined">
-										<CardHeader
-											disableTypography
-											action={
-												<Box>
+									<Box flex={1} width="50%" minWidth="15%">
+										<CustomSplit>
+											<Box
+												key="mainContainerBox"
+												flex={1}
+												sx={{
+													minWidth: extraMinWidth,
+													width: extraWidth,
+												}}
+											>
+												<ToolContainer
+													id={99999}
+													key="mainContainer"
+													ref={this.mainContainerRef}
+													onPageFocus={
+														this
+															.pageFocusedInContainer
+													}
+													//onSplit={this.splitContainer} //disabled for the moment
+													showClose={false}
+												/>
+											</Box>
+											{extraContainers.map(
+												(container, index) => (
+													<Box
+														key={
+															"container" +
+															index +
+															"Box"
+														}
+														sx={{
+															minWidth:
+																extraMinWidth,
+															width: extraWidth,
+														}}
+													>
+														{container.component}
+													</Box>
+												)
+											)}
+										</CustomSplit>
+									</Box>
+									{showsAssistant &&
+										assistantChatMaximized && (
+											<Box
+												width="25%"
+												minWidth="15%"
+												display="flex"
+												flexDirection="column"
+											>
+												<Box
+													display="flex"
+													flexDirection="row"
+												>
+													<Box flexGrow={1} mt={1}>
+														<Typography variant="body1">
+															Code assistant
+														</Typography>
+													</Box>
 													<IconButton
 														onClick={
 															this
-																.closeAssistantChat
+																.minimizeAssistantChat
 														}
+														size="small"
 													>
 														<MinimizeIcon fontSize="small" />
 													</IconButton>
-													<IconButton
-														onClick={
-															this
-																.maximizeAssistantChat
-														}
-													>
-														<MaximizeIcon fontSize="small" />
-													</IconButton>
 												</Box>
-											}
-											title="Code assistant"
-											style={{
-												paddingTop: 8,
-												paddingBottom: 5,
-											}}
-										/>
-										<CardContent
-											style={{
-												paddingTop: 5,
-												paddingBottom: 5,
-											}}
-										>
-											<Box
-												display="flex"
-												sx={{
-													height: 400,
-													minWidth: 400,
+												<Box flexGrow={1} mt={1}>
+													<CodeAssistantChat
+														ref={
+															this
+																.assistantChatRef
+														}
+													/>
+												</Box>
+											</Box>
+										)}
+								</CustomSplit>
+								{showsAssistant && !assistantChatMaximized && (
+									<Fab
+										id="assitantLocation"
+										sx={{
+											position: "fixed",
+											bottom: (theme) => theme.spacing(2),
+											right: (theme) => theme.spacing(2),
+										}}
+										onClick={this.toggleOpenAssistantChat}
+										color="primary"
+									>
+										<AssistantIcon />
+									</Fab>
+								)}
+								{showsAssistant && !assistantChatMaximized && (
+									<Popper
+										open={assistantChatOpened}
+										//placement="left-end"
+										anchorEl={document.getElementById(
+											"assitantLocation"
+										)}
+									>
+										<Card variant="outlined">
+											<CardHeader
+												disableTypography
+												action={
+													<Box>
+														<IconButton
+															onClick={
+																this
+																	.closeAssistantChat
+															}
+														>
+															<MinimizeIcon fontSize="small" />
+														</IconButton>
+														<IconButton
+															onClick={
+																this
+																	.maximizeAssistantChat
+															}
+														>
+															<MaximizeIcon fontSize="small" />
+														</IconButton>
+													</Box>
+												}
+												title="Code assistant"
+												style={{
+													paddingTop: 8,
+													paddingBottom: 5,
+												}}
+											/>
+											<CardContent
+												style={{
+													paddingTop: 5,
+													paddingBottom: 5,
 												}}
 											>
-												<CodeAssistantChat
-													ref={this.assistantChatRef}
-												/>
-											</Box>
-										</CardContent>
-									</Card>
-								</Popper>
-							)}
-							{menuOptions && menuOptions.length > 0 && (
-								<PopupMenu
-									options={menuOptions}
-									open={menuOpen}
-									position={menuPosition}
-									onClose={this.closeMenu}
-								/>
-							)}
+												<Box
+													display="flex"
+													sx={{
+														height: 400,
+														minWidth: 400,
+													}}
+												>
+													<CodeAssistantChat
+														ref={
+															this
+																.assistantChatRef
+														}
+													/>
+												</Box>
+											</CardContent>
+										</Card>
+									</Popper>
+								)}
+								{menuOptions && menuOptions.length > 0 && (
+									<PopupMenu
+										options={menuOptions}
+										open={menuOpen}
+										position={menuPosition}
+										onClose={this.closeMenu}
+									/>
+								)}
+							</Box>
 						</Box>
-					</Box>
-					<Backdrop
-						//sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-						open={waiting}
-					>
-						<CircularProgress color="inherit" />
-						{waitDescription && waitDescription !== "" && (
-							<Typography ml={2}>{waitDescription}</Typography>
-						)}
-					</Backdrop>
-					<CustomSnacks
-						open={lastMessage !== null}
-						onClose={() => this.setState({ lastMessage: null })}
-						action={lastMessage ? lastMessage.action : null}
-						text={lastMessage ? lastMessage.text : ""}
-						severity={lastMessage ? lastMessage.type : ""}
-					/>
-				</DialogProvider>
-				<Dialog
-					onClose={() => this.setState({ quickSearchOpen: false })}
-					open={quickSearchOpen}
-				>
-					<DialogTitle>Quick Search</DialogTitle>
-					<DialogContent dividers sx={{ width: 600, height: 400 }}>
-						<QuickSearch
-							initialOptions={quickSearchOptions}
-							onResultSelect={(result, options) =>
-								this.setState({
-									quickSearchOpen: false,
-									quickSearchOptions: options,
-								})
-							}
+						<Backdrop
+							//sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+							open={waiting}
+						>
+							<CircularProgress color="inherit" />
+							{waitDescription && waitDescription !== "" && (
+								<Typography ml={2}>
+									{waitDescription}
+								</Typography>
+							)}
+						</Backdrop>
+						<CustomSnacks
+							open={lastMessage !== null}
+							onClose={() => this.setState({ lastMessage: null })}
+							action={lastMessage ? lastMessage.action : null}
+							text={lastMessage ? lastMessage.text : ""}
+							severity={lastMessage ? lastMessage.type : ""}
 						/>
-					</DialogContent>
-				</Dialog>
-			</Hotkeys>
+					</DialogProvider>
+					<Dialog
+						onClose={() =>
+							this.setState({ quickSearchOpen: false })
+						}
+						open={quickSearchOpen}
+					>
+						<DialogTitle>Quick Search</DialogTitle>
+						<DialogContent
+							dividers
+							sx={{ width: 600, height: 400 }}
+						>
+							<QuickSearch
+								initialOptions={quickSearchOptions}
+								onResultSelect={(result, options) =>
+									this.setState({
+										quickSearchOpen: false,
+										quickSearchOptions: options,
+									})
+								}
+							/>
+						</DialogContent>
+					</Dialog>
+				</Hotkeys>
+			</DndProvider>
 		);
 	}
 }

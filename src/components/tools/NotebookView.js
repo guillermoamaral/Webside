@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Box, IconButton, Tooltip, Divider, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import NotebookCellEditor from "../parts/NotebookCellEditor";
+import DraggableReorderItem from "../controls/DraggableReorderItem";
 import EvaluateIcon from "@mui/icons-material/PlayCircle";
 import Notebook from "../../model/Notebook";
 
@@ -14,6 +15,7 @@ class NotebookView extends Component {
 			activeCellIndex: null,
 			hoveredIndex: null,
 			hoveredInsertIndex: null,
+			dragging: false,
 		};
 		this.cellRefs = [];
 	}
@@ -73,8 +75,8 @@ class NotebookView extends Component {
 		this.setState({ activeCellIndex: null });
 	};
 
-	reorderCells = (from, to) => {
-		this.notebook.reorderCells(from, to);
+	moveCell = (from, to) => {
+		this.notebook.moveCell(from, to);
 		this.setState(
 			{ cells: this.notebook.cells, activeCellIndex: to },
 			this.notebookChanged
@@ -82,12 +84,12 @@ class NotebookView extends Component {
 	};
 
 	moveUpCell = (index) => {
-		if (index > 0) this.reorderCells(index, index - 1);
+		if (index > 0) this.moveCell(index, index - 1);
 	};
 
 	moveDownCell = (index) => {
 		if (index < this.state.cells.length - 1)
-			this.reorderCells(index, index + 1);
+			this.moveCell(index, index + 1);
 	};
 
 	evaluateAllCells = () => {
@@ -160,127 +162,162 @@ class NotebookView extends Component {
 				</Box>
 				<Divider />
 				<Box mt={1}>
-					{[...Array(cells.length + 1)].map((_, index) => (
-						<Box key={`insert-${index}`}>
-							<Box
-								sx={{
-									width: "100%",
-									height: 20,
-									position: "relative",
-								}}
-								onMouseEnter={() =>
-									this.setState({ hoveredInsertIndex: index })
-								}
-								onMouseLeave={() =>
-									this.setState({ hoveredInsertIndex: null })
-								}
-							>
-								{hoveredInsertIndex === index && (
-									<>
-										<Divider
-											sx={{
-												position: "absolute",
-												top: "50%",
-												width: "100%",
-											}}
-										/>
-										<Box
-											sx={{
-												position: "absolute",
-												top: "50%",
-												left: "50%",
-												transform:
-													"translate(-50%, -50%)",
-												display: "flex",
-												gap: 1,
-												backgroundColor:
-													"background.paper",
-												px: 1,
-											}}
-										>
-											<Tooltip title="Inser code cell here">
-												<Button
-													variant="text"
-													size="small"
-													startIcon={
-														<AddIcon fontSize="small" />
-													}
-													onClick={(event) =>
-														this.addCellClicked(
-															event,
-															index,
-															"code"
-														)
-													}
-												>
-													Code
-												</Button>
-											</Tooltip>
-											<Tooltip title="Inser text cell here">
-												<Button
-													variant="text"
-													size="small"
-													startIcon={
-														<AddIcon fontSize="small" />
-													}
-													onClick={(event) =>
-														this.addCellClicked(
-															event,
-															index,
-															"text"
-														)
-													}
-												>
-													Text
-												</Button>
-											</Tooltip>
-										</Box>
-									</>
-								)}
-							</Box>
-							{index < cells.length && (
+					{[...Array(cells.length + 1)].map((_, index) => {
+						return (
+							<Box key={`insert-${index}`}>
 								<Box
-									display="flex"
-									flexDirection="row"
-									alignItems="center"
-									onClick={(event) =>
-										this.editCell(event, index)
-									}
+									sx={{
+										width: "100%",
+										height: 20,
+										position: "relative",
+									}}
 									onMouseEnter={() =>
 										this.setState({
-											hoveredIndex: index,
+											hoveredInsertIndex: index,
 										})
 									}
 									onMouseLeave={() =>
-										this.setState({ hoveredIndex: null })
+										this.setState({
+											hoveredInsertIndex: null,
+										})
 									}
-									width="100%"
-									key={"cell-" + index}
-									mb={1}
-									px={4}
 								>
-									<NotebookCellEditor
-										ref={(ref) =>
-											(this.cellRefs[index] = ref)
-										}
-										editable={activeCellIndex === index}
-										cell={cells[index]}
-										onChange={this.notebookChanged}
-										onEvaluate={this.cellEvaluated}
-										onDelete={() => this.deleteCell(index)}
-										evaluationContext={evaluationContext}
-										onMoveUp={() => this.moveUpCell(index)}
-										onMoveDown={() =>
-											this.moveDownCell(index)
-										}
-										enableUp={index > 0}
-										enableDown={index < cells.length - 1}
-										hovered={hoveredIndex === index}
-									/>
+									{hoveredInsertIndex === index && (
+										<>
+											<Divider
+												sx={{
+													position: "absolute",
+													top: "50%",
+													width: "100%",
+												}}
+											/>
+											{
+												<Box
+													sx={{
+														position: "absolute",
+														top: "50%",
+														left: "50%",
+														transform:
+															"translate(-50%, -50%)",
+														display: "flex",
+														gap: 1,
+														backgroundColor:
+															"background.paper",
+														px: 1,
+													}}
+												>
+													<Tooltip title="Inser code cell here">
+														<Button
+															variant="text"
+															size="small"
+															startIcon={
+																<AddIcon fontSize="small" />
+															}
+															onClick={(event) =>
+																this.addCellClicked(
+																	event,
+																	index,
+																	"code"
+																)
+															}
+														>
+															Code
+														</Button>
+													</Tooltip>
+													<Tooltip title="Inser text cell here">
+														<Button
+															variant="text"
+															size="small"
+															startIcon={
+																<AddIcon fontSize="small" />
+															}
+															onClick={(event) =>
+																this.addCellClicked(
+																	event,
+																	index,
+																	"text"
+																)
+															}
+														>
+															Text
+														</Button>
+													</Tooltip>
+												</Box>
+											}
+										</>
+									)}
 								</Box>
-							)}
-						</Box>
-					))}
+								{index < cells.length && (
+									<Box
+										display="flex"
+										flexDirection="row"
+										alignItems="center"
+										onClick={(event) =>
+											this.editCell(event, index)
+										}
+										onMouseEnter={() =>
+											this.setState({
+												hoveredIndex: index,
+											})
+										}
+										onMouseLeave={() =>
+											this.setState({
+												hoveredIndex: null,
+											})
+										}
+										width="100%"
+										key={"cell-" + index}
+										mb={1}
+										px={4}
+									>
+										<DraggableReorderItem
+											index={index}
+											type="NOTEBOOK_CELL"
+											onMove={this.moveCell}
+											direction="vertical"
+											dragHandle={true}
+											sx={{
+												width: "100%",
+												display: "flex",
+											}}
+											onDraggingChange={(dragging) =>
+												this.setState({ dragging })
+											}
+										>
+											<NotebookCellEditor
+												ref={(ref) =>
+													(this.cellRefs[index] = ref)
+												}
+												editable={
+													activeCellIndex === index
+												}
+												cell={cells[index]}
+												onChange={this.notebookChanged}
+												onEvaluate={this.cellEvaluated}
+												onDelete={() =>
+													this.deleteCell(index)
+												}
+												evaluationContext={
+													evaluationContext
+												}
+												onMoveUp={() =>
+													this.moveUpCell(index)
+												}
+												onMoveDown={() =>
+													this.moveDownCell(index)
+												}
+												enableUp={index > 0}
+												enableDown={
+													index < cells.length - 1
+												}
+												hovered={hoveredIndex === index}
+											/>
+										</DraggableReorderItem>
+									</Box>
+								)}
+							</Box>
+						);
+					})}
 				</Box>
 			</Box>
 		);
