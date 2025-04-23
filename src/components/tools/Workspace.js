@@ -18,6 +18,8 @@ import { ide } from "../IDE";
 import CustomSplit from "../controls/CustomSplit";
 import NotebookView from "./NotebookView";
 import Notebook from "../../model/Notebook";
+import Scrollable from "../controls/Scrollable";
+import ShareIcon from "@mui/icons-material/Share";
 
 class Workspace extends Tool {
 	constructor(props) {
@@ -61,7 +63,6 @@ class Workspace extends Tool {
 
 	save = async () => {
 		const { source, name } = this.state;
-		console.log(name);
 		try {
 			await ide.backend.saveWorkspace({
 				id: this.props.id,
@@ -173,6 +174,15 @@ class Workspace extends Tool {
 		this.setState({ name: event.target.value });
 	};
 
+	copyUrlToClipboard = () => {
+		const url = new URL(window.location.href);
+		url.hash = url.hash + `&workspace=${this.props.id}`;
+		navigator.clipboard.writeText(url.toString()).then(
+			() => ide.inform("Workspace link copied to clipboard"),
+			(err) => ide.reportError("Failed to copy: " + err)
+		);
+	};
+
 	render() {
 		const {
 			name,
@@ -199,44 +209,59 @@ class Workspace extends Tool {
 					}}
 				>
 					<Box
-						onDoubleClick={() =>
-							this.setState({ editingName: true })
-						}
-						sx={{ minWidth: 150 }}
+						sx={{
+							display: "flex",
+							alignItems: "center",
+							gap: 1,
+							minWidth: 150,
+						}}
 					>
-						{editingName ? (
-							<TextField
-								variant="standard"
-								autoFocus
-								placeholder="[Unnamed]"
-								value={name}
-								onChange={this.nameChanged}
-								onBlur={() =>
-									this.setState(
-										{ editingName: false },
-										this.save
-									)
-								}
-								onKeyDown={(e) => {
-									if (e.key === "Enter") {
+						<IconButton
+							size="small"
+							onClick={this.copyUrlToClipboard}
+						>
+							<ShareIcon fontSize="small" />
+						</IconButton>
+						<Box
+							onDoubleClick={() =>
+								this.setState({ editingName: true })
+							}
+							sx={{ minWidth: 100 }}
+						>
+							{editingName ? (
+								<TextField
+									variant="standard"
+									autoFocus
+									placeholder="[Unnamed]"
+									value={name}
+									onChange={this.nameChanged}
+									onBlur={() =>
 										this.setState(
 											{ editingName: false },
 											this.save
-										);
+										)
 									}
-								}}
-								InputProps={{ disableUnderline: true }}
-							/>
-						) : (
-							<Typography
-								variant="normal"
-								fontWeight="fontWeightBold"
-								fontStyle="italic"
-								color="text.secondary"
-							>
-								{name || "[Unnamed]"}
-							</Typography>
-						)}
+									onKeyDown={(e) => {
+										if (e.key === "Enter") {
+											this.setState(
+												{ editingName: false },
+												this.save
+											);
+										}
+									}}
+									InputProps={{ disableUnderline: true }}
+								/>
+							) : (
+								<Typography
+									variant="normal"
+									fontWeight="fontWeightBold"
+									fontStyle="italic"
+									color="text.secondary"
+								>
+									{name || "[Unnamed]"}
+								</Typography>
+							)}
+						</Box>
 					</Box>
 					<Link
 						href="#"
@@ -338,11 +363,13 @@ class Workspace extends Tool {
 					</CustomSplit>
 				)}
 				{useNotebookView && (
-					<NotebookView
-						notebook={notebook}
-						onChange={this.notebookChanged}
-						evaluationContext={this.evaluationContext()}
-					/>
+					<Scrollable sx={{ flexGrow: 1 }}>
+						<NotebookView
+							notebook={notebook}
+							onChange={this.notebookChanged}
+							evaluationContext={this.evaluationContext()}
+						/>
+					</Scrollable>
 				)}
 			</Box>
 		);
