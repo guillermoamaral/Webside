@@ -1,5 +1,136 @@
 [
 	{
+		"name": "Modern",
+		"dark": {
+			"commentStyle": {
+				"color": "#6A9955",
+				"italic": true
+			},
+			"stringStyle": {
+				"color": "#CE9178"
+			},
+			"numberStyle": {
+				"color": "#B5CEA8"
+			},
+			"variableStyle": {
+				"color": "#D4D4D4"
+			},
+			"temporaryStyle": {
+				"color": "#4EC9B0"
+			},
+			"argumentStyle": {
+				"color": "#9CDCFE"
+			},
+			"symbolStyle": {
+				"color": "#569CD6"
+			},
+			"globalStyle": {
+				"color": "#4EC9B0"
+			},
+			"selfStyle": {
+				"color": "#569CD6"
+			},
+			"superStyle": {
+				"color": "#569CD6"
+			},
+			"trueStyle": {
+				"color": "#569CD6"
+			},
+			"falseStyle": {
+				"color": "#569CD6"
+			},
+			"nilStyle": {
+				"color": "#569CD6"
+			},
+			"thisContextStyle": {
+				"color": "#569CD6"
+			},
+			"primaryColor": "#FFFFFF",
+			"secondaryColor": "#CCCCCC",
+			"background": "#1F1F1F",
+			"systemBrowserColor": "#1F1F1F",
+			"classBrowserColor": "#1F1F1F",
+			"debuggerColor": "#1F1F1F",
+			"inspectorColor": "#1F1F1F",
+			"workspaceColor": "#1F1F1F",
+			"transcriptColor": "#1F1F1F",
+			"methodBrowserColor": "#1F1F1F",
+			"changesBrowserColor": "#1F1F1F",
+			"historyBrowserColor": "#1F1F1F",
+			"primaryText": "#CCCCCC",
+			"secondaryText": "#9D9D9D",
+			"disabledText": "#AAAAAA80",
+			"appliedChange": "#81D41A",
+			"unappliedChange": "#808080",
+			"separatorColor": "#2A2A2A",
+			"selectionColor": "#264F78"
+		},
+		"light": {
+			"commentStyle": {
+				"color": "#008000",
+				"italic": true
+			},
+			"stringStyle": {
+				"color": "#A31515"
+			},
+			"numberStyle": {
+				"color": "#098658"
+			},
+			"variableStyle": {
+				"color": "#000000"
+			},
+			"temporaryStyle": {
+				"color": "#007ACC"
+			},
+			"argumentStyle": {
+				"color": "#0451A5"
+			},
+			"symbolStyle": {
+				"color": "#267F99"
+			},
+			"globalStyle": {
+				"color": "#007ACC"
+			},
+			"selfStyle": {
+				"color": "#267F99"
+			},
+			"superStyle": {
+				"color": "#267F99"
+			},
+			"trueStyle": {
+				"color": "#267F99"
+			},
+			"falseStyle": {
+				"color": "#267F99"
+			},
+			"nilStyle": {
+				"color": "#267F99"
+			},
+			"thisContextStyle": {
+				"color": "#267F99"
+			},
+			"primaryColor": "#000000",
+			"secondaryColor": "#333333",
+			"background": "#FFFFFF",
+			"systemBrowserColor": "#FFFFFF",
+			"classBrowserColor": "#FFFFFF",
+			"debuggerColor": "#FFFFFF",
+			"inspectorColor": "#FFFFFF",
+			"workspaceColor": "#FFFFFF",
+			"transcriptColor": "#FFFFFF",
+			"methodBrowserColor": "#FFFFFF",
+			"changesBrowserColor": "#FFFFFF",
+			"historyBrowserColor": "#FFFFFF",
+			"primaryText": "#000000",
+			"secondaryText": "#333333",
+			"disabledText": "#00000080",
+			"appliedChange": "#81D41A",
+			"unappliedChange": "#808080",
+			"separatorColor": "#CCCCCC",
+			"selectionColor": "#CCE3FF"
+		}
+	},
+	{
 		"name": "Quiet Light",
 		"dark": {
 			"commentStyle": {
