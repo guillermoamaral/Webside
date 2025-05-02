@@ -111,13 +111,13 @@ class ToolContainer extends Component {
 	}
 
 	selectPageAtOffset(offset) {
-		const pages = this.state.pages;
-		var page = this.pageWithId(this.state.selectedPageId);
+		const { pages, selectedPageId } = this.state;
+		var page = this.pageWithId(selectedPageId);
 		var index = pages.indexOf(page);
 		if (index >= 0) {
 			index = index + offset;
 			if (index < 0) {
-				index = pages.length;
+				index = pages.length - 1;
 			} else if (index >= pages.length) {
 				index = 0;
 			}
