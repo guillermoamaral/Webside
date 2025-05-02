@@ -14,6 +14,7 @@ import {
 	Fab,
 	Typography,
 } from "@mui/material";
+import CollapseSearchIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import CodeAssistantChat from "./tools/CodeAssistantChat";
 import MinimizeIcon from "@mui/icons-material/Minimize";
 import MaximizeIcon from "@mui/icons-material/Maximize";
@@ -808,10 +809,14 @@ class IDE extends Component {
 		}
 	};
 
-	openSearch = () => {
+	toggleOpenSearch = () => {
 		//this.mainContainer().openSearch();
 		//this.openQuickSearch();
 		this.setState({ searchOpened: !this.state.searchOpened });
+	};
+
+	closeSearch = () => {
+		this.setState({ searchOpened: false });
 	};
 
 	openQuickSearch = () => {
@@ -1540,7 +1545,7 @@ class IDE extends Component {
 								unreadMessages={unreadMessages}
 								onSaveImageClick={this.saveImage}
 								onTranscriptClick={this.openTranscript}
-								onSearchClick={this.openSearch}
+								onSearchClick={this.toggleOpenSearch}
 								onChangesClick={this.browseLastChanges}
 								onResourcesClick={this.openResources}
 								onPeersClick={
@@ -1572,12 +1577,25 @@ class IDE extends Component {
 											key="search"
 											mt={1}
 										>
-											<Typography
-												color="primary"
-												variant="h6"
+											<Box
+												display="flex"
+												flexDirection="row"
+												justifyContent="space-between"
 											>
-												Search
-											</Typography>
+												<Typography
+													color="primary"
+													variant="body1"
+													ml={1}
+												>
+													Search
+												</Typography>
+												<IconButton
+													onClick={this.closeSearch}
+													size="small"
+												>
+													<CollapseSearchIcon fontSize="small" />
+												</IconButton>
+											</Box>
 											<QuickSearch
 												initialOptions={searchOptions}
 												onResultSelect={(

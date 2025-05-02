@@ -3,7 +3,7 @@ import axios from "axios";
 class BackendError extends Error {
 	constructor(description, url, request, status, reason, data) {
 		const explanation =
-			reason && reason.lenght > 0 ? " due to " + reason : "";
+			reason && reason.length > 0 ? " due to " + reason : "";
 		const message = '"' + description + " (" + url + explanation + ')"';
 		super(message);
 		this.name = "BackendError";
@@ -435,6 +435,7 @@ class Backend {
 	}
 
 	// Debugging...
+	
 	async debuggers() {
 		return await this.get("/debuggers", "debuggers");
 	}
@@ -527,6 +528,7 @@ class Backend {
 	}
 
 	// Workspaces...
+
 	async workspaces() {
 		return await this.get("/workspaces", "workspaces");
 	}
@@ -555,6 +557,7 @@ class Backend {
 	}
 
 	// Changes...
+
 	async usesChanges() {
 		if (this.useChanges === null) {
 			try {
@@ -646,6 +649,7 @@ class Backend {
 	}
 
 	// Change helpers...
+
 	async createPackage(packagename) {
 		const description = "create package " + packagename;
 		const change = this.newChange("AddPackage");
@@ -884,7 +888,7 @@ class Backend {
 		change.category = category;
 		return await this.postChange(
 			change,
-			"classify methodd " +
+			"classify method " +
 				classname +
 				">>#" +
 				selector +
@@ -941,6 +945,7 @@ class Backend {
 	}
 
 	// Evaluations...
+
 	async evaluateExpression(
 		expression,
 		sync = false,
@@ -1021,6 +1026,7 @@ class Backend {
 	}
 
 	// Objects...
+
 	async objects() {
 		return await this.get("/objects", "objects");
 	}
@@ -1081,6 +1087,7 @@ class Backend {
 	}
 
 	// Tests...
+
 	async testRuns() {
 		return await this.get("/test-runs", "test runs");
 	}
@@ -1157,6 +1164,7 @@ class Backend {
 	}
 
 	// Profiling...
+
 	async profilerTreeResults(id) {
 		return await this.get(
 			"/profilers/" + id + "/tree",
@@ -1176,6 +1184,7 @@ class Backend {
 	}
 
 	//Native debugging...
+
 	async nativeDebugger(id) {
 		return await this.get(
 			"/native-debuggers/" + id,
