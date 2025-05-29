@@ -931,7 +931,7 @@ class CodeEditor extends Component {
 				caret:
 					mode.name === "light" ? "black" : mode.get("primaryColor"),
 				selection: mode.get("selectionColor"),
-				selectionMatch: "#cccccc50",
+				selectionMatch: "#ef9b9b50",
 				lineHighlight: "#8a91991a",
 				gutterBackground: background,
 				gutterBorder: background,
