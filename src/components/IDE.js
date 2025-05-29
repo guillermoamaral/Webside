@@ -218,7 +218,7 @@ class IDE extends Component {
 		light.set("appliedChange", "green");
 		light.set("unappliedChange", "#969696");
 		light.set("separatorColor", "#b3bab6");
-		light.set("selectionColor", "#9bcaef64");
+		light.set("selectionColor", "#9bcaef50");
 		light.setting("selectorStyle").color = "#000000";
 		light.setting("symbolStyle").color = "#2aa9b2";
 		light.setting("argumentStyle").color = "#f06520";
