@@ -9,6 +9,62 @@ class AICodeGenerationResult {
 		this.scripts = [];
 	}
 
+	isEmpty() {
+		return (
+			this.classes.length === 0 &&
+			this.methods.length === 0 &&
+			this.scripts.length === 0
+		);
+	}
+
+	hasOnlyClassNames() {
+		if (
+			this.classes.length === 0 ||
+			this.methods.length !== 0 ||
+			this.scripts.length !== 0
+		)
+			return false;
+		return this.classes.filter((c) => !c.hasOnlyName()).length === 0;
+	}
+
+	hasOnlySignatures() {
+		if (
+			this.classes.length !== 0 ||
+			this.methods.length === 0 ||
+			this.scripts.length !== 0
+		)
+			return false;
+		return this.methods.filter((m) => !m.hasOnlySignature()).length === 0;
+	}
+
+	classLinks() {
+		let names = "";
+		let first = true;
+		this.classes.forEach((c) => {
+			if (first) {
+				first = false;
+			} else {
+				names += "\n\n";
+			}
+			names += `* [${c.name}](internalLink?classname=${c.name})`;
+		});
+		return names;
+	}
+
+	signatureLinks() {
+		let signatures = "";
+		let first = true;
+		this.methods.forEach((m) => {
+			if (first) {
+				first = false;
+			} else {
+				signatures += "\n\n";
+			}
+			signatures += `* [${m.methodClass.name}>>#${m.selector}](internalLink?classname=${m.methodClass.name}&selector=${m.selector})`;
+		});
+		return signatures;
+	}
+
 	addClass(suggestedClass) {
 		this.classes.push(suggestedClass);
 	}
@@ -40,11 +96,11 @@ class AICodeGenerationResult {
 		});
 		this.methods.forEach((m, i) => {
 			if (i !== 0) chunk += `\n\n`;
-			chunk += m.sourceCode;
+			chunk += m.source;
 		});
 		this.scripts.forEach((s, i) => {
 			if (i !== 0) chunk += `\n\n`;
-			chunk += s.sourceCode;
+			chunk += s.source;
 		});
 		return chunk;
 	}

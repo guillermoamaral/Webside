@@ -1,10 +1,10 @@
 class AISuggestedScript {
-	constructor(sourceCode = "") {
-		this.sourceCode = sourceCode;
+	constructor(source = "") {
+		this.source = source;
 	}
 
 	codeChunk() {
-		return this.sourceCode;
+		return this.source;
 	}
 }
 

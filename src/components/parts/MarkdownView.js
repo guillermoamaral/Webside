@@ -15,6 +15,14 @@ class MarkdownView extends Component {
 		this.forceUpdate();
 	};
 
+	linkClicked = (event) => {
+		event.stopPropagation();
+		if (this.props.onLinkClick) {
+			event.preventDefault();
+			this.props.onLinkClick(event.target.href);
+		}
+	};
+
 	render() {
 		const source = this.props.source;
 		const appearance = ide.settings.section("appearance");
@@ -36,7 +44,7 @@ class MarkdownView extends Component {
 							href={href}
 							target="_blank"
 							rel="noopener noreferrer"
-							onClick={(event) => event.stopPropagation()}
+							onClick={this.linkClicked}
 						>
 							{children}
 						</a>

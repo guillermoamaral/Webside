@@ -855,6 +855,10 @@ class IDE extends Component {
 		this.mainContainer().openChat();
 	};
 
+	browseMethods = (methods) => {
+		this.mainContainer().openMethodBrowser(methods);
+	};
+
 	async inspectExpression(expression) {
 		const object = await this.backend.evaluateExpression(
 			expression,

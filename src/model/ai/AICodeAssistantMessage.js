@@ -1,7 +1,4 @@
-import AICodeGenerationResult from "./AICodeGenerationResult";
-import AISuggestedClass from "./AISuggestedClass";
-import AISuggestedMethod from "./AISuggestedMethod";
-import AISuggestedScript from "./AISuggestedScript";
+import AICodeAssistantMessageParser from "./AICodeAssistantMessageParser";
 
 class AICodeAssistantMessage {
 	constructor(role = "user", content = "", visibleContent) {
@@ -57,56 +54,6 @@ class AICodeAssistantMessage {
 		return this.toolCall !== null;
 	}
 
-	extractMethodFrom(xmlNode) {
-		return new AISuggestedMethod(null, xmlNode.textContent.trim());
-	}
-
-	extractScriptFrom(xmlNode) {
-		console.log("script!", xmlNode.textContent.trim());
-		return new AISuggestedScript(xmlNode.textContent.trim());
-	}
-
-	extractClassFrom(xmlNode) {
-		const name = xmlNode.querySelector("name")?.textContent || "";
-		const species = new AISuggestedClass(name);
-		const superclassName =
-			xmlNode.querySelector("superclass")?.textContent || "";
-		if (superclassName) species.superclassName = superclassName;
-		const instVarNames =
-			xmlNode.querySelector("instanceVariables")?.textContent || "";
-		if (instVarNames)
-			species.instanceVariableNames = instVarNames.split(" ");
-		const classVarNames =
-			xmlNode.querySelector("classVariables")?.textContent || "";
-		if (classVarNames)
-			species.classVariableNames = classVarNames.split(" ");
-		xmlNode.childNodes.forEach((child) => {
-			if (
-				child.nodeType === 1 &&
-				child.tagName === "method" &&
-				child.textContent
-			) {
-				species.addMethod(this.extractMethodFrom(child));
-			}
-		});
-		return species;
-	}
-
-	extractCodeFrom(xmlNode) {
-		const code = new AICodeGenerationResult();
-		xmlNode.querySelector("code").childNodes.forEach((child) => {
-			if (child.nodeType === 1) {
-				if (child.tagName === "class")
-					code.addClass(this.extractClassFrom(child));
-				if (child.tagName === "method")
-					code.addMethod(this.extractMethodFrom(child));
-				if (child.tagName === "script")
-					code.addScript(this.extractScriptFrom(child));
-			}
-		});
-		return code;
-	}
-
 	initializeParts() {
 		this.parts = [];
 		if (this.visibleContent) {
@@ -116,59 +63,7 @@ class AICodeAssistantMessage {
 			});
 			return;
 		}
-		const regex = /<(code|thinking|issue)>([\s\S]*?)<\/\1>/g;
-		let lastIndex = 0;
-		let match, part;
-		const raw = this.rawContent || "";
-		while ((match = regex.exec(raw)) !== null) {
-			if (lastIndex < match.index) {
-				part = {
-					type: "text",
-					content: raw.slice(lastIndex, match.index).trim(),
-				};
-				this.parts.push(part);
-			}
-			const type = match[1];
-			let content = match[2].trim() || "";
-			if (content.length > 0) {
-				part = {
-					type: "text",
-					content: `**${type.charAt(0).toUpperCase()}${type.slice(
-						1
-					)}**. ${content}`,
-				};
-				if (type === "code") {
-					const parser = new DOMParser();
-					const xmlNode = parser.parseFromString(
-						`<code>${content}</code>`,
-						"text/xml"
-					);
-					const code = this.extractCodeFrom(xmlNode);
-					part.type = "code";
-					part.code = code;
-					part.content = code.codeChunk();
-				}
-				if (
-					part.type === "text" &&
-					this.parts.length > 0 &&
-					this.parts[this.parts.length - 1].type === "text"
-				) {
-					this.parts[
-						this.parts.length - 1
-					].content += `${part.content}`;
-				} else {
-					this.parts.push(part);
-				}
-			}
-			lastIndex = regex.lastIndex;
-		}
-		if (lastIndex < raw.length) {
-			part = {
-				type: "text",
-				content: raw.slice(lastIndex).trim(),
-			};
-			this.parts.push(part);
-		}
+		this.parts = new AICodeAssistantMessageParser().parse(this.rawContent);
 	}
 }
 
