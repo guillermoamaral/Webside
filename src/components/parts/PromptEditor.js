@@ -227,7 +227,6 @@ class PromptEditor extends Component {
 	};
 
 	render() {
-		console.log("rendering prompt editor");
 		const prompt = this.state.prompt;
 		return (
 			<Box style={{ width: "100%", height: "100%" }}>

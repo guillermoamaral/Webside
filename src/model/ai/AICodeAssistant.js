@@ -14,14 +14,45 @@ class AICodeAssistant {
 		this.initializeTools();
 	}
 
+	initializeMessages() {
+		const message = AICodeAssistantMessage.systemPrompt(this.systemPrompt);
+		this.messages = [message];
+	}
+
 	defaultInterface() {
 		return new OpenAIInterface();
 	}
 
 	defaultSystemPrompt() {
-		return `You are an expert Smalltalk programmer.
-When I ask for help to analyze, explain or write Smalltalk code, you will reply accordingly.
-In your response you will avoid using the words 'Smalltalk' and 'snippet'.`;
+		return `You are an expert Smalltalk programmer, integrated in a Smalltalk IDE.
+	You have access to several tools that can help you obtain information about the codebase. These tools are precise and return authoritative results. 
+	You should invoke them as needed, and trust their results.
+	
+	Here is what each tool provides:
+	
+	- search_implementors(selector): returns the methods that implement a given selector (message). Only use this to find methods implementing a selector, not for classes or protocols.
+	
+	- search_senders(selector): returns the methods that send a given selector (message).
+	
+	- search_classReferences(classname): returns the methods that reference a given class.
+	
+	- class_definition(classname): returns the definition of a given class.
+	
+	- class_protocol(classname): returns the list of selectors (messages) that instances of the class understand and implement. Use this to answer questions like "what messages does <classname> implement?", "what methods does <classname> have?", "what services does <classname> provide?", etc.
+	
+	- search_subclasses(classname): returns the direct subclasses of a given class.
+	
+	- evaluate_expression(expression): evaluates a Smalltalk expression and returns the result.
+	
+	General guidelines:
+	
+	- Use the tools whenever possible instead of guessing.
+	- When a tool returns a result, assume it is correct. Do not reinterpret or modify its meaning. If the result is a list of selectors, present it as <code><method class="ClassName" selector="selectorName"/>...</code>.
+	- If the tool result is already formatted as XML or code, preserve that structure and do not add extra explanations unless asked.
+	- Never propose classes or selectors unless you have verified their existence using the appropriate tool.
+	- Avoid using the words 'Smalltalk' and 'snippet' in your responses.
+	
+	You are helping the user analyze, explain, and write Smalltalk code interactively in the IDE.`;
 	}
 
 	systemPromptForCodeAnalysis() {
@@ -41,11 +72,6 @@ If you find any issue when generating code do say it.`;
 Your task is to generate a test case for the provided code.`;
 	}
 
-	initializeMessages() {
-		const message = AICodeAssistantMessage.systemPrompt(this.systemPrompt);
-		this.messages = [message];
-	}
-
 	codeResponseFormatSpecification() {
 		return `You answer should be in correct Smalltalk, without any \`\`\` marks nor the word Smalltalk, in the following format:
 <issue>if you think there's a problem, describe it here, otherwise do not include this tag</issue>
@@ -54,21 +80,97 @@ ${this.codeFormatSpecification()}`;
 	}
 
 	codeFormatSpecification() {
-		return `Any Smalltalk code you provide should be in correct Smalltalk, without any \`\`\` marks nor the word Smalltalk.
-		If you provide classes the code should be organized in the following format:
+		return `Any Smalltalk code you provide should be in correct Smalltalk, without any \`\`\` Markdown mark nor the word Smalltalk,
+		and using the following format.
+		If you only provide names classes, use this format:
+		
 		<code>
-			<class>
-				<superclass>Smalltalk superclass name here</superclass>
-				<name>Smalltalk class name here</name>
-				<instanceVariables>instance variables here, space-separated</instanceVariables>
-				<classVariables>class variables here, space-separated</instanceVariables>
-				<method>Smalltalk method code here; avoid including the class and >> before the selector</method>
-				<method>Smalltalk method code here; avoid including the class and >> before the selector</method>
+			<class name="Class name here"/>
+			...
+			<class name="Class name here"/>
+		</code>
+
+		For example:
+
+		<code>
+			<class name="Foo"/>
+			<class name="Bar"/>
+		</code>
+
+		If you provide classes with methods, the code should be organized like this:
+		
+		<code>
+			<class superclass="Superclass name here" name="Class name here" 
+			instanceVariables="Instance variables here, space-separated"
+			classVariables="Class variables here, space-separated"/>
+				<method selector="Method selector here">Method code here; avoid including the class and >> before the selector</method>
 				...
+				<method selector="Method selector here">Method code here; avoid including the class and >> before the selector</method>				...
 			</class>
 			<script>Smalltalk code that is neither a class nor a method</script>
 		</code>
-		If you do not provide classes, avoid the level <class></class> and use directly <method></method>`;
+
+		For example:
+
+		<code>
+			<class superclass="Foo" name="Bar" 
+			instanceVariables="a b c"
+			classVariables="A B"/>
+				<method>bar ^self foo + 1</method>
+				...
+				<method>foo ^super foo * 2</method>				...
+			</class>
+		</code>
+
+		If you do not provide classes and only provide a bunch of methods, the code should be organized like this:
+
+		<code>
+			<method class="Class name here">
+				Method code here; avoid including the class and >> before the selector
+			</method>
+			...
+			<method class="Class name here">
+				Method code here; avoid including the class and >> before the selector
+			</method>
+		</code>
+
+		For example:
+
+		<code>
+			<method class="Foo">
+				foo
+					^self 1 + 2
+			</method>
+			...
+			<method class="Bar">
+				bar
+					^self foo - 1
+			</method>
+		</code>		
+
+		If you want to provide just signatures, i.e., class and selector pairs, use this organization instead:
+
+		<code>
+			<method class="Class name here" selector="Method selector here"/>
+			...
+			<method class="Class name here" selector="Method selector here"/>
+		</code>
+		
+		For example:
+
+		<code>
+			<method class="Foo" selector="foo"/>
+			...
+			<method class="Bar" selector="bar"/>
+		</code>
+		
+		Always enclose any code in <code></code> tags. Do not give me code without <code></code>`;
+	}
+
+	codeRestrictionsSpecification() {
+		return `Unless you have provided a class in the conversation, never propose a class that you are not 100-percent sure it exists in the system. 
+		You have tools to check whether a class exist so you can verify a class exist before giving code that references it.
+		The same for the selectors. You can check whether a selector has implementors using the corresponding tool and avoid giving me code that has potential flaws.`;
 	}
 
 	testFormatSpecification() {
@@ -84,18 +186,55 @@ ${this.codeFormatSpecification()}`;
 		If there is more than one test, enclose each of them between <method> and </method>.`;
 	}
 
+	xmlFromClasses(classes) {
+		let xml = "<code>";
+		classes.forEach(
+			(c) =>
+				(xml += `\n<class superclass=${c.superclass} name=${c.name}/>`)
+		);
+		xml += "</code>";
+		return xml;
+	}
+
+	xmlFromMethods(methods) {
+		let xml = "<code>";
+		methods.forEach(
+			(m) =>
+				(xml += `\n<method class=${m.methodClass}>${m.source}</method>`)
+		);
+		xml += "</code>";
+		return xml;
+	}
+
+	xmlFromSignaturesOf(methods) {
+		let xml = "<code>";
+		methods.forEach(
+			(m) =>
+				(xml += `\n<method class=${m.methodClass} selector=${m.selector}/>`)
+		);
+		xml += "</code>";
+		return xml;
+	}
+
+	// Tools
+
 	initializeTools() {
 		this.tools = [];
 		this.tools.push(this.searchImplementorsTool());
 		this.tools.push(this.searchSendersTool());
+		this.tools.push(this.searchReferencesTool());
 		this.tools.push(this.classDefinitionTool());
 		this.tools.push(this.classProtocolTool());
+		this.tools.push(this.subclassesTool());
+		this.tools.push(this.evaluationTool());
 	}
 
 	searchImplementorsTool() {
 		const tool = new AIFunction(
 			"search_implementors",
-			'Search implementors of a given selector. Call this whenever you need to know what are the methods implementing a given message, for example, when the user asks "What are the implementors of <selector>"'
+			"Retrieves the list of methods that implement a given message (selector). " +
+				'Use this ONLY when the user asks "What are the implementors of <selector>?" or "Which methods implement <selector>?", ' +
+				"NOT when asking about classes or protocols."
 		);
 		tool.addStringParameter(
 			"selector",
@@ -111,12 +250,7 @@ ${this.codeFormatSpecification()}`;
 			} catch (ignored) {}
 			if (implementors.length === 0)
 				return `There are no implementors of ${selector}`;
-			let result = "";
-			implementors.forEach(
-				(m) =>
-					(result += `\n\n${m.methodClass}>>${m.selector}\n${m.source}`)
-			);
-			return result;
+			return this.xmlFromSignaturesOf(implementors);
 		};
 		return tool;
 	}
@@ -140,12 +274,31 @@ ${this.codeFormatSpecification()}`;
 			} catch (ignored) {}
 			if (senders.length === 0)
 				return `There are no senders of ${selector}`;
-			let result = "";
-			senders.forEach(
-				(m) =>
-					(result += `\n\n${m.methodClass}>>${m.selector}\n${m.source}`)
-			);
-			return result;
+			return this.xmlFromSignaturesOf(senders);
+		};
+		return tool;
+	}
+
+	searchReferencesTool() {
+		const tool = new AIFunction(
+			"search_classReferences",
+			'Search references of a given class. Call this whenever you need to know what are the methods referencing a given class, for example, when the user asks "What are the references of <classname>"'
+		);
+		tool.addStringParameter(
+			"classname",
+			"The class that the user would like to search references for",
+			true
+		);
+		tool.handler = async (args) => {
+			const classname = args.classname;
+			if (!classname) return "Class is missing";
+			let references = [];
+			try {
+				references = await this.backend.classReferences(classname);
+			} catch (ignored) {}
+			if (references.length === 0)
+				return `There are no references of ${classname}`;
+			return this.xmlFromMethods(references);
 		};
 		return tool;
 	}
@@ -176,11 +329,13 @@ ${this.codeFormatSpecification()}`;
 	classProtocolTool() {
 		const tool = new AIFunction(
 			"class_protocol",
-			'Search the list of messages that are understood by instances of a given class name. Call this whenever you need to know what is the set of messages (protocol) of a given class, for example, when the user asks "What are the messages an instance of <classname> understands" or "What services does <classname> implements"'
+			"Retrieves the list of messages (selectors) that instances of a given class understand and implement. " +
+				'Use this when the user asks "What messages does <classname> implement?", "What messages does <classname> understand?", ' +
+				'"What is the protocol of <classname>?", "What methods does <classname> have?", "What services does <classname> provide?" or any similar phrasing.'
 		);
 		tool.addStringParameter(
 			"classname",
-			"The name of the class that the user would like to know its protocol",
+			"The name of the class for which you want to retrieve its protocol (understood messages)",
 			true
 		);
 		tool.handler = async (args) => {
@@ -192,8 +347,59 @@ ${this.codeFormatSpecification()}`;
 			} catch (ignored) {}
 			if (methods.length === 0)
 				return `Class named ${classname} has no methods`;
-			let result = "This are the methods implemented by the class:";
-			methods.forEach((m) => (result += `\n${m.selector}`));
+			return this.xmlFromSignaturesOf(methods);
+		};
+		return tool;
+	}
+
+	subclassesTool() {
+		const tool = new AIFunction(
+			"search_subclasses",
+			'Search subclasses of a given class. Call this whenever you need to know what are the subclasses of a given class, for example, when the user asks "What are the subclasses of <classname>"'
+		);
+		tool.addStringParameter(
+			"classname",
+			"The class that the user would like to know its subclasses",
+			true
+		);
+		tool.handler = async (args) => {
+			const classname = args.classname;
+			if (!classname) return "Class is missing";
+			let subclasses = [];
+			try {
+				subclasses = await this.backend.subclasses(classname);
+			} catch (ignored) {}
+			if (subclasses.length === 0)
+				return `There are no subclasses of ${classname}`;
+			return this.xmlFromClasses(subclasses);
+		};
+		return tool;
+	}
+
+	evaluationTool() {
+		const tool = new AIFunction(
+			"evaluate_expression",
+			'Evaluates a Smalltalk expression. Call this whenever you need to evaluate an expression, for example, when the user asks "What is the result of 3 + 4, 123 factorial, Process allInstances size < 10 ifTrue: [Processor yield]"'
+		);
+		tool.addStringParameter(
+			"expression",
+			"The expression to be evaluated",
+			true
+		);
+		tool.handler = async (args) => {
+			const expression = args.expression;
+			if (!expression) return "Expression is missing";
+			let result;
+			try {
+				result = await this.backend.evaluateExpression(
+					expression,
+					true,
+					true
+				);
+				result = result.printString;
+			} catch (error) {
+				result = error?.error?.description || error.toString();
+			}
 			return result;
 		};
 		return tool;
@@ -314,7 +520,7 @@ ${this.codeFormatSpecification()}`;
 	async freePrompt(text) {
 		await this.addContextsFrom(text);
 		const answer = this.sendPrompt(
-			`${text}\n${this.codeFormatSpecification()}`,
+			`${text}\n${this.codeFormatSpecification()}\n${this.codeRestrictionsSpecification()}`,
 			text
 		);
 		this.clearPromptContext();
@@ -432,6 +638,8 @@ ${this.codeFormatSpecification()}`;
 		this.messages.push(response);
 		if (response.hasToolCall()) {
 			const data = await response.invokeTool();
+			console.log("Tool invokation result");
+			console.log(data);
 			let result = AICodeAssistantMessage.toolResult(data);
 			result.toolCall = response.toolCall;
 			this.messages.push(result);

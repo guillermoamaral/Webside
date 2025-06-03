@@ -9,6 +9,17 @@ class AISuggestedClass {
 		this.methods = [];
 	}
 
+	hasOnlyName() {
+		return (
+			this.name &&
+			this.name !== "" &&
+			(!this.superclassName || this.superclassName === "") &&
+			this.instanceVariableNames == [] &&
+			this.classVariableNames == [] &&
+			this.methods == []
+		);
+	}
+
 	install() {
 		// Not implemented yet
 	}
@@ -51,7 +62,7 @@ class AISuggestedClass {
 		chunk += `'\n\n`;
 		this.methods.forEach((m, i) => {
 			if (i !== 0) chunk += `\n\n`;
-			chunk += m.sourceCode;
+			chunk += m.source;
 		});
 		return chunk;
 	}

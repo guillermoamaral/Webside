@@ -100,6 +100,10 @@ class AIToolCall {
 	}
 
 	async invoke() {
+		console.log(
+			"Invoking tool " + this.tool.name + " with arguments:",
+			this.arguments
+		);
 		if (this.tool && this.tool.handler)
 			return await this.tool.handler(this.arguments);
 	}

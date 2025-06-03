@@ -23,7 +23,7 @@ import CopyIcon from "@mui/icons-material/ContentCopy";
 import AssistantIcon from "@mui/icons-material/Assistant";
 //import ChangesBrowserIcon from "../icons/ChangesBrowserIcon";
 
-const MessageItem = ({ message }) => {
+const MessageItem = ({ message, index }) => {
 	const parts = message.parts || [];
 	const who = message.role === "user" ? ide.currentDeveloper() : message.role;
 	const photo = ide.settings.section("general").get("photo");
@@ -31,7 +31,12 @@ const MessageItem = ({ message }) => {
 		ide.settings.section("appearance").get("fontSize") - 1 + "px";
 	const showSeparatedChunks = false;
 	return (
-		<Box display="flex" flexDirection="column" sx={{ width: "100%" }}>
+		<Box
+			key={index}
+			display="flex"
+			flexDirection="column"
+			sx={{ width: "100%" }}
+		>
 			<Box display="flex" alignItems="center">
 				{message.role === "user" && (
 					<Avatar
@@ -66,39 +71,70 @@ const MessageItem = ({ message }) => {
 				)}
 				{parts.map((part, index) => {
 					if (part.type === "code") {
-						const height = Math.min(
-							part.content.split("\n").length * 20 + 40,
-							400
-						);
-						const chunks =
-							part.code && showSeparatedChunks
-								? part.code.codeChunks()
-								: [part.content];
-						return (
-							<Box>
-								{chunks.map((chunk) => (
-									<Paper
-										variant="outlined"
-										key={"code" + index}
-									>
-										<Box
-											display="flex"
-											flexDirection="row"
-											justifyContent="flex-end"
+						if (part.code && part.code.hasOnlyClassNames()) {
+							return (
+								<MarkdownView
+									key={"markdown" + index}
+									source={part.code.classLinks()}
+									onLinkClick={(href) => {
+										ide.browseClass(
+											new URL(href).searchParams.get(
+												"classname"
+											)
+										);
+									}}
+								/>
+							);
+						} else if (part.code && part.code.hasOnlySignatures()) {
+							return (
+								<MarkdownView
+									key={"markdown" + index}
+									source={part.code.signatureLinks()}
+									onLinkClick={async (href) => {
+										const params = new URL(href)
+											.searchParams;
+										const method = await ide.backend.method(
+											params.get("classname"),
+											params.get("selector")
+										);
+										if (method) ide.browseMethods([method]);
+									}}
+								/>
+							);
+						} else {
+							const height = Math.min(
+								part.content.split("\n").length * 30 + 10,
+								400
+							);
+							const chunks =
+								part.code && showSeparatedChunks
+									? part.code.codeChunks()
+									: [part.content];
+							return (
+								<Box mt={1}>
+									{chunks.map((chunk) => (
+										<Paper
+											variant="outlined"
+											key={"code" + index}
 										>
-											<IconButton
-												size="small"
-												key={"copyCode" + index}
-												color="primary"
-												onClick={() =>
-													navigator.clipboard.writeText(
-														chunk
-													)
-												}
+											<Box
+												display="flex"
+												flexDirection="row"
+												justifyContent="flex-end"
 											>
-												<CopyIcon fontSize="small" />
-											</IconButton>
-											{/* {part.code && (
+												<IconButton
+													size="small"
+													key={"copyCode" + index}
+													color="primary"
+													onClick={() =>
+														navigator.clipboard.writeText(
+															chunk
+														)
+													}
+												>
+													<CopyIcon fontSize="small" />
+												</IconButton>
+												{/* {part.code && (
 											<IconButton
 												size="small"
 												key={"browseCode" + index}
@@ -112,26 +148,27 @@ const MessageItem = ({ message }) => {
 												<ChangesBrowserIcon fontSize="small" />
 											</IconButton>
 										)} */}
-										</Box>
-										<Box
-											key={index}
-											display="flex"
-											variant="outlined"
-											ml={2}
-											mt={1}
-											sx={{ height: height }}
-										>
-											<CodeEditor
-												source={chunk}
-												readOnly
-												fontSize={codeFontSize}
-												noTooltips
-											/>
-										</Box>
-									</Paper>
-								))}
-							</Box>
-						);
+											</Box>
+											<Box
+												key={index}
+												display="flex"
+												variant="outlined"
+												ml={2}
+												mt={1}
+												sx={{ height: height }}
+											>
+												<CodeEditor
+													source={chunk}
+													readOnly
+													fontSize={codeFontSize}
+													noTooltips
+												/>
+											</Box>
+										</Paper>
+									))}
+								</Box>
+							);
+						}
 					}
 					return (
 						<MarkdownView
@@ -244,7 +281,6 @@ class CodeAssistantChat extends Tool {
 	};
 
 	render() {
-		console.log("rendering CAC");
 		const { prompt, processing } = this.state;
 		const messages = this.messages();
 		const showButtons = false;
@@ -279,7 +315,11 @@ class CodeAssistantChat extends Tool {
 														//padding: 2,
 													}}
 												>
-													<MessageItem message={m} />
+													<MessageItem
+														message={m}
+														index={i}
+														key={i}
+													/>
 												</ListItem>
 											);
 										})}
