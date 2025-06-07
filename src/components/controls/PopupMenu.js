@@ -11,27 +11,39 @@ class PopupMenu extends Component {
 			if (!option) {
 				return <Divider key={"divider-" + index} />;
 			} else {
+				const enabled = this.getItemEnabled(option);
+				const style = this.getItemStyle(option);
+				const weight = this.getItemWeight(option);
 				if (option.suboptions) {
 					return (
 						<NestedMenuItem
 							key={option.label}
-							label={option.label}
+							renderLabel={() => (
+								<Box
+									sx={{
+										pl: 1.5,
+										pt: 0,
+										pb: 0,
+										fontStyle: style,
+										fontWeight: weight,
+									}}
+								>
+									{option.label}
+								</Box>
+							)}
 							parentMenuOpen={this.props.open}
-							style={{ paddingTop: 0, paddingBottom: 0 }}
+							sx={{ pt: 0, pb: 0 }}
 						>
 							{this.createItems(option.suboptions)}
 						</NestedMenuItem>
 					);
 				} else {
-					const enabled = this.getItemEnabled(option);
-					const style = this.getItemStyle(option);
-					const weight = this.getItemWeight(option);
 					return (
 						<MenuItem
 							key={option.label}
 							id={option.id}
 							onClick={(event) => this.itemClicked(event, option)}
-							style={{ paddingTop: 0, paddingBottom: 0 }}
+							sx={{ pt: 0, pb: 0 }}
 							disabled={!enabled}
 						>
 							<Box fontStyle={style} fontWeight={weight}>
