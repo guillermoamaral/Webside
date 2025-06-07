@@ -17,39 +17,30 @@ class ChangesTable extends Component {
 	}
 
 	changeSelected = (change) => {
-		if (this.props.onChangeSelect) {
-			this.props.onChangeSelect(change);
-		}
+		if (this.props.onChangeSelect) this.props.onChangeSelect(change);
 	};
 
 	browseClass = (change) => {
-		if (change) {
-			this.context.browseClass(change.className);
-		}
+		if (change) this.context.browseClass(change.className);
 	};
 
 	browseImplementors = (change) => {
-		if (change && change.isMethodChange()) {
+		if (change && change.isMethodChange())
 			this.context.browseImplementors(change.selector);
-		}
 	};
 
 	browseSenders = (change) => {
-		if (change && change.isMethodChange()) {
+		if (change && change.isMethodChange())
 			this.context.browseSenders(change.selector);
-		}
 	};
 
 	applyChange = (change) => {
-		if (this.props.onChangeApply) {
-			this.props.onChangeApply(change);
-		}
+		if (this.props.onChangeApply) this.props.onChangeApply(change);
 	};
 
 	addFilter(label, fx) {
-		const filters = this.state.filters;
 		const filter = { label: label, function: fx };
-		filters.push(filter);
+		const filters = [...this.state.filters, filter];
 		this.filtersChanged(filters);
 		this.setState({ filters: filters });
 	}
@@ -65,15 +56,11 @@ class ChangesTable extends Component {
 	}
 
 	filtersChanged(filters) {
-		if (this.props.onFiltersChange) {
-			this.props.onFiltersChange(filters);
-		}
+		if (this.props.onFiltersChange) this.props.onFiltersChange(filters);
 	}
 
 	rejectChange = (change) => {
-		if (this.props.onChangeReject) {
-			this.props.onChangeReject(change);
-		}
+		if (this.props.onChangeReject) this.props.onChangeReject(change);
 	};
 
 	selectChangesWithTheSame(change, property) {
