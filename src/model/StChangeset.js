@@ -73,10 +73,8 @@ class StChangeset extends Object {
 	}
 
 	filterChanges(filters) {
-		if (!this.originalChanges) {
-			this.originalChanges = this.changes;
-		}
-		var filtered = [...this.changes];
+		if (!this.originalChanges) this.originalChanges = this.changes;
+		let filtered = [...this.originalChanges];
 		filters.forEach((f) => (filtered = filtered.filter(f.function)));
 		this.changes = filtered;
 	}
