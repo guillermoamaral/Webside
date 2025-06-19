@@ -1247,9 +1247,7 @@ class CodeEditor extends Component {
 								this.lexer(),
 								EditorView.lineWrapping,
 								this.lineGutter(),
-								...(lineNumbers
-									? [linter(this.annotations)]
-									: []),
+								linter(this.annotations),
 								Prec.highest(keymap.of(this.extraKeys())),
 								this.tooltip(),
 								autocompletion({
