@@ -291,9 +291,7 @@ class ClassTree extends Component {
 	};
 
 	newSubclass = async (superclass) => {
-		if (!superclass) {
-			return;
-		}
+		if (!superclass) return;
 		try {
 			const name = await ide.prompt({
 				title: "New " + superclass.name + " subclass",
@@ -322,9 +320,7 @@ class ClassTree extends Component {
 	};
 
 	renameClass = async (species) => {
-		if (!species) {
-			return;
-		}
+		if (!species) return;
 		try {
 			const newName = await ide.prompt({
 				title: "Rename class",
@@ -397,33 +393,27 @@ class ClassTree extends Component {
 	};
 
 	browseClass = (species) => {
-		if (species) {
-			this.context.browseClass(species.name);
-		}
+		if (species) this.context.browseClass(species.name);
 	};
 
 	browsePackage = (species) => {
-		if (species) {
-			this.context.browsePackage(species.package);
-		}
+		if (species) this.context.browsePackage(species.package);
 	};
 
 	browseClassReferences = (species) => {
-		if (species) {
-			this.context.browseClassReferences(species.name);
-		}
+		if (species) this.context.browseClassReferences(species.name);
 	};
 
 	runTests = (species) => {
-		if (species) {
-			this.context.runTestClass(species.name);
-		}
+		if (species) this.context.runTestClass(species.name);
 	};
 
 	migrateClass = (species) => {
-		if (species) {
-			this.context.migrateClass(species.name);
-		}
+		if (species) this.context.migrateClass(species.name);
+	};
+
+	exportToTonel = (species) => {
+		if (species) ide.exportClassToTonel(species.name);
 	};
 
 	canAddClass = (species) => {
@@ -506,6 +496,11 @@ class ClassTree extends Component {
 					enabled: (c) => c != null,
 				},
 				null,
+				{
+					label: "Export to Tonel",
+					action: this.exportToTonel,
+					enabled: (c) => c != null,
+				},
 				{
 					label: "Migrate",
 					action: this.migrateClass,
