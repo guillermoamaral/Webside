@@ -146,9 +146,7 @@ class PackageTree extends Component {
 	};
 
 	renamePackage = async (pack) => {
-		if (!pack) {
-			return;
-		}
+		if (!pack) return;
 		try {
 			const newName = await ide.prompt({
 				title: "Rename package",
@@ -193,15 +191,15 @@ class PackageTree extends Component {
 	};
 
 	runTests = (pack) => {
-		if (pack) {
-			this.context.runTestPackage(pack.name);
-		}
+		if (pack) this.context.runTestPackage(pack.name);
 	};
 
 	migratePackage = (pack) => {
-		if (pack) {
-			this.context.migratePackage(pack.name);
-		}
+		if (pack) this.context.migratePackage(pack.name);
+	};
+
+	exportToTonel = (pack) => {
+		if (pack) ide.exportPackageToTonel(pack.name);
 	};
 
 	addCategory = async () => {
@@ -285,6 +283,7 @@ class PackageTree extends Component {
 		options = options.concat([
 			{ label: "Run tests", action: this.runTests },
 			null,
+			{ label: "Export to Tonel", action: this.exportToTonel },
 			{ label: "Migrate", action: this.migratePackage },
 		]);
 		const extended = ide.extensionMenuOptions(

@@ -44,6 +44,7 @@
 		"autosuggest-highlight": "^3.3.4",
 		"axios": "^1.8.4",
 		"electron-is-dev": "^3.0.1",
+		"jszip": "^3.10.1",
 		"mui-nested-menu": "^3.3.0",
 		"react": "^18.2.0",
 		"react-autosuggest": "^10.1.0",

@@ -40,6 +40,8 @@ import AICodeAssistant from "../model/ai/AICodeAssistant";
 import PopupMenu from "./controls/PopupMenu";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import TonelWriterV3 from "../model/TonelWriter";
+import JSZip from "jszip";
 
 var ide = null;
 var MaxExtraContainers = 3;
@@ -1380,6 +1382,55 @@ class IDE extends Component {
 		const description = data ? data.description : data;
 		ide.reportError(description || "Unknown change error");
 	}
+
+	tonelFromClass = async (classname) => {
+		const species = await this.backend.classNamed(classname);
+		let variables = await this.backend.instanceVariables(classname);
+		species.instanceVariables = variables.map((v) => v.name);
+		variables = await this.backend.classVariables(classname);
+		species.classVariables = variables.map((v) => v.name);
+		species.methods = await this.backend.methods(classname);
+		species.classMethods = await this.backend.methods(species.class);
+		console.log(species);
+		return new TonelWriterV3().writeClass(species);
+	};
+
+	tonelFromPackage = async (packagename) => {
+		const pack = await this.backend.packageNamed(packagename);
+		const writer = new TonelWriterV3();
+		const zip = new JSZip();
+		zip.file("package.st", writer.writePackage(pack));
+		await Promise.all(
+			pack.classes.map(async (classname) => {
+				const filename = `${classname}.class.st`;
+				zip.file(filename, this.tonelFromClass(classname));
+			})
+		);
+		const blob = await zip.generateAsync({ type: "blob" });
+		return blob;
+	};
+
+	exportClassToTonel = async (classname) => {
+		let tonel;
+		await this.waitFor(async () => {
+			tonel = await this.tonelFromClass(classname);
+		}, "Generating Tonel file...");
+		const blob = new Blob([tonel], {
+			type: "text/plain",
+		});
+		this.download(blob, classname + ".st");
+	};
+
+	exportPackageToTonel = async (packagename) => {
+		let tonel;
+		await this.waitFor(async () => {
+			tonel = await this.tonelFromPackage(packagename);
+		}, "Generating Tonel files...");
+		const blob = new Blob([tonel], {
+			type: "text/plain",
+		});
+		this.download(blob, packagename + ".zip");
+	};
 
 	download(blob, filename) {
 		try {
