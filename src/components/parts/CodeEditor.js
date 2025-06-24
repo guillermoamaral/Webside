@@ -368,8 +368,12 @@ class CodeEditor extends Component {
 	menuOptions() {
 		const shortcuts = ide.settings.section("shortcuts");
 		const options = [
-			{ label: "Copy (Ctrl+c)", action: this.copyToClipboard },
-			{ label: "Paste (Ctrl+v)", action: this.pasteFromClipboard },
+			{ label: "Copy", shortcut: "Ctrl+c", action: this.copyToClipboard },
+			{
+				label: "Paste",
+				shortcut: "(Ctrl+v)",
+				action: this.pasteFromClipboard,
+			},
 			null,
 		];
 		if (this.normalizedSource() === this.normalizedOriginalSource()) {
@@ -387,39 +391,36 @@ class CodeEditor extends Component {
 		options.push(
 			...[
 				{
-					label:
-						"Do it (" + shortcuts.get("evaluateExpression") + ")",
+					label: "Do it",
+					shortcut: shortcuts.get("evaluateExpression"),
 					action: this.evaluateSelection,
 				},
 				{
-					label: "Print it (" + shortcuts.get("showEvaluation") + ")",
+					label: "Print it",
+					shortcut: shortcuts.get("showEvaluation"),
 					action: this.showEvaluation,
 				},
 				{
-					label:
-						"Inspect it (" +
-						shortcuts.get("inspectEvaluation") +
-						")",
+					label: "Inspect it",
+					shortcut: shortcuts.get("inspectEvaluation"),
 					action: this.inspectEvaluation,
 				},
 				{
-					label:
-						"Debug it (" + shortcuts.get("debugExpression") + ")",
+					label: "Debug it",
+					shortcut: shortcuts.get("debugExpression"),
 					action: this.debugExpression,
 				},
 				{ label: "Profile it", action: this.profileExpression },
 				{ label: "Google it", action: this.searchInGoogle },
 				null,
 				{
-					label:
-						"Browse class (" + shortcuts.get("browseClass") + ")",
+					label: "Browse class",
+					shortcut: shortcuts.get("browseClass"),
 					action: this.browseClass,
 				},
 				{
-					label:
-						"Browse senders (" +
-						shortcuts.get("browseSenders") +
-						")",
+					label: "Browse senders",
+					shortcut: shortcuts.get("browseSenders"),
 					action: this.browseSenders,
 				},
 			]
@@ -431,10 +432,8 @@ class CodeEditor extends Component {
 			});
 		}
 		options.push({
-			label:
-				"Browse implementors (" +
-				shortcuts.get("browseImplementors") +
-				")",
+			label: "Browse implementors",
+			shortcut: shortcuts.get("browseImplementors"),
 			action: this.browseImplementors,
 		});
 		if (species) {
@@ -446,10 +445,8 @@ class CodeEditor extends Component {
 		options.push(
 			...[
 				{
-					label:
-						"Browse class references (" +
-						shortcuts.get("browseClassReferences") +
-						")",
+					label: "Browse class references",
+					shortchut: shortcuts.get("browseClassReferences"),
 					action: this.browseClassReferences,
 				},
 				{
@@ -462,10 +459,8 @@ class CodeEditor extends Component {
 				},
 				null,
 				{
-					label:
-						"Toggle full view (" +
-						shortcuts.get("toggleEditorFullView") +
-						")",
+					label: "Toggle full view",
+					shourtcut: shortcuts.get("toggleEditorFullView"),
 					action: this.toggleFullView,
 				},
 			]
@@ -869,6 +864,7 @@ class CodeEditor extends Component {
 				key: this.adaptShortcut(shortcuts.get("browseClass")),
 				run: this.browseClass,
 				preventDefault: true,
+				stopPropagation: true,
 			},
 			{
 				key: this.adaptShortcut(shortcuts.get("browseSenders")),
@@ -1229,7 +1225,6 @@ class CodeEditor extends Component {
 			this.props;
 		const showCodeAssistant = showAssistant && ide.usesCodeAssistant();
 		const showButtons = showAccept || showPlay || showAssistant;
-		const lineNumbers = this.effectiveLineNumbers();
 		const menuOptions = this.menuOptions();
 		return (
 			<Box

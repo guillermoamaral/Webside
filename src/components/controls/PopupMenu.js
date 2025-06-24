@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Menu, MenuItem, Divider, Box } from "@mui/material";
+import { Menu, MenuItem, Divider, Box, Typography } from "@mui/material";
 import { NestedMenuItem } from "mui-nested-menu";
 
 class PopupMenu extends Component {
@@ -24,11 +24,25 @@ class PopupMenu extends Component {
 										pl: 1.5,
 										pt: 0,
 										pb: 0,
+										display: "flex",
+										justifyContent: "space-between",
+										alignItems: "baseline",
 										fontStyle: style,
 										fontWeight: weight,
+										width: "100%",
 									}}
 								>
-									{option.label}
+									<Typography variant="body2">
+										{option.label}
+									</Typography>
+									{option.shortcut && (
+										<Typography
+											variant="caption"
+											sx={{ ml: 1, opacity: 0.6 }}
+										>
+											{"(" + option.shortcut + ")"}
+										</Typography>
+									)}
 								</Box>
 							)}
 							parentMenuOpen={this.props.open}
@@ -46,8 +60,27 @@ class PopupMenu extends Component {
 							sx={{ pt: 0, pb: 0 }}
 							disabled={!enabled}
 						>
-							<Box fontStyle={style} fontWeight={weight}>
-								{option.label}
+							<Box
+								sx={{
+									display: "flex",
+									justifyContent: "space-between",
+									alignItems: "baseline",
+									fontStyle: style,
+									fontWeight: weight,
+									width: "100%",
+								}}
+							>
+								<Typography variant="body2">
+									{option.label}
+								</Typography>
+								{option.shortcut && (
+									<Typography
+										variant="caption"
+										sx={{ ml: 1, opacity: 0.6 }}
+									>
+										{"(" + option.shortcut + ")"}
+									</Typography>
+								)}
 							</Box>
 						</MenuItem>
 					);

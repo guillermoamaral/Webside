@@ -84,15 +84,9 @@ class IDE extends Component {
 		container.openTranscript();
 		//container.openPOC();
 		const options = this.queryOptions();
-		if (options.classname) {
-			container.openClassBrowser(options.classname);
-		}
-		if (options.debugger) {
-			container.openDebugger(options.debugger);
-		}
-		if (options.workspace) {
-			container.openWorkspace(options.workspace);
-		}
+		if (options.classname) container.openClassBrowser(options.classname);
+		if (options.debugger) container.openDebugger(options.debugger);
+		if (options.workspace) container.openWorkspace(options.workspace);
 	}
 
 	// Settings
@@ -329,6 +323,7 @@ class IDE extends Component {
 		// Shortcuts...
 		const shortcuts = settings.addSection("shortcuts");
 		shortcuts.addShortcut("quickSearch", "Shift+Enter");
+		shortcuts.addShortcut("openSystemBrowser", "Ctrl+Shift+b");
 		shortcuts.addShortcut("openClassBrowser", "Ctrl+b");
 		shortcuts.addShortcut("newWorkspace", "Ctrl+Alt+w");
 		shortcuts.addShortcut("moveToLeftTab", "Ctrl+Alt+Left");
@@ -1002,6 +997,9 @@ class IDE extends Component {
 			case shortcuts.get("quickSearch"):
 				this.openQuickSearch();
 				break;
+			case shortcuts.get("openSystemBrowser"):
+				this.mainContainer().openPackageBrowser();
+				break;
 			case shortcuts.get("openClassBrowser"):
 				this.mainContainer().openClassBrowser();
 				break;
@@ -1550,6 +1548,8 @@ class IDE extends Component {
 				<Hotkeys
 					keyName={
 						shortcuts.get("quickSearch") +
+						"," +
+						shortcuts.get("openSystemBrowser") +
 						"," +
 						shortcuts.get("openClassBrowser") +
 						"," +
