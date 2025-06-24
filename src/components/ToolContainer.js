@@ -986,19 +986,23 @@ class ToolContainer extends Component {
 	};
 
 	addPageOptions() {
+		const shortcuts = ide.settings.section("shortcuts");
 		return [
 			{
 				label: "Workspace",
+				shortcut: shortcuts.get("newWorkspace"),
 				icon: <WorkspaceIcon />,
 				handler: this.addWorkspaceClicked,
 			},
 			{
 				label: "System Browser",
+				shortcut: shortcuts.get("openSystemBrowser"),
 				icon: <PackageBrowserIcon />,
 				handler: this.addPackageBrowserClicked,
 			},
 			{
 				label: "Class Browser",
+				shortcut: shortcuts.get("openClassBrowser"),
 				icon: <ClassBrowserIcon />,
 				handler: this.addClassBrowserClicked,
 			},

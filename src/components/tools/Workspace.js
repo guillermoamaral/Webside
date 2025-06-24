@@ -255,7 +255,6 @@ class Workspace extends Tool {
 								<Typography
 									variant="normal"
 									fontWeight="fontWeightBold"
-									fontStyle="italic"
 									color="text.secondary"
 								>
 									{name || "[Unnamed]"}

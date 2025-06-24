@@ -134,7 +134,7 @@ class ShortcutEditor extends Component {
 					onKeyDown={this.keyDown}
 					required
 				/>
-				<Typography variant="body2" ml={2}>
+				<Typography variant="body2" sx={{ ml: 2, opacity: 0.6 }}>
 					{"(" + this.shourtcut(shift, ctrl, alt, key) + ")"}
 				</Typography>
 			</Box>

@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { Tabs, Tab, Box, IconButton, Menu, MenuItem } from "@mui/material";
+import {
+	Tabs,
+	Tab,
+	Box,
+	IconButton,
+	Menu,
+	MenuItem,
+	Typography,
+} from "@mui/material";
 import TabPanel from "./TabPanel";
 import TabLabel from "./TabLabel";
 import AddIcon from "@mui/icons-material/Add";
@@ -224,11 +232,32 @@ class TabControl extends Component {
 									)
 								}
 							>
-								<Box display="flex" alignItems="center">
+								<Box
+									display="flex"
+									alignItems="center"
+									width="100%"
+								>
 									<Box pt={1} pr={1}>
 										{option.icon}
 									</Box>
-									<Box>{option.label}</Box>
+									<Box
+										sx={{
+											display: "flex",
+											justifyContent: "space-between",
+											alignItems: "baseline",
+											width: "100%",
+										}}
+									>
+										<Typography>{option.label}</Typography>
+										{option.shortcut && (
+											<Typography
+												variant="caption"
+												sx={{ ml: 1, opacity: 0.6 }}
+											>
+												{"(" + option.shortcut + ")"}
+											</Typography>
+										)}
+									</Box>
 								</Box>
 							</MenuItem>
 						))}
