@@ -27,12 +27,16 @@ class PopupMenu extends Component {
 										display: "flex",
 										justifyContent: "space-between",
 										alignItems: "baseline",
-										fontStyle: style,
-										fontWeight: weight,
 										width: "100%",
 									}}
 								>
-									<Typography variant="body2">
+									<Typography
+										sx={{
+											fontStyle: style,
+											fontWeight: weight,
+										}}
+										variant="body2"
+									>
 										{option.label}
 									</Typography>
 									{option.shortcut && (
@@ -65,12 +69,16 @@ class PopupMenu extends Component {
 									display: "flex",
 									justifyContent: "space-between",
 									alignItems: "baseline",
-									fontStyle: style,
-									fontWeight: weight,
 									width: "100%",
 								}}
 							>
-								<Typography variant="body2">
+								<Typography
+									sx={{
+										fontStyle: style,
+										fontWeight: weight,
+									}}
+									variant="body2"
+								>
 									{option.label}
 								</Typography>
 								{option.shortcut && (
