@@ -4,7 +4,7 @@ import PopupMenu from "../controls/PopupMenu";
 //import { ide } from "../IDE.js";
 import CodeMirrorMerge from "react-codemirror-merge";
 import { EditorView, keymap } from "@codemirror/view";
-import { CodeEditor } from "./CodeEditor";
+import { CodeMirrorEditor } from "./CodeMirrorEditor";
 import { lintGutter } from "@codemirror/lint";
 import { Box } from "@mui/material";
 import { Prec } from "@codemirror/state";
@@ -12,7 +12,7 @@ import { Prec } from "@codemirror/state";
 const Original = CodeMirrorMerge.Original;
 const Modified = CodeMirrorMerge.Modified;
 
-class CodeMerge extends CodeEditor {
+class CodeMerge extends CodeMirrorEditor {
 	constructor(props) {
 		super(props);
 		this.ref = React.createRef();

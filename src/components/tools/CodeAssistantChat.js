@@ -13,7 +13,7 @@ import {
 	CircularProgress,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import CodeEditor from "../parts/CodeEditor";
+import CodeMirrorEditor from "../parts/CodeMirrorEditor";
 import PromptEditor from "../parts/PromptEditor";
 import Scrollable from "../controls/Scrollable";
 import { ide } from "../IDE";
@@ -157,7 +157,7 @@ const MessageItem = ({ message, index }) => {
 												mt={1}
 												sx={{ height: height }}
 											>
-												<CodeEditor
+												<CodeMirrorEditor
 													source={chunk}
 													readOnly
 													fontSize={codeFontSize}

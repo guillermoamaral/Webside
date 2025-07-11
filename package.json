@@ -27,6 +27,7 @@
 		"@emotion/styled": "^11.10.6",
 		"@iconify/icons-mdi": "^1.2.44",
 		"@iconify/react": "^4.1.0",
+		"@monaco-editor/react": "^4.7.0",
 		"@mui/icons-material": "^5.11.16",
 		"@mui/lab": "^5.0.0-alpha.129",
 		"@mui/material": "^5.11.16",

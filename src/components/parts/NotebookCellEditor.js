@@ -10,7 +10,7 @@ import {
 import EvaluateIcon from "@mui/icons-material/PlayCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ide } from "../IDE";
-import CodeEditor from "./CodeEditor";
+import CodeMirrorEditor from "./CodeMirrorEditor";
 import MarkdownView from "./MarkdownView";
 import ObjectPresenter from "./ObjectPresenter";
 import ToolContainerContext from "../ToolContainerContext";
@@ -263,7 +263,7 @@ class NotebookCellEditor extends Component {
 					)}
 					{(cell.isCode() || editable) && (
 						<Box sx={{ ml: 3, width: "95%" }}>
-							<CodeEditor
+							<CodeMirrorEditor
 								ref={(ref) => (this.editorRef = ref)}
 								noScroll
 								showLineNumbers={false}

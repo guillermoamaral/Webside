@@ -14,6 +14,7 @@ class StMethod extends Object {
 		this.bytecodes = null;
 		this.disassembly = null;
 		this.template = false;
+		this.needsRecompilation = false;
 	}
 
 	static newTemplate() {
@@ -39,6 +40,7 @@ class StMethod extends Object {
 		this.ast = json.ast;
 		this.bytecodes = json.bytecodes;
 		this.disassembly = json.disassembly;
+		this.needsRecompilation = json.needsRecompilation;
 	}
 
 	isTest() {

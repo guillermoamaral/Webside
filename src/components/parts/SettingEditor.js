@@ -99,140 +99,151 @@ class SettingEditor extends Component {
 					mr={2}
 					sx={{ minWidth: minLabelWidth }}
 				>
-					{description && (
-						<Tooltip key={label} title={description}>
-							<InfoIcon />
-						</Tooltip>
+					{showLabel && (
+						<Typography
+							variant="body2"
+							color={editable ? "text.primary" : "grey.500"}
+						>
+							{label}
+						</Typography>
 					)}
-					<Box flexGrow={1} ml={1}>
-						{showLabel && (
-							<Typography variant="body2">{label}</Typography>
-						)}
-					</Box>
 				</Box>
-				{["text", "paragraph", "number", "url"].includes(type) && (
-					<TextField
-						fullWidth={type === "paragraph"}
-						multiline={type === "paragraph"}
-						sx={{ minWidth: 250 }}
-						size="small"
-						id={name}
-						type={type}
-						placeholder={"Enter " + label}
-						margin="dense"
-						name={name}
-						variant="outlined"
-						value={value}
-						inputProps={{
-							id: name + "key",
-							style: { textAlign: alignment },
-						}}
-						onChange={(event) => {
-							this.valueChanged(event.target.value);
-						}}
-						required
-						disabled={!editable}
-					/>
-				)}
-				{type === "boolean" && (
-					<FormGroup>
-						<FormControlLabel
-							control={
-								<Checkbox
-									checked={value}
-									onChange={(event) =>
-										this.valueChanged(event.target.checked)
-									}
-									disabled={!editable}
-								/>
-							}
-							//label={label}
+				<Box>
+					{["text", "paragraph", "number", "url"].includes(type) && (
+						<TextField
+							fullWidth={type === "paragraph"}
+							multiline={type === "paragraph"}
+							sx={{ minWidth: 250 }}
 							size="small"
-						/>
-					</FormGroup>
-				)}
-				{type === "options" && (
-					<Box display="flex" flexDirection="row">
-						<Select
-							size="small"
+							id={name}
+							type={type}
+							placeholder={"Enter " + label}
+							margin="dense"
+							name={name}
+							variant="outlined"
 							value={value}
-							input={<OutlinedInput margin="dense" />}
+							inputProps={{
+								id: name + "key",
+								style: { textAlign: alignment },
+							}}
 							onChange={(event) => {
 								this.valueChanged(event.target.value);
 							}}
+							required
 							disabled={!editable}
-							sx={{ minWidth: 250 }}
-						>
-							{this.settingOptions().map((option) => (
-								<MenuItem value={option} key={option}>
-									{option}
-								</MenuItem>
-							))}
-						</Select>
-						{setting.refreshHandler && (
-							<IconButton onClick={this.refreshSettingOptions}>
-								<RefreshIcon fontSize="small" />
-							</IconButton>
-						)}
-					</Box>
-				)}
-				{type === "shortcut" && (
-					<ShortcutEditor
-						value={value}
-						onChange={(value) => this.valueChanged(value)}
-					/>
-				)}
-				{type === "color" && (
-					<ColorEditor
-						name={name}
-						value={value}
-						editable={editable}
-						onChange={this.valueChanged}
-					/>
-				)}
-				{type === "textStyle" && (
-					<Box display="flex" flexDirection="row">
+						/>
+					)}
+					{type === "boolean" && (
+						<FormGroup>
+							<FormControlLabel
+								control={
+									<Checkbox
+										checked={value}
+										onChange={(event) =>
+											this.valueChanged(
+												event.target.checked
+											)
+										}
+										disabled={!editable}
+									/>
+								}
+								//label={label}
+								size="small"
+							/>
+						</FormGroup>
+					)}
+					{type === "options" && (
+						<Box display="flex" flexDirection="row">
+							<Select
+								size="small"
+								value={value}
+								input={<OutlinedInput margin="dense" />}
+								onChange={(event) => {
+									this.valueChanged(event.target.value);
+								}}
+								disabled={!editable}
+								sx={{ minWidth: 250 }}
+							>
+								{this.settingOptions().map((option) => (
+									<MenuItem value={option} key={option}>
+										{option}
+									</MenuItem>
+								))}
+							</Select>
+							{setting.refreshHandler && (
+								<IconButton
+									onClick={this.refreshSettingOptions}
+								>
+									<RefreshIcon fontSize="small" />
+								</IconButton>
+							)}
+						</Box>
+					)}
+					{type === "shortcut" && (
+						<ShortcutEditor
+							value={value}
+							onChange={(value) => this.valueChanged(value)}
+						/>
+					)}
+					{type === "color" && (
 						<ColorEditor
 							name={name}
-							value={setting.color}
+							value={value}
 							editable={editable}
-							onChange={(rgba) => {
-								setting.color = rgba;
-								this.forceUpdate();
-							}}
+							onChange={this.valueChanged}
 						/>
-						<ToggleButtonGroup
-							size="small"
-							value={textStyleBoldItalic}
-							onChange={(a, s) => {
-								setting.italic = s.includes("italic");
-								setting.bold = s.includes("bold");
-								this.forceUpdate();
-							}}
-						>
-							<ToggleButton value="bold" size="small">
-								<FormatBoldIcon fontSize="small" />
-							</ToggleButton>
-							<ToggleButton value="italic" size="small">
-								<FormatItalicIcon fontSize="small" />
-							</ToggleButton>
-						</ToggleButtonGroup>
+					)}
+					{type === "textStyle" && (
+						<Box display="flex" flexDirection="row">
+							<ColorEditor
+								name={name}
+								value={setting.color}
+								editable={editable}
+								onChange={(rgba) => {
+									setting.color = rgba;
+									this.valueChanged(); // Trigger re-render
+								}}
+							/>
+							<ToggleButtonGroup
+								size="small"
+								value={textStyleBoldItalic}
+								onChange={(a, s) => {
+									setting.italic = s.includes("italic");
+									setting.bold = s.includes("bold");
+									this.valueChanged(); // Trigger re-render
+								}}
+							>
+								<ToggleButton value="bold" size="small">
+									<FormatBoldIcon fontSize="small" />
+								</ToggleButton>
+								<ToggleButton value="italic" size="small">
+									<FormatItalicIcon fontSize="small" />
+								</ToggleButton>
+							</ToggleButtonGroup>
+						</Box>
+					)}
+					{type === "image" && (
+						<IconButton component="label">
+							<Avatar
+								alt={description}
+								src={value}
+								sx={{ width: 56, height: 56 }}
+							/>
+							<input
+								type="file"
+								accept="image/*"
+								style={{ display: "none" }}
+								onChange={this.loadImage}
+							/>
+						</IconButton>
+					)}
+				</Box>
+				{description && (
+					<Box ml={1} display="flex" alignItems="center">
+						<Tooltip key={label} title={description}>
+							<InfoIcon fontSize="small" />
+						</Tooltip>
 					</Box>
-				)}
-				{type === "image" && (
-					<IconButton component="label">
-						<Avatar
-							alt={description}
-							src={value}
-							sx={{ width: 56, height: 56 }}
-						/>
-						<input
-							type="file"
-							accept="image/*"
-							style={{ display: "none" }}
-							onChange={this.loadImage}
-						/>
-					</IconButton>
 				)}
 			</Box>
 		);

@@ -1,6 +1,6 @@
 import React from "react";
 import Tool from "./Tool";
-import CodeEditor from "../parts/CodeEditor";
+import CodeMirrorEditor from "../parts/CodeMirrorEditor";
 import { Box } from "@mui/material";
 import { ide } from "../IDE";
 
@@ -22,7 +22,7 @@ class Transcript extends Tool {
 					background: background,
 				}}
 			>
-				<CodeEditor
+				<CodeMirrorEditor
 					source={ide.transcriptText()}
 					onChange={this.props.onChange}
 				/>

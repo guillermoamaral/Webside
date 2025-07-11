@@ -118,6 +118,7 @@ class Setting extends Object {
 		copy.description = this.description;
 		copy.editable = this.editable;
 		copy.active = this.active;
+		copy.options = this.options;
 		return copy;
 	}
 
@@ -128,6 +129,13 @@ class Setting extends Object {
 
 	toJson() {
 		return this.value;
+	}
+
+	path() {
+		if (this.parent) {
+			return this.parent.path() + "." + this.name;
+		}
+		return this.name;
 	}
 }
 
@@ -208,6 +216,11 @@ class Settings extends Object {
 	}
 
 	setting(name) {
+		const parts = name.split(".");
+		if (parts.length > 1) {
+			const section = this.section(parts[0]);
+			return section.setting(parts.slice(1).join("."));
+		}
 		return this.plainSettings().find((s) => s.name === name);
 	}
 
@@ -226,6 +239,7 @@ class Settings extends Object {
 	}
 
 	add(setting) {
+		setting.parent = this;
 		this.settings.push(setting);
 		return setting;
 	}
@@ -328,8 +342,15 @@ class Settings extends Object {
 
 	copy() {
 		const copy = new Settings(this.name, this.label);
-		copy.settings = this.settings.map((s) => s.copy());
+		this.settings.forEach((s) => copy.add(s.copy()));
 		return copy;
+	}
+
+	path() {
+		if (this.parent) {
+			return this.parent.path() + "." + this.name;
+		}
+		return this.name;
 	}
 }
 

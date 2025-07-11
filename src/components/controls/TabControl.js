@@ -28,9 +28,8 @@ class TabControl extends Component {
 
 	tabChanged = (event, index) => {
 		event.preventDefault();
-		if (this.props.onTabSelect) {
+		if (this.props.onTabSelect)
 			this.props.onTabSelect(this.props.pages[index]);
-		}
 	};
 
 	tabFocused = (event, index) => {

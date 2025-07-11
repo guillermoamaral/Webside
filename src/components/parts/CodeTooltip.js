@@ -9,7 +9,7 @@ import {
 	Paper,
 } from "@mui/material";
 import { ide } from "../IDE";
-import CodeEditor from "./CodeEditor";
+import CodeMirrorEditor from "./CodeMirrorEditor";
 import Inspector from "../tools/Inspector";
 
 class CodeTooltip extends Component {
@@ -65,7 +65,7 @@ class CodeTooltip extends Component {
 								height: 150,
 							}}
 						>
-							<CodeEditor source={code} readOnly noTooltips />
+							<CodeMirrorEditor source={code} readOnly noTooltips />
 						</Paper>
 					)}
 					{object && (

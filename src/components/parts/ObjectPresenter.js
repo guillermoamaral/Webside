@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Paper, Box } from "@mui/material";
 import CustomTable from "../controls/CustomTable";
-import CodeEditor from "../parts/CodeEditor";
+import CodeMirrorEditor from "../parts/CodeMirrorEditor";
 import TabControl from "../controls/TabControl";
 import CustomTree from "../controls/CustomTree";
 import MarkdownView from "./MarkdownView";
@@ -52,7 +52,7 @@ class ObjectPresenter extends Component {
 				label: "Raw",
 				component: (
 					<Paper variant="outlined" style={{ height: "100%" }}>
-						<CodeEditor
+						<CodeMirrorEditor
 							context={context}
 							source={!object ? "" : object.printString}
 							onAccept={onAccept}
@@ -109,7 +109,7 @@ class ObjectPresenter extends Component {
 		switch (view.type) {
 			case "source":
 				code = view.code || `"no code provided"`;
-				component = <CodeEditor source={code} showAccept={false} />;
+				component = <CodeMirrorEditor source={code} showAccept={false} />;
 				break;
 			case "markdown":
 				code = view.code || `"no markdown provided"`;

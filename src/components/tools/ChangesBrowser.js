@@ -10,6 +10,7 @@ import {
 	ToggleButton,
 } from "@mui/material";
 import CodeMerge from "../parts/CodeMerge";
+import MonacoDiffEditor from "../parts/MonacoDiffEditor";
 import { ide } from "../IDE";
 import ChangesTable from "../parts/ChangesTable";
 import DownloadIcon from "@mui/icons-material/GetApp";
@@ -303,7 +304,7 @@ class ChangesBrowser extends Tool {
 									variant="outlined"
 									sx={{ height: "100%", minHeight: 400 }}
 								>
-									<CodeMerge
+									<MonacoDiffEditor
 										highlightChanges={highlightChanges}
 										sx={{ height: "100%" }}
 										context={this.evaluationContext()}

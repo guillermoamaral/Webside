@@ -4,7 +4,7 @@ import { Box, Paper, Breadcrumbs, Link, Typography } from "@mui/material";
 import { ide } from "../IDE";
 import ObjectTree from "../parts/ObjectTree";
 import ObjectPresenter from "../parts/ObjectPresenter";
-import CodeEditor from "../parts/CodeEditor";
+import CodeMirrorEditor from "../parts/CodeMirrorEditor";
 import CustomSplit from "../controls/CustomSplit";
 
 class Inspector extends Tool {
@@ -319,7 +319,7 @@ class Inspector extends Tool {
 											variant="outlined"
 											sx={{ height: "100%" }}
 										>
-											<CodeEditor
+											<CodeMirrorEditor
 												context={this.evaluationContext()}
 												onEvaluate={
 													this.expressionEvaluated

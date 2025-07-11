@@ -9,7 +9,7 @@ import {
 	ToggleButtonGroup,
 	Button,
 } from "@mui/material";
-import CodeEditor from "../parts/CodeEditor";
+import CodeMirrorEditor from "../parts/CodeMirrorEditor";
 import CustomSplit from "../controls/CustomSplit";
 import CustomTree from "../controls/CustomTree";
 import { BarChart } from "@mui/x-charts/BarChart";
@@ -150,7 +150,7 @@ class Profiler extends Tool {
 								variant="outlined"
 								style={{ height: "100%" }}
 							>
-								<CodeEditor
+								<CodeMirrorEditor
 									context={evaluationContext}
 									source={expression}
 									onChange={this.expressionChanged}
@@ -271,7 +271,7 @@ class Profiler extends Tool {
 											variant="outlined"
 											style={{ height: "100%" }}
 										>
-											<CodeEditor
+											<CodeMirrorEditor
 												source={
 													!selectedMethod
 														? ""

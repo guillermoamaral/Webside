@@ -90,7 +90,7 @@ class IDE extends Component {
 	}
 
 	// Settings
-	initializeSettings = () => {
+	initializeSettings = async () => {
 		this.settings = this.defaultSettings();
 		this.loadSettings();
 		this.setConnectionSettings();
@@ -289,9 +289,9 @@ class IDE extends Component {
 		connection.addText("version").readOnly();
 		// Code...
 		const code = settings.addSection("editor");
-		code.addBoolean("lineNumbers", false, "Show line numbers");
-		code.addBoolean("autocompletion", false, "Use autocompletion");
-		code.addBoolean("tooltips", true, "Show tooltips");
+		code.addBoolean("showLineNumbers", false, "Show line numbers");
+		code.addBoolean("useAutocompletion", false, "Use autocompletion");
+		code.addBoolean("showTooltips", true, "Show tooltips");
 		// Appearance...
 		const appearance = settings.addSection("appearance");
 		appearance.addOptions(
@@ -395,16 +395,16 @@ class IDE extends Component {
 		return setting.active ? setting.value : "inherit";
 	}
 
-	applyTheme(name) {
+	applyTheme(settings) {
+		const name = settings.get("appearance.theme");
 		const theme = this.themes.find((t) => t.name === name);
 		if (!theme) return;
-		const appearance = this.settings.section("appearance");
+		const appearance = settings.section("appearance");
 		appearance.copyFrom(theme);
 	}
 
 	applySettings(settings) {
 		this.settings = settings;
-		this.applyTheme(settings.section("appearance").get("theme"));
 		this.storeSettings();
 		this.updateSettings();
 	}
@@ -483,7 +483,7 @@ class IDE extends Component {
 			await ide.backend.autocompletions("Object", "m\r Objec", 8);
 			autocompletion = true;
 		} catch (ignored) {}
-		this.settings.section("editor").set("autocompletion", autocompletion);
+		this.settings.section("editor").set("useAutocompletion", autocompletion);
 		this.waitFor(async () => {
 			await this.fetchIcons();
 			await this.fetchThemes();
@@ -647,6 +647,7 @@ class IDE extends Component {
 	}
 
 	welcomeMessage() {
+		console.log("a", this.currentDialect());
 		return (
 			'"Welcome to Webside ' +
 			this.currentDeveloper() +

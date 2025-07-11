@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import CodeEditor from "../parts/CodeEditor";
+import CodeMirrorEditor from "../parts/CodeMirrorEditor";
 import Inspector from "./Inspector";
 import { ide } from "../IDE";
 import CustomSplit from "../controls/CustomSplit";
@@ -280,7 +280,7 @@ class Workspace extends Tool {
 								variant="outlined"
 								style={{ minHeight: 300, height: "100%" }}
 							>
-								<CodeEditor
+								<CodeMirrorEditor
 									ref={this.editorRef}
 									context={this.evaluationContext()}
 									source={source}

@@ -209,9 +209,7 @@ export const SmalltalkLexer = function (inSelector) {
 		},
 		token: function (stream, state) {
 			state.userIndent(stream.indentation());
-			if (stream.eatSpace()) {
-				return null;
-			}
+			if (stream.eatSpace()) return null;
 			var token = state.context.next(stream, state.context, state);
 			state.context = token.context;
 			state.first = false;

@@ -99,15 +99,13 @@ class ToolContainer extends Component {
 	};
 
 	aboutToDeselectPage(page) {
-		if (page && page.ref && page.ref.current) {
+		if (page && page.ref && page.ref.current)
 			page.ref.current.aboutToDeselect();
-		}
 	}
 
 	aboutToSelectPage(page) {
-		if (page && page.ref && page.ref.current) {
+		if (page && page.ref && page.ref.current)
 			page.ref.current.aboutToSelect();
-		}
 	}
 
 	selectPageAtOffset(offset) {
@@ -578,7 +576,7 @@ class ToolContainer extends Component {
 		if (page) {
 			this.selectPage(page);
 		} else {
-			const settings = ide.settings;
+			const settings = ide.settings.copy();
 			const page = (
 				<SettingsEditor
 					settings={settings}

@@ -3,7 +3,7 @@ import { Box, Paper, IconButton } from "@mui/material";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 import { DataGrid } from "@mui/x-data-grid";
-import CodeEditor from "../parts/CodeEditor";
+import CodeMirrorEditor from "../parts/CodeMirrorEditor";
 import {
 	AddCircle as AddIcon,
 	Delete as DeleteIcon,
@@ -253,7 +253,7 @@ class ExpressionTable extends Component {
 				</Box>
 				<Box height={"20%"}>
 					<Paper variant="outlined" style={{ height: "100%" }}>
-						<CodeEditor
+						<CodeMirrorEditor
 							source={
 								selectedExpression
 									? selectedExpression.value

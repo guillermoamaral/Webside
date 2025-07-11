@@ -1,11 +1,14 @@
 import React from "react";
 import Tool from "./Tool";
-import { Typography, Box, Button, Link, Divider } from "@mui/material";
+import { Typography, Box, Button, Link, Divider, Paper } from "@mui/material";
 import SettingEditor from "../parts/SettingEditor";
 import CustomTree from "../controls/CustomTree";
 import CustomSplit from "../controls/CustomSplit";
 import CustomPaper from "../controls/CustomPaper";
 import BackendTester from "./BackendTester";
+import CodeMirrorEditor from "../parts/CodeMirrorEditor";
+import { ide } from "../IDE";
+import Scrollable from "../controls/Scrollable";
 
 class SettingsEditor extends Tool {
 	constructor(props) {
@@ -46,17 +49,28 @@ class SettingsEditor extends Tool {
 		this.setState({ expandedSections: expanded });
 	};
 
+	sampleMethod = () => {
+		return `method: argument\n\t"This is a comment"\n\t| temporaryVariable |\n\ttemporaryVariable := 123 + self unary.\n\tself keyword1: true keyword2: #symbol keyword3: nil.\n\tinstanceVariable := 'string'.\n\t^SomeClass new\n\n`;
+	};
+
+	settingChanged = (setting) => {
+		if (setting.name === "theme") ide.applyTheme(this.props.settings);
+		if (["dark", "light"].some((s) => setting.path().includes(s))) {
+			this.props.settings.set("appearance.theme", "Custom");
+		}
+		if (setting.path().includes("appearance")) {
+			if (this.codePreviewRef) {
+				this.codePreviewRef.forceUpdate();
+			}
+		}
+	};
+
 	render() {
-		console.log("render settings editor");
 		const settings = this.props.settings;
 		const { selectedSection, expandedSections } = this.state;
 		const selectedSettings = selectedSection
 			? selectedSection.plainSettings()
 			: [];
-		const backendUrl =
-			selectedSection && selectedSection.name === "connection"
-				? selectedSection.get("backend")
-				: null;
 		const maxLabelLength = selectedSettings.reduce(
 			(max, s) => Math.max(max, s.label.length),
 			0
@@ -122,29 +136,79 @@ class SettingsEditor extends Tool {
 								<Box
 									display="flex"
 									flexDirection="column"
-									sx={{ width: "100%", height: "90%" }}
+									sx={{
+										width: "50%",
+										height: "100%",
+										marginRight: 2,
+									}}
 								>
-									{selectedSettings.map((setting) => (
-										<Box key={setting.name} mb={1}>
-											<SettingEditor
-												//showLabel={false}
-												setting={setting}
-												onValueChange={() =>
-													this.forceUpdate()
-												}
-												minLabelWidth={Math.min(
-													maxLabelLength * 10,
-													200
+									<Scrollable>
+										{selectedSettings.map((setting) => (
+											<Box key={setting.path()} mb={1}>
+												<SettingEditor
+													//showLabel={false}
+													setting={setting}
+													// Commented out to avoid re-rendering (until discovering why it was needed)
+													onValueChange={() =>
+														this.settingChanged(
+															setting
+														)
+													}
+													minLabelWidth={Math.min(
+														maxLabelLength * 10,
+														200
+													)}
+												/>
+											</Box>
+										))}
+									</Scrollable>
+								</Box>
+								{selectedSection.name === "connection" && (
+									<BackendTester
+										url={selectedSection.get("backend")}
+									/>
+								)}
+								{["appearance", "dark", "light"].includes(
+									selectedSection.name
+								) && (
+									<Box
+										sx={{
+											width: "50%",
+											height: "100%",
+										}}
+									>
+										<Typography
+											variant="subtitle1"
+											sx={{ p: 1 }}
+										>
+											Code preview
+										</Typography>
+										<Paper
+											variant="outlined"
+											sx={{
+												minWidth: 400,
+												minHeight: 200,
+												width: "100%",
+												height: "30%",
+												maxHeight: 300,
+											}}
+										>
+											<CodeMirrorEditor
+												ref={(ref) => {
+													this.codePreviewRef = ref;
+												}}
+												source={this.sampleMethod()}
+												//readOnly
+												noTooltips
+												settings={this.props.settings}
+												useMethodLexer
+												randomProp={Math.floor(
+													Math.random() * 100
 												)}
 											/>
-										</Box>
-									))}
-									{backendUrl && (
-										<Box flexGrow={1} mt={2}>
-											<BackendTester url={backendUrl} />
-										</Box>
-									)}
-								</Box>
+										</Paper>
+									</Box>
+								)}
 							</Box>
 						</Box>
 					)}

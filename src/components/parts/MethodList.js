@@ -402,7 +402,6 @@ class MethodList extends Component {
 	};
 
 	browseLocalImplementors = (selector, classname) => {
-		console.log(selector, classname);
 		if (selector && classname)
 			this.context.browseLocalImplementors(selector, classname);
 	};

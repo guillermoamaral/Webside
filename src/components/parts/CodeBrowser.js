@@ -12,8 +12,10 @@ import {
 } from "@mui/material";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
-import CodeEditor from "./CodeEditor";
+import CodeMirrorEditor from "./CodeMirrorEditor";
+import MonacoEditor from "./MonacoEditor";
 import MarkdownView from "./MarkdownView";
+import { Code } from "@mui/icons-material";
 
 class CodeBrowser extends Component {
 	static contextType = ToolContainerContext;
@@ -413,7 +415,7 @@ class CodeBrowser extends Component {
 						sx={{ height: "100%", minHeight: 300 }}
 					>
 						{(selectedMode !== "comment" || !previewMarkdown) && (
-							<CodeEditor
+							<MonacoEditor
 								context={context}
 								class={this.props.class}
 								method={method}

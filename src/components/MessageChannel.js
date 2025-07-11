@@ -25,7 +25,7 @@ class MessageChannel {
 		return this.peers.find((c) => c.username === name);
 	}
 
-	peertWithId(id) {
+	peerWithId(id) {
 		return this.peers.find((c) => c.id === id);
 	}
 
