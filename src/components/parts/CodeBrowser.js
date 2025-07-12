@@ -435,7 +435,7 @@ class CodeBrowser extends Component {
 								onExtendedOptionPerform={
 									this.extendedOptionPerformed
 								}
-								useMethodLexer={selectedMode === "source"}
+								inMethod={selectedMode === "source"}
 								onFullViewToggle={this.toggleFullView}
 							/>
 						)}

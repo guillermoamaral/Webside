@@ -45,21 +45,6 @@ class CodeEditor extends Component {
 		});
 	};
 
-	openMenu = (event) => {
-		event.preventDefault();
-		event.stopPropagation();
-		this.setState({
-			menuOpen: true,
-			menuPosition: { x: event.clientX - 2, y: event.clientY - 4 },
-		});
-		this.forceUpdate(); // Check this according to the default response in shouldComponentUpdate()
-	};
-
-	closeMenu = () => {
-		this.setState({ menuOpen: false });
-		this.forceUpdate(); // Check this according to the default response in shouldComponentUpdate()
-	};
-
 	playClicked = async (editor, event) => {
 		if (event) event.preventDefault();
 		const object = await this.evaluateExpression(
@@ -94,20 +79,6 @@ class CodeEditor extends Component {
 				currentEvaluation: { ...evaluation, state: updated.state },
 			});
 		} catch (ignored) {}
-	};
-
-	annotations = () => {
-		if (this.state.dirty || !this.props.annotations) {
-			return [];
-		}
-		return this.props.annotations.map((a) => {
-			return {
-				from: a.from - 1,
-				to: a.to - 1,
-				severity: a.type,
-				message: a.description,
-			};
-		});
 	};
 
 	renameTarget = () => {
@@ -363,6 +334,19 @@ class CodeEditor extends Component {
 
 	acceptClicked = () => {
 		if (this.props.onAccept) this.props.onAccept(this.normalizedSource());
+	};
+
+	openMenu = (event) => {
+		event.preventDefault();
+		event.stopPropagation();
+		this.setState({
+			menuOpen: true,
+			menuPosition: { x: event.clientX - 2, y: event.clientY - 4 },
+		});
+	};
+
+	closeMenu = () => {
+		this.setState({ menuOpen: false });
 	};
 
 	browseClass = (name) => {
@@ -682,7 +666,10 @@ class CodeEditor extends Component {
 	}
 
 	getCompletions = async (source, position) => {
-		const classname = this.props.class ? this.props.class.name : null;
+		const classname =
+			this.props.class && this.props.inMethod
+				? this.props.class.name
+				: null;
 		let completions = [];
 		try {
 			completions = await ide.backend.autocompletions(

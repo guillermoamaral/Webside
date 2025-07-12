@@ -201,7 +201,7 @@ class SettingsEditor extends Tool {
 												//readOnly
 												noTooltips
 												settings={this.props.settings}
-												useMethodLexer
+												inMethod
 												randomProp={Math.floor(
 													Math.random() * 100
 												)}

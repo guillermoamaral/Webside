@@ -209,18 +209,6 @@ class MonacoDiffEditor extends CodeEditor {
 		);
 	}
 
-	openMenu = (event) => {
-		event.preventDefault();
-		this.setState({
-			menuOpen: true,
-			menuPosition: { x: event.clientX - 2, y: event.clientY - 4 },
-		});
-	};
-
-	closeMenu = () => {
-		this.setState({ menuOpen: false });
-	};
-
 	render() {
 		const { menuOpen, menuPosition } = this.state;
 		const menuOptions = this.props.menuOptions?.() || [];

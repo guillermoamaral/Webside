@@ -45,19 +45,6 @@ class CodeMerge extends CodeMirrorEditor {
 		);
 	}
 
-	openMenu = (event) => {
-		event.preventDefault();
-		event.stopPropagation();
-		this.setState({
-			menuOpen: true,
-			menuPosition: { x: event.clientX - 2, y: event.clientY - 4 },
-		});
-	};
-
-	closeMenu = () => {
-		this.setState({ menuOpen: false });
-	};
-
 	render() {
 		console.log("rendering code merge");
 		const { leftCode, rightCode, menuOpen, menuPosition } = this.state;

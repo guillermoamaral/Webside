@@ -4,6 +4,9 @@ import { Box, IconButton, LinearProgress, Tooltip } from "@mui/material";
 import AcceptIcon from "@mui/icons-material/CheckCircle";
 import PlayIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
+import ImproveIcon from "@mui/icons-material/AutoFixHigh";
+import TestIcon from "../icons/TestRunnerIcon";
+import ExplainIcon from "@mui/icons-material/QuestionMark";
 import PopupMenu from "../controls/PopupMenu";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
@@ -27,9 +30,6 @@ import {
 } from "@codemirror/autocomplete";
 import { hoverTooltip } from "@codemirror/view";
 import CodeTooltip from "./CodeTooltip";
-import ImproveIcon from "@mui/icons-material/AutoFixHigh";
-import TestIcon from "../icons/TestRunnerIcon";
-import ExplainIcon from "@mui/icons-material/QuestionMark";
 import { ThemeProvider } from "@mui/material/styles";
 import { withTheme } from "@emotion/react";
 import { darken } from "@mui/system";
@@ -214,7 +214,7 @@ class CodeMirrorEditor extends CodeEditor {
 	// Configuration
 
 	lexer() {
-		const lexer = SmalltalkLexer(this.props.useMethodLexer);
+		const lexer = SmalltalkLexer(this.props.inMethod);
 		lexer.tokenTable = newTags;
 		return StreamLanguage.define(lexer);
 	}
@@ -434,20 +434,6 @@ class CodeMirrorEditor extends CodeEditor {
 		} catch (ignored) {}
 	};
 
-	annotations = () => {
-		if (this.state.dirty || !this.props.annotations) {
-			return [];
-		}
-		return this.props.annotations.map((a) => {
-			return {
-				from: a.from - 1,
-				to: a.to - 1,
-				severity: a.type,
-				message: a.description,
-			};
-		});
-	};
-
 	setBreakpoint = (n) => {
 		// OUTDATED
 		var info = this.editor.lineInfo(n);
@@ -521,17 +507,12 @@ class CodeMirrorEditor extends CodeEditor {
 	};
 
 	openMenu = (event) => {
-		event.preventDefault();
-		event.stopPropagation();
-		this.setState({
-			menuOpen: true,
-			menuPosition: { x: event.clientX - 2, y: event.clientY - 4 },
-		});
+		super.openMenu(event);
 		this.forceUpdate(); // Check this according to the default response in shouldComponentUpdate()
 	};
 
 	closeMenu = () => {
-		this.setState({ menuOpen: false });
+		super.closeMenu();
 		this.forceUpdate(); // Check this according to the default response in shouldComponentUpdate()
 	};
 
@@ -552,9 +533,9 @@ class CodeMirrorEditor extends CodeEditor {
 		const word = context.matchBefore(/[^\s]*/);
 		if (!word || word.from === word.to || word.text.trim().length <= 0)
 			return null;
-		let completions = this.getCompletions(
+		let completions = await this.getCompletions(
 			this.normalizedSource(),
-			word.text
+			word.to
 		);
 		// Remove perfect matches (this prevents completion menu appear when the target word is completed)
 		completions = completions.filter((o) => o.label !== word.text);
@@ -666,10 +647,24 @@ class CodeMirrorEditor extends CodeEditor {
 		);
 	}
 
+	// Linting annotations
+
+	annotations = () => {
+		if (this.state.dirty || !this.props.annotations) return [];
+		return this.props.annotations.map((a) => {
+			return {
+				from: a.from - 1,
+				to: a.to - 1,
+				severity: a.type,
+				message: a.description,
+			};
+		});
+	};
+
 	// Rendering
 
 	render() {
-		console.log("rendering code editor");
+		console.log("rendering code mirror editor");
 		const {
 			source,
 			evaluating,

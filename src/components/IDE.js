@@ -1613,7 +1613,6 @@ class IDE extends Component {
 							<Box
 								component="main"
 								mt={6}
-								//disableGutters
 								flexGrow={1}
 								sx={{
 									height: "95vh",
