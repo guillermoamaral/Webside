@@ -211,14 +211,22 @@ class CodeMirrorEditor extends CodeEditor {
 		ide.removeColorModeChangeHandler(this.colorModeChanged);
 	}
 
-	colorModeChanged = () => {
-		this.forceUpdate();
-	};
+	// Configuration
 
-	async initializeExtendedOptions() {
-		let extensions = await ide.fetchExtendedOptions("code");
-		this.setState({ extendedOptions: extensions });
+	lexer() {
+		const lexer = SmalltalkLexer(this.props.useMethodLexer);
+		lexer.tokenTable = newTags;
+		return StreamLanguage.define(lexer);
 	}
+
+	lineGutter = () => {
+		if (this.showLineNumbers()) return lineNumbers();
+		return EditorView.theme({
+			".cm-gutters": {
+				display: "none",
+			},
+		});
+	};
 
 	currentState() {
 		if (this.editorView && this.editorView.viewState) {
@@ -226,50 +234,93 @@ class CodeMirrorEditor extends CodeEditor {
 		}
 	}
 
-	renameIdentifier = async (identifier) => {
-		const replacement = await ide.prompt({
-			title: "Replacement",
-			defaultValue: identifier,
-		});
-		if (!replacement) return;
-		const changes = this.astRangesContainingIdentifier(identifier).map(
-			(range) => {
-				return {
-					from: range.anchor,
-					to: range.head,
-					insert: replacement,
-				};
-			}
-		);
-		this.editorView.dispatch({
-			changes: changes,
-		});
-	};
+	adaptShortcut(shortcut) {
+		const parts = shortcut.split("+");
+		return parts[0] + "-" + parts[1];
+	}
 
-	openMenu = (event) => {
-		event.preventDefault();
-		event.stopPropagation();
-		this.setState({
-			menuOpen: true,
-			menuPosition: { x: event.clientX - 2, y: event.clientY - 4 },
+	extraKeys() {
+		const extrakeys = this.shortcuts().map((shorcut) => {
+			return {
+				key: this.adaptShortcut(shorcut.shortcut),
+				run: () => {
+					shorcut.action();
+				},
+				preventDefault: true,
+				stopPropagation: true,
+			};
 		});
-		this.forceUpdate(); // Check this according to the default response in shouldComponentUpdate()
-	};
+		extrakeys.push({ key: "F2", run: this.renameTarget });
+		extrakeys.push({
+			key: "Tab",
+			run: acceptCompletion,
+		});
+		return extrakeys;
+	}
 
-	closeMenu = () => {
-		this.setState({ menuOpen: false });
-		this.forceUpdate(); // Check this according to the default response in shouldComponentUpdate()
-	};
-
-	pasteFromClipboard = () => {
-		// OUTDATED
-		navigator.clipboard.readText().then(
-			(text) => {
-				this.editor.replaceSelection(text);
+	theme() {
+		const { readOnly, fontSize } = this.props;
+		const appearance = this.settings().section("appearance");
+		const mode = appearance.section(appearance.get("mode"));
+		let background = mode.get("background");
+		if (readOnly) background = darken(background, 0.05);
+		const styles = [
+			"selectorStyle",
+			"symbolStyle",
+			"argumentStyle",
+			"temporaryStyle",
+			"assignmentStyle",
+			"stringStyle",
+			"variableStyle",
+			"metaStyle",
+			"bracketStyle",
+			"selfStyle",
+			"superStyle",
+			"trueStyle",
+			"falseStyle",
+			"nilStyle",
+			"thisContextStyle",
+			"returnStyle",
+			"globalStyle",
+			"numberStyle",
+			"commentStyle",
+		];
+		const params = {
+			theme: appearance.get("mode"),
+			settings: {
+				fontSize: fontSize,
+				fontFamily: appearance.get("fontFamily"),
+				background: background,
+				foreground: "#75baff",
+				caret:
+					mode.name === "light" ? "black" : mode.get("primaryColor"),
+				selection: mode.get("selectionColor"),
+				selectionMatch: "#ef9b9b50",
+				lineHighlight: "#8a91991a",
+				gutterBackground: background,
+				gutterBorder: background,
+				gutterForeground: "#8a919966",
 			},
-			(error) => console.log(error)
-		);
-	};
+			styles: [],
+		};
+		styles.forEach((s) => {
+			const setting = mode.setting(s);
+			params.styles.push({
+				tag: newTags[s.replace("Style", "")],
+				color: setting.color,
+				fontStyle: setting.italic ? "italic" : "normal",
+				fontWeight: setting.bold ? "bold" : "normal",
+			});
+		});
+		const setting = mode.setting("variableStyle");
+		params.styles.push({
+			tag: newTags.var,
+			color: setting.color,
+			fontStyle: setting.italic ? "italic" : "normal",
+			fontWeight: setting.bold ? "bold" : "normal",
+		});
+		return createTheme(params);
+	}
 
 	// Source access and manipulation
 
@@ -342,6 +393,10 @@ class CodeMirrorEditor extends CodeEditor {
 	}
 
 	// Event handlers
+
+	colorModeChanged = () => {
+		this.forceUpdate();
+	};
 
 	playClicked = async (editor, event) => {
 		if (event) event.preventDefault();
@@ -439,93 +494,99 @@ class CodeMirrorEditor extends CodeEditor {
 		}
 	};
 
-	adaptShortcut(shortcut) {
-		const parts = shortcut.split("+");
-		return parts[0] + "-" + parts[1];
-	}
+	focusEditor = () => {
+		if (this.editorView) {
+			this.editorView.focus();
+		}
+	};
 
-	extraKeys() {
-		const extrakeys = this.shortcuts().map((shorcut) => {
-			return {
-				key: this.adaptShortcut(shorcut.shortcut),
-				run: () => {
-					shorcut.action();
-				},
-				preventDefault: true,
-				stopPropagation: true,
-			};
+	renameIdentifier = async (identifier) => {
+		const replacement = await ide.prompt({
+			title: "Replacement",
+			defaultValue: identifier,
 		});
-		extrakeys.push({ key: "F2", run: this.renameTarget });
-		extrakeys.push({
-			key: "Tab",
-			run: acceptCompletion,
+		if (!replacement) return;
+		const changes = this.astRangesContainingIdentifier(identifier).map(
+			(range) => {
+				return {
+					from: range.anchor,
+					to: range.head,
+					insert: replacement,
+				};
+			}
+		);
+		this.editorView.dispatch({
+			changes: changes,
 		});
-		return extrakeys;
-	}
+	};
 
-	theme() {
-		const { readOnly, fontSize } = this.props;
-		const appearance = this.settings().section("appearance");
-		const mode = appearance.section(appearance.get("mode"));
-		let background = mode.get("background");
-		if (readOnly) background = darken(background, 0.05);
-		const styles = [
-			"selectorStyle",
-			"symbolStyle",
-			"argumentStyle",
-			"temporaryStyle",
-			"assignmentStyle",
-			"stringStyle",
-			"variableStyle",
-			"metaStyle",
-			"bracketStyle",
-			"selfStyle",
-			"superStyle",
-			"trueStyle",
-			"falseStyle",
-			"nilStyle",
-			"thisContextStyle",
-			"returnStyle",
-			"globalStyle",
-			"numberStyle",
-			"commentStyle",
-		];
-		const params = {
-			theme: appearance.get("mode"),
-			settings: {
-				fontSize: fontSize,
-				fontFamily: appearance.get("fontFamily"),
-				background: background,
-				foreground: "#75baff",
-				caret:
-					mode.name === "light" ? "black" : mode.get("primaryColor"),
-				selection: mode.get("selectionColor"),
-				selectionMatch: "#ef9b9b50",
-				lineHighlight: "#8a91991a",
-				gutterBackground: background,
-				gutterBorder: background,
-				gutterForeground: "#8a919966",
+	openMenu = (event) => {
+		event.preventDefault();
+		event.stopPropagation();
+		this.setState({
+			menuOpen: true,
+			menuPosition: { x: event.clientX - 2, y: event.clientY - 4 },
+		});
+		this.forceUpdate(); // Check this according to the default response in shouldComponentUpdate()
+	};
+
+	closeMenu = () => {
+		this.setState({ menuOpen: false });
+		this.forceUpdate(); // Check this according to the default response in shouldComponentUpdate()
+	};
+
+	pasteFromClipboard = () => {
+		// OUTDATED
+		navigator.clipboard.readText().then(
+			(text) => {
+				this.editor.replaceSelection(text);
 			},
-			styles: [],
+			(error) => console.log(error)
+		);
+	};
+
+	// Autocompletion and tooltips
+
+	completionResult = async (context) => {
+		if (!this.usesAutocompletion()) return null;
+		const word = context.matchBefore(/[^\s]*/);
+		if (!word || word.from === word.to || word.text.trim().length <= 0)
+			return null;
+		let completions = this.getCompletions(
+			this.normalizedSource(),
+			word.text
+		);
+		// Remove perfect matches (this prevents completion menu appear when the target word is completed)
+		completions = completions.filter((o) => o.label !== word.text);
+		if (completions.length <= 0) return null;
+		// Hide descriptions by now
+		completions.forEach((o) => (o.detail = ""));
+		return {
+			from: word.from,
+			options: completions,
+			filter: false,
 		};
-		styles.forEach((s) => {
-			const setting = mode.setting(s);
-			params.styles.push({
-				tag: newTags[s.replace("Style", "")],
-				color: setting.color,
-				fontStyle: setting.italic ? "italic" : "normal",
-				fontWeight: setting.bold ? "bold" : "normal",
-			});
+	};
+
+	customCompletionDisplay() {
+		return EditorView.updateListener.of(({ view, docChanged }) => {
+			if (docChanged) {
+				// when a completion is active each keystroke triggers the
+				// completion source function, to avoid it we close any open
+				// completion inmediatly.
+				closeCompletion(view);
+				this.delayedStartCompletion(view);
+			}
 		});
-		const setting = mode.setting("variableStyle");
-		params.styles.push({
-			tag: newTags.var,
-			color: setting.color,
-			fontStyle: setting.italic ? "italic" : "normal",
-			fontWeight: setting.bold ? "bold" : "normal",
-		});
-		return createTheme(params);
 	}
+
+	delayedStartCompletion = (view) => {
+		if (!this.state.dirty) return;
+		clearTimeout(this.autocompletionTimer);
+		this.autocompletionTimer = setTimeout(() => {
+			startCompletion(view);
+		}, 350);
+	};
 
 	tooltip() {
 		const { theme } = this.props;
@@ -605,82 +666,6 @@ class CodeMirrorEditor extends CodeEditor {
 		);
 	}
 
-	completionSource = async (context) => {
-		const { enableAutocompletion } = this.props;
-		const enabled =
-			enableAutocompletion !== undefined
-				? enableAutocompletion
-				: this.settings().section("editor").get("useAutocompletion");
-		if (!enabled) return null;
-		const word = context.matchBefore(/[^\s]*/);
-		if (!word || word.from === word.to || word.text.trim().length <= 0)
-			return null;
-		const classname = this.props.class ? this.props.class.name : null;
-		let options;
-		try {
-			options = await ide.backend.autocompletions(
-				classname,
-				this.normalizedSource(),
-				word.to
-			);
-		} catch (error) {
-			return null;
-		}
-		// Remove perfect matches (this prevents completion menu appear when the target word is completed)
-		options = options.filter((o) => o.label !== word.text);
-		if (options.length <= 0) return null;
-		// Hide descriptions by now
-		options.forEach((o) => (o.detail = ""));
-		return {
-			from: word.from,
-			options: options,
-			filter: false,
-		};
-	};
-
-	customCompletionDisplay() {
-		return EditorView.updateListener.of(({ view, docChanged }) => {
-			if (docChanged) {
-				// when a completion is active each keystroke triggers the
-				// completion source function, to avoid it we close any open
-				// completion inmediatly.
-				closeCompletion(view);
-				this.delayedStartCompletion(view);
-			}
-		});
-	}
-
-	delayedStartCompletion = (view) => {
-		if (!this.state.dirty) {
-			return;
-		}
-		clearTimeout(this.autocompletionTimer);
-		this.autocompletionTimer = setTimeout(() => {
-			startCompletion(view);
-		}, 350);
-	};
-
-	lexer() {
-		const lexer = SmalltalkLexer(this.props.useMethodLexer);
-		lexer.tokenTable = newTags;
-		return StreamLanguage.define(lexer);
-	}
-
-	lineGutter = () => {
-		if (this.showLineNumbers()) return lineNumbers();
-		return EditorView.theme({
-			".cm-gutters": {
-				display: "none",
-			},
-		});
-	};
-
-	focusEditor = () => {
-		if (this.editorView) {
-			this.editorView.focus();
-		}
-	};
-
 	// Rendering
 
 	render() {
@@ -718,7 +703,7 @@ class CodeMirrorEditor extends CodeEditor {
 								this.tooltip(),
 								autocompletion({
 									activateOnTyping: false,
-									override: [this.completionSource],
+									override: [this.completionResult],
 								}),
 								this.customCompletionDisplay(),
 							]}

@@ -1,7 +1,7 @@
 import { SmalltalkLexer } from "./SmalltalkLexer";
 
-export function tokenize(source) {
-	const lexer = SmalltalkLexer(true);
+export function tokenize(source, inSelector = false) {
+	const lexer = SmalltalkLexer(inSelector);
 	const state = lexer.startState();
 	const lines = source.split(/\n/);
 	const tokens = [];

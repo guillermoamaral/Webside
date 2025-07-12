@@ -25,11 +25,6 @@ class CodeEditor extends Component {
 		};
 	}
 
-	async initializeExtendedOptions() {
-		let extensions = await ide.fetchExtendedOptions("code");
-		this.setState({ extendedOptions: extensions });
-	}
-
 	renameIdentifier = async (identifier) => {
 		const replacement = await ide.prompt({
 			title: "Replacement",
@@ -125,39 +120,6 @@ class CodeEditor extends Component {
 		}
 	};
 
-	completionSource = async (context) => {
-		const { enableAutocompletion } = this.props;
-		const enabled =
-			enableAutocompletion !== undefined
-				? enableAutocompletion
-				: this.settings().section("editor").get("useAutocompletion");
-		if (!enabled) return null;
-		const word = context.matchBefore(/[^\s]*/);
-		if (!word || word.from === word.to || word.text.trim().length <= 0)
-			return null;
-		const classname = this.props.class ? this.props.class.name : null;
-		let options;
-		try {
-			options = await ide.backend.autocompletions(
-				classname,
-				this.normalizedSource(),
-				word.to
-			);
-		} catch (error) {
-			return null;
-		}
-		// Remove perfect matches (this prevents completion menu appear when the target word is completed)
-		options = options.filter((o) => o.label !== word.text);
-		if (options.length <= 0) return null;
-		// Hide descriptions by now
-		options.forEach((o) => (o.detail = ""));
-		return {
-			from: word.from,
-			options: options,
-			filter: false,
-		};
-	};
-
 	includeColonInSelection = () => {
 		const range = this.currentSelectionRange();
 		if (this.textInRange({ from: range.to, to: range.to + 1 }) === ":") {
@@ -182,6 +144,11 @@ class CodeEditor extends Component {
 		const preference = this.props.showLineNumbers;
 		if (typeof preference === "boolean") return preference;
 		return this.settings().section("editor").get("showLineNumbers");
+	}
+
+	async initializeExtendedOptions() {
+		let extensions = await ide.fetchExtendedOptions("code");
+		this.setState({ extendedOptions: extensions });
 	}
 
 	// Menues and shortcuts
@@ -635,7 +602,7 @@ class CodeEditor extends Component {
 		return ast.nodeAt(offset);
 	}
 
-	// Tool tips...
+	// Autocompletion and tooltips
 
 	showsTooltip() {
 		let show = this.settings().section("editor").get("showTooltips");
@@ -705,6 +672,26 @@ class CodeEditor extends Component {
 				],
 			};
 		}
+	};
+
+	usesAutocompletion() {
+		const { enableAutocompletion } = this.props;
+		return enableAutocompletion !== undefined
+			? enableAutocompletion
+			: this.settings().section("editor").get("useAutocompletion");
+	}
+
+	getCompletions = async (source, position) => {
+		const classname = this.props.class ? this.props.class.name : null;
+		let completions = [];
+		try {
+			completions = await ide.backend.autocompletions(
+				classname,
+				source,
+				position
+			);
+		} catch (ignored) {}
+		return completions;
 	};
 }
 

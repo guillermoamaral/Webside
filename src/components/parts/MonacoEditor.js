@@ -8,6 +8,9 @@ import { darken } from "@mui/system";
 import CodeEditor from "./CodeEditor";
 import { tokenize } from "../../SmalltalkTokenizer";
 
+let smalltalkRegistered = false;
+const openedEditors = new Map();
+
 class MonacoEditor extends CodeEditor {
 	static contextType = ToolContainerContext;
 
@@ -45,47 +48,8 @@ class MonacoEditor extends CodeEditor {
 
 	componentDidMount() {
 		ide.onColorModeChange(this.colorModeChanged);
-
-		monaco.languages.register({ id: "smalltalk" });
-		monaco.languages.setMonarchTokensProvider(
-			"smalltalk",
-			smalltalkMonarchDefinition
-		);
-
 		this.defineTheme();
-
-		const appearance = this.settings().section("appearance");
-
-		this.editorRef = monaco.editor.create(this.containerRef.current, {
-			value: this.source(),
-			language: "smalltalk",
-			readOnly: this.props.readOnly || false,
-			fontFamily: appearance.get("fontFamily"),
-			fontSize: appearance.get("fontSize"),
-			theme: "webside",
-			minimap: { enabled: false },
-			scrollBeyondLastLine: false,
-			lineNumbers: this.showLineNumbers() ? "on" : "off",
-		});
-
-		this.resizeObserver = new ResizeObserver(() => {
-			requestAnimationFrame(() => {
-				this.editorRef?.layout();
-			});
-		});
-
-		this.resizeObserver.observe(this.containerRef.current);
-
-		this.editorRef.onDidChangeModelContent(() => {
-			const value = this.editorRef.getValue();
-			this.sourceChanged(value);
-			this.setDecorations();
-		});
-
-		this.editorRef.onMouseMove(this.mouseMoved);
-
-		this.editorRef.onMouseDown(this.mouseClicked);
-
+		this.createEditor();
 		this.injectStyles();
 		this.addCommands();
 		this.setDecorations();
@@ -116,6 +80,56 @@ class MonacoEditor extends CodeEditor {
 
 	// Configuration
 
+	createEditor() {
+		if (!smalltalkRegistered) {
+			monaco.languages.register({ id: "smalltalk" });
+			monaco.languages.setMonarchTokensProvider(
+				"smalltalk",
+				smalltalkMonarchDefinition
+			);
+			monaco.languages.registerCompletionItemProvider("smalltalk", {
+				triggerCharacters: [".", " "],
+				provideCompletionItems: async (model, position) => {
+					const instance = openedEditors.get(model.uri.toString());
+					if (!instance) return { suggestions: [] };
+					return instance.completionList(model, position);
+				},
+			});
+			smalltalkRegistered = true;
+		}
+
+		const appearance = this.settings().section("appearance");
+		this.editorRef = monaco.editor.create(this.containerRef.current, {
+			value: this.source(),
+			language: "smalltalk",
+			readOnly: this.props.readOnly || false,
+			fontFamily: appearance.get("fontFamily"),
+			fontSize: appearance.get("fontSize"),
+			theme: "webside",
+			minimap: { enabled: false },
+			scrollBeyondLastLine: false,
+			lineNumbers: this.showLineNumbers() ? "on" : "off",
+		});
+
+		const model = this.editorRef.getModel();
+		if (model) openedEditors.set(model.uri.toString(), this);
+
+		this.resizeObserver = new ResizeObserver(() => {
+			requestAnimationFrame(() => {
+				this.editorRef?.layout();
+			});
+		});
+		this.resizeObserver.observe(this.containerRef.current);
+
+		this.editorRef.onDidChangeModelContent(() => {
+			const value = this.editorRef.getValue();
+			this.sourceChanged(value);
+			this.setDecorations();
+		});
+		this.editorRef.onMouseMove(this.mouseMoved);
+		this.editorRef.onMouseDown(this.mouseClicked);
+	}
+
 	defineTheme() {
 		const appearance = this.settings().section("appearance");
 		const mode = appearance.section(appearance.get("mode"));
@@ -124,9 +138,10 @@ class MonacoEditor extends CodeEditor {
 		const foreground = mode.get("primaryColor");
 		const border = darken(background, 0.2);
 		const selection = mode.get("selectionColor");
+		const text = mode.get("primaryText");
 		monaco.editor.defineTheme("webside", {
 			base: "vs-dark",
-			inherit: true,
+			inherit: false,
 			rules: [],
 			colors: {
 				"editor.background": background,
@@ -146,6 +161,9 @@ class MonacoEditor extends CodeEditor {
 				"scrollbarSlider.background": "#ffffff22",
 				"scrollbarSlider.hoverBackground": "#ffffff33",
 				"scrollbarSlider.activeBackground": "#ffffff44",
+				"editorSuggestWidget.border": darken(foreground, 0.3),
+				"editorSuggestWidget.foreground": text,
+				"editorSuggestWidget.selectedForeground": text,
 			},
 		});
 	}
@@ -160,8 +178,8 @@ class MonacoEditor extends CodeEditor {
 		if (!fontSize) fontSize = appearance.get("fontSize");
 		const primary = mode.get("primaryColor");
 		const border = darken(background, 0.3);
+		const text = mode.get("primaryText");
 		const gray = "#888";
-
 		let rules = `
 		.monaco-editor,
 		.monaco-editor-background,
@@ -175,59 +193,53 @@ class MonacoEditor extends CodeEditor {
 			background: ${background} !important;
 			color: ${primary};
 		}
-
 		.monaco-editor .line-numbers {
 			color: ${gray} !important;
 		}
-
 		.monaco-editor .find-widget {
 			border: 1px solid ${border} !important;
 			background-color: ${background} !important;
 			box-shadow: none !important;
 		}
-
 		.monaco-editor .monaco-findInput .monaco-inputbox {
 			border: 1px solid ${border} !important;
 			background-color: ${background} !important;
 			box-shadow: none !important;
 		}
-
 		.monaco-editor .monaco-findInput .monaco-inputbox .input {
 			color: ${gray} !important;
 			background-color: ${background} !important;
 		}
-
 		.monaco-editor .monaco-findInput .monaco-inputbox .input:focus {
 			border: 1px solid ${primary} !important;
 			outline: none !important;
 		}
-
 		.monaco-editor .monaco-findInput .monaco-inputbox .input.invalid,
 		.monaco-editor .monaco-findInput .monaco-inputbox .input.invalid:focus {
 			border: 1px solid ${gray} !important;
 			box-shadow: none !important;
 			outline: none !important;
 		}
-
 		.monaco-editor .find-widget .message {
 			color: ${gray} !important;
 		}
-
 		.monaco-editor .find-widget .message.error {
 			color: ${gray} !important;
 		}
-
 		.monaco-editor .find-widget::before,
 		.monaco-editor .find-widget > .monaco-sash {
 			display: none !important;
 		}
-
 		.class-link {
 			text-decoration: underline;
 			cursor: pointer;
 		}
-	`;
-
+		.monaco-editor .monaco-list .monaco-list-row {
+			color: ${text} !important;
+		}
+		.monaco-editor .suggest-widget {
+			border: 1px solid ${gray} !important;
+		}`;
 		this.tagNames.forEach((name) => {
 			const setting = mode.setting(`${name}Style`);
 			if (!setting) return;
@@ -239,10 +251,8 @@ class MonacoEditor extends CodeEditor {
 			}
 		`;
 		});
-
 		const existing = document.getElementById("monaco-theme-dynamic");
 		if (existing) existing.remove();
-
 		const styleTag = document.createElement("style");
 		styleTag.id = "monaco-theme-dynamic";
 		styleTag.innerHTML = rules;
@@ -306,7 +316,7 @@ class MonacoEditor extends CodeEditor {
 
 		this.clearHoverDecoration();
 		const code = model.getValue();
-		const tokens = tokenize(code);
+		const tokens = tokenize(code, this.props.useMethodLexer);
 
 		const newDecorations = tokens.map((token) => {
 			const start = model.getPositionAt(token.start);
@@ -507,6 +517,48 @@ class MonacoEditor extends CodeEditor {
 		this.clearHoverDecoration();
 		this.context.browseClass(word.word);
 	};
+
+	// Autocompletion and tooltips
+
+	completionList = async (model, position) => {
+		const offset = model.getOffsetAt(position);
+		const source = model.getValue();
+		const word = model.getWordUntilPosition(position);
+		const list = { suggestions: [] };
+		if (word.word.length < 2) return list;
+		try {
+			const completions = await this.getCompletions(source, offset);
+			const range = {
+				startLineNumber: position.lineNumber,
+				startColumn: word.startColumn,
+				endLineNumber: position.lineNumber,
+				endColumn: word.endColumn,
+			};
+			list.suggestions = completions.map((c) => ({
+				label: c.label,
+				kind: this.completionKind(c.type),
+				insertText: c.label,
+				range: range,
+			}));
+		} catch (ignored) {}
+		console.log("Completions:", list.suggestions);
+		return list;
+	};
+
+	completionKind(type) {
+		switch (type) {
+			case "class":
+				return monaco.languages.CompletionItemKind.Class;
+			case "method":
+				return monaco.languages.CompletionItemKind.Method;
+			case "variable":
+				return monaco.languages.CompletionItemKind.Variable;
+			case "keyword":
+				return monaco.languages.CompletionItemKind.Keyword;
+			default:
+				return monaco.languages.CompletionItemKind.Text;
+		}
+	}
 
 	// Rendering
 
