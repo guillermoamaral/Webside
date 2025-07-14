@@ -1,4 +1,3 @@
-import React from "react";
 import Tool from "./Tool";
 import { ide } from "../IDE";
 import {
@@ -9,10 +8,10 @@ import {
 	ToggleButtonGroup,
 	Button,
 } from "@mui/material";
-import CodeMirrorEditor from "../parts/CodeMirrorEditor";
 import CustomSplit from "../controls/CustomSplit";
 import CustomTree from "../controls/CustomTree";
 import { BarChart } from "@mui/x-charts/BarChart";
+import CodeEditorBackend from "../parts/CodeEditorBackend";
 
 class Profiler extends Tool {
 	constructor(props) {
@@ -150,7 +149,7 @@ class Profiler extends Tool {
 								variant="outlined"
 								style={{ height: "100%" }}
 							>
-								<CodeMirrorEditor
+								<CodeEditorBackend
 									context={evaluationContext}
 									source={expression}
 									onChange={this.expressionChanged}
@@ -271,7 +270,7 @@ class Profiler extends Tool {
 											variant="outlined"
 											style={{ height: "100%" }}
 										>
-											<CodeMirrorEditor
+											<CodeEditorBackend
 												source={
 													!selectedMethod
 														? ""

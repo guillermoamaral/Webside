@@ -28,7 +28,6 @@ import Titlebar from "./layout/Titlebar";
 import Sidebar from "./layout/Sidebar";
 import MessageChannel from "./MessageChannel";
 import Hotkeys from "react-hot-keys";
-//import DrawerHeader from "./layout/DrawerHeader";
 import { Settings, Setting } from "../model/Settings";
 import { app as mainApp } from "../App";
 import { v4 as uuidv4 } from "uuid";
@@ -42,6 +41,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import TonelWriterV3 from "../model/TonelWriter";
 import JSZip from "jszip";
+import { tokenTypes } from "../SmalltalkTokenizer";
 
 var ide = null;
 var MaxExtraContainers = 3;
@@ -161,29 +161,10 @@ class IDE extends Component {
 			dark.addColor(a[0], "#000000", a[1]).active = a[2] !== false;
 			light.addColor(a[0], "#ffffff", a[1]).active = a[2] !== false;
 		});
-		[
-			"selectorStyle",
-			"symbolStyle",
-			"argumentStyle",
-			"temporaryStyle",
-			"assignmentStyle",
-			"stringStyle",
-			"variableStyle",
-			"metaStyle",
-			"bracketStyle",
-			"selfStyle",
-			"superStyle",
-			"trueStyle",
-			"falseStyle",
-			"nilStyle",
-			"thisContextStyle",
-			"returnStyle",
-			"globalStyle",
-			"numberStyle",
-			"commentStyle",
-		].forEach((s) => {
-			dark.addTextStyle(s, "#000000");
-			light.addTextStyle(s, "#ffffff");
+		tokenTypes.forEach((type) => {
+			const style = type + "Style";
+			dark.addTextStyle(style, "#000000");
+			light.addTextStyle(style, "#ffffff");
 		});
 		dark.setting("primaryColor").readOnly();
 		dark.setting("secondaryColor").readOnly();
@@ -288,10 +269,11 @@ class IDE extends Component {
 		connection.addText("dialect").readOnly();
 		connection.addText("version").readOnly();
 		// Code...
-		const code = settings.addSection("editor");
-		code.addBoolean("showLineNumbers", false, "Show line numbers");
-		code.addBoolean("useAutocompletion", false, "Use autocompletion");
-		code.addBoolean("showTooltips", true, "Show tooltips");
+		const editor = settings.addSection("editor");
+		editor.addOptions("backend", ["Monaco", "CodeMirror"], "CodeMirror");
+		editor.addBoolean("showLineNumbers", false, "Show line numbers");
+		editor.addBoolean("useAutocompletion", false, "Use autocompletion");
+		editor.addBoolean("showTooltips", true, "Show tooltips");
 		// Appearance...
 		const appearance = settings.addSection("appearance");
 		appearance.addOptions(
@@ -483,7 +465,9 @@ class IDE extends Component {
 			await ide.backend.autocompletions("Object", "m\r Objec", 8);
 			autocompletion = true;
 		} catch (ignored) {}
-		this.settings.section("editor").set("useAutocompletion", autocompletion);
+		this.settings
+			.section("editor")
+			.set("useAutocompletion", autocompletion);
 		this.waitFor(async () => {
 			await this.fetchIcons();
 			await this.fetchThemes();

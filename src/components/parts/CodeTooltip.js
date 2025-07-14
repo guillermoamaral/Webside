@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import {
 	Link,
 	Card,
@@ -9,8 +9,8 @@ import {
 	Paper,
 } from "@mui/material";
 import { ide } from "../IDE";
-import CodeMirrorEditor from "./CodeMirrorEditor";
 import Inspector from "../tools/Inspector";
+import CodeEditorBackend from "./CodeEditorBackend";
 
 class CodeTooltip extends Component {
 	render() {
@@ -65,7 +65,7 @@ class CodeTooltip extends Component {
 								height: 150,
 							}}
 						>
-							<CodeMirrorEditor source={code} readOnly noTooltips />
+							<CodeEditorBackend source={code} readOnly noTooltips />
 						</Paper>
 					)}
 					{object && (

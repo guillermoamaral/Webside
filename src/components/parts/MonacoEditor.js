@@ -13,7 +13,7 @@ import { smalltalkMonarchDefinition } from "../../SmalltalkMonarch";
 import { ide } from "../IDE";
 import { darken } from "@mui/system";
 import CodeEditor from "./CodeEditor";
-import { tokenize } from "../../SmalltalkTokenizer";
+import { tokenize, tokenTypes } from "../../SmalltalkTokenizer";
 
 let smalltalkRegistered = false;
 const openedEditors = new Map();
@@ -23,6 +23,11 @@ class MonacoEditor extends CodeEditor {
 
 	constructor(props) {
 		super(props);
+		this.containerRef = React.createRef();
+		this.editor = null;
+		this.focusedEditor = null;
+		this.decorations = [];
+		this.hoverDecoration = [];
 		this.state = {
 			originalSource: props.originalSource ?? props.source,
 			source: props.source,
@@ -35,70 +40,52 @@ class MonacoEditor extends CodeEditor {
 			extendedOptions: [],
 			currentEvaluation: null,
 		};
-		this.containerRef = React.createRef();
-		this.editorRef = null;
-		this.decorations = [];
-		this.hoverDecoration = [];
-		this.tagNames = [
-			"selector",
-			"symbol",
-			"argument",
-			"temporary",
-			"assignment",
-			"string",
-			"variable",
-			"meta",
-			"bracket",
-			"self",
-			"super",
-			"true",
-			"false",
-			"nil",
-			"thisContext",
-			"return",
-			"global",
-			"number",
-			"comment",
-		];
 	}
 
 	componentDidMount() {
 		ide.onColorModeChange(this.colorModeChanged);
 		this.defineTheme();
-		this.createEditor();
+		this.initializeEditor();
 		this.injectStyles();
-		this.addCommands();
-		this.setDecorations();
-		this.updateAnnotations();
+		this.addCommands(this.editor);
+		this.setDecorations(this.editor);
+		this.updateAnnotations(this.editor);
 	}
 
 	componentDidUpdate(prevProps) {
 		if (prevProps.source !== this.props.source) {
-			this.setState({ source: this.props.source || "" }, () => {
-				if (this.editorRef) {
-					this.editorRef.setValue(this.state.source);
-					this.setDecorations();
-					this.updateAnnotations();
+			this.setState({ source: this.props.source }, () => {
+				if (this.editor) {
+					this.editor.setValue(this.state.source);
+					this.setDecorations(this.editor);
+					this.updateAnnotations(this.editor);
 				}
 			});
 		}
-		if (this.editorRef) {
-			this.editorRef.layout();
-			this.editorRef.focus();
+		if (this.editor) {
+			this.editor.layout();
+			this.editor.focus();
 		}
 	}
 
 	componentWillUnmount() {
 		console.log("MonacoEditor componentWillUnmount");
-		this.clearHoverDecoration();
-		this.editorRef?.dispose();
+		this.clearHoverDecoration(this.editor);
+		this.editor?.dispose();
 		ide.removeColorModeChangeHandler(this.colorModeChanged);
 		this.resizeObserver?.disconnect();
 	}
 
 	// Configuration
 
-	createEditor() {
+	initializeEditor() {
+		this.registerLanguage();
+		this.createEditor(this.containerRef.current);
+		this.registerEditor(this.editor);
+		this.setupEditor(this.editor);
+	}
+
+	registerLanguage = () => {
 		if (!smalltalkRegistered) {
 			monaco.languages.register({ id: "smalltalk" });
 			monaco.languages.setMonarchTokensProvider(
@@ -115,46 +102,67 @@ class MonacoEditor extends CodeEditor {
 			});
 			smalltalkRegistered = true;
 		}
+	};
+
+	editorOptions() {
 		const appearance = this.settings().section("appearance");
-		this.editorRef = monaco.editor.create(this.containerRef.current, {
-			value: this.source(),
-			language: "smalltalk",
+		return {
 			readOnly: this.props.readOnly || false,
+			theme: "webside",
+			contextmenu: false,
 			fontFamily: appearance.get("fontFamily"),
 			fontSize: appearance.get("fontSize"),
-			theme: "webside",
+			lineNumbers: this.showLineNumbers?.() ? "on" : "off",
 			minimap: { enabled: false },
 			scrollBeyondLastLine: false,
-			lineNumbers: this.showLineNumbers() ? "on" : "off",
-			minimap: {
-				enabled: false, // Disable minimap for coloring issues (no good monarch support, code is highlighted by means of decorations)
-			},
-			contextmenu: false,
+		};
+	}
+
+	createEditor = (container) => {
+		this.editor = monaco.editor.create(container, {
+			...this.editorOptions(),
+			value: this.source(),
+			language: "smalltalk",
 		});
+		this.registerEditor(this.editor);
+		this.focusedEditor = this.editor;
+	};
 
-		const model = this.editorRef.getModel();
-		if (model) openedEditors.set(model.uri.toString(), this);
-
+	setupEditor(editor) {
+		editor.onDidChangeModelContent(() => {
+			const value = editor.getValue();
+			this.sourceChanged(value);
+			this.setDecorations(editor);
+			this.updateAnnotations(editor);
+		});
+		editor.onMouseMove((event) => {
+			this.focusedEditor = editor;
+			this.mouseMoved(event, editor);
+		});
+		editor.onMouseDown((event) => {
+			this.focusedEditor = editor;
+			this.mouseClicked(event, editor);
+		});
+		editor.onContextMenu((event) => {
+			if (!event.target?.position) return;
+			this.focusedEditor = editor;
+			this.openMenu(event.event.browserEvent);
+		});
 		this.resizeObserver = new ResizeObserver(() => {
 			requestAnimationFrame(() => {
-				this.editorRef?.layout();
+				console.log("reanimating");
+				this.focusedEditor = editor;
+				editor?.focus();
+				editor?.layout();
 			});
 		});
 		this.resizeObserver.observe(this.containerRef.current);
-
-		this.editorRef.onDidChangeModelContent(() => {
-			const value = this.editorRef.getValue();
-			this.sourceChanged(value);
-			this.setDecorations();
-			this.updateAnnotations();
-		});
-		this.editorRef.onMouseMove(this.mouseMoved);
-		this.editorRef.onMouseDown(this.mouseClicked);
-		this.editorRef.onContextMenu((e) => {
-			if (!e.target?.position) return;
-			this.openMenu(e.event.browserEvent);
-		});
 	}
+
+	registerEditor = (editor) => {
+		const model = editor.getModel();
+		if (model) openedEditors.set(model.uri.toString(), this);
+	};
 
 	defineTheme() {
 		const appearance = this.settings().section("appearance");
@@ -168,13 +176,13 @@ class MonacoEditor extends CodeEditor {
 		monaco.editor.defineTheme("webside", {
 			base: "vs-dark",
 			inherit: false,
-			rules: this.tagNames
-				.filter((tag) => {
-					mode.get(`${tag}Color`);
+			rules: tokenTypes
+				.filter((type) => {
+					mode.get(`${type}Color`);
 				})
-				.map((tag) => ({
-					token: tag,
-					foreground: mode.get(`${tag}Color`).replace("#", ""),
+				.map((type) => ({
+					token: type,
+					foreground: mode.get(`${type}Color`).replace("#", ""),
 				})),
 			semanticHighlighting: true,
 			colors: {
@@ -279,10 +287,10 @@ class MonacoEditor extends CodeEditor {
 		.monaco-editor .suggest-widget {
 			border: 1px solid ${gray} !important;
 		}`;
-		this.tagNames.forEach((name) => {
-			const setting = mode.setting(`${name}Style`);
+		tokenTypes.forEach((type) => {
+			const setting = mode.setting(`${type}Style`);
 			if (setting) {
-				rules += `\n.${name} {
+				rules += `\n.${type} {
 				color: ${setting.color};
 				font-style: ${setting.italic ? "italic" : "normal"};
 				font-weight: ${setting.bold ? "bold" : "normal"};
@@ -297,8 +305,7 @@ class MonacoEditor extends CodeEditor {
 		document.head.appendChild(styleTag);
 	}
 
-	addCommands() {
-		const editor = this.editorRef;
+	addCommands(editor) {
 		if (!editor) return;
 		this.shortcuts().forEach(({ shortcut, action }) => {
 			const keys = this.adaptShortcut(shortcut);
@@ -347,16 +354,13 @@ class MonacoEditor extends CodeEditor {
 		return key == null ? null : mod | key;
 	}
 
-	setDecorations() {
-		const editor = this.editorRef;
+	setDecorations(editor) {
 		const model = editor.getModel();
 		if (!editor || !model) return;
-
-		this.clearHoverDecoration();
-		const code = model.getValue();
-		const tokens = tokenize(code, this.props.inMethod);
-
-		const newDecorations = tokens.map((token) => {
+		this.clearHoverDecoration(editor);
+		const source = model.getValue();
+		const tokens = tokenize(source, this.isInMethod());
+		const decorations = tokens.map((token) => {
 			const start = model.getPositionAt(token.start);
 			const end = model.getPositionAt(token.end);
 			let classname = token.type;
@@ -371,24 +375,22 @@ class MonacoEditor extends CodeEditor {
 				options: { inlineClassName: classname },
 			};
 		});
-
 		this.decorations = editor.deltaDecorations(
 			this.decorations,
-			newDecorations
+			decorations
 		);
 	}
 
-	clearHoverDecoration() {
-		const model = this.editorRef.getModel();
+	clearHoverDecoration(editor) {
+		const model = editor.getModel();
 		if (!model) return;
-
 		this.hoverDecoration = model.deltaDecorations(this.hoverDecoration, []);
 	}
 
 	// Source access and manipulation
 
 	currentPosition = () => {
-		const editor = this.editorRef;
+		const editor = this.focusedEditor;
 		if (!editor) return;
 		const model = editor.getModel();
 		if (!model) return;
@@ -398,13 +400,13 @@ class MonacoEditor extends CodeEditor {
 	};
 
 	wordAtPosition = (position) => {
-		const model = this.editorRef.getModel();
+		const model = this.focusedEditor.getModel();
 		const info = model.getWordAtPosition(position);
 		if (info) return info.word;
 	};
 
 	selectedText = () => {
-		const editor = this.editorRef;
+		const editor = this.focusedEditor;
 		if (!editor) return "";
 		const model = editor.getModel();
 		const selection = editor.getSelection();
@@ -413,7 +415,7 @@ class MonacoEditor extends CodeEditor {
 	};
 
 	currentLine = () => {
-		const editor = this.editorRef;
+		const editor = this.focusedEditor;
 		if (!editor) return;
 		const model = editor.getModel();
 		const position = editor.getPosition(); // { lineNumber, column }
@@ -422,7 +424,7 @@ class MonacoEditor extends CodeEditor {
 	};
 
 	currentLineRange = () => {
-		const editor = this.editorRef;
+		const editor = this.focusedEditor;
 		if (!editor) return null;
 		const model = editor.getModel();
 		const position = editor.getPosition();
@@ -437,7 +439,7 @@ class MonacoEditor extends CodeEditor {
 	};
 
 	currentSelectionRange = () => {
-		const editor = this.editorRef;
+		const editor = this.focusedEditor;
 		if (!editor) return;
 		editor.focus();
 		const model = editor.getModel();
@@ -455,14 +457,13 @@ class MonacoEditor extends CodeEditor {
 	};
 
 	selectRanges = (ranges) => {
-		if (!this.editorRef || !ranges?.length) return;
-		const editor = this.editorRef;
+		if (!this.focusedEditor || !ranges?.length) return;
+		const editor = this.focusedEditor;
 		const model = editor.getModel();
 		if (!model) return;
 		const { from, to } = ranges[0];
 		const start = model.getPositionAt(from);
 		const end = model.getPositionAt(to);
-
 		const selection = new monaco.Selection(
 			start.lineNumber,
 			start.column,
@@ -474,7 +475,7 @@ class MonacoEditor extends CodeEditor {
 	};
 
 	insertText = (text, position) => {
-		const editor = this.editorRef;
+		const editor = this.focusedEditor;
 		if (!editor) return;
 		const model = editor.getModel();
 		if (!model) return;
@@ -500,36 +501,33 @@ class MonacoEditor extends CodeEditor {
 		this.defineTheme();
 		monaco.editor.setTheme("webside");
 		this.injectStyles();
-		this.setDecorations();
+		this.setDecorations(this.editor);
 	};
 
-	mouseMoved = async (e) => {
-		if (!e.event.ctrlKey) return;
-		const editor = this.editorRef;
+	mouseMoved = async (event, editor) => {
+		if (!event.event.ctrlKey) return;
 		const model = editor.getModel();
 		if (!model) return;
-		const pos = e.target.position;
-		if (!pos) return this.clearHoverDecoration();
+		const pos = event.target.position;
+		if (!pos) return this.clearHoverDecoration(editor);
 		const wordInfo = model.getWordAtPosition(pos);
-		if (!wordInfo) return this.clearHoverDecoration();
+		if (!wordInfo) return this.clearHoverDecoration(editor);
 		const word = wordInfo.word;
 		if (!/^[A-Z][a-zA-Z0-9_]*$/.test(word))
-			return this.clearHoverDecoration();
+			return this.clearHoverDecoration(editor);
 		let species;
 		try {
 			species = await ide.backend.classNamed(word);
 		} catch (ignored) {}
 		if (!species) {
-			return this.clearHoverDecoration();
+			return this.clearHoverDecoration(editor);
 		}
-
 		const range = new monaco.Range(
 			pos.lineNumber,
 			wordInfo.startColumn,
 			pos.lineNumber,
 			wordInfo.endColumn
 		);
-
 		this.hoverDecoration = editor.deltaDecorations(this.hoverDecoration, [
 			{
 				range,
@@ -543,16 +541,15 @@ class MonacoEditor extends CodeEditor {
 		]);
 	};
 
-	mouseClicked = (e) => {
-		if (!e.event.ctrlKey) return;
-		const editor = this.editorRef;
+	mouseClicked = (event, editor) => {
+		if (!event.event.ctrlKey) return;
 		const model = editor.getModel();
 		if (!model) return;
-		const target = e.target;
+		const target = event.target;
 		if (target.type !== monaco.editor.MouseTargetType.CONTENT_TEXT) return;
 		const word = model.getWordAtPosition(target.position);
 		if (!word || !/^[A-Z][a-zA-Z0-9_]*$/.test(word.word)) return;
-		this.clearHoverDecoration();
+		this.clearHoverDecoration(editor);
 		this.context.browseClass(word.word);
 	};
 
@@ -599,8 +596,7 @@ class MonacoEditor extends CodeEditor {
 
 	// Linting annotations
 
-	updateAnnotations = () => {
-		const editor = this.editorRef;
+	updateAnnotations = (editor) => {
 		if (!editor || !this.props.annotations) return;
 		const model = editor.getModel();
 		if (!model) return;
@@ -650,14 +646,8 @@ class MonacoEditor extends CodeEditor {
 
 	render() {
 		console.log("rendering monaco editor");
-		const {
-			source,
-			evaluating,
-			currentEvaluation,
-			dirty,
-			menuOpen,
-			menuPosition,
-		} = this.state;
+		const { evaluating, currentEvaluation, dirty, menuOpen, menuPosition } =
+			this.state;
 		const { showAccept, showPlay, showAssistant, readOnly, noScroll } =
 			this.props;
 		const showCodeAssistant = showAssistant && ide.usesCodeAssistant();

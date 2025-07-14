@@ -1,10 +1,10 @@
-import React, { PureComponent } from "react";
+import { PureComponent } from "react";
 import { Box, Paper } from "@mui/material";
 import CustomTable from "../controls/CustomTable";
-import CodeMirrorEditor from "../parts/CodeMirrorEditor";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 import CustomSplit from "../controls/CustomSplit";
+import CodeEditorBackend from "./CodeEditorBackend";
 
 class BindingTable extends PureComponent {
 	static contextType = ToolContainerContext;
@@ -125,7 +125,7 @@ class BindingTable extends PureComponent {
 					</Box>
 					<Box height={"20%"}>
 						<Paper variant="outlined" style={{ height: "100%" }}>
-							<CodeMirrorEditor
+							<CodeEditorBackend
 								source={source}
 								//onAccept={this.saveBinding}
 								context={this.evaluationContext()}

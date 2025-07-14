@@ -1,7 +1,6 @@
-import React from "react";
 import Tool from "./Tool";
 import { Grid, Paper } from "@mui/material";
-import CodeMerge from "../parts/CodeMerge";
+import CodeDiffEditorBackend from "../parts/CodeDiffEditorBackend";
 
 class CodeDifferences extends Tool {
 	render() {
@@ -9,9 +8,9 @@ class CodeDifferences extends Tool {
 			<Grid container spacing={1}>
 				<Grid item xs={12} md={12} lg={12}>
 					<Paper variant="outlined">
-						<CodeMerge
-							leftCode={this.props.leftSource}
-							rightCode={this.props.rightSource}
+						<CodeDiffEditorBackend
+							leftSource={this.props.leftSource}
+							rightSource={this.props.rightSource}
 						/>
 					</Paper>
 				</Grid>

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import {
 	Paper,
 	Box,
@@ -10,7 +10,6 @@ import {
 import EvaluateIcon from "@mui/icons-material/PlayCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ide } from "../IDE";
-import CodeMirrorEditor from "./CodeMirrorEditor";
 import MarkdownView from "./MarkdownView";
 import ObjectPresenter from "./ObjectPresenter";
 import ToolContainerContext from "../ToolContainerContext";
@@ -20,6 +19,7 @@ import InspectorIcon from "../icons/InspectorIcon";
 import { darken } from "@mui/system";
 import CollapsedIcon from "@mui/icons-material/ArrowRight";
 import ExpandedIcon from "@mui/icons-material/ArrowDropDown";
+import CodeEditorBackend from "./CodeEditorBackend";
 
 class NotebookCellEditor extends Component {
 	static contextType = ToolContainerContext;
@@ -263,7 +263,7 @@ class NotebookCellEditor extends Component {
 					)}
 					{(cell.isCode() || editable) && (
 						<Box sx={{ ml: 3, width: "95%" }}>
-							<CodeMirrorEditor
+							<CodeEditorBackend
 								ref={(ref) => (this.editorRef = ref)}
 								noScroll
 								showLineNumbers={false}

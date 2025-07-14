@@ -1,4 +1,3 @@
-import React from "react";
 import Tool from "./Tool";
 import { Typography, Box, Button, Link, Divider, Paper } from "@mui/material";
 import SettingEditor from "../parts/SettingEditor";
@@ -6,9 +5,9 @@ import CustomTree from "../controls/CustomTree";
 import CustomSplit from "../controls/CustomSplit";
 import CustomPaper from "../controls/CustomPaper";
 import BackendTester from "./BackendTester";
-import CodeMirrorEditor from "../parts/CodeMirrorEditor";
 import { ide } from "../IDE";
 import Scrollable from "../controls/Scrollable";
+import CodeEditorBackend from "../parts/CodeEditorBackend";
 
 class SettingsEditor extends Tool {
 	constructor(props) {
@@ -193,7 +192,7 @@ class SettingsEditor extends Tool {
 												maxHeight: 300,
 											}}
 										>
-											<CodeMirrorEditor
+											<CodeEditorBackend
 												ref={(ref) => {
 													this.codePreviewRef = ref;
 												}}

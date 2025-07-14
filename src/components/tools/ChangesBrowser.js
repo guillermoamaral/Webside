@@ -1,4 +1,3 @@
-import React from "react";
 import Tool from "./Tool";
 import {
 	Grid,
@@ -9,8 +8,6 @@ import {
 	Tab,
 	ToggleButton,
 } from "@mui/material";
-import CodeMerge from "../parts/CodeMerge";
-import MonacoDiffEditor from "../parts/MonacoDiffEditor";
 import { ide } from "../IDE";
 import ChangesTable from "../parts/ChangesTable";
 import DownloadIcon from "@mui/icons-material/GetApp";
@@ -21,6 +18,7 @@ import ApplyAllIcon from "@mui/icons-material/DoneAll";
 import ShowOriginalIcon from "@mui/icons-material/Refresh";
 import HighlightIcon from "@mui/icons-material/Highlight";
 import CustomSplit from "../controls/CustomSplit";
+import CodeDiffEditorBackend from "../parts/CodeDiffEditorBackend";
 
 class ChangesBrowser extends Tool {
 	constructor(props) {
@@ -304,16 +302,16 @@ class ChangesBrowser extends Tool {
 									variant="outlined"
 									sx={{ height: "100%", minHeight: 400 }}
 								>
-									<MonacoDiffEditor
+									<CodeDiffEditorBackend
 										highlightChanges={highlightChanges}
 										sx={{ height: "100%" }}
 										context={this.evaluationContext()}
-										leftCode={
+										leftSource={
 											selectedChange
 												? selectedChange.sourceCode()
 												: ""
 										}
-										rightCode={
+										rightSource={
 											selectedChange
 												? selectedChange.currentSourceCode()
 												: ""

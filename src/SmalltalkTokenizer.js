@@ -1,16 +1,37 @@
 import { SmalltalkLexer } from "./SmalltalkLexer";
 
+export const tokenTypes = [
+	"selector",
+	"symbol",
+	"argument",
+	"temporary",
+	"assignment",
+	"string",
+	"variable",
+	"meta",
+	"bracket",
+	"self",
+	"super",
+	"true",
+	"false",
+	"nil",
+	"thisContext",
+	"return",
+	"global",
+	"number",
+	"comment",
+	"separator",
+];
+
 export function tokenize(source, inSelector = false) {
 	const lexer = SmalltalkLexer(inSelector);
 	const state = lexer.startState();
 	const lines = source.split(/\n/);
 	const tokens = [];
 	let offset = 0;
-
 	for (let i = 0; i < lines.length; i++) {
 		const line = lines[i];
 		const stream = new StringStream(line);
-
 		while (!stream.eol()) {
 			const start = stream.pos;
 			const type = lexer.token(stream, state);
@@ -26,7 +47,6 @@ export function tokenize(source, inSelector = false) {
 			}
 			stream.start = stream.pos;
 		}
-
 		offset += line.length + 1;
 	}
 

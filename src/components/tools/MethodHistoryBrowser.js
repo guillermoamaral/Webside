@@ -1,11 +1,10 @@
-import React from "react";
 import Tool from "./Tool";
 import { Grid, Paper, Box, Tab } from "@mui/material";
-import CodeMerge from "../parts/CodeMerge";
 import MethodVersionTable from "../parts/MethodVersionTable";
 import CustomSplit from "../controls/CustomSplit";
 import { ide } from "../IDE";
 import Changeset from "../../model/StChangeset";
+import CodeDiffEditorBackend from "../parts/CodeDiffEditorBackend";
 
 class MethodHistoryBrowser extends Tool {
 	constructor(props) {
@@ -113,15 +112,15 @@ class MethodHistoryBrowser extends Tool {
 								variant="outlined"
 								sx={{ height: "100%", minHeight: 400 }}
 							>
-								<CodeMerge
+								<CodeDiffEditorBackend
 									sx={{ height: "100%" }}
 									context={this.evaluationContext()}
-									leftCode={
+									leftSource={
 										selectedChange
 											? selectedChange.sourceCode()
 											: ""
 									}
-									rightCode={method ? method.source : ""}
+									rightSource={method ? method.source : ""}
 								/>
 							</Paper>
 						</Box>

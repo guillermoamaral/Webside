@@ -246,7 +246,7 @@ class CodeEditor extends Component {
 	wordUnderCursor() {
 		const position = this.currentPosition();
 		if (!position) return null;
-		return this.wordAt(position);
+		return this.wordAtPosition(position);
 	}
 
 	targetWord() {
@@ -665,9 +665,13 @@ class CodeEditor extends Component {
 			: this.settings().section("editor").get("useAutocompletion");
 	}
 
+	isInMethod() {
+		return this.props.inMethod;
+	}
+
 	getCompletions = async (source, position) => {
 		const classname =
-			this.props.class && this.props.inMethod
+			this.props.class && this.isInMethod()
 				? this.props.class.name
 				: null;
 		let completions = [];

@@ -33,9 +33,8 @@ class TabControl extends Component {
 	};
 
 	tabFocused = (event, index) => {
-		if (this.props.onTabFocus) {
+		if (this.props.onTabFocus)
 			this.props.onTabFocus(this.props.pages[index]);
-		}
 	};
 
 	closeTab = (event, index) => {

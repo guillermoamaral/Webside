@@ -12,13 +12,13 @@ import { Prec } from "@codemirror/state";
 const Original = CodeMirrorMerge.Original;
 const Modified = CodeMirrorMerge.Modified;
 
-class CodeMerge extends CodeMirrorEditor {
+class CodeMirrorDiffEditor extends CodeMirrorEditor {
 	constructor(props) {
 		super(props);
 		this.ref = React.createRef();
 		this.state = {
-			leftCode: "",
-			rightCode: "",
+			leftSource: "",
+			rightSource: "",
 			menuOpen: false,
 			menuPosition: { x: null, y: null },
 		};
@@ -26,12 +26,12 @@ class CodeMerge extends CodeMirrorEditor {
 
 	static getDerivedStateFromProps(props, state) {
 		if (
-			props.leftCode !== state.leftCode ||
-			props.rightCode !== state.rightCode
+			props.leftSource !== state.leftSource ||
+			props.rightSource !== state.rightSource
 		) {
 			return {
-				leftCode: props.leftCode || "",
-				rightCode: props.rightCode || "",
+				leftSource: props.leftSource || "",
+				rightSource: props.rightSource || "",
 			};
 		}
 		return null;
@@ -39,15 +39,15 @@ class CodeMerge extends CodeMirrorEditor {
 
 	shouldComponentUpdate(nextProps, nextState) {
 		return (
-			nextProps.leftCode !== this.props.leftCode ||
-			nextProps.rightCode !== this.props.rightCode ||
+			nextProps.leftSource !== this.props.leftSource ||
+			nextProps.rightSource !== this.props.rightSource ||
 			nextProps.highlightChanges !== this.state.highlightChanges
 		);
 	}
 
 	render() {
 		console.log("rendering code merge");
-		const { leftCode, rightCode, menuOpen, menuPosition } = this.state;
+		const { leftSource, rightSource, menuOpen, menuPosition } = this.state;
 		const highlightChanges = this.props.highlightChanges;
 		const theme = this.theme();
 		const menuOptions = this.menuOptions();
@@ -69,7 +69,7 @@ class CodeMerge extends CodeMirrorEditor {
 						}}
 					>
 						<Original
-							value={leftCode}
+							value={leftSource}
 							extensions={[
 								this.lexer(),
 								EditorView.lineWrapping,
@@ -82,7 +82,7 @@ class CodeMerge extends CodeMirrorEditor {
 							}}
 						/>
 						<Modified
-							value={rightCode}
+							value={rightSource}
 							extensions={[
 								this.lexer(),
 								EditorView.lineWrapping,
@@ -109,4 +109,4 @@ class CodeMerge extends CodeMirrorEditor {
 	}
 }
 
-export default CodeMerge;
+export default CodeMirrorDiffEditor;

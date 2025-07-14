@@ -1,242 +1,160 @@
-import React from "react";
 import * as monaco from "monaco-editor";
-import { Box } from "@mui/material";
-import Scrollable from "../controls/Scrollable";
+import React from "react";
+import MonacoEditor from "./MonacoEditor";
+import { Box, LinearProgress } from "@mui/material";
+import { ide } from "../IDE";
 import PopupMenu from "../controls/PopupMenu";
-import ToolContainerContext from "../ToolContainerContext";
-import { smalltalkMonarchDefinition } from "../../SmalltalkMonarch";
-import CodeEditor from "./CodeEditor";
 
-class MonacoDiffEditor extends CodeEditor {
-	static contextType = ToolContainerContext;
-	containerRef = React.createRef();
-	editorOriginal = null;
-	editorModified = null;
-	decorationsOriginal = [];
-	decorationsModified = [];
-
-	state = {
-		menuOpen: false,
-		menuPosition: { x: null, y: null },
-	};
+class MonacoDiffEditor extends MonacoEditor {
+	constructor(props) {
+		super(props);
+		this.editor = null;
+		this.leftEditor = null;
+		this.rightEditor = null;
+		this.containerRef = React.createRef();
+		this.state = {
+			dirty: false,
+			menuOpen: false,
+			menuPosition: { x: null, y: null },
+			evaluating: false,
+			extendedOptions: [],
+			currentEvaluation: null,
+		};
+	}
 
 	componentDidMount() {
-		monaco.languages.register({ id: "smalltalk" });
-		monaco.languages.setMonarchTokensProvider(
-			"smalltalk",
-			smalltalkMonarchDefinition
-		);
-
-		this.editorOriginal = monaco.editor.create(
-			this.containerRef.current.children[0],
-			{
-				value: this.props.leftCode || "",
-				language: "smalltalk",
-				readOnly: true,
-				theme: "vs-dark",
-				fontSize: 14,
-				minimap: { enabled: false },
-				scrollBeyondLastLine: false,
-			}
-		);
-
-		this.editorModified = monaco.editor.create(
-			this.containerRef.current.children[1],
-			{
-				value: this.props.rightCode || "",
-				language: "smalltalk",
-				readOnly: false,
-				theme: "vs-dark",
-				fontSize: 14,
-				minimap: { enabled: false },
-				scrollBeyondLastLine: false,
-			}
-		);
-
-		this.editorModified.addCommand(
-			monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
-			() => this.props.onAccept?.(this.editorModified.getValue())
-		);
-
-		this.editorModified.addAction({
-			id: "inspect-it",
-			label: "Inspect It",
-			keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyI],
-			run: () => this.props.onExtendedOptionPerform?.("inspect"),
-		});
-
-		this.editorModified.onDidChangeModelContent(() => {
-			this.applyHighlights();
-		});
-
-		this.applyHighlights();
+		ide.onColorModeChange(this.colorModeChanged);
+		this.defineTheme();
+		this.initializeEditor();
+		this.injectStyles();
+		this.addCommands(this.leftEditor);
+		this.addCommands(this.rightEditor);
+		this.setDecorations(this.leftEditor);
+		this.setDecorations(this.rightEditor);
+		this.updateAnnotations(this.leftEditor);
+		this.updateAnnotations(this.rightEditor);
 	}
 
 	componentDidUpdate(prevProps) {
-		if (prevProps.leftCode !== this.props.leftCode) {
-			this.editorOriginal.setValue(this.props.leftCode || "");
+		if (
+			prevProps.leftSource !== this.props.leftSource ||
+			prevProps.rightSource !== this.props.rightSource
+		) {
+			this.setState(
+				{
+					leftSource: this.props.leftSource,
+					rightSource: this.props.rightSource,
+				},
+				() => {
+					if (this.leftEditor) {
+						this.leftEditor.setValue(this.state.leftSource);
+						this.setDecorations(this.leftEditor);
+						this.updateAnnotations(this.leftEditor);
+					}
+					if (this.rightEditor) {
+						this.rightEditor.setValue(this.state.rightSource);
+						this.setDecorations(this.rightEditor);
+						this.updateAnnotations(this.rightEditor);
+					}
+				}
+			);
 		}
-		if (prevProps.rightCode !== this.props.rightCode) {
-			this.editorModified.setValue(this.props.rightCode || "");
+		if (this.editor) {
+			this.editor.layout();
+			this.editor.focus();
 		}
-		this.applyHighlights();
 	}
 
 	componentWillUnmount() {
-		this.editorOriginal?.dispose();
-		this.editorModified?.dispose();
+		this.clearHoverDecoration(this.leftEditor);
+		this.clearHoverDecoration(this.rightEditor);
+		this.editor?.dispose();
+		ide.removeColorModeChangeHandler(this.colorModeChanged);
+		this.resizeObserver?.disconnect();
 	}
 
-	extractSymbols(code) {
-		const temporals = new Set();
-		const parameters = new Set();
-		const lines = code.split(/\r?\n/);
+	// Configuration
 
-		for (let line of lines) {
-			const trimmed = line.trim();
-			if (trimmed.startsWith("|") && trimmed.endsWith("|")) {
-				trimmed
-					.slice(1, -1)
-					.trim()
-					.split(/\s+/)
-					.forEach((t) => temporals.add(t));
-			}
-		}
+	createEditor = (container) => {
+		this.editor = monaco.editor.createDiffEditor(container, {
+			...this.editorOptions(),
+			enableSplitViewResizing: true,
+			renderSideBySide: true,
+		});
+		const originalModel = monaco.editor.createModel(
+			this.props.leftSource,
+			"smalltalk"
+		);
+		const modifiedModel = monaco.editor.createModel(
+			this.props.rightSource,
+			"smalltalk"
+		);
+		this.editor.setModel({
+			original: originalModel,
+			modified: modifiedModel,
+		});
+	};
 
-		const header = lines.slice(0, 6).join(" ");
-		const re = /\b([a-zA-Z0-9_]+):\s*([a-zA-Z0-9_]+)/g;
-		let match;
-		while ((match = re.exec(header))) {
-			parameters.add(match[2]);
-		}
+	setupEditor(editor) {
+		this.leftEditor = editor.getOriginalEditor();
+		this.rightEditor = editor.getModifiedEditor();
 
-		return { temporals, parameters };
-	}
+		super.setupEditor(this.leftEditor);
+		super.setupEditor(this.rightEditor);
 
-	applyHighlights() {
-		const apply = (editor, code, decorations, isLeft) => {
-			const model = editor.getModel();
-			if (!model) return;
-			const { temporals, parameters } = this.extractSymbols(code);
-			const newDecorations = [];
-
-			const classRegex = /\b[A-Z][a-zA-Z0-9_]*\b/g;
-			const identifierRegex = /\b[a-zA-Z_][a-zA-Z0-9_]*\b/g;
-			const lines = code.split(/\r?\n/);
-
-			for (let lineNumber = 1; lineNumber <= lines.length; lineNumber++) {
-				const line = lines[lineNumber - 1];
-				let match;
-
-				while ((match = classRegex.exec(line))) {
-					const start = match.index + 1;
-					const end = start + match[0].length;
-					newDecorations.push({
-						range: new monaco.Range(
-							lineNumber,
-							start,
-							lineNumber,
-							end
-						),
-						options: {
-							inlineClassName: "class-link",
-							hoverMessage: {
-								value: `Go to class **${match[0]}** (Ctrl+Click)`,
-							},
-						},
-					});
-				}
-
-				while ((match = identifierRegex.exec(line))) {
-					const name = match[0];
-					const start = match.index + 1;
-					const end = start + name.length;
-					if (parameters.has(name)) {
-						newDecorations.push({
-							range: new monaco.Range(
-								lineNumber,
-								start,
-								lineNumber,
-								end
-							),
-							options: { inlineClassName: "param-symbol" },
-						});
-					} else if (temporals.has(name)) {
-						newDecorations.push({
-							range: new monaco.Range(
-								lineNumber,
-								start,
-								lineNumber,
-								end
-							),
-							options: { inlineClassName: "temp-symbol" },
-						});
-					}
-				}
-			}
-
-			editor.onMouseDown((e) => {
-				if (!e.event.ctrlKey) return;
-				const word = model.getWordAtPosition(e.target.position);
-				if (!word || !/^[A-Z]/.test(word.word)) return;
-				this.context.ide?.browseClass(word.word);
+		this.resizeObserver = new ResizeObserver(() => {
+			requestAnimationFrame(() => {
+				editor?.layout();
+				this.leftEditor?.layout();
+				this.rightEditor?.layout();
 			});
-
-			if (isLeft) {
-				this.decorationsOriginal = editor.deltaDecorations(
-					decorations,
-					newDecorations
-				);
-			} else {
-				this.decorationsModified = editor.deltaDecorations(
-					decorations,
-					newDecorations
-				);
-			}
-		};
-
-		apply(
-			this.editorOriginal,
-			this.props.leftCode || "",
-			this.decorationsOriginal,
-			true
-		);
-		apply(
-			this.editorModified,
-			this.props.rightCode || "",
-			this.decorationsModified,
-			false
-		);
+		});
+		this.resizeObserver.observe(this.containerRef.current);
 	}
+
+	registerEditor = (ignored) => {
+		// super.registerEditor(this.leftEditor);
+		// super.registerEditor(this.rightEditor);
+	};
+
+	// Autocompletion and tooltips
+
+	isInMethod() {
+		return true;
+	}
+
+	// Rendering
 
 	render() {
-		const { menuOpen, menuPosition } = this.state;
-		const menuOptions = this.props.menuOptions?.() || [];
-
+		const { evaluating, currentEvaluation, dirty, menuOpen, menuPosition } =
+			this.state;
+		const menuOptions = this.menuOptions();
 		return (
 			<Box
 				display="flex"
-				flexDirection="column"
-				style={{ height: "100%" }}
+				flexDirection="row"
+				style={{ width: "100%", height: "100%" }}
 			>
-				<Scrollable>
-					<div
-						ref={this.containerRef}
-						style={{ display: "flex", height: "100%" }}
-						onContextMenu={this.openMenu}
-					>
-						<div style={{ flex: 1, height: "100%" }} />
-						<div style={{ flex: 1, height: "100%" }} />
-					</div>
-					{menuOptions.length > 0 && (
-						<PopupMenu
-							options={menuOptions}
-							open={menuOpen}
-							position={menuPosition}
-							onClose={this.closeMenu}
-						/>
-					)}
-				</Scrollable>
+				<Box
+					ref={this.containerRef}
+					flexGrow={1}
+					sx={{
+						width: "100%",
+						height: "100%",
+						outline: "none",
+						border: "none",
+					}}
+				/>
+				<div id="tooltip-container"></div>
+				{evaluating && <LinearProgress variant="indeterminate" />}
+				{menuOptions && menuOptions.length > 0 && (
+					<PopupMenu
+						options={menuOptions}
+						open={menuOpen}
+						position={menuPosition}
+						onClose={this.closeMenu}
+					/>
+				)}
 			</Box>
 		);
 	}

@@ -18,6 +18,7 @@ import { acceptCompletion } from "@codemirror/autocomplete";
 //import { LRLanguage, LanguageSupport } from "@codemirror/language";
 //import { styleTags, tags } from "@lezer/highlight";
 import { SmalltalkLexer } from "../../SmalltalkLexer";
+import { tokenTypes } from "../../SmalltalkTokenizer";
 import { Tag } from "@lezer/highlight";
 import { createTheme } from "@uiw/codemirror-themes";
 import { StreamLanguage } from "@codemirror/language";
@@ -54,30 +55,9 @@ import CodeEditor from "./CodeEditor";
 
 // This code makes use of a CodeMirror5-like parser and should be replaced in the future by the Lezer grammar option abvove.
 
-const newTags = {
-	selector: Tag.define(),
-	symbol: Tag.define(),
-	argument: Tag.define(),
-	temporary: Tag.define(),
-	assignment: Tag.define(),
-	string: Tag.define(),
-	variable: Tag.define(),
-	var: Tag.define(),
-	meta: Tag.define(),
-	bracket: Tag.define(),
-	reserved: Tag.define(),
-	self: Tag.define(),
-	super: Tag.define(),
-	true: Tag.define(),
-	false: Tag.define(),
-	nil: Tag.define(),
-	thisContext: Tag.define(),
-	return: Tag.define(),
-	global: Tag.define(),
-	number: Tag.define(),
-	comment: Tag.define(),
-	separator: Tag.define(),
-};
+const lezerTags = {};
+tokenTypes.forEach((type) => (lezerTags[type] = Tag.define()));
+lezerTags.var = Tag.define();
 
 class CodeMirrorEditor extends CodeEditor {
 	static contextType = ToolContainerContext;
@@ -214,8 +194,8 @@ class CodeMirrorEditor extends CodeEditor {
 	// Configuration
 
 	lexer() {
-		const lexer = SmalltalkLexer(this.props.inMethod);
-		lexer.tokenTable = newTags;
+		const lexer = SmalltalkLexer(this.isInMethod());
+		lexer.tokenTable = lezerTags;
 		return StreamLanguage.define(lexer);
 	}
 
@@ -264,27 +244,6 @@ class CodeMirrorEditor extends CodeEditor {
 		const mode = appearance.section(appearance.get("mode"));
 		let background = mode.get("background");
 		if (readOnly) background = darken(background, 0.05);
-		const styles = [
-			"selectorStyle",
-			"symbolStyle",
-			"argumentStyle",
-			"temporaryStyle",
-			"assignmentStyle",
-			"stringStyle",
-			"variableStyle",
-			"metaStyle",
-			"bracketStyle",
-			"selfStyle",
-			"superStyle",
-			"trueStyle",
-			"falseStyle",
-			"nilStyle",
-			"thisContextStyle",
-			"returnStyle",
-			"globalStyle",
-			"numberStyle",
-			"commentStyle",
-		];
 		const params = {
 			theme: appearance.get("mode"),
 			settings: {
@@ -303,10 +262,10 @@ class CodeMirrorEditor extends CodeEditor {
 			},
 			styles: [],
 		};
-		styles.forEach((s) => {
-			const setting = mode.setting(s);
+		tokenTypes.forEach((type) => {
+			const setting = mode.setting(type + "Style");
 			params.styles.push({
-				tag: newTags[s.replace("Style", "")],
+				tag: lezerTags[type],
 				color: setting.color,
 				fontStyle: setting.italic ? "italic" : "normal",
 				fontWeight: setting.bold ? "bold" : "normal",
@@ -314,7 +273,7 @@ class CodeMirrorEditor extends CodeEditor {
 		});
 		const setting = mode.setting("variableStyle");
 		params.styles.push({
-			tag: newTags.var,
+			tag: lezerTags.var,
 			color: setting.color,
 			fontStyle: setting.italic ? "italic" : "normal",
 			fontWeight: setting.bold ? "bold" : "normal",
@@ -481,9 +440,7 @@ class CodeMirrorEditor extends CodeEditor {
 	};
 
 	focusEditor = () => {
-		if (this.editorView) {
-			this.editorView.focus();
-		}
+		if (this.editorView) this.editorView.focus();
 	};
 
 	renameIdentifier = async (identifier) => {
@@ -507,12 +464,17 @@ class CodeMirrorEditor extends CodeEditor {
 	};
 
 	openMenu = (event) => {
-		super.openMenu(event);
+		event.preventDefault();
+		event.stopPropagation();
+		this.setState({
+			menuOpen: true,
+			menuPosition: { x: event.clientX - 2, y: event.clientY - 4 },
+		});
 		this.forceUpdate(); // Check this according to the default response in shouldComponentUpdate()
 	};
 
 	closeMenu = () => {
-		super.closeMenu();
+		this.setState({ menuOpen: false });
 		this.forceUpdate(); // Check this according to the default response in shouldComponentUpdate()
 	};
 

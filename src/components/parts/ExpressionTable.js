@@ -1,14 +1,14 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import { Box, Paper, IconButton } from "@mui/material";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 import { DataGrid } from "@mui/x-data-grid";
-import CodeMirrorEditor from "../parts/CodeMirrorEditor";
 import {
 	AddCircle as AddIcon,
 	Delete as DeleteIcon,
 	Refresh as RefreshIcon,
 } from "@mui/icons-material";
+import CodeEditorBackend from "./CodeEditorBackend";
 
 class ExpressionTable extends Component {
 	static contextType = ToolContainerContext;
@@ -253,7 +253,7 @@ class ExpressionTable extends Component {
 				</Box>
 				<Box height={"20%"}>
 					<Paper variant="outlined" style={{ height: "100%" }}>
-						<CodeMirrorEditor
+						<CodeEditorBackend
 							source={
 								selectedExpression
 									? selectedExpression.value
