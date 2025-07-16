@@ -64,7 +64,7 @@ class CodeMirrorEditor extends CodeEditor {
 
 	constructor(props) {
 		super(props);
-		this.editorView = null;
+		this.editor = null;
 		this.selectsRanges = true;
 		this.state = {
 			originalSource: props.originalSource ?? props.source,
@@ -152,7 +152,7 @@ class CodeMirrorEditor extends CodeEditor {
 
 	componentDidUpdate() {
 		if (this.state.dirty) return;
-		if (!this.selectsRanges || !this.editorView) return;
+		if (!this.selectsRanges || !this.editor) return;
 		const { selectedRanges, selectedSelector, selectedIdentifier } =
 			this.state;
 		if (selectedRanges) this.selectRanges(selectedRanges);
@@ -165,7 +165,7 @@ class CodeMirrorEditor extends CodeEditor {
 				this.astRangesContainingIdentifier(selectedIdentifier);
 			this.selectRanges(ranges);
 		}
-		const limit = this.editorView.state.doc.length;
+		const limit = this.editor.state.doc.length;
 		const range = this.lastSelection;
 		if (
 			range &&
@@ -174,7 +174,7 @@ class CodeMirrorEditor extends CodeEditor {
 			range.anchor <= limit &&
 			range.head <= limit
 		) {
-			this.editorView.dispatch({
+			this.editor.dispatch({
 				selection: range,
 				scrollIntoView: true,
 			});
@@ -209,8 +209,8 @@ class CodeMirrorEditor extends CodeEditor {
 	};
 
 	currentState() {
-		if (this.editorView && this.editorView.viewState) {
-			return this.editorView.viewState.state;
+		if (this.editor && this.editor.viewState) {
+			return this.editor.viewState.state;
 		}
 	}
 
@@ -333,7 +333,7 @@ class CodeMirrorEditor extends CodeEditor {
 		for (let i = 0; i < 2; i++) {
 			setTimeout(() => {
 				try {
-					this.editorView?.dispatch({
+					this.editor?.dispatch({
 						selection: {
 							anchor: ranges[0].from,
 							head: ranges[0].to,
@@ -346,10 +346,30 @@ class CodeMirrorEditor extends CodeEditor {
 	}
 
 	insertText(text, position) {
-		this.editorView.dispatch({
+		this.editor.dispatch({
 			changes: { from: position, to: position, insert: text },
 		});
 	}
+
+	replaceSelectionWith = (text) => {
+		if (!this.editor) return;
+		const range = this.currentSelectionRange();
+		const state = this.currentState();
+		const limit = state.doc.length;
+		const from = Math.max(0, Math.min(range.from, limit));
+		const to = Math.max(0, Math.min(range.to, limit));
+		this.editor.dispatch({
+			changes: {
+				from,
+				to,
+				insert: text,
+			},
+			selection: {
+				anchor: from + text.length,
+			},
+		});
+		this.editor.focus(); // Check if this is needed
+	};
 
 	// Event handlers
 
@@ -427,8 +447,8 @@ class CodeMirrorEditor extends CodeEditor {
 
 	sourceChanged(source) {
 		this.selectsRanges = false;
-		if (this.editorView) {
-			this.lastSelection = this.editorView.state.selection.main;
+		if (this.editor) {
+			this.lastSelection = this.editor.state.selection.main;
 		}
 		super.sourceChanged(source);
 	}
@@ -440,7 +460,7 @@ class CodeMirrorEditor extends CodeEditor {
 	};
 
 	focusEditor = () => {
-		if (this.editorView) this.editorView.focus();
+		if (this.editor) this.editor.focus();
 	};
 
 	renameIdentifier = async (identifier) => {
@@ -458,7 +478,7 @@ class CodeMirrorEditor extends CodeEditor {
 				};
 			}
 		);
-		this.editorView.dispatch({
+		this.editor.dispatch({
 			changes: changes,
 		});
 	};
@@ -476,16 +496,6 @@ class CodeMirrorEditor extends CodeEditor {
 	closeMenu = () => {
 		this.setState({ menuOpen: false });
 		this.forceUpdate(); // Check this according to the default response in shouldComponentUpdate()
-	};
-
-	pasteFromClipboard = () => {
-		// OUTDATED
-		navigator.clipboard.readText().then(
-			(text) => {
-				this.editor.replaceSelection(text);
-			},
-			(error) => console.log(error)
-		);
 	};
 
 	// Autocompletion and tooltips
@@ -670,7 +680,7 @@ class CodeMirrorEditor extends CodeEditor {
 							onChange={(value) => this.sourceChanged(value)}
 							onContextMenu={this.openMenu}
 							onCreateEditor={(view, state) => {
-								this.editorView = view;
+								this.editor = view;
 							}}
 							onUpdate={(update) => this.editorUpdated(update)}
 							onDoubleClick={this.includeColonInSelection}

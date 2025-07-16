@@ -166,8 +166,14 @@ class IDE extends Component {
 			dark.addTextStyle(style, "#000000");
 			light.addTextStyle(style, "#ffffff");
 		});
+		dark.addColor("errorColor", "#ff5370").readOnly();
+		dark.addColor("warningColor", "#ffcb6b").readOnly();
+		dark.addColor("infoColor", "#82aaff").readOnly();
 		dark.setting("primaryColor").readOnly();
 		dark.setting("secondaryColor").readOnly();
+		light.addColor("errorColor", "#ff5370").readOnly();
+		light.addColor("warningColor", "#ffcb6b").readOnly();
+		light.addColor("infoColor", "#82aaff").readOnly();
 		light.setting("primaryColor").readOnly();
 		light.setting("secondaryColor").readOnly();
 		return settings;
@@ -631,7 +637,6 @@ class IDE extends Component {
 	}
 
 	welcomeMessage() {
-		console.log("a", this.currentDialect());
 		return (
 			'"Welcome to Webside ' +
 			this.currentDeveloper() +

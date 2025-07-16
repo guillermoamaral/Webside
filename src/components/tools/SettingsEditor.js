@@ -49,7 +49,41 @@ class SettingsEditor extends Tool {
 	};
 
 	sampleMethod = () => {
-		return `method: argument\n\t"This is a comment"\n\t| temporaryVariable |\n\ttemporaryVariable := 123 + self unary.\n\tself keyword1: true keyword2: #symbol keyword3: nil.\n\tinstanceVariable := 'string'.\n\t^SomeClass new\n\n`;
+		return `method: argument
+	"This is a comment"
+	| temporaryVariable |
+	temporaryVariable := 123 + self unary.
+	self keyword1: true keyword2: #symbol keyword3: nil.
+	instanceVariable := 'string'.
+	self messageWithLintError.
+	self messageWithLintWarning.
+	self messageWithLintInfo.
+	^SomeClass new
+	
+	`;
+	};
+
+	sampleAnnotations = () => {
+		return [
+			{
+				from: 193,
+				to: 213,
+				type: "error",
+				description: "This is a sample error",
+			},
+			{
+				from: 221,
+				to: 243,
+				type: "warning",
+				description: "This is a sample warning",
+			},
+			{
+				from: 251,
+				to: 270,
+				type: "info",
+				description: "This is a sample info",
+			},
+		];
 	};
 
 	settingChanged = (setting) => {
@@ -197,7 +231,8 @@ class SettingsEditor extends Tool {
 													this.codePreviewRef = ref;
 												}}
 												source={this.sampleMethod()}
-												//readOnly
+												annotations={this.sampleAnnotations()}
+												readOnly
 												noTooltips
 												settings={this.props.settings}
 												inMethod

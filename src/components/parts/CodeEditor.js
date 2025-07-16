@@ -8,6 +8,7 @@ class CodeEditor extends Component {
 
 	constructor(props) {
 		super(props);
+		this.editor = null;
 		this.typingTimer = null;
 		this.changeEventFrequency = 500; // miliseconds
 		this.autocompletionTimer = null;
@@ -88,18 +89,6 @@ class CodeEditor extends Component {
 		}
 		if (this.props.onRename) {
 			this.props.onRename(target);
-		}
-	};
-
-	includeColonInSelection = () => {
-		const range = this.currentSelectionRange();
-		if (this.textInRange({ from: range.to, to: range.to + 1 }) === ":") {
-			this.selectRanges([
-				{
-					from: range.from,
-					to: range.to + 1,
-				},
-			]);
 		}
 	};
 
@@ -270,7 +259,6 @@ class CodeEditor extends Component {
 		const ast = this.ast();
 		if (!this.state.dirty && ast) {
 			const range = this.currentSelectionRange();
-			console.log("targetSelector range", ast, range);
 			const node =
 				range && range.from < range.to
 					? ast.selectorInRage(range.from, range.to)
@@ -281,7 +269,6 @@ class CodeEditor extends Component {
 		try {
 			let selector;
 			const selection = this.selectedText();
-			console.log("targetSelector", selection);
 			if (selection.length > 0) {
 				selector = await ide.backend.selectorInSource(selection);
 			} else {
@@ -310,6 +297,18 @@ class CodeEditor extends Component {
 	static normalizeNewlines(source = "") {
 		return source.replace(/(?<!\r)\n|\r(?!\n)/g, "\r");
 	}
+
+	includeColonInSelection = () => {
+		const range = this.currentSelectionRange();
+		if (this.textInRange({ from: range.to, to: range.to + 1 }) === ":") {
+			this.selectRanges([
+				{
+					from: range.from,
+					to: range.to + 1,
+				},
+			]);
+		}
+	};
 
 	// Event handlers
 
@@ -529,6 +528,13 @@ class CodeEditor extends Component {
 	copyToClipboard = () => {
 		const text = this.selectedText();
 		navigator.clipboard.writeText(text);
+	};
+
+	pasteFromClipboard = () => {
+		navigator.clipboard.readText().then(
+			(text) => this.replaceSelectionWith(text),
+			(error) => console.log(error)
+		);
 	};
 
 	// AST manipulation...

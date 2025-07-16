@@ -104,18 +104,19 @@ class MonacoDiffEditor extends MonacoEditor {
 
 		this.resizeObserver = new ResizeObserver(() => {
 			requestAnimationFrame(() => {
-				editor?.layout();
+				//this.leftEditor?.focus();
 				this.leftEditor?.layout();
+				//this.rightEditor?.focus();
 				this.rightEditor?.layout();
 			});
 		});
 		this.resizeObserver.observe(this.containerRef.current);
 	}
 
-	registerEditor = (ignored) => {
-		// super.registerEditor(this.leftEditor);
-		// super.registerEditor(this.rightEditor);
-	};
+	registerEditor(ignored) {
+		super.registerEditor(this.leftEditor);
+		super.registerEditor(this.rightEditor);
+	}
 
 	// Autocompletion and tooltips
 
