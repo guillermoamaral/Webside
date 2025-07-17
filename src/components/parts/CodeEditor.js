@@ -46,42 +46,6 @@ class CodeEditor extends Component {
 		});
 	};
 
-	playClicked = async (editor, event) => {
-		if (event) event.preventDefault();
-		const object = await this.evaluateExpression(
-			this.normalizedSource(),
-			true
-		);
-		if (object && this.props.onEvaluate) this.props.onEvaluate(object);
-	};
-
-	pauseClicked = async (editor, event) => {
-		if (event) event.preventDefault();
-		const evaluation = this.state.currentEvaluation;
-		if (!evaluation) return;
-		try {
-			const paused = await ide.backend.pauseEvaluation(evaluation.id);
-			this.setState({
-				currentEvaluation: { ...evaluation, state: paused.state },
-			});
-			const d = await ide.backend.createDebugger(evaluation.id);
-			this.context.openDebugger(d.id, d.description);
-		} catch (error) {
-			ide.reportError(error);
-		}
-	};
-
-	updatePlay = async () => {
-		const evaluation = this.state.currentEvaluation;
-		if (!evaluation) return;
-		try {
-			const updated = await ide.backend.evaluation(evaluation.id);
-			this.setState({
-				currentEvaluation: { ...evaluation, state: updated.state },
-			});
-		} catch (ignored) {}
-	};
-
 	renameTarget = () => {
 		const target = this.targetWord();
 		if (!target || target === "") {
@@ -332,6 +296,7 @@ class CodeEditor extends Component {
 	}
 
 	acceptClicked = () => {
+		console.log("accept clicked", this.normalizedSource());
 		if (this.props.onAccept) this.props.onAccept(this.normalizedSource());
 	};
 
@@ -535,6 +500,42 @@ class CodeEditor extends Component {
 			(text) => this.replaceSelectionWith(text),
 			(error) => console.log(error)
 		);
+	};
+
+	playClicked = async (editor, event) => {
+		if (event) event.preventDefault();
+		const object = await this.evaluateExpression(
+			this.normalizedSource(),
+			true
+		);
+		if (object && this.props.onEvaluate) this.props.onEvaluate(object);
+	};
+
+	pauseClicked = async (editor, event) => {
+		if (event) event.preventDefault();
+		const evaluation = this.state.currentEvaluation;
+		if (!evaluation) return;
+		try {
+			const paused = await ide.backend.pauseEvaluation(evaluation.id);
+			this.setState({
+				currentEvaluation: { ...evaluation, state: paused.state },
+			});
+			const d = await ide.backend.createDebugger(evaluation.id);
+			this.context.openDebugger(d.id, d.description);
+		} catch (error) {
+			ide.reportError(error);
+		}
+	};
+
+	updatePlay = async () => {
+		const evaluation = this.state.currentEvaluation;
+		if (!evaluation) return;
+		try {
+			const updated = await ide.backend.evaluation(evaluation.id);
+			this.setState({
+				currentEvaluation: { ...evaluation, state: updated.state },
+			});
+		} catch (ignored) {}
 	};
 
 	// AST manipulation...

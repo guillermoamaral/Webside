@@ -19,7 +19,7 @@ let smalltalkRegistered = false;
 
 class MonacoEditor extends CodeEditor {
 	static contextType = ToolContainerContext;
-	static openedEditors = new Map();
+	static openedInstances = new Map();
 	static activeEditor = null;
 
 	constructor(props) {
@@ -53,7 +53,16 @@ class MonacoEditor extends CodeEditor {
 	}
 
 	componentDidUpdate(prevProps) {
-		if (prevProps.source !== this.props.source) {
+		console.log(
+			"MonacoEditor componentDidUpdate",
+			this.props.source,
+			prevProps.source,
+			this.state.source
+		);
+		if (
+			prevProps.source !== this.props.source &&
+			this.props.source !== this.state.source
+		) {
 			this.setState({ source: this.props.source }, () => {
 				if (this.editor) {
 					this.editor.setValue(this.state.source);
@@ -87,7 +96,7 @@ class MonacoEditor extends CodeEditor {
 	static getInstanceForEditor(editor) {
 		const model = editor.getModel();
 		if (!model) return null;
-		return MonacoEditor.openedEditors.get(model.uri.toString());
+		return MonacoEditor.openedInstances.get(model.uri.toString());
 	}
 
 	// Configuration
@@ -109,7 +118,7 @@ class MonacoEditor extends CodeEditor {
 			monaco.languages.registerCompletionItemProvider("smalltalk", {
 				triggerCharacters: [".", " "],
 				provideCompletionItems: async (model, position) => {
-					const instance = MonacoEditor.openedEditors.get(
+					const instance = MonacoEditor.openedInstances.get(
 						model.uri.toString()
 					);
 					if (!instance) return { suggestions: [] };
@@ -139,7 +148,7 @@ class MonacoEditor extends CodeEditor {
 	createEditor = (container) => {
 		this.editor = monaco.editor.create(container, {
 			...this.editorOptions(),
-			value: this.source(),
+			value: this.state.source,
 			language: "smalltalk",
 		});
 		this.registerEditor(this.editor);
@@ -159,10 +168,12 @@ class MonacoEditor extends CodeEditor {
 			this.mouseMoved(event, editor);
 		});
 		editor.onMouseDown((event) => {
+			editor?.focus();
 			MonacoEditor.setActiveEditor(editor);
 			this.mouseClicked(event, editor);
 		});
 		editor.onContextMenu((event) => {
+			editor?.focus();
 			if (!event.target?.position) return;
 			MonacoEditor.setActiveEditor(editor);
 			this.openMenu(event.event.browserEvent);
@@ -178,7 +189,7 @@ class MonacoEditor extends CodeEditor {
 
 	registerEditor(editor) {
 		const model = editor?.getModel();
-		if (model) MonacoEditor.openedEditors.set(model.uri.toString(), this);
+		if (model) MonacoEditor.openedInstances.set(model.uri.toString(), this);
 	}
 
 	defineTheme() {
@@ -383,8 +394,15 @@ class MonacoEditor extends CodeEditor {
 	static dispatchCommand(action) {
 		const editor = MonacoEditor.getActiveEditor();
 		const instance = MonacoEditor.getInstanceForEditor(editor);
+		console.log("Dispatching command");
+		console.log(editor?.getValue(), editor?.getPosition());
+		console.log(
+			editor?.getModel()?.uri.toString(),
+			instance,
+			instance.editor === editor
+		);
 		if (!instance) return;
-		action.call(instance);
+		action.bind(instance)();
 	}
 
 	adaptShortcut(shortcut) {
@@ -459,6 +477,12 @@ class MonacoEditor extends CodeEditor {
 
 	// Source access and manipulation
 
+	source() {
+		const editor = MonacoEditor.getActiveEditor();
+		if (!editor) return;
+		return editor.getValue();
+	}
+
 	currentPosition = () => {
 		const editor = MonacoEditor.getActiveEditor();
 		if (!editor) return;
@@ -469,10 +493,11 @@ class MonacoEditor extends CodeEditor {
 		return offset;
 	};
 
-	wordAtPosition = (position) => {
+	wordAtPosition = (offset) => {
 		const editor = MonacoEditor.getActiveEditor();
 		if (!editor) return;
 		const model = editor.getModel();
+		const position = model.getPositionAt(offset);
 		const info = model.getWordAtPosition(position);
 		if (info) return info.word;
 	};
@@ -597,9 +622,9 @@ class MonacoEditor extends CodeEditor {
 		if (!model) return;
 		const pos = event.target.position;
 		if (!pos) return this.clearHoverDecoration(editor);
-		const wordInfo = model.getWordAtPosition(pos);
-		if (!wordInfo) return this.clearHoverDecoration(editor);
-		const word = wordInfo.word;
+		const info = model.getWordAtPosition(pos);
+		if (!info) return this.clearHoverDecoration(editor);
+		const word = info.word;
 		if (!/^[A-Z][a-zA-Z0-9_]*$/.test(word))
 			return this.clearHoverDecoration(editor);
 		let species;
@@ -611,9 +636,9 @@ class MonacoEditor extends CodeEditor {
 		}
 		const range = new monaco.Range(
 			pos.lineNumber,
-			wordInfo.startColumn,
+			info.startColumn,
 			pos.lineNumber,
-			wordInfo.endColumn
+			info.endColumn
 		);
 		this.hoverDecoration = editor.deltaDecorations(this.hoverDecoration, [
 			{
@@ -638,10 +663,10 @@ class MonacoEditor extends CodeEditor {
 		if (!model) return;
 		const target = event.target;
 		if (target.type !== monaco.editor.MouseTargetType.CONTENT_TEXT) return;
-		const word = model.getWordAtPosition(target.position);
-		if (!word || !/^[A-Z][a-zA-Z0-9_]*$/.test(word.word)) return;
+		const info = model.getWordAtPosition(target.position);
+		if (!info || !/^[A-Z][a-zA-Z0-9_]*$/.test(info.word)) return;
 		this.clearHoverDecoration(editor);
-		this.context.browseClass(word.word);
+		this.context.browseClass(info.word);
 	};
 
 	// Autocompletion and tooltips
