@@ -132,10 +132,9 @@ class Setting extends Object {
 	}
 
 	path() {
-		if (this.parent) {
-			return this.parent.path() + "." + this.name;
-		}
-		return this.name;
+		let prefix = "";
+		if (this.parent) prefix = this.parent.path() + ".";
+		return prefix + this.name;
 	}
 }
 
@@ -207,21 +206,29 @@ class Settings extends Object {
 		return this.settings.filter((s) => s instanceof Settings);
 	}
 
-	section(name) {
-		return this.sections().find((s) => s.name === name);
+	section(nameOrPath) {
+		const parts = nameOrPath.split(".");
+		if (parts.length > 1) {
+			const section = this.section(parts[0]);
+			if (!section) return;
+			return section.section(parts.slice(1).join("."));
+		}
+		return this.sections().find((s) => s.name === nameOrPath);
 	}
 
 	plainSettings() {
 		return this.settings.filter((s) => s instanceof Setting);
 	}
 
-	setting(name) {
-		const parts = name.split(".");
+	setting(nameOrPath) {
+		const parts = nameOrPath.split(".");
 		if (parts.length > 1) {
-			const section = this.section(parts[0]);
-			return section.setting(parts.slice(1).join("."));
+			const last = parts.pop();
+			const section = this.section(parts.join("."));
+			if (!section) return;
+			return section.setting(last);
 		}
-		return this.plainSettings().find((s) => s.name === name);
+		return this.plainSettings().find((s) => s.name === nameOrPath);
 	}
 
 	get(name) {
@@ -250,9 +257,16 @@ class Settings extends Object {
 		return section;
 	}
 
-	setSection(name, section) {
-		const index = this.settings.findIndex((s) => s.name === name);
-		if (index) {
+	setSection(nameOrPath, section) {
+		const parts = nameOrPath.split(".");
+		if (parts.length > 1) {
+			const target = this.section(parts[0]);
+			if (!target) return;
+			return target.setSection(parts.slice(1).join("."), section);
+		}
+		const index = this.settings.findIndex((s) => s.name === nameOrPath);
+		if (index >= 0) {
+			section.parent = this;
 			this.settings[index] = section;
 		}
 	}
@@ -347,10 +361,13 @@ class Settings extends Object {
 	}
 
 	path() {
+		let prefix = "";
 		if (this.parent) {
-			return this.parent.path() + "." + this.name;
+			const head = this.parent.path();
+			if (head !== "") prefix = head + ".";
 		}
-		return this.name;
+		if (this.name === "settings") return ""; // root settings have no path
+		return prefix + this.name;
 	}
 }
 

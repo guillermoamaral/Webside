@@ -126,7 +126,7 @@ var next = function (stream, context, state) {
 		const identifier = stream.current();
 		token.value = identifier;
 		if (reserved.includes(identifier)) {
-			token.type = identifier;
+			token.type = "reserved";
 			state.expect("selector");
 			state.inSelector = false;
 		} else if (state.expects("variable") && state.isArgument(identifier)) {

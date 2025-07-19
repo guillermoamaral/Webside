@@ -33,12 +33,7 @@ Where `styles` is an object with the following properties:
 	"variableStyle": "style",
 	"metaStyle": "style",
 	"bracketStyle": "style",
-	"selfStyle": "style",
-	"superStyle": "style",
-	"trueStyle": "style",
-	"falseStyle": "style",
-	"nilStyle": "style",
-	"thisContextStyle": "style",
+	"reservedStyle": "style",
 	"returnStyle": "style",
 	"globalStyle": "style",
 	"numberStyle": "style",
@@ -102,23 +97,8 @@ If style is omitted a default style will be used.
 				"color": "#000000",
 				"bold": true
 			},
-			"trueStyle": {
+			"reservedStyle": {
 				"color": "#8F5902"
-			},
-			"falseStyle": {
-				"color": "#8F5902"
-			},
-			"nilStyle": {
-				"color": "#8F5902"
-			},
-			"selfStyle": {
-				"color": "#4d9a06"
-			},
-			"superStyle": {
-				"color": "#4d9a06"
-			},
-			"thisContextStyle": {
-				"color": "#4d9a06"
 			}
 		}
 	}

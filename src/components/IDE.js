@@ -209,12 +209,7 @@ class IDE extends Component {
 		light.setting("variableStyle").color = "#4fc1ff";
 		light.setting("metaStyle").color = "#ffcb6b";
 		light.setting("bracketStyle").color = "#9b9b9b";
-		light.setting("selfStyle").color = "#c792ea";
-		light.setting("superStyle").color = "#c792ea";
-		light.setting("trueStyle").color = "#c792ea";
-		light.setting("falseStyle").color = "#c792ea";
-		light.setting("nilStyle").color = "#c792ea";
-		light.setting("thisContextStyle").color = "#c792ea";
+		light.setting("reservedStyle").color = "#c792ea";
 		light.setting("returnStyle").color = "#72bb19";
 		light.setting("globalStyle").color = "#a22598";
 		light.setting("numberStyle").color = "#65a14e";
@@ -248,12 +243,7 @@ class IDE extends Component {
 		dark.setting("variableStyle").color = "#4fc1ff";
 		dark.setting("metaStyle").color = "#ffcb6b";
 		dark.setting("bracketStyle").color = "#9b9b9b";
-		dark.setting("selfStyle").color = "#c792ea";
-		dark.setting("superStyle").color = "#c792ea";
-		dark.setting("trueStyle").color = "#c792ea";
-		dark.setting("falseStyle").color = "#c792ea";
-		dark.setting("nilStyle").color = "#c792ea";
-		dark.setting("thisContextStyle").color = "#c792ea";
+		dark.setting("reservedStyle").color = "#c792ea";
 		dark.setting("returnStyle").color = "#72bb19";
 		dark.setting("globalStyle").color = "#bb73b5";
 		dark.setting("numberStyle").color = "#65a14e";
@@ -400,9 +390,9 @@ class IDE extends Component {
 		this.props.navigate("/");
 	};
 
-	resetSettingsSection(name) {
-		const section = this.defaultSettings().section(name);
-		this.settings.setSection(name, section);
+	resetSettingsSection(path) {
+		const section = this.defaultSettings().section(path);
+		this.settings.setSection(path, section);
 		this.applySettings(this.settings);
 	}
 

@@ -82,7 +82,7 @@ class ColorEditor extends Component {
 					required
 					disabled={!editable}
 				/>
-				<Box m={2}>
+				<Box ml={2} mr={2}>
 					<Typography variant="body2" sx={{ color: textColor }}>
 						Transparency
 					</Typography>

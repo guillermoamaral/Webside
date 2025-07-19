@@ -583,8 +583,8 @@ class ToolContainer extends Component {
 					onApply={(settings) => {
 						ide.applySettings(settings);
 					}}
-					onResetSection={(name) => {
-						ide.resetSettingsSection(name);
+					onResetSection={(path) => {
+						ide.resetSettingsSection(path);
 					}}
 				/>
 			);

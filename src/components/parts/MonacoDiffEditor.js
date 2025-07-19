@@ -8,10 +8,12 @@ import PopupMenu from "../controls/PopupMenu";
 class MonacoDiffEditor extends MonacoEditor {
 	constructor(props) {
 		super(props);
+		this.containerRef = React.createRef();
 		this.editor = null;
 		this.leftEditor = null;
 		this.rightEditor = null;
-		this.containerRef = React.createRef();
+		this.leftDecorations = [];
+		this.rightDecorations = [];
 		this.state = {
 			dirty: false,
 			menuOpen: false,
@@ -27,12 +29,8 @@ class MonacoDiffEditor extends MonacoEditor {
 		this.defineTheme();
 		this.initializeEditor();
 		this.injectStyles();
-		this.addCommands(this.leftEditor);
-		this.addCommands(this.rightEditor);
-		this.setDecorations(this.leftEditor);
-		this.setDecorations(this.rightEditor);
-		this.updateAnnotations(this.leftEditor);
-		this.updateAnnotations(this.rightEditor);
+		this.updateEditor(this.leftEditor);
+		this.updateEditor(this.rightEditor);
 	}
 
 	componentDidUpdate(prevProps) {
@@ -48,19 +46,17 @@ class MonacoDiffEditor extends MonacoEditor {
 				() => {
 					if (this.leftEditor) {
 						this.leftEditor.setValue(this.state.leftSource);
-						this.setDecorations(this.leftEditor);
-						this.updateAnnotations(this.leftEditor);
+						this.updateEditor(this.leftEditor);
 					}
 					if (this.rightEditor) {
 						this.rightEditor.setValue(this.state.rightSource);
-						this.setDecorations(this.rightEditor);
-						this.updateAnnotations(this.rightEditor);
+						this.updateEditor(this.rightEditor);
 					}
 				}
 			);
 		}
 		if (this.editor) {
-			this.editor.layout();
+			this.refreshLayout();
 			this.editor.focus();
 		}
 	}
@@ -104,10 +100,7 @@ class MonacoDiffEditor extends MonacoEditor {
 
 		this.resizeObserver = new ResizeObserver(() => {
 			requestAnimationFrame(() => {
-				//this.leftEditor?.focus();
-				this.leftEditor?.layout();
-				//this.rightEditor?.focus();
-				this.rightEditor?.layout();
+				this.refreshLayout();
 			});
 		});
 		this.resizeObserver.observe(this.containerRef.current);
@@ -116,6 +109,30 @@ class MonacoDiffEditor extends MonacoEditor {
 	registerEditor(ignored) {
 		super.registerEditor(this.leftEditor);
 		super.registerEditor(this.rightEditor);
+	}
+
+	addCommands = (ignored) => {
+		super.addCommands(this.leftEditor);
+		super.addCommands(this.rightEditor);
+	};
+
+	unregisterEditor(ignored) {
+		super.unregisterEditor(this.leftEditor);
+		super.unregisterEditor(this.rightEditor);
+	}
+
+	// Events handlers
+
+	refreshLayout() {
+		if (
+			this.containerRef &&
+			this.containerRef.current &&
+			this.containerRef.current.offsetWidth > 0
+		) {
+			this.editor?.layout();
+			this.leftEditor?.layout();
+			this.rightEditor?.layout();
+		}
 	}
 
 	// Autocompletion and tooltips

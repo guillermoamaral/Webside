@@ -308,12 +308,12 @@ class ChangesBrowser extends Tool {
 										context={this.evaluationContext()}
 										leftSource={
 											selectedChange
-												? selectedChange.sourceCode()
+												? selectedChange.currentSourceCode()
 												: ""
 										}
 										rightSource={
 											selectedChange
-												? selectedChange.currentSourceCode()
+												? selectedChange.sourceCode()
 												: ""
 										}
 									/>

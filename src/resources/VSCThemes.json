@@ -13,12 +13,7 @@
 			"argumentStyle": { "color": "#9CDCFE" },
 			"symbolStyle": { "color": "#569CD6" },
 			"globalStyle": { "color": "#4EC9B0" },
-			"selfStyle": { "color": "#569CD6" },
-			"superStyle": { "color": "#569CD6" },
-			"trueStyle": { "color": "#569CD6" },
-			"falseStyle": { "color": "#569CD6" },
-			"nilStyle": { "color": "#569CD6" },
-			"thisContextStyle": { "color": "#569CD6" },
+			"reservedStyle": { "color": "#569CD6" },
 			"selectorStyle": { "color": "#DCDCAA" },
 			"separatorStyle": { "color": "#2A2A2A" },
 			"primaryColor": "#FFFFFF",
@@ -66,22 +61,7 @@
 			"globalStyle": {
 				"color": "#007ACC"
 			},
-			"selfStyle": {
-				"color": "#267F99"
-			},
-			"superStyle": {
-				"color": "#267F99"
-			},
-			"trueStyle": {
-				"color": "#267F99"
-			},
-			"falseStyle": {
-				"color": "#267F99"
-			},
-			"nilStyle": {
-				"color": "#267F99"
-			},
-			"thisContextStyle": {
+			"reservedStyle": {
 				"color": "#267F99"
 			},
 			"selectorStyle": {
@@ -136,22 +116,7 @@
 			"globalStyle": {
 				"color": "#4EC9B0"
 			},
-			"selfStyle": {
-				"color": "#569CD6"
-			},
-			"superStyle": {
-				"color": "#569CD6"
-			},
-			"trueStyle": {
-				"color": "#569CD6"
-			},
-			"falseStyle": {
-				"color": "#569CD6"
-			},
-			"nilStyle": {
-				"color": "#569CD6"
-			},
-			"thisContextStyle": {
+			"reservedStyle": {
 				"color": "#569CD6"
 			},
 			"selectorStyle": {
@@ -203,22 +168,7 @@
 			"globalStyle": {
 				"color": "#007ACC"
 			},
-			"selfStyle": {
-				"color": "#267f99"
-			},
-			"superStyle": {
-				"color": "#267f99"
-			},
-			"trueStyle": {
-				"color": "#267f99"
-			},
-			"falseStyle": {
-				"color": "#267f99"
-			},
-			"nilStyle": {
-				"color": "#267f99"
-			},
-			"thisContextStyle": {
+			"reservedStyle": {
 				"color": "#267f99"
 			},
 			"selectorStyle": {
@@ -273,22 +223,7 @@
 			"globalStyle": {
 				"color": "#4ec9b0"
 			},
-			"selfStyle": {
-				"color": "#569cd6"
-			},
-			"superStyle": {
-				"color": "#569cd6"
-			},
-			"trueStyle": {
-				"color": "#569cd6"
-			},
-			"falseStyle": {
-				"color": "#569cd6"
-			},
-			"nilStyle": {
-				"color": "#569cd6"
-			},
-			"thisContextStyle": {
+			"reservedStyle": {
 				"color": "#569cd6"
 			},
 			"selectorStyle": {
@@ -340,22 +275,7 @@
 			"globalStyle": {
 				"color": "#007acc"
 			},
-			"selfStyle": {
-				"color": "#267f99"
-			},
-			"superStyle": {
-				"color": "#267f99"
-			},
-			"trueStyle": {
-				"color": "#267f99"
-			},
-			"falseStyle": {
-				"color": "#267f99"
-			},
-			"nilStyle": {
-				"color": "#267f99"
-			},
-			"thisContextStyle": {
+			"reservedStyle": {
 				"color": "#267f99"
 			},
 			"selectorStyle": {
@@ -410,23 +330,8 @@
 			"globalStyle": {
 				"color": "#f8f8f2"
 			},
-			"selfStyle": {
+			"reservedStyle": {
 				"color": "#f92672"
-			},
-			"superStyle": {
-				"color": "#f92672"
-			},
-			"trueStyle": {
-				"color": "#ae81ff"
-			},
-			"falseStyle": {
-				"color": "#ae81ff"
-			},
-			"nilStyle": {
-				"color": "#ae81ff"
-			},
-			"thisContextStyle": {
-				"color": "#ae81ff"
 			},
 			"selectorStyle": {
 				"color": "#A6E22E"
@@ -477,23 +382,8 @@
 			"globalStyle": {
 				"color": "#1e1e1e"
 			},
-			"selfStyle": {
+			"reservedStyle": {
 				"color": "#f92672"
-			},
-			"superStyle": {
-				"color": "#f92672"
-			},
-			"trueStyle": {
-				"color": "#ae81ff"
-			},
-			"falseStyle": {
-				"color": "#ae81ff"
-			},
-			"nilStyle": {
-				"color": "#ae81ff"
-			},
-			"thisContextStyle": {
-				"color": "#ae81ff"
 			},
 			"selectorStyle": {
 				"color": "#A6E22E"
@@ -547,23 +437,8 @@
 			"globalStyle": {
 				"color": "#f8f8f2"
 			},
-			"selfStyle": {
+			"reservedStyle": {
 				"color": "#f92672"
-			},
-			"superStyle": {
-				"color": "#f92672"
-			},
-			"trueStyle": {
-				"color": "#ae81ff"
-			},
-			"falseStyle": {
-				"color": "#ae81ff"
-			},
-			"nilStyle": {
-				"color": "#ae81ff"
-			},
-			"thisContextStyle": {
-				"color": "#ae81ff"
 			},
 			"selectorStyle": {
 				"color": "#A6E22E"
@@ -614,23 +489,8 @@
 			"globalStyle": {
 				"color": "#1e1e1e"
 			},
-			"selfStyle": {
+			"reservedStyle": {
 				"color": "#f92672"
-			},
-			"superStyle": {
-				"color": "#f92672"
-			},
-			"trueStyle": {
-				"color": "#ae81ff"
-			},
-			"falseStyle": {
-				"color": "#ae81ff"
-			},
-			"nilStyle": {
-				"color": "#ae81ff"
-			},
-			"thisContextStyle": {
-				"color": "#ae81ff"
 			},
 			"selectorStyle": {
 				"color": "#A6E22E"
@@ -684,22 +544,7 @@
 			"globalStyle": {
 				"color": "#6c71c4"
 			},
-			"selfStyle": {
-				"color": "#268bd2"
-			},
-			"superStyle": {
-				"color": "#268bd2"
-			},
-			"trueStyle": {
-				"color": "#268bd2"
-			},
-			"falseStyle": {
-				"color": "#268bd2"
-			},
-			"nilStyle": {
-				"color": "#268bd2"
-			},
-			"thisContextStyle": {
+			"reservedStyle": {
 				"color": "#268bd2"
 			},
 			"selectorStyle": {
@@ -751,22 +596,7 @@
 			"globalStyle": {
 				"color": "#6c71c4"
 			},
-			"selfStyle": {
-				"color": "#268bd2"
-			},
-			"superStyle": {
-				"color": "#268bd2"
-			},
-			"trueStyle": {
-				"color": "#268bd2"
-			},
-			"falseStyle": {
-				"color": "#268bd2"
-			},
-			"nilStyle": {
-				"color": "#268bd2"
-			},
-			"thisContextStyle": {
+			"reservedStyle": {
 				"color": "#268bd2"
 			},
 			"selectorStyle": {
@@ -821,22 +651,7 @@
 			"globalStyle": {
 				"color": "#ffeead"
 			},
-			"selfStyle": {
-				"color": "#ff9da4"
-			},
-			"superStyle": {
-				"color": "#ff9da4"
-			},
-			"trueStyle": {
-				"color": "#ff9da4"
-			},
-			"falseStyle": {
-				"color": "#ff9da4"
-			},
-			"nilStyle": {
-				"color": "#ff9da4"
-			},
-			"thisContextStyle": {
+			"reservedStyle": {
 				"color": "#ff9da4"
 			},
 			"selectorStyle": {
@@ -888,22 +703,7 @@
 			"globalStyle": {
 				"color": "#ffeead"
 			},
-			"selfStyle": {
-				"color": "#ff9da4"
-			},
-			"superStyle": {
-				"color": "#ff9da4"
-			},
-			"trueStyle": {
-				"color": "#ff9da4"
-			},
-			"falseStyle": {
-				"color": "#ff9da4"
-			},
-			"nilStyle": {
-				"color": "#ff9da4"
-			},
-			"thisContextStyle": {
+			"reservedStyle": {
 				"color": "#ff9da4"
 			},
 			"selectorStyle": {
@@ -976,22 +776,7 @@
 			"globalStyle": {
 				"color": "#ffffff"
 			},
-			"selfStyle": {
-				"color": "#ff4444"
-			},
-			"superStyle": {
-				"color": "#ff4444"
-			},
-			"trueStyle": {
-				"color": "#ff4444"
-			},
-			"falseStyle": {
-				"color": "#ff4444"
-			},
-			"nilStyle": {
-				"color": "#ff4444"
-			},
-			"thisContextStyle": {
+			"reservedStyle": {
 				"color": "#ff4444"
 			},
 			"returnStyle": {
@@ -1052,22 +837,7 @@
 			"globalStyle": {
 				"color": "#000000"
 			},
-			"selfStyle": {
-				"color": "#aa2222"
-			},
-			"superStyle": {
-				"color": "#aa2222"
-			},
-			"trueStyle": {
-				"color": "#aa2222"
-			},
-			"falseStyle": {
-				"color": "#aa2222"
-			},
-			"nilStyle": {
-				"color": "#aa2222"
-			},
-			"thisContextStyle": {
+			"reservedStyle": {
 				"color": "#aa2222"
 			},
 			"returnStyle": {

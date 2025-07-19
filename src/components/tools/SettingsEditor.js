@@ -28,7 +28,7 @@ class SettingsEditor extends Tool {
 		event.preventDefault();
 		const section = this.state.selectedSection;
 		const handler = this.props.onResetSection;
-		if (handler) handler(section.name);
+		if (handler) handler(section.path());
 		this.forceUpdate();
 	};
 
@@ -55,12 +55,9 @@ class SettingsEditor extends Tool {
 	temporaryVariable := 123 + self unary.
 	self keyword1: true keyword2: #symbol keyword3: nil.
 	instanceVariable := 'string'.
-	self messageWithLintError.
-	self messageWithLintWarning.
-	self messageWithLintInfo.
-	^SomeClass new
-	
-	`;
+	self messageWithLintError; messageWithLintInfo.
+	super messageWithLintWarning.
+	^SomeClass new`;
 	};
 
 	sampleAnnotations = () => {
@@ -72,14 +69,14 @@ class SettingsEditor extends Tool {
 				description: "This is a sample error",
 			},
 			{
-				from: 221,
-				to: 243,
+				from: 215,
+				to: 234,
 				type: "warning",
 				description: "This is a sample warning",
 			},
 			{
-				from: 251,
-				to: 270,
+				from: 243,
+				to: 265,
 				type: "info",
 				description: "This is a sample info",
 			},
