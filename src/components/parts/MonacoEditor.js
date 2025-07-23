@@ -676,7 +676,7 @@ class MonacoEditor extends CodeEditor {
 	};
 
 	rangeFromInterval(interval) {
-		const source = this.state.source;
+		const source = this.normalizedSource();
 		const extra = (offset) =>
 			(source.slice(0, offset).match(/\r/g) || []).length + offset - 1;
 		return {

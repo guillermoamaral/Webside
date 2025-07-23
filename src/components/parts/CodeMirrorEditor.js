@@ -417,11 +417,11 @@ class CodeMirrorEditor extends CodeEditor {
 			defaultValue: identifier,
 		});
 		if (!replacement) return;
-		const changes = this.astRangesContainingIdentifier(identifier).map(
-			(range) => {
+		const changes = this.astIntervalsWithIdentifier(identifier).map(
+			(interval) => {
 				return {
-					from: range.anchor,
-					to: range.head,
+					from: interval.start,
+					to: interval.end,
 					insert: replacement,
 				};
 			}

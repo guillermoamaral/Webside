@@ -404,11 +404,7 @@ class Debugger extends Tool {
 								method={
 									selectedFrame ? selectedFrame.method : null
 								}
-								selectedInterval={
-									selectedFrame
-										? selectedFrame.interval
-										: null
-								}
+								selectedInterval={selectedFrame?.interval}
 								onMethodCompile={this.methodCompiled}
 								onClassDefine={this.classDefined}
 								onClassComment={this.classCommented}

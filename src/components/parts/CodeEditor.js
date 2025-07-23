@@ -274,25 +274,32 @@ class CodeEditor extends Component {
 		}
 	};
 
-	selectInterval(interval) {
-		if (!interval) return;
+	selectIntervals(intervals) {
 		const source = this.normalizedSource();
-		if (!source || interval.start < 1 || interval.end > source.length)
-			return;
-		const range = this.rangeFromInterval(interval);
-		this.selectRanges([range]);
+		if (!source || intervals.length === 0) return;
+		const ranges = intervals
+			.filter(
+				(interval) =>
+					interval.start >= 1 && interval.end <= source.length
+			)
+			.map((interval) => this.rangeFromInterval(interval));
+		this.selectRanges(ranges);
+	}
+
+	selectInterval(interval) {
+		this.selectIntervals([interval]);
 	}
 
 	selectSelector(selector) {
 		if (!selector) return;
-		const ranges = this.astRangesContainingSelector(selector);
-		this.selectRanges(ranges);
+		const intervals = this.astIntervalsWithSelector(selector);
+		this.selectIntervals(intervals);
 	}
 
 	selectIdentifier(identifier) {
 		if (!identifier) return;
-		const ranges = this.astRangesContainingIdentifier(identifier);
-		this.selectRanges(ranges);
+		const intervals = this.astIntervalsWithIdentifier(identifier);
+		this.selectIntervals(intervals);
 	}
 
 	// Event handlers
@@ -568,15 +575,15 @@ class CodeEditor extends Component {
 		return ast;
 	}
 
-	astRangesSatisfying(condition) {
+	astIntervalsSatisfying(condition) {
 		const ast = this.ast();
 		if (!ast) return [];
 		return ast.nodesSatisfying(condition).map((node) => {
-			return { from: node.start - 1, to: node.end };
+			return { start: node.start, end: node.end };
 		});
 	}
 
-	astRangesContainingSelector(selector) {
+	astIntervalsWithSelector(selector) {
 		const ranges = [];
 		const ast = this.props.ast;
 		if (!ast) {
@@ -584,14 +591,14 @@ class CodeEditor extends Component {
 			// using some smart mechanism
 			return ranges;
 		}
-		return this.astRangesSatisfying(
+		return this.astIntervalsSatisfying(
 			(node) =>
 				(node.type === "Selector" || node.type === "Literal") &&
 				node.value === selector
 		);
 	}
 
-	astRangesContainingIdentifier(identifier) {
+	astIntervalsWithIdentifier(identifier) {
 		const ranges = [];
 		const ast = this.props.ast;
 		if (!ast) {
@@ -599,7 +606,7 @@ class CodeEditor extends Component {
 			// using some smart mechanism
 			return ranges;
 		}
-		return this.astRangesSatisfying(
+		return this.astIntervalsSatisfying(
 			(node) => node.type === "Identifier" && node.value === identifier
 		);
 	}
