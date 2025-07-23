@@ -29,8 +29,8 @@ class MonacoDiffEditor extends MonacoEditor {
 		this.defineTheme();
 		this.initializeEditor();
 		this.injectStyles();
-		this.updateEditor(this.leftEditor);
-		this.updateEditor(this.rightEditor);
+		this.updateOverlays(this.leftEditor);
+		this.updateOverlays(this.rightEditor);
 	}
 
 	componentDidUpdate(prevProps) {
@@ -46,19 +46,21 @@ class MonacoDiffEditor extends MonacoEditor {
 				() => {
 					if (this.leftEditor) {
 						this.leftEditor.setValue(this.state.leftSource);
-						this.updateEditor(this.leftEditor);
+						setTimeout(() => this.leftEditor?.layout(), 0);
+						this.updateOverlays(this.leftEditor);
 					}
 					if (this.rightEditor) {
 						this.rightEditor.setValue(this.state.rightSource);
-						this.updateEditor(this.rightEditor);
+						setTimeout(() => this.rightEditor?.layout(), 0);
+						this.updateOverlays(this.rightEditor);
 					}
 				}
 			);
 		}
-		if (this.editor) {
-			this.refreshLayout();
-			this.editor.focus();
-		}
+		//this.refreshLayout(this.editor);
+		this.refreshLayout(this.leftEditor);
+		this.refreshLayout(this.rightEditor);
+		//this.editor.focus();
 	}
 
 	componentWillUnmount() {
@@ -94,13 +96,13 @@ class MonacoDiffEditor extends MonacoEditor {
 	setupEditor(editor) {
 		this.leftEditor = editor.getOriginalEditor();
 		this.rightEditor = editor.getModifiedEditor();
-
 		super.setupEditor(this.leftEditor);
 		super.setupEditor(this.rightEditor);
-
 		this.resizeObserver = new ResizeObserver(() => {
 			requestAnimationFrame(() => {
-				this.refreshLayout();
+				//this.refreshLayout(this.editor);
+				this.refreshLayout(this.leftEditor);
+				this.refreshLayout(this.rightEditor);
 			});
 		});
 		this.resizeObserver.observe(this.containerRef.current);
@@ -122,18 +124,6 @@ class MonacoDiffEditor extends MonacoEditor {
 	}
 
 	// Events handlers
-
-	refreshLayout() {
-		if (
-			this.containerRef &&
-			this.containerRef.current &&
-			this.containerRef.current.offsetWidth > 0
-		) {
-			this.editor?.layout();
-			this.leftEditor?.layout();
-			this.rightEditor?.layout();
-		}
-	}
 
 	// Autocompletion and tooltips
 

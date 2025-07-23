@@ -12,12 +12,12 @@ class CodeEditor extends Component {
 		this.typingTimer = null;
 		this.changeEventFrequency = 500; // miliseconds
 		this.autocompletionTimer = null;
+		this.selectsRanges = true;
 		this.state = {
 			originalSource: props.originalSource ?? props.source,
 			source: props.source,
 			selectedInterval: null,
 			dirty: false,
-			selectedRanges: [],
 			menuOpen: false,
 			menuPosition: { x: null, y: null },
 			evaluating: false,
@@ -274,6 +274,27 @@ class CodeEditor extends Component {
 		}
 	};
 
+	selectInterval(interval) {
+		if (!interval) return;
+		const source = this.normalizedSource();
+		if (!source || interval.start < 1 || interval.end > source.length)
+			return;
+		const range = this.rangeFromInterval(interval);
+		this.selectRanges([range]);
+	}
+
+	selectSelector(selector) {
+		if (!selector) return;
+		const ranges = this.astRangesContainingSelector(selector);
+		this.selectRanges(ranges);
+	}
+
+	selectIdentifier(identifier) {
+		if (!identifier) return;
+		const ranges = this.astRangesContainingIdentifier(identifier);
+		this.selectRanges(ranges);
+	}
+
 	// Event handlers
 
 	triggerOnChange(source) {
@@ -296,7 +317,6 @@ class CodeEditor extends Component {
 	}
 
 	acceptClicked = () => {
-		console.log("accept clicked", this.normalizedSource());
 		if (this.props.onAccept) this.props.onAccept(this.normalizedSource());
 	};
 
@@ -560,7 +580,8 @@ class CodeEditor extends Component {
 		const ranges = [];
 		const ast = this.props.ast;
 		if (!ast) {
-			// Should try by using a SearchCursor and selector as a string or regex
+			// We could search for identifiers in the source code
+			// using some smart mechanism
 			return ranges;
 		}
 		return this.astRangesSatisfying(
@@ -574,7 +595,8 @@ class CodeEditor extends Component {
 		const ranges = [];
 		const ast = this.props.ast;
 		if (!ast) {
-			// Should try by using a SearchCursor and selector as a string or regex
+			// We could search for identifiers in the source code
+			// using some smart mechanism
 			return ranges;
 		}
 		return this.astRangesSatisfying(

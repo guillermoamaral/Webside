@@ -1,6 +1,11 @@
-import React from "react";
 import Tool from "./Tool";
-import { Box, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
+import {
+	Box,
+	FormGroup,
+	FormControlLabel,
+	Checkbox,
+	Typography,
+} from "@mui/material";
 import { ide } from "../IDE";
 import MethodList from "../parts/MethodList";
 import CodeBrowser from "../parts/CodeBrowser";
@@ -172,7 +177,7 @@ class MethodBrowser extends Tool {
 	render() {
 		const { selectedMethod, selectedClass, showTests, editorFullView } =
 			this.state;
-		const { selectedSelector, selectedIdentifier } = this.props;
+		const { selectedSelector, selectedIdentifier, title } = this.props;
 		const methods = this.currentMethods();
 		const background = ide.colorSetting("methodBrowserColor");
 		return (
@@ -187,6 +192,14 @@ class MethodBrowser extends Tool {
 			>
 				<Box>
 					<Box display="flex" justifyContent="flex-end">
+						<Box
+							display="flex"
+							flexGrow={1}
+							justifyContent="center"
+							alignItems="center"
+						>
+							<Typography>{title}</Typography>
+						</Box>
 						<FormGroup>
 							<FormControlLabel
 								control={

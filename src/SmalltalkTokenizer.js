@@ -31,7 +31,6 @@ export function tokenize(source, inSelector = false) {
 			const start = stream.pos;
 			const type = lexer.token(stream, state);
 			const end = stream.pos;
-
 			if (type) {
 				tokens.push({
 					start: offset + start,
@@ -44,7 +43,6 @@ export function tokenize(source, inSelector = false) {
 		}
 		offset += line.length + 1;
 	}
-
 	return tokens;
 }
 

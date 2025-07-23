@@ -64,14 +64,13 @@ class CodeMirrorEditor extends CodeEditor {
 
 	constructor(props) {
 		super(props);
-		this.editor = null;
-		this.selectsRanges = true;
 		this.state = {
-			originalSource: props.originalSource ?? props.source,
 			source: props.source,
-			selectedInterval: null,
+			originalSource: props.originalSource ?? props.source,
 			dirty: false,
-			selectedRanges: [],
+			selectedInterval: null,
+			selectedIdentifier: null,
+			selectedSelector: null,
 			menuOpen: false,
 			menuPosition: { x: null, y: null },
 			evaluating: false,
@@ -98,25 +97,12 @@ class CodeMirrorEditor extends CodeEditor {
 			selectedSelector !== state.selectedSelector ||
 			selectedIdentifier !== state.selectedIdentifier
 		) {
-			const ranges =
-				source &&
-				selectedInterval &&
-				selectedInterval.start >= 1 &&
-				selectedInterval.end <= source.length
-					? [
-							{
-								from: selectedInterval.start - 1,
-								to: selectedInterval.end,
-							},
-					  ]
-					: [];
 			return {
 				originalSource: originalSource ?? source,
+				source: source,
 				selectedInterval: selectedInterval,
 				selectedSelector: selectedSelector,
 				selectedIdentifier: selectedIdentifier,
-				source: source,
-				selectedRanges: ranges,
 				dirty: false,
 			};
 		}
@@ -153,18 +139,11 @@ class CodeMirrorEditor extends CodeEditor {
 	componentDidUpdate() {
 		if (this.state.dirty) return;
 		if (!this.selectsRanges || !this.editor) return;
-		const { selectedRanges, selectedSelector, selectedIdentifier } =
+		const { selectedInterval, selectedSelector, selectedIdentifier } =
 			this.state;
-		if (selectedRanges) this.selectRanges(selectedRanges);
-		if (selectedSelector) {
-			const ranges = this.astRangesContainingSelector(selectedSelector);
-			this.selectRanges(ranges);
-		}
-		if (selectedIdentifier) {
-			const ranges =
-				this.astRangesContainingIdentifier(selectedIdentifier);
-			this.selectRanges(ranges);
-		}
+		if (selectedInterval) this.selectInterval(selectedInterval);
+		if (selectedSelector) this.selectSelector(selectedSelector);
+		if (selectedIdentifier) this.selectIdentifier(selectedIdentifier);
 		const limit = this.editor.state.doc.length;
 		const range = this.lastSelection;
 		if (
@@ -325,9 +304,9 @@ class CodeMirrorEditor extends CodeEditor {
 	}
 
 	selectRanges(ranges) {
-		if (ranges.length === 0) return;
+		if (!ranges || ranges.length === 0) return;
 		// This hack sucks!
-		// It was the way I found to set selection after a rendering: the value changes but editorView
+		// It was the only way to set selection after a rendering: the value changes but editorView
 		// has a delay in updating its state, and so the first attempt to set the selection might fail
 		// (as the new selection might surpass the previous value boundaries)
 		for (let i = 0; i < 2; i++) {
@@ -344,6 +323,13 @@ class CodeMirrorEditor extends CodeEditor {
 			}, 200 * i);
 		}
 	}
+
+	rangeFromInterval = (interval) => {
+		return {
+			from: interval.start - 1,
+			to: interval.end,
+		};
+	};
 
 	insertText(text, position) {
 		this.editor.dispatch({
@@ -411,9 +397,7 @@ class CodeMirrorEditor extends CodeEditor {
 
 	sourceChanged(source) {
 		this.selectsRanges = false;
-		if (this.editor) {
-			this.lastSelection = this.editor.state.selection.main;
-		}
+		if (this.editor) this.lastSelection = this.editor.state.selection.main;
 		super.sourceChanged(source);
 	}
 
