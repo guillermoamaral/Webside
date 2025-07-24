@@ -95,7 +95,7 @@ class TabControl extends Component {
 				width="100%"
 				height="100%"
 				maxWidth="95vw"
-				onClick={() => console.log("container " + id)}
+				//onClick={() => console.log("container " + id)}
 			>
 				<Box
 					pt={0}

@@ -27,6 +27,7 @@ class MonacoEditor extends CodeEditor {
 		this.containerRef = React.createRef();
 		this.decorations = new Map();
 		this.hoverDecoration = [];
+		this.hoverAction = null;
 		this.state = {
 			source: props.source,
 			originalSource: props.originalSource ?? props.source,
@@ -183,6 +184,7 @@ class MonacoEditor extends CodeEditor {
 			this.selectsRanges = false;
 			editor?.focus();
 			MonacoEditor.setActiveEditor(editor);
+			//this.showDebugInfo();
 			this.mouseClicked(event, editor);
 		});
 		editor.onContextMenu((event) => {
@@ -345,7 +347,7 @@ class MonacoEditor extends CodeEditor {
 		.monaco-editor .find-widget > .monaco-sash {
 			display: none !important;
 		}
-		.class-link {
+		.hover-link {
 			text-decoration: underline;
 			cursor: pointer;
 		}
@@ -499,6 +501,7 @@ class MonacoEditor extends CodeEditor {
 
 	clearHoverDecoration(editor) {
 		if (!editor) return;
+		this.hoverAction = null;
 		this.hoverDecoration = editor.deltaDecorations(
 			this.hoverDecoration,
 			[]
@@ -552,14 +555,14 @@ class MonacoEditor extends CodeEditor {
 		if (!model) return;
 		const position = editor.getPosition(); // { lineNumber, column }
 		const offset = model.getOffsetAt(position);
-		return offset;
+		return this.normalizedOffset(offset);
 	};
 
 	wordAtPosition = (offset) => {
 		const editor = MonacoEditor.getActiveEditor();
 		if (!editor) return;
 		const model = editor.getModel();
-		const position = model.getPositionAt(offset);
+		const position = model.getPositionAt(this.denormalizedOffset(offset));
 		const info = model.getWordAtPosition(position);
 		if (info) return info.word;
 	};
@@ -592,14 +595,18 @@ class MonacoEditor extends CodeEditor {
 		if (!editor) return null;
 		const model = editor.getModel();
 		const position = editor.getPosition();
-		if (!model || !position) return null;
+		if (!model || !position) return;
 		const lineNumber = position.lineNumber;
 		const from = model.getOffsetAt({ lineNumber, column: 1 });
+		const line = model.getLineContent(lineNumber);
 		const to = model.getOffsetAt({
 			lineNumber,
-			column: model.getLineContent(lineNumber).length + 1,
+			column: line.length + 1,
 		});
-		return { from, to };
+		return {
+			from: this.normalizedOffset(from),
+			to: this.normalizedOffset(to),
+		};
 	};
 
 	currentSelectionRange = () => {
@@ -609,30 +616,39 @@ class MonacoEditor extends CodeEditor {
 		const model = editor.getModel();
 		const selection = editor.getSelection();
 		if (!model || !selection) return;
-		const startOffset = model.getOffsetAt({
+		const from = model.getOffsetAt({
 			lineNumber: selection.startLineNumber,
 			column: selection.startColumn,
 		});
-		const endOffset = model.getOffsetAt({
+		const to = model.getOffsetAt({
 			lineNumber: selection.endLineNumber,
 			column: selection.endColumn,
 		});
-		return { from: startOffset, to: endOffset };
+		return {
+			from: this.normalizedOffset(from),
+			to: this.normalizedOffset(to),
+		};
 	};
 
-	insertText = (text, position) => {
+	insertText = (text, offset) => {
 		const editor = MonacoEditor.getActiveEditor();
 		if (!editor) return;
 		const model = editor.getModel();
 		if (!model) return;
-		const pos = model.getPositionAt(position);
+		console.log(
+			"Inserting text at offset:",
+			offset,
+			"denormalized:",
+			this.denormalizedOffset(offset)
+		);
+		const position = model.getPositionAt(this.denormalizedOffset(offset));
 		editor.executeEdits(null, [
 			{
 				range: new monaco.Range(
-					pos.lineNumber,
-					pos.column,
-					pos.lineNumber,
-					pos.column
+					position.lineNumber,
+					position.column,
+					position.lineNumber,
+					position.column
 				),
 				text,
 				forceMoveMarkers: true,
@@ -662,8 +678,8 @@ class MonacoEditor extends CodeEditor {
 		const model = editor.getModel();
 		if (!model) return;
 		const selections = ranges.map(({ from, to }) => {
-			const start = model.getPositionAt(from);
-			const end = model.getPositionAt(to);
+			const start = model.getPositionAt(this.denormalizedOffset(from));
+			const end = model.getPositionAt(this.denormalizedOffset(to));
 			return new monaco.Selection(
 				start.lineNumber,
 				start.column,
@@ -675,14 +691,16 @@ class MonacoEditor extends CodeEditor {
 		editor.revealRangeInCenter(selections[0]);
 	};
 
-	rangeFromInterval(interval) {
+	normalizedOffset(offset) {
+		const source = this.source();
+		if (offset < 0 || offset > source.length) return;
+		return offset - (source.slice(0, offset).match(/\r\n/g) || []).length;
+	}
+
+	denormalizedOffset(offset) {
 		const source = this.normalizedSource();
-		const extra = (offset) =>
-			(source.slice(0, offset).match(/\r/g) || []).length + offset - 1;
-		return {
-			from: extra(interval.start),
-			to: extra(interval.end) + 1,
-		};
+		if (offset < 0 || offset > source.length) return;
+		return (source.slice(0, offset).match(/\r/g) || []).length + offset;
 	}
 
 	updateSelections() {
@@ -704,56 +722,65 @@ class MonacoEditor extends CodeEditor {
 	};
 
 	mouseMoved = async (event, editor) => {
-		if (!event.event.ctrlKey) return;
+		if (!event.event.ctrlKey) return this.clearHoverDecoration(editor);
 		const model = editor.getModel();
 		if (!model) return;
-		const pos = event.target.position;
-		if (!pos) return this.clearHoverDecoration(editor);
-		const info = model.getWordAtPosition(pos);
-		if (!info) return this.clearHoverDecoration(editor);
-		const word = info.word;
-		if (!/^[A-Z][a-zA-Z0-9_]*$/.test(word))
-			return this.clearHoverDecoration(editor);
-		let species;
-		try {
-			species = await ide.backend.classNamed(word);
-		} catch (ignored) {}
-		if (!species) {
-			return this.clearHoverDecoration(editor);
+		const position = event.target.position;
+		if (!position) return this.clearHoverDecoration(editor);
+		const offset = this.normalizedOffset(model.getOffsetAt(position));
+		const node = this.astNodeAtOffset(offset);
+		let l1, l2, c1, c2, message;
+		if (node && node.type === "Selector") {
+			const position1 = model.getPositionAt(
+				this.denormalizedOffset(node.start - 1)
+			);
+			const position2 = model.getPositionAt(
+				this.denormalizedOffset(node.end)
+			);
+			l1 = position1.lineNumber;
+			c1 = position1.column;
+			l2 = position2.lineNumber;
+			c2 = position2.column;
+			this.hoverAction = () => {
+				this.browseImplementors(node.value);
+			};
+			message = `Browse implementors of **${node.value}**`;
+		} else {
+			// if (!/^[A-Z][a-zA-Z0-9_]*$/.test(word))
+			// 	return this.clearHoverDecoration(editor);
+			const info = model.getWordAtPosition(position);
+			if (!info) return this.clearHoverDecoration(editor);
+			let species;
+			try {
+				species = await ide.backend.classNamed(info.word);
+			} catch (ignored) {}
+			if (!species) return this.clearHoverDecoration(editor);
+			l1 = position.lineNumber;
+			c1 = info.startColumn;
+			l2 = position.lineNumber;
+			c2 = info.endColumn;
+			message = `Browse class **${info.word}**`;
+			this.hoverAction = () => {
+				this.browseClass(info.word);
+			};
 		}
-		const range = new monaco.Range(
-			pos.lineNumber,
-			info.startColumn,
-			pos.lineNumber,
-			info.endColumn
-		);
+		const range = new monaco.Range(l1, c1, l2, c2);
 		this.hoverDecoration = editor.deltaDecorations(this.hoverDecoration, [
 			{
 				range,
 				options: {
-					inlineClassName: "class-link",
-					hoverMessage: {
-						value: `Browse class **${word}**`,
-					},
+					inlineClassName: "hover-link",
+					hoverMessage: { value: message },
 				},
 			},
 		]);
 	};
 
 	mouseClicked = (event, editor) => {
-		if (event.event.detail === 2) {
-			this.includeColonInSelection();
-			return;
-		}
+		if (event.event.detail === 2) return this.includeColonInSelection();
 		if (!event.event.ctrlKey) return;
-		const model = editor.getModel();
-		if (!model) return;
-		const target = event.target;
-		if (target.type !== monaco.editor.MouseTargetType.CONTENT_TEXT) return;
-		const info = model.getWordAtPosition(target.position);
-		if (!info || !/^[A-Z][a-zA-Z0-9_]*$/.test(info.word)) return;
+		if (this.hoverAction) this.hoverAction();
 		this.clearHoverDecoration(editor);
-		this.context.browseClass(info.word);
 	};
 
 	forceHardRelayout(editor) {

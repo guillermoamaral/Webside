@@ -3,6 +3,8 @@ import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 import StAST from "../../model/StAST";
 
+const ShowDebugInfo = true;
+
 class CodeEditor extends Component {
 	static contextType = ToolContainerContext;
 
@@ -25,38 +27,6 @@ class CodeEditor extends Component {
 			currentEvaluation: null,
 		};
 	}
-
-	renameIdentifier = async (identifier) => {
-		const replacement = await ide.prompt({
-			title: "Replacement",
-			defaultValue: identifier,
-		});
-		if (!replacement) return;
-		const changes = this.rangesContainingIdentifier(identifier).map(
-			(range) => {
-				return {
-					from: range.anchor,
-					to: range.head,
-					insert: replacement,
-				};
-			}
-		);
-		this.editorView.dispatch({
-			changes: changes,
-		});
-	};
-
-	renameTarget = () => {
-		const target = this.targetWord();
-		if (!target || target === "") {
-			return;
-		}
-		if (this.props.onRename) {
-			this.props.onRename(target);
-		}
-	};
-
-	// From here on, new abstract CodeEditor methods!
 
 	// Configuration
 
@@ -94,6 +64,13 @@ class CodeEditor extends Component {
 			},
 			null,
 		];
+		if (ShowDebugInfo) {
+			options.push({
+				label: "Show debug info",
+				shortcut: "Ctrl+k",
+				action: this.showDebugInfo,
+			});
+		}
 		if (this.normalizedSource() === this.normalizedOriginalSource()) {
 			const node = this.targetAstNode();
 			if (node && node.type === "Identifier") {
@@ -198,7 +175,7 @@ class CodeEditor extends Component {
 
 	wordUnderCursor() {
 		const position = this.currentPosition();
-		if (!position) return null;
+		if (!position) return;
 		return this.wordAtPosition(position);
 	}
 
@@ -216,6 +193,7 @@ class CodeEditor extends Component {
 
 	textInRange(range) {
 		let source = this.normalizedSource();
+		console.log("textInRange", range, JSON.stringify(this.source()));
 		if (source) return source.slice(range.from, range.to);
 	}
 
@@ -259,7 +237,7 @@ class CodeEditor extends Component {
 	}
 
 	static normalizeNewlines(source = "") {
-		return source.replace(/(?<!\r)\n|\r(?!\n)/g, "\r");
+		return source.replace(/\r?\n/g, "\r");
 	}
 
 	includeColonInSelection = () => {
@@ -282,7 +260,12 @@ class CodeEditor extends Component {
 				(interval) =>
 					interval.start >= 1 && interval.end <= source.length
 			)
-			.map((interval) => this.rangeFromInterval(interval));
+			.map((interval) => {
+				return {
+					from: interval.start - 1,
+					to: interval.end,
+				};
+			});
 		this.selectRanges(ranges);
 	}
 
@@ -303,6 +286,21 @@ class CodeEditor extends Component {
 	}
 
 	// Event handlers
+
+	showDebugInfo = async () => {
+		console.log("Current source:", this.normalizedSource());
+		console.log("Current position:", this.currentPosition());
+		console.log("Word under cursor:", this.wordUnderCursor());
+		console.log("Selected text:", this.selectedText());
+		console.log("Target selector:", await this.targetSelector());
+		console.log("Target node:", this.targetAstNode());
+		console.log("Target node value:", this.targetAstNode()?.value);
+		console.log("Current selection range:", this.currentSelectionRange());
+		console.log("Current line range:", this.currentLineRange());
+		console.log("Current line:", this.currentLine());
+		console.log("Target word:", this.targetWord());
+		console.log("Selected expression:", this.selectedExpression());
+	};
 
 	triggerOnChange(source) {
 		if (this.props.onChange) {

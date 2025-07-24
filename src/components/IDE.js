@@ -1368,7 +1368,6 @@ class IDE extends Component {
 		species.classVariables = variables.map((v) => v.name);
 		species.methods = await this.backend.methods(classname);
 		species.classMethods = await this.backend.methods(species.class);
-		console.log(species);
 		return new TonelWriterV3().writeClass(species);
 	};
 
@@ -1498,7 +1497,7 @@ class IDE extends Component {
 	}
 
 	render() {
-		console.log("rendering IDE");
+		//console.log("rendering IDE");
 		const {
 			sidebarExpanded,
 			unreadErrorsCount,

@@ -324,13 +324,6 @@ class CodeMirrorEditor extends CodeEditor {
 		}
 	}
 
-	rangeFromInterval = (interval) => {
-		return {
-			from: interval.start - 1,
-			to: interval.end,
-		};
-	};
-
 	insertText(text, position) {
 		this.editor.dispatch({
 			changes: { from: position, to: position, insert: text },
