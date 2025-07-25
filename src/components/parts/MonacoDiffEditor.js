@@ -125,11 +125,19 @@ class MonacoDiffEditor extends MonacoEditor {
 
 	// Events handlers
 
-	// Autocompletion and tooltips
+	colorModeChanged = () => {
+		this.defineTheme();
+		monaco.editor.setTheme("webside");
+		this.injectStyles();
+		this.updateOverlays(this.leftEditor);
+		this.updateOverlays(this.rightEditor);
+	};
 
-	isInMethod() {
-		return true;
-	}
+	acceptSource = () => {
+		console.log(this.normalizedSource());
+	};
+
+	// Autocompletion and tooltips
 
 	// Rendering
 

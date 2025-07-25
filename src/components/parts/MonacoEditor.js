@@ -236,9 +236,7 @@ class MonacoEditor extends CodeEditor {
 			base: "vs-dark",
 			inherit: false,
 			rules: tokenTypes
-				.filter((type) => {
-					mode.get(`${type}Color`);
-				})
+				.filter((type) => mode.get(`${type}Color`))
 				.map((type) => ({
 					token: type,
 					foreground: mode.get(`${type}Color`).replace("#", ""),
@@ -378,6 +376,11 @@ class MonacoEditor extends CodeEditor {
 			border: 1px solid ${border} !important;
 		}
 
+		.monaco-editor .monaco-hover .hover-row.status-bar {
+			border-top: none !important;   /* quita la línea */
+			background: transparent !important; /* asegura que no pinte rojo */
+		}
+
 		.monaco-editor .monaco-hover {
 			border: 1px solid ${border} !important;
 			background: ${background} !important;
@@ -388,6 +391,10 @@ class MonacoEditor extends CodeEditor {
 			color: ${text} !important;
 			border-color: transparent !important;
 			box-shadow: none !important;
+		}
+
+		.monaco-hover .hover-contents .hover-row.separator {
+			border: none !important;
 		}
 
 		.monaco-editor .monaco-hover .hover-row {
@@ -422,7 +429,8 @@ class MonacoEditor extends CodeEditor {
 		// console.log(
 		// 	"Dispatching command from",
 		// 	editor?.getModel()?.uri.toString(),
-		// 	instance
+		// 	instance,
+		// 	action
 		// );
 		action.bind(instance)();
 	}
@@ -467,6 +475,10 @@ class MonacoEditor extends CodeEditor {
 	// Highlighting and annotations
 
 	updateOverlays(editor) {
+		if (!editor) return;
+		const model = editor.getModel();
+		if (!model) return;
+		if (model.getLineCount() === 0) return;
 		this.updateDecorations(editor);
 		this.updateAnnotations(editor);
 		editor.layout();
@@ -635,12 +647,6 @@ class MonacoEditor extends CodeEditor {
 		if (!editor) return;
 		const model = editor.getModel();
 		if (!model) return;
-		console.log(
-			"Inserting text at offset:",
-			offset,
-			"denormalized:",
-			this.denormalizedOffset(offset)
-		);
 		const position = model.getPositionAt(this.denormalizedOffset(offset));
 		editor.executeEdits(null, [
 			{
@@ -654,7 +660,7 @@ class MonacoEditor extends CodeEditor {
 				forceMoveMarkers: true,
 			},
 		]);
-		editor.focus();
+		//editor.focus();
 	};
 
 	replaceSelectionWith = (text) => {
@@ -861,22 +867,27 @@ class MonacoEditor extends CodeEditor {
 				flexDirection="row"
 				style={{ width: "100%", height: "100%" }}
 			>
-				<Box flexGrow={1}>
+				<Box display="flex" flexDirection="column" flexGrow={1}>
 					<Box
+						flexGrow={1}
 						ref={this.containerRef}
 						sx={{
 							width: "100%",
 							height: "100%",
-							outline: "none",
-							border: "none",
-							minHeight: "10px",
-							position: "relative", // 👈 importante para que Monaco mida bien
-							display: "flex", // 👈 asegura que ocupe todo el padre
-							overflow: "hidden", // 👈 evita que se desborde visualmente
+							// 	outline: "none",
+							// 	border: "none",
+							minHeight: "30px",
+							// 	position: "relative",
+							// 	display: "flex",
+							// 	overflow: "hidden",
 						}}
 					/>
 					<div id="tooltip-container"></div>
-					{evaluating && <LinearProgress variant="indeterminate" />}
+					{evaluating && (
+						<Box>
+							<LinearProgress variant="indeterminate" />
+						</Box>
+					)}
 				</Box>
 				{showButtons && (
 					<Box
@@ -888,7 +899,7 @@ class MonacoEditor extends CodeEditor {
 							<Box display="flex" justifyContent="center">
 								<IconButton
 									color="inherit"
-									onClick={this.acceptClicked}
+									onClick={this.acceptSource}
 								>
 									<AcceptIcon
 										size="large"

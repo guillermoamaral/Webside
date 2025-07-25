@@ -119,6 +119,7 @@ class Setting extends Object {
 		copy.editable = this.editable;
 		copy.active = this.active;
 		copy.options = this.options;
+		copy.refreshHandler = this.refreshHandler;
 		return copy;
 	}
 

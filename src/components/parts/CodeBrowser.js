@@ -322,7 +322,7 @@ class CodeBrowser extends Component {
 		this.setState({ selectedMode: mode });
 	};
 
-	acceptClicked = (source) => {
+	acceptSource = (source) => {
 		switch (this.state.selectedMode) {
 			case "comment":
 				this.commentClass(source);
@@ -425,7 +425,7 @@ class CodeBrowser extends Component {
 								selectedSelector={selectedSelector}
 								selectedIdentifier={selectedIdentifier}
 								showAccept
-								onAccept={this.acceptClicked}
+								onAccept={this.acceptSource}
 								onRename={(target) => this.renameClass(target)}
 								onTooltipShow={onTooltipShow}
 								onTooltipClick={onTooltipClick}

@@ -650,7 +650,7 @@ class CodeMirrorEditor extends CodeEditor {
 							<Box display="flex" justifyContent="center">
 								<IconButton
 									color="inherit"
-									onClick={this.acceptClicked}
+									onClick={this.acceptSource}
 								>
 									<AcceptIcon
 										size="large"

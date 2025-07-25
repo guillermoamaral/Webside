@@ -53,7 +53,7 @@ class CodeEditor extends Component {
 			{
 				label: "Save",
 				shortcut: shortcuts.get("acceptCode"),
-				action: this.acceptClicked,
+				action: this.acceptSource,
 			},
 			null,
 			{ label: "Copy", shortcut: "Ctrl+c", action: this.copyToClipboard },
@@ -193,7 +193,6 @@ class CodeEditor extends Component {
 
 	textInRange(range) {
 		let source = this.normalizedSource();
-		console.log("textInRange", range, JSON.stringify(this.source()));
 		if (source) return source.slice(range.from, range.to);
 	}
 
@@ -321,7 +320,7 @@ class CodeEditor extends Component {
 		);
 	}
 
-	acceptClicked = () => {
+	acceptSource = () => {
 		if (this.props.onAccept) this.props.onAccept(this.normalizedSource());
 	};
 
@@ -527,7 +526,7 @@ class CodeEditor extends Component {
 		);
 	};
 
-	playClicked = async (editor, event) => {
+	playClicked = async (event) => {
 		if (event) event.preventDefault();
 		const object = await this.evaluateExpression(
 			this.normalizedSource(),
@@ -536,7 +535,7 @@ class CodeEditor extends Component {
 		if (object && this.props.onEvaluate) this.props.onEvaluate(object);
 	};
 
-	pauseClicked = async (editor, event) => {
+	pauseClicked = async (event) => {
 		if (event) event.preventDefault();
 		const evaluation = this.state.currentEvaluation;
 		if (!evaluation) return;

@@ -316,6 +316,10 @@ class ChangesBrowser extends Tool {
 												? selectedChange.sourceCode()
 												: ""
 										}
+										inMethod={
+											selectedChange &&
+											selectedChange.isMethodChange()
+										}
 									/>
 								</Paper>
 							</Box>
