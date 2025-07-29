@@ -20,6 +20,7 @@ class CodeEditor extends Component {
 			source: props.source,
 			selectedInterval: null,
 			dirty: false,
+			showAnnotations: true,
 			menuOpen: false,
 			menuPosition: { x: null, y: null },
 			evaluating: false,
@@ -286,7 +287,7 @@ class CodeEditor extends Component {
 
 	// Event handlers
 
-	showDebugInfo = async () => {
+	async showDebugInfo() {
 		console.log("Current source:", this.normalizedSource());
 		console.log("Current position:", this.currentPosition());
 		console.log("Word under cursor:", this.wordUnderCursor());
@@ -299,7 +300,7 @@ class CodeEditor extends Component {
 		console.log("Current line:", this.currentLine());
 		console.log("Target word:", this.targetWord());
 		console.log("Selected expression:", this.selectedExpression());
-	};
+	}
 
 	triggerOnChange(source) {
 		if (this.props.onChange) {
@@ -315,14 +316,17 @@ class CodeEditor extends Component {
 			{
 				source,
 				dirty: true,
+				showAnnotations: false,
 			},
 			() => this.triggerOnChange(source)
 		);
 	}
 
-	acceptSource = () => {
+	acceptSource() {
+		console.log("Accepting source:", this);
 		if (this.props.onAccept) this.props.onAccept(this.normalizedSource());
-	};
+		this.setState({ showAnnotations: true });
+	}
 
 	openMenu = (event) => {
 		event.preventDefault();
@@ -333,55 +337,59 @@ class CodeEditor extends Component {
 		});
 	};
 
+	menuOptionClicked = (option) => {
+		if (option?.action) option.action.call(this);
+	};
+
 	closeMenu = () => {
 		this.setState({ menuOpen: false });
 	};
 
-	browseClass = (name) => {
+	async browseClass(name) {
 		if (name === undefined) name = this.targetWord();
 		name ? this.context.browseClass(name) : this.context.openClassBrowser();
-	};
+	}
 
-	browseSenders = async (selector) => {
+	async browseSenders(selector) {
 		if (selector === undefined) selector = await this.targetSelector();
 		this.context.browseSenders(selector);
-	};
+	}
 
-	browseLocalSenders = async (selector) => {
+	async browseLocalSenders(selector) {
 		if (selector === undefined) selector = await this.targetSelector();
 		this.context.browseLocalSenders(selector, this.props.class.name);
-	};
+	}
 
-	browseImplementors = async (selector) => {
+	async browseImplementors(selector) {
 		if (selector === undefined) selector = await this.targetSelector();
 		this.context.browseImplementors(selector);
-	};
+	}
 
-	browseLocalImplementors = async (selector) => {
+	async browseLocalImplementors(selector) {
 		if (selector === undefined) selector = await this.targetSelector();
 		this.context.browseLocalImplementors(selector, this.props.class.name);
-	};
+	}
 
-	browseClassReferences = (name) => {
+	async browseClassReferences(name) {
 		if (name === undefined) name = this.targetWord();
 		this.context.browseClassReferences(name);
-	};
+	}
 
-	browseMethodsMatching = (text) => {
+	async browseMethodsMatching(text) {
 		if (text === undefined) text = this.targetWord();
 		this.context.browseMethodsMatching(text);
-	};
+	}
 
-	browseStringReferences = (text) => {
+	async browseStringReferences(text) {
 		if (text === undefined) text = this.targetWord();
 		this.context.browseStringReferences(text);
-	};
+	}
 
-	searchInGoogle = (text) => {
+	searchInGoogle(text) {
 		if (text === undefined) text = this.targetWord();
 		const url = "https://www.google.com/search?q=" + text;
 		window.open(url, "_blank").focus();
-	};
+	}
 
 	browseGlobal = async (name) => {
 		if (!name) return;
@@ -413,9 +421,9 @@ class CodeEditor extends Component {
 		ide.improveCode(source);
 	};
 
-	toggleFullView = () => {
+	toggleFullView() {
 		if (this.props.onFullViewToggle) this.props.onFullViewToggle();
-	};
+	}
 
 	evaluateExpression = async (expression, pin) => {
 		this.setState({ evaluating: true });
@@ -447,12 +455,12 @@ class CodeEditor extends Component {
 		return object;
 	};
 
-	evaluateSelection = async () => {
+	async valuateSelection() {
 		const expression = this.selectedExpression();
 		await this.evaluateExpression(expression, false);
-	};
+	}
 
-	showEvaluation = async () => {
+	async showEvaluation() {
 		const range = this.currentSelectionRange();
 		let position;
 		if (range && range.from < range.to) {
@@ -472,24 +480,24 @@ class CodeEditor extends Component {
 				},
 			]);
 		}
-	};
+	}
 
-	inspectEvaluation = async () => {
+	async inspectEvaluation() {
 		const expression = this.selectedExpression();
 		const object = await this.evaluateExpression(expression, true);
 		if (object) {
 			this.context.openInspector(object);
 		}
-	};
+	}
 
-	debugExpression = async () => {
+	async debugExpression() {
 		const expression = this.selectedExpression();
 		try {
 			await this.context.debugExpression(expression, this.props.context);
 		} catch (error) {}
-	};
+	}
 
-	profileExpression = async () => {
+	async profileExpression() {
 		const expression = this.selectedExpression();
 		try {
 			await this.context.profileExpression(
@@ -497,7 +505,7 @@ class CodeEditor extends Component {
 				this.props.context
 			);
 		} catch (error) {}
-	};
+	}
 
 	performExtendedOption = async (option) => {
 		const selection = this.selectedText();
@@ -514,17 +522,17 @@ class CodeEditor extends Component {
 			this.props.onExtendedOptionPerform();
 	};
 
-	copyToClipboard = () => {
+	copyToClipboard() {
 		const text = this.selectedText();
 		navigator.clipboard.writeText(text);
-	};
+	}
 
-	pasteFromClipboard = () => {
+	pasteFromClipboard() {
 		navigator.clipboard.readText().then(
 			(text) => this.replaceSelectionWith(text),
 			(error) => console.log(error)
 		);
-	};
+	}
 
 	playClicked = async (event) => {
 		if (event) event.preventDefault();

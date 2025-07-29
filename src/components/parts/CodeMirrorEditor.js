@@ -76,6 +76,7 @@ class CodeMirrorEditor extends CodeEditor {
 			evaluating: false,
 			extendedOptions: [],
 			currentEvaluation: null,
+			showAnnotations: true,
 		};
 		this.lastSelection = null;
 	}
@@ -104,6 +105,7 @@ class CodeMirrorEditor extends CodeEditor {
 				selectedSelector: selectedSelector,
 				selectedIdentifier: selectedIdentifier,
 				dirty: false,
+				showAnnotations: true,
 			};
 		}
 		return null;
@@ -127,7 +129,8 @@ class CodeMirrorEditor extends CodeEditor {
 			(typeof nextProps.evaluating === "boolean" &&
 				nextProps.evaluating !== this.state.evaluating) ||
 			(typeof nextProps.readOnly === "boolean" &&
-				nextProps.readOnly !== this.props.readOnly)
+				nextProps.readOnly !== this.props.readOnly) ||
+			nextState.showAnnotations !== this.state.showAnnotations
 		) {
 			return true;
 		}
@@ -203,7 +206,7 @@ class CodeMirrorEditor extends CodeEditor {
 			return {
 				key: this.adaptShortcut(shorcut.shortcut),
 				run: () => {
-					shorcut.action();
+					shorcut.action.call(this);
 				},
 				preventDefault: true,
 				stopPropagation: true,
@@ -563,7 +566,7 @@ class CodeMirrorEditor extends CodeEditor {
 	// Linting annotations
 
 	annotations = () => {
-		if (this.state.dirty || !this.props.annotations) return [];
+		if (!this.state.showAnnotations || !this.props.annotations) return [];
 		return this.props.annotations.map((a) => {
 			return {
 				from: a.from - 1,
@@ -650,7 +653,7 @@ class CodeMirrorEditor extends CodeEditor {
 							<Box display="flex" justifyContent="center">
 								<IconButton
 									color="inherit"
-									onClick={this.acceptSource}
+									onClick={() => this.acceptSource()}
 								>
 									<AcceptIcon
 										size="large"
@@ -740,6 +743,7 @@ class CodeMirrorEditor extends CodeEditor {
 						open={menuOpen}
 						position={menuPosition}
 						onClose={this.closeMenu}
+						onOptionClick={this.menuOptionClicked}
 					/>
 				)}
 			</Box>

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import CustomList from "../controls/CustomList";
 import CustomPaper from "../controls/CustomPaper";
 import { ide } from "../IDE";

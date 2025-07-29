@@ -133,7 +133,7 @@ class MonacoDiffEditor extends MonacoEditor {
 		this.updateOverlays(this.rightEditor);
 	};
 
-	acceptSource = () => {
+	acceptSource() {
 		console.log(this.normalizedSource());
 	};
 
@@ -169,6 +169,7 @@ class MonacoDiffEditor extends MonacoEditor {
 						open={menuOpen}
 						position={menuPosition}
 						onClose={this.closeMenu}
+						onOptionClick={this.menuOptionClicked}
 					/>
 				)}
 			</Box>

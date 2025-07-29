@@ -190,9 +190,7 @@ class Debugger extends Tool {
 
 	methodCompiled = async (method) => {
 		const selected = this.state.selectedFrame.method;
-		if (method.selector !== selected.selector) {
-			return;
-		}
+		if (method.selector !== selected.selector) return;
 		try {
 			await ide.backend.restartDebugger(
 				this.props.id,

@@ -101,6 +101,7 @@ class CodeMirrorDiffEditor extends CodeMirrorEditor {
 							open={menuOpen}
 							position={menuPosition}
 							onClose={this.closeMenu}
+							onOptionClick={this.menuOptionClicked}
 						/>
 					)}
 				</Scrollable>

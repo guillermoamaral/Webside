@@ -40,6 +40,7 @@ class MonacoEditor extends CodeEditor {
 			evaluating: false,
 			extendedOptions: [],
 			currentEvaluation: null,
+			showAnnotations: true,
 		};
 	}
 
@@ -56,15 +57,25 @@ class MonacoEditor extends CodeEditor {
 			prevProps.source !== this.props.source &&
 			this.props.source !== this.state.source
 		) {
-			this.setState({ source: this.props.source }, () => {
-				if (this.editor) {
-					this.editor.setValue(this.state.source);
-					setTimeout(() => this.editor?.layout(), 0);
-					this.updateOverlays(this.editor);
-					this.selectsRanges = true;
-					this.updateSelections();
+			this.setState(
+				{
+					originalSource:
+						this.props.originalSource ?? this.props.source,
+					source: this.props.source,
+					dirty: false,
+					showAnnotations: true,
+				},
+				() => {
+					if (this.editor) {
+						this.updatingFromProps = true;
+						this.editor.setValue(this.props.source);
+						setTimeout(() => this.editor?.layout(), 0);
+						this.updateOverlays(this.editor);
+						this.selectsRanges = true;
+						this.updateSelections();
+					}
 				}
-			});
+			);
 		}
 		if (
 			JSON.stringify(prevProps.selectedInterval) !==
@@ -76,6 +87,7 @@ class MonacoEditor extends CodeEditor {
 			this.updateSelections();
 		}
 		this.refreshLayout(this.editor);
+		this.updateOverlays(this.editor);
 	}
 
 	componentWillUnmount() {
@@ -92,6 +104,10 @@ class MonacoEditor extends CodeEditor {
 	}
 
 	static setActiveEditor(editor) {
+		// console.log(
+		// 	"setting active editor",
+		// 	editor?.getModel()?.uri.toString()
+		// );
 		MonacoEditor.activeEditor = editor;
 	}
 
@@ -171,6 +187,11 @@ class MonacoEditor extends CodeEditor {
 			MonacoEditor.setActiveEditor(editor);
 		});
 		editor.onDidChangeModelContent(() => {
+			MonacoEditor.setActiveEditor(editor);
+			if (this.updatingFromProps) {
+				this.updatingFromProps = false;
+				return;
+			}
 			this.selectsRanges = false;
 			const value = editor.getValue();
 			this.sourceChanged(value);
@@ -182,7 +203,7 @@ class MonacoEditor extends CodeEditor {
 		});
 		editor.onMouseDown((event) => {
 			this.selectsRanges = false;
-			editor?.focus();
+			editor.focus();
 			MonacoEditor.setActiveEditor(editor);
 			//this.showDebugInfo();
 			this.mouseClicked(event, editor);
@@ -195,7 +216,7 @@ class MonacoEditor extends CodeEditor {
 		this.resizeObserver = new ResizeObserver(() => {
 			requestAnimationFrame(() => {
 				editor?.layout();
-				//editor?.focus();
+				editor?.focus();
 			});
 		});
 		this.resizeObserver.observe(this.containerRef.current);
@@ -232,6 +253,9 @@ class MonacoEditor extends CodeEditor {
 		const border = darken(background, 0.2);
 		const selection = mode.get("selectionColor");
 		const text = mode.get("primaryText");
+		const error = mode.get("errorColor");
+		const warning = mode.get("warningColor");
+		const info = mode.get("infoColor");
 		monaco.editor.defineTheme("webside", {
 			base: "vs-dark",
 			inherit: false,
@@ -268,12 +292,12 @@ class MonacoEditor extends CodeEditor {
 				"editorError.border": border,
 				"editorWarning.border": border,
 				"editorInfo.border": border,
-				"editorError.foreground": "#ff5370",
-				"editorWarning.foreground": "#ffcb6b",
-				"editorInfo.foreground": "#82aaff",
-				"editorMarkerNavigationError.background": "#ff5370",
-				"editorMarkerNavigationWarning.background": "#ffcb6b",
-				"editorMarkerNavigationInfo.background": "#82aaff",
+				"editorError.foreground": error,
+				"editorWarning.foreground": warning,
+				"editorInfo.foreground": info,
+				"editorMarkerNavigationError.background": error,
+				"editorMarkerNavigationWarning.background": warning,
+				"editorMarkerNavigationInfo.background": info,
 			},
 		});
 	}
@@ -291,6 +315,9 @@ class MonacoEditor extends CodeEditor {
 		const gray = "#888";
 		const border = gray;
 		const selection = mode.get("selectionColor");
+		const error = mode.get("errorColor");
+		const warning = mode.get("warningColor");
+		const info = mode.get("infoColor");
 		let rules = `
 		.monaco-editor,
 		.monaco-editor-background,
@@ -355,15 +382,19 @@ class MonacoEditor extends CodeEditor {
 		.monaco-editor .suggest-widget {
 			border: 1px solid ${gray} !important;
 		}
-
 		.monaco-editor .squiggly-error {
-			border-bottom: 2px dotted ${mode.get("errorColor")} !important;
+			border-bottom: 2px dotted ${error} !important;
 		}
 		.monaco-editor .squiggly-warning {
-			border-bottom: 2px dotted ${mode.get("warningColor")} !important;
+			border-bottom: 2px dotted ${warning} !important;
 		}
 		.monaco-editor .squiggly-info {
-			border-bottom: 2px dotted ${mode.get("infoColor")} !important;
+			border-bottom: 2px dotted ${info} !important;
+		}
+		.monaco-editor .squiggly-error,
+		.monaco-editor .squiggly-warning,
+		.monaco-editor .squiggly-info {
+			text-decoration: none !important;
 		}
 		.monaco-editor .margin .codicon-error,
 		.monaco-editor .margin .codicon-warning,
@@ -430,7 +461,8 @@ class MonacoEditor extends CodeEditor {
 		// 	"Dispatching command from",
 		// 	editor?.getModel()?.uri.toString(),
 		// 	instance,
-		// 	action
+		// 	action,
+		// 	editor?.getValue()
 		// );
 		action.bind(instance)();
 	}
@@ -521,13 +553,15 @@ class MonacoEditor extends CodeEditor {
 	}
 
 	updateAnnotations = (editor) => {
-		const annotations = this.props.annotations;
-		if (!editor || !annotations) return;
+		if (!editor) return;
 		const model = editor.getModel();
 		if (!model) return;
+		monaco.editor.setModelMarkers(model, "owner", []);
+		const annotations = this.props.annotations;
+		if (!annotations || !this.state.showAnnotations) return;
 		const markers = annotations.map((a) => {
-			const start = model.getPositionAt(a.from - 1);
-			const end = model.getPositionAt(a.to - 1);
+			const start = model.getPositionAt(this.denormalizedOffset(a.from));
+			const end = model.getPositionAt(this.denormalizedOffset(a.to));
 			return {
 				severity: this.annotationSeverity(a.type),
 				message: a.description,
@@ -899,7 +933,7 @@ class MonacoEditor extends CodeEditor {
 							<Box display="flex" justifyContent="center">
 								<IconButton
 									color="inherit"
-									onClick={this.acceptSource}
+									onClick={() => this.acceptSource()}
 								>
 									<AcceptIcon
 										size="large"
@@ -989,6 +1023,7 @@ class MonacoEditor extends CodeEditor {
 						open={menuOpen}
 						position={menuPosition}
 						onClose={this.closeMenu}
+						onOptionClick={this.menuOptionClicked}
 					/>
 				)}
 			</Box>
