@@ -387,10 +387,6 @@ class CodeMirrorEditor extends CodeEditor {
 		}
 	};
 
-	normalizedOriginalSource() {
-		return CodeEditor.normalizeNewlines(this.state.originalSource);
-	}
-
 	sourceChanged(source) {
 		this.selectsRanges = false;
 		if (this.editor) this.lastSelection = this.editor.state.selection.main;

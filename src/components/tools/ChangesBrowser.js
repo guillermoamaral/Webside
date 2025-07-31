@@ -159,7 +159,6 @@ class ChangesBrowser extends Tool {
 
 	render() {
 		const { changes, selectedChange, highlightChanges } = this.state;
-		console.log("rendering changes browser");
 		const background = ide.colorSetting("changesBrowserColor");
 		return (
 			<Box
@@ -308,12 +307,12 @@ class ChangesBrowser extends Tool {
 										context={this.evaluationContext()}
 										leftSource={
 											selectedChange
-												? selectedChange.currentSourceCode()
+												? selectedChange.sourceCode()
 												: ""
 										}
 										rightSource={
 											selectedChange
-												? selectedChange.sourceCode()
+												? selectedChange.currentSourceCode()
 												: ""
 										}
 										inMethod={

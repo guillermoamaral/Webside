@@ -34,23 +34,24 @@ class MonacoDiffEditor extends MonacoEditor {
 	}
 
 	componentDidUpdate(prevProps) {
+		const { leftSource, rightSource } = this.props;
 		if (
-			prevProps.leftSource !== this.props.leftSource ||
-			prevProps.rightSource !== this.props.rightSource
+			prevProps.leftSource !== leftSource ||
+			prevProps.rightSource !== rightSource
 		) {
 			this.setState(
 				{
-					leftSource: this.props.leftSource,
-					rightSource: this.props.rightSource,
+					leftSource: leftSource,
+					rightSource: rightSource,
 				},
 				() => {
 					if (this.leftEditor) {
-						this.leftEditor.setValue(this.state.leftSource);
+						this.leftEditor.setValue(rightSource);
 						setTimeout(() => this.leftEditor?.layout(), 0);
 						this.updateOverlays(this.leftEditor);
 					}
 					if (this.rightEditor) {
-						this.rightEditor.setValue(this.state.rightSource);
+						this.rightEditor.setValue(leftSource);
 						setTimeout(() => this.rightEditor?.layout(), 0);
 						this.updateOverlays(this.rightEditor);
 					}
@@ -79,12 +80,13 @@ class MonacoDiffEditor extends MonacoEditor {
 			enableSplitViewResizing: true,
 			renderSideBySide: true,
 		});
+		const { leftSource, rightSource } = this.props;
 		const originalModel = monaco.editor.createModel(
-			this.props.leftSource,
+			rightSource,
 			"smalltalk"
 		);
 		const modifiedModel = monaco.editor.createModel(
-			this.props.rightSource,
+			leftSource,
 			"smalltalk"
 		);
 		this.editor.setModel({
@@ -123,6 +125,21 @@ class MonacoDiffEditor extends MonacoEditor {
 		super.unregisterEditor(this.rightEditor);
 	}
 
+	injectStyles() {
+		super.injectStyles();
+		const styleElement = document.createElement("style");
+		styleElement.innerHTML = `
+        .monaco-diff-editor .editor.original {
+            left: 50% !important;
+            right: 0 !important;
+        }
+        .monaco-diff-editor .editor.modified {
+            left: 0 !important;
+            right: 50% !important;
+        }`;
+		document.head.appendChild(styleElement);
+	}
+
 	// Events handlers
 
 	colorModeChanged = () => {
@@ -133,9 +150,40 @@ class MonacoDiffEditor extends MonacoEditor {
 		this.updateOverlays(this.rightEditor);
 	};
 
-	acceptSource() {
-		console.log(this.normalizedSource());
-	};
+	async acceptSource() {
+		if (!this.props.class) return;
+		const source = this.normalizedSource();
+		const pack = this.props.package;
+		const species = this.props.class;
+		const packagename = pack ? pack.name : species.package;
+		const category = this.props.category;
+		const result = await this.context.compileMethod(
+			species.name,
+			packagename,
+			category,
+			source
+		);
+		if (!result) return;
+		if (result.hasError()) {
+			const data = result.error.data;
+			if (data && data.interval) {
+				this.annotations = [
+					{
+						from: data.interval.start,
+						to: data.interval.end,
+						type: "error",
+						description: data.description,
+					},
+				];
+			} else {
+				const description = data ? data.description : null;
+				ide.reportError(description || "Unknown compilation error");
+			}
+		} else {
+			if (this.props.onMethodCompile)
+				this.props.onMethodCompile(result.method);
+		}
+	}
 
 	// Autocompletion and tooltips
 

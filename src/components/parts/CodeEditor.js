@@ -228,8 +228,8 @@ class CodeEditor extends Component {
 		return this.state.source || "";
 	}
 
-	normalizedSource() {
-		return CodeEditor.normalizeNewlines(this.source());
+	normalizedSource(source = this.source()) {
+		return CodeEditor.normalizeNewlines(source);
 	}
 
 	normalizedOriginalSource() {
@@ -323,7 +323,6 @@ class CodeEditor extends Component {
 	}
 
 	acceptSource() {
-		console.log("Accepting source:", this);
 		if (this.props.onAccept) this.props.onAccept(this.normalizedSource());
 		this.setState({ showAnnotations: true });
 	}

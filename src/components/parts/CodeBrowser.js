@@ -264,12 +264,6 @@ class CodeBrowser extends Component {
 	};
 
 	acceptSource = (source) => {
-		console.log("acceptSource", {
-			selectedMode: this.state.selectedMode,
-			method: this.props.method,
-			stateMethod: this.state.method,
-			instance: this
-		});
 		switch (this.state.selectedMode) {
 			case "comment":
 				this.commentClass(source);

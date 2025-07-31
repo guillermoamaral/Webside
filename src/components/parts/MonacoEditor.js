@@ -54,8 +54,10 @@ class MonacoEditor extends CodeEditor {
 
 	componentDidUpdate(prevProps) {
 		if (
-			prevProps.source !== this.props.source &&
-			this.props.source !== this.state.source
+			this.normalizedSource(prevProps.source) !==
+				this.normalizedSource(this.props.source) &&
+			this.normalizedSource(this.props.source) !==
+				this.normalizedSource(this.state.source)
 		) {
 			this.setState(
 				{
@@ -150,8 +152,12 @@ class MonacoEditor extends CodeEditor {
 
 	editorOptions() {
 		const appearance = this.settings().section("appearance");
+		console.log(
+			this.props.readOnly === undefined ? false : this.props.readOnly
+		);
 		return {
-			readOnly: this.props.readOnly || false,
+			readOnly:
+				this.props.readOnly === undefined ? false : this.props.readOnly,
 			theme: "webside",
 			contextmenu: false,
 			fontFamily: appearance.get("fontFamily"),
@@ -406,32 +412,26 @@ class MonacoEditor extends CodeEditor {
 			background: ${background} !important;
 			border: 1px solid ${border} !important;
 		}
-
 		.monaco-editor .monaco-hover .hover-row.status-bar {
 			border-top: none !important;   /* quita la línea */
 			background: transparent !important; /* asegura que no pinte rojo */
 		}
-
 		.monaco-editor .monaco-hover {
 			border: 1px solid ${border} !important;
 			background: ${background} !important;
 			color: ${text} !important;
 		}
-
 		.monaco-editor .monaco-hover .hover-contents {
 			color: ${text} !important;
 			border-color: transparent !important;
 			box-shadow: none !important;
 		}
-
 		.monaco-hover .hover-contents .hover-row.separator {
 			border: none !important;
 		}
-
 		.monaco-editor .monaco-hover .hover-row {
 			border-left: none !important;
 		}
-		
 		.monaco-editor .monaco-hover .hover-row:first-child {
 			border-top: none !important;
 		}`;
@@ -447,10 +447,10 @@ class MonacoEditor extends CodeEditor {
 		});
 		const existing = document.getElementById("monaco-theme-dynamic");
 		if (existing) existing.remove();
-		const styleTag = document.createElement("style");
-		styleTag.id = "monaco-theme-dynamic";
-		styleTag.innerHTML = rules;
-		document.head.appendChild(styleTag);
+		const styleElement = document.createElement("style");
+		styleElement.id = "monaco-theme-dynamic";
+		styleElement.innerHTML = rules;
+		document.head.appendChild(styleElement);
 	}
 
 	static dispatchCommand(action) {
