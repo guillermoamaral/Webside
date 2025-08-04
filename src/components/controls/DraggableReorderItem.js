@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import { Box } from "@mui/material";
 import { getEmptyImage } from "react-dnd-html5-backend";

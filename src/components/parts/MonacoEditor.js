@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom/client";
 import { Box, IconButton, LinearProgress, Tooltip } from "@mui/material";
 import AcceptIcon from "@mui/icons-material/CheckCircle";
 import PlayIcon from "@mui/icons-material/PlayArrow";
@@ -14,8 +15,10 @@ import { ide } from "../IDE";
 import { darken } from "@mui/system";
 import CodeEditor from "./CodeEditor";
 import { tokenize, tokenTypes } from "../../SmalltalkTokenizer";
+import { withTheme } from "@emotion/react";
 
 let smalltalkRegistered = false;
+//let tooltipRegistered = false;
 
 class MonacoEditor extends CodeEditor {
 	static contextType = ToolContainerContext;
@@ -28,6 +31,12 @@ class MonacoEditor extends CodeEditor {
 		this.decorations = new Map();
 		this.hoverDecoration = [];
 		this.hoverAction = null;
+
+		this.currentTooltipWidget = null;
+		this.currentTooltipRoot = null;
+		this.lastTooltipWord = null;
+		this.tooltipTimeout = null;
+
 		this.state = {
 			source: props.source,
 			originalSource: props.originalSource ?? props.source,
@@ -90,11 +99,13 @@ class MonacoEditor extends CodeEditor {
 		}
 		this.refreshLayout(this.editor);
 		this.updateOverlays(this.editor);
+		this.disableWordHighlighter(this.editor);
 	}
 
 	componentWillUnmount() {
 		this.clearHoverDecoration(this.editor);
 		this.unregisterEditor(this.editor);
+		this.disableWordHighlighter(this.editor);
 		this.editor?.dispose();
 		this.editor = null;
 		ide.removeColorModeChangeHandler(this.colorModeChanged);
@@ -143,18 +154,51 @@ class MonacoEditor extends CodeEditor {
 						model.uri.toString()
 					);
 					if (!instance) return { suggestions: [] };
-					return instance.completionList(model, position);
+					const result = await instance.completionList(
+						model,
+						position
+					);
+					return result;
 				},
 			});
 			smalltalkRegistered = true;
 		}
 	};
 
+	// registerTooltip() {
+	// 	if (tooltipRegistered) return;
+	// 	tooltipRegistered = true;
+	// 	monaco.languages.registerHoverProvider("smalltalk", {
+	// 		provideHover: async (model, position) => {
+	// 			const info = model.getWordAtPosition(position);
+	// 			if (!info) return null;
+	// 			const classname = info.word;
+	// 			try {
+	// 				const species = await ide.backend.classNamed(classname);
+	// 				if (!species) return null;
+	// 				let definition = species.definition
+	// 					.replace(/\r\n|\r/g, "\n")
+	// 					.replace(/\t/g, "    ");
+	// 				definition = definition.replace(/`/g, "\\`");
+	// 				return {
+	// 					contents: [
+	// 						{
+	// 							value: "```smalltalk\n\n" + definition + "\n```",
+	// 						},
+	// 					],
+	// 				};
+	// 			} catch (e) {
+	// 				return null;
+	// 			}
+	// 		},
+	// 	});
+	// }
+
 	editorOptions() {
 		const appearance = this.settings().section("appearance");
-		console.log(
-			this.props.readOnly === undefined ? false : this.props.readOnly
-		);
+		// console.log(
+		// 	this.props.readOnly === undefined ? false : this.props.readOnly
+		// );
 		return {
 			readOnly:
 				this.props.readOnly === undefined ? false : this.props.readOnly,
@@ -175,7 +219,9 @@ class MonacoEditor extends CodeEditor {
 			...this.editorOptions(),
 			value: this.state.source,
 			language: "smalltalk",
+			wordHighlighter: false,
 		});
+		this.disableWordHighlighter(this.editor);
 		MonacoEditor.setActiveEditor(this.editor);
 	};
 
@@ -207,7 +253,11 @@ class MonacoEditor extends CodeEditor {
 			MonacoEditor.setActiveEditor(editor);
 			this.mouseMoved(event, editor);
 		});
+		editor.onMouseLeave(() => {
+			this.hideTooltip(editor);
+		});
 		editor.onMouseDown((event) => {
+			//this.hideTooltip(editor);
 			this.selectsRanges = false;
 			editor.focus();
 			MonacoEditor.setActiveEditor(editor);
@@ -219,6 +269,9 @@ class MonacoEditor extends CodeEditor {
 			MonacoEditor.setActiveEditor(editor);
 			this.openMenu(event.event.browserEvent);
 		});
+		editor.onDidChangeModel(() => {
+			this.disableWordHighlighter(editor);
+		});
 		this.resizeObserver = new ResizeObserver(() => {
 			requestAnimationFrame(() => {
 				editor?.layout();
@@ -226,6 +279,13 @@ class MonacoEditor extends CodeEditor {
 			});
 		});
 		this.resizeObserver.observe(this.containerRef.current);
+	}
+
+	disableWordHighlighter(editor) {
+		if (editor?._contributions?.["wordHighlighter"]) {
+			editor._contributions["wordHighlighter"].dispose();
+			delete editor._contributions["wordHighlighter"];
+		}
 	}
 
 	registerEditor(editor) {
@@ -306,6 +366,24 @@ class MonacoEditor extends CodeEditor {
 				"editorMarkerNavigationInfo.background": info,
 			},
 		});
+	}
+
+	completionIconStyles() {
+		const kinds = ["class", "method", "variable", "constant"];
+		let rules = "";
+		kinds.forEach((kind) => {
+			const icon = ide.iconNamed(kind);
+			if (icon && icon.data) {
+				rules += `
+				.monaco-editor .suggest-widget .icon.${kind} {
+				background-image: url('data:image/png;base64,${icon.data}') !important;
+				background-size: 16px 16px;
+				background-repeat: no-repeat;
+				background-position: center;
+				}`;
+			}
+		});
+		return rules;
 	}
 
 	injectStyles() {
@@ -449,6 +527,7 @@ class MonacoEditor extends CodeEditor {
 		if (existing) existing.remove();
 		const styleElement = document.createElement("style");
 		styleElement.id = "monaco-theme-dynamic";
+		rules += this.completionIconStyles();
 		styleElement.innerHTML = rules;
 		document.head.appendChild(styleElement);
 	}
@@ -543,15 +622,6 @@ class MonacoEditor extends CodeEditor {
 		this.decorations.set(uri, updated);
 	}
 
-	clearHoverDecoration(editor) {
-		if (!editor) return;
-		this.hoverAction = null;
-		this.hoverDecoration = editor.deltaDecorations(
-			this.hoverDecoration,
-			[]
-		);
-	}
-
 	updateAnnotations = (editor) => {
 		if (!editor) return;
 		const model = editor.getModel();
@@ -560,8 +630,10 @@ class MonacoEditor extends CodeEditor {
 		const annotations = this.props.annotations;
 		if (!annotations || !this.state.showAnnotations) return;
 		const markers = annotations.map((a) => {
-			const start = model.getPositionAt(this.denormalizedOffset(a.from));
-			const end = model.getPositionAt(this.denormalizedOffset(a.to));
+			const start = model.getPositionAt(
+				this.denormalizedOffset(a.from - 1)
+			);
+			const end = model.getPositionAt(this.denormalizedOffset(a.to - 1));
 			return {
 				severity: this.annotationSeverity(a.type),
 				message: a.description,
@@ -587,6 +659,66 @@ class MonacoEditor extends CodeEditor {
 		}
 	};
 
+	clearHoverDecoration(editor) {
+		if (!editor) return;
+		this.hoverAction = null;
+		this.hoverDecoration = editor.deltaDecorations(
+			this.hoverDecoration,
+			[]
+		);
+	}
+
+	async updateHoverDecoration(editor, position) {
+		const model = editor.getModel();
+		if (!model || !position) return this.clearHoverDecoration(editor);
+		const offset = this.normalizedOffset(model.getOffsetAt(position));
+		const node = this.astNodeAtOffset(offset);
+		let l1, l2, c1, c2, message;
+		if (node && node.type === "Selector") {
+			const position1 = model.getPositionAt(
+				this.denormalizedOffset(node.start - 1)
+			);
+			const position2 = model.getPositionAt(
+				this.denormalizedOffset(node.end)
+			);
+			if (!position1 || !position2)
+				return this.clearHoverDecoration(editor);
+			l1 = position1.lineNumber;
+			c1 = position1.column;
+			l2 = position2.lineNumber;
+			c2 = position2.column;
+			this.hoverAction = () => {
+				this.browseImplementors(node.value);
+			};
+			message = `Browse implementors of **${node.value}**`;
+		} else {
+			const info = model.getWordAtPosition(position);
+			if (!info) return this.clearHoverDecoration(editor);
+			let species;
+			try {
+				species = await ide.backend.classNamed(info.word);
+			} catch (ignored) {}
+			if (!species) return this.clearHoverDecoration(editor);
+			l1 = position.lineNumber;
+			c1 = info.startColumn;
+			l2 = position.lineNumber;
+			c2 = info.endColumn;
+			message = `Browse class **${info.word}**`;
+			this.hoverAction = () => {
+				this.browseClass(info.word);
+			};
+		}
+		this.hoverDecoration = editor.deltaDecorations(this.hoverDecoration, [
+			{
+				range: new monaco.Range(l1, c1, l2, c2),
+				options: {
+					inlineClassName: "hover-link",
+					hoverMessage: { value: message },
+				},
+			},
+		]);
+	}
+
 	// Source access and manipulation
 
 	source() {
@@ -594,7 +726,7 @@ class MonacoEditor extends CodeEditor {
 		if (editor) return editor.getValue();
 	}
 
-	currentPosition = () => {
+	currentPosition() {
 		const editor = MonacoEditor.getActiveEditor();
 		if (!editor) return;
 		const model = editor.getModel();
@@ -602,41 +734,36 @@ class MonacoEditor extends CodeEditor {
 		const position = editor.getPosition(); // { lineNumber, column }
 		const offset = model.getOffsetAt(position);
 		return this.normalizedOffset(offset);
-	};
+	}
 
-	wordAtPosition = (offset) => {
+	wordAtPosition(offset) {
 		const editor = MonacoEditor.getActiveEditor();
 		if (!editor) return;
 		const model = editor.getModel();
 		const position = model.getPositionAt(this.denormalizedOffset(offset));
 		const info = model.getWordAtPosition(position);
 		if (info) return info.word;
-	};
+	}
 
-	selectedText = () => {
+	selectedText() {
 		const editor = MonacoEditor.getActiveEditor();
 		if (!editor) return "";
-		// console.log(
-		// 	editor.getValue(),
-		// 	editor.getModel().uri.toString(),
-		// 	MonacoEditor.openedInstances
-		// );
 		const model = editor.getModel();
 		const selection = editor.getSelection();
 		if (!model || !selection) return "";
 		return model.getValueInRange(selection);
-	};
+	}
 
-	currentLine = () => {
+	currentLine() {
 		const editor = MonacoEditor.getActiveEditor();
 		if (!editor) return;
 		const model = editor.getModel();
 		const position = editor.getPosition(); // { lineNumber, column }
 		if (!model || !position) return;
 		return model.getLineContent(position.lineNumber);
-	};
+	}
 
-	currentLineRange = () => {
+	currentLineRange() {
 		const editor = MonacoEditor.getActiveEditor();
 		if (!editor) return null;
 		const model = editor.getModel();
@@ -653,9 +780,9 @@ class MonacoEditor extends CodeEditor {
 			from: this.normalizedOffset(from),
 			to: this.normalizedOffset(to),
 		};
-	};
+	}
 
-	currentSelectionRange = () => {
+	currentSelectionRange() {
 		const editor = MonacoEditor.getActiveEditor();
 		if (!editor) return;
 		editor.focus();
@@ -674,9 +801,9 @@ class MonacoEditor extends CodeEditor {
 			from: this.normalizedOffset(from),
 			to: this.normalizedOffset(to),
 		};
-	};
+	}
 
-	insertText = (text, offset) => {
+	insertText(text, offset) {
 		const editor = MonacoEditor.getActiveEditor();
 		if (!editor) return;
 		const model = editor.getModel();
@@ -695,9 +822,9 @@ class MonacoEditor extends CodeEditor {
 			},
 		]);
 		//editor.focus();
-	};
+	}
 
-	replaceSelectionWith = (text) => {
+	replaceSelectionWith(text) {
 		const editor = MonacoEditor.getActiveEditor();
 		if (!editor) return;
 		const selection = editor.getSelection();
@@ -710,7 +837,7 @@ class MonacoEditor extends CodeEditor {
 			},
 		]);
 		editor.focus(); // Check if this is needed
-	};
+	}
 
 	selectRanges = (ranges) => {
 		const editor = MonacoEditor.getActiveEditor();
@@ -761,59 +888,28 @@ class MonacoEditor extends CodeEditor {
 		this.updateOverlays(this.editor);
 	};
 
+	// mouseMoved = async (event, editor) => {
+	// 	const position = event.target.position;
+	// 	if (event.event.ctrlKey)
+	// 		return await this.updateHoverDecoration(editor, position);
+	// 	this.showTooltip(editor, position);
+	// };
+
 	mouseMoved = async (event, editor) => {
-		if (!event.event.ctrlKey) return this.clearHoverDecoration(editor);
-		const model = editor.getModel();
-		if (!model) return;
 		const position = event.target.position;
-		if (!position) return this.clearHoverDecoration(editor);
-		const offset = this.normalizedOffset(model.getOffsetAt(position));
-		const node = this.astNodeAtOffset(offset);
-		let l1, l2, c1, c2, message;
-		if (node && node.type === "Selector") {
-			const position1 = model.getPositionAt(
-				this.denormalizedOffset(node.start - 1)
-			);
-			const position2 = model.getPositionAt(
-				this.denormalizedOffset(node.end)
-			);
-			l1 = position1.lineNumber;
-			c1 = position1.column;
-			l2 = position2.lineNumber;
-			c2 = position2.column;
-			this.hoverAction = () => {
-				this.browseImplementors(node.value);
-			};
-			message = `Browse implementors of **${node.value}**`;
-		} else {
-			// if (!/^[A-Z][a-zA-Z0-9_]*$/.test(word))
-			// 	return this.clearHoverDecoration(editor);
-			const info = model.getWordAtPosition(position);
-			if (!info) return this.clearHoverDecoration(editor);
-			let species;
-			try {
-				species = await ide.backend.classNamed(info.word);
-			} catch (ignored) {}
-			if (!species) return this.clearHoverDecoration(editor);
-			l1 = position.lineNumber;
-			c1 = info.startColumn;
-			l2 = position.lineNumber;
-			c2 = info.endColumn;
-			message = `Browse class **${info.word}**`;
-			this.hoverAction = () => {
-				this.browseClass(info.word);
-			};
-		}
-		const range = new monaco.Range(l1, c1, l2, c2);
-		this.hoverDecoration = editor.deltaDecorations(this.hoverDecoration, [
-			{
-				range,
-				options: {
-					inlineClassName: "hover-link",
-					hoverMessage: { value: message },
-				},
-			},
-		]);
+		if (!position) return;
+		if (event.event.ctrlKey)
+			return await this.updateHoverDecoration(editor, position);
+		if (!this.showsTooltip()) return;
+		const info = editor.getModel().getWordAtPosition(position);
+		if (!info) return;
+		const word = info.word;
+		if (word === this.lastTooltipWord) return;
+		this.lastTooltipWord = word;
+		clearTimeout(this.tooltipTimeout);
+		this.tooltipTimeout = setTimeout(() => {
+			this.showTooltip(editor, position);
+		}, 150);
 	};
 
 	mouseClicked = (event, editor) => {
@@ -844,7 +940,7 @@ class MonacoEditor extends CodeEditor {
 		// }
 	}
 
-	// Autocompletion and tooltips
+	// Autocompletion
 
 	completionList = async (model, position) => {
 		const offset = model.getOffsetAt(position);
@@ -883,6 +979,63 @@ class MonacoEditor extends CodeEditor {
 			default:
 				return monaco.languages.CompletionItemKind.Text;
 		}
+	}
+
+	// Tooltips
+
+	async showTooltip(editor, position) {
+		if (!this.showsTooltip()) return;
+		const model = editor.getModel();
+		if (!model || !position) return;
+		const offset = this.normalizedOffset(model.getOffsetAt(position));
+		const spec = await this.tooltipSpec(offset);
+		if (!spec) return;
+		if (this.currentTooltipWidget) {
+			editor.removeContentWidget(this.currentTooltipWidget);
+			this.currentTooltipRoot?.unmount();
+			this.currentTooltipWidget = null;
+			this.currentTooltipRoot = null;
+		}
+		const container = this.ensureTooltipContainer();
+		container.innerHTML = "";
+		//const dom = document.createElement("div");
+		//container.appendChild(dom);
+		const ref = React.createRef();
+		const root = this.renderTooltip(spec, container, ref);
+		const widget = {
+			getId: () => "code.tooltip.widget",
+			getDomNode: () => container,
+			getPosition: () => ({
+				position,
+				preference: [
+					monaco.editor.ContentWidgetPositionPreference.BELOW,
+				],
+			}),
+		};
+		editor.addContentWidget(widget);
+		this.currentTooltipWidget = widget;
+		this.currentTooltipRoot = root;
+		setTimeout(() => {
+			if (this.currentTooltipWidget === widget) {
+				editor.removeContentWidget(widget);
+				root.unmount();
+				if (ref && ref.current) ref.current.aboutToClose();
+				this.currentTooltipWidget = null;
+				this.currentTooltipRoot = null;
+			}
+		}, 3000);
+	}
+
+	hideTooltip(editor) {
+		if (this.currentTooltipWidget) {
+			editor.removeContentWidget(this.currentTooltipWidget);
+			this.currentTooltipRoot?.unmount();
+			this.currentTooltipWidget = null;
+			this.currentTooltipRoot = null;
+			this.lastTooltipWord = null;
+		}
+		clearTimeout(this.tooltipTimeout);
+		this.tooltipTimeout = null;
 	}
 
 	// Rendering
@@ -1031,4 +1184,5 @@ class MonacoEditor extends CodeEditor {
 	}
 }
 
-export default MonacoEditor;
+export { MonacoEditor };
+export default withTheme(MonacoEditor);

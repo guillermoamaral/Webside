@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import { Box, IconButton, Tooltip, Divider, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import NotebookCellEditor from "../parts/NotebookCellEditor";

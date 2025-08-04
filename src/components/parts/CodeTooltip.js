@@ -65,7 +65,11 @@ class CodeTooltip extends Component {
 								height: 150,
 							}}
 						>
-							<CodeEditorBackend source={code} readOnly noTooltips />
+							<CodeEditorBackend
+								source={code}
+								readOnly
+								noTooltips
+							/>
 						</Paper>
 					)}
 					{object && (
@@ -98,7 +102,10 @@ class CodeTooltip extends Component {
 										color: color,
 									}}
 									key={"tipAction" + i}
-									onClick={() => action.handler(title)}
+									onClick={() => {
+										console.log("dale");
+										action.handler(title);
+									}}
 								>
 									{action.label}
 								</Button>

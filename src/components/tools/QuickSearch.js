@@ -199,7 +199,7 @@ class QuickSearch extends Tool {
 	};
 
 	resultIcon = (result) => {
-		return ide.objectIcon(result, result.text);
+		return ide.objectIcon(result, "", result.text);
 	};
 
 	typeExpanded = (group) => {

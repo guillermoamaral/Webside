@@ -1,7 +1,12 @@
 import { Component } from "react";
+import ReactDOM from "react-dom/client";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 import StAST from "../../model/StAST";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import CodeTooltip from "./CodeTooltip";
+import { ThemeProvider } from "@mui/material/styles";
 
 const ShowDebugInfo = true;
 
@@ -454,7 +459,7 @@ class CodeEditor extends Component {
 		return object;
 	};
 
-	async valuateSelection() {
+	async evaluateSelection() {
 		const expression = this.selectedExpression();
 		await this.evaluateExpression(expression, false);
 	}
@@ -626,14 +631,39 @@ class CodeEditor extends Component {
 		return ast.nodeAt(offset);
 	}
 
-	// Autocompletion and tooltips
+	// Autocompletion
+
+	usesAutocompletion() {
+		const { enableAutocompletion } = this.props;
+		return enableAutocompletion !== undefined
+			? enableAutocompletion
+			: this.settings().section("editor").get("useAutocompletion");
+	}
+
+	async getCompletions(source, position) {
+		const classname =
+			this.props.class && this.isInMethod()
+				? this.props.class.name
+				: null;
+		let completions = [];
+		try {
+			completions = await ide.backend.autocompletions(
+				classname,
+				source,
+				position
+			);
+		} catch (ignored) {}
+		return completions;
+	}
+
+	// Tooltips
 
 	showsTooltip() {
 		let show = this.settings().section("editor").get("showTooltips");
 		return show && !this.props.noTooltips;
 	}
 
-	tooltipSpecAt = async (position) => {
+	tooltipSpec = async (position) => {
 		const word = this.wordAtPosition(position);
 		if (!word) return;
 		var handler = this.props.onTooltipShow;
@@ -698,32 +728,42 @@ class CodeEditor extends Component {
 		}
 	};
 
-	usesAutocompletion() {
-		const { enableAutocompletion } = this.props;
-		return enableAutocompletion !== undefined
-			? enableAutocompletion
-			: this.settings().section("editor").get("useAutocompletion");
+	ensureTooltipContainer() {
+		let container = document.getElementById("tooltip-container");
+		if (!container) {
+			console.warn("Tooltip container not found! Creating one...");
+			container = document.createElement("div");
+			container.id = "tooltip-container";
+			document.body.appendChild(container); // Ensure it exists
+		}
+		return container;
 	}
 
 	isInMethod() {
 		return this.props.inMethod;
 	}
 
-	getCompletions = async (source, position) => {
-		const classname =
-			this.props.class && this.isInMethod()
-				? this.props.class.name
-				: null;
-		let completions = [];
-		try {
-			completions = await ide.backend.autocompletions(
-				classname,
-				source,
-				position
-			);
-		} catch (ignored) {}
-		return completions;
-	};
+	renderTooltip(spec, dom, inspectorRef) {
+		const root = ReactDOM.createRoot(dom);
+		root.render(
+			<DndProvider backend={HTML5Backend}>
+				<ThemeProvider theme={this.props.theme}>
+					<ToolContainerContext.Provider value={this.context}>
+						<CodeTooltip
+							title={spec.title}
+							titleAction={spec.titleAction}
+							description={spec.description}
+							code={spec.code}
+							object={spec.object}
+							actions={spec.actions}
+							inspectorRef={inspectorRef}
+						/>
+					</ToolContainerContext.Provider>
+				</ThemeProvider>
+			</DndProvider>
+		);
+		return root;
+	}
 }
 
 export default CodeEditor;

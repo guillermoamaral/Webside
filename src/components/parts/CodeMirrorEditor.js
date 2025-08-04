@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
 import { Box, IconButton, LinearProgress, Tooltip } from "@mui/material";
 import AcceptIcon from "@mui/icons-material/CheckCircle";
 import PlayIcon from "@mui/icons-material/PlayArrow";
@@ -30,8 +29,6 @@ import {
 	startCompletion,
 } from "@codemirror/autocomplete";
 import { hoverTooltip } from "@codemirror/view";
-import CodeTooltip from "./CodeTooltip";
-import { ThemeProvider } from "@mui/material/styles";
 import { withTheme } from "@emotion/react";
 import { darken } from "@mui/system";
 import CodeEditor from "./CodeEditor";
@@ -333,7 +330,7 @@ class CodeMirrorEditor extends CodeEditor {
 		});
 	}
 
-	replaceSelectionWith = (text) => {
+	replaceSelectionWith(text) {
 		if (!this.editor) return;
 		const range = this.currentSelectionRange();
 		const state = this.currentState();
@@ -351,7 +348,7 @@ class CodeMirrorEditor extends CodeEditor {
 			},
 		});
 		this.editor.focus(); // Check if this is needed
-	};
+	}
 
 	// Event handlers
 
@@ -438,7 +435,7 @@ class CodeMirrorEditor extends CodeEditor {
 		this.forceUpdate(); // Check this according to the default response in shouldComponentUpdate()
 	};
 
-	// Autocompletion and tooltips
+	// Autocompletion
 
 	completionResult = async (context) => {
 		if (!this.usesAutocompletion()) return null;
@@ -481,59 +478,25 @@ class CodeMirrorEditor extends CodeEditor {
 		}, 350);
 	};
 
+	// Tooltips
+
 	tooltip() {
-		const { theme } = this.props;
 		const ref = React.createRef();
 		return hoverTooltip(
-			async (view, pos, side) => {
+			async (view, position, side) => {
 				if (!this.showsTooltip()) return null;
-				const spec = await this.tooltipSpecAt(pos);
+				const spec = await this.tooltipSpec(position);
 				if (!spec) return null;
 				return {
-					pos: pos,
-					end: pos + spec.title.length - 1,
+					pos: position,
+					end: position + spec.title.length - 1,
 					above: true,
 					arrow: true,
 					create: (view) => {
-						let container =
-							document.getElementById("tooltip-container");
-						if (!container) {
-							console.error(
-								"Tooltip container not found! Creating one..."
-							);
-							container = document.createElement("div");
-							container.id = "tooltip-container";
-							document.body.appendChild(container); // Ensure it exists
-						}
+						const container = this.ensureTooltipContainer();
 						const dom = document.createElement("div");
 						container.appendChild(dom);
-						let root;
-						try {
-							root = ReactDOM.createRoot(dom);
-						} catch (error) {
-							console.error(
-								"Failed to create React root for tooltip:",
-								error
-							);
-							return { dom }; // Failsafe return
-						}
-						root.render(
-							<ThemeProvider theme={theme}>
-								<ToolContainerContext.Provider
-									value={this.context}
-								>
-									<CodeTooltip
-										title={spec.title}
-										titleAction={spec.titleAction}
-										description={spec.description}
-										code={spec.code}
-										object={spec.object}
-										actions={spec.actions}
-										inspectorRef={ref}
-									/>
-								</ToolContainerContext.Provider>
-							</ThemeProvider>
-						);
+						const root = this.renderTooltip(spec, dom, ref);
 						return {
 							dom,
 							destroy: () => {

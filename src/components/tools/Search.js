@@ -114,7 +114,7 @@ class Search extends Tool {
 	};
 
 	resultIcon = (result) => {
-		return ide.objectIcon(result, result.text);
+		return ide.objectIcon(result, "", result.text);
 	};
 
 	render() {

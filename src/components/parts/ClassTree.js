@@ -557,7 +557,7 @@ class ClassTree extends Component {
 	};
 
 	classIcon = (species) => {
-		return ide.objectIcon(species, species.name);
+		return ide.objectIcon(species, "class", species.name);
 	};
 
 	render() {

@@ -1,6 +1,6 @@
 import * as monaco from "monaco-editor";
 import React from "react";
-import MonacoEditor from "./MonacoEditor";
+import { MonacoEditor } from "./MonacoEditor";
 import { Box, LinearProgress } from "@mui/material";
 import { ide } from "../IDE";
 import PopupMenu from "../controls/PopupMenu";

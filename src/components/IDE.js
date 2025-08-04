@@ -496,9 +496,10 @@ class IDE extends Component {
 		return this.icons[name];
 	}
 
-	objectIcon = (object, description) => {
+	objectIcon = (object, defaultName, description) => {
 		if (!object || !object.iconName) return;
-		const icon = this.iconNamed(object.iconName);
+		let icon = this.iconNamed(object.iconName);
+		if (!icon) icon = this.iconNamed(defaultName);
 		if (!icon) return;
 		return (
 			<img
@@ -1479,6 +1480,7 @@ class IDE extends Component {
 
 	openMenu = (event) => {
 		event.preventDefault();
+		event.stopPropagation();
 		this.setState({
 			menuOpen: true,
 			menuPosition: { x: event.clientX - 2, y: event.clientY - 4 },
