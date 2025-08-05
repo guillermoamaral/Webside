@@ -33,9 +33,10 @@ class MonacoEditor extends CodeEditor {
 		this.hoverAction = null;
 
 		this.currentTooltipWidget = null;
+		this.currentTooltipRef = null;
 		this.currentTooltipRoot = null;
-		this.lastTooltipWord = null;
 		this.tooltipTimeout = null;
+		this.isTooltipHovered = false;
 
 		this.state = {
 			source: props.source,
@@ -252,6 +253,9 @@ class MonacoEditor extends CodeEditor {
 		editor.onMouseMove((event) => {
 			MonacoEditor.setActiveEditor(editor);
 			this.mouseMoved(event, editor);
+			if (this.currentTooltipWidget && !this.isTooltipHovered) {
+				this.hideTooltip(editor);
+			}
 		});
 		editor.onMouseLeave(() => {
 			this.hideTooltip(editor);
@@ -901,11 +905,6 @@ class MonacoEditor extends CodeEditor {
 		if (event.event.ctrlKey)
 			return await this.updateHoverDecoration(editor, position);
 		if (!this.showsTooltip()) return;
-		const info = editor.getModel().getWordAtPosition(position);
-		if (!info) return;
-		const word = info.word;
-		if (word === this.lastTooltipWord) return;
-		this.lastTooltipWord = word;
 		clearTimeout(this.tooltipTimeout);
 		this.tooltipTimeout = setTimeout(() => {
 			this.showTooltip(editor, position);
@@ -942,7 +941,7 @@ class MonacoEditor extends CodeEditor {
 
 	// Autocompletion
 
-	completionList = async (model, position) => {
+	async completionList(model, position) {
 		const offset = model.getOffsetAt(position);
 		const source = model.getValue();
 		const word = model.getWordUntilPosition(position);
@@ -964,7 +963,7 @@ class MonacoEditor extends CodeEditor {
 			}));
 		} catch (ignored) {}
 		return list;
-	};
+	}
 
 	completionKind(type) {
 		switch (type) {
@@ -998,44 +997,61 @@ class MonacoEditor extends CodeEditor {
 		}
 		const container = this.ensureTooltipContainer();
 		container.innerHTML = "";
-		//const dom = document.createElement("div");
-		//container.appendChild(dom);
-		const ref = React.createRef();
-		const root = this.renderTooltip(spec, container, ref);
-		const widget = {
+		container.style.pointerEvents = "auto";
+		this.currentTooltipRef = React.createRef();
+		this.currentTooltipRoot = this.renderTooltip(
+			spec,
+			container,
+			this.currentTooltipRef
+		);
+		this.currentTooltipWidget = {
 			getId: () => "code.tooltip.widget",
 			getDomNode: () => container,
 			getPosition: () => ({
 				position,
 				preference: [
+					monaco.editor.ContentWidgetPositionPreference.EXACT,
+					monaco.editor.ContentWidgetPositionPreference.ABOVE,
 					monaco.editor.ContentWidgetPositionPreference.BELOW,
 				],
 			}),
 		};
-		editor.addContentWidget(widget);
-		this.currentTooltipWidget = widget;
-		this.currentTooltipRoot = root;
-		setTimeout(() => {
-			if (this.currentTooltipWidget === widget) {
-				editor.removeContentWidget(widget);
-				root.unmount();
-				if (ref && ref.current) ref.current.aboutToClose();
-				this.currentTooltipWidget = null;
-				this.currentTooltipRoot = null;
-			}
-		}, 3000);
+		editor.addContentWidget(this.currentTooltipWidget);
+		container.addEventListener("mouseenter", () => {
+			this.isTooltipHovered = true;
+			clearTimeout(this.tooltipTimeout);
+			this.tooltipTimeout = null;
+		});
+		container.addEventListener("mouseleave", () => {
+			this.isTooltipHovered = false;
+			this.tooltipTimeout = setTimeout(() => {
+				this.hideTooltip(editor);
+			}, 200);
+		});
 	}
 
 	hideTooltip(editor) {
-		if (this.currentTooltipWidget) {
-			editor.removeContentWidget(this.currentTooltipWidget);
-			this.currentTooltipRoot?.unmount();
-			this.currentTooltipWidget = null;
-			this.currentTooltipRoot = null;
-			this.lastTooltipWord = null;
+		if (this.tooltipTimeout) {
+			clearTimeout(this.tooltipTimeout);
+			this.tooltipTimeout = null;
 		}
-		clearTimeout(this.tooltipTimeout);
-		this.tooltipTimeout = null;
+		if (this.currentTooltipWidget) {
+			try {
+				editor.removeContentWidget(this.currentTooltipWidget);
+			} catch (ignored) {}
+			this.currentTooltipWidget = null;
+		}
+		if (this.currentTooltipRoot) {
+			try {
+				this.currentTooltipRoot.unmount();
+			} catch (ignored) {}
+			this.currentTooltipRoot = null;
+		}
+		if (this.currentTooltipRef && this.currentTooltipRef.current) {
+			this.currentTooltipRef.current.aboutToClose();
+			this.currentTooltipRef = null;
+		}
+		this.isTooltipHovered = false;
 	}
 
 	// Rendering
