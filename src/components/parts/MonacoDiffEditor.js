@@ -4,6 +4,7 @@ import { MonacoEditor } from "./MonacoEditor";
 import { Box, LinearProgress } from "@mui/material";
 import { ide } from "../IDE";
 import PopupMenu from "../controls/PopupMenu";
+import { withTheme } from "@emotion/react";
 
 class MonacoDiffEditor extends MonacoEditor {
 	constructor(props) {
@@ -45,23 +46,15 @@ class MonacoDiffEditor extends MonacoEditor {
 					rightSource: rightSource,
 				},
 				() => {
-					if (this.leftEditor) {
-						this.leftEditor.setValue(rightSource);
-						setTimeout(() => this.leftEditor?.layout(), 0);
-						this.updateOverlays(this.leftEditor);
-					}
-					if (this.rightEditor) {
-						this.rightEditor.setValue(leftSource);
-						setTimeout(() => this.rightEditor?.layout(), 0);
-						this.updateOverlays(this.rightEditor);
-					}
+					this.updateEditor(this.leftEditor, rightSource);
+					this.updateEditor(this.rightEditor, leftSource);
 				}
 			);
 		}
 		//this.refreshLayout(this.editor);
 		this.refreshLayout(this.leftEditor);
 		this.refreshLayout(this.rightEditor);
-		//this.editor.focus();
+		this.editor.focus();
 	}
 
 	componentWillUnmount() {
@@ -81,17 +74,11 @@ class MonacoDiffEditor extends MonacoEditor {
 			renderSideBySide: true,
 		});
 		const { leftSource, rightSource } = this.props;
-		const originalModel = monaco.editor.createModel(
-			rightSource,
-			"smalltalk"
-		);
-		const modifiedModel = monaco.editor.createModel(
-			leftSource,
-			"smalltalk"
-		);
+		const original = monaco.editor.createModel(rightSource, "smalltalk");
+		const modified = monaco.editor.createModel(leftSource, "smalltalk");
 		this.editor.setModel({
-			original: originalModel,
-			modified: modifiedModel,
+			original: original,
+			modified: modified,
 		});
 	};
 
@@ -225,4 +212,5 @@ class MonacoDiffEditor extends MonacoEditor {
 	}
 }
 
-export default MonacoDiffEditor;
+export { MonacoDiffEditor };
+export default withTheme(MonacoDiffEditor);

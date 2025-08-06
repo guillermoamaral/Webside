@@ -627,6 +627,7 @@ class CodeEditor extends Component {
 
 	astNodeAtOffset(offset) {
 		const ast = this.ast();
+		console.log("ast", ast)
 		if (!ast) return;
 		return ast.nodeAt(offset);
 	}
@@ -665,6 +666,7 @@ class CodeEditor extends Component {
 
 	tooltipSpec = async (position) => {
 		const word = this.wordAtPosition(position);
+		console.log(word)
 		if (!word) return;
 		var handler = this.props.onTooltipShow;
 		var tip;
@@ -687,6 +689,7 @@ class CodeEditor extends Component {
 
 	defaultTooltipSpecFor = async (word, position) => {
 		const node = this.astNodeAtOffset(position);
+		console.log("node", node)
 		if (node && node.type === "Selector" && node.value.includes(word)) {
 			return {
 				title: node.value,
@@ -734,6 +737,9 @@ class CodeEditor extends Component {
 			console.warn("Tooltip container not found! Creating one...");
 			container = document.createElement("div");
 			container.id = "tooltip-container";
+			container.style.position = "fixed";
+			container.style.zIndex = "9999";
+			container.style.pointerEvents = "auto";
 			document.body.appendChild(container); // Ensure it exists
 		}
 		return container;
