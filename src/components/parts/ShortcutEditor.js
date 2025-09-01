@@ -47,7 +47,7 @@ class ShortcutEditor extends Component {
 
 	setShortcut(shift, ctrl, alt, key) {
 		if (this.props.onChange) {
-			const shortcut = this.shourtcut(shift, ctrl, alt, key);
+			const shortcut = this.shortcut(shift, ctrl, alt, key);
 			return this.props.onChange(shortcut);
 		}
 		this.setState({
@@ -78,7 +78,7 @@ class ShortcutEditor extends Component {
 		);
 	};
 
-	shourtcut = (shift, ctrl, alt, key) => {
+	shortcut = (shift, ctrl, alt, key) => {
 		return key
 			? (shift ? "Shift+" : "") +
 					(ctrl ? "Ctrl+" : "") +
@@ -135,7 +135,7 @@ class ShortcutEditor extends Component {
 					required
 				/>
 				<Typography variant="body2" sx={{ ml: 2, opacity: 0.6 }}>
-					{"(" + this.shourtcut(shift, ctrl, alt, key) + ")"}
+					{"(" + this.shortcut(shift, ctrl, alt, key) + ")"}
 				</Typography>
 			</Box>
 		);

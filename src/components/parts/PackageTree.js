@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import CustomTree from "../controls/CustomTree";
 import CustomPaper from "../controls/CustomPaper";
 import { ide } from "../IDE";
@@ -321,7 +321,7 @@ class PackageTree extends Component {
 	}
 
 	packageIcon = (pack) => {
-		return ide.objectIcon(pack, pack.name);
+		return ide.objectIcon(pack, "package", pack.name);
 	};
 
 	render() {

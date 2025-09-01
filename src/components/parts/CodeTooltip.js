@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import {
 	Link,
 	Card,
@@ -9,8 +9,8 @@ import {
 	Paper,
 } from "@mui/material";
 import { ide } from "../IDE";
-import CodeEditor from "./CodeEditor";
 import Inspector from "../tools/Inspector";
+import CodeEditorBackend from "./CodeEditorBackend";
 
 class CodeTooltip extends Component {
 	render() {
@@ -65,7 +65,11 @@ class CodeTooltip extends Component {
 								height: 150,
 							}}
 						>
-							<CodeEditor source={code} readOnly noTooltips />
+							<CodeEditorBackend
+								source={code}
+								readOnly
+								noTooltips
+							/>
 						</Paper>
 					)}
 					{object && (
@@ -98,7 +102,10 @@ class CodeTooltip extends Component {
 										color: color,
 									}}
 									key={"tipAction" + i}
-									onClick={() => action.handler(title)}
+									onClick={() => {
+										console.log("dale");
+										action.handler(title);
+									}}
 								>
 									{action.label}
 								</Button>

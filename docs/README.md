@@ -55,7 +55,9 @@ Webside is built using these frameworks and components (plus a set of packages n
 
 - [ReactJS](https://reactjs.org): the main framework used to build Webside.
 - [Material-UI](https://material-ui.com): a set of React useful components with handy interfaces and a coherent style.
+- **New!!!** [Monaco](https://microsoft.github.io/monaco-editor/): the component used to display and edit code.
 - [CodeMirror](https://codemirror.net/): the component used to display and edit code.
+
 
 The IDE used for JavaScript was [Visual Studio Code](https://code.visualstudio.com).
 

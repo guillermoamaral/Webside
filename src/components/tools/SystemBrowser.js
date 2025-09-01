@@ -343,9 +343,7 @@ class SystemBrowser extends Tool {
 
 	methodCompiled = async (method) => {
 		if (!method) return;
-		if (method) {
-			this.updateLabel(method.methodClass + ">>" + method.selector);
-		}
+		this.updateLabel(method.methodClass + ">>" + method.selector);
 		let ref = this.methodListRef;
 		if (ref && ref.current) {
 			ref.current.refreshEnsuring(method);

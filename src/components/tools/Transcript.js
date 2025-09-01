@@ -1,8 +1,7 @@
-import React from "react";
 import Tool from "./Tool";
-import CodeEditor from "../parts/CodeEditor";
 import { Box } from "@mui/material";
 import { ide } from "../IDE";
+import CodeEditorBackend from "../parts/CodeEditorBackend";
 
 class Transcript extends Tool {
 	aboutToSelect() {
@@ -22,7 +21,7 @@ class Transcript extends Tool {
 					background: background,
 				}}
 			>
-				<CodeEditor
+				<CodeEditorBackend
 					source={ide.transcriptText()}
 					onChange={this.props.onChange}
 				/>

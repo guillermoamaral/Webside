@@ -4,7 +4,7 @@ import PopupMenu from "../controls/PopupMenu";
 //import { ide } from "../IDE.js";
 import CodeMirrorMerge from "react-codemirror-merge";
 import { EditorView, keymap } from "@codemirror/view";
-import { CodeEditor } from "./CodeEditor";
+import { CodeMirrorEditor } from "./CodeMirrorEditor";
 import { lintGutter } from "@codemirror/lint";
 import { Box } from "@mui/material";
 import { Prec } from "@codemirror/state";
@@ -12,13 +12,13 @@ import { Prec } from "@codemirror/state";
 const Original = CodeMirrorMerge.Original;
 const Modified = CodeMirrorMerge.Modified;
 
-class CodeMerge extends CodeEditor {
+class CodeMirrorDiffEditor extends CodeMirrorEditor {
 	constructor(props) {
 		super(props);
 		this.ref = React.createRef();
 		this.state = {
-			leftCode: "",
-			rightCode: "",
+			leftSource: "",
+			rightSource: "",
 			menuOpen: false,
 			menuPosition: { x: null, y: null },
 		};
@@ -26,12 +26,12 @@ class CodeMerge extends CodeEditor {
 
 	static getDerivedStateFromProps(props, state) {
 		if (
-			props.leftCode !== state.leftCode ||
-			props.rightCode !== state.rightCode
+			props.leftSource !== state.leftSource ||
+			props.rightSource !== state.rightSource
 		) {
 			return {
-				leftCode: props.leftCode || "",
-				rightCode: props.rightCode || "",
+				leftSource: props.leftSource || "",
+				rightSource: props.rightSource || "",
 			};
 		}
 		return null;
@@ -39,28 +39,15 @@ class CodeMerge extends CodeEditor {
 
 	shouldComponentUpdate(nextProps, nextState) {
 		return (
-			nextProps.leftCode !== this.props.leftCode ||
-			nextProps.rightCode !== this.props.rightCode ||
+			nextProps.leftSource !== this.props.leftSource ||
+			nextProps.rightSource !== this.props.rightSource ||
 			nextProps.highlightChanges !== this.state.highlightChanges
 		);
 	}
 
-	openMenu = (event) => {
-		event.preventDefault();
-		event.stopPropagation();
-		this.setState({
-			menuOpen: true,
-			menuPosition: { x: event.clientX - 2, y: event.clientY - 4 },
-		});
-	};
-
-	closeMenu = () => {
-		this.setState({ menuOpen: false });
-	};
-
 	render() {
 		console.log("rendering code merge");
-		const { leftCode, rightCode, menuOpen, menuPosition } = this.state;
+		const { leftSource, rightSource, menuOpen, menuPosition } = this.state;
 		const highlightChanges = this.props.highlightChanges;
 		const theme = this.theme();
 		const menuOptions = this.menuOptions();
@@ -82,7 +69,7 @@ class CodeMerge extends CodeEditor {
 						}}
 					>
 						<Original
-							value={leftCode}
+							value={leftSource}
 							extensions={[
 								this.lexer(),
 								EditorView.lineWrapping,
@@ -95,7 +82,7 @@ class CodeMerge extends CodeEditor {
 							}}
 						/>
 						<Modified
-							value={rightCode}
+							value={rightSource}
 							extensions={[
 								this.lexer(),
 								EditorView.lineWrapping,
@@ -114,6 +101,7 @@ class CodeMerge extends CodeEditor {
 							open={menuOpen}
 							position={menuPosition}
 							onClose={this.closeMenu}
+							onOptionClick={this.menuOptionClicked}
 						/>
 					)}
 				</Scrollable>
@@ -122,4 +110,4 @@ class CodeMerge extends CodeEditor {
 	}
 }
 
-export default CodeMerge;
+export default CodeMirrorDiffEditor;

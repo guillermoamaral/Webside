@@ -126,7 +126,7 @@ var next = function (stream, context, state) {
 		const identifier = stream.current();
 		token.value = identifier;
 		if (reserved.includes(identifier)) {
-			token.type = identifier;
+			token.type = "reserved";
 			state.expect("selector");
 			state.inSelector = false;
 		} else if (state.expects("variable") && state.isArgument(identifier)) {
@@ -209,9 +209,7 @@ export const SmalltalkLexer = function (inSelector) {
 		},
 		token: function (stream, state) {
 			state.userIndent(stream.indentation());
-			if (stream.eatSpace()) {
-				return null;
-			}
+			if (stream.eatSpace()) return null;
 			var token = state.context.next(stream, state.context, state);
 			state.context = token.context;
 			state.first = false;

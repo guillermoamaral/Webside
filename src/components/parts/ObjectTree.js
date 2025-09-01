@@ -46,7 +46,7 @@ class ObjectTree extends Component {
 	};
 
 	slotIcon = (object) => {
-		return ide.objectIcon(object, this.objectId(object));
+		return ide.objectIcon(object, "variable", this.objectId(object));
 	};
 
 	render() {

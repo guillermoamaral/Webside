@@ -261,7 +261,7 @@ class VariableList extends Component {
 	}
 
 	variableIcon = (variable) => {
-		return ide.objectIcon(variable, variable.name);
+		return ide.objectIcon(variable, "variable", variable.name);
 	};
 
 	render() {

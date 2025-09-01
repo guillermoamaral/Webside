@@ -12,7 +12,8 @@ This endpoint is aim to provide a list of completion entries for given a piece o
 {
 	"source": "string",
 	"position": "integer",
-	"class": "string"
+	"class": "string",
+	"inMethod": "boolean"
 }
 ```
 

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import { Menu, MenuItem, Divider, Box, Typography } from "@mui/material";
 import { NestedMenuItem } from "mui-nested-menu";
 

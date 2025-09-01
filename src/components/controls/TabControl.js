@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import {
 	Tabs,
 	Tab,
@@ -28,15 +28,13 @@ class TabControl extends Component {
 
 	tabChanged = (event, index) => {
 		event.preventDefault();
-		if (this.props.onTabSelect) {
+		if (this.props.onTabSelect)
 			this.props.onTabSelect(this.props.pages[index]);
-		}
 	};
 
 	tabFocused = (event, index) => {
-		if (this.props.onTabFocus) {
+		if (this.props.onTabFocus)
 			this.props.onTabFocus(this.props.pages[index]);
-		}
 	};
 
 	closeTab = (event, index) => {
@@ -96,8 +94,7 @@ class TabControl extends Component {
 				flexDirection="column"
 				width="100%"
 				height="100%"
-				maxWidth="95vw"
-				onClick={() => console.log("container " + id)}
+				//onClick={() => console.log("container " + id)}
 			>
 				<Box
 					pt={0}

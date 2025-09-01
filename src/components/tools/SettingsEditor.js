@@ -1,11 +1,13 @@
-import React from "react";
 import Tool from "./Tool";
-import { Typography, Box, Button, Link, Divider } from "@mui/material";
+import { Typography, Box, Button, Link, Divider, Paper } from "@mui/material";
 import SettingEditor from "../parts/SettingEditor";
 import CustomTree from "../controls/CustomTree";
 import CustomSplit from "../controls/CustomSplit";
 import CustomPaper from "../controls/CustomPaper";
 import BackendTester from "./BackendTester";
+import { ide } from "../IDE";
+import Scrollable from "../controls/Scrollable";
+import CodeEditorBackend from "../parts/CodeEditorBackend";
 
 class SettingsEditor extends Tool {
 	constructor(props) {
@@ -26,7 +28,7 @@ class SettingsEditor extends Tool {
 		event.preventDefault();
 		const section = this.state.selectedSection;
 		const handler = this.props.onResetSection;
-		if (handler) handler(section.name);
+		if (handler) handler(section.path());
 		this.forceUpdate();
 	};
 
@@ -46,17 +48,59 @@ class SettingsEditor extends Tool {
 		this.setState({ expandedSections: expanded });
 	};
 
+	sampleMethod = () => {
+		return `method: argument
+	"This is a comment"
+	| temporaryVariable |
+	temporaryVariable := 123 + self unary.
+	self keyword1: true keyword2: #symbol keyword3: nil.
+	instanceVariable := 'string'.
+	self messageWithLintError; messageWithLintInfo.
+	super messageWithLintWarning.
+	^SomeClass new`;
+	};
+
+	sampleAnnotations = () => {
+		return [
+			{
+				from: 193,
+				to: 213,
+				type: "error",
+				description: "This is a sample error",
+			},
+			{
+				from: 215,
+				to: 234,
+				type: "warning",
+				description: "This is a sample warning",
+			},
+			{
+				from: 243,
+				to: 265,
+				type: "info",
+				description: "This is a sample info",
+			},
+		];
+	};
+
+	settingChanged = (setting) => {
+		if (setting.name === "theme") ide.applyTheme(this.props.settings);
+		if (["dark", "light"].some((s) => setting.path().includes(s))) {
+			this.props.settings.set("appearance.theme", "Custom");
+		}
+		if (setting.path().includes("appearance")) {
+			if (this.codePreviewRef) {
+				this.codePreviewRef.forceUpdate();
+			}
+		}
+	};
+
 	render() {
-		console.log("render settings editor");
 		const settings = this.props.settings;
 		const { selectedSection, expandedSections } = this.state;
 		const selectedSettings = selectedSection
 			? selectedSection.plainSettings()
 			: [];
-		const backendUrl =
-			selectedSection && selectedSection.name === "connection"
-				? selectedSection.get("backend")
-				: null;
 		const maxLabelLength = selectedSettings.reduce(
 			(max, s) => Math.max(max, s.label.length),
 			0
@@ -68,7 +112,7 @@ class SettingsEditor extends Tool {
 				sx={{ width: "100%", height: "100%" }}
 			>
 				<CustomSplit>
-					<Box sx={{ width: "20%" }}>
+					<Box sx={{ width: "15%" }}>
 						<CustomPaper>
 							<CustomTree
 								nodes={settings.sections()}
@@ -88,7 +132,7 @@ class SettingsEditor extends Tool {
 							flexDirection="column"
 							ml={2}
 							flexGrow={1}
-							sx={{ width: "80%" }}
+							sx={{ width: "85%" }}
 						>
 							<Typography variant="h6">
 								{selectedSection.label}
@@ -122,29 +166,80 @@ class SettingsEditor extends Tool {
 								<Box
 									display="flex"
 									flexDirection="column"
-									sx={{ width: "100%", height: "90%" }}
+									sx={{
+										width: "50%",
+										height: "100%",
+										marginRight: 2,
+									}}
 								>
-									{selectedSettings.map((setting) => (
-										<Box key={setting.name} mb={1}>
-											<SettingEditor
-												//showLabel={false}
-												setting={setting}
-												onValueChange={() =>
-													this.forceUpdate()
-												}
-												minLabelWidth={Math.min(
-													maxLabelLength * 10,
-													200
+									<Scrollable>
+										{selectedSettings.map((setting) => (
+											<Box key={setting.path()} mb={1}>
+												<SettingEditor
+													//showLabel={false}
+													setting={setting}
+													// Commented out to avoid re-rendering (until discovering why it was needed)
+													onValueChange={() =>
+														this.settingChanged(
+															setting
+														)
+													}
+													minLabelWidth={Math.min(
+														maxLabelLength * 10,
+														200
+													)}
+												/>
+											</Box>
+										))}
+									</Scrollable>
+								</Box>
+								{selectedSection.name === "connection" && (
+									<BackendTester
+										url={selectedSection.get("backend")}
+									/>
+								)}
+								{["appearance", "dark", "light"].includes(
+									selectedSection.name
+								) && (
+									<Box
+										sx={{
+											width: "50%",
+											height: "100%",
+										}}
+									>
+										<Typography
+											variant="subtitle1"
+											sx={{ p: 1 }}
+										>
+											Code preview
+										</Typography>
+										<Paper
+											variant="outlined"
+											sx={{
+												minWidth: 400,
+												minHeight: 200,
+												width: "100%",
+												height: "30%",
+												maxHeight: 300,
+											}}
+										>
+											<CodeEditorBackend
+												ref={(ref) => {
+													this.codePreviewRef = ref;
+												}}
+												source={this.sampleMethod()}
+												annotations={this.sampleAnnotations()}
+												readOnly
+												noTooltips
+												settings={this.props.settings}
+												inMethod
+												randomProp={Math.floor(
+													Math.random() * 100
 												)}
 											/>
-										</Box>
-									))}
-									{backendUrl && (
-										<Box flexGrow={1} mt={2}>
-											<BackendTester url={backendUrl} />
-										</Box>
-									)}
-								</Box>
+										</Paper>
+									</Box>
+								)}
 							</Box>
 						</Box>
 					)}

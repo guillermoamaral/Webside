@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import {
 	Box,
 	Paper,
@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
-import CodeEditor from "./CodeEditor";
+import CodeEditorBackend from "./CodeEditorBackend";
 import MarkdownView from "./MarkdownView";
 
 class CodeBrowser extends Component {
@@ -103,95 +103,33 @@ class CodeBrowser extends Component {
 
 	compileMethod = async (source) => {
 		if (!this.props.class) return;
-		try {
-			const pack = this.props.package;
-			const species = this.props.class;
-			const method = this.props.method;
-			const packagename = pack
-				? pack.name
-				: method
-				? method.package
-				: species
-				? species.package
-				: null;
-			const category = method
-				? method.category || this.props.category
-				: this.props.category;
-			const classname = species
-				? species.name
-				: method
-				? method.methodClass
-				: null;
-			const change = await ide.backend.compileMethod(
-				classname,
-				packagename,
-				category,
-				source
-			);
-			const compiled = await ide.backend.method(
-				classname,
-				change.selector
-			);
-			if (this.props.onMethodCompile)
-				this.props.onMethodCompile(compiled);
-		} catch (error) {
-			this.handleCompilationError(error, source);
-		}
-	};
-
-	async handleCompilationError(error, source) {
+		const pack = this.props.package;
+		const species = this.props.class;
 		const method = this.props.method;
-		if (!method) return;
-		method.source = source;
-		const data = error.data;
-		if (data && data.suggestions && data.suggestions.length > 0) {
-			const suggestions = data.suggestions;
-			let suggestion;
-			if (suggestions.length === 1) {
-				let confirm = await ide.confirm({
-					title: data.description,
-					message: suggestions[0].description,
-				});
-				if (confirm) suggestion = suggestions[0];
-			} else {
-				let description = await ide.choose({
-					title: data.description,
-					message: "What do you want to do?",
-					items: suggestions.map((s) => s.description),
-					defaultValue: suggestions[0].description,
-				});
-				if (description) {
-					suggestion = suggestions.find(
-						(s) => s.description === description
-					);
-				}
-			}
-			if (suggestion) {
-				try {
-					let applied;
-					for (const change of suggestion.changes) {
-						applied = await ide.backend.postChange(change);
-					}
-					let method;
-					if (applied && applied.type === "AddMethod") {
-						try {
-							method = await ide.backend.method(
-								this.props.class.name,
-								applied.selector
-							);
-						} catch (error) {}
-						if (method && this.props.onMethodCompile)
-							this.props.onMethodCompile(method);
-					}
-				} catch (inner) {
-					this.handleCompilationError(
-						inner,
-						suggestion.changes[suggestion.changes.length - 1]
-							.sourceCode
-					);
-				}
-			}
-		} else {
+		const packagename = pack
+			? pack.name
+			: method
+			? method.package
+			: species
+			? species.package
+			: null;
+		const category = method
+			? method.category || this.props.category
+			: this.props.category;
+		const classname = species
+			? species.name
+			: method
+			? method.methodClass
+			: null;
+		const result = await this.context.compileMethod(
+			classname,
+			packagename,
+			category,
+			source
+		);
+		if (!result) return;
+		if (result.hasError()) {
+			const data = result.error.data;
 			if (data && data.interval) {
 				method.annotations = [
 					{
@@ -206,8 +144,11 @@ class CodeBrowser extends Component {
 				ide.reportError(description || "Unknown compilation error");
 			}
 			this.setState({ method: method });
+		} else {
+			if (this.props.onMethodCompile)
+				this.props.onMethodCompile(result.method);
 		}
-	}
+	};
 
 	availableModes = () => {
 		const modes = [
@@ -322,7 +263,7 @@ class CodeBrowser extends Component {
 		this.setState({ selectedMode: mode });
 	};
 
-	acceptClicked = (source) => {
+	acceptSource = (source) => {
 		switch (this.state.selectedMode) {
 			case "comment":
 				this.commentClass(source);
@@ -413,7 +354,7 @@ class CodeBrowser extends Component {
 						sx={{ height: "100%", minHeight: 300 }}
 					>
 						{(selectedMode !== "comment" || !previewMarkdown) && (
-							<CodeEditor
+							<CodeEditorBackend
 								context={context}
 								class={this.props.class}
 								method={method}
@@ -425,7 +366,7 @@ class CodeBrowser extends Component {
 								selectedSelector={selectedSelector}
 								selectedIdentifier={selectedIdentifier}
 								showAccept
-								onAccept={this.acceptClicked}
+								onAccept={this.acceptSource}
 								onRename={(target) => this.renameClass(target)}
 								onTooltipShow={onTooltipShow}
 								onTooltipClick={onTooltipClick}
@@ -433,7 +374,7 @@ class CodeBrowser extends Component {
 								onExtendedOptionPerform={
 									this.extendedOptionPerformed
 								}
-								useMethodLexer={selectedMode === "source"}
+								inMethod={selectedMode === "source"}
 								onFullViewToggle={this.toggleFullView}
 							/>
 						)}

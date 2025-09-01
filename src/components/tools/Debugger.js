@@ -190,9 +190,7 @@ class Debugger extends Tool {
 
 	methodCompiled = async (method) => {
 		const selected = this.state.selectedFrame.method;
-		if (method.selector !== selected.selector) {
-			return;
-		}
+		if (method.selector !== selected.selector) return;
 		try {
 			await ide.backend.restartDebugger(
 				this.props.id,
@@ -404,11 +402,7 @@ class Debugger extends Tool {
 								method={
 									selectedFrame ? selectedFrame.method : null
 								}
-								selectedInterval={
-									selectedFrame
-										? selectedFrame.interval
-										: null
-								}
+								selectedInterval={selectedFrame?.interval}
 								onMethodCompile={this.methodCompiled}
 								onClassDefine={this.classDefined}
 								onClassComment={this.classCommented}

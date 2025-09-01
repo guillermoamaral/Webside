@@ -1,4 +1,3 @@
-import React from "react";
 import Tool from "./Tool";
 import {
 	Box,
@@ -141,7 +140,11 @@ class BackendTester extends Tool {
 			this.state;
 		const showLog = selectedTest && showTestLog;
 		return (
-			<Box style={{ height: "100%" }}>
+			<Box
+				display="flex"
+				flexDirection="column"
+				style={{ width: "100%", height: "100%" }}
+			>
 				<Box display="flex" flexDirection="row" alignItems="center">
 					<Box>
 						<Button
@@ -174,59 +177,64 @@ class BackendTester extends Tool {
 					</Box>
 				</Box>
 				{tests.length > 0 && (
-					<BarChart
-						margin={{
-							top: 0,
-							left: 0,
-							bottom: 0,
-							right: 0,
-						}}
-						slotProps={{
-							legend: {
-								hidden: true,
-							},
-						}}
-						layout="horizontal"
-						series={[
-							{
-								stack: "Results",
-								label: "Passed",
-								color: this.stateColor("Passed"),
-								data: [
-									tests.filter((r) => r.state() === "Passed")
-										.length,
-								],
-							},
-							{
-								stack: "Results",
-								label: "Failed",
-								color: this.stateColor("Failed"),
-								data: [
-									tests.filter((r) => r.state() === "Failed")
-										.length,
-								],
-							},
-							{
-								stack: "Results",
-								label: "Error",
-								color: this.stateColor("Error"),
-								data: [
-									tests.filter((r) => r.state() === "Error")
-										.length,
-								],
-							},
-						]}
-						barLabel="value"
-						yAxis={[
-							{
-								scaleType: "band",
-								data: ["Results"],
-							},
-						]}
-						leftAxis={null}
-						bottomAxis={null}
-						height={30}
-					/>
+					<Box mt={1}>
+						<BarChart
+							margin={{
+								top: 0,
+								left: 0,
+								bottom: 0,
+								right: 0,
+							}}
+							slotProps={{
+								legend: {
+									hidden: true,
+								},
+							}}
+							layout="horizontal"
+							series={[
+								{
+									stack: "Results",
+									label: "Passed",
+									color: this.stateColor("Passed"),
+									data: [
+										tests.filter(
+											(r) => r.state() === "Passed"
+										).length,
+									],
+								},
+								{
+									stack: "Results",
+									label: "Failed",
+									color: this.stateColor("Failed"),
+									data: [
+										tests.filter(
+											(r) => r.state() === "Failed"
+										).length,
+									],
+								},
+								{
+									stack: "Results",
+									label: "Error",
+									color: this.stateColor("Error"),
+									data: [
+										tests.filter(
+											(r) => r.state() === "Error"
+										).length,
+									],
+								},
+							]}
+							barLabel="value"
+							yAxis={[
+								{
+									scaleType: "band",
+									data: ["Results"],
+								},
+							]}
+							leftAxis={null}
+							bottomAxis={null}
+							height={30}
+						/>
+					</Box>
 				)}
 				<CustomSplit>
 					<Box flex={1}>

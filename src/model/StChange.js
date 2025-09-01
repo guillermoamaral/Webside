@@ -86,6 +86,10 @@ class StChange extends Object {
 		return this.source;
 	}
 
+	setSourceCode(source) {
+		this.source = source;
+	}
+
 	currentSourceCode() {
 		return this.currentSource;
 	}
@@ -294,6 +298,10 @@ class AddClass extends ClassChange {
 	sourceCode() {
 		return this.definition;
 	}
+
+	setSourceCode(source) {
+		this.definition = source;
+	}
 }
 
 class CommentClass extends ClassChange {
@@ -319,6 +327,10 @@ class CommentClass extends ClassChange {
 
 	sourceCode() {
 		return this.comment;
+	}
+
+	setSourceCode(source) {
+		this.comment = source;
 	}
 }
 

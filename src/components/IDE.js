@@ -28,7 +28,6 @@ import Titlebar from "./layout/Titlebar";
 import Sidebar from "./layout/Sidebar";
 import MessageChannel from "./MessageChannel";
 import Hotkeys from "react-hot-keys";
-//import DrawerHeader from "./layout/DrawerHeader";
 import { Settings, Setting } from "../model/Settings";
 import { app as mainApp } from "../App";
 import { v4 as uuidv4 } from "uuid";
@@ -42,6 +41,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import TonelWriterV3 from "../model/TonelWriter";
 import JSZip from "jszip";
+import { tokenTypes } from "../SmalltalkTokenizer";
 
 var ide = null;
 var MaxExtraContainers = 3;
@@ -90,7 +90,7 @@ class IDE extends Component {
 	}
 
 	// Settings
-	initializeSettings = () => {
+	initializeSettings = async () => {
 		this.settings = this.defaultSettings();
 		this.loadSettings();
 		this.setConnectionSettings();
@@ -146,7 +146,6 @@ class IDE extends Component {
 			["disabledText", ""],
 			["appliedChange", ""],
 			["unappliedChange", ""],
-			["separatorColor", ""],
 			["selectionColor", ""],
 			["systemBrowserColor", "System browser background color", false],
 			["classBrowserColor", "Class browser background color", false],
@@ -161,32 +160,19 @@ class IDE extends Component {
 			dark.addColor(a[0], "#000000", a[1]).active = a[2] !== false;
 			light.addColor(a[0], "#ffffff", a[1]).active = a[2] !== false;
 		});
-		[
-			"selectorStyle",
-			"symbolStyle",
-			"argumentStyle",
-			"temporaryStyle",
-			"assignmentStyle",
-			"stringStyle",
-			"variableStyle",
-			"metaStyle",
-			"bracketStyle",
-			"selfStyle",
-			"superStyle",
-			"trueStyle",
-			"falseStyle",
-			"nilStyle",
-			"thisContextStyle",
-			"returnStyle",
-			"globalStyle",
-			"numberStyle",
-			"commentStyle",
-		].forEach((s) => {
-			dark.addTextStyle(s, "#000000");
-			light.addTextStyle(s, "#ffffff");
+		tokenTypes.forEach((type) => {
+			const style = type + "Style";
+			dark.addTextStyle(style, "#000000");
+			light.addTextStyle(style, "#ffffff");
 		});
+		dark.addColor("errorColor", "#ff5370").readOnly();
+		dark.addColor("warningColor", "#ffcb6b").readOnly();
+		dark.addColor("infoColor", "#82aaff").readOnly();
 		dark.setting("primaryColor").readOnly();
 		dark.setting("secondaryColor").readOnly();
+		light.addColor("errorColor", "#ff5370").readOnly();
+		light.addColor("warningColor", "#ffcb6b").readOnly();
+		light.addColor("infoColor", "#82aaff").readOnly();
 		light.setting("primaryColor").readOnly();
 		light.setting("secondaryColor").readOnly();
 		return settings;
@@ -213,7 +199,6 @@ class IDE extends Component {
 		light.set("disabledText", "#00000080");
 		light.set("appliedChange", "green");
 		light.set("unappliedChange", "#969696");
-		light.set("separatorColor", "#b3bab6");
 		light.set("selectionColor", "#9bcaef50");
 		light.setting("selectorStyle").color = "#000000";
 		light.setting("symbolStyle").color = "#2aa9b2";
@@ -224,16 +209,12 @@ class IDE extends Component {
 		light.setting("variableStyle").color = "#4fc1ff";
 		light.setting("metaStyle").color = "#ffcb6b";
 		light.setting("bracketStyle").color = "#9b9b9b";
-		light.setting("selfStyle").color = "#c792ea";
-		light.setting("superStyle").color = "#c792ea";
-		light.setting("trueStyle").color = "#c792ea";
-		light.setting("falseStyle").color = "#c792ea";
-		light.setting("nilStyle").color = "#c792ea";
-		light.setting("thisContextStyle").color = "#c792ea";
+		light.setting("reservedStyle").color = "#c792ea";
 		light.setting("returnStyle").color = "#72bb19";
 		light.setting("globalStyle").color = "#a22598";
 		light.setting("numberStyle").color = "#65a14e";
 		light.setting("commentStyle").color = "#586e75";
+		light.setting("separatorStyle").color = "#b3bab6";
 		const dark = theme.section("dark");
 		dark.set("primaryColor", "#ffffff");
 		dark.set("secondaryColor", "#cccccc");
@@ -252,7 +233,6 @@ class IDE extends Component {
 		dark.set("disabledText", "#aaaaaa80");
 		dark.set("appliedChange", "#c0ff61");
 		dark.set("unappliedChange", "#c8c8c8");
-		dark.set("separatorColor", "#b3bab6");
 		dark.set("selectionColor", "#9bcaef50");
 		dark.setting("selectorStyle").color = "#d3dddd";
 		dark.setting("symbolStyle").color = "#3cd2dd";
@@ -263,16 +243,12 @@ class IDE extends Component {
 		dark.setting("variableStyle").color = "#4fc1ff";
 		dark.setting("metaStyle").color = "#ffcb6b";
 		dark.setting("bracketStyle").color = "#9b9b9b";
-		dark.setting("selfStyle").color = "#c792ea";
-		dark.setting("superStyle").color = "#c792ea";
-		dark.setting("trueStyle").color = "#c792ea";
-		dark.setting("falseStyle").color = "#c792ea";
-		dark.setting("nilStyle").color = "#c792ea";
-		dark.setting("thisContextStyle").color = "#c792ea";
+		dark.setting("reservedStyle").color = "#c792ea";
 		dark.setting("returnStyle").color = "#72bb19";
 		dark.setting("globalStyle").color = "#bb73b5";
 		dark.setting("numberStyle").color = "#65a14e";
 		dark.setting("commentStyle").color = "#586e75";
+		dark.setting("separatorStyle").color = "#b3bab6";
 		return theme;
 	}
 
@@ -288,10 +264,11 @@ class IDE extends Component {
 		connection.addText("dialect").readOnly();
 		connection.addText("version").readOnly();
 		// Code...
-		const code = settings.addSection("editor");
-		code.addBoolean("lineNumbers", false, "Show line numbers");
-		code.addBoolean("autocompletion", false, "Use autocompletion");
-		code.addBoolean("tooltips", true, "Show tooltips");
+		const editor = settings.addSection("editor");
+		editor.addOptions("backend", ["Monaco", "CodeMirror"], "Monaco");
+		editor.addBoolean("showLineNumbers", false, "Show line numbers");
+		editor.addBoolean("useAutocompletion", false, "Use autocompletion");
+		editor.addBoolean("showTooltips", true, "Show tooltips");
 		// Appearance...
 		const appearance = settings.addSection("appearance");
 		appearance.addOptions(
@@ -395,16 +372,16 @@ class IDE extends Component {
 		return setting.active ? setting.value : "inherit";
 	}
 
-	applyTheme(name) {
+	applyTheme(settings) {
+		const name = settings.get("appearance.theme");
 		const theme = this.themes.find((t) => t.name === name);
 		if (!theme) return;
-		const appearance = this.settings.section("appearance");
+		const appearance = settings.section("appearance");
 		appearance.copyFrom(theme);
 	}
 
 	applySettings(settings) {
 		this.settings = settings;
-		this.applyTheme(settings.section("appearance").get("theme"));
 		this.storeSettings();
 		this.updateSettings();
 	}
@@ -413,9 +390,9 @@ class IDE extends Component {
 		this.props.navigate("/");
 	};
 
-	resetSettingsSection(name) {
-		const section = this.defaultSettings().section(name);
-		this.settings.setSection(name, section);
+	resetSettingsSection(path) {
+		const section = this.defaultSettings().section(path);
+		this.settings.setSection(path, section);
 		this.applySettings(this.settings);
 	}
 
@@ -483,7 +460,9 @@ class IDE extends Component {
 			await ide.backend.autocompletions("Object", "m\r Objec", 8);
 			autocompletion = true;
 		} catch (ignored) {}
-		this.settings.section("editor").set("autocompletion", autocompletion);
+		this.settings
+			.section("editor")
+			.set("useAutocompletion", autocompletion);
 		this.waitFor(async () => {
 			await this.fetchIcons();
 			await this.fetchThemes();
@@ -517,9 +496,10 @@ class IDE extends Component {
 		return this.icons[name];
 	}
 
-	objectIcon = (object, description) => {
+	objectIcon = (object, defaultName, description) => {
 		if (!object || !object.iconName) return;
-		const icon = this.iconNamed(object.iconName);
+		let icon = this.iconNamed(object.iconName);
+		if (!icon) icon = this.iconNamed(defaultName);
 		if (!icon) return;
 		return (
 			<img
@@ -1381,6 +1361,8 @@ class IDE extends Component {
 		ide.reportError(description || "Unknown change error");
 	}
 
+	// Tonel...
+
 	tonelFromClass = async (classname) => {
 		const species = await this.backend.classNamed(classname);
 		let variables = await this.backend.instanceVariables(classname);
@@ -1389,7 +1371,6 @@ class IDE extends Component {
 		species.classVariables = variables.map((v) => v.name);
 		species.methods = await this.backend.methods(classname);
 		species.classMethods = await this.backend.methods(species.class);
-		console.log(species);
 		return new TonelWriterV3().writeClass(species);
 	};
 
@@ -1499,6 +1480,7 @@ class IDE extends Component {
 
 	openMenu = (event) => {
 		event.preventDefault();
+		event.stopPropagation();
 		this.setState({
 			menuOpen: true,
 			menuPosition: { x: event.clientX - 2, y: event.clientY - 4 },
@@ -1519,7 +1501,7 @@ class IDE extends Component {
 	}
 
 	render() {
-		console.log("rendering IDE");
+		//console.log("rendering IDE");
 		const {
 			sidebarExpanded,
 			unreadErrorsCount,
@@ -1612,7 +1594,6 @@ class IDE extends Component {
 							<Box
 								component="main"
 								mt={6}
-								//disableGutters
 								flexGrow={1}
 								sx={{
 									height: "95vh",

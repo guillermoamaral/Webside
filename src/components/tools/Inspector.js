@@ -1,11 +1,10 @@
-import React from "react";
 import Tool from "./Tool";
 import { Box, Paper, Breadcrumbs, Link, Typography } from "@mui/material";
 import { ide } from "../IDE";
 import ObjectTree from "../parts/ObjectTree";
 import ObjectPresenter from "../parts/ObjectPresenter";
-import CodeEditor from "../parts/CodeEditor";
 import CustomSplit from "../controls/CustomSplit";
+import CodeEditorBackend from "../parts/CodeEditorBackend";
 
 class Inspector extends Tool {
 	constructor(props) {
@@ -319,7 +318,7 @@ class Inspector extends Tool {
 											variant="outlined"
 											sx={{ height: "100%" }}
 										>
-											<CodeEditor
+											<CodeEditorBackend
 												context={this.evaluationContext()}
 												onEvaluate={
 													this.expressionEvaluated

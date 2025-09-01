@@ -1,4 +1,3 @@
-import React from "react";
 import Tool from "./Tool";
 import {
 	Grid,
@@ -9,7 +8,6 @@ import {
 	Tab,
 	ToggleButton,
 } from "@mui/material";
-import CodeMerge from "../parts/CodeMerge";
 import { ide } from "../IDE";
 import ChangesTable from "../parts/ChangesTable";
 import DownloadIcon from "@mui/icons-material/GetApp";
@@ -20,6 +18,7 @@ import ApplyAllIcon from "@mui/icons-material/DoneAll";
 import ShowOriginalIcon from "@mui/icons-material/Refresh";
 import HighlightIcon from "@mui/icons-material/Highlight";
 import CustomSplit from "../controls/CustomSplit";
+import CodeDiffEditorBackend from "../parts/CodeDiffEditorBackend";
 
 class ChangesBrowser extends Tool {
 	constructor(props) {
@@ -158,9 +157,17 @@ class ChangesBrowser extends Tool {
 		this.updateChanges(changeset.changes);
 	};
 
+	acceptSource = (source) => {
+		console.log("si papu", source)
+		const { selectedChange } = this.state;
+		if (selectedChange) {
+			selectedChange.setSourceCode(source);
+			this.setState({ selectedChange: selectedChange });
+		}
+	};
+
 	render() {
 		const { changes, selectedChange, highlightChanges } = this.state;
-		console.log("rendering changes browser");
 		const background = ide.colorSetting("changesBrowserColor");
 		return (
 			<Box
@@ -258,7 +265,7 @@ class ChangesBrowser extends Tool {
 											alignContent="center"
 											justifyContent="flex-start"
 										>
-											<Tab label="New source" />
+											<Tab label="Current version" />
 										</Box>
 									</Grid>
 									<Grid item xs={3} md={3} lg={3}>
@@ -267,7 +274,7 @@ class ChangesBrowser extends Tool {
 											alignContent="center"
 											justifyContent="flex-start"
 										>
-											<Tab label="Current source" />
+											<Tab label="New version" />
 										</Box>
 									</Grid>
 									<Grid item xs={3} md={3} lg={3}>
@@ -303,20 +310,25 @@ class ChangesBrowser extends Tool {
 									variant="outlined"
 									sx={{ height: "100%", minHeight: 400 }}
 								>
-									<CodeMerge
+									<CodeDiffEditorBackend
 										highlightChanges={highlightChanges}
 										sx={{ height: "100%" }}
 										context={this.evaluationContext()}
-										leftCode={
-											selectedChange
-												? selectedChange.sourceCode()
-												: ""
-										}
-										rightCode={
+										leftSource={
 											selectedChange
 												? selectedChange.currentSourceCode()
 												: ""
 										}
+										rightSource={
+											selectedChange
+												? selectedChange.sourceCode()
+												: ""
+										}
+										inMethod={
+											selectedChange &&
+											selectedChange.isMethodChange()
+										}
+										onAccept={this.acceptSource}
 									/>
 								</Paper>
 							</Box>

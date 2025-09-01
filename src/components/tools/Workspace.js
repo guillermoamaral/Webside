@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import CodeEditor from "../parts/CodeEditor";
 import Inspector from "./Inspector";
 import { ide } from "../IDE";
 import CustomSplit from "../controls/CustomSplit";
@@ -20,6 +19,7 @@ import NotebookView from "./NotebookView";
 import Notebook from "../../model/Notebook";
 import Scrollable from "../controls/Scrollable";
 import ShareIcon from "@mui/icons-material/Share";
+import CodeEditorBackend from "../parts/CodeEditorBackend";
 
 class Workspace extends Tool {
 	constructor(props) {
@@ -280,7 +280,7 @@ class Workspace extends Tool {
 								variant="outlined"
 								style={{ minHeight: 300, height: "100%" }}
 							>
-								<CodeEditor
+								<CodeEditorBackend
 									ref={this.editorRef}
 									context={this.evaluationContext()}
 									source={source}

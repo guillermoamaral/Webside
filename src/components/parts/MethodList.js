@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import OverridenIcon from "@mui/icons-material/ExpandMore";
 import OverridingIcon from "@mui/icons-material/ExpandLess";
 import OverridingOverridenIcon from "@mui/icons-material/UnfoldMore";
@@ -81,23 +81,23 @@ class MethodList extends Component {
 	}
 
 	async refreshEnsuring(method) {
-		this.updateMethods(method);
+		const scopes = await this.createScopes();
+		this.setState({ scopes: scopes }, () => this.updateMethods(method));
 	}
 
 	async createScopes() {
 		const species = this.props.class;
 		let scopes = [];
-		if (species) {
-			const pack = this.props.package;
-			if (pack && species.package !== pack.name) {
-				scopes = [{ name: pack.name, type: "package" }, ...scopes];
-			}
-			scopes.push({ name: species.name, type: "class" });
-			let superclasses = await this.fetchSuperclasses();
-			superclasses.forEach((c) => {
-				scopes.push({ name: c.name, type: "class" });
-			});
+		if (!species) return scopes;
+		const pack = this.props.package;
+		if (pack && species.package !== pack.name) {
+			scopes = [{ name: pack.name, type: "package" }, ...scopes];
 		}
+		scopes.push({ name: species.name, type: "class" });
+		let superclasses = await this.fetchSuperclasses();
+		superclasses.forEach((c) => {
+			scopes.push({ name: c.name, type: "class" });
+		});
 		return scopes;
 	}
 
@@ -402,7 +402,6 @@ class MethodList extends Component {
 	};
 
 	browseLocalImplementors = (selector, classname) => {
-		console.log(selector, classname);
 		if (selector && classname)
 			this.context.browseLocalImplementors(selector, classname);
 	};

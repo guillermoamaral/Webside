@@ -13,7 +13,6 @@ import {
 	CircularProgress,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import CodeEditor from "../parts/CodeEditor";
 import PromptEditor from "../parts/PromptEditor";
 import Scrollable from "../controls/Scrollable";
 import { ide } from "../IDE";
@@ -21,6 +20,7 @@ import MarkdownView from "../parts/MarkdownView";
 import CustomSplit from "../controls/CustomSplit";
 import CopyIcon from "@mui/icons-material/ContentCopy";
 import AssistantIcon from "@mui/icons-material/Assistant";
+import CodeEditorBackend from "../parts/CodeEditorBackend";
 //import ChangesBrowserIcon from "../icons/ChangesBrowserIcon";
 
 const MessageItem = ({ message, index }) => {
@@ -157,7 +157,7 @@ const MessageItem = ({ message, index }) => {
 												mt={1}
 												sx={{ height: height }}
 											>
-												<CodeEditor
+												<CodeEditorBackend
 													source={chunk}
 													readOnly
 													fontSize={codeFontSize}

@@ -16,6 +16,10 @@ class StAST extends Object {
 		this.children = json.children;
 	}
 
+	forEach(block) {
+		this.traverse(this, block);
+	}
+
 	traverse(node, block) {
 		block(node);
 		if (node.children) {
@@ -47,13 +51,13 @@ class StAST extends Object {
 		return nodes;
 	}
 
-	selectorInRage(range) {
+	selectorInRage(start, stop) {
 		let node;
 		this.traverse(this, (n) => {
 			if (
 				n.type === "Selector" &&
-				range.from <= n.start &&
-				n.end <= range.to &&
+				start <= n.start &&
+				n.end <= stop &&
 				(!node || (n.start <= node.start && node.end <= n.end))
 			) {
 				node = n;

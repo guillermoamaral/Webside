@@ -1,11 +1,12 @@
-class TonelWriterV3 extends Object {
-	constructor() {
-		super();
-	}
+import StParser from "./StParser";
 
+class TonelWriterV3 extends Object {
 	writeMethod(method) {
 		const header = `{ #category : '${method.category}' }`;
-		const bodyIndex = this.methodBodyIndex(method);
+		const bodyIndex = StParser.methodBodyIndex(
+			method.selector,
+			method.source
+		);
 		const methodHeader = `${method.methodClass} >> ${method.source
 			.substring(0, bodyIndex)
 			.trim()} [`;
@@ -16,80 +17,6 @@ class TonelWriterV3 extends Object {
 			.map((line) => "\t" + line.trim())
 			.join("\n");
 		return `${header}\n${methodHeader}\n${body}\n]`;
-	}
-
-	methodBodyIndex(method) {
-		const binarySelectors = [
-			"+",
-			"-",
-			"*",
-			"/",
-			"\\",
-			"~",
-			"<",
-			">",
-			"<=",
-			">=",
-			"=",
-			"~=",
-			"==",
-			"~~",
-			"@",
-			"->",
-			"&",
-			"|",
-			",",
-			"<<",
-			">>",
-		];
-		const { selector, source } = method;
-		let index;
-		if (selector.includes(":")) {
-			const keywords = selector
-				.split(":")
-				.filter(Boolean)
-				.map((k) => k + ":");
-			for (const keyword of keywords) {
-				const found = source.indexOf(keyword, index);
-				if (found === -1) {
-					throw new Error(`Keyword ${keyword} not found in source`);
-				}
-				index = found + keyword.length;
-			}
-			while (index < source.length && /\s/.test(source[index])) index++;
-			while (index < source.length && /\S/.test(source[index])) index++;
-			while (
-				index < source.length &&
-				(source[index] === "\r" || source[index] === "\n")
-			)
-				index++;
-			return index;
-		}
-
-		if (binarySelectors.includes(selector)) {
-			index = source.indexOf(selector);
-			if (index === -1) {
-				throw new Error(
-					`Binary selector ${selector} not found in source`
-				);
-			}
-			index = index + selector.length;
-			while (index < source.length && /\s/.test(source[index])) index++;
-			while (index < source.length && /\S/.test(source[index])) index++;
-			while (
-				index < source.length &&
-				(source[index] === "\r" || source[index] === "\n")
-			)
-				index++;
-			return index;
-		}
-
-		// Unary
-		index = source.indexOf(selector);
-		if (index === -1) {
-			throw new Error(`Unary selector ${selector} not found in source`);
-		}
-		return index + selector.length;
 	}
 
 	writeClassDefinition(species) {

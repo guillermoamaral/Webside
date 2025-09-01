@@ -37,6 +37,7 @@ import SystemBrowser from "./tools/SystemBrowser";
 import { v4 as uuidv4 } from "uuid";
 import MethodHistoryBrowser from "./tools/MethodHistoryBrowser";
 import BackendTester from "./tools/BackendTester";
+import CompilationResult from "../model/CompilationResult";
 
 class ToolContainer extends Component {
 	constructor(props) {
@@ -99,15 +100,13 @@ class ToolContainer extends Component {
 	};
 
 	aboutToDeselectPage(page) {
-		if (page && page.ref && page.ref.current) {
+		if (page && page.ref && page.ref.current)
 			page.ref.current.aboutToDeselect();
-		}
 	}
 
 	aboutToSelectPage(page) {
-		if (page && page.ref && page.ref.current) {
+		if (page && page.ref && page.ref.current)
 			page.ref.current.aboutToSelect();
-		}
 	}
 
 	selectPageAtOffset(offset) {
@@ -578,15 +577,15 @@ class ToolContainer extends Component {
 		if (page) {
 			this.selectPage(page);
 		} else {
-			const settings = ide.settings;
+			const settings = ide.settings.copy();
 			const page = (
 				<SettingsEditor
 					settings={settings}
 					onApply={(settings) => {
 						ide.applySettings(settings);
 					}}
-					onResetSection={(name) => {
-						ide.resetSettingsSection(name);
+					onResetSection={(path) => {
+						ide.resetSettingsSection(path);
 					}}
 				/>
 			);
@@ -729,26 +728,38 @@ class ToolContainer extends Component {
 	browseChangesFromFile = async () => {
 		var input = document.createElement("input");
 		input.type = "file";
-		input.onchange = (e) => {
+		input.onchange = async (e) => {
 			var file = e.target.files[0];
 			if (file) {
-				var reader = new FileReader();
-				reader.onload = async () => {
-					try {
-						const changes = await ide.backend.uploadChangeset(
-							reader.result
-						);
-						const changeset = new Changeset(ide.backend);
-						changeset.fromJson(changes);
-						this.browseChanges(changeset, file.name);
-					} catch (error) {
-						this.reportError(error);
-					}
-				};
-				reader.readAsArrayBuffer(file);
+				const changeset = await ide.waitFor(
+					() => this.loadChangesetFromFile(file),
+					"Loading changeset..."
+				);
+				if (changeset) this.browseChanges(changeset, file.name);
 			}
 		};
 		input.click();
+	};
+
+	loadChangesetFromFile = async (file) => {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = async () => {
+				try {
+					const changes = await ide.backend.uploadChangeset(
+						reader.result
+					);
+					const changeset = new Changeset(ide.backend);
+					changeset.fromJson(changes);
+					resolve(changeset);
+				} catch (error) {
+					this.reportError(error);
+					reject(error);
+				}
+			};
+			reader.onerror = (e) => reject(e);
+			reader.readAsArrayBuffer(file);
+		});
 	};
 
 	browseMethodHistory(method) {
@@ -781,6 +792,70 @@ class ToolContainer extends Component {
 				"Stack trace:\r" + error.stack + "\r\rDo you want to debug it?",
 			ok: { text: "Debug", variant: "outlined" },
 		});
+	}
+
+	compileMethod = async (classname, packagename, category, source) => {
+		let method;
+		try {
+			const change = await ide.backend.compileMethod(
+				classname,
+				packagename,
+				category,
+				source
+			);
+			method = await ide.backend.method(classname, change.selector);
+		} catch (error) {
+			return this.handleCompilationError(error, classname);
+		}
+		return new CompilationResult(method);
+	};
+
+	async handleCompilationError(error, classname) {
+		const data = error.data;
+		if (data && data.suggestions && data.suggestions.length > 0) {
+			const suggestions = data.suggestions;
+			let suggestion;
+			if (suggestions.length === 1) {
+				let confirm = await ide.confirm({
+					title: data.description,
+					message: suggestions[0].description,
+				});
+				if (confirm) suggestion = suggestions[0];
+			} else {
+				let description = await ide.choose({
+					title: data.description,
+					message: "What do you want to do?",
+					items: suggestions.map((s) => s.description),
+					defaultValue: suggestions[0].description,
+				});
+				if (description) {
+					suggestion = suggestions.find(
+						(s) => s.description === description
+					);
+				}
+			}
+			if (suggestion) {
+				try {
+					let applied, method;
+					for (const change of suggestion.changes) {
+						applied = await ide.backend.postChange(change);
+					}
+					if (applied && applied.type === "AddMethod") {
+						try {
+							method = await ide.backend.method(
+								classname,
+								applied.selector
+							);
+						} catch (ignored) {}
+					}
+					return new CompilationResult(method);
+				} catch (inner) {
+					return this.handleCompilationError(inner, classname);
+				}
+			}
+		} else {
+			return new CompilationResult(null, error);
+		}
 	}
 
 	evaluateExpression = async (
@@ -965,18 +1040,6 @@ class ToolContainer extends Component {
 		ide.transcriptChanged(text);
 	};
 
-	addPackageBrowserClicked = () => {
-		this.openPackageBrowser();
-	};
-
-	addClassBrowserClicked = () => {
-		this.openClassBrowser();
-	};
-
-	addWorkspaceClicked = async () => {
-		this.newWorkspace();
-	};
-
 	addChangesBrowserClicked = async () => {
 		try {
 			this.browseChangesFromFile();
@@ -992,19 +1055,19 @@ class ToolContainer extends Component {
 				label: "Workspace",
 				shortcut: shortcuts.get("newWorkspace"),
 				icon: <WorkspaceIcon />,
-				handler: this.addWorkspaceClicked,
+				handler: this.newWorkspace,
 			},
 			{
 				label: "System Browser",
 				shortcut: shortcuts.get("openSystemBrowser"),
 				icon: <PackageBrowserIcon />,
-				handler: this.addPackageBrowserClicked,
+				handler: this.openPackageBrowser,
 			},
 			{
 				label: "Class Browser",
 				shortcut: shortcuts.get("openClassBrowser"),
 				icon: <ClassBrowserIcon />,
-				handler: this.addClassBrowserClicked,
+				handler: this.openClassBrowser,
 			},
 			{
 				label: "Changes Browser",
