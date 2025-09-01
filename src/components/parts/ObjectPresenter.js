@@ -51,7 +51,10 @@ class ObjectPresenter extends Component {
 				id: "raw",
 				label: "Raw",
 				component: (
-					<Paper variant="outlined" style={{ height: "100%" }}>
+					<Paper
+						variant="outlined"
+						style={{ with: "100%", height: "100%" }}
+					>
 						<CodeEditorBackend
 							context={context}
 							source={!object ? "" : object.printString}
@@ -181,8 +184,8 @@ class ObjectPresenter extends Component {
 				sx={{
 					width: "100%",
 					height: "100%",
-					display: "flex",
-					flexDirection: "column",
+					//display: "flex",
+					//flexDirection: "column",
 				}}
 			>
 				<TabControl

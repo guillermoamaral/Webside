@@ -157,6 +157,15 @@ class ChangesBrowser extends Tool {
 		this.updateChanges(changeset.changes);
 	};
 
+	acceptSource = (source) => {
+		console.log("si papu", source)
+		const { selectedChange } = this.state;
+		if (selectedChange) {
+			selectedChange.setSourceCode(source);
+			this.setState({ selectedChange: selectedChange });
+		}
+	};
+
 	render() {
 		const { changes, selectedChange, highlightChanges } = this.state;
 		const background = ide.colorSetting("changesBrowserColor");
@@ -256,7 +265,7 @@ class ChangesBrowser extends Tool {
 											alignContent="center"
 											justifyContent="flex-start"
 										>
-											<Tab label="New source" />
+											<Tab label="Current version" />
 										</Box>
 									</Grid>
 									<Grid item xs={3} md={3} lg={3}>
@@ -265,7 +274,7 @@ class ChangesBrowser extends Tool {
 											alignContent="center"
 											justifyContent="flex-start"
 										>
-											<Tab label="Current source" />
+											<Tab label="New version" />
 										</Box>
 									</Grid>
 									<Grid item xs={3} md={3} lg={3}>
@@ -307,18 +316,19 @@ class ChangesBrowser extends Tool {
 										context={this.evaluationContext()}
 										leftSource={
 											selectedChange
-												? selectedChange.sourceCode()
+												? selectedChange.currentSourceCode()
 												: ""
 										}
 										rightSource={
 											selectedChange
-												? selectedChange.currentSourceCode()
+												? selectedChange.sourceCode()
 												: ""
 										}
 										inMethod={
 											selectedChange &&
 											selectedChange.isMethodChange()
 										}
+										onAccept={this.acceptSource}
 									/>
 								</Paper>
 							</Box>

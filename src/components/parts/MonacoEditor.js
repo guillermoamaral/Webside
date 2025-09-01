@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
 import { Box, IconButton, LinearProgress, Tooltip } from "@mui/material";
 import AcceptIcon from "@mui/icons-material/CheckCircle";
 import PlayIcon from "@mui/icons-material/PlayArrow";
@@ -55,11 +54,21 @@ class MonacoEditor extends CodeEditor {
 	}
 
 	componentDidMount() {
-		ide.onColorModeChange(this.colorModeChanged);
+		super.componentDidMount();
 		this.defineTheme();
 		this.initializeEditor();
 		this.injectStyles();
 		this.updateOverlays(this.editor);
+	}
+
+	componentWillUnmount() {
+		super.componentWillUnmount();
+		this.hideTooltip(this.editor);
+		this.clearHoverDecoration(this.editor);
+		this.unregisterEditor(this.editor);
+		this.disableWordHighlighter(this.editor);
+		this.editor?.dispose();
+		this.editor = null;
 	}
 
 	componentDidUpdate(prevProps) {
@@ -96,19 +105,9 @@ class MonacoEditor extends CodeEditor {
 			this.selectsRanges = true;
 			this.updateSelections();
 		}
-		this.refreshLayout(this.editor);
+		this.editor.layout();
 		this.updateOverlays(this.editor);
 		this.disableWordHighlighter(this.editor);
-	}
-
-	componentWillUnmount() {
-		this.clearHoverDecoration(this.editor);
-		this.unregisterEditor(this.editor);
-		this.disableWordHighlighter(this.editor);
-		this.editor?.dispose();
-		this.editor = null;
-		ide.removeColorModeChangeHandler(this.colorModeChanged);
-		this.resizeObserver?.disconnect();
 	}
 
 	static getActiveEditor() {
@@ -164,35 +163,6 @@ class MonacoEditor extends CodeEditor {
 		}
 	};
 
-	// registerTooltip() {
-	// 	if (tooltipRegistered) return;
-	// 	tooltipRegistered = true;
-	// 	monaco.languages.registerHoverProvider("smalltalk", {
-	// 		provideHover: async (model, position) => {
-	// 			const info = model.getWordAtPosition(position);
-	// 			if (!info) return null;
-	// 			const classname = info.word;
-	// 			try {
-	// 				const species = await ide.backend.classNamed(classname);
-	// 				if (!species) return null;
-	// 				let definition = species.definition
-	// 					.replace(/\r\n|\r/g, "\n")
-	// 					.replace(/\t/g, "    ");
-	// 				definition = definition.replace(/`/g, "\\`");
-	// 				return {
-	// 					contents: [
-	// 						{
-	// 							value: "```smalltalk\n\n" + definition + "\n```",
-	// 						},
-	// 					],
-	// 				};
-	// 			} catch (e) {
-	// 				return null;
-	// 			}
-	// 		},
-	// 	});
-	// }
-
 	editorOptions() {
 		const appearance = this.settings().section("appearance");
 		// console.log(
@@ -208,12 +178,14 @@ class MonacoEditor extends CodeEditor {
 			lineNumbers: this.showLineNumbers?.() ? "on" : "off",
 			minimap: { enabled: false },
 			scrollBeyondLastLine: false,
-			//glyphMargin: true,
 			renderValidationDecorations: "on",
 			stickyScroll: {
 				enabled: false,
 			},
 			wordHighlighter: false,
+			wordWrap: "on",
+			fixedOverflowWidgets: true,
+			suggest: { showStatusBar: false },
 		};
 	}
 
@@ -228,16 +200,28 @@ class MonacoEditor extends CodeEditor {
 	};
 
 	setupEditor(editor) {
+		const proto = editor.getModel().constructor.prototype;
+		if (!proto.__patched) {
+			proto.getLineMaxColumn2 = proto.getLineMaxColumn;
+			proto.getLineMaxColumn = function (lineNumber) {
+				if (lineNumber < 1 || lineNumber > this.getLineCount()) {
+					console.log("daleeeeeeeeeeee", lineNumber);
+					console.log(
+						this.getValue(),
+						this.getLineCount(),
+						lineNumber
+					);
+				}
+				return proto.getLineMaxColumn2.call(this, lineNumber);
+			};
+			proto.__patched = true;
+		}
+
 		editor.onDidFocusEditorText(() => {
 			if (this.state?.menuOpen) {
 				//"Ignoring focus during context menu"
 				return;
 			}
-			// console.log(
-			// 	"Setting active editor due to onDidFocusEditorText",
-			// 	editor?.getModel()?.uri.toString()
-			// );
-			// console.trace();
 			MonacoEditor.setActiveEditor(editor);
 		});
 		editor.onDidChangeModel(() => {
@@ -257,39 +241,51 @@ class MonacoEditor extends CodeEditor {
 		editor.onMouseMove((event) => {
 			MonacoEditor.setActiveEditor(editor);
 			this.mouseMoved(event, editor);
-			if (this.currentTooltipWidget && !this.isTooltipHovered) {
-				this.hideTooltip(editor);
-			}
 		});
 		editor.onMouseLeave(() => {
-			this.hideTooltip(editor);
+			this.clearTooltipTimeout();
+			this.tooltipTimeout = setTimeout(() => {
+				if (!this.isTooltipHovered) this.hideTooltip(editor);
+			}, 150);
 		});
 		editor.onMouseDown((event) => {
-			//this.hideTooltip(editor);
 			this.selectsRanges = false;
 			editor.focus();
 			MonacoEditor.setActiveEditor(editor);
 			//this.showDebugInfo();
 			this.mouseClicked(event, editor);
+			if (this.currentTooltipWidget && !this.isTooltipHovered) {
+				this.hideTooltip(editor);
+			}
 		});
 		editor.onContextMenu((event) => {
 			if (!event.target?.position) return;
 			MonacoEditor.setActiveEditor(editor);
 			this.openMenu(event.event.browserEvent);
 		});
+		this.disableStickyScroll(editor);
+	}
 
-		this.resizeObserver = new ResizeObserver(() => {
-			requestAnimationFrame(() => {
-				editor?.layout();
-				editor?.focus();
-			});
-		});
-		this.resizeObserver.observe(this.containerRef.current);
+	disableStickyScroll(editor) {
+		editor?.updateOptions({ stickyScroll: { enabled: false } });
+		if (editor?._contributions?.["stickyScrollController"]) {
+			editor._contributions["stickyScrollController"].dispose();
+			delete editor._contributions["stickyScrollController"];
+		}
 	}
 
 	disableWordHighlighter(editor) {
-		if (editor?._contributions?.["wordHighlighter"]) {
-			editor._contributions["wordHighlighter"].dispose();
+		const wh = editor?._contributions?.["wordHighlighter"];
+		if (wh && typeof wh.dispose === "function") {
+			if (!wh._isDisposed) {
+				try {
+					wh.dispose();
+					wh._isDisposed = true;
+				} catch (e) {
+					if (e?.message?.includes("Canceled")) return;
+					throw e;
+				}
+			}
 			delete editor._contributions["wordHighlighter"];
 		}
 	}
@@ -596,6 +592,7 @@ class MonacoEditor extends CodeEditor {
 		const model = editor.getModel();
 		if (!model || model.isDisposed()) return;
 		if (model.getLineCount() === 0) return;
+		if (model.getValueLength() === 0) return;
 		try {
 			this.updateDecorations(editor);
 			this.updateAnnotations(editor);
@@ -612,22 +609,44 @@ class MonacoEditor extends CodeEditor {
 		this.clearHoverDecoration(editor);
 		const source = model.getValue();
 		const tokens = tokenize(source, this.isInMethod());
-		const limit = model.getLineCount();
-		const decorations = tokens.map((token) => {
-			const start = model.getPositionAt(token.start);
-			const end = model.getPositionAt(token.end);
-			let classname = token.type;
-			if (classname === "var") classname = "variable";
-			return {
-				range: new monaco.Range(
-					start.lineNumber,
-					start.column,
-					end.lineNumber,
-					end.column
-				),
-				options: { inlineClassName: classname },
-			};
-		});
+		const limit = model.getValueLength();
+		const decorations = tokens
+			.map((token) => {
+				const startOffset = token.start;
+				const endOffset = token.end;
+				if (
+					startOffset < 0 ||
+					endOffset <= startOffset ||
+					endOffset > limit
+				) {
+					console.warn("Invalid token range", token, "limit:", limit);
+					return null;
+				}
+				let start, end;
+				try {
+					start = model.getPositionAt(startOffset);
+					end = model.getPositionAt(endOffset);
+				} catch (err) {
+					console.warn(
+						"Failed to get positions for token",
+						token,
+						err
+					);
+					return null;
+				}
+				let classname = token.type;
+				if (classname === "var") classname = "variable";
+				return {
+					range: new monaco.Range(
+						start.lineNumber,
+						start.column,
+						end.lineNumber,
+						end.column
+					),
+					options: { inlineClassName: classname },
+				};
+			})
+			.filter(Boolean);
 		const uri = model.uri.toString();
 		const previous = this.decorations.get(uri) || [];
 		const updated = editor.deltaDecorations(previous, decorations);
@@ -708,7 +727,7 @@ class MonacoEditor extends CodeEditor {
 		if (!editor) return;
 		const model = editor.getModel();
 		if (!model) return;
-		monaco.editor.setModelMarkers(model, "owner", []);
+		this.clearAnnotations(editor);
 		const annotations = this.props.annotations;
 		if (!annotations || !this.state.showAnnotations) return;
 		const markers = annotations.map((a) => {
@@ -741,6 +760,13 @@ class MonacoEditor extends CodeEditor {
 		}
 	};
 
+	clearAnnotations(editor) {
+		if (!editor) return;
+		const model = editor.getModel();
+		if (!model) return;
+		monaco.editor.setModelMarkers(model, "owner", []);
+	}
+
 	// Source access and manipulation
 
 	source() {
@@ -748,15 +774,24 @@ class MonacoEditor extends CodeEditor {
 		if (editor) return editor.getValue();
 	}
 
-	updateEditor(editor, source) {
+	resetEditor(editor) {
+		if (!editor) return;
+		const model = editor.getModel();
+		if (!model || model.isDisposed()) return;
 		this.clearDecorations(editor);
+		this.clearAnnotations(editor);
 		editor.setScrollTop(0);
-		editor.setValue(source);
-		// console.log("reseting sticky scroll")
-		// editor.updateOptions({ stickyScroll: { enabled: false } });
-		// requestAnimationFrame(() => {
-		// 	editor.updateOptions({ stickyScroll: { enabled: true } });
-		// });
+		editor.setScrollLeft(0);
+	}
+
+	updateEditor(editor, source) {
+		// Super defensive approach to clean everything before changing the value
+		this.resetEditor(editor);
+		try {
+			editor.setValue(source);
+		} catch (error) {
+			console.warn("Error setting editor value:", error);
+		}
 		setTimeout(() => editor.layout(), 0);
 		this.updateOverlays(editor);
 	}
@@ -856,7 +891,6 @@ class MonacoEditor extends CodeEditor {
 				forceMoveMarkers: true,
 			},
 		]);
-		//editor.focus();
 	}
 
 	replaceSelectionWith(text) {
@@ -929,10 +963,11 @@ class MonacoEditor extends CodeEditor {
 		if (event.event.ctrlKey)
 			return await this.updateHoverDecoration(editor, position);
 		if (!this.showsTooltip()) return;
-		clearTimeout(this.tooltipTimeout);
-		this.tooltipTimeout = setTimeout(() => {
-			this.showTooltip(editor, position);
-		}, 150);
+		this.clearTooltipTimeout();
+		this.tooltipTimeout = setTimeout(
+			() => this.showTooltip(editor, position),
+			150
+		);
 	};
 
 	mouseClicked = (event, editor) => {
@@ -941,27 +976,6 @@ class MonacoEditor extends CodeEditor {
 		if (this.hoverAction) this.hoverAction();
 		this.clearHoverDecoration(editor);
 	};
-
-	forceHardRelayout(editor) {
-		const domNode = editor?.getDomNode();
-		if (!domNode) return;
-		domNode.style.display = "none";
-		requestAnimationFrame(() => {
-			domNode.style.display = "block";
-			editor?.layout();
-		});
-	}
-
-	refreshLayout(editor) {
-		editor?.layout();
-		//editor?.focus();
-		// if (this.containerRef?.current?.offsetWidth > 0) {
-		// 	setTimeout(() => {
-		// 		editor?.layout();
-		// 		editor?.focus();
-		// 	}, 50);
-		// }
-	}
 
 	// Autocompletion
 
@@ -1038,26 +1052,32 @@ class MonacoEditor extends CodeEditor {
 					monaco.editor.ContentWidgetPositionPreference.BELOW,
 				],
 			}),
+			allowEditorOverflow: true,
 		};
 		editor.addContentWidget(this.currentTooltipWidget);
 		container.addEventListener("mouseenter", () => {
 			this.isTooltipHovered = true;
-			clearTimeout(this.tooltipTimeout);
-			this.tooltipTimeout = null;
+			this.clearTooltipTimeout();
 		});
 		container.addEventListener("mouseleave", () => {
 			this.isTooltipHovered = false;
-			this.tooltipTimeout = setTimeout(() => {
-				this.hideTooltip(editor);
-			}, 500);
+			this.clearTooltipTimeout();
+			this.tooltipTimeout = setTimeout(
+				() => this.hideTooltip(editor),
+				500
+			);
 		});
 	}
 
-	hideTooltip(editor) {
+	clearTooltipTimeout() {
 		if (this.tooltipTimeout) {
 			clearTimeout(this.tooltipTimeout);
 			this.tooltipTimeout = null;
 		}
+	}
+
+	hideTooltip(editor) {
+		this.clearTooltipTimeout();
 		if (this.currentTooltipWidget) {
 			try {
 				editor.removeContentWidget(this.currentTooltipWidget);
@@ -1093,22 +1113,22 @@ class MonacoEditor extends CodeEditor {
 				flexDirection="row"
 				style={{ width: "100%", height: "100%" }}
 			>
-				<Box display="flex" flexDirection="column" flexGrow={1}>
+				<Box
+					display="flex"
+					flexDirection="column"
+					sx={{ flex: "1 1 0%", minWidth: 0 }}
+				>
 					<Box
 						flexGrow={1}
 						ref={this.containerRef}
 						sx={{
 							width: "100%",
 							height: "100%",
-							// 	outline: "none",
-							// 	border: "none",
 							minHeight: "30px",
-							// 	position: "relative",
-							// 	display: "flex",
-							// 	overflow: "hidden",
+							overflow: "hidden",
+							minWidth: 0,
 						}}
 					/>
-					<div id="tooltip-container"></div>
 					{evaluating && (
 						<Box>
 							<LinearProgress variant="indeterminate" />
@@ -1119,55 +1139,73 @@ class MonacoEditor extends CodeEditor {
 					<Box
 						display="flex"
 						flexDirection="column"
-						sx={{ height: "100%" }}
+						sx={{ height: "100%", flexShrink: 0 }}
 					>
 						{showAccept && (
 							<Box display="flex" justifyContent="center">
-								<IconButton
-									color="inherit"
-									onClick={() => this.acceptSource()}
-								>
-									<AcceptIcon
-										size="large"
-										color={dirty ? "primary" : "inherit"}
-										style={{ fontSize: 30 }}
-									/>
-								</IconButton>
+								<Tooltip title="Save" placement="top">
+									<IconButton
+										color="inherit"
+										onClick={() => this.acceptSource()}
+									>
+										<AcceptIcon
+											size="large"
+											color={
+												dirty ? "primary" : "inherit"
+											}
+											style={{ fontSize: 30 }}
+										/>
+									</IconButton>
+								</Tooltip>
 							</Box>
 						)}
 						{showPlay && !evaluating && (
 							<Box display="flex" justifyContent="center">
-								<IconButton
-									color="inherit"
-									onClick={this.playClicked}
-								>
-									<PlayIcon
-										size="large"
-										color={dirty ? "primary" : "inherit"}
-									/>
-								</IconButton>
+								<Tooltip title="Evaluate" placement="top">
+									<IconButton
+										color="inherit"
+										onClick={this.playClicked}
+									>
+										<PlayIcon
+											size="large"
+											color={
+												dirty ? "primary" : "inherit"
+											}
+										/>
+									</IconButton>
+								</Tooltip>
 							</Box>
 						)}
 						{showPlay && evaluating && (
 							<Box display="flex" justifyContent="center">
-								<IconButton
-									color="inherit"
-									onClick={this.pauseClicked}
-									disabled={
-										!(
-											currentEvaluation &&
-											["pending", "evaluating"].includes(
-												currentEvaluation.state
-											)
-										)
-									}
+								<Tooltip
+									title="Pause evaluation"
+									placement="top"
 								>
-									<PauseIcon
-										size="large"
-										color={dirty ? "primary" : "inherit"}
-										style={{ fontSize: 30 }}
-									/>
-								</IconButton>
+									<IconButton
+										color="inherit"
+										onClick={this.pauseClicked}
+										disabled={
+											!(
+												currentEvaluation &&
+												[
+													"pending",
+													"evaluating",
+												].includes(
+													currentEvaluation.state
+												)
+											)
+										}
+									>
+										<PauseIcon
+											size="large"
+											color={
+												dirty ? "primary" : "inherit"
+											}
+											style={{ fontSize: 30 }}
+										/>
+									</IconButton>
+								</Tooltip>
 							</Box>
 						)}
 						{showCodeAssistant && (

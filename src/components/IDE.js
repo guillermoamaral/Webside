@@ -265,7 +265,7 @@ class IDE extends Component {
 		connection.addText("version").readOnly();
 		// Code...
 		const editor = settings.addSection("editor");
-		editor.addOptions("backend", ["Monaco", "CodeMirror"], "CodeMirror");
+		editor.addOptions("backend", ["Monaco", "CodeMirror"], "Monaco");
 		editor.addBoolean("showLineNumbers", false, "Show line numbers");
 		editor.addBoolean("useAutocompletion", false, "Use autocompletion");
 		editor.addBoolean("showTooltips", true, "Show tooltips");

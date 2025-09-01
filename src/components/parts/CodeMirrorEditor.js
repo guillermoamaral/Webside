@@ -76,6 +76,7 @@ class CodeMirrorEditor extends CodeEditor {
 			showAnnotations: true,
 		};
 		this.lastSelection = null;
+		this.selectionTimers = [];
 	}
 
 	static getDerivedStateFromProps(props, state) {
@@ -162,12 +163,25 @@ class CodeMirrorEditor extends CodeEditor {
 	}
 
 	componentDidMount() {
+		super.componentDidMount();
 		this.initializeExtendedOptions();
-		ide.onColorModeChange(this.colorModeChanged);
 	}
 
 	componentWillUnmount() {
+		super.componentWillUnmount?.();
 		ide.removeColorModeChangeHandler(this.colorModeChanged);
+	}
+
+	clearTimers() {
+		super.clearTimers();
+		if (this.autocompletionTimer) {
+			clearTimeout(this.autocompletionTimer);
+			this.autocompletionTimer = null;
+		}
+		if (this.selectionTimers && this.selectionTimers.length) {
+			this.selectionTimers.forEach((h) => clearTimeout(h));
+			this.selectionTimers = [];
+		}
 	}
 
 	// Configuration
@@ -309,8 +323,12 @@ class CodeMirrorEditor extends CodeEditor {
 		// It was the only way to set selection after a rendering: the value changes but editorView
 		// has a delay in updating its state, and so the first attempt to set the selection might fail
 		// (as the new selection might surpass the previous value boundaries)
+		if (this.selectionTimers && this.selectionTimers.length) {
+			this.selectionTimers.forEach((h) => clearTimeout(h));
+			this.selectionTimers = [];
+		}
 		for (let i = 0; i < 2; i++) {
-			setTimeout(() => {
+			const handle = setTimeout(() => {
 				try {
 					this.editor?.dispatch({
 						selection: {
@@ -321,6 +339,7 @@ class CodeMirrorEditor extends CodeEditor {
 					});
 				} catch (ignored) {}
 			}, 200 * i);
+			this.selectionTimers.push(handle);
 		}
 	}
 
@@ -599,7 +618,6 @@ class CodeMirrorEditor extends CodeEditor {
 							}}
 						/>
 					</Scrollable>
-					<div id="tooltip-container"></div>
 					{evaluating && <LinearProgress variant="indeterminate" />}
 				</Box>
 				{showButtons && (

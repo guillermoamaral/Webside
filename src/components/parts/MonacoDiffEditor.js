@@ -46,14 +46,11 @@ class MonacoDiffEditor extends MonacoEditor {
 					rightSource: rightSource,
 				},
 				() => {
-					this.updateEditor(this.leftEditor, rightSource);
-					this.updateEditor(this.rightEditor, leftSource);
+					this.updateDiffEditor(leftSource, rightSource);
 				}
 			);
 		}
-		//this.refreshLayout(this.editor);
-		this.refreshLayout(this.leftEditor);
-		this.refreshLayout(this.rightEditor);
+		this.editor.layout();
 		this.editor.focus();
 	}
 
@@ -72,10 +69,11 @@ class MonacoDiffEditor extends MonacoEditor {
 			...this.editorOptions(),
 			enableSplitViewResizing: true,
 			renderSideBySide: true,
+			automaticLayout: true,
 		});
 		const { leftSource, rightSource } = this.props;
-		const original = monaco.editor.createModel(rightSource, "smalltalk");
-		const modified = monaco.editor.createModel(leftSource, "smalltalk");
+		const original = monaco.editor.createModel(leftSource, "smalltalk");
+		const modified = monaco.editor.createModel(rightSource, "smalltalk");
 		this.editor.setModel({
 			original: original,
 			modified: modified,
@@ -87,14 +85,6 @@ class MonacoDiffEditor extends MonacoEditor {
 		this.rightEditor = editor.getModifiedEditor();
 		super.setupEditor(this.leftEditor);
 		super.setupEditor(this.rightEditor);
-		this.resizeObserver = new ResizeObserver(() => {
-			requestAnimationFrame(() => {
-				//this.refreshLayout(this.editor);
-				this.refreshLayout(this.leftEditor);
-				this.refreshLayout(this.rightEditor);
-			});
-		});
-		this.resizeObserver.observe(this.containerRef.current);
 	}
 
 	registerEditor(ignored) {
@@ -112,19 +102,35 @@ class MonacoDiffEditor extends MonacoEditor {
 		super.unregisterEditor(this.rightEditor);
 	}
 
-	injectStyles() {
-		super.injectStyles();
-		const styleElement = document.createElement("style");
-		styleElement.innerHTML = `
-        .monaco-diff-editor .editor.original {
-            left: 50% !important;
-            right: 0 !important;
-        }
-        .monaco-diff-editor .editor.modified {
-            left: 0 !important;
-            right: 50% !important;
-        }`;
-		document.head.appendChild(styleElement);
+	// Source access and manipulation
+
+	updateDiffEditor(leftSource, rightSource) {
+		this.resetEditor(this.leftEditor);
+		this.resetEditor(this.rightEditor);
+		const pair = this.editor.getModel();
+		const originalModel = pair?.original;
+		const modifiedModel = pair?.modified;
+		requestAnimationFrame(() => {
+			try {
+				if (originalModel && !originalModel.isDisposed()) {
+					this.updatingFromProps = true;
+					originalModel.setValue(leftSource);
+				}
+				if (modifiedModel && !modifiedModel.isDisposed()) {
+					this.updatingFromProps = true;
+					modifiedModel.setValue(rightSource);
+				}
+			} catch {}
+			requestAnimationFrame(() => {
+				try {
+					this.editor.layout();
+				} catch {}
+				requestAnimationFrame(() => {
+					this.updateOverlays(this.leftEditor);
+					this.updateOverlays(this.rightEditor);
+				});
+			});
+		});
 	}
 
 	// Events handlers
@@ -136,41 +142,6 @@ class MonacoDiffEditor extends MonacoEditor {
 		this.updateOverlays(this.leftEditor);
 		this.updateOverlays(this.rightEditor);
 	};
-
-	async acceptSource() {
-		if (!this.props.class) return;
-		const source = this.normalizedSource();
-		const pack = this.props.package;
-		const species = this.props.class;
-		const packagename = pack ? pack.name : species.package;
-		const category = this.props.category;
-		const result = await this.context.compileMethod(
-			species.name,
-			packagename,
-			category,
-			source
-		);
-		if (!result) return;
-		if (result.hasError()) {
-			const data = result.error.data;
-			if (data && data.interval) {
-				this.annotations = [
-					{
-						from: data.interval.start,
-						to: data.interval.end,
-						type: "error",
-						description: data.description,
-					},
-				];
-			} else {
-				const description = data ? data.description : null;
-				ide.reportError(description || "Unknown compilation error");
-			}
-		} else {
-			if (this.props.onMethodCompile)
-				this.props.onMethodCompile(result.method);
-		}
-	}
 
 	// Autocompletion and tooltips
 
@@ -196,7 +167,6 @@ class MonacoDiffEditor extends MonacoEditor {
 						border: "none",
 					}}
 				/>
-				<div id="tooltip-container"></div>
 				{evaluating && <LinearProgress variant="indeterminate" />}
 				{menuOptions && menuOptions.length > 0 && (
 					<PopupMenu

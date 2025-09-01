@@ -34,6 +34,26 @@ class CodeEditor extends Component {
 		};
 	}
 
+	componentDidMount() {
+		ide.onColorModeChange(this.colorModeChanged);
+	}
+
+	componentWillUnmount() {
+		ide.removeColorModeChangeHandler(this.colorModeChanged);
+		this.clearTimers();
+	}
+
+	clearTimers() {
+		if (this.typingTimer) {
+			clearTimeout(this.typingTimer);
+			this.typingTimer = null;
+		}
+		if (this.autocompletionTimer) {
+			clearTimeout(this.autocompletionTimer);
+			this.autocompletionTimer = null;
+		}
+	}
+
 	// Configuration
 
 	settings() {
@@ -49,6 +69,48 @@ class CodeEditor extends Component {
 	async initializeExtendedOptions() {
 		let extensions = await ide.fetchExtendedOptions("code");
 		this.setState({ extendedOptions: extensions });
+	}
+
+	// Abstract methods that must be implemented by subclasses
+
+	currentPosition() {
+		throw new Error("currentPosition() must be implemented by subclass");
+	}
+
+	selectedText() {
+		throw new Error("selectedText() must be implemented by subclass");
+	}
+
+	currentLine() {
+		throw new Error("currentLine() must be implemented by subclass");
+	}
+
+	currentLineRange() {
+		throw new Error("currentLineRange() must be implemented by subclass");
+	}
+
+	currentSelectionRange() {
+		throw new Error(
+			"currentSelectionRange() must be implemented by subclass"
+		);
+	}
+
+	insertText(text, position) {
+		throw new Error("insertText() must be implemented by subclass");
+	}
+
+	replaceSelectionWith(text) {
+		throw new Error(
+			"replaceSelectionWith() must be implemented by subclass"
+		);
+	}
+
+	selectRanges(ranges) {
+		throw new Error("selectRanges() must be implemented by subclass");
+	}
+
+	wordAtPosition() {
+		throw new Error("wordAtPosition() must be implemented by subclass");
 	}
 
 	// Menues and shortcuts
@@ -161,7 +223,7 @@ class CodeEditor extends Component {
 				null,
 				{
 					label: "Toggle full view",
-					shourtcut: shortcuts.get("toggleEditorFullView"),
+					shortcut: shortcuts.get("toggleEditorFullView"),
 					action: this.toggleFullView,
 				},
 			]
@@ -292,6 +354,8 @@ class CodeEditor extends Component {
 
 	// Event handlers
 
+	colorModeChanged() {}
+
 	async showDebugInfo() {
 		console.log("Current source:", this.normalizedSource());
 		console.log("Current position:", this.currentPosition());
@@ -329,7 +393,7 @@ class CodeEditor extends Component {
 
 	acceptSource() {
 		if (this.props.onAccept) this.props.onAccept(this.normalizedSource());
-		this.setState({ showAnnotations: true });
+		this.setState({ showAnnotations: true, dirty: false });
 	}
 
 	openMenu = (event) => {
@@ -627,7 +691,6 @@ class CodeEditor extends Component {
 
 	astNodeAtOffset(offset) {
 		const ast = this.ast();
-		console.log("ast", ast)
 		if (!ast) return;
 		return ast.nodeAt(offset);
 	}
@@ -666,7 +729,6 @@ class CodeEditor extends Component {
 
 	tooltipSpec = async (position) => {
 		const word = this.wordAtPosition(position);
-		console.log(word)
 		if (!word) return;
 		var handler = this.props.onTooltipShow;
 		var tip;
@@ -689,7 +751,6 @@ class CodeEditor extends Component {
 
 	defaultTooltipSpecFor = async (word, position) => {
 		const node = this.astNodeAtOffset(position);
-		console.log("node", node)
 		if (node && node.type === "Selector" && node.value.includes(word)) {
 			return {
 				title: node.value,
@@ -734,13 +795,12 @@ class CodeEditor extends Component {
 	ensureTooltipContainer() {
 		let container = document.getElementById("tooltip-container");
 		if (!container) {
-			console.warn("Tooltip container not found! Creating one...");
 			container = document.createElement("div");
 			container.id = "tooltip-container";
 			container.style.position = "fixed";
-			container.style.zIndex = "9999";
+			container.style.zIndex = "2147483647";
 			container.style.pointerEvents = "auto";
-			document.body.appendChild(container); // Ensure it exists
+			document.body.appendChild(container);
 		}
 		return container;
 	}

@@ -112,7 +112,7 @@ class SettingsEditor extends Tool {
 				sx={{ width: "100%", height: "100%" }}
 			>
 				<CustomSplit>
-					<Box sx={{ width: "20%" }}>
+					<Box sx={{ width: "15%" }}>
 						<CustomPaper>
 							<CustomTree
 								nodes={settings.sections()}
@@ -132,7 +132,7 @@ class SettingsEditor extends Tool {
 							flexDirection="column"
 							ml={2}
 							flexGrow={1}
-							sx={{ width: "80%" }}
+							sx={{ width: "85%" }}
 						>
 							<Typography variant="h6">
 								{selectedSection.label}

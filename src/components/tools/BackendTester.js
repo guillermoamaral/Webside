@@ -1,4 +1,3 @@
-import React from "react";
 import Tool from "./Tool";
 import {
 	Box,

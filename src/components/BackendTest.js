@@ -64,17 +64,23 @@ class BackendTestSuite {
 	}
 
 	async run() {
-		this.tests.forEach((r) => r.reset());
+		if (this.state === "running") return; // avoid re-entrancy
 		this.state = "running";
+		// reset all tests before starting
+		this.tests.forEach((r) => r.reset());
 		this.ran = 0;
 		this.count = this.tests.length;
-		this.tests.forEach(async (test) => {
-			if (this.state !== "stopped") {
-				await this.runTest(test);
-				this.ran++;
+		try {
+			// run tests strictly in sequence
+			for (const test of this.tests) {
+				if (this.state === "stopped") break; // allow external stop
+				await this.runTest(test); // wait for each test to finish
+				this.ran++; // update after completion
 			}
-		});
-		this.state = "stopped";
+		} finally {
+			// ensure state is consistent even if a test throws
+			this.state = "stopped";
+		}
 	}
 
 	stop() {

@@ -1040,18 +1040,6 @@ class ToolContainer extends Component {
 		ide.transcriptChanged(text);
 	};
 
-	addPackageBrowserClicked = () => {
-		this.openPackageBrowser();
-	};
-
-	addClassBrowserClicked = () => {
-		this.openClassBrowser();
-	};
-
-	addWorkspaceClicked = async () => {
-		this.newWorkspace();
-	};
-
 	addChangesBrowserClicked = async () => {
 		try {
 			this.browseChangesFromFile();
@@ -1067,19 +1055,19 @@ class ToolContainer extends Component {
 				label: "Workspace",
 				shortcut: shortcuts.get("newWorkspace"),
 				icon: <WorkspaceIcon />,
-				handler: this.addWorkspaceClicked,
+				handler: this.newWorkspace,
 			},
 			{
 				label: "System Browser",
 				shortcut: shortcuts.get("openSystemBrowser"),
 				icon: <PackageBrowserIcon />,
-				handler: this.addPackageBrowserClicked,
+				handler: this.openPackageBrowser,
 			},
 			{
 				label: "Class Browser",
 				shortcut: shortcuts.get("openClassBrowser"),
 				icon: <ClassBrowserIcon />,
-				handler: this.addClassBrowserClicked,
+				handler: this.openClassBrowser,
 			},
 			{
 				label: "Changes Browser",
