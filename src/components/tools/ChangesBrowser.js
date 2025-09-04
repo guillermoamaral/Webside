@@ -7,6 +7,7 @@ import {
 	Tooltip,
 	Tab,
 	ToggleButton,
+	Typography,
 } from "@mui/material";
 import { ide } from "../IDE";
 import ChangesTable from "../parts/ChangesTable";
@@ -19,6 +20,7 @@ import ShowOriginalIcon from "@mui/icons-material/Refresh";
 import HighlightIcon from "@mui/icons-material/Highlight";
 import CustomSplit from "../controls/CustomSplit";
 import CodeDiffEditorBackend from "../parts/CodeDiffEditorBackend";
+import CodeInfo from "../parts/CodeInfo";
 
 class ChangesBrowser extends Tool {
 	constructor(props) {
@@ -158,7 +160,6 @@ class ChangesBrowser extends Tool {
 	};
 
 	acceptSource = (source) => {
-		console.log("si papu", source)
 		const { selectedChange } = this.state;
 		if (selectedChange) {
 			selectedChange.setSourceCode(source);
@@ -181,7 +182,7 @@ class ChangesBrowser extends Tool {
 			>
 				<Box>
 					<Box display="flex" justifyContent="flex-end">
-						<Tooltip title="Apply change" placement="top">
+						<Tooltip title="Apply selected change" placement="top">
 							<span>
 								<IconButton
 									color="inherit"
@@ -264,25 +265,38 @@ class ChangesBrowser extends Tool {
 											display="flex"
 											alignContent="center"
 											justifyContent="flex-start"
+											alignItems="center"
 										>
-											<Tab label="Current version" />
+											<CodeInfo
+												timestampLabel="Current version: "
+												timestamp={selectedChange?.currentTimestamp()}
+												authorLabel=" - "
+												author={selectedChange?.currentAuthor()}
+												packagename={selectedChange?.currentPackage()}
+											/>
 										</Box>
 									</Grid>
-									<Grid item xs={3} md={3} lg={3}>
+									<Grid item xs={6} md={6} lg={6}>
 										<Box
 											display="flex"
 											alignContent="center"
 											justifyContent="flex-start"
 										>
-											<Tab label="New version" />
-										</Box>
-									</Grid>
-									<Grid item xs={3} md={3} lg={3}>
-										<Box
-											display="flex"
-											alignContent="center"
-											justifyContent="flex-end"
-										>
+											<Box display="flex" flexGrow={1}>
+												<CodeInfo
+													timestampLabel="New version: "
+													timestamp={
+														selectedChange?.timestamp
+													}
+													authorLabel=" - "
+													author={
+														selectedChange?.author
+													}
+													packagename={
+														selectedChange?.package
+													}
+												/>
+											</Box>
 											<Tooltip
 												title="Highlight changes"
 												placement="top"
