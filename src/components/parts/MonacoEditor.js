@@ -185,7 +185,7 @@ class MonacoEditor extends CodeEditor {
 			wordHighlighter: false,
 			wordWrap: "on",
 			fixedOverflowWidgets: true,
-			suggest: { showStatusBar: false },
+			suggest: { showStatusBar: false }
 		};
 	}
 
@@ -200,22 +200,22 @@ class MonacoEditor extends CodeEditor {
 	};
 
 	setupEditor(editor) {
-		const proto = editor.getModel().constructor.prototype;
-		if (!proto.__patched) {
-			proto.getLineMaxColumn2 = proto.getLineMaxColumn;
-			proto.getLineMaxColumn = function (lineNumber) {
-				if (lineNumber < 1 || lineNumber > this.getLineCount()) {
-					console.log("daleeeeeeeeeeee", lineNumber);
-					console.log(
-						this.getValue(),
-						this.getLineCount(),
-						lineNumber
-					);
-				}
-				return proto.getLineMaxColumn2.call(this, lineNumber);
-			};
-			proto.__patched = true;
-		}
+		// const proto = editor.getModel().constructor.prototype;
+		// if (!proto.__patched) {
+		// 	proto.getLineMaxColumn2 = proto.getLineMaxColumn;
+		// 	proto.getLineMaxColumn = function (lineNumber) {
+		// 		if (lineNumber < 1 || lineNumber > this.getLineCount()) {
+		// 			console.log("daleeeeeeeeeeee", lineNumber);
+		// 			console.log(
+		// 				this.getValue(),
+		// 				this.getLineCount(),
+		// 				lineNumber
+		// 			);
+		// 		}
+		// 		return proto.getLineMaxColumn2.call(this, lineNumber);
+		// 	};
+		// 	proto.__patched = true;
+		// }
 
 		editor.onDidFocusEditorText(() => {
 			if (this.state?.menuOpen) {
@@ -538,13 +538,13 @@ class MonacoEditor extends CodeEditor {
 		const editor = MonacoEditor.getActiveEditor();
 		const instance = MonacoEditor.getInstanceForEditor(editor);
 		if (!instance) return;
-		// console.log(
-		// 	"Dispatching command from",
-		// 	editor?.getModel()?.uri.toString(),
-		// 	instance,
-		// 	action,
-		// 	editor?.getValue()
-		// );
+		console.log(
+			"Dispatching command from",
+			editor?.getModel()?.uri.toString(),
+			instance,
+			action,
+			editor?.getValue()
+		);
 		action.bind(instance)();
 	}
 

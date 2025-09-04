@@ -121,6 +121,12 @@ class StChange extends Object {
 	type() {
 		return "Change";
 	}
+
+	currentTimestamp() {}
+
+	currentAuthor() {}
+
+	currentPackage() {}
 }
 
 class MethodChange extends StChange {

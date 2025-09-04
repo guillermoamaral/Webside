@@ -40,18 +40,8 @@ class MonacoDiffEditor extends MonacoEditor {
 			prevProps.leftSource !== leftSource ||
 			prevProps.rightSource !== rightSource
 		) {
-			this.setState(
-				{
-					leftSource: leftSource,
-					rightSource: rightSource,
-				},
-				() => {
-					this.updateDiffEditor(leftSource, rightSource);
-				}
-			);
+			this.updateEditor(leftSource, rightSource);
 		}
-		this.editor.layout();
-		this.editor.focus();
 	}
 
 	componentWillUnmount() {
@@ -104,32 +94,39 @@ class MonacoDiffEditor extends MonacoEditor {
 
 	// Source access and manipulation
 
-	updateDiffEditor(leftSource, rightSource) {
-		this.resetEditor(this.leftEditor);
-		this.resetEditor(this.rightEditor);
+	updateEditor(leftSource, rightSource) {
+		if (!this.editor) return;
+
+		const original = monaco.editor.createModel(leftSource, "smalltalk");
+		const modified = monaco.editor.createModel(rightSource, "smalltalk");
+
 		const pair = this.editor.getModel();
-		const originalModel = pair?.original;
-		const modifiedModel = pair?.modified;
+		const oldOriginal = pair?.original;
+		const oldModified = pair?.modified;
+
+		if (this.leftEditor) this.leftEditor.setModel(null);
+		if (this.rightEditor) this.rightEditor.setModel(null);
+
+		this.editor.setModel({
+			original,
+			modified,
+		});
+
+		this.leftEditor = this.editor.getOriginalEditor();
+		this.rightEditor = this.editor.getModifiedEditor();
+
+		if (oldOriginal) oldOriginal.dispose();
+		if (oldModified) oldModified.dispose();
+
 		requestAnimationFrame(() => {
-			try {
-				if (originalModel && !originalModel.isDisposed()) {
-					this.updatingFromProps = true;
-					originalModel.setValue(leftSource);
-				}
-				if (modifiedModel && !modifiedModel.isDisposed()) {
-					this.updatingFromProps = true;
-					modifiedModel.setValue(rightSource);
-				}
-			} catch {}
-			requestAnimationFrame(() => {
-				try {
-					this.editor.layout();
-				} catch {}
-				requestAnimationFrame(() => {
-					this.updateOverlays(this.leftEditor);
-					this.updateOverlays(this.rightEditor);
-				});
-			});
+			if (!this.editor) return;
+
+			this.editor.layout();
+			this.leftEditor = this.editor.getOriginalEditor();
+			this.rightEditor = this.editor.getModifiedEditor();
+
+			this.updateOverlays(this.leftEditor);
+			this.updateOverlays(this.rightEditor);
 		});
 	}
 
