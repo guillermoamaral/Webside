@@ -2,7 +2,6 @@ import { Component } from "react";
 import {
 	Box,
 	Paper,
-	Link,
 	ToggleButton,
 	ToggleButtonGroup,
 	FormGroup,
@@ -14,6 +13,7 @@ import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 import CodeEditorBackend from "./CodeEditorBackend";
 import MarkdownView from "./MarkdownView";
+import CodeInfo from "./CodeInfo";
 
 class CodeBrowser extends Component {
 	static contextType = ToolContainerContext;
@@ -383,31 +383,11 @@ class CodeBrowser extends Component {
 						)}
 					</Paper>
 				</Box>
-				<Box>
-					{timestamp ? "Modified on " : ""}
-					{timestamp}
-					{author ? " by " : ""}
-					{author && (
-						<Link
-							href="#"
-							onClick={() => this.context.openChat(author)}
-						>
-							{author}
-						</Link>
-					)}
-					{timestamp || author ? " - " : ""}
-					{packagename && (
-						<Link
-							href="#"
-							onClick={(event) => {
-								event.preventDefault();
-								this.context.browsePackage(packagename);
-							}}
-						>
-							{packagename}
-						</Link>
-					)}
-				</Box>
+				<CodeInfo
+					timestamp={timestamp}
+					author={author}
+					packagename={packagename}
+				/>
 			</Box>
 		);
 	}
