@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import { ide } from "../IDE";
 import MarkdownPreview from "@uiw/react-markdown-preview";
 
