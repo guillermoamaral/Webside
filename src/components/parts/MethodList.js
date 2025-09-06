@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import CustomPaper from "../controls/CustomPaper";
 import StAST from "../../model/StAST";
+import { ModifiedCategory } from "./CategoryList";
 
 class MethodList extends Component {
 	static contextType = ToolContainerContext;
@@ -154,9 +155,12 @@ class MethodList extends Component {
 						fetched = await ide.backend.accessors(
 							c.name,
 							variable.name,
-							access
+							access,
+							null,
+							null,
+							category === ModifiedCategory ? true : undefined
 						);
-					} else if (category) {
+					} else if (category && category !== ModifiedCategory) {
 						fetched = await ide.backend.methodsInCategory(
 							c.name,
 							category
@@ -165,7 +169,8 @@ class MethodList extends Component {
 						fetched = await ide.backend.methods(
 							c.name,
 							false,
-							basic
+							basic,
+							category === ModifiedCategory ? true : undefined
 						);
 					}
 				} catch (error) {
@@ -184,7 +189,8 @@ class MethodList extends Component {
 				}
 			});
 		});
-		if (category) methods = methods.filter((m) => m.category === category);
+		if (category && category !== ModifiedCategory)
+			methods = methods.filter((m) => m.category === category);
 		return methods.sort((a, b) => (a.selector <= b.selector ? -1 : 1));
 	}
 
@@ -759,7 +765,7 @@ class MethodList extends Component {
 				minWidth: 300,
 			},
 			{
-				field: "selector",
+				field: this.methodLabel,
 				label: "Selector",
 				// link: (m) => {
 				// 	this.browseImplementors(m);
@@ -832,9 +838,11 @@ class MethodList extends Component {
 
 	methodLabel = (method) => {
 		const selector = method.template ? "<new>" : method.selector;
-		return this.props.showClass === true
-			? method.methodClass + " >> #" + selector
-			: selector;
+		const label =
+			this.props.showClass === true
+				? method.methodClass + " >> #" + selector
+				: selector;
+		return method.modified === true ? `(${label})` : label;
 	};
 
 	methodColor = (method) => {

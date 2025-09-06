@@ -24,18 +24,24 @@ Retrieve all packages in the system.
 	"methods": {
 		"classname": ["selector"]
 	},
-	"categories": ["category"]
+	"categories": ["category"],
+    "modified": "boolean"
 }
 ```
 
-Where `category` is defined as:
+Where: 
 
-```json
-{
-	"name": "string",
-	"package": "string"
-}
-```
+- `category` is defined as:
+
+    ```json
+    {
+        "name": "string",
+        "package": "string"
+    }
+    ```
+- `modified` is an optional property indicating whether the package was modified in the current session.
+
+
 
 **Example:**: The following is the partial result of `GET /packages` on Pharo.
 

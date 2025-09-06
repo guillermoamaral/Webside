@@ -175,13 +175,17 @@ class PackageList extends Component {
 		handler ? handler() : this.updatePackages(this.state.selectedPackage);
 	}
 
+	packageLabel = (pack) => {
+		return pack.modified === true ? `(${pack.name})` : pack.name;
+	};
+
 	render() {
 		let { packages, selectedPackage } = this.state;
 		return (
 			<CustomPaper>
 				<CustomList
 					items={packages}
-					itemLabel="name"
+					itemLabel={this.packageLabel}
 					selectedItem={selectedPackage}
 					onItemSelect={this.packageSelected}
 					menuOptions={this.menuOptions()}
