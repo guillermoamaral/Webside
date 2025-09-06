@@ -16,8 +16,7 @@ import {
 } from "@mui/material";
 import CollapseSearchIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import CodeAssistantChat from "./tools/CodeAssistantChat";
-import MinimizeIcon from "@mui/icons-material/Minimize";
-import MaximizeIcon from "@mui/icons-material/Maximize";
+import CloseIcon from "@mui/icons-material/Close";
 import ToolContainer from "./ToolContainer";
 import { withNavigation } from "./withNavigation";
 import { withDialog } from "./dialogs/index";
@@ -33,7 +32,6 @@ import { app as mainApp } from "../App";
 import { v4 as uuidv4 } from "uuid";
 import CustomSplit from "./controls/CustomSplit";
 import QuickSearch from "./tools/QuickSearch";
-import AssistantIcon from "@mui/icons-material/Assistant";
 import { AIInterface } from "../model/ai/AIInterface";
 import AICodeAssistant from "../model/ai/AICodeAssistant";
 import PopupMenu from "./controls/PopupMenu";
@@ -67,8 +65,7 @@ class IDE extends Component {
 			quickSearchOpen: false,
 			quickSearchOptions: {},
 			activeContainer: null,
-			assistantChatOpened: false,
-			assistantChatMaximized: true,
+			showAssistant: false,
 			searchOpened: false,
 			searchOptions: {},
 			menuOpen: false,
@@ -1436,46 +1433,36 @@ class IDE extends Component {
 		}
 	};
 
-	closeAssistantChat = () => {
-		this.setState({ assistantChatOpened: false });
+	closeAssistant = () => {
+		this.setState({ showAssistant: false });
 	};
 
-	toggleOpenAssistantChat = () => {
+	toggleShowAssistant = () => {
 		this.setState(
-			{ assistantChatOpened: !this.state.assistantChatOpened },
+			{ showAssistant: !this.state.showAssistant },
 			this.updateAssistantChat
 		);
 	};
 
-	minimizeAssistantChat = () => {
-		this.setState({
-			assistantChatOpened: false,
-			assistantChatMaximized: false,
-		});
-	};
-
-	maximizeAssistantChat = () => {
-		this.setState(
-			{ assistantChatMaximized: true },
-			this.updateAssistantChat
-		);
+	openAssistant = () => {
+		this.setState({ showAssistant: true }, this.updateAssistantChat);
 	};
 
 	explainCode = async (code) => {
 		this.codeAssistant.explainCode(code).then(this.updateAssistantChat);
-		this.setState({ assistantChatOpened: true }, this.updateAssistantChat);
+		this.setState({ showAssistant: true }, this.updateAssistantChat);
 	};
 
 	testCode = async (code) => {
 		this.codeAssistant
 			.writeTestForCode(code)
 			.then(this.updateAssistantChat);
-		this.setState({ assistantChatOpened: true }, this.updateAssistantChat);
+		this.setState({ showAssistant: true }, this.updateAssistantChat);
 	};
 
 	improveCode = async (code) => {
 		this.codeAssistant.improveCode(code).then(this.updateAssistantChat);
-		this.setState({ assistantChatOpened: true }, this.updateAssistantChat);
+		this.setState({ showAssistant: true }, this.updateAssistantChat);
 	};
 
 	openMenu = (event) => {
@@ -1501,7 +1488,6 @@ class IDE extends Component {
 	}
 
 	render() {
-		//console.log("rendering IDE");
 		const {
 			sidebarExpanded,
 			unreadErrorsCount,
@@ -1512,8 +1498,7 @@ class IDE extends Component {
 			waitDescription,
 			quickSearchOpen,
 			quickSearchOptions,
-			assistantChatOpened,
-			assistantChatMaximized,
+			showAssistant,
 			searchOpened,
 			searchOptions,
 			menuOpen,
@@ -1523,7 +1508,6 @@ class IDE extends Component {
 		const extraWidth = Math.round(100 / (extraContainers.length + 1)) + "%";
 		const extraMinWidth = "10%";
 		const shortcuts = this.settings.section("shortcuts");
-		const showsAssistant = this.usesCodeAssistant();
 		const photo = this.settings.section("general").get("photo");
 		return (
 			<DndProvider backend={HTML5Backend}>
@@ -1572,6 +1556,11 @@ class IDE extends Component {
 								onSplit={
 									extraContainers.length < MaxExtraContainers
 										? this.splitContainer
+										: null
+								}
+								onAssistantClick={
+									this.usesCodeAssistant()
+										? this.toggleShowAssistant
 										: null
 								}
 								photo={photo}
@@ -1689,8 +1678,8 @@ class IDE extends Component {
 											)}
 										</CustomSplit>
 									</Box>
-									{showsAssistant &&
-										assistantChatMaximized && (
+									{this.usesCodeAssistant() &&
+										showAssistant && (
 											<Box
 												width="25%"
 												minWidth="15%"
@@ -1708,12 +1697,11 @@ class IDE extends Component {
 													</Box>
 													<IconButton
 														onClick={
-															this
-																.minimizeAssistantChat
+															this.closeAssistant
 														}
 														size="small"
 													>
-														<MinimizeIcon fontSize="small" />
+														<CloseIcon fontSize="small" />
 													</IconButton>
 												</Box>
 												<Box flexGrow={1} mt={1}>
@@ -1727,81 +1715,6 @@ class IDE extends Component {
 											</Box>
 										)}
 								</CustomSplit>
-								{showsAssistant && !assistantChatMaximized && (
-									<Fab
-										id="assitantLocation"
-										sx={{
-											position: "fixed",
-											bottom: (theme) => theme.spacing(2),
-											right: (theme) => theme.spacing(2),
-										}}
-										onClick={this.toggleOpenAssistantChat}
-										color="primary"
-									>
-										<AssistantIcon />
-									</Fab>
-								)}
-								{showsAssistant && !assistantChatMaximized && (
-									<Popper
-										open={assistantChatOpened}
-										//placement="left-end"
-										anchorEl={document.getElementById(
-											"assitantLocation"
-										)}
-									>
-										<Card variant="outlined">
-											<CardHeader
-												disableTypography
-												action={
-													<Box>
-														<IconButton
-															onClick={
-																this
-																	.closeAssistantChat
-															}
-														>
-															<MinimizeIcon fontSize="small" />
-														</IconButton>
-														<IconButton
-															onClick={
-																this
-																	.maximizeAssistantChat
-															}
-														>
-															<MaximizeIcon fontSize="small" />
-														</IconButton>
-													</Box>
-												}
-												title="Code assistant"
-												style={{
-													paddingTop: 8,
-													paddingBottom: 5,
-												}}
-											/>
-											<CardContent
-												style={{
-													paddingTop: 5,
-													paddingBottom: 5,
-												}}
-											>
-												<Box
-													display="flex"
-													sx={{
-														height: 400,
-														minWidth: 400,
-													}}
-												>
-													<CodeAssistantChat
-														ref={
-															this
-																.assistantChatRef
-														}
-													/>
-												</Box>
-											</CardContent>
-										</Card>
-									</Popper>
-								)}
 								{menuOptions && menuOptions.length > 0 && (
 									<PopupMenu
 										options={menuOptions}

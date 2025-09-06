@@ -15,6 +15,7 @@ import SearchField from "../controls/SearchField";
 import LightModeIcon from "@mui/icons-material/LightModeRounded";
 import DarkModeIcon from "@mui/icons-material/DarkModeRounded";
 import SplitIcon from "../icons/SplitIcon";
+import AssistantIcon from "@mui/icons-material/Assistant";
 
 class Titlebar extends Component {
 	constructor(props) {
@@ -38,6 +39,7 @@ class Titlebar extends Component {
 			onSearchClick,
 			searchPlaceholder,
 			onSplit,
+			onAssistantClick,
 			photo,
 		} = this.props;
 		const developerMenuOpen = this.state.developerMenuOpen;
@@ -125,6 +127,16 @@ class Titlebar extends Component {
 					>
 						<SplitIcon />
 					</IconButton>
+					{onAssistantClick && (
+						<IconButton
+							color="inherit"
+							onClick={(event) => {
+								onAssistantClick();
+							}}
+						>
+							<AssistantIcon />
+						</IconButton>
+					)}
 					<Box sx={{ flexGrow: 0 }}>
 						<IconButton
 							id="developer"
