@@ -40,6 +40,7 @@ class Titlebar extends Component {
 			searchPlaceholder,
 			onSplit,
 			onAssistantClick,
+			onReleaseNotesClick,
 			photo,
 		} = this.props;
 		const developerMenuOpen = this.state.developerMenuOpen;
@@ -180,6 +181,19 @@ class Titlebar extends Component {
 							>
 								<Typography textAlign="center">
 									Settings
+								</Typography>
+							</MenuItem>
+							<MenuItem
+								key="releaseNotes"
+								onClick={() => {
+									this.setState(
+										{ developerMenuOpen: false },
+										onReleaseNotesClick
+									);
+								}}
+							>
+								<Typography textAlign="center">
+									Release Notes
 								</Typography>
 							</MenuItem>
 							<MenuItem

@@ -38,6 +38,8 @@ import { v4 as uuidv4 } from "uuid";
 import MethodHistoryBrowser from "./tools/MethodHistoryBrowser";
 import BackendTester from "./tools/BackendTester";
 import CompilationResult from "../model/CompilationResult";
+import ReleaseNotes from "./tools/ReleaseNotes";
+import ReleaseNotesIcon from "@mui/icons-material/NewReleases";
 
 class ToolContainer extends Component {
 	constructor(props) {
@@ -590,6 +592,16 @@ class ToolContainer extends Component {
 				/>
 			);
 			this.createPage("Settings", <SettingsIcon />, page);
+		}
+	};
+
+	openReleaseNotes = () => {
+		const page = this.pageLabeled("Release Notes");
+		if (page) {
+			this.selectPage(page);
+		} else {
+			const page = <ReleaseNotes />;
+			this.createPage("Release Notes", <ReleaseNotesIcon />, page);
 		}
 	};
 

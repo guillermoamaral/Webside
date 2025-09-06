@@ -40,6 +40,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import TonelWriterV3 from "../model/TonelWriter";
 import JSZip from "jszip";
 import { tokenTypes } from "../SmalltalkTokenizer";
+import { VERSION } from "../config";
 
 var ide = null;
 var MaxExtraContainers = 3;
@@ -84,6 +85,21 @@ class IDE extends Component {
 		if (options.classname) container.openClassBrowser(options.classname);
 		if (options.debugger) container.openDebugger(options.debugger);
 		if (options.workspace) container.openWorkspace(options.workspace);
+		this.showUnseenReleaseNotes();
+	}
+
+	showUnseenReleaseNotes() {
+		const options = this.queryOptions();
+		const seenKey =
+			"webside-release-notes-seen-" +
+			options.backend +
+			"-" +
+			options.developer;
+		const seen = localStorage.getItem(seenKey);
+		if (!seen || seen != VERSION) {
+			this.openReleaseNotes();
+			localStorage.setItem(seenKey, VERSION);
+		}
 	}
 
 	// Settings
@@ -773,6 +789,10 @@ class IDE extends Component {
 
 	openSettings = () => {
 		this.mainContainer().openSettings();
+	};
+
+	openReleaseNotes = () => {
+		this.mainContainer().openReleaseNotes();
 	};
 
 	openTranscript = () => {
@@ -1563,6 +1583,7 @@ class IDE extends Component {
 										? this.toggleShowAssistant
 										: null
 								}
+								onReleaseNotesClick={this.openReleaseNotes}
 								photo={photo}
 							/>
 							<Sidebar
