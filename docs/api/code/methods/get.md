@@ -11,20 +11,21 @@ The `class`, `hierarchy` and `package` options can be used in conjunction with o
 
 **Filtering Query Options**
 
-| Option           |  Type   | Description                                                                    |
-| ---------------- | :-----: | ------------------------------------------------------------------------------ |
-| class            | string  | to get methods of a given class                                                |
-| selector         | string  | to get implementors of a given selector                                        |
-| category         | string  | to get methods under a given category                                          |
-| accessing        | string  | to get those methods accessing a given variable (either using or assigning it) |
-| using            | string  | to get those methods using a given variable                                    |
-| assigning        | string  | to get those methods assigning a given variable                                |
-| sending          | string  | to get senders of a given selector                                             |
-| referencingClass | string  | to get those methods referencing a given class                                 |
-| selectorMatching | string  | to get those methods with a selector matching a given pattern string           |
-| hierarchy        | string  | used to restrict the search to a given hierarchy                               |
-| package          | string  | used to restrict the search to a given package                                 |
-| count            | boolean | true to get only the number of methods statisfying the condition               |
+| Option           |  Type   | Description                                                                      |
+| ---------------- | :-----: | -------------------------------------------------------------------------------- |
+| class            | string  | to get methods of a given class                                                  |
+| selector         | string  | to get implementors of a given selector                                          |
+| category         | string  | to get methods under a given category                                            |
+| accessing        | string  | to get those methods accessing a given variable (either using or assigning it)   |
+| using            | string  | to get those methods using a given variable                                      |
+| assigning        | string  | to get those methods assigning a given variable                                  |
+| sending          | string  | to get senders of a given selector                                               |
+| referencingClass | string  | to get those methods referencing a given class                                   |
+| selectorMatching | string  | to get those methods with a selector matching a given pattern string             |
+| hierarchy        | string  | used to restrict the search to a given hierarchy                                 |
+| package          | string  | used to restrict the search to a given package                                   |
+| count            | boolean | true to get only the number of methods statisfying the condition                 |
+| modified         | boolean | true to get only modified methods (if such a feature is provided by the backend) |
 
 **Decoration Query Options**
 
@@ -57,7 +58,8 @@ The `class`, `hierarchy` and `package` options can be used in conjunction with o
 	"bytecodes": "string",
 	"disassembly": "string",
 	"ast": "node",
-	"annotations": ["annotation"]
+	"annotations": ["annotation"],
+	"modified": "boolean"
 }
 ```
 
@@ -66,6 +68,7 @@ Where:
 -   `needsRecompilation` specifies whether the last compilation of method has any issue, for instance, when a instance variable was removed from the class definition and a method accessing it should be revised and recompiled. This mark is used to color the method differently to bring developers attention.
 -   `ast` is a simplified version of the method's abstract syntax tree used for some functionalities (see [Method AST](#method-ast) below)
 -   `annotations` is list of annotations helpful to code linting (see [Method Annotations](#method-annotations) below)
+-   `modified` is an optional property indicating whether the method was modified in the current session.
 
 _Note: optional properties such as `bytecodes`, `disassembly` or `annotations` should not be included if they are not requested in the query._
 

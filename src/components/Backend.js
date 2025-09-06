@@ -258,9 +258,10 @@ class Backend {
 		return selectors;
 	}
 
-	async methods(classname, sorted = false, basic = false) {
+	async methods(classname, sorted = false, basic = false, modified) {
 		let uri = "/classes/" + classname + "/methods";
 		if (basic) uri += "?basic=true";
+		if (modified === true) uri += (basic ? "&" : "?") + "modified=true";
 		const methods = await this.get(uri, "methods of class " + classname);
 		if (sorted) {
 			methods.sort((a, b) => (a.selector <= b.selector ? -1 : 1));
@@ -334,15 +335,24 @@ class Backend {
 	}
 
 	// Method queries...
+
 	async senders(selector, basic = false) {
 		let uri = "/methods?sending=" + selector;
 		if (basic) uri += "&basic=true";
 		return await this.get(uri, "senders of " + selector);
 	}
 
-	async accessors(classname, variable, type, sorted = false, basic = false) {
+	async accessors(
+		classname,
+		variable,
+		type,
+		sorted = false,
+		basic = false,
+		modified
+	) {
 		let uri = "/classes/" + classname + "/methods?" + type + "=" + variable;
 		if (basic) uri += "&basic=true";
+		if (modified === true) uri += "&modified=true";
 		const methods = await this.get(
 			uri,
 			"methods of class " + classname + " using " + variable
@@ -434,8 +444,15 @@ class Backend {
 		return methods;
 	}
 
+	async modifiedMethodCount(classname) {
+		return await this.get(
+			"/classes/" + classname + "/methods?count=true&modified=true",
+			"modified method count in class " + classname
+		);
+	}
+
 	// Debugging...
-	
+
 	async debuggers() {
 		return await this.get("/debuggers", "debuggers");
 	}

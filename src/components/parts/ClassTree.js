@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 import CustomTree from "../controls/CustomTree";
@@ -542,7 +542,9 @@ class ClassTree extends Component {
 	}
 
 	classLabel = (species) => {
-		return species.template ? "<new>" : species.name;
+		if (species.template) return "<new>";
+		const label = species.name;
+		return species.modified === true ? `(${label})` : label;
 	};
 
 	classColor = (species) => {

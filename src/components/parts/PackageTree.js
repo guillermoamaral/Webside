@@ -324,6 +324,10 @@ class PackageTree extends Component {
 		return ide.objectIcon(pack, "package", pack.name);
 	};
 
+	packageLabel = (pack) => {
+		return pack.modified === true ? `(${pack.name})` : pack.name;
+	};
+
 	render() {
 		const {
 			selectedNode,
@@ -372,7 +376,7 @@ class PackageTree extends Component {
 							loading={loading}
 							nodes={filteredPackages}
 							nodeId="name"
-							nodeLabel={"name"}
+							nodeLabel={this.packageLabel}
 							nodeChildren="categories"
 							nodeIcon={this.packageIcon}
 							selectedNode={selectedNode}

@@ -4,12 +4,14 @@ import CustomPaper from "../controls/CustomPaper";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
 
+const ModifiedCategory = "(Modified methods)";
+
 class CategoryList extends Component {
 	static contextType = ToolContainerContext;
 
 	constructor(props) {
 		super(props);
-		this.all = "All selectors";
+		this.all = "All methods";
 		this.state = {
 			class: null,
 			categories: [],
@@ -63,6 +65,10 @@ class CategoryList extends Component {
 				species.name.endsWith(" class")
 			);
 			categories.usual.sort();
+			const modified = await ide.backend.modifiedMethodCount(
+				species.name
+			);
+			this.showsModified = modified > 0;
 		} catch (error) {
 			ide.reportError(error);
 		}
@@ -142,12 +148,22 @@ class CategoryList extends Component {
 	};
 
 	browseMethods = async (category) => {
-		let species = this.props.class;
+		const species = this.props.class;
 		if (!species) return [];
-		let methods = await ide.backend.methodsInCategory(
-			species.name,
-			category
-		);
+		let methods = [];
+		if (category === ModifiedCategory) {
+			methods = await ide.backend.methods(
+				species.name,
+				false,
+				false,
+				true
+			);
+		} else {
+			methods = await ide.backend.methodsInCategory(
+				species.name,
+				category
+			);
+		}
 		this.context.openMethodBrowser(methods);
 	};
 
@@ -176,8 +192,16 @@ class CategoryList extends Component {
 		});
 		let options = [
 			{ label: "Add", suboptions: suboptions },
-			{ label: "Rename", action: this.renameCategory },
-			{ label: "Remove", action: this.removeCategory },
+			{
+				label: "Rename",
+				action: this.renameCategory,
+				enabled: (c) => c && c !== this.all && c !== ModifiedCategory,
+			},
+			{
+				label: "Remove",
+				action: this.removeCategory,
+				enabled: (c) => c && c !== this.all && c !== ModifiedCategory,
+			},
 			null,
 			{ label: "Browse methods", action: this.browseMethods },
 		];
@@ -201,9 +225,23 @@ class CategoryList extends Component {
 			: this.updateCategories(this.state.selectedCategory);
 	}
 
+	labelStyle = (category) => {
+		return category === this.all || category === ModifiedCategory
+			? "italic"
+			: "normal";
+	};
+
+	labelSize = (category) => {
+		return category === this.all || category === ModifiedCategory
+			? "small"
+			: "normal";
+	};
+
 	render() {
-		let { categories, selectedCategory, loading } = this.state;
+		const { selectedCategory, loading } = this.state;
 		const { highlightedCategory } = this.props;
+		let categories = this.state.categories;
+		if (this.showsModified) categories = [ModifiedCategory, ...categories];
 		categories = [this.all, ...categories];
 		return (
 			<CustomPaper>
@@ -212,12 +250,8 @@ class CategoryList extends Component {
 					loading={loading}
 					items={categories}
 					itemDivider={(item) => item === this.all}
-					labelStyle={(item) =>
-						item === this.all ? "italic" : "normal"
-					}
-					labelSize={(item) =>
-						item === this.all ? "small" : "normal"
-					}
+					itemStyle={this.labelStyle}
+					labelSize={this.labelSize}
 					selectedItem={selectedCategory}
 					highlightedItem={highlightedCategory}
 					onItemSelect={this.categorySelected}
@@ -229,3 +263,4 @@ class CategoryList extends Component {
 }
 
 export default CategoryList;
+export { ModifiedCategory };

@@ -31,9 +31,14 @@ It is also possible get a tree-like structure as well as to limit the depth in t
 	"comment": "string",
 	"category": "string",
 	"variable": "boolean",
-	"package": "string"
+	"package": "string",
+	"modified": "boolean"
 }
 ```
+
+Where:
+
+-   `modified` is an optional property indicating whether the class was modified in the current session.
 
 **Example 1:**: `Integer` subclasses `GET /classes?root=Integer`.
 
