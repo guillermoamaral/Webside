@@ -16,7 +16,10 @@ class ReleaseNotes extends Tool {
 
 	async componentDidMount() {
 		const json = await this.fetchReleaseNotes(VERSION);
-		this.setState({ version: json.tag, notes: json.markdown });
+		this.setState({
+			version: json?.tag,
+			notes: json?.markdown || "No release notes available",
+		});
 	}
 
 	async fetchReleaseNotes(tag = null) {
