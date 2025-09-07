@@ -103,6 +103,12 @@ class TabLabel extends Component {
 				alignItems="center"
 				justifyContent="center"
 				onContextMenu={this.openMenu}
+				onMouseDown={(e) => {
+					if (e.button === 1) {
+						e.preventDefault();
+						this.closeTab();
+					}
+				}}
 				onMouseEnter={() => this.setState({ mouseHovering: true })}
 				onMouseLeave={() => this.setState({ mouseHovering: false })}
 			>
