@@ -220,6 +220,17 @@ class CodeEditor extends Component {
 					label: "Search string references",
 					action: this.browseStringReferences,
 				},
+			]
+		);
+		const external = this.props.externalOptions || [];
+		external.forEach((option) => {
+			options.push({
+				label: option.label,
+				action: () => this.performExternalOption(option),
+			});
+		});
+		options.push(
+			...[
 				null,
 				{
 					label: "Toggle full view",
@@ -451,6 +462,11 @@ class CodeEditor extends Component {
 	async browseStringReferences(text) {
 		if (text === undefined) text = this.targetWord();
 		this.context.browseStringReferences(text);
+	}
+
+	async performExternalOption(option) {
+		if (!option) return;
+		option.action(this);
 	}
 
 	searchInGoogle(text) {

@@ -300,6 +300,7 @@ class CodeBrowser extends Component {
 			onTooltipClick,
 			context,
 			method,
+			externalOptions,
 		} = this.props;
 		return (
 			<Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
@@ -376,6 +377,7 @@ class CodeBrowser extends Component {
 								}
 								inMethod={selectedMode === "source"}
 								onFullViewToggle={this.toggleFullView}
+								externalOptions={externalOptions}
 							/>
 						)}
 						{selectedMode === "comment" && previewMarkdown && (
