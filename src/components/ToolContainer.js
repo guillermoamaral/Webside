@@ -634,6 +634,27 @@ class ToolContainer extends Component {
 		}
 	};
 
+	browseSendersInList = async (selector, methods) => {
+		let senders = await ide.searchMethods(() => {
+			return ide.backend.senders(selector);
+		}, "senders of " + selector + " in list");
+		senders = senders.filter((s) =>
+			methods.find(
+				(m) =>
+					m.methodClass === s.methodClass && m.selector === s.selector
+			)
+		);
+		if (senders && senders.length > 0) {
+			this.openMethodBrowser(
+				senders,
+				"Senders of " + selector + " in list",
+				selector,
+				null,
+				"methodClass"
+			);
+		}
+	};
+
 	browseLocalSenders = async (selector, classname) => {
 		const senders = await ide.searchMethods(() => {
 			return ide.backend.localSenders(selector, classname);
