@@ -128,9 +128,7 @@ class MethodBrowser extends Tool {
 	};
 
 	currentMethods() {
-		if (this.state.showTests) {
-			return this.state.methods;
-		}
+		if (this.state.showTests) return this.state.methods;
 		return this.state.methods.filter((m) => {
 			return !this.isTest(m);
 		});
@@ -172,6 +170,13 @@ class MethodBrowser extends Tool {
 
 	toggleFullView = () => {
 		this.setState({ editorFullView: !this.state.editorFullView });
+	};
+
+	browseSendersInList = async (editor) => {
+		const selector = await editor.targetSelector();
+		console.log(selector);
+		if (!selector) return;
+		this.context.browseSendersInList(selector, this.currentMethods());
 	};
 
 	render() {
@@ -241,6 +246,12 @@ class MethodBrowser extends Tool {
 								onClassDefine={this.classDefined}
 								onClassComment={this.classCommented}
 								onFullViewToggle={this.toggleFullView}
+								externalOptions={[
+									{
+										label: "Browse senders in list",
+										action: this.browseSendersInList,
+									},
+								]}
 							/>
 						</Box>
 					</CustomSplit>
