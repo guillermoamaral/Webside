@@ -174,7 +174,7 @@ class SystemBrowser extends Tool {
 	};
 
 	classSelected = async (species) => {
-		this.updateLabel(species.name);
+		if (!this.props.showPackages) this.updateLabel(species.name);
 		await this.updateClass(species);
 		const { selectedMethod, selectedCategory, selectedVariable } =
 			this.state;
@@ -215,12 +215,13 @@ class SystemBrowser extends Tool {
 
 	classDefined = async (species) => {
 		await this.updateClass(species);
-		this.updateLabel(species.name);
 		if (this.props.showPackages) {
 			const pack = this.state.selectedPackage;
 			if (pack && pack.name === species.package) {
 				await this.updatePackage(pack);
 			}
+		} else {
+			this.updateLabel(species.name);
 		}
 		const ref = this.classTreeRef;
 		if (ref && ref.current) {
@@ -326,10 +327,7 @@ class SystemBrowser extends Tool {
 	}
 
 	methodSelected = async (method) => {
-		if (method) {
-			this.updateLabel(method.methodClass + ">>" + method.selector);
-			if (!method.template) await this.updateMethod(method);
-		}
+		if (method && !method.template) await this.updateMethod(method);
 		this.setState({ selectedMethod: method });
 	};
 
@@ -343,7 +341,6 @@ class SystemBrowser extends Tool {
 
 	methodCompiled = async (method) => {
 		if (!method) return;
-		this.updateLabel(method.methodClass + ">>" + method.selector);
 		let ref = this.methodListRef;
 		if (ref && ref.current) {
 			ref.current.refreshEnsuring(method);
