@@ -1,4 +1,3 @@
-import React from "react";
 import Icon from "@mui/icons-material/PlaylistPlayRounded";
 
 export default function WorkspaceIcon(props) {

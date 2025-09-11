@@ -1,11 +1,3 @@
-// import React from "react";
-// import Icon from "@mui/icons-material/ViewQuilt";
-
-// export default function PackageBrowserIcon(props) {
-// 	return <Icon color={props.color} />;
-// }
-
-import React from "react";
 import { SvgIcon } from "@mui/material";
 
 export default function PackageBrowserIcon() {

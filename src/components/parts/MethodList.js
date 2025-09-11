@@ -8,16 +8,12 @@ import CustomList from "../controls/CustomList";
 import CustomTable from "../controls/CustomTable";
 import { ide } from "../IDE";
 import ToolContainerContext from "../ToolContainerContext";
-import {
-	Typography,
-	Box,
-	Select,
-	OutlinedInput,
-	MenuItem,
-} from "@mui/material";
+import { Box, Select, OutlinedInput, MenuItem } from "@mui/material";
 import CustomPaper from "../controls/CustomPaper";
 import StAST from "../../model/StAST";
 import { ModifiedCategory } from "./CategoryList";
+import SendersIcon from "../icons/SendersIcon";
+import ImplementorsIcon from "../icons/ImplementorsIcon";
 
 class MethodList extends Component {
 	static contextType = ToolContainerContext;
@@ -801,15 +797,13 @@ class MethodList extends Component {
 			});
 		}
 		actions.push({
-			//icon: <ImplementorsIcon style={{ fontSize: 14 }} />,
-			icon: <Typography color="primary">i</Typography>,
-			label: "Implementors",
+			icon: <ImplementorsIcon fontSize="small" />,
+			label: "Browse implementors",
 			handler: (m) => this.browseImplementors(m.selector),
 		});
 		actions.push({
-			//icon: <SendersIcon style={{ fontSize: 14 }} />,
-			icon: <Typography color="primary">s</Typography>,
-			label: "Senders",
+			icon: <SendersIcon fontSize="small" />,
+			label: "Browse senders",
 			handler: (m) => this.browseSenders(m.selector),
 		});
 		return actions;
@@ -890,6 +884,7 @@ class MethodList extends Component {
 					rowColor={this.methodColor}
 					//noHeaders
 					onRowDoubleClick={this.browseClass}
+					rowActions={this.methodActions}
 				/>
 			);
 		} else {
