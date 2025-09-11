@@ -40,6 +40,9 @@ import BackendTester from "./tools/BackendTester";
 import CompilationResult from "../model/CompilationResult";
 import ReleaseNotes from "./tools/ReleaseNotes";
 import ReleaseNotesIcon from "@mui/icons-material/NewReleases";
+import SendersIcon from "./icons/SendersIcon";
+import ImplementorsIcon from "./icons/ImplementorsIcon";
+import ReferencesIcon from "./icons/ReferencesIcon";
 
 class ToolContainer extends Component {
 	constructor(props) {
@@ -372,6 +375,7 @@ class ToolContainer extends Component {
 	openMethodBrowser = (
 		methods,
 		title = "Methods",
+		icon = <MethodBrowserIcon />,
 		selectedSelector,
 		selectedIdentifier,
 		sortedBy
@@ -393,7 +397,7 @@ class ToolContainer extends Component {
 		);
 		this.createPage(
 			title + " (" + methods.length + ")",
-			<MethodBrowserIcon />,
+			icon,
 			browser,
 			null,
 			ref,
@@ -626,7 +630,8 @@ class ToolContainer extends Component {
 		if (senders && senders.length > 0) {
 			this.openMethodBrowser(
 				senders,
-				"Senders of " + selector,
+				selector,
+				<SendersIcon />,
 				selector,
 				null,
 				"methodClass"
@@ -647,7 +652,8 @@ class ToolContainer extends Component {
 		if (senders && senders.length > 0) {
 			this.openMethodBrowser(
 				senders,
-				"Senders of " + selector + " in list",
+				selector,
+				<SendersIcon />,
 				selector,
 				null,
 				"methodClass"
@@ -662,7 +668,8 @@ class ToolContainer extends Component {
 		if (senders && senders.length > 0) {
 			this.openMethodBrowser(
 				senders,
-				"Local senders of " + selector,
+				selector,
+				<SendersIcon />,
 				selector,
 				null,
 				"selector"
@@ -677,7 +684,8 @@ class ToolContainer extends Component {
 		if (implementors && implementors.length > 0) {
 			this.openMethodBrowser(
 				implementors,
-				"Implementors of " + selector,
+				selector,
+				<ImplementorsIcon />,
 				null,
 				null,
 				"methodClass"
@@ -692,7 +700,8 @@ class ToolContainer extends Component {
 		if (implementors && implementors.length > 0) {
 			this.openMethodBrowser(
 				implementors,
-				"Local implementors of " + selector
+				selector,
+				<ImplementorsIcon />
 			);
 		}
 	};
@@ -704,7 +713,8 @@ class ToolContainer extends Component {
 		if (references && references.length > 0) {
 			this.openMethodBrowser(
 				references,
-				"References to " + classname,
+				classname,
+				<ReferencesIcon />,
 				null,
 				classname,
 				"methodClass"
@@ -719,7 +729,8 @@ class ToolContainer extends Component {
 		if (references && references.length > 0) {
 			this.openMethodBrowser(
 				references,
-				"References to '" + string + "'",
+				string,
+				<ReferencesIcon />,
 				null,
 				string,
 				"methodClass"
@@ -734,10 +745,11 @@ class ToolContainer extends Component {
 		if (matching && matching.length > 0) {
 			this.openMethodBrowser(
 				matching,
-				"Methods with selector matching " + pattern,
+				"Methods matching " + pattern,
 				null,
 				null,
-				"methocClass"
+				null,
+				"methodClass"
 			);
 		}
 	};

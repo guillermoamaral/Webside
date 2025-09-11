@@ -1,4 +1,3 @@
-import React from "react";
 import Icon from "@mui/icons-material/Subject";
 
 export default function TranscriptIcon(props) {
