@@ -478,6 +478,15 @@ class ToolContainer extends Component {
 		this.createPage(title, <DebuggerIcon />, tool, pageId, ref, true);
 	};
 
+	inspectObjectWithId = async (id) => {
+		try {
+			const object = await ide.backend.objectWithId(id);
+			this.openInspector(object);
+		} catch (error) {
+			this.reportError(error);
+		}
+	};
+
 	openInspector = (object, preserve = false) => {
 		const existing = this.state.pages.find((p) => {
 			return (

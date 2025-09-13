@@ -93,6 +93,7 @@ class Backend {
 	}
 
 	// General...
+	
 	async dialect() {
 		return await this.get("/dialect", "dialect");
 	}
@@ -126,6 +127,7 @@ class Backend {
 	}
 
 	// Code...
+
 	async packageNames() {
 		return await this.get("/packages?names=true", "package names");
 	}

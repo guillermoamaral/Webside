@@ -6,12 +6,7 @@ import {
 	Dialog,
 	DialogTitle,
 	DialogContent,
-	Popper,
-	Card,
-	CardContent,
-	CardHeader,
 	IconButton,
-	Fab,
 	Typography,
 } from "@mui/material";
 import CollapseSearchIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
@@ -41,6 +36,7 @@ import TonelWriterV3 from "../model/TonelWriter";
 import JSZip from "jszip";
 import { tokenTypes } from "../SmalltalkTokenizer";
 import { VERSION } from "../config";
+import ServerEventChannel from "./ServerEventChannel";
 
 var ide = null;
 var MaxExtraContainers = 3;
@@ -484,6 +480,7 @@ class IDE extends Component {
 			this.initializeMessageChannel();
 			this.initializeCodeAssistant();
 			this.initializeExtendedOptions();
+			this.initializeServerEventChannel();
 		}, "Loading...");
 	}
 
@@ -605,13 +602,28 @@ class IDE extends Component {
 		}
 	}
 
+	serverEventsUrl() {
+		return this.backend.url + "/events";
+	}
+
+	initializeServerEventChannel() {
+		this.serverEventChannel = new ServerEventChannel(
+			this.serverEventsUrl()
+		);
+		this.serverEventChannel
+			.onOpen(() => console.log("Events channel opened"))
+			.onError((e) => console.warn("Events channel error", e))
+			.onMessage((m) => console.log("generic", m))
+			.on("debugger", (id) => this.mainContainer().openDebugger(id))
+			.on("object", (id) => this.mainContainer().inspectObjectWithId(id))
+			.connect();
+	}
+
 	initializeMessageChannel() {
 		const url = this.settings
 			.section("connection")
 			.get("messageChannelUrl");
-		if (!url) {
-			return;
-		}
+		if (!url) return;
 		this.messageChannel = new MessageChannel();
 		this.messageChannel.login(url, this.settings.connection.developer);
 		this.messageChannel.onEvent(
@@ -859,9 +871,7 @@ class IDE extends Component {
 			true,
 			true
 		);
-		if (object) {
-			this.mainContainer().openInspector(object);
-		}
+		if (object) this.mainContainer().openInspector(object);
 	}
 
 	async followTestRun(id, debug, onRun) {
