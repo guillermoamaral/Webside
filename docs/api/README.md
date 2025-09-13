@@ -199,3 +199,11 @@ Retrieve definitions and process commands.
 | :----: | ----------------------------------------------- | ---------------------------- | :--------: | ------- |
 |  GET   | [/command-definitions](commands/definitions.md) | Retrieve command definitions |     -      | -       |
 |  POST  | [/commands](commands/post.md)                   | Process a command            | `command`  | -       |
+
+## [Events](events)
+
+This endpoint allows clients to subscribe to server-sent events.
+
+| Method | Path                     | Description                     | Parameters | Payload |
+| :----: | ------------------------ | ------------------------------- | :--------: | ------- |
+|  GET   | [/events](events/get.md) | Subscribe to server-sent events |     -      | -       |
