@@ -92,7 +92,7 @@ class IDE extends Component {
 			"-" +
 			options.developer;
 		const seen = localStorage.getItem(seenKey);
-		if (!seen || seen != VERSION) {
+		if (!seen || seen !== VERSION) {
 			this.openReleaseNotes();
 			localStorage.setItem(seenKey, VERSION);
 		}
@@ -457,10 +457,10 @@ class IDE extends Component {
 		}
 		try {
 			version = await this.backend.version();
-		} catch (ignored) {}
+		} catch (ignored) { }
 		try {
 			this.logo = await this.backend.logo();
-		} catch (ignored) {}
+		} catch (ignored) { }
 		document.title = dialect;
 		this.settings.section("connection").set("dialect", dialect);
 		this.settings.section("connection").set("version", version);
@@ -468,7 +468,7 @@ class IDE extends Component {
 		try {
 			await ide.backend.autocompletions("Object", "m\r Objec", 8);
 			autocompletion = true;
-		} catch (ignored) {}
+		} catch (ignored) { }
 		this.settings
 			.section("editor")
 			.set("useAutocompletion", autocompletion);
@@ -614,6 +614,7 @@ class IDE extends Component {
 			.onOpen(() => console.log("Events channel opened"))
 			.onError((e) => console.warn("Events channel error", e))
 			.onMessage((m) => console.log("generic", m))
+			.on("transcript", (text) => this.setState(prev => ({ transcriptText: prev.transcriptText + "\r" + text }), () => this.openTranscript()))
 			.on("debugger", (id) => this.mainContainer().openDebugger(id))
 			.on("object", (id) => this.mainContainer().inspectObjectWithId(id))
 			.connect();
@@ -763,8 +764,8 @@ class IDE extends Component {
 		if (containers.length < MaxExtraContainers) {
 			const index = container
 				? containers.findIndex(
-						(c) => c.component.ref.current === container
-				  )
+					(c) => c.component.ref.current === container
+				)
 				: containers.length - 1;
 			this.addContainer([], index + 1);
 		}
@@ -940,10 +941,10 @@ class IDE extends Component {
 			passed.length > 0 && failed.length === 0 && errors.length === 0
 				? "success"
 				: failed.length > 0 && errors.length === 0
-				? "warning"
-				: errors.length > 0
-				? "error"
-				: "info";
+					? "warning"
+					: errors.length > 0
+						? "error"
+						: "info";
 		return { text: text, type: type };
 	}
 
@@ -964,8 +965,8 @@ class IDE extends Component {
 			? typeof error.data === "string"
 				? error.data
 				: error.data.description
-				? error.data.description
-				: ""
+					? error.data.description
+					: ""
 			: "";
 		if (message.length > 0)
 			description = description + "\rServer message: " + message;
@@ -989,7 +990,7 @@ class IDE extends Component {
 	}
 
 	transcriptChanged = (text) => {
-		this.state.transcriptText = text;
+		this.setState({ transcriptText: text });
 	};
 
 	reportChange = async (change) => {
@@ -1081,7 +1082,7 @@ class IDE extends Component {
 			extensions = await ide.backend.extensions(type);
 			commands = await ide.backend.commandDefinitions(type);
 			commands.forEach((c) => (c.type = "command"));
-		} catch (ignored) {}
+		} catch (ignored) { }
 		return extensions.concat(commands);
 	}
 
