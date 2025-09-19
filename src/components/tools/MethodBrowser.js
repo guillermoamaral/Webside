@@ -182,7 +182,7 @@ class MethodBrowser extends Tool {
 	render() {
 		const { selectedMethod, selectedClass, showTests, editorFullView } =
 			this.state;
-		const { selectedSelector, selectedIdentifier, title } = this.props;
+		const { selectedSelector, selectedIdentifier, title, description } = this.props;
 		const methods = this.currentMethods();
 		const background = ide.colorSetting("methodBrowserColor");
 		return (
@@ -203,7 +203,7 @@ class MethodBrowser extends Tool {
 							justifyContent="center"
 							alignItems="center"
 						>
-							<Typography>{title}</Typography>
+							<Typography>{description || title}</Typography>
 						</Box>
 						<FormGroup>
 							<FormControlLabel

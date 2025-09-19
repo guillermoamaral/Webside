@@ -538,13 +538,13 @@ class MonacoEditor extends CodeEditor {
 		const editor = MonacoEditor.getActiveEditor();
 		const instance = MonacoEditor.getInstanceForEditor(editor);
 		if (!instance) return;
-		console.log(
-			"Dispatching command from",
-			editor?.getModel()?.uri.toString(),
-			instance,
-			action,
-			editor?.getValue()
-		);
+		// console.log(
+		// 	"Dispatching command from",
+		// 	editor?.getModel()?.uri.toString(),
+		// 	instance,
+		// 	action,
+		// 	editor?.getValue()
+		// );
 		action.bind(instance)();
 	}
 

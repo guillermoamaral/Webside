@@ -165,6 +165,7 @@ class TabControl extends Component {
 												selected={
 													index === selectedIndex
 												}
+												tooltip={page.description}
 											/>
 										</DraggableReorderItem>
 									}
