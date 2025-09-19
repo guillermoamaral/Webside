@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { IconButton, Box } from "@mui/material";
+import { IconButton, Box, Tooltip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import PopupMenu from "./PopupMenu";
 
@@ -86,14 +86,15 @@ class TabLabel extends Component {
 	}
 
 	render() {
+		const { menuOpen, menuPosition, mouseHovering, label } = this.state;
 		const {
 			index,
 			icon,
 			onClose,
 			showCloseOptions = true,
 			selected = false,
+			tooltip = label,
 		} = this.props;
-		const { menuOpen, menuPosition, mouseHovering } = this.state;
 		const text = this.visibleLabel();
 		const menuOptions = this.menuOptions();
 		return (
@@ -113,7 +114,7 @@ class TabLabel extends Component {
 				onMouseLeave={() => this.setState({ mouseHovering: false })}
 			>
 				{icon && <Box pr={1}>{icon}</Box>}
-				<Box>{text}</Box>
+				<Tooltip title={tooltip} placement="top"><Box>{text}</Box></Tooltip>
 				<Box>
 					{showCloseOptions && (
 						<IconButton

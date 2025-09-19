@@ -60,7 +60,7 @@ class ToolContainer extends Component {
 		return uuidv4();
 	}
 
-	createPage(label, icon, component, id, ref, nextToSelected) {
+	createPage(label, icon, component, id, ref, nextToSelected, description) {
 		const { pages, selectedPageId } = this.state;
 		const labelRef = React.createRef();
 		const page = {
@@ -70,6 +70,7 @@ class ToolContainer extends Component {
 			component: component,
 			ref: ref,
 			labelRef: labelRef,
+			description: description,
 		};
 		if (nextToSelected) {
 			const selectedPage = this.pageWithId(selectedPageId);
@@ -160,12 +161,12 @@ class ToolContainer extends Component {
 			currentPages.length === pages.length
 				? null
 				: !ids.includes(selectedPageId)
-				? selectedPageId
-				: i0 > 0
-				? currentPages[i0 - 1].id
-				: ik < currentPages.length - 1
-				? currentPages[ik + 1].id
-				: null;
+					? selectedPageId
+					: i0 > 0
+						? currentPages[i0 - 1].id
+						: ik < currentPages.length - 1
+							? currentPages[ik + 1].id
+							: null;
 		const filtered = currentPages.filter((p) => !ids.includes(p.id));
 		if (this.props.onPagesRemove) {
 			this.props.onPagesRemove(this);
@@ -299,7 +300,7 @@ class ToolContainer extends Component {
 		if (packagename) {
 			try {
 				pack = await ide.backend.packageNamed(packagename);
-			} catch (error) {}
+			} catch (error) { }
 		}
 		const ref = React.createRef();
 		const browser = (
@@ -378,7 +379,8 @@ class ToolContainer extends Component {
 		icon = <MethodBrowserIcon />,
 		selectedSelector,
 		selectedIdentifier,
-		sortedBy
+		sortedBy,
+		description
 	) => {
 		const sorted = sortedBy
 			? methods.sort((a, b) => (a[sortedBy] <= b[sortedBy] ? -1 : 1))
@@ -393,6 +395,7 @@ class ToolContainer extends Component {
 				selectedIdentifier={selectedIdentifier}
 				id={pageId}
 				title={title}
+				description={description}
 			/>
 		);
 		this.createPage(
@@ -401,7 +404,8 @@ class ToolContainer extends Component {
 			browser,
 			null,
 			ref,
-			true
+			true,
+			description
 		);
 	};
 
@@ -643,7 +647,7 @@ class ToolContainer extends Component {
 				<SendersIcon />,
 				selector,
 				null,
-				"methodClass"
+				"methodClass",
 			);
 		}
 	};
@@ -665,7 +669,8 @@ class ToolContainer extends Component {
 				<SendersIcon />,
 				selector,
 				null,
-				"methodClass"
+				"methodClass",
+				"Senders of " + selector + " in list"
 			);
 		}
 	};
@@ -681,7 +686,8 @@ class ToolContainer extends Component {
 				<SendersIcon />,
 				selector,
 				null,
-				"selector"
+				"selector",
+				"Local senders of " + selector
 			);
 		}
 	};
@@ -697,7 +703,8 @@ class ToolContainer extends Component {
 				<ImplementorsIcon />,
 				null,
 				null,
-				"methodClass"
+				"methodClass",
+				"Implementors of " + selector
 			);
 		}
 	};
@@ -710,7 +717,11 @@ class ToolContainer extends Component {
 			this.openMethodBrowser(
 				implementors,
 				selector,
-				<ImplementorsIcon />
+				<ImplementorsIcon />,
+				null,
+				null,
+				null,
+				"Local implementors of " + selector
 			);
 		}
 	};
@@ -726,7 +737,8 @@ class ToolContainer extends Component {
 				<ReferencesIcon />,
 				null,
 				classname,
-				"methodClass"
+				"methodClass",
+				"References to " + classname
 			);
 		}
 	};
@@ -742,7 +754,8 @@ class ToolContainer extends Component {
 				<ReferencesIcon />,
 				null,
 				string,
-				"methodClass"
+				"methodClass",
+				"References to " + string
 			);
 		}
 	};
@@ -758,7 +771,8 @@ class ToolContainer extends Component {
 				null,
 				null,
 				null,
-				"methodClass"
+				"methodClass",
+				"Methods matching " + pattern
 			);
 		}
 	};
@@ -900,7 +914,7 @@ class ToolContainer extends Component {
 								classname,
 								applied.selector
 							);
-						} catch (ignored) {}
+						} catch (ignored) { }
 					}
 					return new CompilationResult(method);
 				} catch (inner) {
@@ -945,7 +959,7 @@ class ToolContainer extends Component {
 		if (!pin && !sync) {
 			try {
 				await ide.backend.unpinObject(object.id);
-			} catch (ignored) {}
+			} catch (ignored) { }
 		}
 		return object;
 	};
@@ -987,9 +1001,9 @@ class ToolContainer extends Component {
 		if (final.state === "failed") {
 			return silent
 				? this.reportError(
-						evaluation.error.description ||
-							evaluation.error.toString()
-				  )
+					evaluation.error.description ||
+					evaluation.error.toString()
+				)
 				: this.handleEvaluationError(final);
 		}
 		try {
