@@ -23,7 +23,7 @@ These are general endpoints that apply to the system as a whole.
 
 | Method | Path                               | Description                    | Parameters | Payload |
 | :----: | ---------------------------------- | ------------------------------ | :--------: | ------- |
-|  GET   | [/dialect](general/dialect/get.md) | Retrieve the Smalltalk dialect |            | -       |
+|  GET   | [/dialect](general/dialect/get.md) | Retrieve Smalltalk dialect |            | -       |
 |  GET   | [/version](general/version/get.md) | Retrieve system version        |            | -       |
 |  GET   | [/colors](general/colors/get.md)   | Retrieve system colors         |            | -       |
 |  GET   | [/logo](general/logo/get.md)       | Retrieve system logo           |            | -       |

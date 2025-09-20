@@ -11,31 +11,31 @@ The `class`, `hierarchy` and `package` options can be used in conjunction with o
 
 **Filtering Query Options**
 
-| Option           |  Type   | Description                                                                      |
-| ---------------- | :-----: | -------------------------------------------------------------------------------- |
-| class            | string  | to get methods of a given class                                                  |
-| selector         | string  | to get implementors of a given selector                                          |
-| category         | string  | to get methods under a given category                                            |
-| accessing        | string  | to get those methods accessing a given variable (either using or assigning it)   |
-| using            | string  | to get those methods using a given variable                                      |
-| assigning        | string  | to get those methods assigning a given variable                                  |
-| sending          | string  | to get senders of a given selector                                               |
-| referencingClass | string  | to get those methods referencing a given class                                   |
-| selectorMatching | string  | to get those methods with a selector matching a given pattern string             |
-| hierarchy        | string  | used to restrict the search to a given hierarchy                                 |
-| package          | string  | used to restrict the search to a given package                                   |
-| count            | boolean | true to get only the number of methods statisfying the condition                 |
-| modified         | boolean | true to get only modified methods (if such a feature is provided by the backend) |
+| Option           |  Type   | Description                                                                        |
+| ---------------- | :-----: | ---------------------------------------------------------------------------------- |
+| class            | string  | Use to get methods of a given class                                                |
+| selector         | string  | Use to get implementors of a given selector                                        |
+| category         | string  | Use to get methods under a given category                                          |
+| accessing        | string  | Use to get those methods accessing a given variable (either using or assigning it) |
+| using            | string  | Use to get those methods using a given variable                                    |
+| assigning        | string  | Use to get those methods assigning a given variable                                |
+| sending          | string  | Use to get senders of a given selector                                             |
+| referencingClass | string  | Use to get those methods referencing a given class                                 |
+| selectorMatching | string  | Use to get those methods with a selector matching a given pattern string           |
+| hierarchy        | string  | Use to restrict the search to a given hierarchy                                    |
+| package          | string  | Use to restrict the search to a given package                                      |
+| count            | boolean | Use to get only the number of methods statisfying the condition                    |
+| modified         | boolean | Use to get only modified methods (if such a feature is provided by the backend)    |
 
 **Decoration Query Options**
 
-|   Option    |  Type   | Description                                                                         |
-| :---------: | :-----: | ----------------------------------------------------------------------------------- |
-|     ast     | boolean | to get methods' AST ([see below](#method-ast))                                      |
-| annotations | boolean | to get methods' annotations ([see below](#method-annotations))                      |
-|  bytecodes  | boolean | to get methods' bytecodes                                                           |
-| disassembly | boolean | to get methods' disassembly                                                         |
-|    basic    | boolean | to get a basic set of properties, avoiding time-consuming ones such as `overriding` |
+|   Option    |  Type   | Description                                                                             |
+| :---------: | :-----: | --------------------------------------------------------------------------------------- |
+|     ast     | boolean | Use to get methods' AST ([see below](#method-ast))                                      |
+| annotations | boolean | Use to get methods' annotations ([see below](#method-annotations))                      |
+|  bytecodes  | boolean | Use to get methods' bytecodes                                                           |
+| disassembly | boolean | Use to get methods' disassembly                                                         |
+|    basic    | boolean | Use to get a basic set of properties, avoiding time-consuming ones such as `overriding` |
 
 ## Success Responses
 
@@ -45,30 +45,30 @@ The `class`, `hierarchy` and `package` options can be used in conjunction with o
 
 ```json
 {
-	"selector": "string",
-	"methodClass": "string",
-	"category": "string",
-	"source": "string",
-	"author": "string",
-	"timestamp": "string",
-	"package": "string",
-	"needsRecompilation": "boolean",
-	"overriding": "boolean",
-	"overriden": "boolean",
-	"bytecodes": "string",
-	"disassembly": "string",
-	"ast": "node",
-	"annotations": ["annotation"],
-	"modified": "boolean"
+  "selector": "string",
+  "methodClass": "string",
+  "category": "string",
+  "source": "string",
+  "author": "string",
+  "timestamp": "string",
+  "package": "string",
+  "needsRecompilation": "boolean",
+  "overriding": "boolean",
+  "overriden": "boolean",
+  "bytecodes": "string",
+  "disassembly": "string",
+  "ast": "node",
+  "annotations": ["annotation"],
+  "modified": "boolean"
 }
 ```
 
 Where:
 
--   `needsRecompilation` specifies whether the last compilation of method has any issue, for instance, when a instance variable was removed from the class definition and a method accessing it should be revised and recompiled. This mark is used to color the method differently to bring developers attention.
--   `ast` is a simplified version of the method's abstract syntax tree used for some functionalities (see [Method AST](#method-ast) below)
--   `annotations` is list of annotations helpful to code linting (see [Method Annotations](#method-annotations) below)
--   `modified` is an optional property indicating whether the method was modified in the current session.
+- `needsRecompilation` specifies whether the last compilation of method has any issue, for instance, when a instance variable was removed from the class definition and a method accessing it should be revised and recompiled. This mark is used to color the method differently to bring developers attention.
+- `ast` is a simplified version of the method's abstract syntax tree used for some functionalities (see [Method AST](#method-ast) below)
+- `annotations` is list of annotations helpful to code linting (see [Method Annotations](#method-annotations) below)
+- `modified` is an optional property indicating whether the method was modified in the current session.
 
 _Note: optional properties such as `bytecodes`, `disassembly` or `annotations` should not be included if they are not requested in the query._
 
@@ -76,12 +76,12 @@ _Note: optional properties such as `bytecodes`, `disassembly` or `annotations` s
 
 ```json
 [
-	{
-		"selector": "/",
-		"source": "/ aNumber\r\t\"Answer the result of dividing the receiver by aNumber.\"\r\taNumber isFraction\r\t\tifTrue: [^self * aNumber reciprocal].\r\t^ aNumber adaptToFraction: self andSend: #/",
-		"methodClass": "Fraction",
-		"category": "arithmetic"
-	}
+  {
+    "selector": "/",
+    "source": "/ aNumber\r\t\"Answer the result of dividing the receiver by aNumber.\"\r\taNumber isFraction\r\t\tifTrue: [^self * aNumber reciprocal].\r\t^ aNumber adaptToFraction: self andSend: #/",
+    "methodClass": "Fraction",
+    "category": "arithmetic"
+  }
 ]
 ```
 
@@ -92,11 +92,11 @@ In case the option is provided by the backend Smalltalk, the expected structure 
 
 ```json
 {
-	"type": "string",
-	"label": "string",
-	"start": "number",
-	"end": "number",
-	"children": ["node"]
+  "type": "string",
+  "label": "string",
+  "start": "number",
+  "end": "number",
+  "children": ["node"]
 }
 ```
 
@@ -126,10 +126,10 @@ The structure of an `annotation` should be like this:
 
 ```json
 {
-	"type": "string",
-	"start": "number",
-	"end": "number",
-	"description": "string"
+  "type": "string",
+  "start": "number",
+  "end": "number",
+  "description": "string"
 }
 ```
 
@@ -140,43 +140,43 @@ Here are a couple of examples of methods with annotations, one sending a message
 
 ```json
 [
-	{
-		"selector": "m",
-		"methodClass": "Number",
-		"category": "blah",
-		"source": "m\r\t^self messageThatHasNoImplementors",
-		"author": "Guille",
-		"package": "Blah",
-		"annotations": [
-			{
-				"from": 10,
-				"to": 38,
-				"type": "warning",
-				"description": "messageThatHasNoImplementors has no implementors"
-			}
-		]
-	}
+  {
+    "selector": "m",
+    "methodClass": "Number",
+    "category": "blah",
+    "source": "m\r\t^self messageThatHasNoImplementors",
+    "author": "Guille",
+    "package": "Blah",
+    "annotations": [
+      {
+        "from": 10,
+        "to": 38,
+        "type": "warning",
+        "description": "messageThatHasNoImplementors has no implementors"
+      }
+    ]
+  }
 ]
 ```
 
 ```json
 [
-	{
-		"selector": "m",
-		"methodClass": "Point",
-		"category": "blah",
-		"source": "m\r\t| t |\r\t^t m",
-		"author": "guille",
-		"package": "Blah",
-		"annotations": [
-			{
-				"from": 12,
-				"to": 13,
-				"type": "warning",
-				"description": "t is not assigned"
-			}
-		]
-	}
+  {
+    "selector": "m",
+    "methodClass": "Point",
+    "category": "blah",
+    "source": "m\r\t| t |\r\t^t m",
+    "author": "guille",
+    "package": "Blah",
+    "annotations": [
+      {
+        "from": 12,
+        "to": 13,
+        "type": "warning",
+        "description": "t is not assigned"
+      }
+    ]
+  }
 ]
 ```
 
@@ -191,7 +191,7 @@ If the backend at hand provides such information (in a property `status`), Websi
 
 ```json
 {
-	"status": "string"
+  "status": "string"
 }
 ```
 

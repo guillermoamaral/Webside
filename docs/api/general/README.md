@@ -6,7 +6,7 @@ These are general endpoints that apply to the system as a whole.
 
 | Method | Path                       | Description                    | Parameters | Payload |
 | :----: | -------------------------- | ------------------------------ | :--------: | ------- |
-|  GET   | [/dialect](dialect/get.md) | Retrieve the Smalltalk dialect |            | -       |
+|  GET   | [/dialect](dialect/get.md) | Retrieve Smalltalk dialect |            | -       |
 |  GET   | [/version](version/get.md) | Retrieve system version        |            | -       |
 |  GET   | [/colors](colors/get.md)   | Retrieve system colors         |            | -       |
 |  GET   | [/logo](logo/get.md)       | Retrieve system logo           |            | -       |

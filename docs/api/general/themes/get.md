@@ -93,7 +93,7 @@ If style is omitted a default style will be used.
 			"numberStyle": {
 				"color": "#8f5902"
 			},
-			"selector": {
+			"selectorStyle": {
 				"color": "#000000",
 				"bold": true
 			},
