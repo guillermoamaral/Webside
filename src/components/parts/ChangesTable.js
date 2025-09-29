@@ -258,7 +258,7 @@ class ChangesTable extends Component {
 						onRowSelect={this.changeSelected}
 						menuOptions={this.menuOptions()}
 						rowActions={this.rowActions()}
-						useFilter
+						enableSearch
 					/>
 				</Box>
 				<Box ml={1} mt={1} mb={1}>
