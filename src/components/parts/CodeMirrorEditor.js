@@ -515,24 +515,25 @@ class CodeMirrorEditor extends CodeEditor {
 						const container = this.ensureTooltipContainer();
 						const dom = document.createElement("div");
 						container.appendChild(dom);
-						const root = this.renderTooltip(spec, dom, ref);
+						const destroy = () => {
+							if (root) {
+								try {
+									if (ref && ref.current)
+										ref.current.aboutToClose();
+									root.unmount();
+								} catch (error) {
+									console.warn(
+										"Tooltip unmount failed:",
+										error
+									);
+								}
+							}
+							dom.remove();
+						};
+						const root = this.renderTooltip(spec, dom, ref, destroy);
 						return {
 							dom,
-							destroy: () => {
-								if (root) {
-									try {
-										if (ref && ref.current)
-											ref.current.aboutToClose();
-										root.unmount();
-									} catch (error) {
-										console.warn(
-											"Tooltip unmount failed:",
-											error
-										);
-									}
-								}
-								dom.remove();
-							},
+							destroy,
 						};
 					},
 				};

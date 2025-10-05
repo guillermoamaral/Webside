@@ -866,6 +866,10 @@ class IDE extends Component {
 		this.mainContainer().openMethodBrowser(methods);
 	};
 
+	inspectObject = (object) => {
+		this.mainContainer().openInspector(object);
+	};
+
 	async inspectExpression(expression) {
 		const object = await this.backend.evaluateExpression(
 			expression,

@@ -241,14 +241,7 @@ class Debugger extends Tool {
 			this.tempObjects.push(object);
 			return {
 				title: name,
-				titleAction: this.inspectBinding,
 				object: object,
-				actions: [
-					{
-						label: "Open in new tab",
-						handler: this.inspectBinding,
-					},
-				],
 			};
 		}
 	};
