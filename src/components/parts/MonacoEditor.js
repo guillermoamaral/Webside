@@ -1039,7 +1039,8 @@ class MonacoEditor extends CodeEditor {
 		this.currentTooltipRoot = this.renderTooltip(
 			spec,
 			container,
-			this.currentTooltipRef
+			this.currentTooltipRef,
+			() => this.hideTooltip(editor)
 		);
 		this.currentTooltipWidget = {
 			getId: () => "code.tooltip.widget",
