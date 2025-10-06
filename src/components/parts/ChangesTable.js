@@ -261,7 +261,7 @@ class ChangesTable extends Component {
 						enableSearch
 					/>
 				</Box>
-				<Box ml={1} mt={1} mb={1}>
+				{filters.length > 0 && <Box ml={1} mt={1} mb={1}>
 					<Stack direction="row" spacing={1}>
 						{filters.map((f, i) => (
 							<Chip
@@ -273,7 +273,7 @@ class ChangesTable extends Component {
 							/>
 						))}
 					</Stack>
-				</Box>
+				</Box>}
 			</Box>
 		);
 	}

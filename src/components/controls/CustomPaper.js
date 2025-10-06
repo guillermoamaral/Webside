@@ -6,7 +6,7 @@ class CustomPaper extends Component {
 		return (
 			<Paper
 				variant="outlined"
-				sx={{ padding: 1, height: "100%" }}
+				sx={{ padding: 0.5, height: "100%" }}
 			>
 				{this.props.children}
 			</Paper>
