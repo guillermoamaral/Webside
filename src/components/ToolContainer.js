@@ -648,6 +648,7 @@ class ToolContainer extends Component {
 				selector,
 				null,
 				"methodClass",
+				"Senders of " + selector,
 			);
 		}
 	};
