@@ -1,0 +1,96 @@
+components:
+  schemas:
+    BaseObject:
+      type: object
+      description: Common properties for all objects in the system
+      required:
+        - class
+        - hasNamedSlots
+        - hasIndexedSlots
+        - size
+        - printString
+      properties:
+        class:
+          type: string
+          description: The class name of the object
+        hasNamedSlots:
+          type: boolean
+          description: Whether the object has named slots
+        hasIndexedSlots:
+          type: boolean
+          description: Whether the object has indexed slots
+        size:
+          type: number
+          description: The size of the object
+        printString:
+          type: string
+          description: String representation of the object
+
+    Profiler:
+      type: object
+      description: A profiler instance
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: Profiler ID
+        expression:
+          type: string
+          description: Expression being profiled
+
+    ProfilerResult:
+      type: object
+      description: Profiler results
+      properties:
+        tree:
+          type: object
+          description: Tree view of profiling results
+        ranking:
+          type: array
+          items:
+            type: object
+          description: Ranked profiling results
+
+    Extension:
+      type: object
+      description: An IDE extension
+      properties:
+        name:
+          type: string
+          description: Extension name
+        description:
+          type: string
+          description: Extension description
+        version:
+          type: string
+          description: Extension version
+
+    Command:
+      type: object
+      description: A command definition
+      properties:
+        name:
+          type: string
+          description: Command name
+        description:
+          type: string
+          description: Command description
+        parameters:
+          type: array
+          items:
+            type: object
+          description: Command parameters
+
+    CommandRequest:
+      type: object
+      description: A command execution request
+      required:
+        - command
+      properties:
+        command:
+          type: string
+          description: Command to execute
+        parameters:
+          type: object
+          description: Command parameters

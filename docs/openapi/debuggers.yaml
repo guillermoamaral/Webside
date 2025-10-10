@@ -1,0 +1,283 @@
+paths:
+  /debuggers:
+    get:
+      summary: Retrieve open debuggers
+      description: Get all currently open debuggers
+      tags: [Debuggers]
+      operationId: getDebuggers
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/debugger"
+
+    post:
+      summary: Create a debugger upon an given process (evaluation)
+      description: Create a debugger on a given process. The process is identified thru the evaluation (ID) that created it.
+      tags: [Debuggers]
+      operationId: createDebugger
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - evaluation
+              properties:
+                evaluation:
+                  type: string
+                  description: Evaluation ID
+      responses:
+        "200":
+          description: Debugger created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/debugger"
+
+  /debuggers/{id}:
+    get:
+      summary: Retrieve the debugger with a given ID
+      description: Get details of a specific debugger
+      tags: [Debuggers]
+      operationId: getDebugger
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Debugger ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/debugger"
+
+    delete:
+      summary: Delete the debugger with a given ID
+      description: Delete a debugger (terminating the process being debugged)
+      tags: [Debuggers]
+      operationId: deleteDebugger
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Debugger ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Debugger deleted successfully
+
+  /debuggers/{id}/frames:
+    get:
+      summary: Retrieve frames of the debugger with a given ID
+      description: Get all stack frames in a debugger
+      tags: [Debuggers]
+      operationId: getDebuggerFrames
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Debugger ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/frame"
+
+  /debuggers/{id}/frames/{index}:
+    get:
+      summary: Retrieve the i-th frame within the debugger with a given ID
+      description: Get a specific stack frame by index
+      tags: [Debuggers]
+      operationId: getDebuggerFrame
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Debugger ID
+          schema:
+            type: string
+        - name: index
+          in: path
+          required: true
+          description: Frame index
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/frame"
+
+  /debuggers/{id}/frames/{index}/bindings:
+    get:
+      summary: Retrieve the bindings of the i-th frame within the debugger with a given ID
+      description: Get variable bindings for a specific frame
+      tags: [Debuggers]
+      operationId: getDebuggerFrameBindings
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Debugger ID
+          schema:
+            type: string
+        - name: index
+          in: path
+          required: true
+          description: Frame index
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/binding"
+
+  /debuggers/{id}/frames/{index}/stepover:
+    post:
+      summary: Step over the current sentence in the debugger with a given ID
+      description: Execute step over operation in debugger
+      tags: [Debuggers]
+      operationId: stepOver
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Debugger ID
+          schema:
+            type: string
+        - name: index
+          in: path
+          required: true
+          description: Frame index
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Step over executed successfully
+
+  /debuggers/{id}/frames/{index}/stepthrough:
+    post:
+      summary: Step through the current sentence in the debugger with a given ID
+      description: Execute step through operation in debugger
+      tags: [Debuggers]
+      operationId: stepThrough
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Debugger ID
+          schema:
+            type: string
+        - name: index
+          in: path
+          required: true
+          description: Frame index
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Step through executed successfully
+
+  /debuggers/{id}/frames/{index}/stepinto:
+    post:
+      summary: Step into the current sentence in the debugger with a given ID
+      description: Execute step into operation in debugger
+      tags: [Debuggers]
+      operationId: stepInto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Debugger ID
+          schema:
+            type: string
+        - name: index
+          in: path
+          required: true
+          description: Frame index
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Step into executed successfully
+
+  /debuggers/{id}/frames/{index}/restart:
+    post:
+      summary: Restart the i-th frame of the debugger with a given ID
+      description: Restart the i-th frame of the debugger
+      tags: [Debuggers]
+      operationId: restartDebugger
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Debugger ID
+          schema:
+            type: string
+        - name: index
+          in: path
+          required: true
+          description: Frame index
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Debugger restarted successfully
+
+  /debuggers/{id}/resume:
+    post:
+      summary: Resume the process of the debugger with a given ID
+      description: Resume execution in debugger
+      tags: [Debuggers]
+      operationId: resumeDebugger
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Debugger ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Debugger resumed successfully
+
+  /debuggers/{id}/terminate:
+    post:
+      summary: Terminate process being debugged and close the debugger with a given ID
+      description: Terminate the process and close debugger
+      tags: [Debuggers]
+      operationId: terminateDebugger
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Debugger ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Debugger terminated successfully

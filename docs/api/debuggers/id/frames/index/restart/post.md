@@ -2,7 +2,7 @@
 
 Restart the debugger with a given ID
 
-**URL**: `/debuggers/1/restart`
+**URL**: `/debuggers/{id}/frames/{index}/restart`
 
 **Method**: `POST`
 

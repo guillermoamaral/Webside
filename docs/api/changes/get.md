@@ -8,24 +8,24 @@ Retrieve all changes made to the system in the current session.
 
 **Query Options**
 
-| Option |  Type  | Description                           |
-| :----: | :----: | ------------------------------------- |
-| author | string | to get only changes made by an author |
+| Option |  Type  | Description                               |
+| :----: | :----: | ----------------------------------------- |
+| author | string | Use to get only changes made by an author |
 
 ## Success Responses
 
 **Code** : `200 OK`
 
-**Content**: `[change]` where `change` can be one of the following:
+**Content**: `[change]` where `change` has the following structure:
 
 ```json
 {
-	"type": "string",
-	"label": "string",
-	"package": "string",
-	"timestamp": "string",
-	"author": "string",
-	"sourceCode": "string"
+  "type": "string",
+  "label": "string",
+  "package": "string",
+  "timestamp": "string",
+  "author": "string",
+  "sourceCode": "string"
 }
 ```
 
@@ -60,16 +60,16 @@ And `type` can be one of the following:
 
 ```json
 [
-	{
-		"type": "AddMethod",
-		"label": "Float class ≫ phi",
-		"package": "Default",
-		"timestamp": "2020-12-05T19:13:44.166-03:00",
-		"author": "guille",
-		"sourceCode": "phi\r\t^1.0 + 5.0 sqrt / 2.0",
-		"className": "Float class",
-		"selector": "phi",
-		"category": "constants"
-	}
+  {
+    "type": "AddMethod",
+    "label": "Float class ≫ phi",
+    "package": "Default",
+    "timestamp": "2020-12-05T19:13:44.166-03:00",
+    "author": "guille",
+    "sourceCode": "phi\r\t^1.0 + 5.0 sqrt / 2.0",
+    "className": "Float class",
+    "selector": "phi",
+    "category": "constants"
+  }
 ]
 ```

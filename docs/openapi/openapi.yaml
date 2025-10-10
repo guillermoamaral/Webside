@@ -1,0 +1,163 @@
+openapi: 3.0.3
+info:
+  title: Webside API
+  description: |
+    Webside is based on a Smalltalk system implementing the following web API.
+  version: 3.2.0
+  contact:
+    name: guille amaral
+servers:
+  - url: http://localhost:9000/bee
+    description: Bee Smalltalk
+  - url: http://localhost:9001/pharo
+    description: Pharo Smalltalk
+paths:
+  # General
+  /dialect:
+    $ref: "./general.yaml#/paths/~1dialect"
+  /version:
+    $ref: "./general.yaml#/paths/~1version"
+  /colors:
+    $ref: "./general.yaml#/paths/~1colors"
+  /logo:
+    $ref: "./general.yaml#/paths/~1logo"
+  /stats:
+    $ref: "./general.yaml#/paths/~1stats"
+  /themes:
+    $ref: "./general.yaml#/paths/~1themes"
+  /icons:
+    $ref: "./general.yaml#/paths/~1icons"
+  # Code
+  /methods:
+    $ref: "./code.yaml#/paths/~1methods"
+  /classes:
+    $ref: "./code.yaml#/paths/~1classes"
+  /classes/{name}:
+    $ref: "./code.yaml#/paths/~1classes~1{name}"
+  /classes/{name}/superclasses:
+    $ref: "./code.yaml#/paths/~1classes~1{name}~1superclasses"
+  /classes/{name}/subclasses:
+    $ref: "./code.yaml#/paths/~1classes~1{name}~1subclasses"
+  /classes/{name}/variables:
+    $ref: "./code.yaml#/paths/~1classes~1{name}~1variables"
+  /classes/{name}/instance-variables:
+    $ref: "./code.yaml#/paths/~1classes~1{name}~1instance-variables"
+  /classes/{name}/class-variables:
+    $ref: "./code.yaml#/paths/~1classes~1{name}~1class-variables"
+  /classes/{name}/categories:
+    $ref: "./code.yaml#/paths/~1classes~1{name}~1categories"
+  /classes/{name}/used-categories:
+    $ref: "./code.yaml#/paths/~1classes~1{name}~1used-categories"
+  /classes/{name}/methods:
+    $ref: "./code.yaml#/paths/~1classes~1{name}~1methods"
+  /classes/{name}/selectors:
+    $ref: "./code.yaml#/paths/~1classes~1{name}~1selectors"
+  /classes/{name}/methods/{selector}:
+    $ref: "./code.yaml#/paths/~1classes~1{name}~1methods~1{selector}"
+  /categories:
+    $ref: "./code.yaml#/paths/~1categories"
+  /usual-categories:
+    $ref: "./code.yaml#/paths/~1usual-categories"
+  /packages:
+    $ref: "./code.yaml#/paths/~1packages"
+  /packages/{name}:
+    $ref: "./code.yaml#/paths/~1packages~1{name}"
+  /packages/{name}/classes:
+    $ref: "./code.yaml#/paths/~1packages~1{name}~1classes"
+  /packages/{name}/methods:
+    $ref: "./code.yaml#/paths/~1packages~1{name}~1methods"
+  /search:
+    $ref: "./code.yaml#/paths/~1search"
+  /autocompletions:
+    $ref: "./code.yaml#/paths/~1autocompletions"
+  /classtemplate:
+    $ref: "./code.yaml#/paths/~1classtemplate"
+  /methodtemplate:
+    $ref: "./code.yaml#/paths/~1methodtemplate"
+  /selector:
+    $ref: "./code.yaml#/paths/~1selector"
+  #Changes
+  /changes:
+    $ref: "./changes.yaml#/paths/~1changes"
+  #Changesets
+  /changesets/download:
+    $ref: "./changesets.yaml#/paths/~1changesets~1download"
+  /changesets/upload:
+    $ref: "./changesets.yaml#/paths/~1changesets~1upload"
+  #Evaluations
+  /evaluations:
+    $ref: "./evaluations.yaml#/paths/~1evaluations"
+  /evaluations/{id}:
+    $ref: "./evaluations.yaml#/paths/~1evaluations~1{id}"
+  /evaluations/{id}/pause:
+    $ref: "./evaluations.yaml#/paths/~1evaluations~1{id}~1pause"
+  /evaluations/{id}/resume:
+    $ref: "./evaluations.yaml#/paths/~1evaluations~1{id}~1resume"
+  #Objects
+  /objects:
+    $ref: "./objects.yaml#/paths/~1objects"
+  /objects/{id}:
+    $ref: "./objects.yaml#/paths/~1objects~1{id}"
+  /objects/{id}/{*}:
+    $ref: "./objects.yaml#/paths/~1objects~1{id}~1{*}"
+  /objects/{id}/named-slots:
+    $ref: "./objects.yaml#/paths/~1objects~1{id}~1named-slots"
+  /objects/{id}/indexed-slots:
+    $ref: "./objects.yaml#/paths/~1objects~1{id}~1indexed-slots"
+  /objects/{id}/custom-views:
+    $ref: "./objects.yaml#/paths/~1objects~1{id}~1custom-views"
+  #Workspaces
+  /workspaces:
+    $ref: "./workspaces.yaml#/paths/~1workspaces"
+  /workspaces/{id}:
+    $ref: "./workspaces.yaml#/paths/~1workspaces~1{id}"
+  /workspaces/{id}/bindings:
+    $ref: "./workspaces.yaml#/paths/~1workspaces~1{id}~1bindings"
+  #Debuggers
+  /debuggers:
+    $ref: "./debuggers.yaml#/paths/~1debuggers"
+  /debuggers/{id}:
+    $ref: "./debuggers.yaml#/paths/~1debuggers~1{id}"
+  /debuggers/{id}/frames:
+    $ref: "./debuggers.yaml#/paths/~1debuggers~1{id}~1frames"
+  /debuggers/{id}/frames/{index}:
+    $ref: "./debuggers.yaml#/paths/~1debuggers~1{id}~1frames~1{index}"
+  /debuggers/{id}/frames/{index}/bindings:
+    $ref: "./debuggers.yaml#/paths/~1debuggers~1{id}~1frames~1{index}~1bindings"
+  /debuggers/{id}/frames/{index}/stepover:
+    $ref: "./debuggers.yaml#/paths/~1debuggers~1{id}~1frames~1{index}~1stepover"
+  /debuggers/{id}/frames/{index}/stepthrough:
+    $ref: "./debuggers.yaml#/paths/~1debuggers~1{id}~1frames~1{index}~1stepthrough"
+  /debuggers/{id}/frames/{index}/stepinto:
+    $ref: "./debuggers.yaml#/paths/~1debuggers~1{id}~1frames~1{index}~1stepinto"
+  /debuggers/{id}/frames/{index}/restart:
+    $ref: "./debuggers.yaml#/paths/~1debuggers~1{id}~1frames~1{index}~1restart"
+  /debuggers/{id}/resume:
+    $ref: "./debuggers.yaml#/paths/~1debuggers~1{id}~1resume"
+  /debuggers/{id}/terminate:
+    $ref: "./debuggers.yaml#/paths/~1debuggers~1{id}~1terminate"
+  #Test Runs
+  /test-runs:
+    $ref: "./test-runs.yaml#/paths/~1test-runs"
+  /test-runs/{id}:
+    $ref: "./test-runs.yaml#/paths/~1test-runs~1{id}"
+  /test-runs/{id}/results:
+    $ref: "./test-runs.yaml#/paths/~1test-runs~1{id}~1results"
+  /test-runs/{id}/run:
+    $ref: "./test-runs.yaml#/paths/~1test-runs~1{id}~1run"
+  /test-runs/{id}/debug:
+    $ref: "./test-runs.yaml#/paths/~1test-runs~1{id}~1debug"
+  /test-runs/{id}/stop:
+    $ref: "./test-runs.yaml#/paths/~1test-runs~1{id}~1stop"
+
+components:
+  schemas:
+    $ref: "./schemas.yaml#/components/schemas"
+tags:
+  - name: General
+    description: These are general endpoints that apply to the system as a whole.
+  - name: Code
+    description: |
+      These are the endpoints used to retrieve system code (packages, classes and methods).
+
+      It is important to mention that the JSON objects returned by these endpoints should include common properties of every `object`. This is used by Webside IDE to provide inspection services over objects of the meta-model (classes, methods, etc.).

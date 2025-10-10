@@ -1,0 +1,87 @@
+paths:
+  /changes:
+    get:
+      summary: Retrieve changes made to the system
+      description: Get all changes made to the system in the current session
+      tags: [Changes]
+      operationId: getChanges
+      parameters:
+        - name: author
+          in: query
+          description: Filter changes by author
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/change"
+    post:
+      summary: Apply a change to the system
+      description: |
+        Apply a change to the system. This is one of the most important endpoints as it centralizes every change the user can apply to the system.
+
+        Important. The API specifies a set of basic changes applicable to all dialect analized. However, this list can be extended to support more changes and refactorings by means of /extensions endpoint.
+
+        Special attention must be paid to the way the target system must handle compilation errors.
+      tags: [Changes]
+      operationId: applyChange
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "./schemas.yaml#/components/schemas/addMethodChange"
+                - $ref: "./schemas.yaml#/components/schemas/removeMethodChange"
+                - $ref: "./schemas.yaml#/components/schemas/classifyMethodChange"
+                - $ref: "./schemas.yaml#/components/schemas/renameMethodChange"
+                - $ref: "./schemas.yaml#/components/schemas/addClassChange"
+                - $ref: "./schemas.yaml#/components/schemas/commentClassChange"
+                - $ref: "./schemas.yaml#/components/schemas/removeClassChange"
+                - $ref: "./schemas.yaml#/components/schemas/renameClassChange"
+                - $ref: "./schemas.yaml#/components/schemas/addClassCategoryChange"
+                - $ref: "./schemas.yaml#/components/schemas/renameClassCategoryChange"
+                - $ref: "./schemas.yaml#/components/schemas/removeClassCategoryChange"
+                - $ref: "./schemas.yaml#/components/schemas/addInstanceVariableChange"
+                - $ref: "./schemas.yaml#/components/schemas/removeInstanceVariableChange"
+                - $ref: "./schemas.yaml#/components/schemas/renameInstanceVariableChange"
+                - $ref: "./schemas.yaml#/components/schemas/moveUpInstanceVariableChange"
+                - $ref: "./schemas.yaml#/components/schemas/moveDownInstanceVariableChange"
+                - $ref: "./schemas.yaml#/components/schemas/addClassVariableChange"
+                - $ref: "./schemas.yaml#/components/schemas/removeClassVariableChange"
+                - $ref: "./schemas.yaml#/components/schemas/renameClassVariableChange"
+                - $ref: "./schemas.yaml#/components/schemas/renameCategoryChange"
+                - $ref: "./schemas.yaml#/components/schemas/removeCategoryChange"
+                - $ref: "./schemas.yaml#/components/schemas/addPackageChange"
+                - $ref: "./schemas.yaml#/components/schemas/removePackageChange"
+                - $ref: "./schemas.yaml#/components/schemas/renamePackageChange"
+            examples:
+              addMethod:
+                summary: Add a method
+                value:
+                  type: "AddMethod"
+                  className: "Float class"
+                  category: "constants"
+                  sourceCode: "phi\r\t^1.0 + 5.0 sqrt / 2.0"
+                  author: "guille"
+      responses:
+        "200":
+          description: Change applied successfully
+          content:
+            application/json:
+              schema:
+                - $ref: "./schemas.yaml#/components/schemas/change"
+        "409":
+          description: Change error
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "./schemas.yaml#/components/schemas/changeError"
+                  - $ref: "./schemas.yaml#/components/schemas/compilationError"

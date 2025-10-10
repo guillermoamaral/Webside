@@ -186,7 +186,8 @@ Every Smalltalk dialect provides some sort of unit tests (e.g., SUnit). In any c
 
 Webside has a naive, yet effective way to detect whether a method represents a test, so the backend is not obligated to specify that.
 
-There are some dialects that keep track of the last run result. They used it as a test _state_, usually to show a colored icon: green if the last run resulted in the test passing, yellow if it failed, and red if it ended up in an error.\
+There are some dialects that keep track of the last run result. They used it as a test _state_, usually to show a colored icon: green if the last run resulted in the test passing, yellow if it failed, and red if it ended up in an error.
+
 If the backend at hand provides such information (in a property `status`), Webside will display it as a mark near the selector.
 
 ```json

@@ -11,7 +11,7 @@ It is also possible get a tree-like structure as well as to limit the depth in t
 
 |  Option  |  Type   | Description                                            |
 | :------: | :-----: | ------------------------------------------------------ |
-|   root   | string  | Use the name of the root class                         |
+|   root   | string  | The name of the root class                             |
 |  names   | boolean | Use to get only class names                            |
 |   tree   | boolean | Use to get a tree-like structure                       |
 |  depth   | number  | Use to limit the hierarchy depth (only when tree=true) |

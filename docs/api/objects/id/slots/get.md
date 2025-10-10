@@ -22,12 +22,12 @@ Finally, custom object views could be available from `custom-views` segment. See
 
 ```json
 {
-	"id": "string",
-	"class": "string",
-	"hasNamedSlots": "boolean",
-	"hasIndexedSlots": "boolean",
-	"size": "number",
-	"printString": "string"
+  "id": "string",
+  "class": "string",
+  "hasNamedSlots": "boolean",
+  "hasIndexedSlots": "boolean",
+  "size": "number",
+  "printString": "string"
 }
 ```
 
@@ -35,11 +35,11 @@ Finally, custom object views could be available from `custom-views` segment. See
 
 ```json
 {
-	"class": "Point",
-	"hasNamedSlots": true,
-	"hasIndexedSlots": false,
-	"size": 0,
-	"printString": "2 @ 2"
+  "class": "Point",
+  "hasNamedSlots": true,
+  "hasIndexedSlots": false,
+  "size": 0,
+  "printString": "2 @ 2"
 }
 ```
 
@@ -47,10 +47,10 @@ Finally, custom object views could be available from `custom-views` segment. See
 
 ```json
 {
-	"class": "SmallInteger",
-	"hasIndexedSlots": false,
-	"size": 0,
-	"printString": "2"
+  "class": "SmallInteger",
+  "hasIndexedSlots": false,
+  "size": 0,
+  "printString": "2"
 }
 ```
 
@@ -58,22 +58,22 @@ Finally, custom object views could be available from `custom-views` segment. See
 
 ```json
 [
-	{
-		"class": "Point",
-		"hasNamedSlots": true,
-		"hasIndexedSlots": false,
-		"size": 0,
-		"printString": "1 @ 1",
-		"slot": "origin"
-	},
-	{
-		"class": "Point",
-		"hasNamedSlots": true,
-		"hasIndexedSlots": false,
-		"size": 0,
-		"printString": "2 @ 2",
-		"slot": "corner"
-	}
+  {
+    "class": "Point",
+    "hasNamedSlots": true,
+    "hasIndexedSlots": false,
+    "size": 0,
+    "printString": "1 @ 1",
+    "slot": "origin"
+  },
+  {
+    "class": "Point",
+    "hasNamedSlots": true,
+    "hasIndexedSlots": false,
+    "size": 0,
+    "printString": "2 @ 2",
+    "slot": "corner"
+  }
 ]
 ```
 
@@ -83,22 +83,22 @@ Note the `slot` property in each object.
 
 ```json
 [
-	{
-		"class": "SmallInteger",
-		"hasNamedSlots": false,
-		"hasIndexedSlots": false,
-		"size": 0,
-		"printString": "2",
-		"slot": "x"
-	},
-	{
-		"class": "SmallInteger",
-		"hasNamedSlots": false,
-		"hasIndexedSlots": false,
-		"size": 0,
-		"printString": "2",
-		"slot": "y"
-	}
+  {
+    "class": "SmallInteger",
+    "hasNamedSlots": false,
+    "hasIndexedSlots": false,
+    "size": 0,
+    "printString": "2",
+    "slot": "x"
+  },
+  {
+    "class": "SmallInteger",
+    "hasNamedSlots": false,
+    "hasIndexedSlots": false,
+    "size": 0,
+    "printString": "2",
+    "slot": "y"
+  }
 ]
 ```
 
@@ -106,30 +106,30 @@ Note the `slot` property in each object.
 
 ```json
 [
-	{
-		"class": "True",
-		"hasNamedSlots": false,
-		"hasIndexedSlots": false,
-		"size": 0,
-		"printString": "true",
-		"slot": 1
-	},
-	{
-		"class": "SmallInteger",
-		"hasNamedSlots": false,
-		"hasIndexedSlots": false,
-		"size": 0,
-		"printString": "2",
-		"slot": 2
-	},
-	{
-		"class": "UndefinedObject",
-		"hasNamedSlots": false,
-		"hasIndexedSlots": false,
-		"size": 0,
-		"printString": "nil",
-		"slot": 3
-	}
+  {
+    "class": "True",
+    "hasNamedSlots": false,
+    "hasIndexedSlots": false,
+    "size": 0,
+    "printString": "true",
+    "slot": 1
+  },
+  {
+    "class": "SmallInteger",
+    "hasNamedSlots": false,
+    "hasIndexedSlots": false,
+    "size": 0,
+    "printString": "2",
+    "slot": 2
+  },
+  {
+    "class": "UndefinedObject",
+    "hasNamedSlots": false,
+    "hasIndexedSlots": false,
+    "size": 0,
+    "printString": "nil",
+    "slot": 3
+  }
 ]
 ```
 
@@ -137,18 +137,18 @@ Note the `slot` property in each object.
 
 ```json
 {
-	"class": "SmallInteger",
-	"hasNamedSlots": false,
-	"hasIndexedSlots": false,
-	"size": 0,
-	"printString": "2"
+  "class": "SmallInteger",
+  "hasNamedSlots": false,
+  "hasIndexedSlots": false,
+  "size": 0,
+  "printString": "2"
 }
 ```
 
 # Custom views
 
 Custom views give the chance to specify special ways of viewing an object. The consumer of the API can take advantage of these specifications and display different views accordingly.\
-For example, at the moment of writing this documentation, the IDE supports the following views `list`, `table`, `tree`, `source`, `html` and `markdown`. These views are available in the Inspector.
+For example, at the moment of writing this documentation, the IDE supports the following views `table`, `tree`, `source`, `html`, `json` and `markdown`. These views are available in the Inspector.
 
 Custom views should be accessible through `/custom-views` segment.
 
@@ -157,28 +157,28 @@ Responding to `GET /objects/2/custom-views` with the following specification wil
 
 ```json
 [
-	{
-		"type": "tree",
-		"title": "Tree View",
-		"roots": [
-			{
-				"label": "root",
-				"children": [
-					{
-						"label": "child 1"
-					},
-					{
-						"label": "child 2",
-						"children": [
-							{
-								"label": "subchild 3"
-							}
-						]
-					}
-				]
-			}
-		]
-	}
+  {
+    "type": "tree",
+    "title": "Tree View",
+    "roots": [
+      {
+        "label": "root",
+        "children": [
+          {
+            "label": "child 1"
+          },
+          {
+            "label": "child 2",
+            "children": [
+              {
+                "label": "subchild 3"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 ]
 ```
 
@@ -186,8 +186,8 @@ The JSON structure for this type of view should be a list of `node`, where a `no
 
 ```json
 {
-	"label": "string",
-	"children": ["node"]
+  "label": "string",
+  "children": ["node"]
 }
 ```
 
@@ -196,30 +196,30 @@ For instance, the same example but with custom properties `name` and `decendents
 
 ```json
 [
-	{
-		"type": "tree",
-		"title": "Tree View",
-		"label": "name",
-		"children": "decendents",
-		"roots": [
-			{
-				"name": "root",
-				"decendents": [
-					{
-						"name": "child 1"
-					},
-					{
-						"name": "child 2",
-						"decendents": [
-							{
-								"name": "subchild 3"
-							}
-						]
-					}
-				]
-			}
-		]
-	}
+  {
+    "type": "tree",
+    "title": "Tree View",
+    "label": "name",
+    "children": "decendents",
+    "roots": [
+      {
+        "name": "root",
+        "decendents": [
+          {
+            "name": "child 1"
+          },
+          {
+            "name": "child 2",
+            "decendents": [
+              {
+                "name": "subchild 3"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 ]
 ```
 
@@ -227,10 +227,10 @@ Here is another example using the type `html`. This type is the most flexible as
 
 ```json
 [
-	{
-		"type": "html",
-		"title": "My Fancy View",
-		"code": "<!DOCTYPE html>\r<html lang=\"en\">\r<head>\r  <meta charset=\"UTF-8\">\r  <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\r  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r  <style>\r\r* {\r  padding: 0;\r  margin: 0 ;\r  box-sizing: border: box;\r}\r\rbody {\r  background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%);\r  background-attachment: fixed;\r  height: 100vh;\r  display: grid;\r  justify-content: center;\r  align-content: center;\r  grid-template-columns: minmax(150px, 440px);\r  font-family: 'Montserrat', sans-serif;\r}\r\r#wrapper {\r  max-width: 400px;\r  padding: 20px;\r}\r\r#title {\r  margin-bottom: 20px;\r}\r\rblockquote {\r  border-left: 5px solid white;\r  padding-left: 20px;\r}\r</style>\r  <title>Blockquote</title>\r</head>\r<body>\r  <div id=\"wrapper\">\r    <h1 id=\"title\">Fancy Object</h1>\r    <blockquote>\r      This is my facy view.\r    </blockquote>\r  </div>\r</body>\r</html>"
-	}
+  {
+    "type": "html",
+    "title": "My Fancy View",
+    "code": "<!DOCTYPE html>\r<html lang=\"en\">\r<head>\r  <meta charset=\"UTF-8\">\r  <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\r  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r  <style>\r\r* {\r  padding: 0;\r  margin: 0 ;\r  box-sizing: border: box;\r}\r\rbody {\r  background-image: linear-gradient(to right, #f78ca0 0%, #f9748f 19%, #fd868c 60%, #fe9a8b 100%);\r  background-attachment: fixed;\r  height: 100vh;\r  display: grid;\r  justify-content: center;\r  align-content: center;\r  grid-template-columns: minmax(150px, 440px);\r  font-family: 'Montserrat', sans-serif;\r}\r\r#wrapper {\r  max-width: 400px;\r  padding: 20px;\r}\r\r#title {\r  margin-bottom: 20px;\r}\r\rblockquote {\r  border-left: 5px solid white;\r  padding-left: 20px;\r}\r</style>\r  <title>Blockquote</title>\r</head>\r<body>\r  <div id=\"wrapper\">\r    <h1 id=\"title\">Fancy Object</h1>\r    <blockquote>\r      This is my facy view.\r    </blockquote>\r  </div>\r</body>\r</html>"
+  }
 ]
 ```

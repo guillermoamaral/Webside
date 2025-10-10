@@ -7,11 +7,11 @@ These are the common properties at the moment:
 
 ```json
 {
-	"class": "string",
-	"hasNamedSlots": "boolean",
-	"hasIndexedSlots": "boolean",
-	"size": "number",
-	"printString": "string"
+  "class": "string",
+  "hasNamedSlots": "boolean",
+  "hasIndexedSlots": "boolean",
+  "size": "number",
+  "printString": "string"
 }
 ```
 
@@ -42,4 +42,4 @@ These are the common properties at the moment:
 |  GET   | [/autocompletions](autocompletions/post.md)                                  | Retrieve completion entries for a given code, position and context                                                                                                                                                      |                                                                                          -                                                                                          | -       |
 |  GET   | [/classtemplate](classtemplate/get.md)                                       | Provide a class template                                                                                                                                                                                                |                                                                                      `package`                                                                                      | -       |
 |  GET   | [/methodtemplate](methodtemplate/get.md)                                     | Provide a method template                                                                                                                                                                                               |                                                                                          -                                                                                          | -       |
-|  POST  | [/selectors](selectors/post.md)                                              | Find a selector in a piece of source code                                                                                                                                                                               |                                                                                          -                                                                                          | -       |
+|  POST  | [/selector](selector/post.md)                                                | Find a selector in a piece of source code                                                                                                                                                                               |                                                                                          -                                                                                          | -       |

@@ -1,0 +1,48 @@
+/packages:
+  $ref: "./changes/packages.yaml#/paths/~1packages"
+/packages/{name}:
+  $ref: "./changes/packages.yaml#/paths/~1packages~1{name}"
+/classes:
+  $ref: "./changes/classes.yaml#/paths/~1classes"
+/classes/{name}:
+  $ref: "./changes/classes.yaml#/paths/~1classes~1{name}"
+/classes/{name}/methods:
+  $ref: "./changes/classes.yaml#/paths/~1classes~1{name}~1methods"
+/classes/{name}/methods/{selector}:
+  $ref: "./changes/classes.yaml#/paths/~1classes~1{name}~1methods~1{selector}"
+
+/test-runs:
+  $ref: "./test-runs/test-runs.yaml#/paths/~1test-runs"
+/test-runs/{id}:
+  $ref: "./test-runs/test-runs.yaml#/paths/~1test-runs~1{id}"
+/test-runs/{id}/results:
+  $ref: "./test-runs/test-runs.yaml#/paths/~1test-runs~1{id}~1results"
+/test-runs/{id}/run:
+  $ref: "./test-runs/test-runs.yaml#/paths/~1test-runs~1{id}~1run"
+/test-runs/{id}/debug:
+  $ref: "./test-runs/test-runs.yaml#/paths/~1test-runs~1{id}~1debug"
+/test-runs/{id}/stop:
+  $ref: "./test-runs/test-runs.yaml#/paths/~1test-runs~1{id}~1stop"
+
+/profilers:
+  $ref: "./profilers/profilers.yaml#/paths/~1profilers"
+/profilers/{id}:
+  $ref: "./profilers/profilers.yaml#/paths/~1profilers~1{id}"
+/profilers/{id}/tree:
+  $ref: "./profilers/profilers.yaml#/paths/~1profilers~1{id}~1tree"
+/profilers/{id}/ranking:
+  $ref: "./profilers/profilers.yaml#/paths/~1profilers~1{id}~1ranking"
+
+/extensions:
+  $ref: "./extensions/extensions.yaml#/paths/~1extensions"
+
+/command-definitions:
+  $ref: "./commands/commands.yaml#/paths/~1command-definitions"
+/commands:
+  $ref: "./commands/commands.yaml#/paths/~1commands"
+
+/events:
+  $ref: "./events/events.yaml#/paths/~1events"
+
+/processes:
+  $ref: "./processes/processes.yaml#/paths/~1processes"
