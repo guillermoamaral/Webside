@@ -1,0 +1,145 @@
+paths:
+  /dialect:
+    get:
+      summary: Retrieve Smalltalk dialect
+      description: This a simple endpoint to retrieve the Smalltalk dialect behind the scenes (Pharo, Bee, etc.).
+      tags: [General]
+      operationId: getDialect
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Pharo"
+
+  /version:
+    get:
+      summary: Retrieve system version
+      description: This endpoint provides the version of the target system.
+      tags: [General]
+      operationId: getVersion
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "12"
+
+  /colors:
+    get:
+      summary: Retrieve system colors
+      description: This endpoint provides colors that represent the target Smalltalk dialect. These colors can (and will) be used on fron-end.
+      tags: [General]
+      operationId: getColors
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+                example:
+                  primary: "#3297d4"
+                  secondary: "#1565c0"
+
+  /logo:
+    get:
+      summary: Retrieve system logo
+      description: This endpoint should provide the (bytes of the) logo of the target Smalltalk dialect (in PNG format).
+      tags: [General]
+      operationId: getLogo
+      responses:
+        "200":
+          description: PNG image of the logo.
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+
+  /stats:
+    get:
+      summary: Retrieve system stats
+      description: This endpoint provides system stats, usually related to the VM such as GC spaces stats.
+      tags: [General]
+      operationId: getStats
+      responses:
+        "200":
+          description: Successful response with a list of stats.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/stat"
+                examples:
+                  pharoExample:
+                    summary: Pharo stats
+                    value:
+                      - label: Old Space
+                        value: 149.0703125
+                        unit: mb
+                      - label: Young Space
+                        value: 2.9942855834960938
+                        unit: mb
+                      - label: Total Space
+                        value: 171.0390625
+                        unit: mb
+                      - label: Free Space
+                        value: 29.71562957763672
+                        unit: mb
+
+  /themes:
+    get:
+      summary: Retrieve custom themes
+      description: This endpoint exposes system themes, a list of named custom styles sets.
+      tags:
+        - General
+      responses:
+        "200":
+          description: Successful response with a list of themes.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/theme"
+
+  /icons:
+    get:
+      summary: Retrieve system icons
+      description: This endpoint provides named system icons.\nThese icons will be used by the IDE whenever an icon name is passed along with a given meta-level object (package, class, etc.).
+      tags: [General]
+      operationId: getIcons
+      responses:
+        "200":
+          description: Successful response with a list of icons.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/icon"
+              examples:
+                pharoIcons:
+                  summary: Pharo icons
+                  value:
+                    - name: class
+                      data: "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABbUlEQVR4..."
+                    - name: classAbstract
+                      data: "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABx0lEQVR4..."
+                    - name: trait
+                      data: "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACA0lEQVR4..."
+                    - name: exception
+                      data: "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACzklEQVR4..."
+                    - name: collection
+                      data: "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABKElEQVR4..."
+                    - name: string
+                      data: "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAeUlEQVR4..."
+                    - name: magnitude
+                      data: "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAyElEQVR4..."

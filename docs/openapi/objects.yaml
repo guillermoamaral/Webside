@@ -1,0 +1,282 @@
+paths:
+  /objects:
+    get:
+      summary: Retrieve pinned objects
+      description: Get all currently pinned objects
+      tags: [Objects]
+      operationId: getObjects
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/pinnedObject"
+              example:
+                - id: "1"
+                  class: "Rectangle"
+                  hasNamedSlots: true
+                  hasIndexedSlots: false
+                  size: 0
+                  printString: "1 @ 2 rightBottom: 11 @ 12"
+
+    post:
+      summary: Pin the object reached thru the given URI
+      description: Pin an object so it can be accessed later
+      tags: [Objects]
+      operationId: pinObject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - objectUri
+              properties:
+                objectUri:
+                  type: string
+                  description: URI to the object to pin
+              example:
+                objectUri: "/objects/1/origin/x"
+      responses:
+        "200":
+          description: Object pinned successfully
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/pinnedObject"
+              example:
+                id: "1"
+                class: "Integer"
+                hasNamedSlots: true
+                hasIndexedSlots: false
+                size: 0
+                printString: "2"
+
+    delete:
+      summary: Unpin all pinned objects
+      description: Remove all pinned objects
+      operationId: unpinAllObjects
+      tags: [Objects]
+      responses:
+        "200":
+          description: All objects unpinned successfully
+
+  /objects/{id}:
+    get:
+      summary: Retrieve the pinned object with a given ID
+      description: Get a specific pinned object by its ID
+      operationId: getObject
+      tags: [Objects]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Object ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/pinnedObject"
+              example:
+                id: "1"
+                class: "Rectangle"
+                hasNamedSlots: true
+                hasIndexedSlots: false
+                size: 0
+                printString: "1 @ 2 rightBottom: 11 @ 12"
+
+    delete:
+      summary: Unpin the object with a given ID
+      description: Remove a specific pinned object
+      operationId: unpinObject
+      tags: [Objects]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Object ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Object unpinned successfully
+
+  /objects/{id}/{*}:
+    get:
+      summary: Retrieve the object reached thru the given URI
+      description: |
+        This URI starts with a pinned object ID and contains a variable part, /*, that indicates the path from the root (pinned) object to the slot of interest, thru a chain of slots. 
+        Slots might be named or indexed depending on the object class. In the former case, they will correspond to instance variable names while in the latter they will correspond to the indexes between 1 and the size of the object. In any case, they should be known before requesting a given slot. See examples below.
+        It should be also possible to get the list of both named or indexed slots at once by means `named-slots` or `indexed-slots`, respectively. See examples below.
+      operationId: getObjectSlot
+      tags: [Objects]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Object ID
+          schema:
+            type: string
+        - name: \*
+          in: path
+          required: true
+          description: Slot path
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/object"
+          examples:
+            firstSlot:
+              summary: corner slot of the rectangle with ID 1, GET /objects/1/corner
+              value:
+                class: "Point"
+                hasNamedSlots: true
+                hasIndexedSlots: false
+                size: 0
+                printString: "2 @ 2"
+            secondSlot:
+              summary: x slot of the corner slot of the rectangle with ID 1, GET /objects/1/corner/x
+              value:
+                class: "SmallInteger"
+                hasIndexedSlots: false
+                size: 0
+                printString: "2"
+
+  /objects/{id}/named-slots:
+    get:
+      summary: Retrieve the named slots of the object with a given ID
+      description: Get the named slots of a specific pinned object by its ID
+      operationId: getObjectNamedSlots
+      tags: [Objects]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Object ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/namedSlot"
+              example:
+                namedSlots:
+                  summary: named slots of the rectangle with ID 1, GET /objects/1/named-slots
+                  value:
+                    [
+                      {
+                        class: "Point",
+                        hasNamedSlots: true,
+                        hasIndexedSlots: false,
+                        size: 0,
+                        printString: "1 @ 1",
+                        slot: "origin",
+                      },
+                      {
+                        class: "Point",
+                        hasNamedSlots: true,
+                        hasIndexedSlots: false,
+                        size: 0,
+                        printString: "2 @ 2",
+                        slot: "corner",
+                      },
+                    ]
+
+  /objects/{id}/indexed-slots:
+    get:
+      summary: Retrieve the indexed slots of the object with a given ID
+      description: Get the indexed slots of a specific pinned object by its ID
+      operationId: getObjectIndexedSlots
+      tags: [Objects]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Object ID
+          schema:
+            type: string
+      responses:
+        "200":
+          summary: Retrieve the indexed slots of the object with a given ID
+          description: Get the indexed slots of a specific pinned object by its ID
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/indexedSlot"
+              examples:
+                indexedSlots:
+                  summary: indexed-slots of the array with ID 1, GET /objects/1/indexed-slots
+                  value:
+                    [
+                      {
+                        class: "True",
+                        hasNamedSlots: false,
+                        hasIndexedSlots: false,
+                        size: 0,
+                        printString: "true",
+                        slot: 1,
+                      },
+                      {
+                        class: "SmallInteger",
+                        hasNamedSlots: false,
+                        hasIndexedSlots: false,
+                        size: 0,
+                        printString: "2",
+                        slot: 2,
+                      },
+                      {
+                        class: "UndefinedObject",
+                        hasNamedSlots: false,
+                        hasIndexedSlots: false,
+                        size: 0,
+                        printString: "nil",
+                        slot: 3,
+                      },
+                    ]
+
+  /objects/{id}/custom-views:
+    get:
+      summary: Retrieve the custom views of the object with a given ID
+      description: |
+        Custom views give the chance to specify special ways of viewing an object. The consumer of the API can take advantage of these specifications and display different views accordingly.
+        For example, at the moment of writing this documentation, the IDE supports the following views table, tree, source, html, json and markdown. These views are available in the Inspector.
+        Custom views should be accessible through /custom-views segment.
+      operationId: getObjectCustomViews
+      tags: [Objects]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Object ID
+          schema:
+            type: string
+      responses:
+        "200":
+          summary: Retrieve the custom views of the object with a given ID
+          description: Get the custom views of a specific pinned object by its ID
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/customView"

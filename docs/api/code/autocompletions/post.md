@@ -10,10 +10,9 @@ This endpoint is aim to provide a list of completion entries for given a piece o
 
 ```json
 {
-	"source": "string",
-	"position": "integer",
-	"class": "string",
-	"inMethod": "boolean"
+  "source": "string",
+  "position": "integer",
+  "class": "string"
 }
 ```
 
@@ -27,9 +26,9 @@ where `class` property is optional.
 
 ```json
 {
-	"label": "string",
-	"type": "string",
-	"detail": "string"
+  "label": "string",
+  "type": "string",
+  "detail": "string"
 }
 ```
 
@@ -48,21 +47,21 @@ The IDE will use this information to style the list shown to the user.
 
 ```json
 {
-	"class": "Rectangle",
-	"source": "m\r  self sc",
-	"position": 11
+  "class": "Rectangle",
+  "source": "m\r  self sc",
+  "position": 11
 }
 ```
 
 ```json
 [
-	{
-		"label": "scaleBy:",
-		"type": "variable"
-	},
-	{
-		"label": "scaleTo:",
-		"type": "variable"
-	}
+  {
+    "label": "scaleBy:",
+    "type": "variable"
+  },
+  {
+    "label": "scaleTo:",
+    "type": "variable"
+  }
 ]
 ```

@@ -1,0 +1,866 @@
+paths:
+  /methods:
+    get:
+      summary: Retrieve methods satisfying the condition specified in the query
+      description: |
+        Retrieve methods satisfying the condition specified in the query (or all the methods 
+        in the system if no condition is provided).
+
+        The combination of filtering options should be interpreted as the intersection of methods honoring each option. For instance, if the query is `class=Rectangle&category=testing&accessing=origin&sending=<` then every method of `Rectangle`, in category `testing`, accessing the instance variable `origing`, and sending `<` should be retrieved (`Rectangle >> #intersects:` honors such condition in Bee, Pharo, Squeak and Dolphin at the moment of writing this documentation).
+
+        The `class`, `hierarchy` and `package` options can be used in conjunction with other options to restrict the scope of a given search. For instance, `selector=<&hierarhcy=Magnitude` should retrieve implementors of `<` in `Magnitude` hierarchy (including superclasses). If `count=true` is provided, only the number of matching methods is returned.
+      tags: [Code]
+      operationId: getMethods
+      parameters:
+        - name: class
+          in: query
+          description: Use to get methods of a given class
+          required: false
+          schema:
+            type: string
+        - name: selector
+          in: query
+          description: Use to get implementors of a given selector
+          required: false
+          schema:
+            type: string
+        - name: category
+          in: query
+          description: Use to get methods under a given category
+          required: false
+          schema:
+            type: string
+        - name: accessing
+          in: query
+          description: Use to get those methods accessing a given variable (either using or assigning it)
+          required: false
+          schema:
+            type: string
+        - name: using
+          in: query
+          description: Use to get those methods using a given variable
+          required: false
+          schema:
+            type: string
+        - name: assigning
+          in: query
+          description: Use to get those methods assigning a given variable
+          required: false
+          schema:
+            type: string
+        - name: sending
+          in: query
+          description: Use to get senders of a given selector
+          required: false
+          schema:
+            type: string
+        - name: referencingClass
+          in: query
+          description: Use to get those methods referencing a given class
+          required: false
+          schema:
+            type: string
+        - name: selectorMatching
+          in: query
+          description: Use to get those methods with a selector matching a given pattern string
+          required: false
+          schema:
+            type: string
+        - name: hierarchy
+          in: query
+          description: Use to restrict the search to a given hierarchy
+          required: false
+          schema:
+            type: string
+        - name: package
+          in: query
+          description: Use to restrict the search to a given package
+          required: false
+          schema:
+            type: string
+        - name: count
+          in: query
+          description: Use to get only the number of methods statisfying the condition
+          required: false
+          schema:
+            type: boolean
+        - name: modified
+          in: query
+          description: Use to get only modified methods (if such a feature is provided by the backend)
+          required: false
+          schema:
+            type: boolean
+        - name: ast
+          in: query
+          description: Use to get methods' AST
+          required: false
+          schema:
+            type: boolean
+        - name: annotations
+          in: query
+          description: Use to get methods' annotations
+          required: false
+          schema:
+            type: boolean
+        - name: bytecodes
+          in: query
+          description: Use to get methods' bytecodes
+          required: false
+          schema:
+            type: boolean
+        - name: disassembly
+          in: query
+          description: Use to get methods' disassembly
+          required: false
+          schema:
+            type: boolean
+        - name: basic
+          in: query
+          description: Use to get a basic set of properties, avoiding time-consuming ones such as overriding
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: List of methods or a count of matching methods.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: array
+                    items:
+                      $ref: "./schemas.yaml#/components/schemas/method"
+                  - type: integer
+                    minimum: 0
+              examples:
+                listExample:
+                  summary: Methods of Fraction in 'arithmetic' sending 'reciprocal'
+                  value:
+                    - selector: "/"
+                      source: "/ aNumber\r\t\"Answer the result of dividing the receiver by aNumber.\"\r\taNumber isFraction\r\t\tifTrue: [^self * aNumber reciprocal].\r\t^ aNumber adaptToFraction: self andSend: #/"
+                      methodClass: Fraction
+                      category: arithmetic
+                countExample:
+                  summary: When count=true, only the number is returned
+                  value: 26
+
+  /classes:
+    get:
+      summary: Retrieve all subclasses of a given root class
+      description: |
+        Retrieve all subclasses of a given root class (if no root is provided, 
+        the uppermost class in the system is used). It is also possible get a 
+        tree-like structure as well as to limit the depth in the classes hierarchy
+      tags: [Code]
+      operationId: getClasses
+      parameters:
+        - name: root
+          in: query
+          description: The name of the root class
+          required: false
+          schema:
+            type: string
+        - name: names
+          in: query
+          description: Use to get only class names
+          required: false
+          schema:
+            type: boolean
+        - name: tree
+          in: query
+          description: Use to get a tree-like structure
+          required: false
+          schema:
+            type: boolean
+        - name: depth
+          in: query
+          description: Use to limit the hierarchy depth (only when tree=true)
+          required: false
+          schema:
+            type: number
+        - name: category
+          in: query
+          description: Use to get classes under a given category
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/class"
+
+  /classes/{name}:
+    get:
+      summary: Retrieve the class with a given name.
+      description: Get detailed information about a specific class
+      tags: [Code]
+      operationId: getClass
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Class name
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/class"
+              example:
+                name: "Integer"
+                definition: "Number subclass: #Integer\r\tinstanceVariableNames: ''\r\tclassVariableNames: ''\r\tpoolDictionaries: ''\r\tcategory: 'Kernel-Numbers'"
+                superclass: "Number"
+                comment: "I am a common abstract superclass for all Integer implementations..."
+                category: "Numbers"
+                variable: false
+                package: "Kernel"
+                modified: false
+                iconName: "magnitude"
+
+  /classes/{name}/superclasses:
+    get:
+      summary: Retrieve superclasses of a given class
+      description: Get all superclasses of the specified class
+      tags: [Code]
+      operationId: getClassSuperclasses
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Class name
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/class"
+
+  /classes/{name}/subclasses:
+    get:
+      summary: Retrieve subclasses of a given class
+      description: Get all subclasses of the specified class
+      tags: [Code]
+      operationId: getClassSubclasses
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Class name
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/class"
+
+  /classes/{name}/variables:
+    get:
+      summary: Retrieve both instance and class variables of a given class.
+      description: Get all variables (both instance and class) of the specified class. This endpoint is the equivalent of retrieving instance and class variables using the corresponding endpoints.
+      tags: [Code]
+      operationId: getClassVariables
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Class name
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/variable"
+              examples:
+                pharoExample:
+                  summary: Fraction variables
+                  value:
+                    - name: numerator
+                      class: Fraction
+                      type: instance
+                    - name: denominator
+                      class: Fraction
+                      type: instance
+                    - name: DependentsFields
+                      class: Object class
+                      type: class
+
+  /classes/{name}/instance-variables:
+    get:
+      summary: Retrieve instance variables of a given class
+      description: Get instance variables of the specified class
+      tags: [Code]
+      operationId: getClassInstanceVariables
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Class name
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/variable"
+              examples:
+                pharoExample:
+                  summary: Fraction instance variables
+                  value:
+                    - name: numerator
+                      class: Fraction
+                      type: instance
+                    - name: denominator
+                      class: Fraction
+                      type: instance
+
+  /classes/{name}/class-variables:
+    get:
+      summary: Retrieve class variables of a given class
+      description: Get class variables of the specified class
+      tags: [Code]
+      operationId: getClassClassVariables
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Class name
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/variable"
+              examples:
+                pharoExample:
+                  summary: Fraction instance variables
+                  value:
+                    - name: DependentsFields
+                      class: Object class
+                      type: class
+
+  /classes/{name}/categories:
+    get:
+      summary: Retrieve categories of a given class
+      description: Get categories of the specified class
+      tags: [Code]
+      operationId: getClassCategories
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Class name
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              examples:
+                categoriesList:
+                  summary: Fraction categories
+                  value:
+                    - "truncation and round off"
+                    - "comparing"
+                    - "*Math-Operations-Extensions"
+                    - "private"
+                    - "self evaluating"
+                    - "printing"
+                    - "arithmetic"
+                    - "*ston-core"
+                    - "testing"
+                    - "converting"
+
+  /classes/{name}/used-categories:
+    get:
+      summary: Retrieve categories used throughout the hierarchy of a given class
+      description: Get categories used throughout the class hierarchy
+      tags: [Code]
+      operationId: getClassUsedCategories
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Class name
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              example:
+                - "accessing"
+                - "changes support"
+                - "comparing"
+                - "constants"
+                - "converting"
+                - "copying"
+                - "date functions"
+                - "evaluating"
+                - "evaluation"
+                - "event handling"
+                - "file in/out"
+                - "functions"
+                - "gemstone"
+                - "header access"
+                - "help"
+                - "initialization"
+                - "inspecting"
+                - "instance behavior"
+                - "interrupts"
+                - "json"
+                - "logarithms"
+                - "lookup"
+                - "meta accessing"
+                - "perform"
+                - "remembering/restoring"
+                - "services"
+                - "ui"
+                - "unwinding"
+
+  /classes/{name}/methods:
+    get:
+      summary: Retrieve methods of a given class
+      description: |
+        Get all methods of the specified class
+
+        This is essentially the same request as /methods with the `class={name}` query option.
+      tags: [Code]
+      operationId: getClassMethods
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Class name
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of methods of the class.
+          content:
+            application/json:
+              schema:
+                - type: array
+                  items:
+                    $ref: "./schemas.yaml#/components/schemas/method"
+
+  /classes/{name}/selectors:
+    get:
+      summary: Retrieve selectors of a given class
+      description: Get method selectors of the specified class
+      tags: [Code]
+      operationId: getClassSelectors
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Class name
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              example:
+                - "x:y:"
+                - "approvedSelectorsForMethodFinder"
+                - "r:degrees:"
+                - "r:theta:"
+                - "settingInputWidgetForNode:"
+
+  /classes/{name}/methods/{selector}:
+    get:
+      summary: Retrieve the method with the given selector in the given class
+      description: Get a specific method by its selector
+      tags: [Code]
+      operationId: getClassMethod
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Class name
+          schema:
+            type: string
+        - name: selector
+          in: path
+          required: true
+          description: Method selector
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/method"
+              example:
+                selector: "isFraction"
+                methodClass: "Fraction"
+                category: "converting"
+                package: "Kernel"
+                source: "isFraction\r\t^ true"
+                author: ""
+                overriding: true
+                overriden: true
+
+  /categories:
+    get:
+      summary: Retrieve all categories in the system
+      description: Get all available categories in the system
+      tags: [Code]
+      operationId: getCategories
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /usual-categories:
+    get:
+      summary: Retrieve popular categories used throughout the system
+      description: Get popular categories used throughout the system
+      tags: [Code]
+      operationId: getUsualCategories
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              example:
+                - "accessing"
+                - "actions"
+                - "construction"
+                - "event handlers"
+                - "initialization"
+                - "inquiries"
+                - "printing"
+                - "private"
+                - "services"
+                - "testing"
+                - "updating"
+                - "validation"
+
+  /packages:
+    get:
+      summary: Retrieve all packages
+      description: Get all available packages in the system
+      tags: [Code]
+      operationId: getPackages
+      parameters:
+        - name: names
+          in: query
+          description: Return only package names
+          required: false
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                - type: array
+                  items:
+                    $ref: "./schemas.yaml#/components/schemas/package"
+
+  /packages/{name}:
+    get:
+      summary: Retrieve a given package
+      description: Get detailed information about a specific package
+      tags: [Code]
+      operationId: getPackage
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Package name
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/package"
+              example:
+                name: "Kernel"
+                classes: ["Fraction", "Point"]
+                methods:
+                  Fraction: ["/", "reciprocal"]
+                  "Object class": ["new"]
+                categories:
+                  - name: "Basic Objects"
+                    package: "Kernel"
+                  - name: "Numbers"
+                    package: "Kernel"
+                modified: true'
+                iconName: "package"
+
+  /packages/{name}/classes:
+    get:
+      summary: Retrieve actual classes of a given package
+      description: Get all classes in the specified package
+      tags: [Code]
+      operationId: getPackageClasses
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Package name
+          schema:
+            type: string
+        - name: extended
+          in: query
+          description: Include extended classes
+          required: false
+          schema:
+            type: boolean
+        - name: tree
+          in: query
+          description: Return tree structure
+          required: false
+          schema:
+            type: boolean
+        - name: names
+          in: query
+          description: Return only class names
+          required: false
+          schema:
+            type: boolean
+        - name: category
+          in: query
+          description: Filter by category
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/class"
+
+  /packages/{name}/methods:
+    get:
+      summary: Retrieve extended methods of a given package.
+      description: Get all extended methods in the specified package
+      tags: [Code]
+      operationId: getPackageMethods
+      parameters:
+        - name: name
+          in: path
+          required: true
+          description: Package name
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of extended methods of the package.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/method"
+
+  /search:
+    get:
+      summary: Perform a search on the system
+      description: Serves for searching the system for code elements (selectors, methods, classes, packages, etc.)
+      tags: [Code]
+      operationId: search
+      parameters:
+        - name: text
+          in: query
+          description: The text to compare with
+          required: true
+          schema:
+            type: string
+        - name: ignoreCase
+          in: query
+          description: Whether to ignore the case when comparing (false by default)
+          required: false
+          schema:
+            type: boolean
+        - name: condition
+          in: query
+          description: How the text is compared against candidates (beginning by default)
+          required: false
+          schema:
+            type: string
+            enum: [beginning, including, ending, similar]
+        - name: type
+          in: query
+          description: The type of elements to search (all by default)
+          required: false
+          schema:
+            type: string
+            enum: [all, class, method, variable, comment]
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/searchResult"
+
+  /autocompletions:
+    post:
+      summary: provide a list of completion entries for given a piece of code, position and context (class).
+      description: Get autocompletion suggestions for code at a specific position
+      tags: [Code]
+      operationId: getAutocompletions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas.yaml#/components/schemas/autocompletionRequest"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/autocompletionResult"
+              example:
+                - label: "scaleBy:"
+                  type: "variable"
+                - label: "scaleTo:"
+                  type: "variable"
+
+  /classtemplate:
+    get:
+      summary: Provide a class template
+      description: Provide a template for creating a class. This relies on the backend as different dialects might have different templates. This template is not but a class as specified in `/classses/{name}`, with an extra property template indicating that is not an actual class. As some dialects might impose a package for a class, this endpoint requires a package on the query
+      tags: [Code]
+      operationId: getClassTemplate
+      parameters:
+        - name: package
+          in: query
+          description: Package name for the template
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/class"
+              example:
+                template: true
+                name: "MyClass"
+                definition: "Object\r\tsubclass: #MyClass\r\tinstanceVariableNames: ''\r\tclassVariableNames: ''\r\tpackage: 'MyPackage'"
+
+  /methodtemplate:
+    get:
+      summary: Provide a method template
+      description: Provide a template for creating a method. This relies on the backend as different dialect might have different templates. This template is not but a method as specified in methods/{selector}, with an extra property template indicating that is not an actual method
+      tags: [Code]
+      operationId: getMethodTemplate
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/method"
+              example:
+                template: true
+                selector: "methodSelectorAndArgumentNames"
+                source: "methodSelectorAndArgumentNames\r\t\"comment stating purpose of instance-side method\"\r\t\"scope: class-variables  &  instance-variables\"\r\r\t| temporary variable names |\r\tstatements"
+
+  /selector:
+    post:
+      summary: Find a selector in a piece of source code
+      description: Allows to find a selector in a given pice of source code
+      tags: [Code]
+      operationId: findSelector
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source:
+                  type: string
+                  description: Source code to analyze
+                position:
+                  type: integer
+                  minimum: 1
+                  description: Position in source
+                required: [source, position]
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: string
+                description: Selector found

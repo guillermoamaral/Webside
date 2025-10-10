@@ -1,0 +1,215 @@
+paths:
+  /test-runs:
+    post:
+      summary: Create and run a test suite
+      description: Create and execute a test suite
+      tags: [Test Runs]
+      operationId: createTestRun
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas.yaml#/components/schemas/testSuite"
+              example:
+                name: "DateTest"
+                methods:
+                  - class: "DateTest"
+                    selector: "testAddDays"
+      responses:
+        "200":
+          description: Test run created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/testRun"
+              example:
+                id: "1"
+                name: "DateTest >> #testAddDays"
+
+  /test-runs/{id}/status:
+    get:
+      summary: Retrieve the status of a given test suite run
+      description: This object allows to provide feedback to the user on how an active test run is progressing. It indicates not only the test being executed at a given time, but the current summary of "passed", "failed", "errors", "sikkped", and "knownIssues" tests.
+      tags: [Test Runs]
+      operationId: getTestRunStatus
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Test run ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/testRunStatus"
+              example:
+                id: "1"
+                name: "DateTest >> #testAddDays"
+                total: 1
+                running: false
+                current:
+                  class: "DateTest"
+                  selector: "testAddDays"
+                  time: 0
+                summary:
+                  run: 1
+                  passed: 1
+                  failed: 0
+                  errors: 0
+                  skipped: 0
+                  knownIssues: 0
+
+  /test-runs/{id}:
+    delete:
+      summary: Delete a test suite run
+      description: Delete a test run
+      tags: [Test Runs]
+      operationId: deleteTestRun
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Test run ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Test run deleted successfully
+
+  /test-runs/{id}/results:
+    get:
+      summary: Retrieve the results of a given test suite run
+      description: Get test results for a completed test run
+      tags: [Test Runs]
+      operationId: getTestRunResults
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Test run ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  passed:
+                    type: array
+                    items:
+                      $ref: "./schemas.yaml#/components/schemas/testCase"
+                  failed:
+                    type: array
+                    items:
+                      $ref: "./schemas.yaml#/components/schemas/testCase"
+                  errors:
+                    type: array
+                    items:
+                      $ref: "./schemas.yaml#/components/schemas/testCase"
+                  skipped:
+                    type: array
+                    items:
+                      $ref: "./schemas.yaml#/components/schemas/testCase"
+                  knownIssues:
+                    type: array
+                    items:
+                      $ref: "./schemas.yaml#/components/schemas/testCase"
+              example:
+                passed:
+                  - class: "DateTest"
+                    selector: "testAddDays"
+                    time: 0
+                failed: []
+                errors: []
+                skipped: []
+                knownIssues: []
+
+  /test-runs/{id}/run:
+    post:
+      summary: Re-run a given test suite
+      description: Execute the test suite again
+      tags: [Test Runs]
+      operationId: rerunTestRun
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Test run ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Test run created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/testRun"
+
+  /test-runs/{id}/debug:
+    post:
+      summary: Debug a test within a test suite run
+      description: Start debugging a specific test
+      tags: [Test Runs]
+      operationId: debugTestRun
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Test run ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - class
+                - selector
+              properties:
+                class:
+                  type: string
+                  description: Test class name
+                selector:
+                  type: string
+                  description: Test selector
+              example:
+                class: "DateTest"
+                selector: "testAddDays"
+      responses:
+        "200":
+          description: Debug session started successfully
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/debugger"
+
+  /test-runs/{id}/stop:
+    post:
+      summary: Stop an active test suite run
+      description: Stop a running test suite
+      tags: [Test Runs]
+      operationId: stopTestRun
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Test run ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Test run stopped successfully
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/testRun"

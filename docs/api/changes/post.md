@@ -5,7 +5,7 @@ This is one of the most important endpoints as it centralizes every change the u
 
 **Important**. The API specifies a set of _basic_ changes applicable to all dialect analized. However, this list can be extended to support more changes and refactorings by means of [/extensions](../extensions/changes.md) endpoint.
 
-Special attention must be paid to the way the target system implementing the API must handle compilation errors so Webside ID can react properly (see [Errors](#errors) below).
+Special attention must be paid to the way the target system must handle compilation errors so Webside IDE can react properly (see [Errors](#errors) below).
 
 **URL**: `/changes`
 
@@ -24,7 +24,7 @@ All changes should include `author` proprerty and might specify a `package` prop
 |       CommentClass       | Change the comment of a given class.                                   | <pre>{<br> "type": "CommentClass",<br> "className": "string",<br> "comment": "string"<br>} </pre>                                                                                                                                         |
 |       RemoveClass        | Remove a given class.                                                  | <pre>{<br> "type": "RemoveClass",<br> "className": "string"<br>} </pre>                                                                                                                                                                   |
 |       RenameClass        | Rename a given class.                                                  | <pre>{<br> "type": "RenameClass",<br> "className": "string",<br> "newName": "string",<br> "renameReferences": "boolean"<br>} </pre>                                                                                                       |
-|     AddClassCategory     | Rename a class category.                                               | <pre>{<br> "type": "AddClassCategory",<br> "package": "string",<br> "category": "string"<br>} </pre>                                                                                                                                      |
+|     AddClassCategory     | Add a new class category.                                              | <pre>{<br> "type": "AddClassCategory",<br> "package": "string",<br> "category": "string"<br>} </pre>                                                                                                                                      |
 |   RenameClassCategory    | Rename a class category.                                               | <pre>{<br> "type": "RenameClassCategory",<br> "package": "string",<br> "category": "string",<br> "newName": "string"<br>} </pre>                                                                                                          |
 |   RemoveClassCategory    | Remove a class category.                                               | <pre>{<br> "type": "RemoveClassCategory",<br> "package": "string",<br> "category": "string"<br>} </pre>                                                                                                                                   |
 |   AddInstanceVariable    | Add a new instance variable to a given class.                          | <pre>{<br> "type": "AddInstanceVariable",<br> "package": "string",<br> "variable": "string"<br>} </pre>                                                                                                                                   |
@@ -48,11 +48,11 @@ All changes should include `author` proprerty and might specify a `package` prop
 
 ```json
 {
-	"type": "AddMethod",
-	"className": "Float class",
-	"category": "constants",
-	"sourceCode": "phi\r\t^1.0 + 5.0 sqrt / 2.0",
-	"author": "guille"
+  "type": "AddMethod",
+  "className": "Float class",
+  "category": "constants",
+  "sourceCode": "phi\r\t^1.0 + 5.0 sqrt / 2.0",
+  "author": "guille"
 }
 ```
 
@@ -68,13 +68,13 @@ There are some special cases like the `selector` property in a `AddMethod`. This
 
 Whenever a change cannot be appplied, the backend should respond with an client error code (typically `409`), indicating what went wrong using the `description` property.\
 Also, the backend might provide one or more _suggestions_ on how to carry on the intended change.
-These should be variations of the original change, together with a description that could be used by the IDE to propmt the user what they want to do.
+These should be variations of the original change, together with a description that could be used by the IDE to prompt the user what they want to do.
 This is the aspect of an error response data.
 
 ```json
 {
-	"description": "string",
-	"suggestions": ["suggestion"]
+  "description": "string",
+  "suggestions": ["suggestion"]
 }
 ```
 
@@ -82,29 +82,28 @@ Where, `suggestion` has the following shape:
 
 ```json
 {
-	"description": "string",
-	"changes": ["change"]
+  "description": "string",
+  "changes": ["change"]
 }
 ```
 
-and `changes` is the set of changes that will be applied to mitigate the reported error.\
+and `changes` is the set of changes that will be applied to mitigate the reported error.
 
 Note that this is a list as it would be necessary to apply several changes to accomplish what the client wanted to do (i.e., the original change). This is better understood by an example like the one below.
 
 ### Compilation Errors
 
-These errors should be reported with code `409`. Like explained above, the payload will contain a `description` and a list of `suggestions`.
-In the case of a compilation error, a more detail description (`fullDescription` property), and the `interval` of the error should be provided.
+As explained above, these should be reported with code `409`, a `description` and eventually a list of `suggestions`. In addition to that information, compilation errors should be reported with a more detail description, `fullDescription`, and the `interval` in the source code where the error was detected. This would be the structure of such a response:
 
 ```json
 {
-	"description": "string",
-	"fullDescription": "string",
-	"interval": {
-		"start": "number",
-		"end": "number"
-	},
-	"suggestions": ["suggestion"]
+  "description": "string",
+  "fullDescription": "string",
+  "interval": {
+    "start": "number",
+    "end": "number"
+  },
+  "suggestions": ["suggestion"]
 }
 ```
 
@@ -124,8 +123,8 @@ For example, after sending a `AddMethod` change on `Number` class with the sourc
 
 Note that the interval corresponds the the missing part and there are no suggestions.
 
-Here is another example with suggestions: Llt's say we try to compile a method with a single line `t := 1` on a class where `t` is not defined.
-The error returned should look like:
+Here is another example with suggestions: Lets suppose we try to compile a method with a single line `t := 1` on a class where `t` is not in the scope.
+The error returned should look like this:
 
 ```json
 409
@@ -156,7 +155,7 @@ The error returned should look like:
 
 Note that `changes` contains a list with another `AddMethod` with a modified source, which corresponds to accepting the suggestion.
 
-Note also that in the case that the original source might contain more than one compilation error. However, these should be presented one at a time, asking the user what suggestion they want, sending the changes of the chosen one, and repeating the process if a new error is reported.\
+Note also that the original source could contain more than one error. These should be presented one at a time, offering suggestions for each error, applying the changes if the user chooses one, and repeating cycle for every error found in the process.\
 For instance, if the code sent in an `AddMethod` change is the following `m t1 := 1. t2 := 2`, and neither `t1` and `t2` are defined, a first response will be like before:
 
 ```json
@@ -215,6 +214,6 @@ And once the user choses the suggestion, a new error is generated indicating `t2
 
 ### Confirmation
 
-Notice that this mechanism can be use to just confirm a change on the server side: by just providing a suggestion with the original change (plus a flag with the confirmation) and a description like `Are you sure?`.
+Notice that this mechanism can be used to confirm a change on the server side: by just providing a suggestion with the original change (plus a flag with the confirmation) and a description like `Are you sure?`.
 
-This differs from any confirmation on the IDE side as the backend might have (and surely has) a richer context.
+This differs from any confirmation on the client side as the backend might have (and surely has) a richer context.

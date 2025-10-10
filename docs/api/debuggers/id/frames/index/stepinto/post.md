@@ -2,7 +2,7 @@
 
 Step into the current sentence in the debugger with a given ID
 
-**URL**: `/debuggers/1/stepinto`
+**URL**: `/debuggers/{id}/frames/{index}/stepinto`
 
 **Method**: `POST`
 

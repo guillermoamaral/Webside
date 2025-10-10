@@ -266,5 +266,6 @@ Then, a subsequent request to see the state of this evaluation will return:
 }
 ```
 
-Here we see the evaluation has `failed` together with the occurred error.\
+Here we see the evaluation has `failed` together with the occurred error.
+
 From here, it is possible to create a debugger by using the evaluation ID (see [/debuggers](../debuggers/post.md))

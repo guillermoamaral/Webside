@@ -14,11 +14,11 @@ Retrieve the results of the test run with a given ID.
 
 ```json
 {
-	"passed": ["test"],
-	"failed": ["test"],
-	"errors": ["test"],
-	"skipped": ["test"],
-	"knownIssues": ["test"]
+    "passed": ["test"],
+    "failed": ["test"],
+    "errors": ["test"],
+    "skipped": ["test"],
+    "knownIssues": ["test"]
 }
 ```
 
@@ -26,10 +26,9 @@ Where `test` is defined as:
 
 ```json
 {
-	"class": "string",
-	"selector": "string",
-	"time": "number",
-	"type": "type"
+    "class": "string",
+    "selector": "string",
+    "time": "number"
 }
 ```
 
@@ -37,31 +36,28 @@ Where `test` is defined as:
 
 ```json
 {
-	"class": "TestResult",
-	"passed": [
-		{
-			"class": "DateTest",
-			"selector": "testAccessing",
-			"time": 0,
-			"seed": 0
-		},
-		{
-			"class": "DateTest",
-			"selector": "testAddDays",
-			"time": 0,
-			"seed": 0
-		}
-	],
-	"failed": [
-		{
-			"class": "DateTest",
-			"selector": "testPrintFormat",
-			"time": 0,
-			"seed": 0
-		}
-	],
-	"errors": [],
-	"skipped": [],
-	"knownIssues": []
+    "class": "TestResult",
+    "passed": [
+        {
+            "class": "DateTest",
+            "selector": "testAccessing",
+            "time": 0
+        },
+        {
+            "class": "DateTest",
+            "selector": "testAddDays",
+            "time": 0
+        }
+    ],
+    "failed": [
+        {
+            "class": "DateTest",
+            "selector": "testPrintFormat",
+            "time": 0
+        }
+    ],
+    "errors": [],
+    "skipped": [],
+    "knownIssues": []
 }
 ```

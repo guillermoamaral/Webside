@@ -1,0 +1,111 @@
+paths:
+  /workspaces:
+    get:
+      summary: Retrieve active workspaces
+      description: Get all currently active workspaces
+      tags: [Workspaces]
+      operationId: getWorkspaces
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/workspace"
+
+    post:
+      summary: Create a new workspace
+      description: Create a new workspace
+      tags: [Workspaces]
+      operationId: createWorkspace
+      responses:
+        "200":
+          description: Workspace created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/workspace"
+
+  /workspaces/{id}:
+    get:
+      summary: Retrieve the workspace with a given ID
+      description: Get details of a specific workspace
+      tags: [Workspaces]
+      operationId: getWorkspace
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Workspace ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/workspace"
+
+    put:
+      summary: Update the workspace with a given ID
+      description: Update workspace content and properties
+      tags: [Workspaces]
+      operationId: updateWorkspace
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Workspace ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas.yaml#/components/schemas/workspace"
+      responses:
+        "200":
+          description: Workspace updated successfully
+
+    delete:
+      summary: Delete the workspace with a given ID
+      description: Delete a specific workspace
+      tags: [Workspaces]
+      operationId: deleteWorkspace
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Workspace ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Workspace deleted successfully
+
+  /workspaces/{id}/bindings:
+    get:
+      summary: Retrieve bindings of the workspace with a given ID
+      description: Get variable bindings in a workspace
+      tags: [Workspaces]
+      operationId: getWorkspaceBindings
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Workspace ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/binding"

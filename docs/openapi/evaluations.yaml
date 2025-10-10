@@ -1,0 +1,182 @@
+paths:
+  /evaluations:
+    get:
+      summary: Retrieve active evaluations
+      description: Get all currently active evaluations
+      tags: [Evaluations]
+      operationId: getEvaluations
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/evaluation"
+
+    post:
+      summary: Evaluate an expression
+      description: |
+        This endpoint allows to evaluate an expression, either **synchronous-** or **asynchronously**.
+        Note: Besides this dichotomy from the API consumer standpoint (an IDE for instance), 
+        the target Smalltalk system can manage this in different ways. Most likely, a Smalltalk 
+        process for evaluating the given expression is going to represent what we call an *evaluation* here.
+      tags: [Evaluations]
+      operationId: evaluateExpression
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas.yaml#/components/schemas/evaluationRequest"
+            examples:
+              syncEvaluation:
+                summary: Synchronous evaluation
+                value:
+                  expression: "3 + 4"
+                  sync: true
+                  pin: false
+              asyncEvaluation:
+                summary: Asynchronous evaluation
+                value:
+                  expression: "3 + 4"
+                  sync: false
+                  pin: true
+      responses:
+        "200":
+          description: Synchronous evaluation result
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/pinnedObject"
+        "201":
+          description: Asynchronous evaluation created
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/evaluation"
+            examples:
+              asyncEvaluation:
+                summary: Asynchronous evaluation created after sending the request with expression `3 + 4` and `sync` set to `false`.
+                value:
+                  id: "1"
+                  state: "pending"
+        "500":
+          description: Evaluation error
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/evaluationError"
+            examples:
+              evaluationError:
+                summary: Evaluation error
+                value:
+                  description: "Variable or expression expected"
+                  evaluation: "1"
+                  interval:
+                    start: 5
+                    end: 5
+              errorWithSuggestions:
+                summary: Evaluation error with suggestions. Suppose `SomeGlobal` does not exist, `SomeGlobal1` and `SomeGlobal2` do, and the expression is `SomeGlobal := 1`.
+                value:
+                  description: "undeclared SomeGlobal"
+                  evaluation: "1"
+                  interval:
+                    start: 1
+                    end: 10
+                  stack: "SmalltalkCompiler>>undeclared..."
+                  suggestions:
+                    - description: "Declare 'SomeGlobal' as a global"
+                      changes:
+                        - type: ExpressionEvaluation
+                          expression: "Smalltalk at: #'SomeGlobal' asSymbol put: nil."
+                      expression: "SomeGlobal := 1"
+                    - description: "Did you mean SomeGlobal1?"
+                      changes:
+                        - type: ExpressionEvaluation
+                          expression: "SomeGlobal1 := 1"
+                      expression: "SomeGlobal1 := 1"
+                    - description: "Did you mean SomeGlobal2?"
+                      changes:
+                        - type: ExpressionEvaluation
+                          expression: "SomeGlobal2 := 1"
+                      expression: "SomeGlobal2 := 1"
+
+  /evaluations/{id}:
+    get:
+      summary: Retrieve the evaluation with a given ID
+      description: Get status and details of a specific evaluation
+      tags: [Evaluations]
+      operationId: getEvaluation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Evaluation ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/evaluation"
+            examples:
+              pendingEvaluation:
+                summary: Evaluation with ID `1`
+                value:
+                  id: "1"
+                  expression: "3 + 4"
+                  state: "pending"
+
+    delete:
+      summary: Cancel the evaluation with a given ID
+      description: Cancel a running evaluation
+      tags: [Evaluations]
+      operationId: cancelEvaluation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Evaluation ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Evaluation cancelled successfully
+
+  /evaluations/{id}/pause:
+    post:
+      summary: Pause the evaluation with a given ID
+      description: Pause a running evaluation
+      tags: [Evaluations]
+      operationId: pauseEvaluation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Evaluation ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Evaluation paused successfully
+
+  /evaluations/{id}/resume:
+    post:
+      summary: Resume the evaluation with a given ID
+      description: Resume a paused evaluation
+      tags: [Evaluations]
+      operationId: resumeEvaluation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Evaluation ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Evaluation resumed successfully

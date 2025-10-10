@@ -1,6 +1,6 @@
 # Basic CRUD operations
 
-For the sake of simplicity, the API encourages the use of a single endpoint [`/changes`](../../changes/README.md) for applying any change to the system.\
+For the sake of simplicity, the API encourages the use of a single endpoint [`/changes`](../../changes/README.md) for applying changes to the system.\
 However, as this may imply to count on some implementation of _refactoring changes_ on the backend (and might not be the case),
 a basic set of CRUD operations on main meta-model objects (classes and methods), should be provided.
 The data required for these operations should be the same as the one provided for the corresponding changes.

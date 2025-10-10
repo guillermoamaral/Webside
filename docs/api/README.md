@@ -21,16 +21,16 @@ _Note: URL path does not include the base URI. The base URI targeting a particul
 
 These are general endpoints that apply to the system as a whole.
 
-| Method | Path                               | Description                    | Parameters | Payload |
-| :----: | ---------------------------------- | ------------------------------ | :--------: | ------- |
+| Method | Path                               | Description                | Parameters | Payload |
+| :----: | ---------------------------------- | -------------------------- | :--------: | ------- |
 |  GET   | [/dialect](general/dialect/get.md) | Retrieve Smalltalk dialect |            | -       |
-|  GET   | [/version](general/version/get.md) | Retrieve system version        |            | -       |
-|  GET   | [/colors](general/colors/get.md)   | Retrieve system colors         |            | -       |
-|  GET   | [/logo](general/logo/get.md)       | Retrieve system logo           |            | -       |
-|  GET   | [/stats](general/stats/get.md)     | Retrieve system stats          |            | -       |
-|  GET   | [/themes](general/themes/get.md)   | Retrieve custom themes         |            | -       |
-|  GET   | [/icons](general/icons/get.md)     | Retrieve system icons          |            | -       |
-|  POST  | [/save](general/save/post.md)      | Save the image                 |            | -       |
+|  GET   | [/version](general/version/get.md) | Retrieve system version    |            | -       |
+|  GET   | [/colors](general/colors/get.md)   | Retrieve system colors     |            | -       |
+|  GET   | [/logo](general/logo/get.md)       | Retrieve system logo       |            | -       |
+|  GET   | [/stats](general/stats/get.md)     | Retrieve system stats      |            | -       |
+|  GET   | [/themes](general/themes/get.md)   | Retrieve custom themes     |            | -       |
+|  GET   | [/icons](general/icons/get.md)     | Retrieve system icons      |            | -       |
+|  POST  | [/save](general/save/post.md)      | Save the image             |            | -       |
 
 ## [Code](code)
 
@@ -61,7 +61,7 @@ These are the endpoints used to retrieve system code: packages, classes and meth
 |  GET   | [/autocompletions](code/autocompletions/post.md)                                  | Retrieve completion entries for a given code, position and context                                                                                                                                                      |                                                                                          -                                                                                          | -       |
 |  GET   | [/classtemplate](code/classtemplate/get.md)                                       | Provide a class template                                                                                                                                                                                                |                                                                                      `package`                                                                                      | -       |
 |  GET   | [/methodtemplate](code/methodtemplate/get.md)                                     | Provide a method template                                                                                                                                                                                               |                                                                                          -                                                                                          | -       |
-|  POST  | [/selectors](code/selectors/post.md)                                              | Find a selector in a piece of source code                                                                                                                                                                               |                                                                                          -                                                                                          | -       |
+|  POST  | [/selector](code/selector/post.md)                                                | Find a selector in a piece of source code                                                                                                                                                                               |                                                                                          -                                                                                          | -       |
 
 ## [Changes](changes)
 
@@ -75,7 +75,7 @@ Endpoints to apply changes and retrieve changes made to the system.
 
 ### [Basic CRUD operations](changes/crud/README.md)
 
-For the sake of simplicity, the API encourages the use of a single endpoint `/changes` for applying any change to the system.\
+For the sake of simplicity, the API encourages the use of a single endpoint `/changes` for applying changes to the system.\
 However, as this may imply to count on some implementation of _refactoring changes_ on the backend (and might not be the case),
 a basic set of CRUD operations on main meta-model objects should be provided.
 The data required for these operations should be the same as the one provided for the corresponding changes.
@@ -141,20 +141,20 @@ Endpoints to manage workspaces.
 
 Endpoints to manage debuggers and interact with them.
 
-| Method | Path                                                                                 | Description                                                                    | Parameters | Payload      |
-| :----: | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | :--------: | ------------ |
-|  GET   | [/debuggers](debuggers/get.md)                                                       | Retrieve open debuggers                                                        |     -      | -            |
-|  POST  | [/debuggers](debuggers/post.md)                                                      | Create a debugger upon an given process (evaluation)                           |     -      | `evaluation` |
-|  GET   | [/debuggers/{id}/frames](debuggers/id/frames/get.md)                                 | Retrieve frames of the debugger with a given ID                                |     -      | -            |
-|  GET   | [/debuggers/{id}/frames/{index}](debuggers/id/frames/index/get.md)                   | Retrieve the _i_-th frame withing the debugger with a given ID                 |     -      | -            |
-|  GET   | [/debuggers/{id}/frames/{index}/bindings](debuggers/id/frames/index/bindings/get.md) | Retrieve the bindings of the _i_-th frame withing the debugger with a given ID |     -      | -            |
-|  POST  | [/debuggers/{id}/stepover](debuggers/id/stepover/post.md)                            | Step over the current sentence in the debugger with a given ID                 |     -      | -            |
-|  POST  | [/debuggers/{id}/stepthrough](debuggers/id/stepthrough/post.md)                      | Step through the current sentence in the debugger with a given ID              |     -      | -            |
-|  POST  | [/debuggers/{id}/stepinto](debuggers/id/stepinto/post.md)                            | Step into the current sentence in the debugger with a given ID                 |     -      | -            |
-|  POST  | [/debuggers/{id}/restart](debuggers/id/restart/post.md)                              | Restart the debugger with a given ID                                           |     -      | -            |
-|  POST  | [/debuggers/{id}/resume](debuggers/id/resume/post.md)                                | Resume the process of the debugger with a given ID                             |     -      | -            |
-|  POST  | [/debuggers/{id}/terminate](debuggers/id/terminate/post.md)                          | Terminate process being debugged and closesthe debugger with a given ID        |     -      | -            |
-| DELETE | [/debuggers/{id}](debuggers/id/delete.md)                                            | Closes the debugger with a given ID (terminating the process being debugged)   |     -      | -            |
+| Method | Path                                                                                        | Description                                                                    | Parameters | Payload      |
+| :----: | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | :--------: | ------------ |
+|  GET   | [/debuggers](debuggers/get.md)                                                              | Retrieve open debuggers                                                        |     -      | -            |
+|  POST  | [/debuggers](debuggers/post.md)                                                             | Create a debugger upon an given process (evaluation)                           |     -      | `evaluation` |
+|  GET   | [/debuggers/{id}/frames](debuggers/id/frames/get.md)                                        | Retrieve frames of the debugger with a given ID                                |     -      | -            |
+|  GET   | [/debuggers/{id}/frames/{index}](debuggers/id/frames/index/get.md)                          | Retrieve the _i_-th frame withing the debugger with a given ID                 |     -      | -            |
+|  GET   | [/debuggers/{id}/frames/{index}/bindings](debuggers/id/frames/index/bindings/get.md)        | Retrieve the bindings of the _i_-th frame withing the debugger with a given ID |     -      | -            |
+|  POST  | [/debuggers/{id}/frames/{index}/stepover](debuggers/id/frames/index/stepover/post.md)       | Step over the current sentence in the debugger with a given ID                 |     -      | -            |
+|  POST  | [/debuggers/{id}/frames/{index}/stepthrough](debuggers/id/frames/index/stepthrough/post.md) | Step through the current sentence in the debugger with a given ID              |     -      | -            |
+|  POST  | [/debuggers/{id}/frames/{index}/stepinto](debuggers/id/frames/index/stepinto/post.md)       | Step into the current sentence in the debugger with a given ID                 |     -      | -            |
+|  POST  | [/debuggers/{id}/frames/{index}/restart](debuggers/id/frames/index/restart/post.md)         | Restart the debugger with a given ID                                           |     -      | -            |
+|  POST  | [/debuggers/{id}/resume](debuggers/id/resume/post.md)                                       | Resume the process of the debugger with a given ID                             |     -      | -            |
+|  POST  | [/debuggers/{id}/terminate](debuggers/id/terminate/post.md)                                 | Terminate process being debugged and close the debugger with a given ID        |     -      | -            |
+| DELETE | [/debuggers/{id}](debuggers/id/delete.md)                                                   | Closes the debugger with a given ID (terminating the process being debugged)   |     -      | -            |
 
 ## [Testing](test-runs)
 

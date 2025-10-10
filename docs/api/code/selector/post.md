@@ -2,7 +2,7 @@
 
 This endpoint allows to find a selector in a given pice of source code.
 
-**URL**: `/selectors`
+**URL**: `/selector`
 
 **Method**: `POST`
 
@@ -10,8 +10,8 @@ This endpoint allows to find a selector in a given pice of source code.
 
 ```json
 {
-	"source": "string",
-	"position": "number"
+  "source": "string",
+  "position": "number"
 }
 ```
 

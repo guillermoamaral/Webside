@@ -1,0 +1,113 @@
+paths:
+  /changesets/download:
+    post:
+      summary: Convert a set of changes (JSON) into a chunk formatted-file
+      description: Export changes to chunk format
+      tags: [Changesets]
+      operationId: downloadChangeset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "./schemas.yaml#/components/schemas/change"
+            example:
+              - type: "AddClass"
+                label: "MyPoint"
+                package: "Examples"
+                timestamp: "2022-08-05T09:27:02.398-03:00"
+                author: "guille"
+                className: "MyPoint"
+                definition: "Point subclass: 'MyPoint' instanceVariableNames: '' classVariableNames: '' poolDictionaries: ''"
+              - type: "AddMethod"
+                label: "MyPoint ≫ xTimesY"
+                package: "Examples"
+                timestamp: "2022-08-05T09:27:23.414-03:00"
+                author: "guille"
+                sourceCode: "xTimesY\r\t^x * y"
+                className: "MyPoint"
+                selector: "xTimesY"
+                category: "unclassified"
+      responses:
+        "200":
+          description: Changeset downloaded successfully
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+              example: |
+                !ClassDefinition
+                timestamp: '2022-08-05T09:27:46.698-03:00'
+                author: 'guille'
+                className: 'MyPoint'
+                project: 'Examples'!
+                Point subclass: 'MyPoint' instanceVariableNames: '' classVariableNames: '' poolDictionaries: ''!
+
+                !MethodDefinition
+                timestamp: '2022-08-05T09:27:46.701-03:00'
+                author: 'guille'
+                className: 'MyPoint'
+                selector: #xTimesY
+                category: #unclassified
+                project: 'Examples'!
+                xTimesY
+                ^x \* y!
+
+  /changesets/upload:
+    post:
+      summary: Convert a chunk-formatted file into a set of changes (JSON)
+      description: Import changes from chunk format
+      tags: [Changesets]
+      operationId: uploadChangeset
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+              description: Chunk formatted file content
+            example: |
+              !ClassDefinition
+              timestamp: '2022-08-05T09:27:46.698-03:00'
+              author: 'guille'
+              className: 'MyPoint'
+              project: 'Examples'!
+              Point subclass: 'MyPoint' instanceVariableNames: '' classVariableNames: '' poolDictionaries: ''!
+              !MethodDefinition
+              timestamp: '2022-08-05T09:27:46.701-03:00'
+              author: 'guille'
+              className: 'MyPoint'
+              selector: #xTimesY
+              category: #unclassified
+              project: 'Examples'!
+              xTimesY
+              ^x \* y!
+      responses:
+        "200":
+          description: Changeset uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/change"
+              example:
+                - type: "AddClass"
+                  label: "MyPoint"
+                  package: "Examples"
+                  timestamp: "2022-08-05T09:27:02.398-03:00"
+                  author: "guille"
+                  className: "MyPoint"
+                  definition: "Point subclass: 'MyPoint' instanceVariableNames: '' classVariableNames: '' poolDictionaries: ''"
+                - type: "AddMethod"
+                  label: "MyPoint ≫ xTimesY"
+                  package: "Examples"
+                  timestamp: "2022-08-05T09:27:23.414-03:00"
+                  author: "guille"
+                  sourceCode: "xTimesY\r\t^x * y"
+                  className: "MyPoint"
+                  selector: "xTimesY"
+                  category: "unclassified"
