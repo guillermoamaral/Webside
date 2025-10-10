@@ -37,6 +37,7 @@ import JSZip from "jszip";
 import { tokenTypes } from "../SmalltalkTokenizer";
 import { VERSION } from "../config";
 import ServerEventChannel from "./ServerEventChannel";
+import { darken } from "@mui/system";
 
 var ide = null;
 var MaxExtraContainers = 3;
@@ -1549,6 +1550,8 @@ class IDE extends Component {
         const menuOptions = this.menuOptions();
         const extraWidth = Math.round(100 / (extraContainers.length + 1)) + "%";
         const extraMinWidth = "10%";
+        const background = this.colorSetting("background");
+        const darkerBackground = darken(background, 0.1);
         const shortcuts = this.settings.section("shortcuts");
         const photo = this.settings.section("general").get("photo");
         return (
@@ -1644,6 +1647,7 @@ class IDE extends Component {
                                             flexDirection="column"
                                             key="search"
                                             mt={1}
+                                            backgroundColor={darkerBackground}
                                         >
                                             <Box
                                                 display="flex"
@@ -1687,6 +1691,7 @@ class IDE extends Component {
                                                 sx={{
                                                     minWidth: extraMinWidth,
                                                     width: extraWidth,
+                                                    backgroundColor: background,
                                                 }}
                                             >
                                                 <ToolContainer
@@ -1702,22 +1707,32 @@ class IDE extends Component {
                                                 />
                                             </Box>
                                             {extraContainers.map(
-                                                (container, index) => (
-                                                    <Box
-                                                        key={
-                                                            "container" +
-                                                            index +
-                                                            "Box"
-                                                        }
-                                                        sx={{
-                                                            minWidth:
-                                                                extraMinWidth,
-                                                            width: extraWidth,
-                                                        }}
-                                                    >
-                                                        {container.component}
-                                                    </Box>
-                                                )
+                                                (container, index) => {
+                                                    const back =
+                                                        index % 2 === 1
+                                                            ? background
+                                                            : darkerBackground;
+                                                    return (
+                                                        <Box
+                                                            key={
+                                                                "container" +
+                                                                index +
+                                                                "Box"
+                                                            }
+                                                            sx={{
+                                                                minWidth:
+                                                                    extraMinWidth,
+                                                                width: extraWidth,
+                                                                backgroundColor:
+                                                                    back,
+                                                            }}
+                                                        >
+                                                            {
+                                                                container.component
+                                                            }
+                                                        </Box>
+                                                    );
+                                                }
                                             )}
                                         </CustomSplit>
                                     </Box>
@@ -1728,10 +1743,15 @@ class IDE extends Component {
                                                 minWidth="15%"
                                                 display="flex"
                                                 flexDirection="column"
+                                                sx={{
+                                                    backgroundColor:
+                                                        darkerBackground,
+                                                }}
                                             >
                                                 <Box
                                                     display="flex"
                                                     flexDirection="row"
+                                                    ml={1}
                                                 >
                                                     <Box flexGrow={1} mt={1}>
                                                         <Typography variant="body1">
