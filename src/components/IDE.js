@@ -266,19 +266,49 @@ class IDE extends Component {
         const settings = new Settings("settings");
         // General...
         const general = settings.addSection("general");
-        general.addImage("photo").description = "Your photo";
+        general.addImage("photo").description =
+            "Your personal photo (optional)";
         // Connection...
         const connection = settings.addSection("connection");
-        connection.addUrl("backend").readOnly();
-        connection.addText("developer");
-        connection.addText("dialect").readOnly();
-        connection.addText("version").readOnly();
+        connection.addUrl("backend", null, "The backend URL.").readOnly();
+        connection.addText(
+            "developer",
+            "guest",
+            null,
+            "Set the developer name or identifier for this connection."
+        );
+        connection
+            .addText("dialect", null, null, "The dialect of the backend. This is read-only and it is automatically set.")
+            .readOnly();
+        connection
+            .addText("version", null, null, "The version of the backend. This is read-only and it is automatically set.")
+            .readOnly();
         // Code...
         const editor = settings.addSection("editor");
-        editor.addOptions("backend", ["Monaco", "CodeMirror"], "Monaco");
-        editor.addBoolean("showLineNumbers", false, "Show line numbers");
-        editor.addBoolean("useAutocompletion", false, "Use autocompletion");
-        editor.addBoolean("showTooltips", true, "Show tooltips");
+        editor.addOptions(
+            "backend",
+            ["Monaco", "CodeMirror"],
+            "Monaco",
+            "The editor to use."
+        );
+        editor.addBoolean(
+            "showLineNumbers",
+            false,
+            "Show line numbers",
+            "Show line numbers in the editor."
+        );
+        editor.addBoolean(
+            "useAutocompletion",
+            false,
+            "Use autocompletion",
+            "Use autocompletion in the editor."
+        );
+        editor.addBoolean(
+            "showTooltips",
+            true,
+            "Show tooltips",
+            "Show tooltips in the editor."
+        );
         // Appearance...
         const appearance = settings.addSection("appearance");
         appearance.addOptions(
@@ -292,43 +322,119 @@ class IDE extends Component {
                 "Roboto",
                 "Tahoma",
             ],
-            "Roboto"
+            "Roboto",
+            "The font family to use in the editor."
         );
         appearance.addOptions(
             "fontSize",
             [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
-            14
+            14,
+            "The font size to use in the editor."
         );
         const theme = this.themes[0].copy();
         appearance.addOptions(
             "theme",
             this.themes.map((t) => t.name),
-            theme.name
+            theme.name,
+            "The theme to use in the editor."
         );
-        appearance.addOptions("mode", ["dark", "light"], theme.mode);
+        appearance.addOptions(
+            "mode",
+            ["dark", "light"],
+            theme.mode,
+            "The mode to use in the editor."
+        );
         theme.settings.forEach((s) => appearance.add(s));
         // Shortcuts...
         const shortcuts = settings.addSection("shortcuts");
-        shortcuts.addShortcut("quickSearch", "Shift+Enter");
-        shortcuts.addShortcut("openSystemBrowser", "Ctrl+Shift+b");
-        shortcuts.addShortcut("openClassBrowser", "Ctrl+b");
-        shortcuts.addShortcut("newWorkspace", "Ctrl+Alt+w");
-        shortcuts.addShortcut("moveToLeftTab", "Ctrl+Alt+Left");
-        shortcuts.addShortcut("moveToRightTab", "Ctrl+Alt+Right");
-        shortcuts.addShortcut("evaluateExpression", "Ctrl+d");
-        shortcuts.addShortcut("inspectEvaluation", "Ctrl+i");
-        shortcuts.addShortcut("showEvaluation", "Ctrl+p");
-        shortcuts.addShortcut("debugExpression", "Ctrl+u");
-        shortcuts.addShortcut("acceptCode", "Ctrl+s");
-        shortcuts.addShortcut("browseClass", "Ctrl+b");
-        shortcuts.addShortcut("browseSenders", "Alt+n");
-        shortcuts.addShortcut("browseImplementors", "Alt+m");
-        shortcuts.addShortcut("browseClassReferences", "Alt+r");
-        shortcuts.addShortcut("toggleEditorFullView", "Alt+z");
+        shortcuts.addShortcut(
+            "quickSearch",
+            "Shift+Enter",
+            "The shortcut to open the quick search."
+        );
+        shortcuts.addShortcut(
+            "openSystemBrowser",
+            "Ctrl+Shift+b",
+            "The shortcut to open a new system browser."
+        );
+        shortcuts.addShortcut(
+            "openClassBrowser",
+            "Ctrl+b",
+            "The shortcut to open a new class browser."
+        );
+        shortcuts.addShortcut(
+            "newWorkspace",
+            "Ctrl+Alt+w",
+            "The shortcut to open a new workspace."
+        );
+        shortcuts.addShortcut(
+            "moveToLeftTab",
+            "Ctrl+Alt+Left",
+            "The shortcut to move to the left tab."
+        );
+        shortcuts.addShortcut(
+            "moveToRightTab",
+            "Ctrl+Alt+Right",
+            "The shortcut to move to the right tab."
+        );
+        shortcuts.addShortcut(
+            "evaluateExpression",
+            "Ctrl+d",
+            "The shortcut to evaluate the selected expression."
+        );
+        shortcuts.addShortcut(
+            "inspectEvaluation",
+            "Ctrl+i",
+            "The shortcut to inspect the evaluation of the selected expression."
+        );
+        shortcuts.addShortcut(
+            "showEvaluation",
+            "Ctrl+p",
+            "The shortcut to show the evaluation of the selected expression."
+        );
+        shortcuts.addShortcut(
+            "debugExpression",
+            "Ctrl+u",
+            "The shortcut to debug the selected expression."
+        );
+        shortcuts.addShortcut(
+            "acceptCode",
+            "Ctrl+s",
+            "The shortcut to accept the code in the editor."
+        );
+        shortcuts.addShortcut(
+            "browseClass",
+            "Ctrl+b",
+            "The shortcut to open a new class browser."
+        );
+        shortcuts.addShortcut(
+            "browseSenders",
+            "Alt+n",
+            "The shortcut to open a new senders browser."
+        );
+        shortcuts.addShortcut(
+            "browseImplementors",
+            "Alt+m",
+            "The shortcut to open a new implementors browser."
+        );
+        shortcuts.addShortcut(
+            "browseClassReferences",
+            "Alt+r",
+            "The shortcut to open a new class references browser."
+        );
+        shortcuts.addShortcut(
+            "toggleEditorFullView",
+            "Alt+z",
+            "The shortcut to toggle the full view of the editor."
+        );
 
         // Code assistant...
         const assistant = settings.addSection("codeAssistant");
-        assistant.addBoolean("enabled", false, "Use code assistant");
+        assistant.addBoolean(
+            "enabled",
+            false,
+            "Use code assistant"
+        ).description = "Use code assistant.";
         const types = AIInterface.availableTypes();
         if (types.length > 0) {
             assistant.addOptions(
@@ -337,7 +443,8 @@ class IDE extends Component {
                 types[0].displayName()
             );
         }
-        assistant.addText("apiKey");
+        assistant.addText("apiKey").description =
+            "The API key to use for the code assistant.";
         if (types.length > 0) {
             const model = assistant.addOptions(
                 "model",
@@ -353,7 +460,8 @@ class IDE extends Component {
                 return models.map((m) => m.id).sort();
             };
         }
-        assistant.addNumber("temperature", 0);
+        assistant.addNumber("temperature", 0).description =
+            "The temperature to use for the code assistant.";
         assistant.addParagraph(
             "systemMessage",
             "You are an expert Smalltalk programmer.\nWhen I ask for help to analyze, explain or write Smalltalk code, you will reply accordingly.\nIn your response you will avoid using the words 'Smalltalk' and 'snippet'."
@@ -369,7 +477,7 @@ class IDE extends Component {
         advanced.addBoolean(
             "useBasicOptionInMethodRequests",
             true,
-            "Use 'basic' option when requesting methods to optimize performace.",
+            "Use basic=true on method requests to optimize performace.",
             "Event when this can speed up response times due to the potential cost of properties such as 'overriding' or 'overriding', this may imply the lose of some visual decorations like the up/down arrows for overriding/overriden properties."
         );
         return settings;
@@ -801,8 +909,12 @@ class IDE extends Component {
         }
     };
 
-    openSettings = () => {
-        this.mainContainer().openSettings();
+    openSettings = (path) => {
+        this.mainContainer().openSettings(path);
+    };
+
+    editSetting = (setting) => {
+        this.openSettings(setting.path());
     };
 
     openReleaseNotes = () => {
@@ -1588,7 +1700,7 @@ class IDE extends Component {
                                 sidebarExpanded={sidebarExpanded}
                                 onSidebarExpand={this.expandSidebar}
                                 searchOptions={[]}
-                                onSettingsClick={this.openSettings}
+                                onSettingsClick={(e) => this.openSettings()}
                                 onDisconnectClick={this.disconnect}
                                 colorMode={this.settings
                                     .section("appearance")
@@ -1623,7 +1735,7 @@ class IDE extends Component {
                                 onPeersClick={
                                     this.messageChannel && this.openChat
                                 }
-                                onSettingsClick={this.openSettings}
+                                onSettingsClick={(e) => this.openSettings()}
                                 onCollapse={this.collapseSidebar}
                             />
                             <Box
