@@ -329,6 +329,7 @@ class SettingsEditor extends Tool {
                                             <Box
                                                 key={setting.path()}
                                                 mb={1}
+                                                mr={2}
                                                 ref={(el) => {
                                                     if (el)
                                                         this.settingRefs[
