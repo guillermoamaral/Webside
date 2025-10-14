@@ -1,375 +1,415 @@
 class Setting extends Object {
-	constructor(name, type, defaultValue, label, description) {
-		super();
-		this.name = name;
-		this.type = type;
-		this.default = defaultValue;
-		this.value = defaultValue;
-		this.label = label;
-		if (!this.label) {
-			var raw = name || "";
-			raw = raw.length > 0 ? raw[0].toUpperCase() + raw.slice(1) : raw;
-			const words = raw.match(/[A-Z][a-z]+|[0-9]+/g);
-			this.label = words ? words.join(" ") : raw;
-		}
-		this.description = description || "";
-		this.editable = true;
-		this.active = true;
-	}
+    constructor(name, type, defaultValue, label, description) {
+        super();
+        this.name = name;
+        this.type = type;
+        this.default = defaultValue;
+        this.value = defaultValue;
+        this.label = label;
+        if (!this.label) {
+            var raw = name || "";
+            raw = raw.length > 0 ? raw[0].toUpperCase() + raw.slice(1) : raw;
+            const words = raw.match(/[A-Z][a-z]+|[0-9]+/g);
+            this.label = words ? words.join(" ") : raw;
+        }
+        this.description = description || "";
+        this.editable = true;
+        this.active = true;
+    }
 
-	static adjustColor(color, amount) {
-		return (
-			"#" +
-			color
-				.replace(/^#/, "")
-				.replace(/../g, (color) =>
-					(
-						"0" +
-						Math.min(
-							255,
-							Math.max(0, parseInt(color, 16) + amount)
-						).toString(16)
-					).substr(-2)
-				)
-		);
-	}
+    static adjustColor(color, amount) {
+        return (
+            "#" +
+            color
+                .replace(/^#/, "")
+                .replace(/../g, (color) =>
+                    (
+                        "0" +
+                        Math.min(
+                            255,
+                            Math.max(0, parseInt(color, 16) + amount)
+                        ).toString(16)
+                    ).substr(-2)
+                )
+        );
+    }
 
-	static text(name, defaultValue = "", label) {
-		return new Setting(name, "text", defaultValue, label);
-	}
+    static text(name, defaultValue = "", label, description) {
+        return new Setting(name, "text", defaultValue, label, description);
+    }
 
-	static paragraph(name, defaultValue = "", label) {
-		return new Setting(name, "paragraph", defaultValue, label);
-	}
+    static paragraph(name, defaultValue = "", label, description) {
+        return new Setting(name, "paragraph", defaultValue, label, description);
+    }
 
-	static url(name) {
-		return new Setting(name, "url", "http://server/site");
-	}
+    static url(name, description) {
+        return new Setting(name, "url", "http://server/site", null, description);
+    }
 
-	static image(name) {
-		return new Setting(name, "image");
-	}
+    static image(name, description) {
+        return new Setting(name, "image", null, null, description);
+    }
 
-	static boolean(name, defaultValue = false, label, description) {
-		return new Setting(name, "boolean", defaultValue, label, description);
-	}
+    static boolean(name, defaultValue = false, label, description) {
+        return new Setting(name, "boolean", defaultValue, label, description);
+    }
 
-	static number(name, defaultValue = 0, label, description) {
-		return new Setting(name, "number", defaultValue, label, description);
-	}
+    static number(name, defaultValue = 0, label, description) {
+        return new Setting(name, "number", defaultValue, label, description);
+    }
 
-	static color(name, defaultValue, description) {
-		return new Setting(name, "color", defaultValue, null, description);
-	}
+    static color(name, defaultValue, description) {
+        return new Setting(name, "color", defaultValue, null, description);
+    }
 
-	static options(name, options, defaultValue) {
-		const alternatives =
-			typeof options === "function" ? options() : options;
-		const df =
-			defaultValue || (alternatives.length > 0 ? alternatives[0] : null);
-		const setting = new Setting(name, "options", df);
-		setting.options = options;
-		return setting;
-	}
+    static options(name, options, defaultValue, description) {
+        const alternatives =
+            typeof options === "function" ? options() : options;
+        const df =
+            defaultValue || (alternatives.length > 0 ? alternatives[0] : null);
+        const setting = new Setting(name, "options", df, null, description);
+        setting.options = options;
+        return setting;
+    }
 
-	static shortcut(name, defaultValue) {
-		return new Setting(name, "shortcut", defaultValue);
-	}
+    static shortcut(name, defaultValue, description) {
+        return new Setting(name, "shortcut", defaultValue, null, description);
+    }
 
-	readOnly() {
-		this.editable = false;
-	}
+    readOnly() {
+        this.editable = false;
+    }
 
-	deactivate() {
-		this.active = false;
-	}
+    deactivate() {
+        this.active = false;
+    }
 
-	activate() {
-		this.active = true;
-	}
+    activate() {
+        this.active = true;
+    }
 
-	setOptions(options) {
-		this.options = options;
-	}
+    setOptions(options) {
+        this.options = options;
+    }
 
-	getOptions() {
-		return typeof this.options === "function"
-			? this.options()
-			: this.options || [];
-	}
+    getOptions() {
+        return typeof this.options === "function"
+            ? this.options()
+            : this.options || [];
+    }
 
-	copyFrom(setting) {
-		this.type = setting.type;
-		this.default = setting.defaultValue;
-		this.value = setting.value;
-		this.label = setting.label;
-		this.description = setting.description;
-		this.editable = setting.editable;
-		this.active = setting.active !== false;
-	}
+    copyFrom(setting) {
+        this.type = setting.type;
+        this.default = setting.defaultValue;
+        this.value = setting.value;
+        this.label = setting.label;
+        this.description = setting.description;
+        this.editable = setting.editable;
+        this.active = setting.active !== false;
+    }
 
-	copy() {
-		const copy = new Setting();
-		copy.name = this.name;
-		copy.type = this.type;
-		copy.default = this.default;
-		copy.value = this.value;
-		copy.label = this.label;
-		copy.description = this.description;
-		copy.editable = this.editable;
-		copy.active = this.active;
-		copy.options = this.options;
-		copy.refreshHandler = this.refreshHandler;
-		return copy;
-	}
+    copy() {
+        const copy = new Setting();
+        copy.name = this.name;
+        copy.type = this.type;
+        copy.default = this.default;
+        copy.value = this.value;
+        copy.label = this.label;
+        copy.description = this.description;
+        copy.editable = this.editable;
+        copy.active = this.active;
+        copy.options = this.options;
+        copy.refreshHandler = this.refreshHandler;
+        return copy;
+    }
 
-	fromJson(value) {
-		this.value = value;
-		this.active = true; // if a value comes from JSON, it implies an active setting...
-	}
+    fromJson(value) {
+        this.value = value;
+        this.active = true; // if a value comes from JSON, it implies an active setting...
+    }
 
-	toJson() {
-		return this.value;
-	}
+    toJson() {
+        return this.value;
+    }
 
-	path() {
-		let prefix = "";
-		if (this.parent) prefix = this.parent.path() + ".";
-		return prefix + this.name;
-	}
+    labelPath() {
+        return this.parent
+            ? this.parent.labelPath() + "." + this.label
+            : this.label;
+    }
+
+    path() {
+        return this.parent ? this.parent.path() + "." + this.name : this.name;
+    }
+
+    section() {
+        return this.parent instanceof Settings ? this.parent : null;
+    }
 }
 
 class TextStyleSetting extends Setting {
-	constructor(
-		name,
-		color = "#00000000",
-		italic = false,
-		bold = false,
-		label,
-		description
-	) {
-		super(name, "textStyle", null, label, description);
-		this.italic = italic;
-		this.bold = bold;
-		this.color = color;
-	}
+    constructor(
+        name,
+        color = "#00000000",
+        italic = false,
+        bold = false,
+        label,
+        description
+    ) {
+        super(name, "textStyle", null, label, description);
+        this.italic = italic;
+        this.bold = bold;
+        this.color = color;
+    }
 
-	copy() {
-		const copy = new TextStyleSetting();
-		copy.name = this.name;
-		copy.color = this.color;
-		copy.italic = this.italic;
-		copy.bold = this.bold;
-		copy.label = this.label;
-		copy.description = this.description;
-		copy.editable = this.editable;
-		copy.active = this.active;
-		return copy;
-	}
+    copy() {
+        const copy = new TextStyleSetting();
+        copy.name = this.name;
+        copy.color = this.color;
+        copy.italic = this.italic;
+        copy.bold = this.bold;
+        copy.label = this.label;
+        copy.description = this.description;
+        copy.editable = this.editable;
+        copy.active = this.active;
+        return copy;
+    }
 
-	copyFrom(setting) {
-		this.color = setting.color;
-		this.italic = setting.italic;
-		this.bold = setting.bold;
-		this.label = setting.label;
-		this.description = setting.description;
-		this.editable = setting.editable;
-		this.active = setting.active !== false;
-	}
+    copyFrom(setting) {
+        this.color = setting.color;
+        this.italic = setting.italic;
+        this.bold = setting.bold;
+        this.label = setting.label;
+        this.description = setting.description;
+        this.editable = setting.editable;
+        this.active = setting.active !== false;
+    }
 
-	fromJson(json) {
-		this.color = json.color;
-		this.italic = json.italic;
-		this.bold = json.bold;
-		this.active = true; // if a value comes from JSON, it implies an active setting...
-	}
+    fromJson(json) {
+        this.color = json.color;
+        this.italic = json.italic;
+        this.bold = json.bold;
+        this.active = true; // if a value comes from JSON, it implies an active setting...
+    }
 
-	toJson() {
-		return { color: this.color, italic: this.italic, bold: this.bold };
-	}
+    toJson() {
+        return { color: this.color, italic: this.italic, bold: this.bold };
+    }
 }
 
 class Settings extends Object {
-	constructor(name, label) {
-		super();
-		this.name = name;
-		this.label = label;
-		if (!this.label) {
-			var raw = name || "";
-			raw = raw.length > 0 ? raw[0].toUpperCase() + raw.slice(1) : raw;
-			const words = raw.match(/[A-Z][a-z]+|[0-9]+/g);
-			this.label = words ? words.join(" ") : raw;
-		}
-		this.settings = [];
-	}
+    constructor(name, label) {
+        super();
+        this.name = name;
+        this.label = label;
+        if (!this.label) {
+            var raw = name || "";
+            raw = raw.length > 0 ? raw[0].toUpperCase() + raw.slice(1) : raw;
+            const words = raw.match(/[A-Z][a-z]+|[0-9]+/g);
+            this.label = words ? words.join(" ") : raw;
+        }
+        this.settings = [];
+    }
 
-	sections() {
-		return this.settings.filter((s) => s instanceof Settings);
-	}
+    sections() {
+        return this.settings.filter((s) => s instanceof Settings);
+    }
 
-	section(nameOrPath) {
-		const parts = nameOrPath.split(".");
-		if (parts.length > 1) {
-			const section = this.section(parts[0]);
-			if (!section) return;
-			return section.section(parts.slice(1).join("."));
-		}
-		return this.sections().find((s) => s.name === nameOrPath);
-	}
+    section(path) {
+        if (!path) return this;
+        const parts = path.split(".");
+        if (parts.length > 1) {
+            const section = this.section(parts[0]);
+            if (!section) return;
+            return section.section(parts.slice(1).join("."));
+        }
+        return this.sections().find((s) => s.name === path);
+    }
 
-	plainSettings() {
-		return this.settings.filter((s) => s instanceof Setting);
-	}
+    plainSettings() {
+        return this.settings.filter((s) => s instanceof Setting);
+    }
 
-	setting(nameOrPath) {
-		const parts = nameOrPath.split(".");
-		if (parts.length > 1) {
-			const last = parts.pop();
-			const section = this.section(parts.join("."));
-			if (!section) return;
-			return section.setting(last);
-		}
-		return this.plainSettings().find((s) => s.name === nameOrPath);
-	}
+    setting(path) {
+        const parts = path.split(".");
+        if (parts.length > 1) {
+            const last = parts.pop();
+            const section = this.section(parts.join("."));
+            if (!section) return;
+            return section.setting(last);
+        }
+        return this.plainSettings().find((s) => s.name === path);
+    }
 
-	get(name) {
-		const setting = this.setting(name);
-		if (setting) {
-			return setting.value === null || setting.value === undefined
-				? setting.default
-				: setting.value;
-		}
-	}
+    allSettings() {
+        const settings = [];
+        this.settings.forEach((s) => {
+            settings.push(s);
+            if (s instanceof Settings) settings.push(...s.allSettings());
+        });
+        return settings;
+    }
 
-	set(name, value) {
-		const setting = this.setting(name);
-		if (setting) setting.value = value;
-	}
+    findSettings(text) {
+        return this.allSettings().filter((s) =>
+            s.label.toLowerCase().includes(text.toLowerCase())
+        );
+    }
 
-	add(setting) {
-		setting.parent = this;
-		this.settings.push(setting);
-		return setting;
-	}
+    get(path) {
+        const setting = this.setting(path);
+        if (setting) {
+            return setting.value === null || setting.value === undefined
+                ? setting.default
+                : setting.value;
+        }
+    }
 
-	addSection(name, label) {
-		const section = new Settings(name, label);
-		this.add(section);
-		return section;
-	}
+    set(path, value) {
+        const setting = this.setting(path);
+        if (setting) setting.value = value;
+    }
 
-	setSection(nameOrPath, section) {
-		const parts = nameOrPath.split(".");
-		if (parts.length > 1) {
-			const target = this.section(parts[0]);
-			if (!target) return;
-			return target.setSection(parts.slice(1).join("."), section);
-		}
-		const index = this.settings.findIndex((s) => s.name === nameOrPath);
-		if (index >= 0) {
-			section.parent = this;
-			this.settings[index] = section;
-		}
-	}
+    add(setting) {
+        setting.parent = this;
+        this.settings.push(setting);
+        return setting;
+    }
 
-	addText(name, defaultValue, label) {
-		return this.add(Setting.text(name, defaultValue, label));
-	}
+    addSection(name, label) {
+        const section = new Settings(name, label);
+        this.add(section);
+        return section;
+    }
 
-	addParagraph(name, defaultValue, label) {
-		return this.add(Setting.paragraph(name, defaultValue, label));
-	}
+    setSection(nameOrPath, section) {
+        const parts = nameOrPath.split(".");
+        if (parts.length > 1) {
+            const target = this.section(parts[0]);
+            if (!target) return;
+            return target.setSection(parts.slice(1).join("."), section);
+        }
+        const index = this.settings.findIndex((s) => s.name === nameOrPath);
+        if (index >= 0) {
+            section.parent = this;
+            this.settings[index] = section;
+        }
+    }
 
-	addUrl(name) {
-		return this.add(Setting.url(name));
-	}
+    addText(name, defaultValue, label, description) {
+        return this.add(Setting.text(name, defaultValue, label, description));
+    }
 
-	addImage(name) {
-		return this.add(Setting.image(name));
-	}
+    addParagraph(name, defaultValue, label, description) {
+        return this.add(Setting.paragraph(name, defaultValue, label, description));
+    }
 
-	addBoolean(name, defaultValue, label, description) {
-		return this.add(
-			Setting.boolean(name, defaultValue, label, description)
-		);
-	}
+    addUrl(name, description) {
+        return this.add(Setting.url(name, description));
+    }
 
-	addNumber(name, defaultValue, label, description) {
-		return this.add(Setting.number(name, defaultValue, label, description));
-	}
+    addImage(name, description) {
+        return this.add(Setting.image(name));
+    }
 
-	addColor(name, defaultValue, description) {
-		return this.add(Setting.color(name, defaultValue, description));
-	}
+    addBoolean(name, defaultValue, label, description) {
+        return this.add(
+            Setting.boolean(name, defaultValue, label, description)
+        );
+    }
 
-	addTextStyle(name, color, label, description) {
-		const setting = new TextStyleSetting(
-			name,
-			color,
-			false,
-			false,
-			label,
-			description
-		);
-		return this.add(setting);
-	}
+    addNumber(name, defaultValue, label, description) {
+        return this.add(Setting.number(name, defaultValue, label, description));
+    }
 
-	addOptions(name, options, defaultValue) {
-		return this.add(Setting.options(name, options, defaultValue));
-	}
+    addColor(name, defaultValue, description) {
+        return this.add(Setting.color(name, defaultValue, description));
+    }
 
-	addShortcut(name, defaultValue) {
-		return this.add(Setting.shortcut(name, defaultValue));
-	}
+    addTextStyle(name, color, label, description) {
+        const setting = new TextStyleSetting(
+            name,
+            color,
+            false,
+            false,
+            label,
+            description
+        );
+        return this.add(setting);
+    }
 
-	toJson() {
-		var json = {};
-		this.settings
-			.filter((s) => s instanceof Settings || s.active)
-			.forEach((s) => {
-				json[s.name] = s.toJson();
-			});
-		return json;
-	}
+    addOptions(name, options, defaultValue, description) {
+        return this.add(Setting.options(name, options, defaultValue, description));
+    }
 
-	fromJson(json) {
-		Object.entries(json).forEach((e) => {
-			const section = this.section(e[0]);
-			if (section) {
-				section.fromJson(e[1]);
-			} else {
-				const setting = this.setting(e[0]);
-				if (setting) setting.fromJson(e[1]);
-			}
-		});
-	}
+    addShortcut(name, defaultValue, description) {
+        return this.add(Setting.shortcut(name, defaultValue, description));
+    }
 
-	readOnly() {
-		this.settings.forEach((s) => s.readOnly());
-	}
+    toJson() {
+        var json = {};
+        this.settings
+            .filter((s) => s instanceof Settings || s.active)
+            .forEach((s) => {
+                json[s.name] = s.toJson();
+            });
+        return json;
+    }
 
-	copyFrom(settings) {
-		settings.settings.forEach((s) => {
-			const local = this.settings.find((t) => t.name === s.name);
-			if (local) local.copyFrom(s);
-		});
-	}
+    fromJson(json) {
+        Object.entries(json).forEach((e) => {
+            const section = this.section(e[0]);
+            if (section) {
+                section.fromJson(e[1]);
+            } else {
+                const setting = this.setting(e[0]);
+                if (setting) setting.fromJson(e[1]);
+            }
+        });
+    }
 
-	copy() {
-		const copy = new Settings(this.name, this.label);
-		this.settings.forEach((s) => copy.add(s.copy()));
-		return copy;
-	}
+    readOnly() {
+        this.settings.forEach((s) => s.readOnly());
+    }
 
-	path() {
-		let prefix = "";
-		if (this.parent) {
-			const head = this.parent.path();
-			if (head !== "") prefix = head + ".";
-		}
-		if (this.name === "settings") return ""; // root settings have no path
-		return prefix + this.name;
-	}
+    copyFrom(settings) {
+        settings.settings.forEach((s) => {
+            const local = this.settings.find((t) => t.name === s.name);
+            if (local) local.copyFrom(s);
+        });
+    }
+
+    copy() {
+        const copy = new Settings(this.name, this.label);
+        this.settings.forEach((s) => copy.add(s.copy()));
+        return copy;
+    }
+
+    path() {
+        if (this.name === "settings") return ""; // root settings have no path
+        let prefix = "";
+        if (this.parent) {
+            const head = this.parent.path();
+            if (head !== "") prefix = head + ".";
+        }
+        return prefix + this.name;
+    }
+
+    labelPath() {
+        if (this.name === "settings") return ""; // root settings have no path
+        let prefix = "";
+        if (this.parent) {
+            const head = this.parent.labelPath();
+            if (head !== "") prefix = head + ".";
+        }
+        return prefix + this.label;
+    }
+
+    sectionPath() {
+        const path = this.parent ? this.parent.sectionPath() : [];
+        path.push(this);
+        return path;
+    }
 }
 
 export { Setting, Settings };
