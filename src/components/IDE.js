@@ -278,10 +278,20 @@ class IDE extends Component {
             "Set the developer name or identifier for this connection."
         );
         connection
-            .addText("dialect", null, null, "The dialect of the backend. This is read-only and it is automatically set.")
+            .addText(
+                "dialect",
+                null,
+                null,
+                "The dialect of the backend. This is read-only and it is automatically set."
+            )
             .readOnly();
         connection
-            .addText("version", null, null, "The version of the backend. This is read-only and it is automatically set.")
+            .addText(
+                "version",
+                null,
+                null,
+                "The version of the backend. This is read-only and it is automatically set."
+            )
             .readOnly();
         // Code...
         const editor = settings.addSection("editor");
@@ -308,6 +318,12 @@ class IDE extends Component {
             true,
             "Show tooltips",
             "Show tooltips in the editor."
+        );
+        editor.addNumber(
+            "tooltipHoverTime",
+            500,
+            "Tooltip hover time (ms)",
+            "The time to wait before showing a tooltip."
         );
         // Appearance...
         const appearance = settings.addSection("appearance");

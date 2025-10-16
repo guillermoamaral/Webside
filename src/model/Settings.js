@@ -231,6 +231,7 @@ class Settings extends Object {
     }
 
     setting(path) {
+        if (!path) return;
         const parts = path.split(".");
         if (parts.length > 1) {
             const last = parts.pop();
