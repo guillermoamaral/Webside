@@ -1081,10 +1081,11 @@ class MonacoEditor extends CodeEditor {
         if (event.event.ctrlKey)
             return await this.updateHoverDecoration(editor, position);
         if (!this.showsTooltip()) return;
+        const hoverTime = this.settings().get("editor.tooltipHoverTime");
         this.clearTooltipTimeout();
         this.tooltipTimeout = setTimeout(
             () => this.showTooltip(editor, position),
-            150
+            hoverTime
         );
     };
 
