@@ -1198,6 +1198,10 @@ class MonacoEditor extends CodeEditor {
 
     hideTooltip(editor) {
         this.clearTooltipTimeout();
+        if (this.currentTooltipRef && this.currentTooltipRef.current) {
+            this.currentTooltipRef.current.aboutToClose();
+            this.currentTooltipRef = null;
+        }
         if (this.currentTooltipWidget) {
             try {
                 editor.removeContentWidget(this.currentTooltipWidget);
@@ -1209,10 +1213,6 @@ class MonacoEditor extends CodeEditor {
                 this.currentTooltipRoot.unmount();
             } catch (ignored) {}
             this.currentTooltipRoot = null;
-        }
-        if (this.currentTooltipRef && this.currentTooltipRef.current) {
-            this.currentTooltipRef.current.aboutToClose();
-            this.currentTooltipRef = null;
         }
         this.isTooltipHovered = false;
     }
