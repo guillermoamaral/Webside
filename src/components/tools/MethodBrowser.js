@@ -174,7 +174,6 @@ class MethodBrowser extends Tool {
 
 	browseSendersInList = async (editor) => {
 		const selector = await editor.targetSelector();
-		console.log(selector);
 		if (!selector) return;
 		this.context.browseSendersInList(selector, this.currentMethods());
 	};

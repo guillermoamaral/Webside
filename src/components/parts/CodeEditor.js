@@ -825,7 +825,7 @@ class CodeEditor extends Component {
         return this.props.inMethod;
     }
 
-    renderTooltip(spec, dom, inspectorRef, destroy) {
+    renderTooltip(spec, dom, ref, destroy) {
         const root = ReactDOM.createRoot(dom);
         root.render(
             <DndProvider backend={HTML5Backend}>
@@ -838,7 +838,7 @@ class CodeEditor extends Component {
                             code={spec.code}
                             object={spec.object}
                             actions={spec.actions}
-                            inspectorRef={inspectorRef}
+                            ref={ref}
                             onClose={destroy}
                         />
                     </ToolContainerContext.Provider>
