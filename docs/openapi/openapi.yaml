@@ -128,6 +128,8 @@ paths:
     $ref: "./debuggers.yaml#/paths/~1debuggers~1{id}~1frames~1{index}~1stepover"
   /debuggers/{id}/frames/{index}/stepthrough:
     $ref: "./debuggers.yaml#/paths/~1debuggers~1{id}~1frames~1{index}~1stepthrough"
+  /debuggers/{id}/frames/{index}/runtocursor:
+    $ref: "./debuggers.yaml#/paths/~1debuggers~1{id}~1frames~1{index}~1runtocursor"
   /debuggers/{id}/frames/{index}/stepinto:
     $ref: "./debuggers.yaml#/paths/~1debuggers~1{id}~1frames~1{index}~1stepinto"
   /debuggers/{id}/frames/{index}/restart:

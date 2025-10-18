@@ -345,6 +345,15 @@ class MonacoEditor extends CodeEditor {
         editor.onDidChangeModel(() => {
             this.disableWordHighlighter(editor);
         });
+        editor.onDidChangeCursorPosition((event) => {
+            if (this.props.onCursorPositionChange) {
+                const model = editor.getModel();
+                const offset = this.normalizedOffset(
+                    model.getOffsetAt(event.position)
+                );
+                this.props.onCursorPositionChange(offset);
+            }
+        });
         editor.onDidChangeModelContent(() => {
             MonacoEditor.setActiveEditor(editor);
             if (this.updatingFromProps) {
@@ -1076,9 +1085,19 @@ class MonacoEditor extends CodeEditor {
     };
 
     mouseMoved = async (event, editor) => {
+        const mouseEvent = event.event;
+        const mouseTarget = editor.getTargetAtClientPoint(
+            mouseEvent.posx,
+            mouseEvent.posy
+        );
+        if (
+            !mouseTarget ||
+            mouseTarget.type !== monaco.editor.MouseTargetType.CONTENT_TEXT
+        ) {
+            return;
+        }
         const position = event.target.position;
-        if (!position) return;
-        if (event.event.ctrlKey)
+        if (mouseEvent.ctrlKey)
             return await this.updateHoverDecoration(editor, position);
         if (!this.showsTooltip()) return;
         const hoverTime = this.settings().get("editor.tooltipHoverTime");
