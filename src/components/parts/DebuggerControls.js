@@ -8,6 +8,7 @@ import StepThroughIcon from "../icons/StepThroughIcon";
 import ResumeIcon from "@iconify/icons-mdi/play";
 import TerminateIcon from "@iconify/icons-mdi/stop";
 import Hotkeys from "react-hot-keys";
+import { ide } from "../IDE";
 
 class DebuggerControls extends PureComponent {
     stepIntoClicked = () => {
@@ -53,64 +54,49 @@ class DebuggerControls extends PureComponent {
     };
 
     hotkeyPressed = async (hotkey) => {
-        const map = this.hotkeyMap();
-        const command = Object.keys(map).find((k) => map[k] === hotkey);
-        this.handlerFor(command)();
-    };
-
-    handlerFor(command) {
-        var handler;
-        switch (command) {
-            case "restart":
-                handler = this.restartClicked;
+        const shortcuts = ide.settings.section("shortcuts");
+        switch (hotkey) {
+            case shortcuts.get("stepInto"):
+                this.stepIntoClicked();
                 break;
-            case "stepInto":
-                handler = this.stepIntoClicked;
+            case shortcuts.get("stepOver"):
+                this.stepOverClicked();
                 break;
-            case "stepOver":
-                handler = this.stepOverClicked;
+            case shortcuts.get("stepThrough"):
+                this.stepThroughClicked();
                 break;
-            case "stepThrough":
-                handler = this.stepThroughClicked;
+            case shortcuts.get("restart"):
+                this.restartClicked();
                 break;
-            case "resume":
-                handler = this.resumeClicked;
+            case shortcuts.get("resume"):
+                this.resumeClicked();
+                break;
+            case shortcuts.get("terminate"):
+                this.terminateClicked();
                 break;
             default:
         }
-        return handler;
-    }
-
-    hotkeyMap() {
-        return {
-            restart: "Ctrl+F6",
-            stepInto: "Ctrl+F7",
-            stepOver: "Ctrl+F8",
-            stepThrough: "Ctrl+F9",
-            resume: "Ctrl+F10",
-        };
-    }
-
-    hotkeyFor(command) {
-        return this.hotkeyMap()[command];
-    }
-
-    hotkeys() {
-        var hotkeys = "";
-        var first = true;
-        Object.values(this.hotkeyMap()).forEach((k) => {
-            hotkeys = hotkeys + (first ? "" : ", ") + k;
-            first = false;
-        });
-        return hotkeys;
-    }
+    };
 
     render() {
         const { disabled } = this.props;
         const stepColor = disabled ? "grey" : "#2ba5de";
+        const shortcuts = ide.settings.section("shortcuts");
         return (
             <Hotkeys
-                keyName={this.hotkeys()}
+                keyName={
+                    shortcuts.get("stepInto") +
+                    "," +
+                    shortcuts.get("stepOver") +
+                    "," +
+                    shortcuts.get("stepThrough") +
+                    "," +
+                    shortcuts.get("restart") +
+                    "," +
+                    shortcuts.get("resume") +
+                    "," +
+                    shortcuts.get("terminate")
+                }
                 filter={(event) => {
                     return true;
                 }}
@@ -119,7 +105,7 @@ class DebuggerControls extends PureComponent {
             >
                 <Box>
                     <Tooltip
-                        title={"Step into (" + this.hotkeyFor("stepInto") + ")"}
+                        title={"Step into (" + shortcuts.get("stepInto") + ")"}
                         placement="top"
                     >
                         <span>
@@ -134,7 +120,7 @@ class DebuggerControls extends PureComponent {
                         </span>
                     </Tooltip>
                     <Tooltip
-                        title={"Step over (" + this.hotkeyFor("stepOver") + ")"}
+                        title={"Step over (" + shortcuts.get("stepOver") + ")"}
                         placement="top"
                     >
                         <span>
@@ -151,7 +137,7 @@ class DebuggerControls extends PureComponent {
                     <Tooltip
                         title={
                             "Step through (" +
-                            this.hotkeyFor("stepThrought") +
+                            shortcuts.get("stepThrough") +
                             ")"
                         }
                         placement="top"
@@ -168,7 +154,7 @@ class DebuggerControls extends PureComponent {
                         </span>
                     </Tooltip>
                     <Tooltip
-                        title={"Restart (" + this.hotkeyFor("restart") + ")"}
+                        title={"Restart (" + shortcuts.get("restart") + ")"}
                         placement="top"
                     >
                         <span>
@@ -183,7 +169,7 @@ class DebuggerControls extends PureComponent {
                         </span>
                     </Tooltip>
                     <Tooltip
-                        title={"Resume (" + this.hotkeyFor("resume") + ")"}
+                        title={"Resume (" + shortcuts.get("resume") + ")"}
                         placement="top"
                     >
                         <span>
@@ -197,7 +183,10 @@ class DebuggerControls extends PureComponent {
                             </IconButton>
                         </span>
                     </Tooltip>
-                    <Tooltip title="Terminate" placement="top">
+                    <Tooltip
+                        title={"Terminate (" + shortcuts.get("terminate") + ")"}
+                        placement="top"
+                    >
                         <span>
                             <IconButton
                                 style={{ color: disabled ? "grey" : "#ba4343" }}

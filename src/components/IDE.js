@@ -443,6 +443,36 @@ class IDE extends Component {
             "Alt+z",
             "The shortcut to toggle the full view of the editor."
         );
+        shortcuts.addShortcut(
+            "stepInto",
+            "Ctrl+F7",
+            "The shortcut to step into the selected expression."
+        );
+        shortcuts.addShortcut(
+            "stepOver",
+            "Ctrl+F8",
+            "The shortcut to step over the selected expression."
+        );
+        shortcuts.addShortcut(
+            "stepThrough",
+            "Ctrl+F9",
+            "The shortcut to step through the selected expression."
+        );
+        shortcuts.addShortcut(
+            "restart",
+            "Ctrl+F6",
+            "The shortcut to restart the debugger."
+        );
+        shortcuts.addShortcut(
+            "resume",
+            "Ctrl+F10",
+            "The shortcut to resume the debugger."
+        );
+        shortcuts.addShortcut(
+            "terminate",
+            "Ctrl+F11",
+            "The shortcut to terminate the debugger."
+        );
 
         // Code assistant...
         const assistant = settings.addSection("codeAssistant");
