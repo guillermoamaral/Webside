@@ -202,6 +202,42 @@ paths:
         "200":
           description: Step through executed successfully
 
+  /debuggers/{id}/frames/{index}/runtocursor:
+    post:
+      summary: Run to cursor in the debugger with a given ID
+      description: Run to cursor in the debugger at a given position
+      tags: [Debuggers]
+      operationId: runToCursor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Debugger ID
+          schema:
+            type: string
+        - name: index
+          in: path
+          required: true
+          description: Frame index
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                position:
+                  type: integer
+                  description: Position
+                  example: 10
+              required:
+                - position
+      responses:
+        "200":
+          description: Run to cursor executed successfully
+
   /debuggers/{id}/frames/{index}/stepinto:
     post:
       summary: Step into the current sentence in the debugger with a given ID
