@@ -5,6 +5,7 @@ import RestartIcon from "../icons/RestartIcon";
 import StepIntoIcon from "../icons/StepIntoIcon";
 import StepOverIcon from "../icons/StepOverIcon";
 import StepThroughIcon from "../icons/StepThroughIcon";
+import RunToCursorIcon from "../icons/RunToCursorIcon";
 import ResumeIcon from "@iconify/icons-mdi/play";
 import TerminateIcon from "@iconify/icons-mdi/stop";
 import Hotkeys from "react-hot-keys";
@@ -13,44 +14,37 @@ import { ide } from "../IDE";
 class DebuggerControls extends PureComponent {
     stepIntoClicked = () => {
         const handler = this.props.onStepIntoClicked;
-        if (handler) {
-            handler();
-        }
+        if (handler) handler();
     };
 
     stepOverClicked = () => {
         const handler = this.props.onStepOverClicked;
-        if (handler) {
-            handler();
-        }
+        if (handler) handler();
     };
 
     stepThroughClicked = () => {
         const handler = this.props.onStepThroughClicked;
-        if (handler) {
-            handler();
-        }
+        if (handler) handler();
     };
 
     restartClicked = () => {
         const handler = this.props.onRestartClicked;
-        if (handler) {
-            handler();
-        }
+        if (handler) handler();
     };
 
     resumeClicked = () => {
         const handler = this.props.onResumeClicked;
-        if (handler) {
-            handler();
-        }
+        if (handler) handler();
     };
 
     terminateClicked = () => {
         const handler = this.props.onTerminateClicked;
-        if (handler) {
-            handler();
-        }
+        if (handler) handler();
+    };
+
+    runToCursorClicked = () => {
+        const handler = this.props.onRunToCursorClicked;
+        if (handler) handler();
     };
 
     hotkeyPressed = async (hotkey) => {
@@ -64,6 +58,9 @@ class DebuggerControls extends PureComponent {
                 break;
             case shortcuts.get("stepThrough"):
                 this.stepThroughClicked();
+                break;
+            case shortcuts.get("runToCursor"):
+                this.runToCursorClicked();
                 break;
             case shortcuts.get("restart"):
                 this.restartClicked();
@@ -90,6 +87,8 @@ class DebuggerControls extends PureComponent {
                     shortcuts.get("stepOver") +
                     "," +
                     shortcuts.get("stepThrough") +
+                    "," +
+                    shortcuts.get("runToCursor") +
                     "," +
                     shortcuts.get("restart") +
                     "," +
@@ -150,6 +149,25 @@ class DebuggerControls extends PureComponent {
                                 disabled={disabled}
                             >
                                 <StepThroughIcon />
+                            </IconButton>
+                        </span>
+                    </Tooltip>
+                    <Tooltip
+                        title={
+                            "Run to cursor (" +
+                            shortcuts.get("runToCursor") +
+                            ")"
+                        }
+                        placement="top"
+                    >
+                        <span>
+                            <IconButton
+                                style={{ color: stepColor }}
+                                onClick={this.runToCursorClicked}
+                                size="medium"
+                                disabled={disabled}
+                            >
+                                <RunToCursorIcon />
                             </IconButton>
                         </span>
                     </Tooltip>

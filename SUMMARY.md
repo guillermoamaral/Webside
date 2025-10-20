@@ -63,6 +63,7 @@
     * [Step into debugger](docs/api/debuggers/id/stepinto/post.md)
     * [Step over debugger](docs/api/debuggers/id/stepover/post.md)
     * [Step through debugger](docs/api/debuggers/id/stepthrough/post.md)
+    * [Run to cursor](docs/api/debuggers/id/runtocursor/post.md)
     * [Terminate debugger](docs/api/debuggers/id/terminate/post.md)
   * [Evaluations](docs/api/evaluations/README.md)
     * [Retrieve evaluations](docs/api/evaluations/get.md)

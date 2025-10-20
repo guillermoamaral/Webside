@@ -459,6 +459,11 @@ class IDE extends Component {
             "The shortcut to step through the selected expression."
         );
         shortcuts.addShortcut(
+            "runToCursor",
+            "Ctrl+F12",
+            "The shortcut to run to the cursor."
+        );
+        shortcuts.addShortcut(
             "restart",
             "Ctrl+F6",
             "The shortcut to restart the debugger."
