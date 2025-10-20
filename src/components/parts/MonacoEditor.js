@@ -348,10 +348,11 @@ class MonacoEditor extends CodeEditor {
         editor.onDidChangeCursorPosition((event) => {
             if (this.props.onCursorPositionChange) {
                 const model = editor.getModel();
+                const position = editor.getPosition();
                 const offset = this.normalizedOffset(
-                    model.getOffsetAt(event.position)
+                    model.getOffsetAt(position)
                 );
-                this.props.onCursorPositionChange(offset);
+                this.props.onCursorPositionChange(offset + 1);
             }
         });
         editor.onDidChangeModelContent(() => {
