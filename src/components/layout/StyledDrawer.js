@@ -31,13 +31,25 @@ const StyledDrawer = styled(Drawer, {
 	flexShrink: 0,
 	whiteSpace: "nowrap",
 	boxSizing: "border-box",
+	"& .MuiDrawer-paper": {
+		top: '0px',
+		height: '100%',
+	},
 	...(open && {
 		...openedMixin(theme),
-		"& .MuiDrawer-paper": openedMixin(theme),
+		"& .MuiDrawer-paper": {
+			...openedMixin(theme),
+			top: '0px',
+			height: '100%',
+		},
 	}),
 	...(!open && {
 		...closedMixin(theme),
-		"& .MuiDrawer-paper": closedMixin(theme),
+		"& .MuiDrawer-paper": {
+			...closedMixin(theme),
+			top: '0px',
+			height: '100%',
+		},
 	}),
 }));
 

@@ -4,8 +4,8 @@ import { styled } from "@mui/material/styles";
 const drawerWidth = 240;
 
 const StyledAppBar = styled(AppBar, {
-	shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
+	shouldForwardProp: (prop) => prop !== "open" && prop !== "isElectron",
+})(({ theme, open, isElectron }) => ({
 	zIndex: theme.zIndex.drawer + 1,
 	transition: theme.transitions.create(["width", "margin"], {
 		easing: theme.transitions.easing.sharp,
@@ -18,6 +18,13 @@ const StyledAppBar = styled(AppBar, {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.enteringScreen,
 		}),
+	}),
+	...(isElectron && {
+		'& .MuiToolbar-root': {
+			paddingRight: 1,
+		},
+		WebkitAppRegion: 'drag',
+		appRegion: 'drag',
 	}),
 }));
 

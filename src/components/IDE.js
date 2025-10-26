@@ -556,6 +556,7 @@ class IDE extends Component {
     }
 
     disconnect = () => {
+        mainApp.resetTheme();
         this.props.navigate("/");
     };
 
@@ -1791,7 +1792,7 @@ class IDE extends Component {
                             />
                             <Box
                                 component="main"
-                                mt={6}
+                                mt={5}
                                 flexGrow={1}
                                 sx={{
                                     height: "95vh",
