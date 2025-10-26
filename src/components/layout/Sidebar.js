@@ -15,7 +15,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import ObjectsIcon from "../icons/ObjectsIcon";
 import ChangesBrowserIcon from "../icons/ChangesBrowserIcon";
 import ChatIcon from "@mui/icons-material/Chat";
-//import SaveImageIcon from "@mui/icons-material/Save";
 import { withDialog } from "../dialogs/index";
 import DrawerHeader from "./DrawerHeader";
 import StyledDrawer from "./StyledDrawer";
@@ -54,7 +53,9 @@ class Sidebar extends Component {
 						</ListItemIcon>
 						<ListItemText primary="Save image" />
 					</ListItemButton> */}
-					<ListItemButton onClick={onSearchClick}>
+					<ListItemButton 
+						onClick={onSearchClick}
+					>
 						<ListItemIcon>
 							<Tooltip title="Search" placement="top">
 								<SearchIcon />
@@ -62,7 +63,9 @@ class Sidebar extends Component {
 						</ListItemIcon>
 						<ListItemText primary="Search" />
 					</ListItemButton>
-					<ListItemButton onClick={onTranscriptClick}>
+					<ListItemButton 
+						onClick={onTranscriptClick}
+					>
 						<ListItemIcon>
 							<Tooltip title="Transcript" placement="top">
 								<Badge
@@ -75,7 +78,9 @@ class Sidebar extends Component {
 						</ListItemIcon>
 						<ListItemText primary="Transcript" />
 					</ListItemButton>
-					<ListItemButton onClick={onChangesClick}>
+					<ListItemButton 
+						onClick={onChangesClick}
+					>
 						<ListItemIcon>
 							<Tooltip title="Last Changes" placement="top">
 								<Badge
@@ -88,7 +93,9 @@ class Sidebar extends Component {
 						</ListItemIcon>
 						<ListItemText primary="Changes" />
 					</ListItemButton>
-					<ListItemButton onClick={onResourcesClick}>
+					<ListItemButton 
+						onClick={onResourcesClick}
+					>
 						<Tooltip title="Resources" placement="top">
 							<ListItemIcon>
 								<ObjectsIcon />
@@ -97,7 +104,9 @@ class Sidebar extends Component {
 						<ListItemText primary="Resources" />
 					</ListItemButton>
 					{onPeersClick && (
-						<ListItemButton onClick={onPeersClick}>
+						<ListItemButton 
+							onClick={onPeersClick}
+						>
 							<ListItemIcon>
 								<Tooltip title="Chat" placement="top">
 									<Badge
@@ -111,7 +120,9 @@ class Sidebar extends Component {
 							<ListItemText primary="Chat" />
 						</ListItemButton>
 					)}
-					<ListItemButton onClick={onSettingsClick}>
+					<ListItemButton 
+						onClick={onSettingsClick}
+					>
 						<Tooltip title="Settings" placement="top">
 							<ListItemIcon>
 								<SettingsIcon />

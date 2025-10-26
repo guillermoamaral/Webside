@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { withNavigation } from "./withNavigation";
+import Titlebar from "./layout/Titlebar";
 
 class Login extends Component {
 	constructor(props) {
@@ -92,13 +93,15 @@ class Login extends Component {
 			this.state;
 		const buttonLabel = connecting ? "Connecting" : "Connect";
 		return (
-			<Box
-				display="flex"
-				flexDirection="column"
-				alignItems="center"
-				justifyContent="center"
-				style={{ minHeight: "80vh" }}
-			>
+			<>
+				<Titlebar />
+				<Box
+					display="flex"
+					flexDirection="column"
+					alignItems="center"
+					justifyContent="center"
+					style={{ minHeight: "80vh" }}
+				>
 				<Box>
 					<img
 						alt="Webside"
@@ -202,7 +205,8 @@ class Login extends Component {
 						))}
 					</Box>
 				)}
-			</Box>
+				</Box>
+			</>
 		);
 	}
 }
