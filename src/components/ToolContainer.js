@@ -43,6 +43,8 @@ import ReleaseNotesIcon from "@mui/icons-material/NewReleases";
 import SendersIcon from "./icons/SendersIcon";
 import ImplementorsIcon from "./icons/ImplementorsIcon";
 import ReferencesIcon from "./icons/ReferencesIcon";
+import ShortcutsLegend from "./parts/ShortcutsLegend";
+import { Box } from "@mui/material";
 
 class ToolContainer extends Component {
     constructor(props) {
@@ -86,6 +88,7 @@ class ToolContainer extends Component {
         const pages = this.state.pages;
         pages.push(page);
         this.setState({ pages: pages, selectedPageId: page.id });
+        this.focused();
     }
 
     pages() {
@@ -102,8 +105,16 @@ class ToolContainer extends Component {
     };
 
     pageFocused = (page) => {
-        if (this.props.onPageFocus) this.props.onPageFocus(this, page);
+        this.focused();
     };
+
+    containerClicked = () => {
+        this.focused();
+    };
+
+    focused() {
+        if (this.props.onFocus) this.props.onFocus(this);
+    }
 
     aboutToDeselectPage(page) {
         if (page && page.ref && page.ref.current)
@@ -168,9 +179,7 @@ class ToolContainer extends Component {
                 ? currentPages[ik + 1].id
                 : null;
         const filtered = currentPages.filter((p) => !ids.includes(p.id));
-        if (this.props.onPagesRemove) {
-            this.props.onPagesRemove(this);
-        }
+        if (this.props.onPagesRemove) this.props.onPagesRemove(this);
         if (selectedPageId !== selectedId) {
             this.aboutToSelectPage(this.pageWithId(selectedId));
         }
@@ -1161,21 +1170,55 @@ class ToolContainer extends Component {
         const showClose = this.props.showClose;
         const { selectedPageId, pages } = this.state;
         const selectedPage = this.pageWithId(selectedPageId);
+
         return (
             <ToolContainerContext.Provider value={this}>
-                <TabControl
-                    id={this.props.id}
-                    style={{ width: "100%", height: "100%" }}
-                    selectedPage={selectedPage}
-                    pages={pages}
-                    onTabSelect={this.selectPage}
-                    onTabsClose={this.closePages}
-                    addOptions={this.addPageOptions()}
-                    onTabSplit={this.splitPage}
-                    onTabFocus={this.pageFocused}
-                    showClose={showClose}
-                    onTabsReorder={this.reorderPages}
-                />
+                <Box
+                    sx={{ width: "100%", height: "100%", position: "relative" }}
+                    onClick={this.containerClicked}
+                >
+                    <TabControl
+                        id={this.props.id}
+                        style={{ width: "100%", height: "100%" }}
+                        selectedPage={selectedPage}
+                        pages={pages}
+                        onTabSelect={this.selectPage}
+                        onTabsClose={this.closePages}
+                        addOptions={this.addPageOptions()}
+                        onTabSplit={this.splitPage}
+                        onTabFocus={this.pageFocused}
+                        showClose={showClose}
+                        onTabsReorder={this.reorderPages}
+                    />
+                    {pages.length === 0 && (
+                        <ShortcutsLegend settings={ide.settings} />
+                    )}
+                    {this.props.active && (
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                top: 0,
+                                right: 0,
+                                width: 0,
+                                height: 0,
+                                borderLeft: "8px solid transparent",
+                                borderTop: "8px solid",
+                                borderTopColor:
+                                    ide.settings
+                                        ?.section("appearance")
+                                        ?.section(
+                                            ide.settings
+                                                ?.section("appearance")
+                                                ?.get("mode")
+                                        )
+                                        ?.get("primaryColor") || "#cccccc",
+                                opacity: 0.6,
+                                zIndex: 10,
+                                pointerEvents: "none",
+                            }}
+                        />
+                    )}
+                </Box>
             </ToolContainerContext.Provider>
         );
     }

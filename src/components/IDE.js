@@ -40,6 +40,7 @@ import ServerEventChannel from "./ServerEventChannel";
 import { darken } from "@mui/system";
 
 var ide = null;
+var mainContainerId = 99999;
 var MaxExtraContainers = 3;
 
 class IDE extends Component {
@@ -62,7 +63,7 @@ class IDE extends Component {
             waitDescription: "",
             quickSearchOpen: false,
             quickSearchOptions: {},
-            activeContainer: null,
+            activeContainerId: mainContainerId,
             showAssistant: false,
             searchOpened: false,
             searchOptions: {},
@@ -75,7 +76,7 @@ class IDE extends Component {
     }
 
     componentDidMount() {
-        const container = this.mainContainer();
+        const container = this.activeContainer();
         container.openTranscript();
         //container.openPOC();
         const options = this.queryOptions();
@@ -776,8 +777,10 @@ class IDE extends Component {
             .onError((e) => console.warn("Events channel error", e))
             .onMessage((m) => console.log("generic", m))
             .on("transcript", (text) => this.handleTranscriptEvent(text))
-            .on("debugger", (id) => this.mainContainer().openDebugger(id))
-            .on("object", (id) => this.mainContainer().inspectObjectWithId(id))
+            .on("debugger", (id) => this.activeContainer().openDebugger(id))
+            .on("object", (id) =>
+                this.activeContainer().inspectObjectWithId(id)
+            )
             .connect();
     }
 
@@ -853,6 +856,15 @@ class IDE extends Component {
         return this.state.transcriptText;
     }
 
+    activeContainer() {
+        if (!this.state.activeContainerId) return this.mainContainer();
+        const container = this.state.extraContainers.find(
+            (c) => c.id === this.state.activeContainerId
+        );
+        if (container) return container.ref.current;
+        return this.mainContainer();
+    }
+
     mainContainer() {
         return this.mainContainerRef.current;
     }
@@ -869,25 +881,15 @@ class IDE extends Component {
         const ref = React.createRef();
         const container = {
             id: id,
-            component: (
-                <ToolContainer
-                    id={id}
-                    key={id}
-                    ref={ref}
-                    onPageFocus={this.pageFocusedInContainer}
-                    onPagesRemove={this.pagesRemovedInContainer}
-                    //onSplit={this.splitContainer} //disabled for the moment
-                    pages={pages}
-                    showClose={true}
-                    sx={{ width: "100%", height: "100%" }}
-                />
-            ),
+            ref: ref,
+            pages: pages,
         };
         let i = index;
         if (i === undefined) i = containers.length;
         containers.splice(i, 0, container);
         this.setState({
             extraContainers: containers,
+            activeContainerId: container.id,
         });
     };
 
@@ -897,12 +899,14 @@ class IDE extends Component {
         });
         this.setState({
             extraContainers: containers,
+            activeContainerId: mainContainerId,
         });
     }
 
     removeExtraContainers() {
         this.setState({
             extralContainers: [],
+            activeContainerId: mainContainerId,
         });
     }
 
@@ -938,9 +942,9 @@ class IDE extends Component {
         }
     };
 
-    pageFocusedInContainer = (container, page) => {
-        if (container === this.state.activeContainer) return;
-        this.setState({ activeContainer: container });
+    containerFocused = (container) => {
+        if (container.props.id === this.state.activeContainerId) return;
+        this.setState({ activeContainerId: container.props.id });
     };
 
     // ...
@@ -962,7 +966,7 @@ class IDE extends Component {
     };
 
     openSettings = (path) => {
-        this.mainContainer().openSettings(path);
+        this.activeContainer().openSettings(path);
     };
 
     editSetting = (setting) => {
@@ -970,14 +974,14 @@ class IDE extends Component {
     };
 
     openReleaseNotes = () => {
-        this.mainContainer().openReleaseNotes();
+        this.activeContainer().openReleaseNotes();
     };
 
     openTranscript = () => {
         if (this.usesEmergentTranscript()) {
             this.toggleShowTranscript();
         } else {
-            this.mainContainer().openTranscript();
+            this.activeContainer().openTranscript();
         }
     };
 
@@ -989,7 +993,7 @@ class IDE extends Component {
     };
 
     toggleOpenSearch = () => {
-        //this.mainContainer().openSearch();
+        //this.activeContainer().openSearch();
         //this.openQuickSearch();
         this.setState({ searchOpened: !this.state.searchOpened });
     };
@@ -1007,39 +1011,39 @@ class IDE extends Component {
     };
 
     browseLastChanges = () => {
-        this.mainContainer().browseLastChanges();
+        this.activeContainer().browseLastChanges();
     };
 
     browseChanges = (changes) => {
-        this.mainContainer().browseChanges(changes);
+        this.activeContainer().browseChanges(changes);
     };
 
     browsePackage = (packname) => {
-        this.mainContainer().browsePackage(packname);
+        this.activeContainer().browsePackage(packname);
     };
 
     browseClass = (classname) => {
-        this.mainContainer().browseClass(classname);
+        this.activeContainer().browseClass(classname);
     };
 
     browseImplementors = (selector) => {
-        this.mainContainer().browseImplementors(selector);
+        this.activeContainer().browseImplementors(selector);
     };
 
     openResources = () => {
-        this.mainContainer().openResources();
+        this.activeContainer().openResources();
     };
 
     openChat = () => {
-        this.mainContainer().openChat();
+        this.activeContainer().openChat();
     };
 
     browseMethods = (methods) => {
-        this.mainContainer().openMethodBrowser(methods);
+        this.activeContainer().openMethodBrowser(methods);
     };
 
     inspectObject = (object) => {
-        this.mainContainer().openInspector(object);
+        this.activeContainer().openInspector(object);
     };
 
     async inspectExpression(expression) {
@@ -1048,7 +1052,7 @@ class IDE extends Component {
             true,
             true
         );
-        if (object) this.mainContainer().openInspector(object);
+        if (object) this.activeContainer().openInspector(object);
     }
 
     async followTestRun(id, debug, onRun) {
@@ -1071,7 +1075,7 @@ class IDE extends Component {
                         test.class,
                         test.selector
                     );
-                    this.mainContainer().openDebugger(
+                    this.activeContainer().openDebugger(
                         d.id,
                         d.description || "Debugging test " + test.selector,
                         () => this.backend.deleteTestRun(id),
@@ -1086,7 +1090,7 @@ class IDE extends Component {
                 // 	message.action = {
                 // 		label: "Debug",
                 // 		handler: () =>
-                // 			this.mainContainer().openDebugger(
+                // 			this.activeContainer().openDebugger(
                 // 				d.id,
                 // 				d.description ||
                 // 					"Debugging test " + test.selector
@@ -1182,19 +1186,19 @@ class IDE extends Component {
                 this.openQuickSearch();
                 break;
             case shortcuts.get("openSystemBrowser"):
-                this.mainContainer().openPackageBrowser();
+                this.activeContainer().openPackageBrowser();
                 break;
             case shortcuts.get("openClassBrowser"):
-                this.mainContainer().openClassBrowser();
+                this.activeContainer().openClassBrowser();
                 break;
             case shortcuts.get("newWorkspace"):
-                this.mainContainer().newWorkspace();
+                this.activeContainer().newWorkspace();
                 break;
             case shortcuts.get("moveToLeftTab"):
-                this.mainContainer().selectPageAtOffset(-1);
+                this.activeContainer().selectPageAtOffset(-1);
                 break;
             case shortcuts.get("moveToRightTab"):
-                this.mainContainer().selectPageAtOffset(1);
+                this.activeContainer().selectPageAtOffset(1);
                 break;
             default:
         }
@@ -1443,7 +1447,7 @@ class IDE extends Component {
             return this.backend.get(uri);
         }, specification.label);
         if (result && result.length > 0) {
-            this.mainContainer().openMethodBrowser(
+            this.activeContainer().openMethodBrowser(
                 result,
                 specification.label,
                 null,
@@ -1710,6 +1714,7 @@ class IDE extends Component {
             searchOptions,
             menuOpen,
             menuPosition,
+            activeContainerId,
         } = this.state;
         const menuOptions = this.menuOptions();
         const extraWidth = Math.round(100 / (extraContainers.length + 1)) + "%";
@@ -1859,15 +1864,18 @@ class IDE extends Component {
                                                 }}
                                             >
                                                 <ToolContainer
-                                                    id={99999}
+                                                    id={mainContainerId}
                                                     key="mainContainer"
                                                     ref={this.mainContainerRef}
-                                                    onPageFocus={
-                                                        this
-                                                            .pageFocusedInContainer
+                                                    onFocus={
+                                                        this.containerFocused
                                                     }
                                                     //onSplit={this.splitContainer} //disabled for the moment
                                                     showClose={false}
+                                                    active={
+                                                        activeContainerId ===
+                                                        mainContainerId
+                                                    }
                                                 />
                                             </Box>
                                             {extraContainers.map(
@@ -1891,9 +1899,38 @@ class IDE extends Component {
                                                                     back,
                                                             }}
                                                         >
-                                                            {
-                                                                container.component
-                                                            }
+                                                            <ToolContainer
+                                                                id={
+                                                                    container.id
+                                                                }
+                                                                key={
+                                                                    container.id
+                                                                }
+                                                                ref={
+                                                                    container.ref
+                                                                }
+                                                                onFocus={
+                                                                    this
+                                                                        .containerFocused
+                                                                }
+                                                                onPagesRemove={
+                                                                    this
+                                                                        .pagesRemovedInContainer
+                                                                }
+                                                                //onSplit={this.splitContainer} //disabled for the moment
+                                                                pages={
+                                                                    container.pages
+                                                                }
+                                                                showClose={true}
+                                                                active={
+                                                                    activeContainerId ===
+                                                                    container.id
+                                                                }
+                                                                sx={{
+                                                                    width: "100%",
+                                                                    height: "100%",
+                                                                }}
+                                                            />
                                                         </Box>
                                                     );
                                                 }
