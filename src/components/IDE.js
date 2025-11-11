@@ -1690,7 +1690,26 @@ class IDE extends Component {
     };
 
     menuOptions() {
-        const options = [];
+        const options = [
+            {
+                label: "Open System Browser",
+                action: () => {
+                    this.activeContainer().openPackageBrowser();
+                },
+            },
+            {
+                label: "Open Class Browser",
+                action: () => {
+                    this.activeContainer().openClassBrowser();
+                },
+            },
+            {
+                label: "New Workspace",
+                action: () => {
+                    this.activeContainer().newWorkspace();
+                },
+            },
+        ];
         const extended = this.extensionMenuOptions(
             this.state.extendedOptions,
             this.performExtendedOption
