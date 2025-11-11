@@ -13,7 +13,7 @@ function createWindow() {
             contextIsolation: false,
         },
     });
-    const isDev = true;
+    const isDev = false;
     const url = isDev
         ? "http://localhost:3000"
         : `file://${path.join(__dirname, "../build/index.html")}`;
