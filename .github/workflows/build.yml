@@ -13,6 +13,7 @@ jobs:
 
     strategy:
       matrix:
+        arch: [x64, arm64]
         os: [ubuntu-latest]
 
     steps:
