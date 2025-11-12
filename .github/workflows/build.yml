@@ -13,7 +13,6 @@ jobs:
 
     strategy:
       matrix:
-        arch: [x64, arm64]
         os: [ubuntu-latest]
 
     steps:
@@ -31,16 +30,29 @@ jobs:
       # install snapcraft and login to allow uploading it to snap store
       - name: Install Snapcraft
         uses: samuelmeuli/action-snapcraft@v2
-
-      - name: Build/release Electron app
-        uses: Yan-Jobs/action-electron-builder@v1.7.0
-        with:
-          # GitHub token, automatically provided to the action
-          # (No need to define this secret in the repo settings)
-          github_token: ${{ secrets.github_token }}
-
+    
       - name: Extract version from tag
         run: |
           VERSION=${GITHUB_REF#refs/tags/v}
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
-          
+
+      - name: Build x64 snap
+        uses: Yan-Jobs/action-electron-builder@v1.7.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          args: --linux snap --x64
+      
+      - name: Upload x64 snap
+        run: snapcraft upload dist/*.snap --release=stable
+      
+      - name: Clean dist
+        run: rm -rf dist
+      
+      - name: Build arm64 snap
+        uses: Yan-Jobs/action-electron-builder@v1.7.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          args: --linux snap --arm64
+      
+      - name: Upload arm64 snap
+        run: snapcraft upload dist/*.snap --release=stable
