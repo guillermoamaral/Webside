@@ -6,7 +6,7 @@ import CodeEditorBackend from "../parts/CodeEditorBackend";
 class Transcript extends Tool {
 	aboutToSelect() {
 		super.aboutToSelect();
-		ide.resetUnredErrorCount();
+		ide.resetUnredAlertsCount();
 		this.forceUpdate();
 	}
 
