@@ -1,5 +1,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
+import { withTheme } from "@emotion/react";
+import ShortcutLegend from "./ShortcutLegend";
 
 class ShortcutsLegend extends React.Component {
     constructor(props) {
@@ -36,12 +38,6 @@ class ShortcutsLegend extends React.Component {
 
     render() {
         const shortcuts = this.getShortcuts();
-        const isDarkMode =
-            this.props.settings?.section("appearance")?.get("mode") === "dark";
-
-        const textColor = isDarkMode ? "#aaaaaa" : "#000000";
-        const shortcutColor = isDarkMode ? "#808080" : "#666666";
-
         return (
             <Box
                 sx={{
@@ -70,33 +66,13 @@ class ShortcutsLegend extends React.Component {
                         <Typography
                             variant="body1"
                             sx={{
-                                color: textColor,
                                 fontWeight: 500,
                                 fontSize: "14px",
                             }}
                         >
                             {item.action}
                         </Typography>
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                color: shortcutColor,
-                                fontSize: "12px",
-                                fontFamily: "monospace",
-                                backgroundColor: isDarkMode
-                                    ? "rgba(255,255,255,0.1)"
-                                    : "rgba(0,0,0,0.1)",
-                                padding: "2px 6px",
-                                borderRadius: "3px",
-                                border: `1px solid ${
-                                    isDarkMode
-                                        ? "rgba(255,255,255,0.2)"
-                                        : "rgba(0,0,0,0.2)"
-                                }`,
-                            }}
-                        >
-                            {item.shortcut}
-                        </Typography>
+                        <ShortcutLegend shortcut={item.shortcut} />
                     </Box>
                 ))}
             </Box>
@@ -104,4 +80,4 @@ class ShortcutsLegend extends React.Component {
     }
 }
 
-export default ShortcutsLegend;
+export default withTheme(ShortcutsLegend);

@@ -15,7 +15,8 @@ import SelectIcon from "@mui/icons-material/ExpandMore";
 import CloseIcon from "@mui/icons-material/Close";
 import { darken } from "@mui/system";
 import DraggableReorderItem from "../controls/DraggableReorderItem";
-import { ide } from "../IDE";
+import { withTheme } from "@emotion/react";
+import ShortcutLegend from "../parts/ShortcutLegend";
 
 class TabControl extends Component {
     constructor(props) {
@@ -83,9 +84,8 @@ class TabControl extends Component {
             showTabSelector = true,
             addOptions = [],
         } = this.props;
-        const appearance = ide.settings.section("appearance");
-        const mode = appearance.section(appearance.get("mode"));
-        const background = mode.get("background");
+        const { theme } = this.props;
+        const background = theme.palette.background.default;
         const selectedIndex = pages.findIndex(
             (p) => p && selectedPage && p.id === selectedPage.id
         );
@@ -249,12 +249,11 @@ class TabControl extends Component {
                                     >
                                         <Typography>{option.label}</Typography>
                                         {option.shortcut && (
-                                            <Typography
-                                                variant="caption"
-                                                sx={{ ml: 1, opacity: 0.6 }}
-                                            >
-                                                {"(" + option.shortcut + ")"}
-                                            </Typography>
+                                            <Box ml={1}>
+                                                <ShortcutLegend
+                                                    shortcut={option.shortcut}
+                                                />
+                                            </Box>
                                         )}
                                     </Box>
                                 </Box>
@@ -308,7 +307,7 @@ class TabControl extends Component {
                     </Menu>
                 </Box>
                 <Box pb={0} flexGrow={1}>
-                    {pages.map((page, index) => {
+                    {pages.map((page) => {
                         return (
                             <TabPanel
                                 id={id + "-" + page.id}
@@ -329,4 +328,4 @@ class TabControl extends Component {
     }
 }
 
-export default TabControl;
+export default withTheme(TabControl);
