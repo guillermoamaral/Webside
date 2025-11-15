@@ -246,7 +246,7 @@ class ToolContainer extends Component {
         if (page) {
             this.selectPage(page);
         } else {
-            ide.resetUnredErrorCount();
+            ide.resetUnredAlertsCount();
             const ref = React.createRef();
             const transcript = (
                 <Transcript

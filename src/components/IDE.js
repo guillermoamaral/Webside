@@ -9,7 +9,7 @@ import {
     IconButton,
     Typography,
 } from "@mui/material";
-import CollapseSearchIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
+import CollapseSearchIcon from "@mui/icons-material/ChevronLeft";
 import CodeAssistantChat from "./tools/CodeAssistantChat";
 import CloseIcon from "@mui/icons-material/Close";
 import ToolContainer from "./ToolContainer";
@@ -55,7 +55,7 @@ class IDE extends Component {
         this.state = {
             sidebarExpanded: false,
             lastMessage: null,
-            unreadErrorsCount: 0,
+            unreadAlertsCount: 1,
             unreadMessages: 0,
             transcriptText: this.welcomeMessage(),
             extraContainers: [],
@@ -77,7 +77,7 @@ class IDE extends Component {
 
     componentDidMount() {
         const container = this.activeContainer();
-        container.openTranscript();
+        //container.openTranscript();
         //container.openPOC();
         const options = this.queryOptions();
         if (options.classname) container.openClassBrowser(options.classname);
@@ -1153,7 +1153,7 @@ class IDE extends Component {
         this.setState({
             lastMessage: { type: "error", text: description },
             transcriptText: this.state.transcriptText + "\r" + description,
-            unreadErrorsCount: this.state.unreadErrorsCount + 1,
+            unreadAlertsCount: this.state.unreadAlertsCount + 1,
         });
     };
 
@@ -1204,8 +1204,8 @@ class IDE extends Component {
         }
     };
 
-    resetUnredErrorCount() {
-        this.setState({ unreadErrorsCount: 0 });
+    resetUnredAlertsCount() {
+        this.setState({ unreadAlertsCount: 0 });
     }
 
     async choose(list) {
@@ -1690,24 +1690,28 @@ class IDE extends Component {
     };
 
     menuOptions() {
+        const shortcuts = this.settings.section("shortcuts");
         const options = [
             {
                 label: "Open System Browser",
                 action: () => {
                     this.activeContainer().openPackageBrowser();
                 },
+                shortcut: shortcuts.get("openSystemBrowser"),
             },
             {
                 label: "Open Class Browser",
                 action: () => {
                     this.activeContainer().openClassBrowser();
                 },
+                shortcut: shortcuts.get("openClassBrowser"),
             },
             {
                 label: "New Workspace",
                 action: () => {
                     this.activeContainer().newWorkspace();
                 },
+                shortcut: shortcuts.get("newWorkspace"),
             },
         ];
         const extended = this.extensionMenuOptions(
@@ -1720,7 +1724,7 @@ class IDE extends Component {
     render() {
         const {
             sidebarExpanded,
-            unreadErrorsCount,
+            unreadAlertsCount,
             unreadMessages,
             lastMessage,
             extraContainers,
@@ -1801,7 +1805,7 @@ class IDE extends Component {
                             />
                             <Sidebar
                                 expanded={sidebarExpanded}
-                                unreadErrorsCount={unreadErrorsCount}
+                                unreadAlertsCount={unreadAlertsCount}
                                 unreadMessages={unreadMessages}
                                 onSaveImageClick={this.saveImage}
                                 onTranscriptClick={this.openTranscript}

@@ -9,7 +9,7 @@ import {
 	Badge,
 	Tooltip,
 } from "@mui/material";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import CollapseIcon from "@mui/icons-material/ChevronLeft";
 import TranscriptIcon from "../icons/TranscriptIcon";
 import SearchIcon from "@mui/icons-material/Search";
 import ObjectsIcon from "../icons/ObjectsIcon";
@@ -27,7 +27,7 @@ class Sidebar extends Component {
 			onCollapse,
 			//onSaveImageClick,
 			onTranscriptClick,
-			unreadErrorsCount,
+			unreadAlertsCount,
 			onSearchClick,
 			changesCount,
 			onResourcesClick,
@@ -40,7 +40,7 @@ class Sidebar extends Component {
 			<StyledDrawer variant="permanent" open={expanded}>
 				<DrawerHeader>
 					<IconButton onClick={onCollapse}>
-						<ChevronLeftIcon />
+						<CollapseIcon />
 					</IconButton>
 				</DrawerHeader>
 				<Divider />
@@ -69,7 +69,7 @@ class Sidebar extends Component {
 						<ListItemIcon>
 							<Tooltip title="Transcript" placement="top">
 								<Badge
-									badgeContent={unreadErrorsCount}
+									badgeContent={unreadAlertsCount}
 									color="secondary"
 								>
 									<TranscriptIcon />
