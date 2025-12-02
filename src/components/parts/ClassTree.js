@@ -344,9 +344,10 @@ class ClassTree extends Component {
 		if (!species) return;
 		try {
 			let message;
-			const references = await ide.waitFor(() => {
-				ide.backend.classReferences(species.name);
+			const references = await ide.waitFor(async () => {
+				return await ide.backend.classReferences(species.name);
 			}, "Searching references...");
+			console.log(references);
 			if (references.length > 0) {
 				message =
 					"Class " +

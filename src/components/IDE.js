@@ -155,8 +155,6 @@ class IDE extends Component {
             ["primaryText", "Color used for labels"],
             ["secondaryText", ""],
             ["disabledText", ""],
-            ["appliedChange", ""],
-            ["unappliedChange", ""],
             ["selectionColor", ""],
             ["systemBrowserColor", "System browser background color", false],
             ["classBrowserColor", "Class browser background color", false],
@@ -186,6 +184,14 @@ class IDE extends Component {
         light.addColor("infoColor", "#82aaff").readOnly();
         light.setting("primaryColor").readOnly();
         light.setting("secondaryColor").readOnly();
+        light.addColor("additionColor", "#9ccc2c33").readOnly();
+        light.addColor("remotionColor", "#ff000033").readOnly();
+        dark.addColor("additionColor", "#9ccc2c33").readOnly();
+        dark.addColor("remotionColor", "#ff000033").readOnly();
+        dark.addColor("appliedChange", "#808080").readOnly();
+        dark.addColor("superflousChange", "#08a5cc").readOnly();
+        light.addColor("appliedChange", "#808080").readOnly();
+        light.addColor("superflousChange", "#08a5cc").readOnly();
         return settings;
     }
 
@@ -208,8 +214,6 @@ class IDE extends Component {
         light.set("primaryText", "#000000");
         light.set("secondaryText", "#808080");
         light.set("disabledText", "#00000080");
-        light.set("appliedChange", "green");
-        light.set("unappliedChange", "#969696");
         light.set("selectionColor", "#9bcaef50");
         light.setting("selectorStyle").color = "#000000";
         light.setting("symbolStyle").color = "#2aa9b2";
@@ -226,6 +230,7 @@ class IDE extends Component {
         light.setting("numberStyle").color = "#65a14e";
         light.setting("commentStyle").color = "#586e75";
         light.setting("separatorStyle").color = "#b3bab6";
+
         const dark = theme.section("dark");
         dark.set("primaryColor", "#ffffff");
         dark.set("secondaryColor", "#cccccc");
@@ -242,8 +247,6 @@ class IDE extends Component {
         dark.set("primaryText", "#aaaaaa");
         dark.set("secondaryText", "#808080");
         dark.set("disabledText", "#aaaaaa80");
-        dark.set("appliedChange", "#c0ff61");
-        dark.set("unappliedChange", "#c8c8c8");
         dark.set("selectionColor", "#9bcaef50");
         dark.setting("selectorStyle").color = "#d3dddd";
         dark.setting("symbolStyle").color = "#3cd2dd";
@@ -260,6 +263,7 @@ class IDE extends Component {
         dark.setting("numberStyle").color = "#65a14e";
         dark.setting("commentStyle").color = "#586e75";
         dark.setting("separatorStyle").color = "#b3bab6";
+
         return theme;
     }
 
@@ -720,11 +724,9 @@ class IDE extends Component {
         const dark = appearance.section("dark");
         dark.set("primaryColor", primary);
         dark.set("secondaryColor", secondary);
-        dark.set("appliedChange", primary);
         const light = appearance.section("light");
         light.set("primaryColor", Setting.adjustColor(primary, -40));
         light.set("secondaryColor", secondary);
-        light.set("appliedChange", Setting.adjustColor(primary, -60));
         this.colorModeChanged();
     }
 
