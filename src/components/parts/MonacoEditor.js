@@ -452,6 +452,8 @@ class MonacoEditor extends CodeEditor {
         const error = mode.get("errorColor");
         const warning = mode.get("warningColor");
         const info = mode.get("infoColor");
+        const addition = mode.get("additionColor");
+        const remotion = mode.get("remotionColor");
         monaco.editor.defineTheme("webside", {
             base: "vs-dark",
             inherit: false,
@@ -494,6 +496,11 @@ class MonacoEditor extends CodeEditor {
                 "editorMarkerNavigationError.background": error,
                 "editorMarkerNavigationWarning.background": warning,
                 "editorMarkerNavigationInfo.background": info,
+                // Diff editor colors
+                "diffEditor.insertedTextBackground": addition,
+                "diffEditor.insertedLineBackground": addition,
+                "diffEditor.removedTextBackground": remotion,
+                "diffEditor.removedLineBackground": remotion,
             },
         });
     }
@@ -897,8 +904,12 @@ class MonacoEditor extends CodeEditor {
 
     // Source access and manipulation
 
+    activeEditor() {
+        return MonacoEditor.getActiveEditor();
+    }
+
     source() {
-        const editor = MonacoEditor.getActiveEditor();
+        const editor = this.activeEditor();
         if (editor) return editor.getValue();
     }
 
@@ -925,7 +936,7 @@ class MonacoEditor extends CodeEditor {
     }
 
     currentPosition() {
-        const editor = MonacoEditor.getActiveEditor();
+        const editor = this.activeEditor();
         if (!editor) return;
         const model = editor.getModel();
         if (!model) return;
@@ -935,7 +946,7 @@ class MonacoEditor extends CodeEditor {
     }
 
     wordAtPosition(offset) {
-        const editor = MonacoEditor.getActiveEditor();
+        const editor = this.activeEditor();
         if (!editor) return;
         const model = editor.getModel();
         const position = model.getPositionAt(this.denormalizedOffset(offset));
@@ -944,7 +955,7 @@ class MonacoEditor extends CodeEditor {
     }
 
     selectedText() {
-        const editor = MonacoEditor.getActiveEditor();
+        const editor = this.activeEditor();
         if (!editor) return "";
         const model = editor.getModel();
         const selection = editor.getSelection();
@@ -953,7 +964,7 @@ class MonacoEditor extends CodeEditor {
     }
 
     currentLine() {
-        const editor = MonacoEditor.getActiveEditor();
+        const editor = this.activeEditor();
         if (!editor) return;
         const model = editor.getModel();
         const position = editor.getPosition(); // { lineNumber, column }
@@ -962,7 +973,7 @@ class MonacoEditor extends CodeEditor {
     }
 
     currentLineRange() {
-        const editor = MonacoEditor.getActiveEditor();
+        const editor = this.activeEditor();
         if (!editor) return null;
         const model = editor.getModel();
         const position = editor.getPosition();
@@ -981,7 +992,7 @@ class MonacoEditor extends CodeEditor {
     }
 
     currentSelectionRange() {
-        const editor = MonacoEditor.getActiveEditor();
+        const editor = this.activeEditor();
         if (!editor) return;
         editor.focus();
         const model = editor.getModel();
@@ -1002,7 +1013,7 @@ class MonacoEditor extends CodeEditor {
     }
 
     insertText(text, offset) {
-        const editor = MonacoEditor.getActiveEditor();
+        const editor = this.activeEditor();
         if (!editor) return;
         const model = editor.getModel();
         if (!model) return;
@@ -1022,7 +1033,7 @@ class MonacoEditor extends CodeEditor {
     }
 
     replaceSelectionWith(text) {
-        const editor = MonacoEditor.getActiveEditor();
+        const editor = this.activeEditor();
         if (!editor) return;
         const selection = editor.getSelection();
         if (!selection) return;
@@ -1037,7 +1048,7 @@ class MonacoEditor extends CodeEditor {
     }
 
     selectRanges = (ranges) => {
-        const editor = MonacoEditor.getActiveEditor();
+        const editor = this.activeEditor();
         if (!editor || !ranges?.length) return;
         const model = editor.getModel();
         if (!model) return;

@@ -31,8 +31,6 @@
 			"primaryText": "#CCCCCC",
 			"secondaryText": "#9D9D9D",
 			"disabledText": "#AAAAAA80",
-			"appliedChange": "#81D41A",
-			"unappliedChange": "#808080",
 			"selectionColor": "#264F78"
 		},
 		"light": {
@@ -83,8 +81,6 @@
 			"primaryText": "#000000",
 			"secondaryText": "#333333",
 			"disabledText": "#00000080",
-			"appliedChange": "#81D41A",
-			"unappliedChange": "#808080",
 			"selectionColor": "#CCE3FF"
 		}
 	},
@@ -138,8 +134,6 @@
 			"primaryText": "#F5F5F5",
 			"secondaryText": "#6A9955",
 			"disabledText": "#6A995580",
-			"appliedChange": "#267f99",
-			"unappliedChange": "#808080",
 			"selectionColor": "#264F78"
 		},
 		"light": {
@@ -190,8 +184,6 @@
 			"primaryText": "#000000",
 			"secondaryText": "#6A9955",
 			"disabledText": "#6A995580",
-			"appliedChange": "#267f99",
-			"unappliedChange": "#808080",
 			"selectionColor": "#ADD6FF"
 		}
 	},
@@ -245,8 +237,6 @@
 			"primaryText": "#d4d4d4",
 			"secondaryText": "#aaaaaa",
 			"disabledText": "#aaaaaa80",
-			"appliedChange": "#81d41a",
-			"unappliedChange": "#808080",
 			"selectionColor": "#1D4A87"
 		},
 		"light": {
@@ -297,8 +287,6 @@
 			"primaryText": "#000c18",
 			"secondaryText": "#333333",
 			"disabledText": "#000c1880",
-			"appliedChange": "#81d41a",
-			"unappliedChange": "#808080",
 			"selectionColor": "#cce3ff"
 		}
 	},
@@ -352,8 +340,6 @@
 			"primaryText": "#f8f8f2",
 			"secondaryText": "#75715e",
 			"disabledText": "#75715e80",
-			"appliedChange": "#a6e22e",
-			"unappliedChange": "#f92672",
 			"selectionColor": "#49483e"
 		},
 		"light": {
@@ -404,8 +390,6 @@
 			"primaryText": "#1e1e1e",
 			"secondaryText": "#75715e",
 			"disabledText": "#75715e80",
-			"appliedChange": "#a6e22e",
-			"unappliedChange": "#f92672",
 			"selectionColor": "#cce3ff"
 		}
 	},
@@ -459,8 +443,6 @@
 			"primaryText": "#c5c8c6",
 			"secondaryText": "#75715e",
 			"disabledText": "#75715e80",
-			"appliedChange": "#a6e22e",
-			"unappliedChange": "#f92672",
 			"selectionColor": "#49483e"
 		},
 		"light": {
@@ -511,8 +493,6 @@
 			"primaryText": "#1e1e1e",
 			"secondaryText": "#75715e",
 			"disabledText": "#75715e80",
-			"appliedChange": "#a6e22e",
-			"unappliedChange": "#f92672",
 			"selectionColor": "#cce3ff"
 		}
 	},
@@ -566,8 +546,6 @@
 			"primaryText": "#839496",
 			"secondaryText": "#586e75",
 			"disabledText": "#586e7580",
-			"appliedChange": "#859900",
-			"unappliedChange": "#b58900",
 			"selectionColor": "#073642"
 		},
 		"light": {
@@ -618,8 +596,6 @@
 			"primaryText": "#002b36",
 			"secondaryText": "#586e75",
 			"disabledText": "#586e7580",
-			"appliedChange": "#859900",
-			"unappliedChange": "#b58900",
 			"selectionColor": "#e3e3d2"
 		}
 	},
@@ -673,8 +649,6 @@
 			"primaryText": "#ffffff",
 			"secondaryText": "#7285b7",
 			"disabledText": "#7285b780",
-			"appliedChange": "#d1f1a9",
-			"unappliedChange": "#ff9da4",
 			"selectionColor": "#003f8e"
 		},
 		"light": {
@@ -725,8 +699,6 @@
 			"primaryText": "#002451",
 			"secondaryText": "#7285b7",
 			"disabledText": "#7285b780",
-			"appliedChange": "#d1f1a9",
-			"unappliedChange": "#ff9da4",
 			"selectionColor": "#cce3ff"
 		}
 	},
@@ -748,8 +720,6 @@
 			"primaryText": "#f8f8f8",
 			"secondaryText": "#ff8888",
 			"disabledText": "#ff888880",
-			"appliedChange": "#ff7777",
-			"unappliedChange": "#aa4444",
 			"selectionColor": "#750000",
 			"commentStyle": {
 				"color": "#ff8888",
@@ -809,8 +779,6 @@
 			"primaryText": "#000000",
 			"secondaryText": "#aa2222",
 			"disabledText": "#cc666680",
-			"appliedChange": "#ff9999",
-			"unappliedChange": "#cc6666",
 			"selectionColor": "#ffd6d6",
 			"commentStyle": {
 				"color": "#aa4444",
