@@ -40,7 +40,7 @@ jobs:
         uses: Yan-Jobs/action-electron-builder@v1.7.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          args: --linux snap --x64
+          args: --linux snap --x64 --publish never
       
       - name: Upload x64 snap
         run: snapcraft upload dist/*.snap --release=stable
@@ -52,7 +52,7 @@ jobs:
         uses: Yan-Jobs/action-electron-builder@v1.7.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          args: --linux snap --arm64
+          args: --linux snap --arm64 --publish never
       
       - name: Upload arm64 snap
         run: snapcraft upload dist/*.snap --release=stable
