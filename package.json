@@ -99,7 +99,7 @@
 		"concurrently": "^8.2.2",
 		"cross-env": "^7.0.3",
 		"electron": "^29.1.5",
-		"electron-builder": "^24.13.3",
+		"electron-builder": "^26.6.0",
 		"wait-on": "^7.2.0"
 	}
 }
