@@ -27,14 +27,18 @@ class Titlebar extends Component {
     }
 
     isElectron = () => {
-        return (
-            !!(window.require && window.require("electron")) ||
-            !!(
-                window.process &&
-                window.process.versions &&
-                window.process.versions.electron
-            )
-        );
+        try {
+            return (
+                !!(window.require && window.require("electron")) ||
+                !!(
+                    window.process &&
+                    window.process.versions &&
+                    window.process.versions.electron
+                )
+            );
+        } catch {
+            return false;
+        }
     };
 
     render() {

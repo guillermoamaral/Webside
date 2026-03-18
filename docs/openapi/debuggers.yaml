@@ -284,6 +284,98 @@ paths:
         "200":
           description: Debugger restarted successfully
 
+  /debuggers/{id}/frames/{index}/stepout:
+    post:
+      summary: Step out of the current frame in the debugger with a given ID
+      description: Execute step out operation in debugger, running until the current frame returns
+      tags: [Debuggers]
+      operationId: stepOut
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Debugger ID
+          schema:
+            type: string
+        - name: index
+          in: path
+          required: true
+          description: Frame index
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Step out executed successfully
+
+  /debuggers/{id}/frames/{index}/reversestepover:
+    post:
+      summary: Reverse step over the current sentence in the debugger with a given ID
+      description: Execute reverse step over operation in debugger
+      tags: [Debuggers]
+      operationId: reverseStepOver
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Debugger ID
+          schema:
+            type: string
+        - name: index
+          in: path
+          required: true
+          description: Frame index
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Reverse step over executed successfully
+
+  /debuggers/{id}/frames/{index}/reversestepinto:
+    post:
+      summary: Reverse step into the current sentence in the debugger with a given ID
+      description: Execute reverse step into operation in debugger
+      tags: [Debuggers]
+      operationId: reverseStepInto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Debugger ID
+          schema:
+            type: string
+        - name: index
+          in: path
+          required: true
+          description: Frame index
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Reverse step into executed successfully
+
+  /debuggers/{id}/frames/{index}/reversestepout:
+    post:
+      summary: Reverse step out of the current frame in the debugger with a given ID
+      description: Execute reverse step out operation in debugger, running backwards until re-entering the current frame
+      tags: [Debuggers]
+      operationId: reverseStepOut
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Debugger ID
+          schema:
+            type: string
+        - name: index
+          in: path
+          required: true
+          description: Frame index
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Reverse step out executed successfully
+
   /debuggers/{id}/resume:
     post:
       summary: Resume the process of the debugger with a given ID

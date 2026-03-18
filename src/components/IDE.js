@@ -1036,6 +1036,10 @@ class IDE extends Component {
         this.activeContainer().openResources();
     };
 
+    openVMInspector = () => {
+        this.activeContainer().openVMInspector();
+    };
+
     openChat = () => {
         this.activeContainer().openChat();
     };
@@ -1814,6 +1818,7 @@ class IDE extends Component {
                                 onSearchClick={this.toggleOpenSearch}
                                 onChangesClick={this.browseLastChanges}
                                 onResourcesClick={this.openResources}
+                                onVMInspectorClick={this.openVMInspector}
                                 onPeersClick={
                                     this.messageChannel && this.openChat
                                 }

@@ -23,6 +23,7 @@ import Debugger from "./tools/Debugger";
 import TestRunner from "./tools/TestRunner";
 import Profiler from "./tools/Profiler";
 import NativeDebugger from "./tools/NativeDebugger";
+import VMInspector from "./tools/VMInspector";
 import Chat from "./tools/Chat";
 import CodeDifferences from "./tools/CodeDifferences";
 import SettingsEditor from "./tools/SettingsEditor";
@@ -32,6 +33,7 @@ import Changeset from "../model/StChangeset";
 import { ide } from "./IDE";
 import ToolContainerContext from "./ToolContainerContext";
 import ResourcesIcon from "./icons/ResourcesIcon";
+import VMInspectorIcon from "./icons/VMInspectorIcon";
 import POC from "./tools/POC";
 import SystemBrowser from "./tools/SystemBrowser";
 import { v4 as uuidv4 } from "uuid";
@@ -580,6 +582,16 @@ class ToolContainer extends Component {
     openNativeDebugger = (id, title = "Native Debugger") => {
         const tool = <NativeDebugger key={id} id={id} />;
         this.createPage(title, <DebuggerIcon />, tool);
+    };
+
+    openVMInspector = () => {
+        const page = this.pageLabeled("VM Inspector");
+        if (page) {
+            this.selectPage(page);
+        } else {
+            const tool = <VMInspector />;
+            this.createPage("VM Inspector", <VMInspectorIcon />, tool);
+        }
     };
 
     openChat = (peername) => {
@@ -1157,6 +1169,11 @@ class ToolContainer extends Component {
                 label: "Changes Browser",
                 icon: <ChangesBrowserIcon />,
                 handler: this.addChangesBrowserClicked,
+            },
+            {
+                label: "VM Inspector",
+                icon: <VMInspectorIcon />,
+                handler: this.openVMInspector,
             },
         ];
     }

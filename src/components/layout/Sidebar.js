@@ -19,6 +19,7 @@ import { withDialog } from "../dialogs/index";
 import DrawerHeader from "./DrawerHeader";
 import StyledDrawer from "./StyledDrawer";
 import SettingsIcon from "@mui/icons-material/Settings";
+import VMInspectorIcon from "../icons/VMInspectorIcon";
 
 class Sidebar extends Component {
 	render() {
@@ -33,6 +34,7 @@ class Sidebar extends Component {
 			onResourcesClick,
 			onChangesClick,
 			onPeersClick,
+			onVMInspectorClick,
 			onSettingsClick,
 			unreadMessages,
 		} = this.props;
@@ -96,11 +98,11 @@ class Sidebar extends Component {
 					<ListItemButton 
 						onClick={onResourcesClick}
 					>
-						<Tooltip title="Resources" placement="top">
-							<ListItemIcon>
-								<ObjectsIcon />
-							</ListItemIcon>
-						</Tooltip>
+						<ListItemIcon>
+							<Tooltip title="Resources" placement="top">
+								<span><ObjectsIcon /></span>
+							</Tooltip>
+						</ListItemIcon>
 						<ListItemText primary="Resources" />
 					</ListItemButton>
 					{onPeersClick && (
@@ -120,14 +122,26 @@ class Sidebar extends Component {
 							<ListItemText primary="Chat" />
 						</ListItemButton>
 					)}
+					{onVMInspectorClick && (
+						<ListItemButton
+							onClick={onVMInspectorClick}
+						>
+							<ListItemIcon>
+								<Tooltip title="VM Inspector" placement="top">
+								<span><VMInspectorIcon /></span>
+								</Tooltip>
+							</ListItemIcon>
+							<ListItemText primary="VM Inspector" />
+						</ListItemButton>
+					)}
 					<ListItemButton 
 						onClick={onSettingsClick}
 					>
-						<Tooltip title="Settings" placement="top">
-							<ListItemIcon>
+						<ListItemIcon>
+							<Tooltip title="Settings" placement="top">
 								<SettingsIcon />
-							</ListItemIcon>
-						</Tooltip>
+							</Tooltip>
+						</ListItemIcon>
 						<ListItemText primary="Settings" />
 					</ListItemButton>
 				</List>

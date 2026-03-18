@@ -13,6 +13,10 @@ Endpoints to manage debuggers and interact with them.
 |  POST  | [/debuggers/{id}/frames/{index}/stepover](id/frames/index/stepover/post.md)       | Step over the current sentence in the debugger with a given ID                 |     -      | -            |
 |  POST  | [/debuggers/{id}/frames/{index}/stepthrough](id/frames/index/stepthrough/post.md) | Step through the current sentence in the debugger with a given ID              |     -      | -            |
 |  POST  | [/debuggers/{id}/frames/{index}/runtocursor](id/frames/index/runtocursor/post.md) | Run to cursor in the debugger with a given ID                                  |     -      | -            |
+|  POST  | [/debuggers/{id}/frames/{index}/stepout](id/frames/index/stepout/post.md)         | Step out of the current frame in the debugger with a given ID                  |     -      | -            |
+|  POST  | [/debuggers/{id}/frames/{index}/reversestepover](id/frames/index/reversestepover/post.md) | Reverse step over the current sentence in the debugger with a given ID |     -      | -            |
+|  POST  | [/debuggers/{id}/frames/{index}/reversestepinto](id/frames/index/reversestepinto/post.md) | Reverse step into the current sentence in the debugger with a given ID |     -      | -            |
+|  POST  | [/debuggers/{id}/frames/{index}/reversestepout](id/frames/index/reversestepout/post.md)   | Reverse step out of the current frame in the debugger with a given ID  |     -      | -            |
 |  POST  | [/debuggers/{id}/frames/{index}/restart](id/frames/index/restart/post.md)         | Restart the debugger with a given ID                                           |     -      | -            |
 |  POST  | [/debuggers/{id}/resume](id/resume/post.md)                                       | Resume the process of the debugger with a given ID                             |     -      | -            |
 |  POST  | [/debuggers/{id}/terminate](id/terminate/post.md)                                 | Terminate process being debugged and close the debugger with a given ID        |     -      | -            |

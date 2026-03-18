@@ -296,7 +296,7 @@ const CustomTree = ({
 		const flatten = [];
 		lastId = 0;
 		for (let node of roots) {
-			flattenNode(node, 0, flatten);
+			if (node) flattenNode(node, 0, flatten);
 		}
 		return flatten;
 	};
@@ -325,7 +325,7 @@ const CustomTree = ({
 		result.push(info);
 		if (info.expanded && info.children.length > 0) {
 			for (let child of info.children) {
-				flattenNode(child, depth + 1, result);
+				if (child) flattenNode(child, depth + 1, result);
 			}
 		}
 	};

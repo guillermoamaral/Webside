@@ -513,6 +513,38 @@ class Backend {
         );
     }
 
+    async stepOutDebugger(id, index) {
+        return await this.post(
+            "/debuggers/" + id + "/frames/" + index + "/stepout",
+            null,
+            "step out on frame " + index + " of debugger " + id
+        );
+    }
+
+    async reverseStepOverDebugger(id, index) {
+        return await this.post(
+            "/debuggers/" + id + "/frames/" + index + "/reversestepover",
+            null,
+            "reverse step over on frame " + index + " of debugger " + id
+        );
+    }
+
+    async reverseStepIntoDebugger(id, index) {
+        return await this.post(
+            "/debuggers/" + id + "/frames/" + index + "/reversestepinto",
+            null,
+            "reverse step into on frame " + index + " of debugger " + id
+        );
+    }
+
+    async reverseStepOutDebugger(id, index) {
+        return await this.post(
+            "/debuggers/" + id + "/frames/" + index + "/reversestepout",
+            null,
+            "reverse step out on frame " + index + " of debugger " + id
+        );
+    }
+
     async runToCursorDebugger(id, index, position) {
         return await this.post(
             "/debuggers/" + id + "/frames/" + index + "/runtocursor",
@@ -1276,6 +1308,93 @@ class Backend {
                 register +
                 " of native debugger " +
                 id
+        );
+    }
+
+    // VM Inspector (low-level, smalldbg)...
+
+    // --- Implemented in Egg server ---
+
+    async nativeSymbols(filter = "") {
+        const query = filter ? "?filter=" + encodeURIComponent(filter) : "";
+        return await this.get(
+            "/native-symbols" + query,
+            "native symbols" + (filter ? " matching " + filter : "")
+        );
+    }
+
+    async nativeSymbol(name) {
+        return await this.get(
+            "/native-symbols/" + encodeURIComponent(name),
+            "native symbol " + name
+        );
+    }
+
+    async nativeModules() {
+        return await this.get("/native-modules", "native modules");
+    }
+
+    async nativeInspect(expression) {
+        return await this.get(
+            "/native-inspect?expression=" + encodeURIComponent(expression),
+            "native inspect " + expression
+        );
+    }
+
+    async vmRegions() {
+        return await this.get("/regions", "VM memory regions");
+    }
+
+    async vmClassifyAddress(address) {
+        return await this.get(
+            "/classify?address=" + encodeURIComponent(address),
+            "classify address " + address
+        );
+    }
+
+    async vmInspectOop(oop, maxSlots = 50) {
+        return await this.get(
+            "/inspect?oop=" +
+                encodeURIComponent(oop) +
+                "&maxSlots=" +
+                maxSlots,
+            "inspect oop " + oop
+        );
+    }
+
+    async vmReadMemory(address, type = "bytes", count = 256) {
+        return await this.get(
+            "/memory?address=" +
+                encodeURIComponent(address) +
+                "&type=" +
+                type +
+                "&count=" +
+                count,
+            "read memory at " + address
+        );
+    }
+
+    async vmResolveSymbol(name) {
+        return await this.get(
+            "/symbol?name=" + encodeURIComponent(name),
+            "resolve symbol " + name
+        );
+    }
+
+    async vmClassOop(oop) {
+        return await this.get(
+            "/classoop?oop=" + encodeURIComponent(oop),
+            "class of oop " + oop
+        );
+    }
+
+    async disassemble(address, count = 256) {
+        return await this.get(
+            "/disassemble?address=" +
+                encodeURIComponent(address) +
+                "&count=" +
+                count,
+            "disassemble at " + address
         );
     }
 }
